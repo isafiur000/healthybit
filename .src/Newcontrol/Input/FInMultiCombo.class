@@ -16,7 +16,7 @@ Public Sub Run(sTitle As String, sRow As Integer, Optional sList As String[]) As
 
   $sTitle = sTitle
   $Row = sRow
-  If sList And sList.Count Then
+  If sList And If sList.Count Then
     $List = sList
   Else
     $List = New String[]

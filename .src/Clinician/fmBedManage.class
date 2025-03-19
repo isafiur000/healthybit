@@ -5,6 +5,7 @@ Private $txtbed As TextBox
 Private $DiscType As String
 
 Private $bedNo As String
+Private $depart As String
 Private $rData As Result
 Private $aMyFields As String[]
 
@@ -36,13 +37,12 @@ Private Sub GetCurrentBedData()
 
   Dim i As Integer
   Dim res As Result
-  Dim xdept As String
 
   res = modDatabase.$myConn.Exec("select flddept,fldbed from tbldepartmentbed where fldbed in(select fldcurrlocat from tblencounter where fldencounterval=&1)", $encid)
   If res.Available Then
     res.MoveLast
     $bedNo = res["fldbed"]
-    xdept = res["flddept"]
+    $depart = res["flddept"]
   Endif
 
   If modBasic.$FixedDepartment Then
@@ -53,7 +53,7 @@ Private Sub GetCurrentBedData()
     Next
   Else
     For i = 0 To lstdepartment.Count - 1
-      If lstdepartment[i].Text = xdept Then
+      If lstdepartment[i].Text = $depart Then
         lstdepartment.Index = i
       Endif
     Next
@@ -237,10 +237,10 @@ Public Sub mnusel_Click()
   If GridView1.Rows.Selection.Count > 0 Then
     If modBasic.$LockToOwnDepart = "Yes" And If modBasic.$FixedDepartment Then
       If lstdepartment.Text = modBasic.$FixedDepartment Then
-        SelectBed()
+        SelectBed(GridView1[GridView1.Row, 3].Text)
       Endif
     Else
-      SelectBed()
+      SelectBed(GridView1[GridView1.Row, 3].Text)
     Endif
   Endif
 
@@ -248,38 +248,38 @@ End
 
 Public Sub GridView1_Click()
 
-  If GridView1.Column = 7 Then
+  If GridView1.Rows.Selection.Count > 0 Then
     If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
-      If modBasic.$LockToOwnDepart = "Yes" And If modBasic.$FixedDepartment Then
-        If lstdepartment.Text = modBasic.$FixedDepartment Then
-          SelectBed()
-        Endif
-      Else
-        SelectBed()
-      Endif
-    Endif
 
-  Else If GridView1.Column = 8 Then
-    If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
-      If modBasic.$LockToOwnDepart = "Yes" And If modBasic.$FixedDepartment Then
-        If lstdepartment.Text = modBasic.$FixedDepartment Then
-          ReleaseBed()
+      If GridView1.Column = 7 Then
+        If modBasic.$LockToOwnDepart = "Yes" And If modBasic.$FixedDepartment Then
+          If lstdepartment.Text = modBasic.$FixedDepartment Then
+            SelectBed(GridView1[GridView1.Row, 3].Text)
+          Endif
+        Else
+          SelectBed(GridView1[GridView1.Row, 3].Text)
         Endif
-      Else
-        ReleaseBed()
+
+      Else If GridView1.Column = 8 Then
+        If modBasic.$LockToOwnDepart = "Yes" And If modBasic.$FixedDepartment Then
+          If lstdepartment.Text = modBasic.$FixedDepartment Then
+            ReleaseBed(GridView1[GridView1.Row, 3].Text)
+          Endif
+        Else
+          ReleaseBed(GridView1[GridView1.Row, 3].Text)
+        Endif
       Endif
+
     Endif
   Endif
 
 End
 
-Private Sub SelectBed()
+Private Sub SelectBed(newbed As String)
 
   Dim res As Result
   Dim res1 As Result
   Dim hr As Float
-  Dim Row As Integer
-  Dim newbed As String
   Dim xitem As String
   Dim autobil As String
   Dim unitrate As String
@@ -288,22 +288,27 @@ Private Sub SelectBed()
   Dim xpayble As String
   Dim xmsg As String
   Dim xidno As Long
+  Dim xcomm As String
 
   If $encid Then
     xrefer = modBillings.GetReferralUserSetting("Service", $encid)
     xpayble = modBillings.GetPayableUserSetting("Service", $encid)
+    If $depart = lstdepartment.Text Then
+      xcomm = "Intra Transfer"
+    Else
+      xcomm = newbed
+    Endif
 
-    res1 = modDatabase.$myConn.Exec("select fldencounterval from tbldepartmentbed where flddept=&1 and fldbed=&2", lstdepartment.Text, GridView1[GridView1.Row, 3].Text)
+    res1 = modDatabase.$myConn.Exec("select fldencounterval from tbldepartmentbed where flddept=&1 and fldbed=&2", lstdepartment.Text, newbed)
     If res1.Available And If res1["fldencounterval"] Then
       Message.Warning(("Bed not free"), ("OK"))
     Else
 
-      Row = GridView1.Row
       Inc Application.Busy
       res = modDatabase.$myConn.Exec("select fldid,flditem,flddisctype,fldfirsttime,fldfirstreport from tblpattiming where fldencounterval=&1 and fldtype=&2 and fldfirstsave=&3 and fldsecondsave=&4 and fldfirstreport=&5", $encid, "General Services", True, False, "Bed")                                                                   ''
       If res.Available = False Then
         modPatientSub.UpdateAdmissionWard($encid, lstdepartment.Text)
-        xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $DiscType, lstdepartment.Text, "Bed", dtnow.Value)
+        xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $DiscType, lstdepartment.Text, "Bed", dtnow.Value, xcomm)
       Else
         res.MoveFirst
         modDatabase.$myConn.Begin
@@ -321,17 +326,16 @@ Private Sub SelectBed()
             xmsg = "Bed Charge not specified."
           Endif
         Endif
-        xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $DiscType, lstdepartment.Text, "Bed", dtnow.Value)
+        xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $DiscType, lstdepartment.Text, "Bed", dtnow.Value, xcomm)
         modDatabase.$myConn.Commit
       Endif
 
-      newbed = GridView1[GridView1.Row, 3].Text
       modPatientSub.UpdatePatLocation($encid, newbed, dtnow.Value)
       $bedNo = newbed
+      $depart = lstdepartment.Text
       $txtbed.Text = newbed
       Dec Application.Busy
       FillBedGrid()
-      GridView1.Row = Row
       If xmsg Then
         Message.Warning(xmsg, "OK")
       Endif
@@ -346,7 +350,7 @@ Catch
 
 End
 
-Private Sub ReleaseBed()
+Private Sub ReleaseBed(curBed As String)
 
   Dim res As Result
   Dim res1 As Result
@@ -365,10 +369,9 @@ Private Sub ReleaseBed()
     xrefer = modBillings.GetReferralUserSetting("Service", $encid)
     xpayble = modBillings.GetPayableUserSetting("Service", $encid)
 
-    res1 = modDatabase.$myConn.Exec("select fldencounterval from tbldepartmentbed where flddept=&1 and fldbed=&2", lstdepartment.Text, GridView1[GridView1.Row, 3].Text)
+    res1 = modDatabase.$myConn.Exec("select fldencounterval from tbldepartmentbed where flddept=&1 and fldbed=&2", lstdepartment.Text, curBed)
     If res1.Available And If res1["fldencounterval"] Then
 
-      Row = GridView1.Row
       Inc Application.Busy
       res = modDatabase.$myConn.Exec("select fldid,flditem,flddisctype,fldfirsttime,fldfirstreport from tblpattiming where fldencounterval=&1 and fldtype=&2 and fldfirstsave=&3 and fldsecondsave=&4 and fldfirstreport=&5", $encid, "General Services", True, False, "Bed")                                                                   ''
       If res.Available Then
@@ -393,10 +396,10 @@ Private Sub ReleaseBed()
 
       modPatientSub.UpdatePatLocationRelease($encid, dtnow.Value)
       $bedNo = ""
+      $depart = ""
       $txtbed.Text = ""
       Dec Application.Busy
       FillBedGrid()
-      GridView1.Row = Row
       If xmsg Then
         Message.Warning(xmsg, "OK")
       Endif
