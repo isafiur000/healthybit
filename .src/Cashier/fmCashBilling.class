@@ -3269,11 +3269,11 @@ Private Sub SerBedEntryCount()
   xdoa = modPatient.GetAdmissionDate(Trim(txtencid.Text))
   res = modDatabase.$myConn.Exec("select fldid,fldfirsttime from tblpattiming where fldencounterval=&1 and fldtype=&2 and fldfirstreport=&3 ORDER BY fldfirsttime ASC", Trim(txtencid.Text), "General Services", "Bed")
   If res.Available = False Then
-    xidno = modPatientGeneral.AddPatientTableFirstTime(Trim(txtencid.Text), "General Services", cmbdisctype.Text, "", "Bed", xdoa, Now())
+    xidno = modPatientGeneral.AddPatientTableFirstTime(Trim(txtencid.Text), "General Services", cmbdisctype.Text, "", "Bed", xdoa, "", Now())
   Else
     res.MoveFirst
     If Date(res["fldfirsttime"]) > Date(xdoa) Then
-      xidno = modPatientGeneral.AddPatientTableFirstTime(Trim(txtencid.Text), "General Services", cmbdisctype.Text, "", "Bed", xdoa, res["fldfirsttime"])
+      xidno = modPatientGeneral.AddPatientTableFirstTime(Trim(txtencid.Text), "General Services", cmbdisctype.Text, "", "Bed", xdoa, "", res["fldfirsttime"])
     Endif
   Endif
 

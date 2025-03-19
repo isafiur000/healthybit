@@ -281,7 +281,7 @@ Public Sub btnedit_Click()
           res["fldsecondsave"] = True
           res.Update
           If Date(dttodate.Value) < Date($LstDate) Then
-            xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $sPackage, cmbward.Text, "Bed", modDate.StartSqlDate(dttodate.Value))
+            xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $sPackage, cmbward.Text, "Bed", modDate.StartSqlDate(dttodate.Value), "")
           Endif
         Endif
         cmbward.Text = ""
@@ -296,7 +296,7 @@ Public Sub btnedit_Click()
   Else
     xdoa = GetLastRecordDate()
     modPatientSub.UpdateAdmissionWard($encid, cmbward.Text)
-    xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $sPackage, cmbward.Text, "Bed", xdoa)
+    xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $sPackage, cmbward.Text, "Bed", xdoa, "")
     cmbward.Text = ""
     txtdays.Value = 0
     ShowNewValue()
@@ -326,7 +326,7 @@ Public Sub btnbreak_Click()
         res.Update
         If Date(dttodate.Value) < Date($LstDate) Then
           ''add both first and last date simultaneously
-          xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $sPackage, cmbward.Text, "Bed", modDate.StartSqlDate(dttodate.Value), xdod)
+          xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $sPackage, cmbward.Text, "Bed", modDate.StartSqlDate(dttodate.Value), "", xdod)
         Endif
       Endif
       cmbward.Text = ""
