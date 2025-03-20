@@ -1953,6 +1953,17 @@ Public Sub mnurec10_Click()
 
 End
 
+Public Sub mnustruct_Click()
+
+  Dim hForm As FmExamReporting
+
+  If GridView1.Rows.Selection.Count Then
+    hForm = New FmExamReporting(GridView1[GridView1.Row, 2].Text, True)
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
 Public Sub btnpersonal_Click()
 
   Dim xPath As String

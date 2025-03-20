@@ -4,8 +4,19 @@ Private $rData As Result
 Private $aMyFields As String[]
 Private $rData1 As Result
 Private $aMyFields1 As String[]
+
+Private $sTatus As String
+Private $PatientNum As String
 Private $focus As Boolean
 Private $UserRestrict As String[]
+
+Private $billModeTest As String
+Private $billModeRadio As String
+Private $billModePharmacy As String
+Private $billModeProcedure As String
+Private $billModeEquipment As String
+Private $billModeService As String
+Private $billModeOthers As String
 
 Public Sub _new(encid As String, Focus As Boolean)
 
@@ -66,6 +77,31 @@ End
 Public Sub Form_Deactivate()
 
   Me.Icon = Picture[modGeneralMain.$strLogo]
+
+End
+
+Public Sub btnconsult_Change()
+
+  If btnconsult.Text = "" Then
+    btnconsult.Tag = ""
+  Endif
+
+End
+
+Public Sub txtencid_KeyPress()
+
+  If Key.Code = Key.Down Then
+    If Not txtencid.Text Then
+      txtencid.Text = PatSearch("Encounter")
+      txtencid.SetFocus
+    Else
+      If modBasic.$AutoEncSuffix = "Yes" Then
+        txtencid.Text = txtencid.Text & modBasic.$HospCode
+      Endif
+    Endif
+  Else
+    modGeneralMain.InputUpCaseOnly()
+  Endif
 
 End
 
@@ -139,8 +175,10 @@ Private Sub GetEncounterValue()
             dtdob.Value = modPatient.GetPatientBirthDay(Trim(txtencid.Text))
             modDateSub.GetAgeControlFromDate(dtdob.Value, txtpatage, cmbpatageunit)
 
-            txtnow.Text = modPatient.CurrentAdmissionStatus(Trim(txtencid.Text))
-            txtbedno.Text = modPatient.GetLocationSetting(Trim(txtencid.Text), txtnow.Text)
+            $PatientNum = modPatient.GetPatientNoByEnc(Trim(txtencid.Text))
+            $sTatus = modPatient.CurrentAdmissionStatus(Trim(txtencid.Text))
+            txtnow.Text = $sTatus
+            txtbedno.Text = modPatient.GetLocationSetting(Trim(txtencid.Text), $sTatus)
             txtpatdoa.Text = modReportVar.GetDateTimeReport(modPatient.GetRecordDate(Trim(txtencid.Text)), gb.GeneralDate)
             txtpatweight.Value = modClinic.GetBodyWeight(Trim(txtencid.Text))
             btnconsult.Tag = modPatient.GetAttendingConsultant(Trim(txtencid.Text))
@@ -151,7 +189,6 @@ Private Sub GetEncounterValue()
             Wait
             If modPatientSub.AllowEncIDHistory(Trim(txtencid.Text), modDatabase.$myConn) = True Then
               BlockDCButton()
-              ButtonControl()
               txtencid.ReadOnly = True
               modImage.ShowPhotoSplash("Patient", modPatient.GetPatientNoByEnc(Trim(txtencid.Text)))
               If rbcateg.Value = True Then
@@ -161,6 +198,7 @@ Private Sub GetEncounterValue()
               Else If rbdepart.Value = True Then
                 rbdepart_Click()
               Endif
+              BasicInfoPatient()
               $focus = False
               cmbexamname.SetFocus
             Else
@@ -368,7 +406,44 @@ Public Sub btnsms_Click()
 
 End
 
-''--------------------------------------------------- General -------------------------------------------------------
+''--------------------------------------- General --------------------------------------
+Public Sub BasicInfoPatient()
+
+  If txtencid.Text Then
+    modRepository.$RepoDataStatus = False
+    modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
+    GetDefaultBillingmodes()
+    ButtonControl()
+  Endif
+
+End
+
+Private Sub GetDefaultBillingmodes()
+
+  Dim xpackage As String
+
+  Select $sTatus
+    Case "Admitted", "Discharged", "LAMA", "Death", "Refer", "Absconder"
+      $billModeTest = modNonMedical.GetAutoIPBillingPack("Test", Trim(txtencid.Text))
+      $billModeRadio = modNonMedical.GetAutoIPBillingPack("Radio", Trim(txtencid.Text))
+      $billModePharmacy = modNonMedical.GetAutoIPBillingPack("Pharmacy", Trim(txtencid.Text))
+      $billModeEquipment = modNonMedical.GetAutoIPBillingPack("Equipment", Trim(txtencid.Text))
+      $billModeProcedure = modNonMedical.GetAutoIPBillingPack("Procedure", Trim(txtencid.Text))
+      $billModeService = modNonMedical.GetAutoIPBillingPack("Service", Trim(txtencid.Text))
+      $billModeOthers = modNonMedical.GetAutoIPBillingPack("Others", Trim(txtencid.Text))
+    Case Else
+      xpackage = modNonMedical.DefaultBillingScheme(Trim(txtencid.Text), modBasic.$compID)
+      $billModeTest = xpackage
+      $billModeRadio = xpackage
+      $billModePharmacy = xpackage
+      $billModeEquipment = xpackage
+      $billModeProcedure = xpackage
+      $billModeService = xpackage
+      $billModeOthers = xpackage
+  End Select
+
+End
+
 Private Sub ButtonControl()
 
   Dim xx As Boolean
@@ -707,31 +782,7 @@ Public Sub btnrepo_Click()
 
 End
 
-Public Sub btnconsult_Change()
-
-  If btnconsult.Text = "" Then
-    btnconsult.Tag = ""
-  Endif
-
-End
-
-Public Sub txtencid_KeyPress()
-
-  If Key.Code = Key.Down Then
-    If Not txtencid.Text Then
-      txtencid.Text = PatSearch("Encounter")
-      txtencid.SetFocus
-    Else
-      If modBasic.$AutoEncSuffix = "Yes" Then
-        txtencid.Text = txtencid.Text & modBasic.$HospCode
-      Endif
-    Endif
-  Else
-    modGeneralMain.InputUpCaseOnly()
-  Endif
-
-End
-
+''--------------- Menu ----------------
 Public Sub mnuexam_Click()
 
   Dim xPath As String
@@ -788,6 +839,76 @@ Public Sub mnucompreport_Click()
 
   If txtencid.Text Then
     modPatReports.GetSelectedPatientValues(Trim(txtencid.Text), MMain.$defUnit)
+  Endif
+
+End
+
+''---------------- Forms --------------------
+Public Sub btnpacs_Click()
+
+  Dim hForm As FmPacsFind
+
+  If txtencid.Text Then
+    hForm = New FmPacsFind(Trim(txtencid.Text), "Visit")
+    hForm.ShowModal
+  Endif
+
+End
+
+Public Sub btnlabs_Click()
+
+  Dim hForm As FmTestList
+
+  If txtencid.Text Then
+    If modNonMedical.AllowEntryWithDeposit(Trim(txtencid.Text), "Test") = True Then
+      hForm = New FmTestList(Trim(txtencid.Text), $billModeTest)
+      hForm.ShowModal
+    Endif
+  Endif
+
+End
+
+Public Sub btnpharm_Click()
+
+  Dim hForm As FmMedOrder
+  Dim hFormNew As FmMedNewOrder
+
+  If txtencid.Text Then
+    If modNonMedical.AllowEntryWithDeposit(Trim(txtencid.Text), "Pharmacy") = True Then
+      If modBasic.$MedRequestForm = "Separate" Then
+        hFormNew = New FmMedNewOrder(Trim(txtencid.Text), $sTatus, $billModePharmacy)
+        hFormNew.ShowModal
+      Else
+        hForm = New FmMedOrder(Trim(txtencid.Text), $sTatus, $billModePharmacy)
+        hForm.ShowModal
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub btnradio_Click()
+
+  Dim hForm As FmRadioList
+
+  If txtencid.Text Then
+    If modNonMedical.AllowEntryWithDeposit(Trim(txtencid.Text), "Radio") = True Then
+      hForm = New FmRadioList(Trim(txtencid.Text), $billModeRadio)
+      hForm.ShowModal
+    Endif
+  Endif
+
+End
+
+Public Sub btngenservice_Click()
+
+  Dim hForm As FmMiniService
+
+  If txtencid.Text Then
+    If modNonMedical.AllowEntryWithDeposit(Trim(txtencid.Text), "Service") = True Then
+      hForm = New FmMiniService(Trim(txtencid.Text), $billModeService, $billModeProcedure, $billModeOthers)
+      hForm.ShowModal
+    Endif
   Endif
 
 End
