@@ -355,7 +355,7 @@ Public Sub BackUpCurrentDB(sFolder As String)
           Endif  ''compression
 
         Else
-          Print "Install mysql-client or mariadb-client to proceed"
+          modApplSub.InstallSelectedApplication(["mariadb-client"])
         Endif
 
       Else If sType = "postgresql" Then
@@ -417,7 +417,7 @@ Private Function GetBackUpMultiTable(sTable As String, sCompress As Boolean) As 
         Endif
         Shell xx Wait
       Else
-        Print "Install mysql-client or mariadb-client to proceed"
+        modApplSub.InstallSelectedApplication(["mariadb-client"])
       Endif
 
     Else If sType = "postgresql" Then
