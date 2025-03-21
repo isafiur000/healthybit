@@ -1091,8 +1091,8 @@ Public Function CustomAccountReport(sCon As Connection, AccountReportName As Str
         Else
           If MMain.$IsGUIApp = True Then
             Message.Warning("Query returned Nothing", ("OK"))
-          Else
-            Try Print "Query returned Nothing"
+        Else
+          modBasic.PrintErrorString("Query returned Nothing")
           Endif
         Endif
 
@@ -1309,7 +1309,7 @@ Public Sub CustomExportData(sCon As Connection, sName As String)
             If MMain.$IsGUIApp = True Then
               Message.Warning("Query returned Nothing", ("OK"))
             Else
-              Try Print "Query returned Nothing"
+              modBasic.PrintErrorString("Query returned Nothing")
             Endif
           Endif
         Endif
@@ -1319,14 +1319,14 @@ Public Sub CustomExportData(sCon As Connection, sName As String)
       If MMain.$IsGUIApp = True Then
         Message.Info(("Data Export Diabled"), ("OK"))
       Else
-        Try Print "Data Export Diabled"
+        modBasic.PrintErrorString("Data Export Diabled")
       Endif
     Endif
   Endif
   If MMain.$IsGUIApp = True Then
     Message.Info(("Data Export Complete"), ("OK"))
   Else
-    Try Print "Data Export Complete"
+    modBasic.PrintErrorString("Data Export Complete")
   Endif
 
 Catch
