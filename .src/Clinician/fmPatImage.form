@@ -1,101 +1,143 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,106,64)
+  MoveScaled(0,0,106,69)
   Text = ("Patient Images")
   Resizable = False
-  { dgimage GridView
-    MoveScaled(1,5,34,58)
-    Mode = Select.Single
-    AutoResize = False
-    Sorted = True
-  }
-  { ScrollView1 ScrollView
-    MoveScaled(36,9,69,38)
-    { PictureBox1 ImageView
-      MoveScaled(1,1,67,36)
+  Arrangement = Arrange.Vertical
+  AutoResize = True
+  { Panel1 Panel
+    MoveScaled(0,0,104.875,4)
+    { Label4 Label
+      MoveScaled(86,0.5,7,3)
+      Border = Border.Plain
+      Text = ("Gender")
+    }
+    { Label2 Label
+      MoveScaled(0.5,0.5,6,3)
+      Border = Border.Plain
+      Text = ("Name")
+    }
+    { txtgender TextBox
+      MoveScaled(94,0.5,10,3)
+      ReadOnly = True
+    }
+    { txtpatientname TextBox
+      MoveScaled(7,0.5,37.5,3)
+      Font = Font["Bold"]
+      ReadOnly = True
     }
   }
-  { btnOpen Button
-    MoveScaled(93,47,4,3.5333)
-    Picture = Picture["icon:/small/open"]
+  { Panel5 Panel
+    MoveScaled(0,5,105,59)
+    { Panel4 Panel
+      MoveScaled(35,0,69,59)
+      { ScrollView1 ScrollView
+        MoveScaled(0,4,69,38)
+        { PictureBox1 ImageView
+          MoveScaled(1,1,67,36)
+        }
+      }
+      { Panel3 Panel
+        MoveScaled(0,42,69,16.5)
+        { Label1 Label
+          MoveScaled(0,3.5,7,3)
+          Border = Border.Plain
+          Text = ("Keys")
+        }
+        { txtdetail TextArea
+          MoveScaled(0,7,52,9.5)
+          Wrap = True
+          ScrollBar = Scroll.Vertical
+        }
+        { txtkeyword TextBox
+          MoveScaled(8,3.5,44,3)
+        }
+        { btnscan Button
+          MoveScaled(53,0,4,3.5)
+          Picture = Picture["icon:/small/scanner"]
+        }
+        { btnOpen Button
+          MoveScaled(57,0,4,3.5)
+          Picture = Picture["icon:/small/open"]
+        }
+        { btnwebcam Button
+          MoveScaled(61,0,4,3.5)
+          Picture = Picture["icon:/small/camera"]
+        }
+        { btnscrpen Button
+          MoveScaled(65,0,4,3.5)
+          Picture = Picture["icon:/small/pen"]
+        }
+        { btnOK Button
+          MoveScaled(53,4,16,3)
+          Text = Shortcut(("Add"), "A")
+          Picture = Picture["icon:/small/add"]
+        }
+        { btnChange Button
+          MoveScaled(53,7,16,3)
+          Text = Shortcut(("Edit"), "E")
+          Picture = Picture["icon:/small/edit"]
+        }
+        { btnexport Button
+          MoveScaled(53,10,16,3)
+          Text = ("Export")
+          Picture = Picture["icon:/small/html"]
+        }
+        { btnclose Button
+          MoveScaled(53,13,16,3)
+          Text = ("Close")
+          Picture = Picture["icon:/small/close"]
+          Cancel = True
+        }
+        { Slider1 Slider
+          MoveScaled(0,0,52,3)
+          MinValue = 1
+          MaxValue = 1000
+          Value = 100
+        }
+      }
+      { Panel2 Panel
+        MoveScaled(0,0,69,4)
+        { btnplay Button
+          MoveScaled(64,0.5,4,3)
+          Picture = Picture["icon:/small/play"]
+        }
+        { txttitle TextBox
+          MoveScaled(0,0.5,62,3)
+        }
+      }
+    }
+    { dgimage GridView
+      MoveScaled(0.5,0,34,59)
+      Mode = Select.Single
+      AutoResize = False
+      Sorted = True
+    }
   }
-  { btnwebcam Button
-    MoveScaled(97,47,4,3.5333)
-    Picture = Picture["icon:/small/camera"]
-  }
-  { btnOK Button
-    MoveScaled(89,51,16,3)
-    Text = Shortcut(("Add"), "A")
-    Picture = Picture["icon:/small/add"]
-  }
-  { btnChange Button
-    MoveScaled(89,54,16,3)
-    Text = Shortcut(("Edit"), "E")
-    Picture = Picture["icon:/small/edit"]
-  }
-  { btnexport Button
-    MoveScaled(89,57,16,3)
-    Text = ("Export")
-    Picture = Picture["icon:/small/html"]
-  }
-  { txttitle TextBox
-    MoveScaled(36,5,64,3.5333)
-  }
-  { txtkeyword TextBox
-    MoveScaled(44,52,44,3)
-  }
-  { txtdetail TextArea
-    MoveScaled(36,56,52,7)
-    Wrap = True
-    ScrollBar = Scroll.Vertical
-  }
-  { btnplay Button
-    MoveScaled(101,5,4,3.5333)
-    Picture = Picture["icon:/small/play"]
-  }
-  { Slider1 Slider
-    MoveScaled(36,48,52,3)
-    MinValue = 1
-    MaxValue = 1000
-    Value = 100
-  }
-  { Label2 Label
-    MoveScaled(1,1,6,3)
-    Text = ("Name")
-    Border = Border.Plain
-  }
-  { txtpatientname TextBox
-    MoveScaled(8,1,37.5333,3)
-    Font = Font["Bold"]
-    ReadOnly = True
-  }
-  { Label4 Label
-    MoveScaled(87,1,7,3)
-    Text = ("Gender")
-    Border = Border.Plain
-  }
-  { txtgender TextBox
-    MoveScaled(95,1,10,3)
-    ReadOnly = True
-  }
-  { Label1 Label
-    MoveScaled(36,52,7,3)
-    Text = ("Keys")
-    Border = Border.Plain
-  }
-  { btnscrpen Button
-    MoveScaled(101,47,4,3.5333)
-    Picture = Picture["icon:/small/pen"]
-  }
-  { btnclose Button
-    MoveScaled(89,60,16,3)
-    Text = ("Close")
-    Picture = Picture["icon:/small/close"]
-    Cancel = True
-  }
-  { btnscan Button
-    MoveScaled(89,47,4,3.5333)
-    Picture = Picture["icon:/small/scanner"]
+  { pnlupload Panel
+    MoveScaled(0,64,105,4)
+    Visible = False
+    { Label100 Label
+      MoveScaled(19,0.5,7,3)
+      Border = Border.Plain
+      Text = ("Folder")
+    }
+    { txtpacsupload ButtonBox
+      MoveScaled(26.5,0.5,46,3)
+      Picture = Picture["icon:/medium/archive"]
+    }
+    { btnpacsupload Button
+      MoveScaled(91,0.5,13,3)
+      Text = ("Upload")
+    }
+    { chkencid CheckBox
+      MoveScaled(75,0.5,15,3)
+      Text = ("Update EncID")
+      Value = CheckBox.True
+    }
+    { cmbserver ComboBox
+      MoveScaled(1,0.5,14,3)
+    }
   }
 }
