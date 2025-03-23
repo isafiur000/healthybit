@@ -753,21 +753,42 @@ End
 
 Public Sub txtpacsupload_Click()
 
-  If Dialog.OpenFile() Then Return
+  If Dialog.SelectDirectory() Then Return
   txtpacsupload.Text = Dialog.Path
+
+End
+
+Public Sub chkencid_Click()
+
+  txtencid.Enabled = chkencid.Value
 
 End
 
 Public Sub btnpacsupload_Click()
 
+  Dim FileList As String[]
+  Dim xfile As String
   Dim xxx As String
+  Dim xNew As String
 
   If txtpacshost.Text Then
-    If Exist(txtpacsupload.Text) Then
-      Inc Application.Busy
-      xxx = modPACS.UploadDicomArchive(txtpacshost.Text, txtorthancport.Text, txtpacsupload.Text, txtpacsuser.Text, txtpacspass.Text, cmbpacsssl.Text)
-      Dec Application.Busy
-    Endif
+    FileList = Dir(txtpacsupload.Text, Null, gb.File)
+    Inc Application.Busy
+    For Each xfile In FileList
+
+      If Exist(txtpacsupload.Text &/ xfile) Then
+        If chkencid.Value = True And If txtencid.Text Then
+          xNew = modDevAll.ChangeEncIdDicom(Trim(txtencid.Text), txtpacsupload.Text &/ xfile)
+          If Exist(xNew) Then
+            xxx = modPACS.UploadDicomArchive(txtpacshost.Text, txtorthancport.Text, xNew, txtpacsuser.Text, txtpacspass.Text, cmbpacsssl.Text)
+          Endif
+        Else
+          xxx = modPACS.UploadDicomArchive(txtpacshost.Text, txtorthancport.Text, txtpacsupload.Text &/ xfile, txtpacsuser.Text, txtpacspass.Text, cmbpacsssl.Text)
+        Endif
+      Endif
+
+    Next
+    Dec Application.Busy
   Endif
 
 End
