@@ -1141,6 +1141,7 @@ Public Sub mnuHIclaimretn_Click()
 
   Dim xretBil As String
   Dim res As Result
+  Dim hForm As FmClaimMini
 
   If txtbill.Text Like "TMP" & "*" Then
   Else
@@ -1154,110 +1155,111 @@ Public Sub mnuHIclaimretn_Click()
         Endif
       Endif
       If xretBil Then
-        AutoClaimReturnIMIS(UCase(Trim(txtbill.Text)), xretBil)
+        hForm = New FmClaimMini($encid, UCase(Trim(txtbill.Text)), $xNHISCode, $LedgerAC, $InvReference, xretBil)
+        hForm.ShowModal()
       Endif
     Endif
   Endif
 
 End
 
-Private Sub AutoClaimReturnIMIS(sCashBill As String, sReturnBill As String)
-
-  Dim xfldList As String[]
-  Dim rex As Result
-  Dim sql As String
-  Dim res1 As Result
-
-  Dim aCode As String
-  Dim sColl As Collection
-  Dim xSNo As Variant[]
-  Dim hForm As CimisAPIClaim
-  Dim xout As String
-  Dim xmsg As String
-
-  Dim xdiagno As String
-  Dim sBillLst As String[]
-  Dim sQty As Float
-
-  xfldList = ["flditemname", "CONCAT(flditemtype,'|', flditemname) as flditemcode", "flditemname", "AVG(flditemrate) as flditemrate", "GROUP_CONCAT(DISTINCT fldid) as fldid", "flditemtype"]
-  sBillLst = [sCashBill, sReturnBill]
-
-  If $LedgerAC Then
-    Inc Application.Busy
-    If modBasic.$IMISICDForm = "ICD10" Then
-      rex = modDatabase.$myConn.Exec("select fldcode,flduserid from tblpatfindings where fldencounterval=&1 and (fldtype=&2 or fldtype=&3) and fldsave=&4 and fldcodeid<>&5 and fldcodeid<>&6 and flduserid in(select flduserid from tbluser where fldusercode like &7)", $encid, "Provisional Diagnosis", "Final Diagnosis", True, "Obstetrics", "Other", "%")
-    Else
-      rex = modDatabase.$myConn.Exec("select fldcode,flduserid from tblpatfindings where fldencounterval=&1 and (fldtype=&2 or fldtype=&3) and fldsave=&4 and fldcodenew<>&5 and fldcodenew<>&6 and flduserid in(select flduserid from tbluser where fldusercode like &7)", $encid, "Provisional Diagnosis", "Final Diagnosis", True, "Obstetrics", "Other", "%")
-    Endif
-    If rex.Available Then
-      rex.MoveLast
-      If rex["fldcode"] And If rex["flduserid"] Then
-        xdiagno = "Diagnosis"
-      Else
-        xdiagno = ""
-      Endif
-    Else
-      xdiagno = "No Diagnosis"
-    Endif  ''diagnosis
-
-    If xdiagno Then
-      sql = "select " & xfldList.Join(",") & " from tblpatbilling where fldencounterval=&1 and fldbillno=&2 and fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&3 and fldbilltype like &4 and fldchequeno=&5 and fldchequeno in(select fldclaimid from tblclaimcode)) and fldclaimstate IS NULL GROUP BY flditemname"
-      res1 = modDatabase.$syConn.Exec(sql, $encid, sReturnBill, $LedgerAC, "Credit", $InvReference)
-      If res1.Available Then
-
-        xSNo = New Variant[]
-        For Each res1
-          aCode = ""
-          aCode = modClaimAPI.GetBillingItemAbbvName(res1["flditemcode"])
-          If aCode Then
-            sQty = 0
-            sQty = GetActiveBillQuantity($encid, res1["flditemname"], sBillLst)
-            sColl = New Collection
-            sColl.Add(aCode, "code")
-            sColl.Add(res1["flditemname"], "item")
-            sColl.Add(res1["flditemrate"], "rate")
-            sColl.Add(sQty, "qty")
-            sColl.Add(Round(sQty * res1["flditemrate"], -2), "total")
-            sColl.Add(res1["fldid"], "index")
-            sColl.Add(res1["flditemtype"], "type")
-            sColl.Add("tblpatbilling", "table")
-            xSNo.Add(sColl)
-          Endif
-        Next
-
-        If xSNo.Count Then
-          If xdiagno = "Diagnosis" Then
-            hForm = New CimisAPIClaim($xNHISCode, $encid, $InvReference, False)
-            hForm.AddBilling(xSNo)
-            xout = hForm.UploadClaim()
-            xmsg = modClaimAPI.GetClaimOutRecording(xSNo, xout, "tblpatbilling")
-          Endif
-        Endif
-
-      Endif
-    Endif  ''diagnosis
-    Dec Application.Busy
-
-    If xmsg Then
-      Message.Warning(xmsg, "OK")
-    Endif
-  Endif  ''Ledger
-
-End
-
-Private Function GetActiveBillQuantity(encid As String, sItem As String, sBillList As String[]) As Float
-
-  Dim res As Result
-  Dim sBill As String
-  Dim xval As Float
-
-  xval = 0
-  For Each sBill In sBillList
-    res = modDatabase.$myConn.Exec("select flditemqty from tblpatbilling where fldencounterval=&1 and fldbillno=&2 and flditemname=&3", encid, sBill, sItem)
-    If res.Available And If res["flditemqty"] Then
-      xval = xval + res["flditemqty"]
-    Endif
-  Next
-  Return xval
-
-End
+' Private Sub AutoClaimReturnIMIS(sCashBill As String, sReturnBill As String)
+'
+'   Dim xfldList As String[]
+'   Dim rex As Result
+'   Dim sql As String
+'   Dim res1 As Result
+'
+'   Dim aCode As String
+'   Dim sColl As Collection
+'   Dim xSNo As Variant[]
+'   Dim hForm As CimisAPIClaim
+'   Dim xout As String
+'   Dim xmsg As String
+'
+'   Dim xdiagno As String
+'   Dim sBillLst As String[]
+'   Dim sQty As Float
+'
+'   xfldList = ["flditemname", "CONCAT(flditemtype,'|', flditemname) as flditemcode", "flditemname", "AVG(flditemrate) as flditemrate", "GROUP_CONCAT(DISTINCT fldid) as fldid", "flditemtype"]
+'   sBillLst = [sCashBill, sReturnBill]
+'
+'   If $LedgerAC Then
+'     Inc Application.Busy
+'     If modBasic.$IMISICDForm = "ICD10" Then
+'       rex = modDatabase.$myConn.Exec("select fldcode,flduserid from tblpatfindings where fldencounterval=&1 and (fldtype=&2 or fldtype=&3) and fldsave=&4 and fldcodeid<>&5 and fldcodeid<>&6 and flduserid in(select flduserid from tbluser where fldusercode like &7)", $encid, "Provisional Diagnosis", "Final Diagnosis", True, "Obstetrics", "Other", "%")
+'     Else
+'       rex = modDatabase.$myConn.Exec("select fldcode,flduserid from tblpatfindings where fldencounterval=&1 and (fldtype=&2 or fldtype=&3) and fldsave=&4 and fldcodenew<>&5 and fldcodenew<>&6 and flduserid in(select flduserid from tbluser where fldusercode like &7)", $encid, "Provisional Diagnosis", "Final Diagnosis", True, "Obstetrics", "Other", "%")
+'     Endif
+'     If rex.Available Then
+'       rex.MoveLast
+'       If rex["fldcode"] And If rex["flduserid"] Then
+'         xdiagno = "Diagnosis"
+'       Else
+'         xdiagno = ""
+'       Endif
+'     Else
+'       xdiagno = "No Diagnosis"
+'     Endif  ''diagnosis
+'
+'     If xdiagno Then
+'       sql = "select " & xfldList.Join(",") & " from tblpatbilling where fldencounterval=&1 and fldbillno=&2 and fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&3 and fldbilltype like &4 and fldchequeno=&5 and fldchequeno in(select fldclaimid from tblclaimcode)) and fldclaimstate IS NULL GROUP BY flditemname"
+'       res1 = modDatabase.$syConn.Exec(sql, $encid, sReturnBill, $LedgerAC, "Credit", $InvReference)
+'       If res1.Available Then
+'
+'         xSNo = New Variant[]
+'         For Each res1
+'           aCode = ""
+'           aCode = modClaimAPI.GetBillingItemAbbvName(res1["flditemcode"])
+'           If aCode Then
+'             sQty = 0
+'             sQty = GetActiveBillQuantity($encid, res1["flditemname"], sBillLst)
+'             sColl = New Collection
+'             sColl.Add(aCode, "code")
+'             sColl.Add(res1["flditemname"], "item")
+'             sColl.Add(res1["flditemrate"], "rate")
+'             sColl.Add(sQty, "qty")
+'             sColl.Add(Round(sQty * res1["flditemrate"], -2), "total")
+'             sColl.Add(res1["fldid"], "index")
+'             sColl.Add(res1["flditemtype"], "type")
+'             sColl.Add("tblpatbilling", "table")
+'             xSNo.Add(sColl)
+'           Endif
+'         Next
+'
+'         If xSNo.Count Then
+'           If xdiagno = "Diagnosis" Then
+'             hForm = New CimisAPIClaim($xNHISCode, $encid, $InvReference, False)
+'             hForm.AddBilling(xSNo)
+'             xout = hForm.UploadClaim()
+'             xmsg = modClaimAPI.GetClaimOutRecording(xSNo, xout, "tblpatbilling")
+'           Endif
+'         Endif
+'
+'       Endif
+'     Endif  ''diagnosis
+'     Dec Application.Busy
+'
+'     If xmsg Then
+'       Message.Warning(xmsg, "OK")
+'     Endif
+'   Endif  ''Ledger
+'
+' End
+'
+' Private Function GetActiveBillQuantity(encid As String, sItem As String, sBillList As String[]) As Float
+'
+'   Dim res As Result
+'   Dim sBill As String
+'   Dim xval As Float
+'
+'   xval = 0
+'   For Each sBill In sBillList
+'     res = modDatabase.$myConn.Exec("select flditemqty from tblpatbilling where fldencounterval=&1 and fldbillno=&2 and flditemname=&3", encid, sBill, sItem)
+'     If res.Available And If res["flditemqty"] Then
+'       xval = xval + res["flditemqty"]
+'     Endif
+'   Next
+'   Return xval
+'
+' End
