@@ -1,0 +1,143 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,106,69)
+  Text = ("Patient Images")
+  Resizable = False
+  Arrangement = Arrange.Vertical
+  AutoResize = True
+  { Panel1 Panel
+    MoveScaled(0,0,104.875,4)
+    { Label4 Label
+      MoveScaled(86,0.5,7,3)
+      Border = Border.Plain
+      Text = ("Gender")
+    }
+    { Label2 Label
+      MoveScaled(0.5,0.5,6,3)
+      Border = Border.Plain
+      Text = ("Name")
+    }
+    { txtgender TextBox
+      MoveScaled(94,0.5,10,3)
+      ReadOnly = True
+    }
+    { txtpatientname TextBox
+      MoveScaled(7,0.5,37.5,3)
+      Font = Font["Bold"]
+      ReadOnly = True
+    }
+  }
+  { Panel5 Panel
+    MoveScaled(0,5,105,59)
+    { Panel4 Panel
+      MoveScaled(35,0,69,59)
+      { ScrollView1 ScrollView
+        MoveScaled(0,4,69,38)
+        { PictureBox1 ImageView
+          MoveScaled(1,1,67,36)
+        }
+      }
+      { Panel3 Panel
+        MoveScaled(0,42,69,16.5)
+        { Label1 Label
+          MoveScaled(0,3.5,7,3)
+          Border = Border.Plain
+          Text = ("Keys")
+        }
+        { txtdetail TextArea
+          MoveScaled(0,7,52,9.5)
+          Wrap = True
+          ScrollBar = Scroll.Vertical
+        }
+        { txtkeyword TextBox
+          MoveScaled(8,3.5,44,3)
+        }
+        { btnscan Button
+          MoveScaled(53,0,4,3.5)
+          Picture = Picture["icon:/small/scanner"]
+        }
+        { btnOpen Button
+          MoveScaled(57,0,4,3.5)
+          Picture = Picture["icon:/small/open"]
+        }
+        { btnwebcam Button
+          MoveScaled(61,0,4,3.5)
+          Picture = Picture["icon:/small/camera"]
+        }
+        { btnscrpen Button
+          MoveScaled(65,0,4,3.5)
+          Picture = Picture["icon:/small/pen"]
+        }
+        { btnOK Button
+          MoveScaled(53,4,16,3)
+          Text = Shortcut(("Add"), "A")
+          Picture = Picture["icon:/small/add"]
+        }
+        { btnChange Button
+          MoveScaled(53,7,16,3)
+          Text = Shortcut(("Edit"), "E")
+          Picture = Picture["icon:/small/edit"]
+        }
+        { btnexport Button
+          MoveScaled(53,10,16,3)
+          Text = ("Export")
+          Picture = Picture["icon:/small/html"]
+        }
+        { btnclose Button
+          MoveScaled(53,13,16,3)
+          Text = ("Close")
+          Picture = Picture["icon:/small/close"]
+          Cancel = True
+        }
+        { Slider1 Slider
+          MoveScaled(0,0,52,3)
+          MinValue = 1
+          MaxValue = 1000
+          Value = 100
+        }
+      }
+      { Panel2 Panel
+        MoveScaled(0,0,69,4)
+        { btnplay Button
+          MoveScaled(64,0.5,4,3)
+          Picture = Picture["icon:/small/play"]
+        }
+        { txttitle TextBox
+          MoveScaled(0,0.5,62,3)
+        }
+      }
+    }
+    { dgimage GridView
+      MoveScaled(0.5,0,34,59)
+      Mode = Select.Single
+      AutoResize = False
+      Sorted = True
+    }
+  }
+  { pnlupload Panel
+    MoveScaled(0,64,105,4)
+    Visible = False
+    { Label100 Label
+      MoveScaled(19,0.5,7,3)
+      Border = Border.Plain
+      Text = ("Folder")
+    }
+    { txtpacsupload ButtonBox
+      MoveScaled(26.5,0.5,46,3)
+      Picture = Picture["icon:/medium/archive"]
+    }
+    { btnpacsupload Button
+      MoveScaled(91,0.5,13,3)
+      Text = ("Upload")
+    }
+    { chkencid CheckBox
+      MoveScaled(75,0.5,15,3)
+      Text = ("Update EncID")
+      Value = CheckBox.True
+    }
+    { cmbserver ComboBox
+      MoveScaled(1,0.5,14,3)
+    }
+  }
+}
