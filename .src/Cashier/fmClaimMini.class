@@ -26,8 +26,6 @@ End
 
 Public Sub Form_Open()
 
-  Dim res As Result
-
   txtencid.Text = $encid
   txtpatientname.Text = modPatient.GetPatientNameByEnc($encid)
   txtgender.Text = modPatient.GetPatientAgeString($encid, Now()) & "/" & Left(modPatient.GetPatientSex($encid), 1)
