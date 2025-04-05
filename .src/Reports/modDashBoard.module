@@ -633,7 +633,7 @@ Public Sub AutoDashboardExpiry(xdate As Date)
       Inc Application.Busy
       xPath = modHTMLStock.ShowTotalExpiryReport("Expired", xdate, "%", xcomp)
       Dec Application.Busy
-      hForm = New FmHtmlView(xPath, False, "")
+      hForm = New FmHtmlView(xPath, False, "", "")
       modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
     Endif
   Endif
@@ -662,7 +662,7 @@ Public Sub AutoDashboardNearExpiry(sMonth As String)
       Inc Application.Busy
       xPath = modHTMLStock.ShowTotalExpiryReport("Near Expiry", xdate, "%", xcomp)
       Dec Application.Busy
-      hForm = New FmHtmlView(xPath, False, "")
+      hForm = New FmHtmlView(xPath, False, "", "")
       modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
     Endif
   Endif
