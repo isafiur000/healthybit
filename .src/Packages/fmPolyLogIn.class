@@ -15,7 +15,7 @@ Public Sub Form_Open()
 
     LoadCategor()
     cmbusname.Text = ""
-    modScript.GetAdvertiseData()
+
     cmbusname.SetFocus
   Endif
 
@@ -152,6 +152,7 @@ Public Sub btnOK_Click()
   modBasic.$lbluser = Trim(txtuser.Text)
   modHelpVariable.$LogInCategory = cmbusname.Text
   modHelpVariable.CreateUserCacheDir(modBasic.$lbluser)
+  modScript.GetAdvertiseData()
 
   modHelpVariable.ConnectionMain()
   modGeneralMain.EnableCollectionCache()

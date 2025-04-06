@@ -1248,7 +1248,7 @@ Public Function GetJSONToDualHTMLTable(sText As String) As String
       If xxx Is Collection Then
         xcoll = xxx
         If xcoll.Count = 2 Then
-          headList = modString.GetCollectionKeys(xcoll)
+          headList = xcoll.Keys
           xleft = headList[0]
           xright = headList[1]
           If xcoll[xleft] Or If xcoll[xright] Then
@@ -1810,40 +1810,6 @@ Public Function SplitTextArray(sText As String) As String[]
     If Len(Trim(sword)) Then
       xxx.Add(Trim(sword))
     Endif
-  Next
-  Return xxx
-
-End
-
-Public Function GetUnivariateSummary(sVar As String[]) As Variant[]
-
-  Dim xList As String[]
-  Dim xval As String
-
-  Dim aColl As Collection
-  Dim aVar As Variant[]
-
-  aVar = New Variant[]
-  xList = modString.GetDistinctStringArray(sVar)
-  For Each xval In xList
-    aColl = New Collection
-    aColl.Add(xval, CStr(0))
-    aColl.Add(modString.CountStringInArray(xval, sVar), CStr(1))
-    aVar.Add(aColl)
-  Next
-
-  Return aVar
-
-End
-
-Public Function GetCollectionKeys(sColl As Collection) As String[]
-
-  Dim xxx As String[]
-  Dim xval As String
-
-  xxx = New String[]
-  For Each xval In sColl
-    xxx.Add(sColl.Key)
   Next
   Return xxx
 

@@ -1,0 +1,72 @@
+' Gambas module file
+
+Public $QueryColumns As String[] = ["{PatientFileNo}", "{PatientEthnicity}", "{PatientGender}", "{PatientDOB}", "{PatientMunicipality}", "{PatientWardAddress}", "{PatientDistrict}", "{PatientGuardian}", "{PatientRelation}", "{E-Mail}", "{ContactNo}", "{PatientCode}", "{ServiceType}", "{ServiceRank}", "{ServiceUnit}", "{PatientNo}", "{VisitMode}", "{DiscountPackae}", "{RegdBillMode}", "{RegdDepartment}", "{ConsultantID}", "{RegistrationDateTime}", "{AdmissionDateTime}", "{DischargeDateTime}", "{FollowUpDate}", "{ReferLocation}", "{CurrentStatus}"]
+
+Public Function GetCustomColumnSQL(sName As String, sTable As String) As String
+
+  Dim sql As String
+
+  Select sName
+      ''tblpatientinfo
+    Case "{PatientFileNo}"
+      sql = "(select tblpatientinfo.fldadmitfile from tblpatientinfo where tblpatientinfo.fldpatientval in(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval))"
+    Case "{PatientEthnicity}"
+      sql = "(select tblpatientinfo.fldethniccode from tblpatientinfo where tblpatientinfo.fldpatientval in(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval))"
+    Case "{PatientGender}"
+      sql = "(select tblpatientinfo.fldptsex from tblpatientinfo where tblpatientinfo.fldpatientval in(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval))"
+    Case "{PatientDOB}"
+      sql = "(select tblpatientinfo.fldptbirday from tblpatientinfo where tblpatientinfo.fldpatientval in(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval))"
+    Case "{PatientMunicipality}"
+      sql = "(select tblpatientinfo.fldptaddvill from tblpatientinfo where tblpatientinfo.fldpatientval in(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval))"
+    Case "{PatientWardAddress}"
+      sql = "(select tblpatientinfo.fldptaddward from tblpatientinfo where tblpatientinfo.fldpatientval in(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval))"
+    Case "{PatientDistrict}"
+      sql = "(select tblpatientinfo.fldptadddist from tblpatientinfo where tblpatientinfo.fldpatientval in(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval))"
+    Case "{PatientGuardian}"
+      sql = "(select tblpatientinfo.fldptguardian from tblpatientinfo where tblpatientinfo.fldpatientval in(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval))"
+    Case "{PatientRelation}"
+      sql = "(select tblpatientinfo.fldrelation from tblpatientinfo where tblpatientinfo.fldpatientval in(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval))"
+    Case "{E-Mail}"
+      sql = "(select tblpatientinfo.fldemail from tblpatientinfo where tblpatientinfo.fldpatientval in(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval))"
+    Case "{ContactNo}"
+      sql = "(select tblpatientinfo.fldptcontact from tblpatientinfo where tblpatientinfo.fldpatientval in(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval))"
+    Case "{PatientCode}"
+      sql = "(select tblpatientinfo.fldptcode from tblpatientinfo where tblpatientinfo.fldpatientval in(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval))"
+    Case "{ServiceType}"
+      sql = "(select tblpatientinfo.fldcategory from tblpatientinfo where tblpatientinfo.fldpatientval in(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval))"
+    Case "{ServiceRank}"
+      sql = "(select tblpatientinfo.fldrank from tblpatientinfo where tblpatientinfo.fldpatientval in(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval))"
+    Case "{ServiceUnit}"
+      sql = "(select tblpatientinfo.fldunit from tblpatientinfo where tblpatientinfo.fldpatientval in(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval))"
+      ''tblencounter
+    Case "{PatientNo}"
+      sql = "(select tblencounter.fldpatientval from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval)"
+    Case "{VisitMode}"
+      sql = "(select tblencounter.fldfollow from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval)"
+    Case "{DiscountPackae}"
+      sql = "(select tblencounter.flddisctype from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval)"
+    Case "{RegdBillMode}"
+      sql = "(select tblencounter.fldbillingmode from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval)"
+    Case "{RegdDepartment}"
+      sql = "(select tblencounter.fldadmitlocat from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval)"
+    Case "{ConsultantID}"
+      sql = "(select tblencounter.flduserid from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval)"
+    Case "{RegistrationDateTime}"
+      sql = "(select tblencounter.fldregdate from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval)"
+    Case "{AdmissionDateTime}"
+      sql = "(select tblencounter.flddoa from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval)"
+    Case "{DischargeDateTime}"
+      sql = "(select tblencounter.flddod from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval)"
+    Case "{FollowUpDate}"
+      sql = "(select tblencounter.fldfollowdate from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval)"
+    Case "{ReferLocation}"
+      sql = "(select tblencounter.fldreferto from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval)"
+    Case "{CurrentStatus}"
+      sql = "(select tblencounter.fldadmission from tblencounter where tblencounter.fldencounterval=" & sTable & ".fldencounterval)"
+    Case Else
+      sql = "fldencounterval"
+  End Select
+
+  Return sql
+
+End
