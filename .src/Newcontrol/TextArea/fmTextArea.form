@@ -2,34 +2,38 @@
 
 { Form Form
   MoveScaled(0,0,80,46)
-  Resizable = False
-  { btnclear Button
-    MoveScaled(1,42,14,3)
-    Text = Shortcut(("Clear"), "C")
-    Picture = Picture["icon:/small/cancel"]
-  }
-  { btnok Button
-    MoveScaled(65,42,14,3)
-    Text = Shortcut(("Save"), "S")
-    Picture = Picture["icon:/small/apply"]
-  }
-  { btnexectext ToolButton
-    MoveScaled(39,42,3,3)
-    Picture = Picture["icon:/small/exec"]
-  }
-  { dctexectext ToolButton
-    MoveScaled(35,42,3,3)
-    Picture = Picture["icon:/small/attach"]
-  }
-  { btnkeyboard ToggleButton
-    MoveScaled(43,42,3,3)
-    Picture = Picture["icon:/small/keyboard"]
-  }
+  Arrangement = Arrange.Vertical
   { TextArea1 TextPlain
     MoveScaled(1,1,78,40)
+    Expand = True
   }
-  { btncloudai ToggleButton
-    MoveScaled(47,42,3,3)
-    Picture = Picture["icon:/small/internet"]
+  { Panel1 Panel
+    MoveScaled(0,42,80,4)
+    { dctexectext ToolButton
+      MoveScaled(35,0.5,3,3)
+      Picture = Picture["icon:/small/attach"]
+    }
+    { btnexectext ToolButton
+      MoveScaled(39,0.5,3,3)
+      Picture = Picture["icon:/small/exec"]
+    }
+    { btnkeyboard ToggleButton
+      MoveScaled(43,0.5,3,3)
+      Picture = Picture["icon:/small/keyboard"]
+    }
+    { btncloudai ToggleButton
+      MoveScaled(47,0.5,3,3)
+      Picture = Picture["icon:/small/internet"]
+    }
+    { btnok Button
+      MoveScaled(65,0.5,14,3)
+      Text = Shortcut(("Save"), "S")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { btnclear Button
+      MoveScaled(1,0.5,14,3)
+      Text = Shortcut(("Clear"), "C")
+      Picture = Picture["icon:/small/cancel"]
+    }
   }
 }

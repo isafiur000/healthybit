@@ -1349,7 +1349,7 @@ Public Sub btnaddsymplist_Click()
       aList = GridListView("Select Presenting Complaints", xlist, Panel9, grdchiefsymptom.Height + cmbsymptom.Height + Label29.Height + txtadmitcause.Height)
       If aList And If aList.Count Then
         For Each xitem In aList
-          modPatientGeneral.AddExamGeneralQualiQuantiData(Trim(txtencid.Text), "Presenting Symptoms", xitem, "", 0, "")
+          modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", xitem, "", 0, "")
         Next
         ShowChiefSymptomData()
       Endif
@@ -1445,15 +1445,10 @@ End
 
 Public Sub btnsympadd_Click()
 
-  Dim xhour As Float
-
   If txtencid.Text Then
     pnlquantisyn.Visible = False
     If cmbsymptom.Text Then
-      If cmbsympunit.Text Then
-        xhour = txtsympval.Value * modDate.GetHoursValue(cmbsympunit.Text)
-      Endif
-      modPatientGeneral.AddExamGeneralQualiQuantiData(Trim(txtencid.Text), "Presenting Symptoms", cmbsymptom.Text, cmbsymdura.Text, xhour, "")
+      modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", cmbsymptom.Text, cmbsymdura.Text, txtsympval.Value, cmbsympunit.Text)
       ShowChiefSymptomData()
       cmbsymptom.Text = ""
       cmbsymdura.Text = ""
@@ -1499,8 +1494,6 @@ Public Sub ShowChiefSymptomData()
       Else If Column = 6 Then
         grdchiefsymptom[res.Index, Column].Picture = Picture["icon:/small/cancel"]
         grdchiefsymptom[res.Index, Column].Text = ""
-      Else If Column = 4 Then
-        grdchiefsymptom[res.Index, Column].Text = modDate.ConvertHoursToString(res[fld.Name])
       Else
         grdchiefsymptom[res.Index, Column].Text = res[fld.Name]
       Endif
@@ -1514,19 +1507,20 @@ Public Sub ShowChiefSymptomData()
     .Columns[0].Width = 1
     .Columns[1].Width = 1
     .Columns[2].Width = 1
-    .Columns[3].Width = 200 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 225 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 50 * modBasic.$AppWidthRatio
     .Columns[5].Width = 75 * modBasic.$AppWidthRatio
     .Columns[6].Width = 25 * modBasic.$AppWidthRatio
     .Columns[7].Width = 25 * modBasic.$AppWidthRatio
     .Columns[8].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[9].Width = 1
+    .Columns[9].Width = 250 * modBasic.$AppWidthRatio
     .Columns[10].Width = 1
 
     .Columns[3].Text = "Symptom"
     .Columns[4].Text = "Dura"
-    .Columns[5].Text = "Side"
+    .Columns[5].Text = "Unit"
     .Columns[8].Text = "DateTime"
+    .Columns[9].Text = "Description"
   End With
 
 End
@@ -1540,7 +1534,7 @@ Public Sub grdchiefsymptom_Click()
 
   pnlquantisyn.Visible = False
   If grdchiefsymptom.Column = 5 Then
-    xval = InputCombo("Select Unit of Symptom", grdchiefsymptom[grdchiefsymptom.Row, 1].Text, cmbsymdura.List, grdchiefsymptom[grdchiefsymptom.Row, 5].Text, True)
+    xval = InputCombo("Select Unit of Symptom Duration", grdchiefsymptom[grdchiefsymptom.Row, 1].Text, ["Hours", "Days", "Weeks", "Months", "Years", "Episodes"], grdchiefsymptom[grdchiefsymptom.Row, 5].Text, True)
     If xval Then
       res = modDatabase.$myConn.Edit("tblexamgeneral", "fldid=&1", grdchiefsymptom[grdchiefsymptom.Row, 0].Text)
       If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
@@ -1556,17 +1550,19 @@ Public Sub grdchiefsymptom_Click()
     Endif
 
   Else If grdchiefsymptom.Column = 4 Then
-    yval = InputHours("Select duration of Symptom", grdchiefsymptom[grdchiefsymptom.Row, 1].Text, grdchiefsymptom[grdchiefsymptom.Row, 10].Text)
-    res = modDatabase.$myConn.Edit("tblexamgeneral", "fldid=&1", grdchiefsymptom[grdchiefsymptom.Row, 0].Text)
-    If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
-      res["fldreportquanti"] = yval
-      res["flduptime"] = Now()
-      res["flduserid"] = modBasic.$lbluser
-      res["xyz"] = False
-      res.Update()
-      ShowChiefSymptomData()
-    Else
-      Message.Warning("Authorization with " & res["flduserid"], ("OK"))
+    yval = InputValue("Update Duration of symptom", grdchiefsymptom[grdchiefsymptom.Row, 1].Text, grdchiefsymptom[grdchiefsymptom.Row, 4].Text)
+    If yval Then
+      res = modDatabase.$myConn.Edit("tblexamgeneral", "fldid=&1", grdchiefsymptom[grdchiefsymptom.Row, 0].Text)
+      If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
+        res["fldreportquanti"] = yval
+        res["flduptime"] = Now()
+        res["flduserid"] = modBasic.$lbluser
+        res["xyz"] = False
+        res.Update()
+        ShowChiefSymptomData()
+      Else
+        Message.Warning("Authorization with " & res["flduserid"], ("OK"))
+      Endif
     Endif
 
   Else If grdchiefsymptom.Column = 6 Then
@@ -1649,6 +1645,12 @@ Public Sub cmbfinding_KeyRelease()
   Else
     modFillContainer.RestrictComboToContent(cmbfinding)
   Endif
+
+End
+
+Public Sub txtfinding_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(txtfinding)
 
 End
 
@@ -4821,11 +4823,10 @@ End
 
 Public Sub mnucloudai_Click()
 
-  Dim hForm As FmPatCloudAI
+  Dim xx As String
 
   If txtencid.Text Then
-    hForm = New FmPatCloudAI(Trim(txtencid.Text))
-    hForm.ShowModal
+    xx = PatCloudAI(Trim(txtencid.Text), "", modBasic.$CloudAIClinQuery, "")
   Endif
 
 End
@@ -6820,67 +6821,67 @@ End
 
 Public Sub btnhelphistory_Click()
 
-  txthistory.RichText = txthistory.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text))
+  txthistory.RichText = txthistory.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txthistory.Text)
 
 End
 
 Public Sub btnprogproblem_Click()
 
-  txtmonproblem.RichText = txtmonproblem.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text))
+  txtmonproblem.RichText = txtmonproblem.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtmonproblem.Text)
 
 End
 
 Public Sub btnhelpnote_Click()
 
-  txtnote.RichText = txtnote.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text))
+  txtnote.RichText = txtnote.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtnote.Text)
 
 End
 
 Public Sub btnhelpcause_Click()
 
-  txtadmitcause.Text = txtadmitcause.Text & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text))
+  txtadmitcause.Text = txtadmitcause.Text & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtadmitcause.Text)
 
 End
 
 Public Sub btnprogtreat_Click()
 
-  txtmontreatment.RichText = txtmontreatment.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text))
+  txtmontreatment.RichText = txtmontreatment.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtmontreatment.Text)
 
 End
 
 Public Sub btnproginout_Click()
 
-  txtmoninout.RichText = txtmoninout.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text))
+  txtmoninout.RichText = txtmoninout.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtmoninout.Text)
 
 End
 
 Public Sub btnprogplan_Click()
 
-  txtmonplan.RichText = txtmonplan.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text))
+  txtmonplan.RichText = txtmonplan.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtmonplan.Text)
 
 End
 
 Public Sub btnplansubj_Click()
 
-  txtsubject.RichText = txtsubject.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text))
+  txtsubject.RichText = txtsubject.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtsubject.Text)
 
 End
 
 Public Sub btnplanobj_Click()
 
-  txtobject.RichText = txtobject.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text))
+  txtobject.RichText = txtobject.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtobject.Text)
 
 End
 
 Public Sub btnplanasses_Click()
 
-  txtmanage.RichText = txtmanage.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text))
+  txtmanage.RichText = txtmanage.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtmanage.Text)
 
 End
 
 Public Sub btnplanplan_Click()
 
-  txtplan.RichText = txtplan.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text))
+  txtplan.RichText = txtplan.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtplan.Text)
 
 End
 

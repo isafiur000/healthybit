@@ -215,15 +215,11 @@ End
 Public Sub btnBrOK_Click()
 
   Dim i As Integer
-  Dim xhour As Float
 
   For i = 0 To $sValueList.Count - 1
     If i < 99 Then
       If aMarkCheck[i].Value = True Then
-        If aComboBox[i].Text Then
-          xhour = aValueBox[i].Value * modDate.GetHoursValue(aComboBox[i].Text)
-        Endif
-        modPatientGeneral.AddExamGeneralQualiQuantiData($encid, "Presenting Symptoms", aNameLabel[i].Text, bComboBox[i].Text, xhour, "")
+        modPatientGeneral.AddPatComplaintsData($encid, "Presenting Symptoms", aNameLabel[i].Text, bComboBox[i].Text, aValueBox[i].Value, aComboBox[i].Text)
       Endif
     Endif
   Next

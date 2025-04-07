@@ -27,7 +27,7 @@ End
 
 Public Sub btnhelpplanfinal_Click()
 
-  txtnote.RichText = txtnote.RichText & modCloudAI.GetPatCloudAIResponse($encid)
+  txtnote.RichText = txtnote.RichText & modCloudAI.GetPatCloudAIResponse($encid, txtnote.Text)
 
 End
 

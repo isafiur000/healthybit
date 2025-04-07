@@ -30,6 +30,7 @@ End
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
+  modGeneralMain.ShowFormSizeParam(Me)
   LeftRightTextArea1.SetFocus
 
 End
@@ -47,6 +48,8 @@ Public Sub btnBrOK_Click()
   xx.Add(JSON.Encode(xcoll))
   xx.Add(chkabnormal.Value)
   $sValue = xx
+  modGeneralMain.SaveFormArrangement(Me)
+  modGeneralMain.SaveFormSizeParam(Me)
   Me.Close(True)
 
 End

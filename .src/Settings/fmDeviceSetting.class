@@ -1833,6 +1833,7 @@ End
 Public Sub btnAIqueryclin_Click()
 
   modSettings.SaveSettingsToFile("CloudAI/Clinic_QueryList", txtAIqueryclin.Text)
+  modBasic.CloudAISettings()
   Balloon.Info(("Information saved"), btnAIqueryclin)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -1841,7 +1842,30 @@ End
 Public Sub btnAIquerydrug_Click()
 
   modSettings.SaveSettingsToFile("CloudAI/Medicine_QueryList", txtAIquerydrug.Text)
+  modBasic.CloudAISettings()
   Balloon.Info(("Information saved"), btnAIquerydrug)
   Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnaddAIqueryclin_Click()
+
+  Dim xx As String
+
+  xx = InputBox("QUestion for Clinical Query", "AI Output", "")
+  If xx Then
+    modBasic.$CloudAIClinQuery.Add(Trim(xx))
+  Endif
+
+End
+
+Public Sub btnaddAIquerydrug_Click()
+
+  Dim xx As String
+
+  xx = InputBox("QUestion for Drug Query", "AI Output", "")
+  If xx Then
+    modBasic.$CloudAIDrugQuery.Add(Trim(xx))
+  Endif
 
 End

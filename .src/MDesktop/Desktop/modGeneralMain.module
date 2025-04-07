@@ -544,6 +544,29 @@ Public Sub SaveFormArrangement(frm As Form)
 
 End
 
+Public Sub SaveFormSizeParam(frm As Form)
+
+  modSettings.SaveValuesToLog(frm.Name & "/Width", CStr(frm.Width))
+  modSettings.SaveValuesToLog(frm.Name & "/Height", CStr(frm.Height))
+
+End
+
+Public Sub ShowFormSizeParam(frm As Form)
+
+  Dim xval As String
+  Dim yval As String
+
+  xval = modSettings.ShowLogValues(frm.Name & "/Width")
+  If xval Then
+    frm.Width = CInt(xval)
+  Endif
+  yval = modSettings.ShowLogValues(frm.Name & "/Height")
+  If yval Then
+    frm.Height = CInt(yval)
+  Endif
+
+End
+
 Public Sub SetActiveForms()
 
   If MMain.$SISHAppMode = "HIS" Or If MMain.$SISHAppMode = "REP" Then ''remoteoptimized
