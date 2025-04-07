@@ -327,7 +327,7 @@ End
 
 Public Sub btnsummary_Click()
 
-  txtsummary.RichText = txtsummary.RichText & modCloudAI.GetPatCloudAIResponse($encid)
+  txtsummary.RichText = txtsummary.RichText & modCloudAI.GetPatCloudAIResponse($encid, txtsummary.Text)
 
 End
 

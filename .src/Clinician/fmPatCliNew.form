@@ -548,15 +548,15 @@
       }
     }
     { Panel9 Panel
-      MoveScaled(1,15,119,33)
+      MoveScaled(1,15,119,36)
       Enabled = False
       { Panel6 Panel
-        MoveScaled(0,-3,60,35)
+        MoveScaled(0,-3,60,38)
         { Panel4 Panel
           MoveScaled(0,0,60,3)
         }
         { TabPanel2 TabPanel
-          MoveScaled(0,3,60,28)
+          MoveScaled(0,3,60,32)
           Count = 2
           Index = 0
           Text = ("Chief Complaints")
@@ -589,7 +589,7 @@
             }
           }
           { grdchiefsymptom GridView
-            MoveScaled(0,3.375,60,20)
+            MoveScaled(0,3.375,60,24)
             Mode = Select.Single
             Header = GridView.Both
             AutoResize = False
@@ -631,12 +631,12 @@
             }
           }
           { txtgencomplaint TextHTML
-            MoveScaled(0,3.375,60,20)
+            MoveScaled(0,3.375,60,24)
           }
           Index = 0
         }
         { Panel23 Panel
-          MoveScaled(0,31.75,60,3)
+          MoveScaled(0,35,60,3)
           { mnuminorproc Button
             MoveScaled(10,0,10,3)
             Text = ("Minor")
@@ -714,7 +714,7 @@
         Picture = Picture["icon:/small/add"]
       }
       { lsticdisease ListBox
-        MoveScaled(82,14,36,11)
+        MoveScaled(82,14,36,14)
         ScrollBar = Scroll.Both
         Sorted = True
       }
@@ -728,10 +728,10 @@
         Visible = False
       }
       { Panel14 Panel
-        MoveScaled(0,32,118,1)
+        MoveScaled(0,35,118,1)
       }
       { Frame2 Panel
-        MoveScaled(60.375,0,21,32)
+        MoveScaled(60.375,0,21,35)
         { txtpulse ValueBox
           MoveScaled(11.375,0,8.625,3)
         }
@@ -786,7 +786,7 @@
           Picture = Picture["icon:/small/apply"]
         }
         { Panel2 Panel
-          MoveScaled(0,25.375,21,2.75)
+          MoveScaled(0,29,21,3)
           Border = Border.Plain
           { rbsi RadioButton
             MoveScaled(0,0,10,3)
@@ -799,7 +799,7 @@
           }
         }
         { Panel15 Panel
-          MoveScaled(1,28.375,19.875,3)
+          MoveScaled(0.5,32,19.875,3)
           { btnaddscan ToolButton
             MoveScaled(4,0,3,3)
             ToolTip = ("Scan Document")
@@ -825,7 +825,7 @@
         }
       }
       { Panel16 Panel
-        MoveScaled(82,29,36.875,3)
+        MoveScaled(82,32,36.875,3)
         { btnpharm Button
           MoveScaled(13,0,12,3)
           Text = ("Pharm [F12]")
@@ -845,12 +845,12 @@
         Picture = Picture["icon:/small/add"]
       }
       { btnfinaldiagno ButtonBox
-        MoveScaled(82,25.375,36,3)
+        MoveScaled(82,28.5,36,3)
         Picture = Picture["icon:/small/attach"]
       }
     }
     { TabPanel1 TabPanel
-      MoveScaled(1,48,119,34)
+      MoveScaled(1,51,119,31)
       Enabled = False
       Expand = True
       Arrangement = Arrange.Horizontal
@@ -858,11 +858,11 @@
       Index = 0
       Text = ("History & Findings")
       { Panel3 Panel
-        MoveScaled(0,0,119,28)
+        MoveScaled(0,0,119,26)
         Expand = True
         Arrangement = Arrange.Column
         { Panel20 Panel
-          MoveScaled(0,0,60,26)
+          MoveScaled(0,0,60,25)
           Expand = True
           Arrangement = Arrange.Vertical
           { Panel11 Panel
@@ -903,13 +903,8 @@
             Expand = True
           }
         }
-        { Panel8 Panel
-          MoveScaled(60,1,1,24)
-          Expand = True
-          Arrangement = Arrange.Vertical
-        }
         { Panel7 Panel
-          MoveScaled(61,0,58,27)
+          MoveScaled(61,0,58,25)
           Expand = True
           Arrangement = Arrange.Vertical
           { Panel5 Panel
@@ -972,7 +967,7 @@
             }
           }
           { GridView1 GridView
-            MoveScaled(0,8,58,18)
+            MoveScaled(0,8,58,16)
             Expand = True
             Mode = Select.Single
             Header = GridView.Both
@@ -989,15 +984,20 @@
             Delay = 10000
           }
         }
+        { Panel8 Panel
+          MoveScaled(60,1,1,24)
+          Expand = True
+          Arrangement = Arrange.Vertical
+        }
       }
       Index = 1
       Text = ("Advice & Planning")
       { Panel22 Panel
-        MoveScaled(0,0,120.875,25.875)
+        MoveScaled(0,0,121,24)
         Expand = True
         Arrangement = Arrange.Column
         { Panel17 Panel
-          MoveScaled(0,0,59,25)
+          MoveScaled(0,0,59,23)
           Expand = True
           Arrangement = Arrange.Vertical
           { Panel12 Panel
@@ -1033,22 +1033,22 @@
             }
           }
           { txtplan TextHTML
-            MoveScaled(0,4,58,16)
+            MoveScaled(0,4,58,14)
             Tag = "Auto"
             Expand = True
           }
           { lblinitialuser Label
-            MoveScaled(0,20,58,3)
+            MoveScaled(0,19,58,3)
             Border = Border.Plain
           }
         }
         { Panel21 Panel
-          MoveScaled(59,0,1,25)
+          MoveScaled(59,0,1,23)
           Expand = True
           Arrangement = Arrange.Vertical
         }
         { Panel18 Panel
-          MoveScaled(60,0,60,25)
+          MoveScaled(60,0,60,23)
           Expand = True
           Arrangement = Arrange.Vertical
           { Panel19 Panel
@@ -1084,12 +1084,12 @@
             }
           }
           { txtplanfinal TextHTML
-            MoveScaled(0,4,59,16)
+            MoveScaled(0,4,59,14)
             Tag = "Auto"
             Expand = True
           }
           { lblfinaluser Label
-            MoveScaled(0,21,58,3)
+            MoveScaled(0,19,58,3)
             Border = Border.Plain
           }
         }
@@ -1097,12 +1097,12 @@
       Index = 2
       Text = ("Telemedicine")
       { pnltelemed Panel
-        MoveScaled(0,0,120.875,25.875)
+        MoveScaled(0,0,121,24)
         Enabled = False
         Expand = True
         Arrangement = Arrange.Column
         { Panel24 Panel
-          MoveScaled(0,0,59,25)
+          MoveScaled(0,0,59,23)
           Expand = True
           Arrangement = Arrange.Vertical
           { Panel25 Panel
@@ -1148,12 +1148,12 @@
           }
         }
         { Panel26 Panel
-          MoveScaled(59,0,1,25)
+          MoveScaled(59,0,1,23)
           Expand = True
           Arrangement = Arrange.Vertical
         }
         { Panel27 Panel
-          MoveScaled(60,0,60,25)
+          MoveScaled(60,0,60,23)
           Expand = True
           Arrangement = Arrange.Vertical
           { Panel28 Panel
@@ -1199,12 +1199,12 @@
             }
           }
           { txtfeedback TextHTML
-            MoveScaled(0,8,58,13)
+            MoveScaled(0,8,58,9)
             Tag = "Auto"
             Expand = True
           }
           { Panel29 Panel
-            MoveScaled(0,21,58,4)
+            MoveScaled(0,18,58,4)
             { btngetfeed Button
               MoveScaled(43,0.625,14,3)
               Text = ("Save")

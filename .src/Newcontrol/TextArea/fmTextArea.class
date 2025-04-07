@@ -21,6 +21,7 @@ End
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
+  modGeneralMain.ShowFormSizeParam(Me)
   Me.Title = $sTitle
   TextArea1.Text = $sValue
   TextArea1.DictionaryPath = modBasic.$dictPathList
@@ -31,6 +32,8 @@ End
 Public Sub btnok_Click()
 
   $sValue = TextArea1.Text
+  modGeneralMain.SaveFormArrangement(Me)
+  modGeneralMain.SaveFormSizeParam(Me)
   Me.Close(True)
 
 End

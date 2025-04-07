@@ -21,6 +21,7 @@ End
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
+  modGeneralMain.ShowFormSizeParam(Me)
   Me.Title = $sTitle
   TextHTML1.DictionaryPath = modBasic.$dictPathList
   TextHTML1.RichText = $sValue
@@ -37,6 +38,8 @@ End
 Public Sub btnok_Click()
 
   $sValue = TextHTML1.RichText
+  modGeneralMain.SaveFormArrangement(Me)
+  modGeneralMain.SaveFormSizeParam(Me)
   Me.Close(True)
 
 End
