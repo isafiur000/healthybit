@@ -1,9 +1,10 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,110,65)
+  MoveScaled(0,0,110,69)
   Text = ("Enter Components")
   Arrangement = Arrange.Vertical
+  AutoResize = True
   Margin = True
   { Panel1 Panel
     MoveScaled(0,0,109,5)
@@ -84,6 +85,33 @@
       MoveScaled(0,1,7,3)
       Border = Border.Plain
       Text = ("Note:")
+    }
+  }
+  { pnlprint Panel
+    MoveScaled(0,64.5,110,4)
+    Visible = False
+    Border = Border.Plain
+    { Label3 Label
+      MoveScaled(1,0.5,10,3)
+      Border = Border.Plain
+      Text = ("Format")
+    }
+    { cmbprintform ComboBox
+      MoveScaled(12,0.5,15,3)
+    }
+    { btnarchive Button
+      MoveScaled(74,0.5,13,3)
+      Text = ("Archive")
+      Picture = Picture["icon:/small/save"]
+    }
+    { btnnohead Button
+      MoveScaled(89,0.5,6,3)
+      Picture = Picture["icon:/small/print"]
+    }
+    { btnreport Button
+      MoveScaled(95,0.5,13,3)
+      Text = ("Report")
+      Picture = Picture["icon:/small/html"]
     }
   }
 }

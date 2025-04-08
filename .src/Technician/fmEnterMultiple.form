@@ -1,78 +1,116 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,110,65)
+  MoveScaled(0,0,110,69)
   Text = ("Enter Components")
   Resizable = False
-  { Label2 Label
-    MoveScaled(1,1,7,3)
-    Border = Border.Plain
-    Text = ("Name:")
-  }
-  { lblitem Label
-    MoveScaled(9,1,51,3)
-    Border = Border.Plain
-  }
-  { btnBrOK Button
-    MoveScaled(84,61,12,3)
-    ToolTip = ("[Ctrl+S] to save")
-    Text = Shortcut(("Save"), "S")
-    Picture = Picture["icon:/small/apply"]
-  }
-  { btnBrChange Button
-    MoveScaled(97,61,12,3)
-    Text = ("Close")
-    Picture = Picture["icon:/small/cancel"]
-    Cancel = True
-  }
-  { ScrollView1 ScrollView
-    MoveScaled(1,5,108,55)
-    { Frame1 Panel
-      MoveScaled(0,0,107,54)
-      Expand = True
+  Arrangement = Arrange.Vertical
+  AutoResize = True
+  { Panel2 Panel
+    MoveScaled(0,0,110,4)
+    { lblitem Label
+      MoveScaled(9,0.5,51,3)
+      Border = Border.Plain
+    }
+    { chkautoption CheckBox
+      MoveScaled(62,0.5,13,3)
+      Text = ("Options")
+    }
+    { Slider1 SliderBox
+      MoveScaled(77,0.5,27,3)
+      MinValue = 1
+      MaxValue = 25
+      Value = 3
+    }
+    { btnrefresh ToolButton
+      MoveScaled(105,0.5,3,3)
+      Picture = Picture["icon:/small/refresh"]
+    }
+    { Label2 Label
+      MoveScaled(1,0.5,7,3)
+      Border = Border.Plain
+      Text = ("Name:")
     }
   }
-  { btnrefresh ToolButton
-    MoveScaled(105,1,3,3)
-    Picture = Picture["icon:/small/refresh"]
+  { Panel3 Panel
+    MoveScaled(0,4,110,56)
+    { ScrollView1 ScrollView
+      MoveScaled(1,0,108,55)
+      { Frame1 Panel
+        MoveScaled(0,0,107,54)
+        Expand = True
+      }
+    }
   }
-  { chkautoption CheckBox
-    MoveScaled(62,1,13,3)
-    Text = ("Options")
+  { Panel1 Panel
+    MoveScaled(0,60,110,4)
+    { chkabnall CheckBox
+      MoveScaled(51,0.5,7,3)
+      Text = ("Abn")
+    }
+    { btnfill Button
+      MoveScaled(59,0.5,11,3)
+      Text = ("Default")
+    }
+    { dctexectext ToolButton
+      MoveScaled(71,0.5,3,3)
+      Picture = Picture["icon:/small/edit"]
+    }
+    { btnexectext ToolButton
+      MoveScaled(75,0.5,3,3)
+      Picture = Picture["icon:/small/exec"]
+    }
+    { btntempltext ToolButton
+      MoveScaled(79,0.5,3,3)
+      Picture = Picture["icon:/small/attach"]
+    }
+    { btnBrOK Button
+      MoveScaled(84,0.5,12,3)
+      ToolTip = ("[Ctrl+S] to save")
+      Text = Shortcut(("Save"), "S")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label1 Label
+      MoveScaled(1,0.5,7,3)
+      Border = Border.Plain
+      Text = ("Note:")
+    }
+    { btnBrChange Button
+      MoveScaled(97,0.5,12,3)
+      Text = ("Close")
+      Picture = Picture["icon:/small/cancel"]
+      Cancel = True
+    }
+    { lblnote Label
+      MoveScaled(9,0.5,41,3)
+      Border = Border.Plain
+    }
   }
-  { Label1 Label
-    MoveScaled(1,61,7,3)
+  { pnlprint Panel
+    MoveScaled(0,64,110,4)
+    Visible = False
     Border = Border.Plain
-    Text = ("Note:")
-  }
-  { lblnote Label
-    MoveScaled(9,61,41,3)
-    Border = Border.Plain
-  }
-  { btnexectext ToolButton
-    MoveScaled(75,61,3,3)
-    Picture = Picture["icon:/small/exec"]
-  }
-  { dctexectext ToolButton
-    MoveScaled(71,61,3,3)
-    Picture = Picture["icon:/small/edit"]
-  }
-  { btntempltext ToolButton
-    MoveScaled(79,61,3,3)
-    Picture = Picture["icon:/small/attach"]
-  }
-  { btnfill Button
-    MoveScaled(59,61,11,3)
-    Text = ("Default")
-  }
-  { Slider1 SliderBox
-    MoveScaled(77,1,27,3)
-    MinValue = 1
-    MaxValue = 25
-    Value = 3
-  }
-  { chkabnall CheckBox
-    MoveScaled(51,61,7,3)
-    Text = ("Abn")
+    { Label3 Label
+      MoveScaled(1,0.5,10,3)
+      Border = Border.Plain
+      Text = ("Format")
+    }
+    { cmbprintform ComboBox
+      MoveScaled(12,0.5,15,3)
+    }
+    { btnarchive Button
+      MoveScaled(75,0.5,13,3)
+      Text = ("Archive")
+      Picture = Picture["icon:/small/save"]
+    }
+    { btnnohead Button
+      MoveScaled(90,0.5,6,3)
+      Picture = Picture["icon:/small/print"]
+    }
+    { btnreport Button
+      MoveScaled(96,0.5,13,3)
+      Text = ("Report")
+      Picture = Picture["icon:/small/html"]
+    }
   }
 }
