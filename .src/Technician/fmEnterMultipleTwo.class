@@ -215,9 +215,9 @@ Private Sub CreateControls()
           aHTMLTextL[i] = New TextHTML(aContLeft[i]) As "TextHTMLgroupL"
         Case "Label Only"
           ''Right
-          aLineTextR[i] = New TextBox(aContRight[i]) As "LabelOnlygroupR"
+          aLineTextR[i] = New Label(aContRight[i]) As "LabelOnlygroupR"
           ''Left
-          aLineTextL[i] = New TextBox(aContLeft[i]) As "LabelOnlygroupL"
+          aLineTextL[i] = New Label(aContLeft[i]) As "LabelOnlygroupL"
         Case Else
           ''Right
           aGenTextAreaR[i] = New TextPlain(aContRight[i]) As "GenAreaGroupR"
@@ -853,6 +853,7 @@ End
 Public Sub Form_Open()
 
   Dim xoption As String
+  Dim xRepoLock As String
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
   xoption = modSettings.ShowSettingFromFIle("EntrySetting/AutoDisplayOptions")
@@ -860,6 +861,21 @@ Public Sub Form_Open()
     chkautoption.Value = True
   Else If xoption = "No" Then
     chkautoption.Value = False
+  Endif
+
+  xRepoLock = modSettings.ShowSettingFromFIle("Laboratory/OutputLock")
+  If xRepoLock = "Verified" Then
+    pnlprint.Visible = False
+  Else
+    If $frm = "Test" Then
+      pnlprint.Visible = True
+      cmbprintform.List = ["A", "B", "C", "D"]
+    Else If $frm = "Radio" Then
+      pnlprint.Visible = True
+      cmbprintform.List = ["A", "B", "C"]
+    Else
+      pnlprint.Visible = False
+    Endif
   Endif
 
 End
@@ -2455,5 +2471,51 @@ Public Sub ImageBoxGroupL_Click()
   Dialog.Filter = ["*.jpg;*.jpeg;*.png;*.bmp", "Picture files"]
   If Dialog.OpenFile() Then Return
   aButtonBoxL[j].Text = Dialog.Path
+
+End
+
+''================== Print ===================
+Public Sub btnarchive_Click()
+
+  Dim cLabForm As CLabReport
+  Dim cRadioForm As CRadioReport
+
+  If $frm = "Test" Then
+    cLabForm = New CLabReport($id, cmbprintform.Text, "")
+    cLabForm.GetReportArchived()
+  Else If $frm = "Radio" Then
+    cRadioForm = New CRadioReport($id, cmbprintform.Text)
+    cRadioForm.GetReportArchived()
+  Endif
+
+End
+
+Public Sub btnnohead_Click()
+
+  Dim cLabForm As CLabReport
+  Dim cRadioForm As CRadioReport
+
+  If $frm = "Test" Then
+    cLabForm = New CLabReport($id, cmbprintform.Text, "")
+    cLabForm.GetReportHeadless()
+  Else If $frm = "Radio" Then
+    cRadioForm = New CRadioReport($id, cmbprintform.Text)
+    cRadioForm.GetReportHeadless()
+  Endif
+
+End
+
+Public Sub btnreport_Click()
+
+  Dim cLabForm As CLabReport
+  Dim cRadioForm As CRadioReport
+
+  If $frm = "Test" Then
+    cLabForm = New CLabReport($id, cmbprintform.Text, "")
+    cLabForm.GetReportComplete()
+  Else If $frm = "Radio" Then
+    cRadioForm = New CRadioReport($id, cmbprintform.Text)
+    cRadioForm.GetReportComplete()
+  Endif
 
 End

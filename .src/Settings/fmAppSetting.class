@@ -33,6 +33,7 @@ Public Sub Form_Open()
   cmbcurlcacert.List = ["Enable", "Disable"]
   cmbencprefix.List = ["Select", "Write"]
   cmbwindowsbar.List = ["Enable", "Disable"]
+  cmbcsvdelim.List = ["Comma", "Semicolon", "Tab"]
 
   ShowDesignSetting()
   ShowPanelAdvertise()
@@ -1066,15 +1067,10 @@ Private Sub ShowOptionSettings()
   Dim xuser As String
 
   cmbemailclient.Text = modSettings.ShowSettingFromFIle("GeneralSettings/EMailClient")
-  cmblocalrepo.Text = modSettings.ShowSettingFromFIle("GeneralSettings/LocalRepoUpload")
-  cmbreportpopup.Text = modSettings.ShowSettingFromFIle("GeneralSettings/ReportingOutput")
   cmbwebfunc.Text = modSettings.ShowSettingFromFIle("GeneralSettings/WebViewFunction")
 
   cmbbothside.Text = modSettings.ShowSettingFromFIle("GeneralSettings/GridViewSearch")
   cmbrowheight.Text = modSettings.ShowSettingFromFIle("GeneralSettings/ResizeRowheight")
-  cmbftpupload.Text = modSettings.ShowSettingFromFIle("GeneralSettings/FTPUploader")
-  cmbcurlcacert.Text = modSettings.ShowSettingFromFIle("GeneralSettings/cURLCACertificate")
-
   cmbencprefix.Text = modSettings.ShowSettingFromFIle("GeneralSettings/AutoEncounterPrefix")
   modSettings.ShowCheckBox(cmbtablet, "GeneralSettings/EnableTabletMode")
   modSettings.ShowCheckBox(chkautorefresh, "GeneralSettings/EnableAutoRefresh")
@@ -1093,6 +1089,13 @@ Private Sub ShowOptionSettings()
   modSettings.ShowCheckBox(chkdebugapp, "GeneralSettings/DebuggingMode_Enable")
   modSettings.ShowCheckBox(chkdebugdb, "GeneralSettings/DebuggingDB_Enable")
   modSettings.ShowCheckBox(chkdebugmsg, "GeneralSettings/DebuggingMessage_Enable")
+
+  ''--- general
+  cmblocalrepo.Text = modSettings.ShowSettingFromFIle("GeneralSettings/LocalRepoUpload")
+  cmbftpupload.Text = modSettings.ShowSettingFromFIle("GeneralSettings/FTPUploader")
+  cmbcurlcacert.Text = modSettings.ShowSettingFromFIle("GeneralSettings/cURLCACertificate")
+  cmbcsvdelim.Text = modSettings.ShowSettingFromFIle("GeneralSettings/CSVDelimiter")
+  cmbreportpopup.Text = modSettings.ShowSettingFromFIle("GeneralSettings/ReportingOutput")
 
 End
 
@@ -1228,14 +1231,6 @@ Public Sub btnautorefresh_Click()
 
 End
 
-Public Sub btnemailclient_Click()
-
-  modSettings.SaveSettingsToFile("GeneralSettings/EMailClient", cmbemailclient.Text)
-  Balloon.Info(("Information saved"), btnemailclient)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
 Public Sub btnbothside_Click()
 
   modSettings.SaveSettingsToFile("GeneralSettings/GridViewSearch", cmbbothside.Text)
@@ -1254,11 +1249,30 @@ Public Sub btnrwheight_Click()
 
 End
 
-Public Sub btncurlcacert_Click()
+''---------------
+Public Sub btnwebfunc_Click()
 
-  modSettings.SaveSettingsToFile("GeneralSettings/cURLCACertificate", cmbcurlcacert.Text)
-  modBasic.$cURLCACert = cmbcurlcacert.Text
-  Balloon.Info(("Information saved"), btncurlcacert)
+  modSettings.SaveSettingsToFile("GeneralSettings/WebViewFunction", cmbwebfunc.Text)
+  modBasic.$WebViewFunction = cmbwebfunc.Text
+  Balloon.Info(("Information saved"), btnwebfunc)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnemailclient_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/EMailClient", cmbemailclient.Text)
+  Balloon.Info(("Information saved"), btnemailclient)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''----------- general
+Public Sub btnlocalrepo_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/LocalRepoUpload", cmblocalrepo.Text)
+  modBasic.$UploadLocalrepo = cmblocalrepo.Text
+  Balloon.Info(("Information saved"), btnlocalrepo)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -1272,11 +1286,20 @@ Public Sub btnftpupload_Click()
 
 End
 
-Public Sub btnlocalrepo_Click()
+Public Sub btncurlcacert_Click()
 
-  modSettings.SaveSettingsToFile("GeneralSettings/LocalRepoUpload", cmblocalrepo.Text)
-  modBasic.$UploadLocalrepo = cmblocalrepo.Text
-  Balloon.Info(("Information saved"), btnlocalrepo)
+  modSettings.SaveSettingsToFile("GeneralSettings/cURLCACertificate", cmbcurlcacert.Text)
+  modBasic.$cURLCACert = cmbcurlcacert.Text
+  Balloon.Info(("Information saved"), btncurlcacert)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btncsvdelimit_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/CSVDelimiter", cmbcsvdelim.Text)
+  modBasic.$CSVDelimiter = cmbcsvdelim.Text
+  Balloon.Info(("Information saved"), btncsvdelimit)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -1286,15 +1309,6 @@ Public Sub btnreportpopup_Click()
   modSettings.SaveSettingsToFile("GeneralSettings/ReportingOutput", cmbreportpopup.Text)
   modBasic.$ReportingPopUp = cmbreportpopup.Text
   Balloon.Info(("Information saved"), btnreportpopup)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btnwebfunc_Click()
-
-  modSettings.SaveSettingsToFile("GeneralSettings/WebViewFunction", cmbwebfunc.Text)
-  modBasic.$WebViewFunction = cmbwebfunc.Text
-  Balloon.Info(("Information saved"), btnwebfunc)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

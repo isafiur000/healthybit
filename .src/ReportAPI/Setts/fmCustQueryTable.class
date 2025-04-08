@@ -655,3 +655,54 @@ Public Sub mnucolumns_Click()
   Endif
 
 End
+
+Public Sub mnucountuni_Click()
+
+  Dim Column As Integer
+  Dim xFieColm As String
+  Dim res As Result
+  Dim yval As Variant
+
+  Dim xColl As Collection
+  Dim xFldList As String[]
+  Dim xPath As String
+
+  Column = ListIndex("Column Index", modGridView.GetGridViewColumns(GridView1))
+  If Column + 1 > 0 Then
+    xFldList = GetSQLColumns()
+    If MMain.$IsGUIApp = True Then
+      $ProgressBar1 = modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory)
+      $ProgressBar1.Visible = True
+      $ProgressBar1.Value = 0
+    Endif
+
+    Inc Application.Busy
+    xFieColm = xFldList[Column]
+    res = ExecuteQuery([xFieColm])
+    xColl = New Collection
+    If res.Available Then
+      For Each res
+        yval = GetGridViewValue(Column, res[xFieColm])
+        If yval Then
+          If xColl.Exist(CStr(yval)) Then
+            xColl[CStr(yval)] = xColl[CStr(yval)] + 1
+          Else
+            xColl[CStr(yval)] = 1
+          Endif
+        Endif
+
+        If MMain.$IsGUIApp = True Then
+          $ProgressBar1.Value = (res.Index + 1) / res.Count
+          Wait
+        Endif
+      Next
+    Endif
+    If xColl.Count Then
+      xPath = modCHTMLReport.CreateHTMLReportFromCollection(["Variable", "Count"], xColl, GridView1.Columns[Column].Text, modReportVar.GetDateTimeReport(Now(), gb.GeneralDate))
+    Endif
+    Dec Application.Busy
+
+    modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
+  Endif
+
+End

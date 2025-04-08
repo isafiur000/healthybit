@@ -1,32 +1,33 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,110,65)
+  MoveScaled(0,0,110,70)
   Text = ("Enter Components")
   Arrangement = Arrange.Vertical
+  AutoResize = True
   Margin = True
   { Panel1 Panel
-    MoveScaled(0,0,109,5)
+    MoveScaled(0,0,109,4)
     { lblitem Label
-      MoveScaled(8,1,51,3)
+      MoveScaled(8,0.5,51,3)
       Border = Border.Plain
     }
     { chkautoption CheckBox
-      MoveScaled(61,1,13,3)
+      MoveScaled(61,0.5,13,3)
       Text = ("Options")
     }
     { Slider1 SliderBox
-      MoveScaled(76,1,27,3)
+      MoveScaled(76,0.5,27,3)
       MinValue = 1
       MaxValue = 25
       Value = 3
     }
     { btnrefresh ToolButton
-      MoveScaled(104,1,3,3)
+      MoveScaled(104,0.5,3,3)
       Picture = Picture["icon:/small/refresh"]
     }
     { Label2 Label
-      MoveScaled(0,1,7,3)
+      MoveScaled(0,0.5,7,3)
       Border = Border.Plain
       Text = ("Name:")
     }
@@ -108,6 +109,34 @@
       MoveScaled(0,1,7,3)
       Border = Border.Plain
       Text = ("Note:")
+    }
+  }
+  { pnlprint Panel
+    MoveScaled(0,64.5,110,4)
+    Visible = False
+    AutoResize = True
+    Border = Border.Plain
+    { Label6 Label
+      MoveScaled(1,0.5,10,3)
+      Border = Border.Plain
+      Text = ("Format")
+    }
+    { cmbprintform ComboBox
+      MoveScaled(12,0.5,15,3)
+    }
+    { btnarchive Button
+      MoveScaled(74,0.5,13,3)
+      Text = ("Archive")
+      Picture = Picture["icon:/small/save"]
+    }
+    { btnnohead Button
+      MoveScaled(89,0.5,6,3)
+      Picture = Picture["icon:/small/print"]
+    }
+    { btnreport Button
+      MoveScaled(95,0.5,13,3)
+      Text = ("Report")
+      Picture = Picture["icon:/small/html"]
     }
   }
 }
