@@ -88,30 +88,34 @@
     }
   }
   { pnlprint Panel
-    MoveScaled(0,64.5,110,4)
+    MoveScaled(0,65,110,4)
     Visible = False
     Border = Border.Plain
-    { Label3 Label
-      MoveScaled(1,0.5,10,3)
-      Border = Border.Plain
-      Text = ("Format")
-    }
-    { cmbprintform ComboBox
-      MoveScaled(12,0.5,15,3)
-    }
     { btnarchive Button
-      MoveScaled(74,0.5,13,3)
+      MoveScaled(46,0.5,13,3)
       Text = ("Archive")
       Picture = Picture["icon:/small/save"]
     }
     { btnnohead Button
-      MoveScaled(89,0.5,6,3)
+      MoveScaled(61,0.5,6,3)
       Picture = Picture["icon:/small/print"]
     }
     { btnreport Button
-      MoveScaled(95,0.5,13,3)
+      MoveScaled(67,0.5,13,3)
       Text = ("Report")
       Picture = Picture["icon:/small/html"]
+    }
+    { cmbprintform ComboBox
+      MoveScaled(10,0.5,12,3)
+    }
+    { chkprinted CheckBox
+      MoveScaled(24,0.5,16,3)
+      Text = ("Mark Printed")
+    }
+    { Label3 Label
+      MoveScaled(1,0.5,8,3)
+      Border = Border.Plain
+      Text = ("Format")
     }
   }
 }

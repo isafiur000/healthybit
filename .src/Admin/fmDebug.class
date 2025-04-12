@@ -17,6 +17,7 @@ Private Sub GetList()
   cmbproblem.Add("Purchase NetCost")
   cmbproblem.Add("Transfer NetCost")
   cmbproblem.Add("Admission Ward")
+  cmbproblem.Add("Max Retail Price")
   ' cmbproblem.Add("---healthybit 0.3.20 or newer ---")
   ' cmbproblem.Add("Patient Exam Option")
   ' cmbproblem.Add("Comp Examination")
@@ -91,6 +92,8 @@ Public Sub btncorr_Click()
       Endif
     Else If cmbproblem.Text = "Admission Ward" Then
       UpdateAdmissionWard()
+    Else If cmbproblem.Text = "Max Retail Price" Then
+      UpdateMaxRPValue()
 
     Else If cmbproblem.Text = "MacAddress Code" Then
       InsertMacAddCode()
@@ -156,6 +159,42 @@ End
 '   ValueBox1.Value = $fin.Count
 '
 ' End
+
+''Max Retail Price
+Private Sub UpdateMaxRPValue()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Edit("tblentry", "fldmrp IS NULL")
+  If res.Available Then
+    For Each res
+      res["fldmrp"] = FindMRPInPurchase(res["fldstockno"])
+      res.Update
+    Next
+  Endif
+  Message.Info("Completed")
+
+End
+
+Private Function FindMRPInPurchase(stockno As Long) As Integer
+
+  Dim res As Result
+  Dim xx As Integer
+
+  res = modDatabase.$myConn.Exec("select fldmrp from tblpurchase where fldstockno=&1 and fldmrp>&2", stockno, 0)
+  If res.Available = True Then
+    res.MoveFirst
+    If res["fldmrp"] Then
+      xx = res["fldmrp"]
+    Else
+      xx = 0
+    Endif
+  Else
+    xx = 0
+  Endif
+  Return xx
+
+End
 
 ''---------------- Admission ward ---------------
 Private Sub UpdateAdmissionWard()

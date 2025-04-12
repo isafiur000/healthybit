@@ -86,9 +86,9 @@ Private Sub FillBedGrid()
   Dim sql As String
 
   If modBasic.$ClinDepartFormat = "Service" Then
-    sql = "select fldencounterval,fldoxyport,fldventilator,fldbed,fldencounterval,fldencounterval,fldencounterval,fldbed,fldbed from tbldepartmentbed where (fldservice=&1 or fldaddservice=&1) and (fldstatus IS NULL or fldstatus=&2)"
+    sql = "select fldencounterval,fldoxyport,fldventilator,fldbed,fldencounterval,fldencounterval,fldencounterval,fldfreedate,fldbed from tbldepartmentbed where (fldservice=&1 or fldaddservice=&1) and (fldstatus IS NULL or fldstatus=&2)"
   Else
-    sql = "select fldencounterval,fldoxyport,fldventilator,fldbed,fldencounterval,fldencounterval,fldencounterval,fldbed,fldbed from tbldepartmentbed where flddept=&1 and (fldstatus IS NULL or fldstatus=&2)"
+    sql = "select fldencounterval,fldoxyport,fldventilator,fldbed,fldencounterval,fldencounterval,fldencounterval,fldfreedate,fldbed from tbldepartmentbed where flddept=&1 and (fldstatus IS NULL or fldstatus=&2)"
   Endif
   $rData = modDatabase.$myConn.Exec(sql, lstdepartment.Text, "Active")
   $aMyFields = New String[]
@@ -142,7 +142,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
       GridView1.Data.Text = ""
     Endif
   Else If Column = 7 Then
-    GridView1.Data.Picture = Picture["icon:/small/apply"]
+    GridView1.Data.Picture = Picture[ShowFreeColor($rData[$aMyFields[Column]])]
     GridView1.Data.Text = ""
   Else If Column = 8 Then
     If modBasic.$ClinMidBedRelease = "Enable" Then
@@ -171,6 +171,23 @@ Private Function ShowBedColor(encid As String) As String
     xx = "icons/false.svg"
   Else
     xx = "icons/null.svg"
+  Endif
+  Return xx
+
+End
+
+Private Function ShowFreeColor(sDischarge As Date) As String
+
+  Dim xx As String
+
+  If modBasic.$ClinBedHoldTime Then
+    If DateDiff(sDischarge, Now(), gb.Hour) <= modBasic.$ClinBedHoldTime Then
+      xx = "icons/coll5.png"
+    Else
+      xx = "icon:/small/apply"
+    Endif
+  Else
+    xx = "icon:/small/apply"
   Endif
   Return xx
 

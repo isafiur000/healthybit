@@ -332,6 +332,7 @@ Private Sub AddNewEntry(StockNo As Long, stockid As String, ItemCategory As Stri
     res["fldqty"] = 0
     res["fldstatus"] = modStock.ItemSaleStatus(stockid, modBasic.$compID)
     res["fldsellpr"] = txtnewsell.Value
+    res["fldmrp"] = txtmrp.Value
     res["fldsav"] = False
     res["fldcategory"] = ItemCategory
     res["fldcomp"] = modBasic.$compID

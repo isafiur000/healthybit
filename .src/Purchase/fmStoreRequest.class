@@ -201,7 +201,7 @@ Private Function TransferItem(sItem As String, sQTY As Float, sComp As String) A
   Dim xclear As Boolean
 
   xclear = False
-  res1 = modDatabase.$myConn.Exec("select fldstockno,fldstockid,fldcategory,fldbatch,fldexpiry,fldqty,fldstatus,fldcategory,fldsellpr from tblentry where fldstockid=&1 and fldstatus=&2 and fldcomp=&3", sItem, 1, modBasic.$compID)                                                   ''
+  res1 = modDatabase.$myConn.Exec("select fldstockno,fldstockid,fldcategory,fldbatch,fldexpiry,fldqty,fldstatus,fldcategory,fldsellpr,fldmrp from tblentry where fldstockid=&1 and fldstatus=&2 and fldcomp=&3", sItem, 1, modBasic.$compID)                                                   ''
   If res1.Available Then
     res1.MoveFirst
     If sComp <> modBasic.$compID And If sQTY <= res1["fldqty"] Then
@@ -220,6 +220,7 @@ Private Function TransferItem(sItem As String, sQTY As Float, sComp As String) A
           res["fldqty"] = 0
           res["fldstatus"] = modStock.ItemSaleStatus(res1["fldstockid"], sComp)
           res["fldsellpr"] = res1["fldsellpr"]
+          res["fldmrp"] = res1["fldmrp"]
           res["fldsav"] = False
           res["fldcategory"] = res1["fldcategory"]
           res["fldcomp"] = sComp

@@ -59,11 +59,11 @@
       Picture = Picture["icon:/small/apply"]
     }
     { cmbextrabill ComboBox
-      MoveScaled(63,25,16.75,3)
+      MoveScaled(63,29,16.75,3)
       ToolTip = ("Select format of copy invoice print")
     }
     { btnextrabill ToolButton
-      MoveScaled(80,25,3,3)
+      MoveScaled(80,29,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { cmbdiscformat ComboBox
@@ -163,7 +163,7 @@
       Text = ("@ Location")
     }
     { Label28 Label
-      MoveScaled(48,25,14,3)
+      MoveScaled(48,29,14,3)
       Border = Border.Plain
       Text = ("Copy Invoice")
     }
@@ -192,32 +192,6 @@
       Border = Border.Plain
       Text = ("Extra Labels")
     }
-    { Label150 Label
-      MoveScaled(48,49,15,3)
-      Border = Border.Plain
-      Text = ("Display Payable")
-    }
-    { cmbautopayble ComboBox
-      MoveScaled(64,49,16,3)
-      ToolTip = ("Select to display Payable selection on each billing item entry")
-    }
-    { btnautopayble ToolButton
-      MoveScaled(80,49,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label159 Label
-      MoveScaled(48,53,15,3)
-      Border = Border.Plain
-      Text = ("Post-Print Form")
-    }
-    { cmbautocalc ComboBox
-      MoveScaled(64,53,16,3)
-      ToolTip = ("Select to display Mini Calculator or Invoice Summary after completion of billing")
-    }
-    { btnautocalc ToolButton
-      MoveScaled(80,53,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
     { Label166 Label
       MoveScaled(1,33,14,3)
       Border = Border.Plain
@@ -232,40 +206,16 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label167 Label
-      MoveScaled(48,29,14,3)
+      MoveScaled(48,48,14,3)
       Border = Border.Plain
       Text = ("Print Regd Slip")
     }
     { cmbregdslip ComboBox
-      MoveScaled(63,29,16.75,3)
+      MoveScaled(63,48,16.75,3)
       ToolTip = ("Select format of registration report to print with invoice")
     }
     { btnregdslip ToolButton
-      MoveScaled(80,29,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label168 Label
-      MoveScaled(1,49,14,3)
-      Border = Border.Plain
-      Text = ("Edit Tax/Disc")
-    }
-    { cmbeditax ComboBox
-      MoveScaled(16,49,17,3)
-    }
-    { btneditax ToolButton
-      MoveScaled(33,49,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label176 Label
-      MoveScaled(1,53,14,3)
-      Border = Border.Plain
-      Text = ("Warn Credits")
-    }
-    { cmbwarncredit ComboBox
-      MoveScaled(16,53,17,3)
-    }
-    { btnwarncredit ToolButton
-      MoveScaled(33,53,3,3)
+      MoveScaled(80,48,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label177 Label
@@ -295,77 +245,51 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label180 Label
-      MoveScaled(1,37,14,3)
+      MoveScaled(1,48,14,3)
       Border = Border.Plain
       Text = ("Discharge Bill")
     }
     { cmbdischbill ComboBox
-      MoveScaled(16,37,17,3)
+      MoveScaled(16,48,17,3)
     }
     { btndischbill ToolButton
-      MoveScaled(33,37,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label182 Label
-      MoveScaled(1,45,14,3)
-      Border = Border.Plain
-      Text = ("Default Service")
-    }
-    { cmbdefitemtype ComboBox
-      MoveScaled(16,45,17,3)
-      ToolTip = ("Select Default Service Type while punching")
-    }
-    { btndefitemtype ToolButton
-      MoveScaled(33,45,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label183 Label
-      MoveScaled(48,45,15,3)
-      Border = Border.Plain
-      Text = ("Default Pharmacy")
-    }
-    { cmbdefpharmtype ComboBox
-      MoveScaled(64,45,16,3)
-      ToolTip = ("Select Default Pharmacy Type while punching")
-    }
-    { btndefpharmtype ToolButton
-      MoveScaled(80,45,3,3)
+      MoveScaled(33,48,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label184 Label
-      MoveScaled(48,37,14,3)
+      MoveScaled(48,52,14,3)
       Border = Border.Plain
       Text = ("Skip Printing")
     }
     { cmbskiprint ComboBox
-      MoveScaled(63,37,17,3)
+      MoveScaled(63,52,17,3)
     }
     { btnskiprint ToolButton
-      MoveScaled(80,37,3,3)
+      MoveScaled(80,52,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label186 Label
-      MoveScaled(1,41,14,3)
+      MoveScaled(1,52,14,3)
       Border = Border.Plain
       Text = ("Pharm Format")
     }
     { cmbitmselct ComboBox
-      MoveScaled(16,41,17,3)
+      MoveScaled(16,52,17,3)
     }
     { btnitmslct ToolButton
-      MoveScaled(33,41,3,3)
+      MoveScaled(33,52,3,3)
       Picture = Picture["icon:/small/apply"]
     }
-    { Label188 Label
-      MoveScaled(48,41,14,3)
+    { Label160 Label
+      MoveScaled(48,25,14,3)
       Border = Border.Plain
-      Text = ("Billing Alert")
+      Text = ("Show MRP")
     }
-    { cmbbillalert ComboBox
-      MoveScaled(63,41,17,3)
+    { cmbshowMRP ComboBox
+      MoveScaled(63,25,17,3)
     }
-    { btnbillalert ToolButton
-      MoveScaled(80,41,3,3)
+    { btnshowMRP ToolButton
+      MoveScaled(80,25,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     Index = 1
@@ -2374,96 +2298,6 @@
         Picture = Picture["icon:/small/apply"]
       }
     }
-    { cmbdifftest ComboBox
-      MoveScaled(20,29,37.5,3)
-    }
-    { cmbprinttest ComboBox
-      MoveScaled(59,29,12,3)
-    }
-    { btndifftest Button
-      MoveScaled(72,29,5,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label160 Label
-      MoveScaled(1,29,17,3)
-      Border = Border.Plain
-      Text = ("Diagnostic Tests")
-    }
-    { Label161 Label
-      MoveScaled(1,33,17,3)
-      Border = Border.Plain
-      Text = ("Radio Diagnostics")
-    }
-    { cmbdiffradio ComboBox
-      MoveScaled(20,33,37.5,3)
-    }
-    { cmbprintradio ComboBox
-      MoveScaled(59,33,12,3)
-    }
-    { btndiffradio Button
-      MoveScaled(72,33,5,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label162 Label
-      MoveScaled(1,37,17,3)
-      Border = Border.Plain
-      Text = ("General Services")
-    }
-    { cmbdiffservice ComboBox
-      MoveScaled(20,37,37.5,3)
-    }
-    { cmbprintservice ComboBox
-      MoveScaled(59,37,12,3)
-    }
-    { btndiffservice Button
-      MoveScaled(72,37,5,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label163 Label
-      MoveScaled(1,41,17,3)
-      Border = Border.Plain
-      Text = ("Procedures")
-    }
-    { cmbdiffproced ComboBox
-      MoveScaled(20,41,37.5,3)
-    }
-    { cmbprintproced ComboBox
-      MoveScaled(59,41,12,3)
-    }
-    { btndiffproced Button
-      MoveScaled(72,41,5,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label164 Label
-      MoveScaled(1,45,17,3)
-      Border = Border.Plain
-      Text = ("Equipment")
-    }
-    { cmbdiffequip ComboBox
-      MoveScaled(20,45,37.5,3)
-    }
-    { cmbprintequip ComboBox
-      MoveScaled(59,45,12,3)
-    }
-    { btndiffequip Button
-      MoveScaled(72,45,5,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label165 Label
-      MoveScaled(1,49,17,3)
-      Border = Border.Plain
-      Text = ("Other Items")
-    }
-    { cmbdiffother ComboBox
-      MoveScaled(20,49,37.5,3)
-    }
-    { cmbprintother ComboBox
-      MoveScaled(59,49,12,3)
-    }
-    { btndiffother Button
-      MoveScaled(72,49,5,3)
-      Picture = Picture["icon:/small/apply"]
-    }
     { Frame2 Frame
       MoveScaled(1,17,82,11)
       Text = ("Spacing")
@@ -2514,6 +2348,99 @@
       }
       { btnline4 ToolButton
         MoveScaled(78,7,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+    }
+    { Frame17 Frame
+      MoveScaled(1,30,82,20)
+      Text = ("Billing Entry")
+      Alignment = Align.Left
+      { Label182 Label
+        MoveScaled(1,3,14,3)
+        Border = Border.Plain
+        Text = ("Default Service")
+      }
+      { Label168 Label
+        MoveScaled(1,7,14,3)
+        Border = Border.Plain
+        Text = ("Edit Tax/Disc")
+      }
+      { cmbdefitemtype ComboBox
+        MoveScaled(16,3,17,3)
+        ToolTip = ("Select Default Service Type while punching")
+      }
+      { cmbeditax ComboBox
+        MoveScaled(16,7,17,3)
+      }
+      { Label176 Label
+        MoveScaled(1,11,14,3)
+        Border = Border.Plain
+        Text = ("Warn Credits")
+      }
+      { cmbwarncredit ComboBox
+        MoveScaled(16,11,17,3)
+      }
+      { Label188 Label
+        MoveScaled(1,15,14,3)
+        Border = Border.Plain
+        Text = ("Billing Alert")
+      }
+      { cmbbillalert ComboBox
+        MoveScaled(16,15,17,3)
+      }
+      { btnbillalert ToolButton
+        MoveScaled(33,15,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { btnwarncredit ToolButton
+        MoveScaled(33,11,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { btneditax ToolButton
+        MoveScaled(33,7,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { btndefitemtype ToolButton
+        MoveScaled(33,3,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { Label183 Label
+        MoveScaled(44,3,16.5,3)
+        Border = Border.Plain
+        Text = ("Default Pharmacy")
+      }
+      { cmbdefpharmtype ComboBox
+        MoveScaled(61,3,16,3)
+        ToolTip = ("Select Default Pharmacy Type while punching")
+      }
+      { Label150 Label
+        MoveScaled(44,7,16.5,3)
+        Border = Border.Plain
+        Text = ("Display Payable")
+      }
+      { cmbautopayble ComboBox
+        MoveScaled(61,7,16,3)
+        ToolTip = ("Select to display Payable selection on each billing item entry")
+      }
+      { Label159 Label
+        MoveScaled(44,11,16.5,3)
+        Border = Border.Plain
+        Text = ("Post-Print Form")
+      }
+      { cmbautocalc ComboBox
+        MoveScaled(61,11,16,3)
+        ToolTip = ("Select to display Mini Calculator or Invoice Summary after completion of billing")
+      }
+      { btnautocalc ToolButton
+        MoveScaled(78,11,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { btnautopayble ToolButton
+        MoveScaled(78,7,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { btndefpharmtype ToolButton
+        MoveScaled(78,3,3,3)
         Picture = Picture["icon:/small/apply"]
       }
     }

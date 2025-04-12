@@ -35,6 +35,7 @@ Public Sub Form_Open()
   cmbrepospecimn.List = ["Specimen", "Comment", "Invoice", "TestUnit", "None"]
   cmbarchlog.List = ["Enable", "Disable"]
   cmblocksms.List = ["Reported", "Verified", "None"]
+  cmbentryprint.List = ["Enable", "Disable"]
 
   cmbextra3.List = ["Specimen", "SampleID", "InvoiceNo", "SampleDate", "ReportDate", "ReportLastDate", "VerifydDate", "VerifyLastDate", "ReferBy", "Condition", "SampleIDBarCode", "SampleIDQRCode", "InvoiceBarCode", "InvoiceQRCode"]
   cmbextra4.List = ["Specimen", "SampleID", "InvoiceNo", "SampleDate", "ReportDate", "ReportLastDate", "VerifydDate", "VerifyLastDate", "ReferBy", "Condition", "SampleIDBarCode", "SampleIDQRCode", "InvoiceBarCode", "InvoiceQRCode"]
@@ -239,12 +240,14 @@ Private Sub ShowLabReport()
   cmbrepospecimn.Text = modSettings.ShowSettingFromFIle("Laboratory/ExtraColumn")
   cmbarchlog.Text = modSettings.ShowSettingFromFIle("Laboratory/ArchiveLogReport")
   cmblocksms.Text = modSettings.ShowSettingFromFIle("Laboratory/LockSMSReport")
+  cmbentryprint.Text = modSettings.ShowSettingFromFIle("Laboratory/Print_EntryForm")
 
 End
 
 Public Sub btnsensdata_Click()
 
   modSettings.SaveSettingsToFile("Laboratory/SensitivityReport", cmbsensdata.Text)
+  modBasic.$LabSensitivityReport = cmbsensdata.Text
   Balloon.Info(("Information saved"), btnsensdata)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -253,6 +256,7 @@ End
 Public Sub btnreposection_Click()
 
   modSettings.SaveSettingsToFile("Laboratory/ReportSections", cmbreposection.Text)
+  modBasic.$LabReportSections = cmbreposection.Text
   Balloon.Info(("Information saved"), btnreposection)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -261,6 +265,7 @@ End
 Public Sub btnrepospecmn_Click()
 
   modSettings.SaveSettingsToFile("Laboratory/ExtraColumn", cmbrepospecimn.Text)
+  modBasic.$LabExtraColumn = cmbrepospecimn.Text
   Balloon.Info(("Information saved"), btnrepospecmn)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -269,6 +274,7 @@ End
 Public Sub btnrepolock_Click()
 
   modSettings.SaveSettingsToFile("Laboratory/OutputLock", cmbrepolock.Text)
+  modBasic.$LabOutputLock = cmbrepolock.Text
   Balloon.Info(("Information saved"), btnrepolock)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -304,6 +310,15 @@ Public Sub btnlocksms_Click()
 
   modSettings.SaveSettingsToFile("Laboratory/LockSMSReport", cmblocksms.Text)
   modBasic.$LabSMSReportLock = cmblocksms.Text
+  Balloon.Info(("Information saved"), btnlocksms)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnentryprint_Click()
+
+  modSettings.SaveSettingsToFile("Laboratory/Print_EntryForm", cmbentryprint.Text)
+  modBasic.$LabPrintWithEntry = cmbentryprint.Text
   Balloon.Info(("Information saved"), btnlocksms)
   Balloon.Delay = modBasic.$BalloonDelay
 
