@@ -75,7 +75,7 @@ Public Sub Form_Open()
   modSettings.ShowCheckBox(chknew, "TestReportFormat/NewItems")
   modSettings.ShowCheckBox(chkprinted, "TestReportFormat/PrintedItems")
   modSettings.ShowCheckBox(chkmark, "TestReportFormat/MarkPrinted")
-  $RepoLock = modSettings.ShowSettingFromFIle("Laboratory/OutputLock")
+  $RepoLock = modBasic.$LabOutputLock
   cmbremove.List = ["Null", "Nil"]
 
   dtselected.Value = Now()
@@ -922,7 +922,7 @@ Private Function SensiFormat() As String
   Dim xsens As String
   Dim xsumm As String
 
-  xsens = modSettings.ShowSettingFromFIle("Laboratory/SensitivityReport")
+  xsens = modBasic.$LabSensitivityReport
   If xsens Then
     xsumm = xsens
   Else
@@ -1368,7 +1368,7 @@ Private Sub ShowPatLaboratoryReport(sType As String, sHide As Boolean)
   xfontcol1 = modSettings.ShowSettingFromFIle("ReportFormat/ReportBody_Font_Column1")
   xfontcol2 = modSettings.ShowSettingFromFIle("ReportFormat/ReportBody_Font_Column2")
   xintrp = modSettings.ShowSettingFromFIle("Laboratory/Observation_Comment")
-  xspecolm = modSettings.ShowSettingFromFIle("Laboratory/ExtraColumn")
+  xspecolm = modBasic.$LabExtraColumn
 
   If xfontcol1 Then
     col1Font = xfontcol1
@@ -1476,7 +1476,7 @@ Private Sub ShowPatLaboratoryReport(sType As String, sHide As Boolean)
   Endif
   $HashCode = $BillingReport.GetReportHash()
 
-  xsection = modSettings.ShowSettingFromFIle("Laboratory/ReportSections")
+  xsection = modBasic.$LabReportSections
   If xsection = "Separate" Then
     ''=========== For separate Report ============
     For Each xx In newCateg

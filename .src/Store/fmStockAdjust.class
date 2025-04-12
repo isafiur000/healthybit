@@ -142,6 +142,7 @@ Private Sub SaveEntry()
         rs["fldqty"] = 0
         rs["fldstatus"] = modStock.ItemSaleStatus(cmbmedicine.Text, modBasic.$compID)
         rs["fldsellpr"] = txtsellpr.Value
+        rs["fldmrp"] = 0
         rs["fldsav"] = True
         rs["fldcategory"] = txtcategory.Text
         rs["fldcomp"] = modBasic.$compID

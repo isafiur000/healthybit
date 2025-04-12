@@ -1,16 +1,14 @@
 ' Gambas class file
 
-Public Sub Form_Open()
+Private $xList As String[]
 
-  Dim xList As String[]
+Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me)
 
-  xList = modNonMedical.FillCashModeCombo()
-  xList.Insert(["All", "None"])
-  cmbautopayble.List = xList
+  $xList = modNonMedical.FillCashModeCombo()
+  $xList.Insert(["All", "None"])
 
-  cmbautocalc.List = ["Calculator", "InvoiceInfo", "BlankForm"]
   'formating
   cmbatch.List = ["Yes", "No"]
   cmbqty.List = ["Yes", "No"]
@@ -30,19 +28,12 @@ Public Sub Form_Open()
   cmbextrabill.List = ["Print", "Print+Print", "Save", "Print+Save", "None"]
   cmbextrefer.List = ["Yes", "No"]
   cmbregdslip.List = ["Sticker", "Prescription", "None"]
-  cmbeditax.List = ["Percent", "Amount"]
-  cmbwarncredit.List = ["Yes", "No"]
   cmbdischbill.List = ["Summary", "Detail"]
   cmbskiprint.List = ["Registration", "Discharge"]
   cmbitmselct.List = ["Current", "Multiple"]
-  cmbbillalert.List = ["Patient No", "Patient Code", "Data Repo", "None"]
-
-  cmbdefitemtype.List = ["All", "Test", "Service", "Procedure", "Equipment", "Radio", "Others", "Package", "Group", "No Change"]
-  cmbdefpharmtype.List = modMedicine.AllComboRoute()
-  cmbdefpharmtype.Add("No Change")
+  cmbshowMRP.List = ["Yes", "No"]
 
   ShowPrintingParam()
-  GeneralBillSetting()
 
 End
 
@@ -191,23 +182,19 @@ Public Sub IconPanel1_Click()
     cmbcontable.List = ["BuiltIn", "External"]
     cmbconfooter.List = ["BuiltIn", "External"]
     cmbinvconversion.List = ["HTML", "Text"]
-    cmbdiffequip.List = Printer.List
-    cmbdiffother.List = Printer.List
-    cmbdiffproced.List = Printer.List
-    cmbdiffradio.List = Printer.List
-    cmbdiffservice.List = Printer.List
-    cmbdifftest.List = Printer.List
 
-    cmbprintequip.List = ["Line", "PDF"]
-    cmbprintother.List = ["Line", "PDF"]
-    cmbprintproced.List = ["Line", "PDF"]
-    cmbprintradio.List = ["Line", "PDF"]
-    cmbprintservice.List = ["Line", "PDF"]
-    cmbprinttest.List = ["Line", "PDF"]
+    cmbeditax.List = ["Percent", "Amount"]
+    cmbwarncredit.List = ["Yes", "No"]
+    cmbbillalert.List = ["Patient No", "Patient Code", "Data Repo", "None"]
+    cmbautopayble.List = $xList
+    cmbautocalc.List = ["Calculator", "InvoiceInfo", "BlankForm"]
+    cmbdefitemtype.List = ["All", "Test", "Service", "Procedure", "Equipment", "Radio", "Others", "Package", "Group", "No Change"]
+    cmbdefpharmtype.List = modMedicine.AllComboRoute()
+    cmbdefpharmtype.Add("No Change")
 
     ShowDefaultComponent()
     ShowLineSpacing()
-    ShowDifferentialPrinters()
+    GeneralBillSetting()
 
   Else If IconPanel1.Index = 10 Then
     CBMSSetting()
@@ -298,6 +285,7 @@ Private Sub ShowPrintingParam()
   cmbcashcredit.Text = modSettings.ShowSettingFromFIle("Invoice/CashCreditFormat")
   cmbtaxsum.Text = modSettings.ShowSettingFromFIle("Invoice/ShowSumTax")
   cmbdiscsum.Text = modSettings.ShowSettingFromFIle("Invoice/ShowSumDiscount")
+  cmbshowMRP.Text = modSettings.ShowSettingFromFIle("Invoice/ShowMaxRetailPrice")
 
   cmbmed.Text = modSettings.ShowSettingFromFIle("Invoice/MedicineName")
   cmbitemsuffix.Text = modSettings.ShowSettingFromFIle("Invoice/ParticularSuffix")
@@ -465,6 +453,14 @@ Public Sub btndischbill_Click()
 
   modSettings.SaveSettingsToFile("Invoice/DischargeBillFormat", cmbdischbill.Text)
   Balloon.Info(("Information updated"), btndischbill)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnshowMRP_Click()
+
+  modSettings.SaveSettingsToFile("Invoice/ShowMaxRetailPrice", cmbshowMRP.Text)
+  Balloon.Info(("Information saved"), btnshowMRP)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -2306,83 +2302,5 @@ Public Sub btnlinepagemaxht_Click()
   modSettings.SaveSettingsToFile("Invoice/LinePrint_PageMaxHeight", txtlinepagemaxht.Value)
   Balloon.Info(("Information updated"), btnlinepagemaxht)
   Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-''------------------------------- Differential prints ----------------------------------------
-
-Public Sub btndifftest_Click()
-
-  modSettings.SaveSettingsToFile("DifferentialPrinter/Test", cmbdifftest.Text)
-  modSettings.SaveSettingsToFile("DifferentialPrintMode/Test", cmbprinttest.Text)
-  Balloon.Info(("Information updated"), btndifftest)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btndiffradio_Click()
-
-  modSettings.SaveSettingsToFile("DifferentialPrinter/Radio", cmbdiffradio.Text)
-  modSettings.SaveSettingsToFile("DifferentialPrintMode/Radio", cmbprintradio.Text)
-  Balloon.Info(("Information updated"), btndiffradio)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btndiffservice_Click()
-
-  modSettings.SaveSettingsToFile("DifferentialPrinter/Service", cmbdiffservice.Text)
-  modSettings.SaveSettingsToFile("DifferentialPrintMode/Service", cmbprintservice.Text)
-  Balloon.Info(("Information updated"), btndiffservice)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btndiffproced_Click()
-
-  modSettings.SaveSettingsToFile("DifferentialPrinter/Procedure", cmbdiffproced.Text)
-  modSettings.SaveSettingsToFile("DifferentialPrintMode/Procedure", cmbprintproced.Text)
-  Balloon.Info(("Information updated"), btndiffproced)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btndiffequip_Click()
-
-  modSettings.SaveSettingsToFile("DifferentialPrinter/Equipment", cmbdiffequip.Text)
-  modSettings.SaveSettingsToFile("DifferentialPrintMode/Equipment", cmbprintequip.Text)
-  Balloon.Info(("Information updated"), btndiffequip)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btndiffother_Click()
-
-  modSettings.SaveSettingsToFile("DifferentialPrinter/Others", cmbdiffother.Text)
-  modSettings.SaveSettingsToFile("DifferentialPrintMode/Others", cmbprintother.Text)
-  Balloon.Info(("Information updated"), btndiffother)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Private Sub ShowDifferentialPrinters()
-
-  cmbdifftest.Text = modSettings.ShowSettingFromFIle("DifferentialPrinter/Test")
-  cmbprinttest.Text = modSettings.ShowSettingFromFIle("DifferentialPrintMode/Test")
-
-  cmbdiffradio.Text = modSettings.ShowSettingFromFIle("DifferentialPrinter/Radio")
-  cmbprintradio.Text = modSettings.ShowSettingFromFIle("DifferentialPrintMode/Radio")
-
-  cmbdiffservice.Text = modSettings.ShowSettingFromFIle("DifferentialPrinter/Service")
-  cmbprintservice.Text = modSettings.ShowSettingFromFIle("DifferentialPrintMode/Service")
-
-  cmbdiffproced.Text = modSettings.ShowSettingFromFIle("DifferentialPrinter/Procedure")
-  cmbprintproced.Text = modSettings.ShowSettingFromFIle("DifferentialPrintMode/Procedure")
-
-  cmbdiffequip.Text = modSettings.ShowSettingFromFIle("DifferentialPrinter/Equipment")
-  cmbprintequip.Text = modSettings.ShowSettingFromFIle("DifferentialPrintMode/Equipment")
-
-  cmbdiffother.Text = modSettings.ShowSettingFromFIle("DifferentialPrinter/Others")
-  cmbprintother.Text = modSettings.ShowSettingFromFIle("DifferentialPrintMode/Others")
 
 End
