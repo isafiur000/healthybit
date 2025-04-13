@@ -265,7 +265,7 @@ Public Sub btnshow2_Click()
       Next
 
       If xGo > 0 Then
-        resx = modDatabase.$myConn.Exec("select fldmode,fldbillingmode,fldacledger,fldbilltype,fldreference,fldlimit from tbldiscount where fldtype=&1", $sPackage)
+        resx = modDatabase.$myConn.Exec("select fldmode,fldbillingmode,fldacledger,fldbilltype,fldreference,fldlimit,fldlockstate from tbldiscount where fldtype=&1", $sPackage)
         If resx.Available Then
           xqty = modNonMedical.GetPatientItemAllSalesPackage($encid, cmbitem.Text, $sPackage)
           If Not xqty Then
