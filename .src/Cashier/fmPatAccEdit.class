@@ -269,6 +269,8 @@ Public Sub btnapi_Click()
     Else If xrefer = "Accident SSF" Then
       xmsg = modSSF.CheckSSFValues(Trim(txtencid.Text), "Accident SSF")
     Else If xrefer = "Critical SSF" Then
+    Else If xrefer = "MedExtra SSF" Then
+      xmsg = modSSF.CheckSSFValues(Trim(txtencid.Text), "MedExtra SSF")
     Else If xrefer = "Medical SSF" Then
       xmsg = modSSF.CheckSSFValues(Trim(txtencid.Text), "Medical SSF")
     Endif

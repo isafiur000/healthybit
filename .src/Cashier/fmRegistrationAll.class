@@ -14,6 +14,7 @@ Private $SearchBox As String
 Private $ValidExpiry As Date
 Private $CredAmount As Float
 Private $DiscAmount As Float
+Private $APISelect As String
 
 Public Sub Form_Open()
 
@@ -683,11 +684,22 @@ Public Sub btnOK_Click()
     If txtreference.Tag = "Claim Code" Then
       txtreference.Text = modClaim.GetClaimCidePatient(Trim(txtencounter.Text))
     Else If txtreference.Text = "Accident SSF" Then
-      txtreference.Text = modSSF.GetSSFClaimCodePatient(Trim(txtencounter.Text), "Accident SSF")
+      txtreference.Text = modSSF.GetSSFClaimRegistPatient(Trim(txtencounter.Text), "Accident SSF")
     Else If txtreference.Text = "Critical SSF" Then
-      txtreference.Text = modSSF.GetSSFClaimCodePatient(Trim(txtencounter.Text), "Critical SSF")
+      txtreference.Text = modSSF.GetSSFClaimRegistPatient(Trim(txtencounter.Text), "Critical SSF")
+    Else If txtreference.Text = "MedExtra SSF" Then
+      txtreference.Text = modSSF.GetSSFClaimRegistPatient(Trim(txtencounter.Text), "MedExtra SSF")
     Else If txtreference.Text = "Medical SSF" Then
-      txtreference.Text = modSSF.GetSSFClaimCodePatient(Trim(txtencounter.Text), "Medical SSF")
+      Select $APISelect
+        Case "Accident,C"
+          txtreference.Text = modSSF.GetSSFClaimRegistMedical(Trim(txtencounter.Text), "Child Accident")
+        Case "Accident,S"
+          txtreference.Text = modSSF.GetSSFClaimRegistMedical(Trim(txtencounter.Text), "Spouse Accident")
+        Case "Maternity"
+          txtreference.Text = modSSF.GetSSFClaimRegistMedical(Trim(txtencounter.Text), "Maternity Expenses")
+        Case Else
+          txtreference.Text = modSSF.GetSSFClaimRegistMedical(Trim(txtencounter.Text), "Medical Expenses")
+      End Select
     Endif
     If txtreference.Text Then
       Balloon.Info("Claim Code: " & txtreference.Text, btnOK)
@@ -981,6 +993,8 @@ Private Sub LoadDiscCreditVal()
           txtreference.Tag = "Accident SSF"
         Else If resx["fldreference"] = "Critical SSF" Then
           txtreference.Tag = "Critical SSF"
+        Else If resx["fldreference"] = "MedExtra SSF" Then
+          txtreference.Tag = "MedExtra SSF"
         Else If resx["fldreference"] = "Medical SSF" Then
           txtreference.Tag = "Medical SSF"
         Endif
@@ -2845,6 +2859,7 @@ Private Sub GetSSFDataAPI(xfile As String)
 
   Dim xallow As Boolean
   Dim xaccdt As Float
+  Dim xmedextra As Float
   Dim xmedopd As Float
   Dim xmedipd As Float
   Dim xcritPre As Float
@@ -2853,6 +2868,7 @@ Private Sub GetSSFDataAPI(xfile As String)
 
   Dim boolMed As Boolean
   Dim boolAcc As Boolean
+  Dim boolExtra As Boolean
   Dim boolCrit As Boolean
   Dim xcashper As Float
 
@@ -2861,6 +2877,7 @@ Private Sub GetSSFDataAPI(xfile As String)
 
     hCElig = New CssfAPIEligible(xfile)
     xaccdt = hCElig.GetAccidentAmt()
+    xmedextra = hCElig.GetMedExtraAmt()
     xmedopd = hCElig.GetMedicalOPDAmt()
     xmedipd = hCElig.GetMedicalIPDAmt()
     xcritPre = hCElig.GetPreDiagnoAmt()
@@ -2868,6 +2885,7 @@ Private Sub GetSSFDataAPI(xfile As String)
     xcritDisc = hCElig.GetDischargeAmt()
     boolMed = hCElig.GetMedicalEnable()
     boolAcc = hCElig.GetAccidentEnable()
+    boolExtra = hCElig.GetMedExtraEnable()
     boolCrit = hCElig.GetCriticalEnable()
     ximage = hCElig.GetPatientImage()
     If ximage Then
@@ -2926,8 +2944,14 @@ Private Sub GetSSFDataAPI(xfile As String)
       Else
         xmessage = xmessage & "<br>" & "<b> Critical Credit suspended </b>"
       Endif
+      If boolExtra = True Then
+        aButton.Add("Med Extra")
+        xmessage = xmessage & "<br>" & "<b>Medical Extra Credit:</b> " & modReportVar.GetLocaleNumberFormat(xmedextra, gb.Currency) & "<br>"
+      Else
+        xmessage = xmessage & "<br>" & "<b>Medical Extra Credit suspended </b>" & "<br>"
+      Endif
 
-      If xaccdt + xmedopd + xmedipd + xcritPre + xcritPost + xcritDisc = 0 Then
+      If xaccdt + xmedextra + xmedopd + xmedipd + xcritPre + xcritPost + xcritDisc = 0 Then
         xallow = False
         xmessage = xmessage & "<h3> No Credit in any Category </h3>"
         Message.Warning(xmessage, "OK")
@@ -2939,30 +2963,29 @@ Private Sub GetSSFDataAPI(xfile As String)
 
         xmessage = xmessage & "<h4> Select Service Format</h4>"
         xresp = MessageValue(xmessage, aButton, xpath, xfile)
-        ' If boolAcc = True And If boolMed = True Then
-        '   xresp = MessageValue(xmessage, ["Close", "Accident", "Out Patient"], xpath, xfile)
-        ' Else If boolAcc = True And If boolMed = False Then
-        '   xresp = MessageValue(xmessage, ["Close", "Accident"], xpath, xfile)
-        ' Else If boolAcc = False And If boolMed = True Then
-        '   xresp = MessageValue(xmessage, ["Close", "Out Patient"], xpath, xfile)
-        ' Else
-        '   xresp = MessageValue(xmessage, ["Close"], xpath, xfile)
-        ' Endif
+        $APISelect = xresp
+
+        Select xresp
+          Case "Accident", "Med Extra", "Out Patient", "Critical"
+            txtnamefir.Text = xname
+            txtnamelast.Text = xsurname
+            cmbsex.Text = xgender
+            txtcontact.Text = xcontact
+            txtemail.Text = xemail
+            dtdobmain.Value = xdob
+            If modBasic.$DistrictList.Exist(xdist) Then
+              cmbdistrict.Text = xdist
+            Endif
+            txtaddfir.Text = xmunic
+            txtward.Text = xward
+            modDateSub.DateToYearandMonth(dtdobmain.Value, txtyears, txtmonths, btnyear, btnmon)
+          Case Else
+            txtpatno.Text = ""
+            txtnamefir.Text = ""
+            txtnamelast.Text = ""
+        End Select
 
         If xresp = "Accident" Then
-          txtnamefir.Text = xname
-          txtnamelast.Text = xsurname
-          cmbsex.Text = xgender
-          txtcontact.Text = xcontact
-          txtemail.Text = xemail
-          dtdobmain.Value = xdob
-          If modBasic.$DistrictList.Exist(xdist) Then
-            cmbdistrict.Text = xdist
-          Endif
-          txtaddfir.Text = xmunic
-          txtward.Text = xward
-          modDateSub.DateToYearandMonth(dtdobmain.Value, txtyears, txtmonths, btnyear, btnmon)
-
           If modBasic.$SSFAccident Then
             $ValidExpiry = DateAdd(Now(), gb.Year, 1)
             If boolAcc = True And If xaccdt Then
@@ -2981,20 +3004,23 @@ Private Sub GetSSFDataAPI(xfile As String)
             Endif
           Endif
 
-        Else If xresp = "Out Patient" Then
-          txtnamefir.Text = xname
-          txtnamelast.Text = xsurname
-          cmbsex.Text = xgender
-          txtcontact.Text = xcontact
-          txtemail.Text = xemail
-          dtdobmain.Value = xdob
-          If modBasic.$DistrictList.Exist(xdist) Then
-            cmbdistrict.Text = xdist
+        Else If xresp = "Med Extra" Then
+          If modBasic.$SSFMedExtra Then
+            $ValidExpiry = DateAdd(Now(), gb.Year, 1)
+            If boolExtra = True And If xmedextra Then
+              xcashper = modNonMedical.GetCashinCreditFixPercent(modBasic.$SSFMedExtra)
+              $CredAmount = xmedextra * (100 - xcashper) / 100
+              modFillContainer.ComboInsertNotItem(cmbdisctype, modBasic.$SSFMedExtra)
+              LoadDiscCreditVal()
+              If modNonMedical.GetReservePackageParam(cmbdisctype.Text) = "Scheme" Then
+                txtpatno.ReadOnly = True
+              Endif
+            Else
+              $CredAmount = 0
+            Endif
           Endif
-          txtaddfir.Text = xmunic
-          txtward.Text = xward
-          modDateSub.DateToYearandMonth(dtdobmain.Value, txtyears, txtmonths, btnyear, btnmon)
 
+        Else If xresp = "Out Patient" Then
           If modBasic.$SSFMedical Then
             $ValidExpiry = DateAdd(Now(), gb.Year, 1)
             If boolMed = True And If xmedopd Then
@@ -3011,19 +3037,6 @@ Private Sub GetSSFDataAPI(xfile As String)
           Endif
 
         Else If xresp = "Critical" Then
-          txtnamefir.Text = xname
-          txtnamelast.Text = xsurname
-          cmbsex.Text = xgender
-          txtcontact.Text = xcontact
-          txtemail.Text = xemail
-          dtdobmain.Value = xdob
-          If modBasic.$DistrictList.Exist(xdist) Then
-            cmbdistrict.Text = xdist
-          Endif
-          txtaddfir.Text = xmunic
-          txtward.Text = xward
-          modDateSub.DateToYearandMonth(dtdobmain.Value, txtyears, txtmonths, btnyear, btnmon)
-
           If modBasic.$SSFCritical Then
             $ValidExpiry = DateAdd(Now(), gb.Year, 1)
             If boolCrit = True And If xcritPre Then
@@ -3040,12 +3053,8 @@ Private Sub GetSSFDataAPI(xfile As String)
           Endif
 
         Else
-          txtpatno.Text = ""
-          txtnamefir.Text = ""
-          txtnamelast.Text = ""
           txtbookingid.SetFocus
           $CredAmount = 0
-
         Endif
 
       Endif

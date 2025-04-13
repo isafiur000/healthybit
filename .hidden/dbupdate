@@ -1149,10 +1149,9 @@ UPDATE tbldiscount SET fldqtysurgical=0 WHERE fldqtysurgical IS NULL
 UPDATE tbldiscount SET fldqtyextra=0 WHERE fldqtyextra IS NULL
 
 ALTER TABLE tblstructexam ADD flditemoption VARCHAR( 150 ) NULL
-
 ALTER TABLE tbldepartmentbed ADD fldfreedate DATETIME NULL
-
 ALTER TABLE tblentry ADD fldmrp DOUBLE NULL
+ALTER TABLE tbldiscount ADD fldlockstate VARCHAR( 100 ) NULL
 
 
 
