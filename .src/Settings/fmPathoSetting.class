@@ -16,7 +16,6 @@ Public Sub Form_Open()
   cmbprovdiagno.List = ["Obstetrics", "Syndromes"]
   cmbfinaldiagno.List = ["Obstetrics", "Syndromes"]
   cmbobshistory.List = ["Yes", "No"]
-  cmbdefgroup.List = modBasic.$ClinDiagnoChapterGrouped
 
   SHowMiscellaneous()
   CommentSetting()
@@ -94,7 +93,6 @@ Private Sub SHowMiscellaneous()
 
   cmbprovdiagno.Text = modSettings.ShowSettingFromFIle("ClinicalList/ProvDiagnosis_Rule")
   cmbfinaldiagno.Text = modSettings.ShowSettingFromFIle("ClinicalList/FinalDiagnosis_Rule")
-  cmbdefgroup.Text = modSettings.ShowSettingFromFIle("ClinicalList/DefaultDiagnosisGroup")
 
 End
 
@@ -112,15 +110,6 @@ Public Sub btnfinaldiagno_Click()
   modSettings.SaveSettingsToFile("ClinicalList/FinalDiagnosis_Rule", cmbfinaldiagno.Text)
   modBasic.$FinalDiagnosisRule = cmbfinaldiagno.Text
   Balloon.Info(("Information updated"), btnfinaldiagno)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btndefgroup_Click()
-
-  modSettings.SaveSettingsToFile("ClinicalList/DefaultDiagnosisGroup", cmbdefgroup.Text)
-  modBasic.$DefaultDiagnoGroup = cmbdefgroup.Text
-  Balloon.Info(("Information updated"), btndefgroup)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

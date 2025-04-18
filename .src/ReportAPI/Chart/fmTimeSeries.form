@@ -1,0 +1,360 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,75,45)
+  Text = ("Time Series")
+  Resizable = False
+  { TabPanel6 TabPanel
+    MoveScaled(0,0,75,45)
+    Count = 2
+    Index = 0
+    Text = ("Pre Values")
+    { Label170 Label
+      MoveScaled(1,0.625,11,3)
+      Border = Border.Plain
+      Text = ("Data Type")
+    }
+    { cmbtimerowtype ComboBox
+      MoveScaled(13,0.625,17,3)
+    }
+    { Label171 Label
+      MoveScaled(2,37,11,3)
+      Border = Border.Plain
+      Text = ("Script")
+    }
+    { txttimeindepscript ButtonBox
+      MoveScaled(23,37,41,3)
+      Picture = Picture["icon:/small/file"]
+    }
+    { txttimeindepshell TextBox
+      MoveScaled(65,37,7,3)
+    }
+    { TabPanel7 TabPanel
+      MoveScaled(1,4,73,32)
+      Count = 2
+      Index = 0
+      Text = ("GridView Data")
+      { txttimegridrow SpinBox
+        MoveScaled(13,1,7,3)
+        ToolTip = ("Select column for independent data input from Gridview")
+      }
+      { txttimegridsqlrow TextEditor
+        MoveScaled(13,5,59,12)
+        ToolTip = ("Independent and Dependent data input from Custom SQL Query. Format:\n<field1> as col1,<field2> as col2 from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txttimegridfiroptrow SpinBox
+        MoveScaled(26,18,7,3)
+        ToolTip = ("First option for Custom SQL Query from selected column of Gridview")
+      }
+      { txttimegridsecoptrow TextBox
+        MoveScaled(13,21,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txttimegridthirdoptrow TextBox
+        MoveScaled(13,24,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label172 Label
+        MoveScaled(1,1,11,3)
+        Border = Border.Plain
+        Text = ("Column")
+      }
+      { Label173 Label
+        MoveScaled(1,18,11,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label174 Label
+        MoveScaled(1,21,11,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      { Label175 Label
+        MoveScaled(1,24,11,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      { Label177 Label
+        MoveScaled(1,5,11,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { Label178 Label
+        MoveScaled(13,18,12,3)
+        Border = Border.Plain
+        Text = ("GridView Col")
+      }
+      { chktimegridrow CheckBox
+        MoveScaled(43,1,29,3)
+        ToolTip = ("Select if data input from Gridview columns")
+        Text = ("Use Grid View Column Data")
+      }
+      Index = 1
+      Text = ("Encounter")
+      { cmbtimerow ComboBox
+        MoveScaled(10,1,58,3)
+        ToolTip = ("Independent data input based on Patient Encounter")
+      }
+      { txttimeencsqlrow TextEditor
+        MoveScaled(10,5,62,12)
+        ToolTip = ("Independent and Dependent data input from Custom SQL Query where first option is Patient Encounter. Format:\n<field1> as col1,<field2> as col2 from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txttimeencfiroptrow TextBox
+        MoveScaled(10,18,31,3)
+        ToolTip = ("First Option for Cutom SQL Query")
+      }
+      { txttimeencsecoptrow TextBox
+        MoveScaled(10,21,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txttimeencthirdoptrow TextBox
+        MoveScaled(10,24,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label179 Label
+        MoveScaled(1,1,8,3)
+        Border = Border.Plain
+        Text = ("Variable")
+      }
+      { btntimerow ToolButton
+        MoveScaled(69,1,3,3)
+        Picture = Picture["icon:/small/add"]
+      }
+      { Label180 Label
+        MoveScaled(1,5,8,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { Label181 Label
+        MoveScaled(1,18,8,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label182 Label
+        MoveScaled(1,24,8,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      { Label183 Label
+        MoveScaled(1,21,8,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      Index = 0
+    }
+    { btntimesaverow Button
+      MoveScaled(57,0.625,12,3)
+      Text = ("Save")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { pnlindep Panel
+      MoveScaled(32,0.625,23,3)
+      { Label184 Label
+        MoveScaled(0,0,7,3)
+        Border = Border.Plain
+        Text = ("Range")
+      }
+      { txttimeindeplow ValueBox
+        MoveScaled(7,0,5,3)
+      }
+      { Label185 Label
+        MoveScaled(12,0,5,3)
+        Alignment = Align.Center
+        Border = Border.Plain
+        Text = ("TO")
+      }
+      { txttimeindephigh ValueBox
+        MoveScaled(17,0,5,3)
+      }
+    }
+    { btncleartimerow Button
+      MoveScaled(70,0.625,4,3)
+      Picture = Picture["icon:/small/clear"]
+    }
+    { chktimeindeptrans CheckBox
+      MoveScaled(14,37,9,3)
+      Text = ("Trans")
+    }
+    Index = 1
+    Text = ("Post Values")
+    { Label186 Label
+      MoveScaled(1,0.625,11,3)
+      Border = Border.Plain
+      Text = ("Data Type")
+    }
+    { cmbtimecoltype ComboBox
+      MoveScaled(13,0.625,17,3)
+    }
+    { btntimesavecol Button
+      MoveScaled(57,0.625,12,3)
+      Text = ("Save")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { TabPanel8 TabPanel
+      MoveScaled(1,4,73,32)
+      Count = 2
+      Index = 0
+      Text = ("GridView Data")
+      { txttimegridcol SpinBox
+        MoveScaled(13,1,7,3)
+        ToolTip = ("Select column for dependent data input from Gridview")
+      }
+      { txttimegridsqlcol TextEditor
+        MoveScaled(13,5,59,12)
+        ToolTip = ("Independent and Dependent data input from Custom SQL Query. Format:\n<field1> as col1,<field2> as col2 from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txttimegridfiroptcol SpinBox
+        MoveScaled(26,18,7,3)
+        ToolTip = ("First option for Custom SQL Query from selected column of Gridview")
+      }
+      { txttimegridsecoptcol TextBox
+        MoveScaled(13,21,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txttimegridthirdoptcol TextBox
+        MoveScaled(13,24,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label187 Label
+        MoveScaled(1,18,11,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label188 Label
+        MoveScaled(1,21,11,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      { Label189 Label
+        MoveScaled(1,24,11,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      { Label190 Label
+        MoveScaled(1,5,11,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { Label191 Label
+        MoveScaled(13,18,12,3)
+        Border = Border.Plain
+        Text = ("GridView Col")
+      }
+      { Label192 Label
+        MoveScaled(1,1,11,3)
+        Border = Border.Plain
+        Text = ("Column")
+      }
+      { chktimegridcol CheckBox
+        MoveScaled(43,1,29,3)
+        ToolTip = ("Select if data input from Gridview columns")
+        Text = ("Use Grid View Column Data")
+      }
+      Index = 1
+      Text = ("Encounter")
+      { cmbtimecol ComboBox
+        MoveScaled(10,1,57,3)
+        ToolTip = ("Dependent data input based on Patient Encounter")
+      }
+      { txttimeencsqlcol TextEditor
+        MoveScaled(10,5,62,12)
+        ToolTip = ("Independent and Dependent data input from Custom SQL Query where first option is Patient Encounter. Format:\n<field1> as col1,<field2> as col2 from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txttimeencfiroptcol TextBox
+        MoveScaled(10,18,31,3)
+        ToolTip = ("First Option for Cutom SQL Query")
+      }
+      { txttimeencsecoptcol TextBox
+        MoveScaled(10,21,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txttimeencthirdoptcol TextBox
+        MoveScaled(10,24,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label193 Label
+        MoveScaled(1,1,8,3)
+        Border = Border.Plain
+        Text = ("Variable")
+      }
+      { btntimecol ToolButton
+        MoveScaled(68,1,3,3)
+        Picture = Picture["icon:/small/add"]
+      }
+      { Label194 Label
+        MoveScaled(1,5,8,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { Label195 Label
+        MoveScaled(1,18,8,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label196 Label
+        MoveScaled(1,24,8,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      { Label197 Label
+        MoveScaled(1,21,8,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      Index = 0
+    }
+    { Label198 Label
+      MoveScaled(2,37,11,3)
+      Border = Border.Plain
+      Text = ("Script")
+    }
+    { txttimedepscript ButtonBox
+      MoveScaled(23,37,41,3)
+      Picture = Picture["icon:/small/file"]
+    }
+    { txttimedepshell TextBox
+      MoveScaled(65,37,7,3)
+    }
+    { pnldep Panel
+      MoveScaled(32,0.625,23,3)
+      { Label199 Label
+        MoveScaled(0,0,7,3)
+        Border = Border.Plain
+        Text = ("Range")
+      }
+      { txttimedeplow ValueBox
+        MoveScaled(7,0,5,3)
+      }
+      { Label200 Label
+        MoveScaled(12,0,5,3)
+        Alignment = Align.Center
+        Border = Border.Plain
+        Text = ("TO")
+      }
+      { txttimedephigh ValueBox
+        MoveScaled(17,0,5,3)
+      }
+    }
+    { btncleartimecol Button
+      MoveScaled(70,0.625,4,3)
+      Picture = Picture["icon:/small/clear"]
+    }
+    { chktimedeptrans CheckBox
+      MoveScaled(14,37,9,3)
+      Text = ("Trans")
+    }
+    Index = 0
+  }
+}

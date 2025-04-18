@@ -105,11 +105,11 @@ Public Sub cmbbatch_Click()
   res = modDatabase.$myConn.Exec("select fldstockno,fldexpiry,fldqty,fldstatus,fldcategory,fldsellpr from tblentry where fldstockid=&1 and fldbatch=&2 and fldcomp=&3", cmbmedicine.Text, cmbbatch.Text, modBasic.$compID)                                                   ''
   If res.Available = True Then
     res.MoveFirst
-    lbldate.Value = res!fldexpiry
-    txtmax.Value = res!fldqty
-    txtstockno.Value = res!fldstockno
-    txtsellpr.Value = res!fldsellpr
-    txtcategory.Text = res!fldcategory
+    lbldate.Value = res["fldexpiry"]
+    txtmax.Value = res["fldqty"]
+    txtstockno.Value = res["fldstockno"]
+    txtsellpr.Value = res["fldsellpr"]
+    txtcategory.Text = res["fldcategory"]
   Else
     lbldate.Value = modStock.GetExpiryFromBatch(cmbmedicine.Text, cmbbatch.Text)
     txtsellpr.Value = modStock.GetAverageSellingPrice(cmbmedicine.Text)
@@ -278,9 +278,9 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   $rData.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView1, Row)
   If Column = 3 Then
-    GridView1.Data.Text = modStock.GetBatchFromStockNo($rData["fldstockno"])
+    GridView1.Data.Text = modStock.GetBatchFromStockNo($rData[$aMyFields[Column]])
   Else If Column = 4 Then
-    GridView1.Data.Text = modReportVar.GetDateTimeReport(modStock.GetExpiryFromStockNo($rData["fldstockno"]), gb.MediumDate)
+    GridView1.Data.Text = modReportVar.GetDateTimeReport(modStock.GetExpiryFromStockNo($rData[$aMyFields[Column]]), gb.MediumDate)
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]
   Endif
@@ -347,12 +347,12 @@ Public Sub mnusave_Click()
       ref = modBillLock.ReferenceString("Stock Adjustment")
       If ref Then
         For Each res
-          res1 = modDatabase.$myConn.Edit("tblentry", "fldstockno=&1 and fldcomp=&2", res!fldstockno, modBasic.$compID)
-          res1["fldqty"] = res1!fldqty - (res!fldcompqty - res!fldcurrqty)
+          res1 = modDatabase.$myConn.Edit("tblentry", "fldstockno=&1 and fldcomp=&2", res["fldstockno"], modBasic.$compID)
+          res1["fldqty"] = res1["fldqty"] - (res["fldcompqty"] - res["fldcurrqty"])
           res1["xyz"] = False
           res1.Update
 
-          res2 = modDatabase.$myConn.Edit("tbladjustment", "fldid=&1", res!fldid)
+          res2 = modDatabase.$myConn.Edit("tbladjustment", "fldid=&1", res["fldid"])
           res2["fldreference"] = ref
           res2["fldsav"] = True
           res2["xyz"] = False
@@ -395,12 +395,12 @@ Public Sub mnuall_Click()
     If res.Available = True Then
       For Each res
         res1 = modDatabase.$myConn.Create("tbladjustment")
-        res1["fldstockno"] = res!fldstockno
-        res1["fldstockid"] = res!fldstockid
-        res1["fldcategory"] = res!fldcategory
-        res1["fldnetcost"] = modStock.GetAverageCostPriceByStockNo(res!fldstockno)
-        res1["fldsellpr"] = res!fldsellpr
-        res1["fldcompqty"] = res!fldqty
+        res1["fldstockno"] = res["fldstockno"]
+        res1["fldstockid"] = res["fldstockid"]
+        res1["fldcategory"] = res["fldcategory"]
+        res1["fldnetcost"] = modStock.GetAverageCostPriceByStockNo(res["fldstockno"])
+        res1["fldsellpr"] = res["fldsellpr"]
+        res1["fldcompqty"] = res["fldqty"]
         res1["fldcurrqty"] = 0
         res1["fldreason"] = txtreason.Text
         res1["fldtime"] = Now()

@@ -294,7 +294,7 @@ Private Sub AddPurchaseEntry(StockNo As Long, ItemCategory As String, stockid As
 
   rs = modDatabase.$myConn.Exec("select fldstockid,fldbatch from tblentry where fldstockno=&1", StockNo)
   If rs.Available = True Then
-    If rs!fldstockid = stockid And If rs!fldbatch = Trim(sBatch) Then
+    If rs["fldstockid"] = stockid And If rs["fldbatch"] = Trim(sBatch) Then
       res = modDatabase.$myConn.Create("tblpurchase")
       res["fldpurtype"] = cmbtype.Text
       res["fldbillno"] = Trim(txtbillno.Text)

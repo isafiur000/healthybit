@@ -2,15 +2,13 @@
 
 Private $encid As String
 Private $sText As String
-Private $quesList As String[]
 Private $sExtra As String
 Private $sValue As String
 
-Public Sub Run(encid As String, sText As String, questionList As String[], sExtra As String) As String
+Public Sub Run(encid As String, sText As String, sExtra As String) As String
 
   $encid = encid
   $sText = sText
-  $quesList = questionList
   $sExtra = sExtra
 
   If Me.ShowModal() Then Return $sValue
@@ -24,10 +22,10 @@ Public Sub Form_Open()
   Dim xstr As String
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
-  cmbquestion.List = $quesList
   If modBasic.$CloudAIURL = "https://api.groq.com/openai/v1/chat/completions" Then
     cmblanguage.List = modCloudAI.$GroqCloudModels
   Endif
+  cmbquestion.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldquery as col from tblaiquery where fldtype=&1", modHelpVariable.$LogInCategory))
 
   xgender = modPatient.GetPatientSex($encid)
   xage = modPatient.GetPatientAgeString($encid, Now())
@@ -45,6 +43,16 @@ Public Sub Form_Open()
     TextArea1.Text = xstr
   Endif
   rbfirst.Value = True
+
+End
+
+Public Sub btnaddquery_Click()
+
+  Dim hForm As FmAddVariable1
+
+  hForm = New FmAddVariable1("fldquery", "fldtype", modHelpVariable.$LogInCategory, "tblaiquery")
+  hForm.ShowModal
+  cmbquestion.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldquery as col from tblaiquery where fldtype=&1", modHelpVariable.$LogInCategory))
 
 End
 

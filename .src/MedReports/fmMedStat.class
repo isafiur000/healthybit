@@ -998,6 +998,11 @@ Public Sub mnuregressionn_Click()
   Dim Indep4Data As Variant[]
   Dim Indep5Data As Variant[]
 
+  Dim hUniv As FmAnalyzeSett
+
+  hUniv = New FmAnalyzeSett("Regression", modGridView.GetGridViewColumns(GridView1))
+  hUniv.ShowModal
+
   Inc Application.Busy
   DepData = New Variant[]
   Indep1Data = New Variant[]
@@ -1083,6 +1088,10 @@ Public Sub mnutimeseries_Click()
   Dim yData As Variant[]
 
   Dim xRow As Integer
+  Dim hUniv As FmAnalyzeSett
+
+  hUniv = New FmAnalyzeSett("Time-Series", modGridView.GetGridViewColumns(GridView1))
+  hUniv.ShowModal
 
   Inc Application.Busy
   xData = New Variant[]

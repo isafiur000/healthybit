@@ -1025,6 +1025,11 @@ Public Sub mnuregresion_Click()
   Dim Indep5Data As Variant[]
   Dim xFldList As String[]
 
+  Dim hUniv As FmAnalyzeSett
+
+  hUniv = New FmAnalyzeSett("Regression", modGridView.GetGridViewColumns(GridView1))
+  hUniv.ShowModal
+
   xFldList = GetSQLColumns()
   Inc Application.Busy
   xFieldList = New String[]
@@ -1151,6 +1156,11 @@ Public Sub mnutimeseries_Click()
   Dim xData As Variant[]
   Dim yData As Variant[]
   Dim xFldList As String[]
+
+  Dim hUniv As FmAnalyzeSett
+
+  hUniv = New FmAnalyzeSett("Time-Series", modGridView.GetGridViewColumns(GridView1))
+  hUniv.ShowModal
 
   xFldList = GetSQLColumns()
   Inc Application.Busy

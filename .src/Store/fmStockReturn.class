@@ -120,7 +120,7 @@ Public Sub cmbbatch_Click()
     res.MoveFirst
     txtstatus.Value = res["fldstatus"]
     lbldate.Value = res["fldexpiry"]
-    ' txtmax.Value = res!fldqty
+    ' txtmax.Value = res["fldqty"]
     txtstockno.Value = res["fldstockno"]
     res1 = modDatabase.$myConn.Exec("select distinct(fldsuppname) as col from tblpurchase where fldstockno=&1 and fldreturnqty=&2", txtstockno.Value, 0)
     If res1.Available Then
@@ -327,9 +327,9 @@ Private Sub ShowTransferGrid()
     For Each fld In $rData.Fields
       modGeneralMain.GridExplicitDecoration(GridView1, $rData.Index, Column)
       If Column = 4 Then
-        GridView1[$rData.Index, Column].Text = modStock.GetBatchFromStockNo($rData["fldstockno"])
+        GridView1[$rData.Index, Column].Text = modStock.GetBatchFromStockNo($rData[fld.Name])
       Else If Column = 5 Then
-        GridView1[$rData.Index, Column].Text = modReportVar.GetDateTimeReport(modStock.GetExpiryFromStockNo($rData["fldstockno"]), gb.MediumDate)
+        GridView1[$rData.Index, Column].Text = modReportVar.GetDateTimeReport(modStock.GetExpiryFromStockNo($rData[fld.Name]), gb.MediumDate)
       Else
         GridView1[$rData.Index, Column].Text = $rData[fld.Name]
       Endif
@@ -408,20 +408,20 @@ Public Sub mnusave_Click()
       ref = modBillLock.ReferenceString("Stock Return")
       If ref Then
         For Each res
-          If res!fldqty <= modStock.TotalQTYbyStockNo(res!fldstockno) Then
+          If res["fldqty"] <= modStock.TotalQTYbyStockNo(res["fldstockno"]) Then
             'reduce stock
-            qty = 0 - res!fldqty
-            modStockSub.AddToExistEntry(res!fldstockno, qty, modBasic.$compID)
+            qty = 0 - res["fldqty"]
+            modStockSub.AddToExistEntry(res["fldstockno"], qty, modBasic.$compID)
             'reduce amt in tblpurchase
-            xqty = res!fldqty
+            xqty = res["fldqty"]
             While xqty > 0
-              res3 = modDatabase.$myConn.Edit("tblpurchase", "fldstockno=&1 and fldstockid=&2 and fldreference=&3 and fldsuppname=&4 and (fldtotalqty-fldreturnqty)>&5", res!fldstockno, res!fldstockid, res!fldreference, res!fldsuppname, 0)
-              If xqty <= (res3!fldtotalqty - res3!fldreturnqty) Then
-                res3["fldreturnqty"] = res3!fldreturnqty + xqty
+              res3 = modDatabase.$myConn.Edit("tblpurchase", "fldstockno=&1 and fldstockid=&2 and fldreference=&3 and fldsuppname=&4 and (fldtotalqty-fldreturnqty)>&5", res["fldstockno"], res["fldstockid"], res["fldreference"], res["fldsuppname"], 0)
+              If xqty <= (res3["fldtotalqty"] - res3["fldreturnqty"]) Then
+                res3["fldreturnqty"] = res3["fldreturnqty"] + xqty
                 xqty = 0
-              Else If xqty > (res3!fldtotalqty - res3!fldreturnqty) Then
-                xx = res3!fldtotalqty - res3!fldreturnqty
-                res3["fldreturnqty"] = res3!fldreturnqty + xx
+              Else If xqty > (res3["fldtotalqty"] - res3["fldreturnqty"]) Then
+                xx = res3["fldtotalqty"] - res3["fldreturnqty"]
+                res3["fldreturnqty"] = res3["fldreturnqty"] + xx
                 xqty = xqty - xx
               Endif
               res3["xyz"] = False

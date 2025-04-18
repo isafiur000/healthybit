@@ -664,6 +664,19 @@ Public Sub mnudashboard_Click()
 
 End
 
+Public Sub mnutoday_Click()
+
+  Dim xPath As String
+
+  If cmbdept.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLDate.GetIPEventsReport(modDatabase.$syConn, Now(), Now(), cmbdept.Text, cmblocation.Text, cmbvalue.Text)
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
+  Endif
+
+End
+
 Public Sub mnucurdepart_Click()
 
   Dim xPath As String
@@ -1153,9 +1166,9 @@ Public Sub btnmobilediagno_Click()
     Else
       xGroup = modPathoSub.GetDiagnoGroupForService(GridView1[GridView1.Row, 3].Text)
       If xGroup Then
-        sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup, modBasic.$ClinDiagnoChapterGrouped, xGroup)
+        sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, xGroup, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
       Else
-        sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup, modBasic.$ClinDiagnoChapterGrouped, modBasic.$DefaultDiagnoGroup)
+        sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, modBasic.$FixDiagnoGroupOPD, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
       Endif
     Endif
     If sName Then

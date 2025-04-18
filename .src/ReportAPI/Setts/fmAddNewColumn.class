@@ -45,7 +45,7 @@ Public Sub TabPanel1_Click()
 End
 
 ''======================================== Custom Columns ---------------------------------------------------------------
-Private Sub SaveCustCol(IconPanelx As IconPanel, cmbvariable As ComboBox, txtsqlx As TextEditor, txtoptx1 As TextBox, txtoptx2 As TextBox, txtoptx3 As TextBox, txttitlex As TextBox, chkarray As CheckBox, txtscript As ButtonBox, txtshell As TextBox, cmbformat As ComboBox)                                    ''
+Private Sub SaveCustCol(IconPanelx As IconPanel, cmbvariable As ComboBox, txtsqlx As TextEditor, txtoptx1 As TextBox, txtoptx2 As TextBox, txtoptx3 As TextBox, txttitlex As TextBox, chkarray As CheckBox, txtscript As ButtonBox, txtshell As TextBox, cmbformat As ComboBox, chktranslate As CheckBox)                                    ''
 
   modSettings.SaveSettingsToFile($FormName & "_" & IconPanelx[IconPanelx.Index].Text & "/" & "Title", txttitlex.Text)
   modSettings.SaveSettingsToFile($FormName & "_" & IconPanelx[IconPanelx.Index].Text & "/" & "PatVariable", cmbvariable.Text)
@@ -57,6 +57,7 @@ Private Sub SaveCustCol(IconPanelx As IconPanel, cmbvariable As ComboBox, txtsql
   modSettings.EnterCheckSetting(chkarray, $FormName & "_" & IconPanelx[IconPanelx.Index].Text & "/" & "ArrayOutput")
   modSettings.SaveSettingsToFile($FormName & "_" & IconPanelx[IconPanelx.Index].Text & "/" & "FormatScript", txtscript.Text)
   modSettings.SaveSettingsToFile($FormName & "_" & IconPanelx[IconPanelx.Index].Text & "/" & "FormatShell", txtshell.Text)
+  modSettings.EnterCheckSetting(chktranslate, $FormName & "_" & IconPanelx[IconPanelx.Index].Text & "/" & "Translate")
 
   If modCustPatient.$extColumnColl Then
     modCustPatient.$extColumnColl.Clear()
@@ -64,7 +65,7 @@ Private Sub SaveCustCol(IconPanelx As IconPanel, cmbvariable As ComboBox, txtsql
 
 End
 
-Private Sub ShowCustColumn(IconPanelx As IconPanel, cmbvariable As ComboBox, txtsqlx As TextEditor, txtoptx1 As TextBox, txtoptx2 As TextBox, txtoptx3 As TextBox, txttitlex As TextBox, chkarray As CheckBox, txtscript As ButtonBox, txtshell As TextBox, cmbformat As ComboBox)
+Private Sub ShowCustColumn(IconPanelx As IconPanel, cmbvariable As ComboBox, txtsqlx As TextEditor, txtoptx1 As TextBox, txtoptx2 As TextBox, txtoptx3 As TextBox, txttitlex As TextBox, chkarray As CheckBox, txtscript As ButtonBox, txtshell As TextBox, cmbformat As ComboBox, chktranslate As CheckBox)
 
   txttitlex.Text = modSettings.ShowSettingFromFIle($FormName & "_" & IconPanelx[IconPanelx.Index].Text & "/" & "Title")
   cmbvariable.Text = modSettings.ShowSettingFromFIle($FormName & "_" & IconPanelx[IconPanelx.Index].Text & "/" & "PatVariable")
@@ -76,12 +77,13 @@ Private Sub ShowCustColumn(IconPanelx As IconPanel, cmbvariable As ComboBox, txt
   modSettings.ShowCheckBox(chkarray, $FormName & "_" & IconPanelx[IconPanelx.Index].Text & "/" & "ArrayOutput")
   txtscript.Text = modSettings.ShowSettingFromFIle($FormName & "_" & IconPanelx[IconPanelx.Index].Text & "/" & "FormatScript")
   txtshell.Text = modSettings.ShowSettingFromFIle($FormName & "_" & IconPanelx[IconPanelx.Index].Text & "/" & "FormatShell")
+  modSettings.ShowCheckBox(chktranslate, $FormName & "_" & IconPanelx[IconPanelx.Index].Text & "/" & "Translate")
 
 End
 
 Public Sub btnsave1_Click()
 
-  SaveCustCol(TabPanel1, cmbvariable1, txtsql1, txtfiroption1, txtsecoption1, txtthirdoption1, txttitle1, chkarry1, txtscript1, txtshell1, cmbformat1)
+  SaveCustCol(TabPanel1, cmbvariable1, txtsql1, txtfiroption1, txtsecoption1, txtthirdoption1, txttitle1, chkarry1, txtscript1, txtshell1, cmbformat1, chktrans1)
   Balloon.Info(("Information saved"), btnsave1)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -89,7 +91,7 @@ End
 
 Public Sub btnsave2_Click()
 
-  SaveCustCol(TabPanel1, cmbvariable2, txtsql2, txtfiroption2, txtsecoption2, txtthirdoption2, txttitle2, chkarry2, txtscript2, txtshell2, cmbformat2)
+  SaveCustCol(TabPanel1, cmbvariable2, txtsql2, txtfiroption2, txtsecoption2, txtthirdoption2, txttitle2, chkarry2, txtscript2, txtshell2, cmbformat2, chktrans2)
   Balloon.Info(("Information saved"), btnsave2)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -97,7 +99,7 @@ End
 
 Public Sub btnsave3_Click()
 
-  SaveCustCol(TabPanel1, cmbvariable3, txtsql3, txtfiroption3, txtsecoption3, txtthirdoption3, txttitle3, chkarry3, txtscript3, txtshell3, cmbformat3)
+  SaveCustCol(TabPanel1, cmbvariable3, txtsql3, txtfiroption3, txtsecoption3, txtthirdoption3, txttitle3, chkarry3, txtscript3, txtshell3, cmbformat3, chktrans3)
   Balloon.Info(("Information saved"), btnsave3)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -105,7 +107,7 @@ End
 
 Public Sub btnsave4_Click()
 
-  SaveCustCol(TabPanel1, cmbvariable4, txtsql4, txtfiroption4, txtsecoption4, txtthirdoption4, txttitle4, chkarry4, txtscript4, txtshell4, cmbformat4)
+  SaveCustCol(TabPanel1, cmbvariable4, txtsql4, txtfiroption4, txtsecoption4, txtthirdoption4, txttitle4, chkarry4, txtscript4, txtshell4, cmbformat4, chktrans4)
   Balloon.Info(("Information saved"), btnsave4)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -113,7 +115,7 @@ End
 
 Public Sub btnsave5_Click()
 
-  SaveCustCol(TabPanel1, cmbvariable5, txtsql5, txtfiroption5, txtsecoption5, txtthirdoption5, txttitle5, chkarry5, txtscript5, txtshell5, cmbformat5)
+  SaveCustCol(TabPanel1, cmbvariable5, txtsql5, txtfiroption5, txtsecoption5, txtthirdoption5, txttitle5, chkarry5, txtscript5, txtshell5, cmbformat5, chktrans5)
   Balloon.Info(("Information saved"), btnsave5)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -121,7 +123,7 @@ End
 
 Public Sub btnsave6_Click()
 
-  SaveCustCol(TabPanel1, cmbvariable6, txtsql6, txtfiroption6, txtsecoption6, txtthirdoption6, txttitle6, chkarry6, txtscript6, txtshell6, cmbformat6)
+  SaveCustCol(TabPanel1, cmbvariable6, txtsql6, txtfiroption6, txtsecoption6, txtthirdoption6, txttitle6, chkarry6, txtscript6, txtshell6, cmbformat6, chktrans6)
   Balloon.Info(("Information saved"), btnsave6)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -129,7 +131,7 @@ End
 
 Public Sub btnsave7_Click()
 
-  SaveCustCol(TabPanel1, cmbvariable7, txtsql7, txtfiroption7, txtsecoption7, txtthirdoption7, txttitle7, chkarry7, txtscript7, txtshell7, cmbformat7)
+  SaveCustCol(TabPanel1, cmbvariable7, txtsql7, txtfiroption7, txtsecoption7, txtthirdoption7, txttitle7, chkarry7, txtscript7, txtshell7, cmbformat7, chktrans7)
   Balloon.Info(("Information saved"), btnsave7)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -137,7 +139,7 @@ End
 
 Public Sub btnsave8_Click()
 
-  SaveCustCol(TabPanel1, cmbvariable8, txtsql8, txtfiroption8, txtsecoption8, txtthirdoption8, txttitle8, chkarry8, txtscript8, txtshell8, cmbformat8)
+  SaveCustCol(TabPanel1, cmbvariable8, txtsql8, txtfiroption8, txtsecoption8, txtthirdoption8, txttitle8, chkarry8, txtscript8, txtshell8, cmbformat8, chktrans8)
   Balloon.Info(("Information saved"), btnsave8)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -145,7 +147,7 @@ End
 
 Public Sub btnsave9_Click()
 
-  SaveCustCol(TabPanel1, cmbvariable9, txtsql9, txtfiroption9, txtsecoption9, txtthirdoption9, txttitle9, chkarry9, txtscript9, txtshell9, cmbformat9)
+  SaveCustCol(TabPanel1, cmbvariable9, txtsql9, txtfiroption9, txtsecoption9, txtthirdoption9, txttitle9, chkarry9, txtscript9, txtshell9, cmbformat9, chktrans9)
   Balloon.Info(("Information saved"), btnsave9)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -153,7 +155,7 @@ End
 
 Public Sub btnsave10_Click()
 
-  SaveCustCol(TabPanel1, cmbvariable10, txtsql10, txtfiroption10, txtsecoption10, txtthirdoption10, txttitle10, chkarry10, txtscript10, txtshell10, cmbformat10)
+  SaveCustCol(TabPanel1, cmbvariable10, txtsql10, txtfiroption10, txtsecoption10, txtthirdoption10, txttitle10, chkarry10, txtscript10, txtshell10, cmbformat10, chktrans10)
   Balloon.Info(("Information saved"), btnsave10)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -162,25 +164,25 @@ End
 Private Sub ShowFilecustom(sInt As Integer)
 
   If sInt = 0 Then
-    ShowCustColumn(TabPanel1, cmbvariable1, txtsql1, txtfiroption1, txtsecoption1, txtthirdoption1, txttitle1, chkarry1, txtscript1, txtshell1, cmbformat1)
+    ShowCustColumn(TabPanel1, cmbvariable1, txtsql1, txtfiroption1, txtsecoption1, txtthirdoption1, txttitle1, chkarry1, txtscript1, txtshell1, cmbformat1, chktrans1)
   Else If sInt = 1 Then
-    ShowCustColumn(TabPanel1, cmbvariable2, txtsql2, txtfiroption2, txtsecoption2, txtthirdoption2, txttitle2, chkarry2, txtscript2, txtshell2, cmbformat2)
+    ShowCustColumn(TabPanel1, cmbvariable2, txtsql2, txtfiroption2, txtsecoption2, txtthirdoption2, txttitle2, chkarry2, txtscript2, txtshell2, cmbformat2, chktrans2)
   Else If sInt = 2 Then
-    ShowCustColumn(TabPanel1, cmbvariable3, txtsql3, txtfiroption3, txtsecoption3, txtthirdoption3, txttitle3, chkarry3, txtscript3, txtshell3, cmbformat3)
+    ShowCustColumn(TabPanel1, cmbvariable3, txtsql3, txtfiroption3, txtsecoption3, txtthirdoption3, txttitle3, chkarry3, txtscript3, txtshell3, cmbformat3, chktrans3)
   Else If sInt = 3 Then
-    ShowCustColumn(TabPanel1, cmbvariable4, txtsql4, txtfiroption4, txtsecoption4, txtthirdoption4, txttitle4, chkarry4, txtscript4, txtshell4, cmbformat4)
+    ShowCustColumn(TabPanel1, cmbvariable4, txtsql4, txtfiroption4, txtsecoption4, txtthirdoption4, txttitle4, chkarry4, txtscript4, txtshell4, cmbformat4, chktrans4)
   Else If sInt = 4 Then
-    ShowCustColumn(TabPanel1, cmbvariable5, txtsql5, txtfiroption5, txtsecoption5, txtthirdoption5, txttitle5, chkarry5, txtscript5, txtshell5, cmbformat5)
+    ShowCustColumn(TabPanel1, cmbvariable5, txtsql5, txtfiroption5, txtsecoption5, txtthirdoption5, txttitle5, chkarry5, txtscript5, txtshell5, cmbformat5, chktrans5)
   Else If sInt = 5 Then
-    ShowCustColumn(TabPanel1, cmbvariable6, txtsql6, txtfiroption6, txtsecoption6, txtthirdoption6, txttitle6, chkarry6, txtscript6, txtshell6, cmbformat6)
+    ShowCustColumn(TabPanel1, cmbvariable6, txtsql6, txtfiroption6, txtsecoption6, txtthirdoption6, txttitle6, chkarry6, txtscript6, txtshell6, cmbformat6, chktrans6)
   Else If sInt = 6 Then
-    ShowCustColumn(TabPanel1, cmbvariable7, txtsql7, txtfiroption7, txtsecoption7, txtthirdoption7, txttitle7, chkarry7, txtscript7, txtshell7, cmbformat7)
+    ShowCustColumn(TabPanel1, cmbvariable7, txtsql7, txtfiroption7, txtsecoption7, txtthirdoption7, txttitle7, chkarry7, txtscript7, txtshell7, cmbformat7, chktrans7)
   Else If sInt = 7 Then
-    ShowCustColumn(TabPanel1, cmbvariable8, txtsql8, txtfiroption8, txtsecoption8, txtthirdoption8, txttitle8, chkarry8, txtscript8, txtshell8, cmbformat8)
+    ShowCustColumn(TabPanel1, cmbvariable8, txtsql8, txtfiroption8, txtsecoption8, txtthirdoption8, txttitle8, chkarry8, txtscript8, txtshell8, cmbformat8, chktrans8)
   Else If sInt = 8 Then
-    ShowCustColumn(TabPanel1, cmbvariable9, txtsql9, txtfiroption9, txtsecoption9, txtthirdoption9, txttitle9, chkarry9, txtscript9, txtshell9, cmbformat9)
+    ShowCustColumn(TabPanel1, cmbvariable9, txtsql9, txtfiroption9, txtsecoption9, txtthirdoption9, txttitle9, chkarry9, txtscript9, txtshell9, cmbformat9, chktrans9)
   Else If sInt = 9 Then
-    ShowCustColumn(TabPanel1, cmbvariable10, txtsql10, txtfiroption10, txtsecoption10, txtthirdoption10, txttitle10, chkarry10, txtscript10, txtshell10, cmbformat10)
+    ShowCustColumn(TabPanel1, cmbvariable10, txtsql10, txtfiroption10, txtsecoption10, txtthirdoption10, txttitle10, chkarry10, txtscript10, txtshell10, cmbformat10, chktrans10)
   Endif
 
 End
@@ -245,7 +247,7 @@ Public Sub txtsql10_KeyPress()
 
 End
 
-Private Sub ClearAll(cmbvariable As ComboBox, txtsqlx As TextEditor, txtoptx1 As TextBox, txtoptx2 As TextBox, txtoptx3 As TextBox, txttitlex As TextBox, chkarray As CheckBox, txtscript As ButtonBox, txtshell As TextBox, cmbformat As ComboBox)
+Private Sub ClearAll(cmbvariable As ComboBox, txtsqlx As TextEditor, txtoptx1 As TextBox, txtoptx2 As TextBox, txtoptx3 As TextBox, txttitlex As TextBox, chkarray As CheckBox, txtscript As ButtonBox, txtshell As TextBox, cmbformat As ComboBox, chktranslate As CheckBox)
 
   cmbvariable.Text = ""
   txtsqlx.Text = ""
@@ -257,67 +259,68 @@ Private Sub ClearAll(cmbvariable As ComboBox, txtsqlx As TextEditor, txtoptx1 As
   chkarray.Value = False
   txtscript.Text = ""
   txtshell.Text = ""
+  chktranslate.Value = False
 
 End
 
 Public Sub btnclear1_Click()
 
-  ClearAll(cmbvariable1, txtsql1, txtfiroption1, txtsecoption1, txtthirdoption1, txttitle1, chkarry1, txtscript1, txtshell1, cmbformat1)
+  ClearAll(cmbvariable1, txtsql1, txtfiroption1, txtsecoption1, txtthirdoption1, txttitle1, chkarry1, txtscript1, txtshell1, cmbformat1, chktrans1)
 
 End
 
 Public Sub btnclear2_Click()
 
-  ClearAll(cmbvariable2, txtsql2, txtfiroption2, txtsecoption2, txtthirdoption2, txttitle2, chkarry2, txtscript2, txtshell2, cmbformat2)
+  ClearAll(cmbvariable2, txtsql2, txtfiroption2, txtsecoption2, txtthirdoption2, txttitle2, chkarry2, txtscript2, txtshell2, cmbformat2, chktrans2)
 
 End
 
 Public Sub btnclear3_Click()
 
-  ClearAll(cmbvariable3, txtsql3, txtfiroption3, txtsecoption3, txtthirdoption3, txttitle3, chkarry3, txtscript3, txtshell3, cmbformat3)
+  ClearAll(cmbvariable3, txtsql3, txtfiroption3, txtsecoption3, txtthirdoption3, txttitle3, chkarry3, txtscript3, txtshell3, cmbformat3, chktrans3)
 
 End
 
 Public Sub btnclear4_Click()
 
-  ClearAll(cmbvariable4, txtsql4, txtfiroption4, txtsecoption4, txtthirdoption4, txttitle4, chkarry4, txtscript4, txtshell4, cmbformat4)
+  ClearAll(cmbvariable4, txtsql4, txtfiroption4, txtsecoption4, txtthirdoption4, txttitle4, chkarry4, txtscript4, txtshell4, cmbformat4, chktrans4)
 
 End
 
 Public Sub btnclear5_Click()
 
-  ClearAll(cmbvariable5, txtsql5, txtfiroption5, txtsecoption5, txtthirdoption5, txttitle5, chkarry5, txtscript5, txtshell5, cmbformat5)
+  ClearAll(cmbvariable5, txtsql5, txtfiroption5, txtsecoption5, txtthirdoption5, txttitle5, chkarry5, txtscript5, txtshell5, cmbformat5, chktrans5)
 
 End
 
 ''
 Public Sub btnclear6_Click()
 
-  ClearAll(cmbvariable6, txtsql6, txtfiroption6, txtsecoption6, txtthirdoption6, txttitle6, chkarry6, txtscript6, txtshell6, cmbformat6)
+  ClearAll(cmbvariable6, txtsql6, txtfiroption6, txtsecoption6, txtthirdoption6, txttitle6, chkarry6, txtscript6, txtshell6, cmbformat6, chktrans6)
 
 End
 
 Public Sub btnclear7_Click()
 
-  ClearAll(cmbvariable7, txtsql7, txtfiroption7, txtsecoption7, txtthirdoption7, txttitle7, chkarry7, txtscript7, txtshell7, cmbformat7)
+  ClearAll(cmbvariable7, txtsql7, txtfiroption7, txtsecoption7, txtthirdoption7, txttitle7, chkarry7, txtscript7, txtshell7, cmbformat7, chktrans7)
 
 End
 
 Public Sub btnclear8_Click()
 
-  ClearAll(cmbvariable8, txtsql8, txtfiroption8, txtsecoption8, txtthirdoption8, txttitle8, chkarry8, txtscript8, txtshell8, cmbformat8)
+  ClearAll(cmbvariable8, txtsql8, txtfiroption8, txtsecoption8, txtthirdoption8, txttitle8, chkarry8, txtscript8, txtshell8, cmbformat8, chktrans8)
 
 End
 
 Public Sub btnclear9_Click()
 
-  ClearAll(cmbvariable9, txtsql9, txtfiroption9, txtsecoption9, txtthirdoption9, txttitle9, chkarry9, txtscript9, txtshell9, cmbformat9)
+  ClearAll(cmbvariable9, txtsql9, txtfiroption9, txtsecoption9, txtthirdoption9, txttitle9, chkarry9, txtscript9, txtshell9, cmbformat9, chktrans9)
 
 End
 
 Public Sub btnclear10_Click()
 
-  ClearAll(cmbvariable10, txtsql10, txtfiroption10, txtsecoption10, txtthirdoption10, txttitle10, chkarry10, txtscript10, txtshell10, cmbformat10)
+  ClearAll(cmbvariable10, txtsql10, txtfiroption10, txtsecoption10, txtthirdoption10, txttitle10, chkarry10, txtscript10, txtshell10, cmbformat10, chktrans10)
 
 End
 

@@ -604,7 +604,7 @@ Public Sub btnmobilediagno_Click()
     If MMain.$Ayurveda = "Yes" Then
       sName = AyurvedicDiagnosis(modAMISRep.$AyurvedicDiagnosis)
     Else
-      sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup, modBasic.$ClinDiagnoChapterGrouped, modBasic.$DefaultDiagnoGroup)
+      sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, modBasic.$FixDiagnoGroupOPD, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
     Endif
     If sName Then
       If sName[1] And If sName[0] Then
