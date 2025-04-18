@@ -119,7 +119,7 @@ Public Sub btnicd_Click()
   Dim sName As String[]
 
   If $encid Then
-    sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup, modBasic.$ClinDiagnoChapterGrouped, modBasic.$DefaultDiagnoGroup)
+    sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, modBasic.$FixDiagnoGroupOPD, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, sName[0], sName[1], sName[2])

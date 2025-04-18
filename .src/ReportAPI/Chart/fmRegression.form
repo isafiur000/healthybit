@@ -1,0 +1,984 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,76,48)
+  Text = ("Regression")
+  Resizable = False
+  { TabPanel5 TabPanel
+    MoveScaled(0,0,76,48)
+    Count = 6
+    Index = 0
+    Text = ("Dependent")
+    { Tabregdep TabPanel
+      MoveScaled(0,5,75,33)
+      Count = 2
+      Index = 0
+      Text = ("GridView Data")
+      { txtregdepgridcol SpinBox
+        MoveScaled(13,1,7,3)
+        ToolTip = ("Select column for data input from Gridview")
+      }
+      { txtregdepgridsql TextEditor
+        MoveScaled(13,5,61,13)
+        ToolTip = ("Data input from Custom SQL Query. Format:\n<field1> as col from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txtregdepgridfiroption SpinBox
+        MoveScaled(26,19,7,3)
+        ToolTip = ("First option for Custom SQL Query from selected column of Gridview")
+      }
+      { txtregdepgridsecoption TextBox
+        MoveScaled(13,22,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txtregdepgridthirdoption TextBox
+        MoveScaled(13,25,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label78 Label
+        MoveScaled(1,1,11,3)
+        Border = Border.Plain
+        Text = ("Column")
+      }
+      { Label79 Label
+        MoveScaled(1,5,11,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { Label80 Label
+        MoveScaled(1,19,11,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label81 Label
+        MoveScaled(1,22,11,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      { Label82 Label
+        MoveScaled(1,25,11,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      { Label83 Label
+        MoveScaled(13,19,12,3)
+        Border = Border.Plain
+        Text = ("GridView Col")
+      }
+      { chkregdepgrid CheckBox
+        MoveScaled(44,1,29,3)
+        ToolTip = ("Select if data input from Gridview column")
+        Text = ("Use Grid View Column Data")
+      }
+      Index = 1
+      Text = ("Encounter")
+      { cmbregdepvariable ComboBox
+        MoveScaled(13,1,58,3)
+        ToolTip = ("Data input based on Patient Encounter")
+      }
+      { txtregdepencsql TextEditor
+        MoveScaled(13,5,61,13)
+        ToolTip = ("Data input from Custom SQL Query where first option is Patient Encounter. Format:\n<field1> as col from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txtregdepencfiroption TextBox
+        MoveScaled(13,19,31,3)
+        ToolTip = ("First Option for Cutom SQL Query")
+      }
+      { txtregdepencsecoption TextBox
+        MoveScaled(13,22,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txtregdepencthirdoption TextBox
+        MoveScaled(13,25,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label84 Label
+        MoveScaled(1,1,11,3)
+        Border = Border.Plain
+        Text = ("Variable")
+      }
+      { Label85 Label
+        MoveScaled(1,5,11,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { btnaddregdep ToolButton
+        MoveScaled(71,1,3,3)
+        Picture = Picture["icon:/small/add"]
+      }
+      { Label86 Label
+        MoveScaled(1,19,11,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label87 Label
+        MoveScaled(1,22,11,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      { Label88 Label
+        MoveScaled(1,25,11,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      Index = 0
+    }
+    { txtregdepscript ButtonBox
+      MoveScaled(13,39,54,3)
+      Picture = Picture["icon:/small/file"]
+    }
+    { txtregdepshell TextBox
+      MoveScaled(68,39,7,3)
+    }
+    { btnsaveregdep Button
+      MoveScaled(55,1,15,3)
+      Text = ("Save")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label89 Label
+      MoveScaled(1,39,11,3)
+      Border = Border.Plain
+      Text = ("Script")
+    }
+    { pnlregdep Panel
+      MoveScaled(1,1,40,3.25)
+      { Label90 Label
+        MoveScaled(0,0,11,3)
+        Border = Border.Plain
+        Text = ("Range")
+      }
+      { txtregdeplower ValueBox
+        MoveScaled(12,0,7,3)
+      }
+      { Label91 Label
+        MoveScaled(21,0,5,3)
+        Alignment = Align.Center
+        Border = Border.Plain
+        Text = ("TO")
+      }
+      { txtregdepupper ValueBox
+        MoveScaled(28,0,7,3)
+      }
+    }
+    { btnclearregressdep Button
+      MoveScaled(71,1,4,3)
+      Picture = Picture["icon:/small/clear"]
+    }
+    Index = 1
+    Text = ("Var1")
+    { Tabregdep2 TabPanel
+      MoveScaled(0,5,75,33)
+      Count = 2
+      Index = 0
+      Text = ("GridView Data")
+      { txtregvargridcol1 SpinBox
+        MoveScaled(13,1,7,3)
+        ToolTip = ("Select column for data input from Gridview")
+      }
+      { txtregvargridsql1 TextEditor
+        MoveScaled(13,5,61,13)
+        ToolTip = ("Data input from Custom SQL Query. Format:\n<field1> as col from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txtregvargridfiroption1 SpinBox
+        MoveScaled(26,19,7,3)
+        ToolTip = ("First option for Custom SQL Query from selected column of Gridview")
+      }
+      { txtregvargridsecoption1 TextBox
+        MoveScaled(13,22,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txtregvargridthirdoption1 TextBox
+        MoveScaled(13,25,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label92 Label
+        MoveScaled(1,1,11,3)
+        Border = Border.Plain
+        Text = ("Column")
+      }
+      { Label93 Label
+        MoveScaled(1,5,11,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { Label94 Label
+        MoveScaled(1,19,11,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label95 Label
+        MoveScaled(1,22,11,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      { Label96 Label
+        MoveScaled(1,25,11,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      { Label97 Label
+        MoveScaled(13,19,12,3)
+        Border = Border.Plain
+        Text = ("GridView Col")
+      }
+      { chkregvargrid1 CheckBox
+        MoveScaled(44,1,29,3)
+        ToolTip = ("Select if data input from Gridview column")
+        Text = ("Use Grid View Column Data")
+      }
+      Index = 1
+      Text = ("Encounter")
+      { cmbregvarvariable1 ComboBox
+        MoveScaled(13,1,58,3)
+        ToolTip = ("Data input based on Patient Encounter")
+      }
+      { txtregvarencsql1 TextEditor
+        MoveScaled(13,5,61,13)
+        ToolTip = ("Data input from Custom SQL Query where first option is Patient Encounter. Format:\n<field1> as col from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txtregvarencfiroption1 TextBox
+        MoveScaled(13,19,31,3)
+        ToolTip = ("First Option for Cutom SQL Query")
+      }
+      { txtregvarencsecoption1 TextBox
+        MoveScaled(13,22,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txtregvarencthirdoption1 TextBox
+        MoveScaled(13,25,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label98 Label
+        MoveScaled(1,1,11,3)
+        Border = Border.Plain
+        Text = ("Variable")
+      }
+      { Label99 Label
+        MoveScaled(1,5,11,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { btnaddregvar1 ToolButton
+        MoveScaled(71,1,3,3)
+        Picture = Picture["icon:/small/add"]
+      }
+      { Label100 Label
+        MoveScaled(1,19,11,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label101 Label
+        MoveScaled(1,22,11,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      { Label102 Label
+        MoveScaled(1,25,11,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      Index = 0
+    }
+    { txtregvarscript1 ButtonBox
+      MoveScaled(13,39,54,3)
+      Picture = Picture["icon:/small/file"]
+    }
+    { txtregvarshell1 TextBox
+      MoveScaled(68,39,7,3)
+    }
+    { btnsaveregvar1 Button
+      MoveScaled(55,1,15,3)
+      Text = ("Save")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label103 Label
+      MoveScaled(1,39,11,3)
+      Border = Border.Plain
+      Text = ("Script")
+    }
+    { pnlregdep2 Panel
+      MoveScaled(1,1,40,3.25)
+      { Label104 Label
+        MoveScaled(0,0,11,3)
+        Border = Border.Plain
+        Text = ("Range")
+      }
+      { txtregvarlower1 ValueBox
+        MoveScaled(12,0,7,3)
+      }
+      { Label105 Label
+        MoveScaled(21,0,5,3)
+        Alignment = Align.Center
+        Border = Border.Plain
+        Text = ("TO")
+      }
+      { txtregvarupper1 ValueBox
+        MoveScaled(28,0,7,3)
+      }
+    }
+    { btnclearregresvar1 Button
+      MoveScaled(71,1,4,3)
+      Picture = Picture["icon:/small/clear"]
+    }
+    Index = 2
+    Text = ("Var2")
+    { Tabregdep3 TabPanel
+      MoveScaled(0,5,75,33)
+      Count = 2
+      Index = 0
+      Text = ("GridView Data")
+      { txtregvargridcol2 SpinBox
+        MoveScaled(13,1,7,3)
+        ToolTip = ("Select column for data input from Gridview")
+      }
+      { txtregvargridsql2 TextEditor
+        MoveScaled(13,5,61,13)
+        ToolTip = ("Data input from Custom SQL Query. Format:\n<field1> as col from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txtregvargridfiroption2 SpinBox
+        MoveScaled(26,19,7,3)
+        ToolTip = ("First option for Custom SQL Query from selected column of Gridview")
+      }
+      { txtregvargridsecoption2 TextBox
+        MoveScaled(13,22,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txtregvargridthirdoption2 TextBox
+        MoveScaled(13,25,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label106 Label
+        MoveScaled(1,1,11,3)
+        Border = Border.Plain
+        Text = ("Column")
+      }
+      { Label107 Label
+        MoveScaled(1,5,11,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { Label108 Label
+        MoveScaled(1,19,11,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label109 Label
+        MoveScaled(1,22,11,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      { Label110 Label
+        MoveScaled(1,25,11,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      { Label111 Label
+        MoveScaled(13,19,12,3)
+        Border = Border.Plain
+        Text = ("GridView Col")
+      }
+      { chkregvargrid2 CheckBox
+        MoveScaled(44,1,29,3)
+        ToolTip = ("Select if data input from Gridview column")
+        Text = ("Use Grid View Column Data")
+      }
+      Index = 1
+      Text = ("Encounter")
+      { cmbregvarvariable2 ComboBox
+        MoveScaled(13,1,58,3)
+        ToolTip = ("Data input based on Patient Encounter")
+      }
+      { txtregvarencsql2 TextEditor
+        MoveScaled(13,5,61,13)
+        ToolTip = ("Data input from Custom SQL Query where first option is Patient Encounter. Format:\n<field1> as col from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txtregvarencfiroption2 TextBox
+        MoveScaled(13,19,31,3)
+        ToolTip = ("First Option for Cutom SQL Query")
+      }
+      { txtregvarencsecoption2 TextBox
+        MoveScaled(13,22,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txtregvarencthirdoption2 TextBox
+        MoveScaled(13,25,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label112 Label
+        MoveScaled(1,1,11,3)
+        Border = Border.Plain
+        Text = ("Variable")
+      }
+      { Label113 Label
+        MoveScaled(1,5,11,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { btnaddregvar2 ToolButton
+        MoveScaled(71,1,3,3)
+        Picture = Picture["icon:/small/add"]
+      }
+      { Label114 Label
+        MoveScaled(1,19,11,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label115 Label
+        MoveScaled(1,22,11,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      { Label116 Label
+        MoveScaled(1,25,11,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      Index = 0
+    }
+    { txtregvarscript2 ButtonBox
+      MoveScaled(13,39,54,3)
+      Picture = Picture["icon:/small/file"]
+    }
+    { txtregvarshell2 TextBox
+      MoveScaled(68,39,7,3)
+    }
+    { btnsaveregvar2 Button
+      MoveScaled(55,1,15,3)
+      Text = ("Save")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label117 Label
+      MoveScaled(1,39,11,3)
+      Border = Border.Plain
+      Text = ("Script")
+    }
+    { pnlregdep3 Panel
+      MoveScaled(1,1,40,3.25)
+      { Label118 Label
+        MoveScaled(0,0,11,3)
+        Border = Border.Plain
+        Text = ("Range")
+      }
+      { txtregvarlower2 ValueBox
+        MoveScaled(12,0,7,3)
+      }
+      { Label119 Label
+        MoveScaled(21,0,5,3)
+        Alignment = Align.Center
+        Border = Border.Plain
+        Text = ("TO")
+      }
+      { txtregvarupper2 ValueBox
+        MoveScaled(28,0,7,3)
+      }
+    }
+    { btnclearregresvar2 Button
+      MoveScaled(71,1,4,3)
+      Picture = Picture["icon:/small/clear"]
+    }
+    Index = 3
+    Text = ("Var3")
+    { Tabregdep4 TabPanel
+      MoveScaled(0,5,75,33)
+      Count = 2
+      Index = 0
+      Text = ("GridView Data")
+      { txtregvargridcol3 SpinBox
+        MoveScaled(13,1,7,3)
+        ToolTip = ("Select column for data input from Gridview")
+      }
+      { txtregvargridsql3 TextEditor
+        MoveScaled(13,5,61,13)
+        ToolTip = ("Data input from Custom SQL Query. Format:\n<field1> as col from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txtregvargridfiroption3 SpinBox
+        MoveScaled(26,19,7,3)
+        ToolTip = ("First option for Custom SQL Query from selected column of Gridview")
+      }
+      { txtregvargridsecoption3 TextBox
+        MoveScaled(13,22,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txtregvargridthirdoption3 TextBox
+        MoveScaled(13,25,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label120 Label
+        MoveScaled(1,1,11,3)
+        Border = Border.Plain
+        Text = ("Column")
+      }
+      { Label121 Label
+        MoveScaled(1,5,11,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { Label122 Label
+        MoveScaled(1,19,11,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label123 Label
+        MoveScaled(1,22,11,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      { Label124 Label
+        MoveScaled(1,25,11,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      { Label125 Label
+        MoveScaled(13,19,12,3)
+        Border = Border.Plain
+        Text = ("GridView Col")
+      }
+      { chkregvargrid3 CheckBox
+        MoveScaled(44,1,29,3)
+        ToolTip = ("Select if data input from Gridview column")
+        Text = ("Use Grid View Column Data")
+      }
+      Index = 1
+      Text = ("Encounter")
+      { cmbregvarvariable3 ComboBox
+        MoveScaled(13,1,58,3)
+        ToolTip = ("Data input based on Patient Encounter")
+      }
+      { txtregvarencsql3 TextEditor
+        MoveScaled(13,5,61,13)
+        ToolTip = ("Data input from Custom SQL Query where first option is Patient Encounter. Format:\n<field1> as col from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txtregvarencfiroption3 TextBox
+        MoveScaled(13,19,31,3)
+        ToolTip = ("First Option for Cutom SQL Query")
+      }
+      { txtregvarencsecoption3 TextBox
+        MoveScaled(13,22,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txtregvarencthirdoption3 TextBox
+        MoveScaled(13,25,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label126 Label
+        MoveScaled(1,1,11,3)
+        Border = Border.Plain
+        Text = ("Variable")
+      }
+      { Label127 Label
+        MoveScaled(1,5,11,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { btnaddregvar3 ToolButton
+        MoveScaled(71,1,3,3)
+        Picture = Picture["icon:/small/add"]
+      }
+      { Label128 Label
+        MoveScaled(1,19,11,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label129 Label
+        MoveScaled(1,22,11,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      { Label130 Label
+        MoveScaled(1,25,11,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      Index = 0
+    }
+    { txtregvarscript3 ButtonBox
+      MoveScaled(13,39,54,3)
+      Picture = Picture["icon:/small/file"]
+    }
+    { txtregvarshell3 TextBox
+      MoveScaled(68,39,7,3)
+    }
+    { btnsaveregvar3 Button
+      MoveScaled(55,1,15,3)
+      Text = ("Save")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label131 Label
+      MoveScaled(1,39,11,3)
+      Border = Border.Plain
+      Text = ("Script")
+    }
+    { pnlregdep4 Panel
+      MoveScaled(1,1,40,3.25)
+      { Label132 Label
+        MoveScaled(0,0,11,3)
+        Border = Border.Plain
+        Text = ("Range")
+      }
+      { txtregvarlower3 ValueBox
+        MoveScaled(12,0,7,3)
+      }
+      { Label133 Label
+        MoveScaled(21,0,5,3)
+        Alignment = Align.Center
+        Border = Border.Plain
+        Text = ("TO")
+      }
+      { txtregvarupper3 ValueBox
+        MoveScaled(28,0,7,3)
+      }
+    }
+    { btnclearregresvar3 Button
+      MoveScaled(71,1,4,3)
+      Picture = Picture["icon:/small/clear"]
+    }
+    Index = 4
+    Text = ("Var4")
+    { Tabregdep5 TabPanel
+      MoveScaled(0,5,75,33)
+      Count = 2
+      Index = 0
+      Text = ("GridView Data")
+      { txtregvargridcol4 SpinBox
+        MoveScaled(13,1,7,3)
+        ToolTip = ("Select column for data input from Gridview")
+      }
+      { txtregvargridsql4 TextEditor
+        MoveScaled(13,5,61,13)
+        ToolTip = ("Data input from Custom SQL Query. Format:\n<field1> as col from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txtregvargridfiroption4 SpinBox
+        MoveScaled(26,19,7,3)
+        ToolTip = ("First option for Custom SQL Query from selected column of Gridview")
+      }
+      { txtregvargridsecoption4 TextBox
+        MoveScaled(13,22,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txtregvargridthirdoption4 TextBox
+        MoveScaled(13,25,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label134 Label
+        MoveScaled(1,1,11,3)
+        Border = Border.Plain
+        Text = ("Column")
+      }
+      { Label135 Label
+        MoveScaled(1,5,11,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { Label136 Label
+        MoveScaled(1,19,11,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label137 Label
+        MoveScaled(1,22,11,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      { Label138 Label
+        MoveScaled(1,25,11,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      { Label139 Label
+        MoveScaled(13,19,12,3)
+        Border = Border.Plain
+        Text = ("GridView Col")
+      }
+      { chkregvargrid4 CheckBox
+        MoveScaled(44,1,29,3)
+        ToolTip = ("Select if data input from Gridview column")
+        Text = ("Use Grid View Column Data")
+      }
+      Index = 1
+      Text = ("Encounter")
+      { cmbregvarvariable4 ComboBox
+        MoveScaled(13,1,58,3)
+        ToolTip = ("Data input based on Patient Encounter")
+      }
+      { txtregvarencsql4 TextEditor
+        MoveScaled(13,5,61,13)
+        ToolTip = ("Data input from Custom SQL Query where first option is Patient Encounter. Format:\n<field1> as col from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txtregvarencfiroption4 TextBox
+        MoveScaled(13,19,31,3)
+        ToolTip = ("First Option for Cutom SQL Query")
+      }
+      { txtregvarencsecoption4 TextBox
+        MoveScaled(13,22,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txtregvarencthirdoption4 TextBox
+        MoveScaled(13,25,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label140 Label
+        MoveScaled(1,1,11,3)
+        Border = Border.Plain
+        Text = ("Variable")
+      }
+      { Label141 Label
+        MoveScaled(1,5,11,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { btnaddregvar4 ToolButton
+        MoveScaled(71,1,3,3)
+        Picture = Picture["icon:/small/add"]
+      }
+      { Label142 Label
+        MoveScaled(1,19,11,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label143 Label
+        MoveScaled(1,22,11,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      { Label144 Label
+        MoveScaled(1,25,11,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      Index = 0
+    }
+    { txtregvarscript4 ButtonBox
+      MoveScaled(13,39,54,3)
+      Picture = Picture["icon:/small/file"]
+    }
+    { txtregvarshell4 TextBox
+      MoveScaled(68,39,7,3)
+    }
+    { btnsaveregvar4 Button
+      MoveScaled(55,1,15,3)
+      Text = ("Save")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label145 Label
+      MoveScaled(1,39,11,3)
+      Border = Border.Plain
+      Text = ("Script")
+    }
+    { pnlregdep5 Panel
+      MoveScaled(1,1,40,3.25)
+      { Label146 Label
+        MoveScaled(0,0,11,3)
+        Border = Border.Plain
+        Text = ("Range")
+      }
+      { txtregvarlower4 ValueBox
+        MoveScaled(12,0,7,3)
+      }
+      { Label147 Label
+        MoveScaled(21,0,5,3)
+        Alignment = Align.Center
+        Border = Border.Plain
+        Text = ("TO")
+      }
+      { txtregvarupper4 ValueBox
+        MoveScaled(28,0,7,3)
+      }
+    }
+    { btnclearregresvar4 Button
+      MoveScaled(71,1,4,3)
+      Picture = Picture["icon:/small/clear"]
+    }
+    Index = 5
+    Text = ("Var5")
+    { Tabregdep6 TabPanel
+      MoveScaled(0,5,75,33)
+      Count = 2
+      Index = 0
+      Text = ("GridView Data")
+      { txtregvargridcol5 SpinBox
+        MoveScaled(13,1,7,3)
+        ToolTip = ("Select column for data input from Gridview")
+      }
+      { txtregvargridsql5 TextEditor
+        MoveScaled(13,5,61,13)
+        ToolTip = ("Data input from Custom SQL Query. Format:\n<field1> as col from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txtregvargridfiroption5 SpinBox
+        MoveScaled(26,19,7,3)
+        ToolTip = ("First option for Custom SQL Query from selected column of Gridview")
+      }
+      { txtregvargridsecoption5 TextBox
+        MoveScaled(13,22,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txtregvargridthirdoption5 TextBox
+        MoveScaled(13,25,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label148 Label
+        MoveScaled(1,1,11,3)
+        Border = Border.Plain
+        Text = ("Column")
+      }
+      { Label149 Label
+        MoveScaled(1,5,11,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { Label150 Label
+        MoveScaled(1,19,11,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label151 Label
+        MoveScaled(1,22,11,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      { Label152 Label
+        MoveScaled(1,25,11,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      { Label153 Label
+        MoveScaled(13,19,12,3)
+        Border = Border.Plain
+        Text = ("GridView Col")
+      }
+      { chkregvargrid5 CheckBox
+        MoveScaled(44,1,29,3)
+        ToolTip = ("Select if data input from Gridview column")
+        Text = ("Use Grid View Column Data")
+      }
+      Index = 1
+      Text = ("Encounter")
+      { cmbregvarvariable5 ComboBox
+        MoveScaled(13,1,58,3)
+        ToolTip = ("Data input based on Patient Encounter")
+      }
+      { txtregvarencsql5 TextEditor
+        MoveScaled(13,5,61,13)
+        ToolTip = ("Data input from Custom SQL Query where first option is Patient Encounter. Format:\n<field1> as col from <table> where <option1>=&1")
+        ScrollBar = Scroll.Vertical
+        Highlight = "SQL"
+        Wrap = True
+      }
+      { txtregvarencfiroption5 TextBox
+        MoveScaled(13,19,31,3)
+        ToolTip = ("First Option for Cutom SQL Query")
+      }
+      { txtregvarencsecoption5 TextBox
+        MoveScaled(13,22,31,3)
+        ToolTip = ("Second Option for Cutom SQL Query")
+      }
+      { txtregvarencthirdoption5 TextBox
+        MoveScaled(13,25,31,3)
+        ToolTip = ("Third Option for Cutom SQL Query")
+      }
+      { Label154 Label
+        MoveScaled(1,1,11,3)
+        Border = Border.Plain
+        Text = ("Variable")
+      }
+      { Label155 Label
+        MoveScaled(1,5,11,3)
+        Border = Border.Plain
+        Text = ("SELECT")
+      }
+      { btnaddregvar5 ToolButton
+        MoveScaled(71,1,3,3)
+        Picture = Picture["icon:/small/add"]
+      }
+      { Label156 Label
+        MoveScaled(1,19,11,3)
+        Border = Border.Plain
+        Text = ("Option1")
+      }
+      { Label157 Label
+        MoveScaled(1,22,11,3)
+        Border = Border.Plain
+        Text = ("Option2")
+      }
+      { Label158 Label
+        MoveScaled(1,25,11,3)
+        Border = Border.Plain
+        Text = ("Option3")
+      }
+      Index = 0
+    }
+    { txtregvarscript5 ButtonBox
+      MoveScaled(13,39,54,3)
+      Picture = Picture["icon:/small/file"]
+    }
+    { txtregvarshell5 TextBox
+      MoveScaled(68,39,7,3)
+    }
+    { btnsaveregvar5 Button
+      MoveScaled(55,1,15,3)
+      Text = ("Save")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label159 Label
+      MoveScaled(1,39,11,3)
+      Border = Border.Plain
+      Text = ("Script")
+    }
+    { pnlregdep6 Panel
+      MoveScaled(1,1,40,3.25)
+      { Label160 Label
+        MoveScaled(0,0,11,3)
+        Border = Border.Plain
+        Text = ("Range")
+      }
+      { txtregvarlower5 ValueBox
+        MoveScaled(12,0,7,3)
+      }
+      { Label161 Label
+        MoveScaled(21,0,5,3)
+        Alignment = Align.Center
+        Border = Border.Plain
+        Text = ("TO")
+      }
+      { txtregvarupper5 ValueBox
+        MoveScaled(28,0,7,3)
+      }
+    }
+    { btnclearregresvar5 Button
+      MoveScaled(71,1,4,3)
+      Picture = Picture["icon:/small/clear"]
+    }
+    Index = 0
+  }
+}

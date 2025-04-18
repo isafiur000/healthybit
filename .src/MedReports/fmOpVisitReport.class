@@ -626,6 +626,11 @@ Public Sub mnuregression_Click()
   Dim Indep5Data As Variant[]
   Dim xFldList As String[]
 
+  Dim hUniv As FmAnalyzeSett
+
+  hUniv = New FmAnalyzeSett("Regression", modGridView.GetGridViewColumns(GridView1))
+  hUniv.ShowModal
+
   xFldList = GetSQLColumns()
   Inc Application.Busy
   xFieldList = New String[]

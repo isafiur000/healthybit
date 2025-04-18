@@ -306,16 +306,16 @@ Private Sub SaveEntryComp()
     res1 = modDatabase.$myConn.Exec("select fldstockno,fldqty from tblentry where fldstockid=&1 and fldbatch=&2 and fldcomp=&3", cmbcommedicine.Text, cmbcombatch.Text, modBasic.$compID)
     If res1.Available Then
       res1.MoveFirst
-      If txtcomqty.Value <= res1!fldqty Then
+      If txtcomqty.Value <= res1["fldqty"] Then
 
         Inc Application.Busy
         res = modDatabase.$myConn.Create("tblbulksale")
         res["fldtarget"] = cmbcomtaget.Text
         res["fldbulktime"] = dtconsume.Value
         res["fldcategory"] = modNonMedical.GetBillItemCategoryFromCombo(cmbcomroute.Text)
-        res["fldstockno"] = res1!fldstockno
+        res["fldstockno"] = res1["fldstockno"]
         res["fldstockid"] = cmbcommedicine.Text
-        res["fldnetcost"] = modStock.GetAverageCostPriceByStockNo(res1!fldstockno)
+        res["fldnetcost"] = modStock.GetAverageCostPriceByStockNo(res1["fldstockno"])
         res["fldqtydisp"] = txtcomqty.Value
         res["fldqtyret"] = 0
         res["flduserid"] = modBasic.$lbluser
@@ -420,9 +420,9 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   $rData2.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView1, Row)
   If Column = 4 Then
-    GridView1.Data.Text = modStock.GetBatchFromStockNo($rData2["fldstockno"])
+    GridView1.Data.Text = modStock.GetBatchFromStockNo($rData2[$aMyFields[Column]])
   Else If Column = 5 Then
-    xdate = modStock.GetExpiryFromStockNo($rData2["fldstockno"])
+    xdate = modStock.GetExpiryFromStockNo($rData2[$aMyFields[Column]])
     If xdate <= Now() Then
       GridView1.Data.Foreground = modBasic.$HighLightColor
     Endif

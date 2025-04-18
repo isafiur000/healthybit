@@ -162,6 +162,7 @@ Private Sub DIsplayTextForm()
 
   Dim i As Integer
   Dim asx As String[]
+  Dim aCoLst As String[]
 
   Frame1.Height = ($xData.Count * (25 * Slider1.Value) + 100) * AppFactor
   Frame1.Width = 875 * AppFactor
@@ -234,6 +235,7 @@ Private Sub DIsplayTextForm()
           .Mode = Select.Single
           If $xData[i][3] = "Dual Columns" Or If $xData[i][3] = "Triple Columns" Then
             .Header = GridView.Horizontal
+            aCoLst = GetCustColHeadings(i)
           Endif
           .ScrollBar = Scroll.Both
           .AutoResize = True
@@ -247,8 +249,8 @@ Private Sub DIsplayTextForm()
             .Columns[2].Width = 100 * modBasic.$AppWidthRatio
             .Columns[3].Width = 100 * modBasic.$AppWidthRatio
             .Columns[1].Text = "Parameter"
-            .Columns[2].Text = "LEFT"
-            .Columns[3].Text = "RIGHT"
+            .Columns[2].Text = aCoLst[0]
+            .Columns[3].Text = aCoLst[1]
           Else If $xData[i][3] = "Triple Columns" Then
             .Columns[0].Width = 1
             .Columns[1].Expand = True '150 * modBasic.$AppWidthRatio
@@ -256,9 +258,9 @@ Private Sub DIsplayTextForm()
             .Columns[3].Width = 100 * modBasic.$AppWidthRatio
             .Columns[4].Width = 100 * modBasic.$AppWidthRatio
             .Columns[1].Text = "Parameter"
-            .Columns[2].Text = "COLUMN-I"
-            .Columns[3].Text = "COLUMN-II"
-            .Columns[4].Text = "COLUMN-III"
+            .Columns[2].Text = aCoLst[0]
+            .Columns[3].Text = aCoLst[1]
+            .Columns[4].Text = aCoLst[2]
           Else If $xData[i][3] = "WHO Sensitivity" Then
             .Columns[0].Width = 1
             .Columns[1].Expand = True '150 * modBasic.$AppWidthRatio
@@ -2324,5 +2326,41 @@ Public Sub btnreport_Click()
     cRadioForm = New CRadioReport($id, cmbprintform.Text, chkprinted.Value)
     cRadioForm.GetReportComplete()
   Endif
+
+End
+
+Private Function GetCustColHeadings(i As Integer) As String[]
+
+  Dim sDefault As String
+  Dim acolx As String[]
+  Dim aCoLst As String[]
+
+  sDefault = modAllExam.GetESubxamDefaultValue($frm, lblitem.Text, $xData[i][0])
+  If $xData[i][3] = "Dual Columns" Then
+    If sDefault Then
+      acolx = Split(sDefault, ":")
+      If acolx[0] = "Columns" Then
+        aCoLst = Split(acolx[1], ";")
+      Else
+        aCoLst = ["LEFT", "RIGHT"]
+      Endif
+    Else
+      aCoLst = ["LEFT", "RIGHT"]
+    Endif
+
+  Else If $xData[i][3] = "Triple Columns" Then
+    If sDefault Then
+      acolx = Split(sDefault, ":")
+      If acolx[0] = "Columns" Then
+        aCoLst = Split(acolx[1], ";")
+      Else
+        aCoLst = ["COLUMN-I", "COLUMN-II", "COLUMN-III"]
+      Endif
+    Else
+      aCoLst = ["COLUMN-I", "COLUMN-II", "COLUMN-III"]
+    Endif
+  Endif
+
+  Return aCoLst
 
 End

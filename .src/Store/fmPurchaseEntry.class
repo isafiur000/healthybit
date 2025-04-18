@@ -466,19 +466,24 @@ End
 
 Public Sub txtbatch_LostFocus()
 
-  Dim xexp As Date
+  Dim res As Result
 
   txtbatch.Text = UCase(Trim(txtbatch.Text))
   If cmbmedicine.Text And If txtbatch.Text Then
-    xexp = modStock.GetExpiryFromBatch(cmbmedicine.Text, txtbatch.Text)
-    If xexp Then
-      dtexpiry.Value = xexp
-      dtexpiry.Enabled = False
-      dtnepexpiry.Enabled = False
-      txttotalcost.SetFocus
-    Else
-      dtexpiry.SetFocus
+    res = modDatabase.$myConn.Exec("select fldexpiry,fldmrp from tblentry where fldstockid=&1 and fldbatch=&2", cmbmedicine.Text, txtbatch.Text)
+    If res.Available Then
+      res.MoveFirst
+      If res["fldexpiry"] Then
+        dtexpiry.Value = res["fldexpiry"]
+        txtmrp.Value = Round(res["fldmrp"], -2)
+        dtexpiry.Enabled = False
+        dtnepexpiry.Enabled = False
+        txttotalcost.SetFocus
+      Else
+        dtexpiry.SetFocus
+      Endif
     Endif
+
   Else
     dtexpiry.SetFocus
   Endif
@@ -634,17 +639,17 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   $rData.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView1, Row)
   If Column = 2 Then
-    GridView1.Data.Text = modReportVar.GetDateTimeReport($rData["fldpurdate"], gb.MediumDate)
+    GridView1.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.MediumDate)
   Else If Column = 8 Then
-    GridView1.Data.Text = modStock.GetBatchFromStockNo($rData["fldstockno"])
+    GridView1.Data.Text = modStock.GetBatchFromStockNo($rData[$aMyFields[Column]])
   Else If Column = 9 Then
-    xdate = modStock.GetExpiryFromStockNo($rData["fldstockno"])
+    xdate = modStock.GetExpiryFromStockNo($rData[$aMyFields[Column]])
     If xdate <= Now() Then
       GridView1.Data.Foreground = modBasic.$HighLightColor
     Endif
     GridView1.Data.Text = modReportVar.GetDateTimeReport(xdate, gb.MediumDate)
   Else If Column = 23 Then
-    GridView1.Data.Text = modReportVar.GetDateTimeReport($rData["fldtime"], gb.GeneralDate)
+    GridView1.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.GeneralDate)
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]
   Endif

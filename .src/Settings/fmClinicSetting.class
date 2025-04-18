@@ -72,6 +72,8 @@ Public Sub Form_Open()
   cmbsyncbilling.List = ["Yes", "No"]
   cmbsyncdemograp.List = ["Yes", "No"]
 
+  cmbdiagnoOPDdef.List = modBasic.$ClinDiagnoChapterGrouped
+  cmbdiagnoERdef.List = modBasic.$ClinDiagnoChapterGrouped
   cmbdischdiagno.List = ["Yes", "No"]
   cmbopdoutdiagno.List = ["Provisional", "Final"]
 
@@ -456,8 +458,27 @@ End
 ''-------------------------- Outcome -----------------------
 Private Sub ShowOutcomeSett()
 
+  cmbdiagnoOPDdef.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/DefaultOPDDiagnoGroup", cmbtarget.Text)
+  cmbdiagnoERdef.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/DefaultERDiagnoGroup", cmbtarget.Text)
+
   cmbdischdiagno.Text = modGlobalSetting.ShowSettingFromDBAny("IPClinic/FixDiagnosisDischarge", cmbtarget.Text)
   cmbopdoutdiagno.Text = modGlobalSetting.ShowSettingFromDBAny("IPClinic/FixDiagnosisOPDOutcome", cmbtarget.Text)
+
+End
+
+Public Sub btndiagnoOPDdef_Click()
+
+  modGlobalSetting.SaveSettingToDB("ClinicForms/DefaultOPDDiagnoGroup", cmbdiagnoOPDdef.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btndiagnoOPDdef)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btndiagnoERdef_Click()
+
+  modGlobalSetting.SaveSettingToDB("ClinicForms/DefaultERDiagnoGroup", cmbdiagnoERdef.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btndiagnoERdef)
+  Balloon.Delay = modBasic.$BalloonDelay
 
 End
 
