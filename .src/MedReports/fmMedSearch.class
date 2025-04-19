@@ -919,6 +919,7 @@ Public Sub mnucrosstab_Click()
   Dim xFldList As String[]
   Dim sOrder As String[]
   Dim hBivar As FmAnalyzeSett
+  Dim hPython As FmPythonTerminal
 
   hBivar = New FmAnalyzeSett("Bivariate", modGridView.GetGridViewColumns(GridView1))
   hBivar.ShowModal
@@ -980,12 +981,17 @@ Public Sub mnucrosstab_Click()
     $ProgressBar1.Visible = False
   Endif
 
-  If modCustPatient.$CrossOutcomeType = "Ordinal" Then
-    sOrder = ListOrder("Select Order", hFile.DistinctValues())
-  Endif
-  xx = modPSPP.GetCrossTabStatNew(hFile.GetSPSSFile(), hFile.GetGroups(), sOrder)
-  If xx Then
-    modControlSub.OpenBrowser(xx)
+  If modBasic.$DataAnalysis = "ML" Then
+    hPython = New FmPythonTerminal("Bivariate", [GridView1.Columns[Row].Text, GridView1.Columns[Column].Text], hFile.GetSPSSFile())
+    modWorkSpace.Add(hPython)
+  Else
+    If modCustPatient.$CrossOutcomeType = "Ordinal" Then
+      sOrder = ListOrder("Select Order", hFile.DistinctValues())
+    Endif
+    xx = modPSPP.GetCrossTabStatNew(hFile.GetSPSSFile(), hFile.GetGroups(), sOrder)
+    If xx Then
+      modControlSub.OpenBrowser(xx)
+    Endif
   Endif
 
 End
