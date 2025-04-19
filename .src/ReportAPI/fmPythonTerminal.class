@@ -1,0 +1,200 @@
+' Gambas class file
+
+Private $sType As String
+Private $sHead As String[]
+Private $sPath As String
+
+Private $aHead As String[]
+Private $imgPath As String
+
+Public Sub _new(sType As String, sHeads As String[], sPath As String)
+
+  $sType = sType
+  $sHead = sHeads
+  $sPath = sPath
+
+End
+
+Public Sub Form_Open()
+
+  Dim i As Integer
+
+  modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
+  Me.Icon = Picture[modGeneralMain.$strLogo]
+  TerminalView1.Shell("python3")
+
+  $aHead = $sHead.Copy()
+  For i = 0 To $aHead.Count - 1
+    $aHead[i] = "'" & $aHead[i] & "'"
+  Next
+
+  cmbdependent.List = $sHead
+  cmbmodel.List = GetModelList($sType)
+
+End
+
+Private Sub GetModelList(sType As String) As String[]
+
+  Dim xlst As String[]
+
+  xlst = New String[]
+  If sType = "Bivariate" Then
+    xlst.Add("LinearRegression")
+    xlst.Add("LogisticRegression")
+  Endif
+  Return xlst
+
+End
+
+Private Sub PressEnterKey()
+
+  TerminalView1.Input(Chr$(10))
+
+End
+
+Private Sub TerminalInput(sText As String)
+
+  TerminalView1.Input(sText)
+  PressEnterKey()
+
+End
+
+''================================= data science ===============
+Public Sub btndatainstall_Click()
+
+  Dim xList As String[]
+
+  xList = New String[]
+  xList.Add("python3-numpy")
+  xList.Add("python3-pandas")
+  xList.Add("python3-matplotlib")
+  xList.Add("python3-seaborn")
+  xList.Add("python3-scipy")
+  xList.Add("python3-sklearn")
+  modApplSub.InstallSelectedApplication(xList)
+
+End
+
+Public Sub btndatainit_Click()
+
+  TerminalInput("import numpy")
+  TerminalInput("import pandas")
+  TerminalInput("import sklearn")
+  TerminalInput("import matplotlib")
+  TerminalInput("import seaborn")
+
+  btndataload.Enabled = True
+
+End
+
+Public Sub btndataload_Click()
+
+  TerminalInput("orig_data = pandas.read_csv('" & $sPath & "', sep='\t')")
+  TerminalInput("orig_data.columns = " & "[" & $aHead.Join(", ") & "]")
+  TerminalInput("print(orig_data.info())")
+  TerminalInput("print(orig_data.head())")
+
+  Panel3.Enabled = True
+
+End
+
+Public Sub btnprocess_Click()
+
+  Dim xList As String[]
+  Dim aVal As String
+  Dim xgo As Boolean = False
+
+  If chknullrow.Value = True Then
+    TerminalInput("orig_data = orig_data.dropna()")
+    xgo = True
+  Endif
+
+  If chkordinalcode.Value = True Then
+    TerminalInput("from sklearn.preprocessing import OrdinalEncoder")
+    TerminalInput("ord_enc = OrdinalEncoder()")
+    xList = SelectListView("Variables to encode", $sHead, False)
+    If xList.Count Then
+      For Each aVal In xList
+        TerminalInput("orig_data['" & aVal & "'] = ord_enc.fit_transform(orig_data[['" & aVal & "']]).astype('int')")    ''
+      Next
+    Endif
+    xgo = True
+  Endif
+
+  If xgo = True Then
+    TerminalInput("print(orig_data.head())")
+  Endif
+  TerminalInput("orig_data.corr()")
+
+End
+
+''==================================== model training =======================
+Public Sub btnmodeltrain_Click()
+
+  Dim trainval As Float
+
+  If cmbdependent.Text Then
+    trainval = valtrain.Value / 100
+    TerminalInput("from sklearn.model_selection import train_test_split")
+    TerminalInput("Y_data = orig_data['" & cmbdependent.Text & "']")
+    TerminalInput("X_data = orig_data.drop(['" & cmbdependent.Text & "'], axis = 1)")
+    TerminalInput("X_train, X_test, Y_train, Y_test = train_test_split(X_data ,Y_data , train_size = " & trainval & ", random_state=1)")
+    TrainModel()
+
+    btnchart.Enabled = True
+    btnpredict.Enabled = True
+  Endif
+
+End
+
+Private Sub TrainModel()
+
+  If cmbmodel.Text = "LinearRegression" Then
+    TerminalInput("from sklearn.linear_model import LinearRegression")
+    TerminalInput("lr = LinearRegression()")
+    TerminalInput("lr_model = lr.fit(X_train, Y_train)")
+    TerminalInput("print('Training Score = ', lr_model.score(X_train, Y_train))")
+    TerminalInput("print('Testing Score = ', lr_model.score(X_test, Y_test))")
+  Endif
+
+End
+
+Public Sub btnchart_Click()
+
+  $imgPath = Temp() & ".png"
+  If cmbmodel.Text = "LinearRegression" Then
+    TerminalInput("matplotlib.pyplot.scatter(X_train, Y_train, color = 'red')")
+    TerminalInput("matplotlib.pyplot.plot(X_train, lr_model.predict(X_train), color = 'blue')")
+    TerminalInput("matplotlib.pyplot.title('Regression Plot')")
+    TerminalInput("matplotlib.pyplot.savefig('" & $imgPath & "')")
+  Endif
+  btnshowchart.Enabled = True
+
+End
+
+Public Sub btnshowchart_Click()
+
+  If Exist($imgPath) Then
+    Desktop.Open($imgPath)
+  Endif
+
+End
+
+Public Sub btnpredict_Click()
+
+  Dim xval As Float
+  Dim xlst As String[]
+  Dim xindep As String
+
+  xlst = $sHead.Copy()
+  xlst.Remove(xlst.Find(cmbdependent.Text))
+  If $sType = "Bivariate" Then
+    xindep = xlst.Join(",")
+    xval = InputBox("Input value of " & xindep, "Prediction", "0")
+    If xval Then
+      TerminalInput("predict_val = lr_model.predict(numpy.array([[" & xval & "]]))")
+      TerminalInput("print('Predicted Value = ', predict_val)")
+    Endif
+  Endif
+
+End
