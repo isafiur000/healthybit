@@ -1660,15 +1660,17 @@ End
 Private Sub AddSubTestData(Row As Integer)
 
   Dim rs As Result
-  Dim xxx As String[]
+  Dim rsx As Result
 
   rs = modDatabase.$myConn.Exec("select fldid,fldsubtest from tblpatradiosubtest where fldtestid=&1", GridView1[Row, 0].Text)
   If rs.Available = False Then
     Select modFixRadio.GetRadioTestOption(GridView1[Row, 2].Text)
       Case "Fixed Components", "Left/Right Components"
-        xxx = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldsubexam) as col from tblradioquali where fldexamid=&1 ORDER BY fldindex", GridView1[Row, 2].Text))
-        If xxx.Count Then
-          modRadioSub.InsertRadioSubTest(GridView1[Row, 12].Text, GridView1[Row, 0].Text, GridView1[Row, 2].Text, xxx)
+        rsx = modDatabase.$myConn.Exec("select fldsubexam,fldtanswertype,fldindex from tblradioquali where fldexamid=&1 GROUP BY fldsubexam", GridView1[Row, 2].Text)
+        If rsx.Available Then
+          For Each rsx
+            modRadioSub.InsertRadioSubTestUnit(GridView1[Row, 12].Text, GridView1[Row, 0].Text, GridView1[Row, 2].Text, rsx["fldsubexam"], rsx["fldtanswertype"], rsx["fldindex"])
+          Next
         Endif
     End Select
   Endif
@@ -1697,7 +1699,7 @@ Private Sub UpdateRadioValue()
     AddSubTestData(GridView1.Row)
 
     xType = modFixRadio.GetRadioTestOption(GridView1[GridView1.Row, 2].Text)
-    sql = "select fldid,fldsubtest,fldreport,fldtanswertype,fldabnormal,fldindex from tblpatradiosubtest where fldtestid=&1"
+    sql = "select fldid,fldsubtest,fldreport,fldtanswertype,fldabnormal,fldindex from tblpatradiosubtest where fldtestid=&1" & modRadioSub.GetRadioRepoOrder("SubTest")
     res = modDatabase.$myConn.Exec(sql, GridView1[GridView1.Row, 0].Text)
     If res.Available = False Then
       If xType = "Clinical Scale" Then

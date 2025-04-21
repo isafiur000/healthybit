@@ -917,7 +917,7 @@ Private Sub EnterTextData()
   xx = TableView1.Row
   If TableView1[TableView1.Row, 11].Text = "Qualitative" Then
     xType = modFixLab.GetLabTestOptionType(TableView1[TableView1.Row, 2].Text)
-    sql = "select fldid,fldsubtest,fldtanswertype,fldreport,fldabnormal,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1"
+    sql = "select fldid,fldsubtest,fldtanswertype,fldreport,fldabnormal,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1" & modLabSub.GetLabRepoOrder("SubTest")
     res = modDatabase.$myConn.Exec(sql, TableView1[TableView1.Row, 0].Text)
     If res.Available = False Then
       If xType = "Clinical Scale" Then
@@ -1319,8 +1319,8 @@ End
 
 Public Sub mnupdatesub_Click()
 
-  Dim xxx As String[]
   Dim xType As String
+  Dim resx As Result
 
   If TableView1.Rows.Selection.Count Then
     Inc Application.Busy
@@ -1328,9 +1328,11 @@ Public Sub mnupdatesub_Click()
     modDatabase.$myConn.Delete($tblpatlabsubtest, "fldtestid=&1", TableView1[TableView1.Row, 0].Text)
     xType = modFixLab.GetLabTestOptionType(TableView1[TableView1.Row, 2].Text)
     If xType = "Fixed Components" Or If xType = "Left/Right Components" Then
-      xxx = modFixLab.GetSubTestArray(TableView1[TableView1.Row, 2].Text)     'modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldsubtest) as col from tbltestquali where fldtestid=&1", GridView1[Row, 3].Text))
-      If xxx.Count Then
-        modLabSub.InsertLabSubTest($encid, TableView1[TableView1.Row, 0].Text, TableView1[TableView1.Row, 2].Text, xxx, $tblpatlabsubtest)
+      resx = modDatabase.$myConn.Exec("select fldsubtest,fldtanswertype,fldindex from tbltestquali where fldtestid=&1 GROUP BY fldsubtest", TableView1[TableView1.Row, 2].Text)
+      If resx.Available Then
+        For Each resx
+          modLabSub.InsertLabSubTestUnit($encid, TableView1[TableView1.Row, 0].Text, TableView1[TableView1.Row, 2].Text, resx["fldsubtest"], resx["fldtanswertype"], resx["fldindex"], $tblpatlabsubtest)
+        Next
       Endif
     Endif
     modDatabase.$myConn.Commit

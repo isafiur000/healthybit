@@ -743,10 +743,10 @@ Public Sub btnupdate_Click()
 
   Dim Row As Integer
   Dim res As Result
-  Dim xxx As String[]
   Dim xallow As Boolean
   Dim xRow As Integer
   Dim xorder As Integer
+  Dim resx As Result
 
   If modBasic.$LabAutoSampleID = "Yes" Then
     If GridView1.Rows.Count > 0 Then
@@ -781,9 +781,11 @@ Public Sub btnupdate_Click()
           res = modDatabase.$myConn.Exec("select fldsubtest from tblpatlabsubtest where fldtestid=&1", GridView1[Row, 0].Text)
           If res.Available = False Then
             If modFixLab.GetLabTestOptionType(GridView1[Row, 3].Text) = "Fixed Components" Then
-              xxx = modFixLab.GetSubTestArray(GridView1[Row, 3].Text)     'modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldsubtest) as col from tbltestquali where fldtestid=&1", GridView1[Row, 3].Text))
-              If xxx.Count Then
-                modLabSub.InsertLabSubTest(GridView1[Row, 10].Text, GridView1[Row, 0].Text, GridView1[Row, 3].Text, xxx)
+              resx = modDatabase.$myConn.Exec("select fldsubtest,fldtanswertype,fldindex from tbltestquali where fldtestid=&1 GROUP BY fldsubtest", GridView1[Row, 3].Text)
+              If resx.Available Then
+                For Each resx
+                  modLabSub.InsertLabSubTestUnit(GridView1[Row, 10].Text, GridView1[Row, 0].Text, GridView1[Row, 3].Text, resx["fldsubtest"], resx["fldtanswertype"], resx["fldindex"])
+                Next
               Endif
             Endif
           Endif

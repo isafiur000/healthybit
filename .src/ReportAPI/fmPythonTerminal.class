@@ -41,6 +41,7 @@ Private Sub GetModelList(sType As String) As String[]
   If sType = "Bivariate" Then
     xlst.Add("LinearRegression")
     xlst.Add("LogisticRegression")
+    xlst.Add("PolynomialFeatures")
   Endif
   Return xlst
 
@@ -129,6 +130,18 @@ Public Sub btnprocess_Click()
 End
 
 ''==================================== model training =======================
+Public Sub cmbmodel_Click()
+
+  If cmbmodel.Text = "PolynomialFeatures" Then
+    lbldegree.Visible = True
+    valdegree.Visible = True
+  Else
+    lbldegree.Visible = False
+    valdegree.Visible = False
+  Endif
+
+End
+
 Public Sub btnmodeltrain_Click()
 
   Dim trainval As Float
@@ -152,22 +165,32 @@ Private Sub TrainModel()
   If cmbmodel.Text = "LinearRegression" Then
     TerminalInput("from sklearn.linear_model import LinearRegression")
     TerminalInput("lr = LinearRegression()")
-    TerminalInput("lr_model = lr.fit(X_train, Y_train)")
-    TerminalInput("print('Training Score = ', lr_model.score(X_train, Y_train))")
-    TerminalInput("print('Testing Score = ', lr_model.score(X_test, Y_test))")
+  Else If cmbmodel.Text = "LogisticRegression" Then
+    TerminalInput("from sklearn.linear_model import LogisticRegression")
+    TerminalInput("lr = LogisticRegression()")
+  Else If cmbmodel.Text = "PolynomialFeatures" Then
+    TerminalInput("from sklearn.preprocessing import PolynomialFeatures")
+    TerminalInput("lr = PolynomialFeatures(degree = " & valdegree.Value & ")")
   Endif
+  TerminalInput("lr_model = lr.fit(X_train, Y_train)")
+  TerminalInput("print('Training Score = ', lr_model.score(X_train, Y_train))")
+  TerminalInput("print('Testing Score = ', lr_model.score(X_test, Y_test))")
 
 End
 
 Public Sub btnchart_Click()
 
   $imgPath = Temp() & ".png"
+  TerminalInput("matplotlib.pyplot.scatter(X_train, Y_train, color = 'red')")
+  TerminalInput("matplotlib.pyplot.plot(X_train, lr_model.predict(X_train), color = 'blue')")
   If cmbmodel.Text = "LinearRegression" Then
-    TerminalInput("matplotlib.pyplot.scatter(X_train, Y_train, color = 'red')")
-    TerminalInput("matplotlib.pyplot.plot(X_train, lr_model.predict(X_train), color = 'blue')")
-    TerminalInput("matplotlib.pyplot.title('Regression Plot')")
-    TerminalInput("matplotlib.pyplot.savefig('" & $imgPath & "')")
+    TerminalInput("matplotlib.pyplot.title('Linear Regression Plot')")
+  Else If cmbmodel.Text = "LogisticRegression" Then
+    TerminalInput("matplotlib.pyplot.title('Logistic Regression Plot')")
+  Else If cmbmodel.Text = "PolynomialFeatures" Then
+    TerminalInput("matplotlib.pyplot.title('Polynomial Regression Plot')")
   Endif
+  TerminalInput("matplotlib.pyplot.savefig('" & $imgPath & "')")
   btnshowchart.Enabled = True
 
 End

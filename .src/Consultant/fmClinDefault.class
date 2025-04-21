@@ -97,6 +97,7 @@ Public Sub btnshow_Click()
     txtdetail.RichText = ""
     GridView1.Clear()
   Endif
+  Frame1.Enabled = True
 
 End
 
@@ -189,8 +190,8 @@ Private Sub SetOptionGrid()
 
   With GridView1
     .Rows.Height = modBasic.$AppGridRowHeight
-    .Columns[0].Width = 300 * modBasic.$AppWidthRatio
-    .Columns[1].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[0].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 300 * modBasic.$AppWidthRatio
 
     .Columns[0].Text = "Variable"
     .Columns[1].Text = "Values"
