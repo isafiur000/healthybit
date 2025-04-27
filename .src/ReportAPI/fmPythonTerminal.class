@@ -21,7 +21,7 @@ Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
-  TerminalView1.Shell("python3")
+  TerminalView1.Shell("ipython3")
 
   $aHead = $sHead.Copy()
   For i = 0 To $aHead.Count - 1
@@ -30,6 +30,7 @@ Public Sub Form_Open()
 
   cmbdependent.List = $sHead
   cmbmodel.List = GetModelList($sType)
+  cmbsplitdata.List = ["X_train", "X_test", "Y_train", "Y_test"]
 
 End
 
@@ -39,33 +40,21 @@ Private Sub GetModelList(sType As String) As String[]
 
   xlst = New String[]
   If sType = "Bivariate" Then
-    xlst.Add("LinearRegression")
-    xlst.Add("LogisticRegression")
-    xlst.Add("PolynomialFeatures")
+    xlst.Add("Linear Regression")
+    xlst.Add("Logistic Regression")
+    xlst.Add("Polynomial Regression")
+    xlst.Add("Support Vector Machine")
   Endif
   Return xlst
 
 End
 
-Private Sub PressEnterKey()
-
-  TerminalView1.Input(Chr$(10))
-
-End
-
-Private Sub TerminalInput(sText As String)
-
-  TerminalView1.Input(sText)
-  PressEnterKey()
-
-End
-
-''================================= data science ===============
 Public Sub btndatainstall_Click()
 
   Dim xList As String[]
 
   xList = New String[]
+  xList.Add("ipython3")
   xList.Add("python3-numpy")
   xList.Add("python3-pandas")
   xList.Add("python3-matplotlib")
@@ -76,148 +65,184 @@ Public Sub btndatainstall_Click()
 
 End
 
+Private Sub PressEnterKey()
+
+  TerminalView1.Input(Chr$(10))
+
+End
+
+Private Sub TerminalInput(cmd As String)
+
+  TerminalView1.Input(cmd)
+  PressEnterKey()
+
+End
+
+Private Sub TerminalInputList(cmdList As String[])
+
+  TerminalView1.Input(cmdList.Join(gb.NewLine))
+  PressEnterKey()
+
+End
+
+Public Sub Form_Close()
+
+  TerminalInput("exit")
+
+End
+
+''================================= Load data ===============
 Public Sub btndatainit_Click()
 
-  TerminalInput("import numpy")
-  TerminalInput("import pandas")
-  TerminalInput("import sklearn")
-  TerminalInput("import matplotlib")
-  TerminalInput("import seaborn")
+  Dim xlibs As String[] = ["import numpy", "import pandas", "import sklearn", "import matplotlib", "import seaborn"]
 
+  TerminalInputList(xlibs)
   btndataload.Enabled = True
 
 End
 
 Public Sub btndataload_Click()
 
-  TerminalInput("orig_data = pandas.read_csv('" & $sPath & "', sep='\t')")
-  TerminalInput("orig_data.columns = " & "[" & $aHead.Join(", ") & "]")
-  TerminalInput("print(orig_data.info())")
-  TerminalInput("print(orig_data.head())")
+  Dim cmdLst As New String[]
+
+  cmdLst.Add("orig_data = pandas.read_csv(\"" & $sPath & "\", sep = '" & "\\" & "t" & "')")
+  cmdLst.Add("orig_data.columns = " & "[" & $aHead.Join(", ") & "]")
+  cmdLst.Add("orig_data")
+  TerminalInputList(cmdLst)
 
   Panel3.Enabled = True
 
 End
 
-Public Sub btnprocess_Click()
+''======================== Data Processing ===========================
+Public Sub btnordinalencode_Click()
 
+  Dim cmdLst As New String[]
   Dim xList As String[]
   Dim aVal As String
-  Dim xgo As Boolean = False
 
-  If chknullrow.Value = True Then
-    TerminalInput("orig_data = orig_data.dropna()")
-    xgo = True
+  cmdLst.Add("from sklearn.preprocessing import OrdinalEncoder")
+  cmdLst.Add("ord_enc = OrdinalEncoder()")
+  xList = SelectListView("Variables to encode", $sHead, False)
+  If xList.Count Then
+    For Each aVal In xList
+      cmdLst.Add("orig_data['" & aVal & "'] = ord_enc.fit_transform(orig_data[['" & aVal & "']]).astype('int')")
+    Next
   Endif
+  TerminalInputList(cmdLst)
 
-  If chkordinalcode.Value = True Then
-    TerminalInput("from sklearn.preprocessing import OrdinalEncoder")
-    TerminalInput("ord_enc = OrdinalEncoder()")
-    xList = SelectListView("Variables to encode", $sHead, False)
-    If xList.Count Then
-      For Each aVal In xList
-        TerminalInput("orig_data['" & aVal & "'] = ord_enc.fit_transform(orig_data[['" & aVal & "']]).astype('int')")    ''
-      Next
-    Endif
-    xgo = True
-  Endif
+End
 
-  If xgo = True Then
-    TerminalInput("print(orig_data.head())")
-  Endif
+Public Sub btndropmissing_Click()
+
+  TerminalInput("orig_data = orig_data.dropna()")
+
+End
+
+Public Sub btnrandomrow_Click()
+
+  TerminalInput("orig_data = orig_data.sample(frac = 1)")
+
+End
+
+Public Sub btndatacorrelation_Click()
+
   TerminalInput("orig_data.corr()")
 
 End
 
-''==================================== model training =======================
-Public Sub cmbmodel_Click()
+Public Sub btnprocess_Click()
 
-  If cmbmodel.Text = "PolynomialFeatures" Then
-    lbldegree.Visible = True
-    valdegree.Visible = True
-  Else
-    lbldegree.Visible = False
-    valdegree.Visible = False
-  Endif
+  TerminalInput("orig_data.info()")
 
 End
 
-Public Sub btnmodeltrain_Click()
+Public Sub btnshowdata_Click()
 
+  TerminalInput("orig_data")
+
+End
+
+''==================================== Split dataand process =======================
+Public Sub btnsplidata_Click()
+
+  Dim cmdLst As New String[]
   Dim trainval As Float
 
   If cmbdependent.Text Then
     trainval = valtrain.Value / 100
-    TerminalInput("from sklearn.model_selection import train_test_split")
-    TerminalInput("Y_data = orig_data['" & cmbdependent.Text & "']")
-    TerminalInput("X_data = orig_data.drop(['" & cmbdependent.Text & "'], axis = 1)")
-    TerminalInput("X_train, X_test, Y_train, Y_test = train_test_split(X_data ,Y_data , train_size = " & trainval & ", random_state=1)")
-    TrainModel()
+    cmdLst.Add("from sklearn.model_selection import train_test_split")
+    cmdLst.Add("Y_data = orig_data['" & cmbdependent.Text & "']")
+    cmdLst.Add("X_data = orig_data.drop(['" & cmbdependent.Text & "'], axis = 1)")
+    cmdLst.Add("X_train, X_test, Y_train, Y_test = train_test_split(X_data ,Y_data , train_size = " & trainval & ", random_state=42)")
+    TerminalInputList(cmdLst)
 
-    btnchart.Enabled = True
-    btnpredict.Enabled = True
+    btnmodeltrain.Enabled = True
   Endif
 
 End
 
-Private Sub TrainModel()
+Public Sub btnnormalize_Click()
 
-  If cmbmodel.Text = "LinearRegression" Then
-    TerminalInput("from sklearn.linear_model import LinearRegression")
-    TerminalInput("lr = LinearRegression()")
-  Else If cmbmodel.Text = "LogisticRegression" Then
-    TerminalInput("from sklearn.linear_model import LogisticRegression")
-    TerminalInput("lr = LogisticRegression()")
-  Else If cmbmodel.Text = "PolynomialFeatures" Then
-    TerminalInput("from sklearn.preprocessing import PolynomialFeatures")
-    TerminalInput("lr = PolynomialFeatures(degree = " & valdegree.Value & ")")
-  Endif
-  TerminalInput("lr_model = lr.fit(X_train, Y_train)")
-  TerminalInput("print('Training Score = ', lr_model.score(X_train, Y_train))")
-  TerminalInput("print('Testing Score = ', lr_model.score(X_test, Y_test))")
+  Dim cmdLst As New String[]
+
+  cmdLst.Add("from sklearn.preprocessing import StandardScaler")
+  cmdLst.Add("SScaler = StandardScaler()")
+  cmdLst.Add("X_train = SScaler.fit_transform(X_train)")
+  cmdLst.Add("X_test = SScaler.fit_transform(X_test)")
+  TerminalInputList(cmdLst)
 
 End
 
-Public Sub btnchart_Click()
+Public Sub btnsplitshow_Click()
+
+  If cmbsplitdata.Text Then
+    TerminalInput(cmbsplitdata.Text)
+  Endif
+
+End
+
+''--------------------------- Model training ===============================
+Public Sub btnmodeltrain_Click()
+
+  Dim cmdLst As New String[]
+
+  Select cmbmodel.Text
+    Case "Linear Regression"
+      cmdLst.Add("from sklearn.linear_model import LinearRegression")
+      cmdLst.Add("model = LinearRegression()")
+      cmdLst.Add("model = model.fit(X_train, Y_train)")
+    Case "Logistic Regression"
+      cmdLst.Add("from sklearn.linear_model import LogisticRegression")
+      cmdLst.Add("model = LogisticRegression()")
+      cmdLst.Add("model = model.fit(X_train, Y_train)")
+  End Select
+  TerminalInputList(cmdLst)
+
+  pnresult.Enabled = True
+
+End
+
+Public Sub btnshowaccuracy_Click()
+
+  Select cmbmodel.Text
+    Case "Linear Regression", "Logistic Regression"
+      TerminalInput("print('Training Score = ', model.score(X_train, Y_train))")
+      TerminalInput("print('Testing Score = ', model.score(X_test, Y_test))")
+  End Select
+
+End
+
+Public Sub btnshowscatterplot_Click()
+
+  Dim cmdLst As New String[]
 
   $imgPath = Temp() & ".png"
-  TerminalInput("matplotlib.pyplot.scatter(X_train, Y_train, color = 'red')")
-  TerminalInput("matplotlib.pyplot.plot(X_train, lr_model.predict(X_train), color = 'blue')")
-  If cmbmodel.Text = "LinearRegression" Then
-    TerminalInput("matplotlib.pyplot.title('Linear Regression Plot')")
-  Else If cmbmodel.Text = "LogisticRegression" Then
-    TerminalInput("matplotlib.pyplot.title('Logistic Regression Plot')")
-  Else If cmbmodel.Text = "PolynomialFeatures" Then
-    TerminalInput("matplotlib.pyplot.title('Polynomial Regression Plot')")
-  Endif
-  TerminalInput("matplotlib.pyplot.savefig('" & $imgPath & "')")
-  btnshowchart.Enabled = True
-
-End
-
-Public Sub btnshowchart_Click()
-
-  If Exist($imgPath) Then
-    Desktop.Open($imgPath)
-  Endif
-
-End
-
-Public Sub btnpredict_Click()
-
-  Dim xval As Float
-  Dim xlst As String[]
-  Dim xindep As String
-
-  xlst = $sHead.Copy()
-  xlst.Remove(xlst.Find(cmbdependent.Text))
-  If $sType = "Bivariate" Then
-    xindep = xlst.Join(",")
-    xval = InputBox("Input value of " & xindep, "Prediction", "0")
-    If xval Then
-      TerminalInput("predict_val = lr_model.predict(numpy.array([[" & xval & "]]))")
-      TerminalInput("print('Predicted Value = ', predict_val)")
-    Endif
-  Endif
+  cmdLst.Add("import matplotlib.pyplot as plt")
+  cmdLst.Add("plt.scatter(X_train, Y_train, color = 'red')")
+  cmdLst.Add("plt.plot(X_train, model.predict(X_train), color = 'blue')")
+  cmdLst.Add("plt.title('Scatter Plot')")
+  cmdLst.Add("plt.show()")
+  TerminalInputList(cmdLst)
 
 End

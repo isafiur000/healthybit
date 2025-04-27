@@ -75,6 +75,8 @@ Private Sub ShowExSetting()
     txtemail.Text = modSettings.ShowExtSettingFromFIle("PatientTable/E-Mail")
     txtdiary.Text = modSettings.ShowExtSettingFromFIle("PatientTable/DiaryNo")
     txtethnicity.Text = modSettings.ShowExtSettingFromFIle("PatientTable/Ethnicity")
+    txtfldencrypt.Text = modSettings.ShowExtSettingFromFIle("PatientTable/Encryption")
+    txtfldptaddward.Text = modSettings.ShowExtSettingFromFIle("PatientTable/WardNo")
 
     txttblencounter.Text = modSettings.ShowExtSettingFromFIle("EncounterTable/TableName")
     txtfldencounterval.Text = modSettings.ShowExtSettingFromFIle("EncounterTable/EncounterID")
@@ -92,6 +94,8 @@ Private Sub ShowExSetting()
     txtfldbillingmode.Text = modSettings.ShowExtSettingFromFIle("EncounterTable/BillingMode")
     txtflduserid.Text = modSettings.ShowExtSettingFromFIle("EncounterTable/Consultant")
     txtfldvisit.Text = modSettings.ShowExtSettingFromFIle("EncounterTable/VisitType")
+    txtflddoa.Text = modSettings.ShowExtSettingFromFIle("EncounterTable/AdmissionDate")
+    txtflddod.Text = modSettings.ShowExtSettingFromFIle("EncounterTable/DischargeDate")
 
   Endif
 
@@ -134,6 +138,8 @@ Private Sub SaveSettingLocal()
   SaveExtSettingsToFile("PatientTable/E-Mail", txtemail.Text)
   SaveExtSettingsToFile("PatientTable/DiaryNo", txtdiary.Text)
   SaveExtSettingsToFile("PatientTable/Ethnicity", txtethnicity.Text)
+  SaveExtSettingsToFile("PatientTable/Encryption", txtfldencrypt.Text)
+  SaveExtSettingsToFile("PatientTable/WardNo", txtfldptaddward.Text)
 
   SaveExtSettingsToFile("EncounterTable/TableName", txttblencounter.Text)
   SaveExtSettingsToFile("EncounterTable/EncounterID", txtfldencounterval.Text)
@@ -151,6 +157,8 @@ Private Sub SaveSettingLocal()
   SaveExtSettingsToFile("EncounterTable/BillingMode", txtfldbillingmode.Text)
   SaveExtSettingsToFile("EncounterTable/Consultant", txtflduserid.Text)
   SaveExtSettingsToFile("EncounterTable/VisitType", txtfldvisit.Text)
+  SaveExtSettingsToFile("EncounterTable/AdmissionDate", txtflddoa.Text)
+  SaveExtSettingsToFile("EncounterTable/DischargeDate", txtflddod.Text)
 
   Message.Info(("Information saved"), ("OK"))
 

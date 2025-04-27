@@ -12,6 +12,7 @@
       Text = ("Processing")
       { Panel2 Panel
         MoveScaled(1,1,25,23)
+        Border = Border.Plain
         { btndatainit Button
           MoveScaled(1,1,23,3.5)
           Text = ("Initialize")
@@ -30,28 +31,60 @@
       { Panel3 Panel
         MoveScaled(26,1,93,23)
         Enabled = False
-        { chkordinalcode CheckBox
-          MoveScaled(1,1,33,3)
+        { btnprocess Button
+          MoveScaled(54,19,15,3)
+          Text = ("Data Info")
+        }
+        { Label5 Label
+          MoveScaled(1,5,31,3)
+          Border = Border.Plain
           Text = ("Encode Ordinal Variables")
         }
-        { btnprocess Button
-          MoveScaled(2,19,31,3)
-          Text = ("Process Data Frame")
+        { Label6 Label
+          MoveScaled(1,1,31,3)
+          Border = Border.Plain
+          Text = ("Drop Rows with missing values")
         }
-        { chknullrow CheckBox
-          MoveScaled(1,5,33,3)
-          Text = ("Remove Rows with missing values")
+        { btnordinalencode ToolButton
+          MoveScaled(33,5,3,3)
+          Picture = Picture["icon:/small/apply"]
+        }
+        { btndropmissing ToolButton
+          MoveScaled(33,1,3,3)
+          Picture = Picture["icon:/small/apply"]
+        }
+        { Label7 Label
+          MoveScaled(53,1,31,3)
+          Border = Border.Plain
+          Text = ("Randomize Row sequence")
+        }
+        { btnrandomrow ToolButton
+          MoveScaled(85,1,3,3)
+          Picture = Picture["icon:/small/apply"]
+        }
+        { btnshowdata Button
+          MoveScaled(70,19,15,3)
+          Text = ("Show Data")
+        }
+        { Label8 Label
+          MoveScaled(53,5,31,3)
+          Border = Border.Plain
+          Text = ("Show Correlations")
+        }
+        { btndatacorrelation ToolButton
+          MoveScaled(85,5,3,3)
+          Picture = Picture["icon:/small/apply"]
         }
       }
       Index = 1
       Text = ("ML Models")
       { Label1 Label
-        MoveScaled(1,1,12,3)
+        MoveScaled(68,1,7,3)
         Border = Border.Plain
-        Text = ("ML Model")
+        Text = ("Model")
       }
       { cmbmodel ComboBox
-        MoveScaled(14,1,35,3)
+        MoveScaled(76,1,28,3)
       }
       { Label2 Label
         MoveScaled(1,5,12,3)
@@ -70,42 +103,64 @@
         Text = ("%")
       }
       { btnmodeltrain Button
-        MoveScaled(15,13,31,3)
-        Text = ("Train Model")
+        MoveScaled(105,1,12,3)
+        Enabled = False
+        Text = ("Train")
       }
       { Label4 Label
-        MoveScaled(1,9,12,3)
+        MoveScaled(1,1,12,3)
         Border = Border.Plain
         Text = ("Dependent")
       }
       { cmbdependent ComboBox
-        MoveScaled(14,9,35,3)
+        MoveScaled(14,1,35,3)
       }
-      { btnpredict Button
-        MoveScaled(15,21,31,3)
+      { btnsplidata Button
+        MoveScaled(31,5,18,3)
+        Text = ("Split Data")
+      }
+      { pnresult Panel
+        MoveScaled(68,5,50,14)
         Enabled = False
-        Text = ("Prediction")
+        { btnshowaccuracy ToolButton
+          MoveScaled(33,1,3,3)
+          Picture = Picture["icon:/small/apply"]
+        }
+        { btnshowscatterplot ToolButton
+          MoveScaled(33,5,3,3)
+          Picture = Picture["icon:/small/apply"]
+        }
+        { Label10 Label
+          MoveScaled(1,5,31,3)
+          Border = Border.Plain
+          Text = ("Show Scatter Plot")
+        }
+        { Label9 Label
+          MoveScaled(1,1,31,3)
+          Border = Border.Plain
+          Text = ("Show Accuracy Scores")
+        }
       }
-      { btnchart Button
-        MoveScaled(15,17,18,3)
-        Enabled = False
-        Text = ("Chart")
-      }
-      { btnshowchart Button
-        MoveScaled(34,17,12,3)
-        Enabled = False
-        Text = ("Show")
-      }
-      { lbldegree Label
-        MoveScaled(35,5,7,3)
-        Visible = False
+      { Label11 Label
+        MoveScaled(1,9,42,3)
         Border = Border.Plain
-        Text = ("degree")
+        Text = ("Normalize Train and Test X Values")
       }
-      { valdegree ValueBox
-        MoveScaled(43,5,6,3)
-        Visible = False
-        Text = ("1")
+      { btnnormalize ToolButton
+        MoveScaled(45,9,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { Label12 Label
+        MoveScaled(68,20,11,3)
+        Border = Border.Plain
+        Text = ("Show Data")
+      }
+      { cmbsplitdata ComboBox
+        MoveScaled(80,20,23,3)
+      }
+      { btnsplitshow Button
+        MoveScaled(105,20,12,3)
+        Text = ("View")
       }
       Index = 0
     }
