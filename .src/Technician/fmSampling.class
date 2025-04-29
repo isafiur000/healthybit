@@ -1149,7 +1149,11 @@ Private Sub BasicInfoPatient()
   lsticdisease.List = modPathoSub.GetProvisionalDiagnosisList($encid)
   modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", $encid)
 
-  btnupdate.Enabled = False
+  If modBasic.$LabQuickMulti = "Yes" Then
+    btnupdate.Enabled = True
+  Else
+    btnupdate.Enabled = False
+  Endif
   modImage.ShowPhotoSplash("Patient", modPatient.GetPatientNoByEnc($encid))
   cmbsamtype.Text = ""
   txtsamid.Text = ""
@@ -1394,12 +1398,12 @@ Public Sub btnclrspec_Click()
 
 End
 
-Public Sub btnupdate_Click()
+Private Sub GetNormalSampling()
 
   Dim Row As Integer
   Dim res As Result
   Dim xallow As Boolean
-  Dim xRow As Integer
+
   Dim xspec As String
   Dim txtsampno As String
   Dim xorder As Integer
@@ -1414,8 +1418,6 @@ Public Sub btnupdate_Click()
   Endif
 
   If txtsamid.Text Then
-    xRow = GridView1.Row
-
     Inc Application.Busy
     For Row = 0 To GridView1.Rows.Count - 1
       If GridView1[Row, 1].Picture = Picture["icons/checked.png"] Then
@@ -1467,31 +1469,137 @@ Public Sub btnupdate_Click()
     Next
     Dec Application.Busy
 
-    If rbbar.Value = True Then
-      btnbarcode_Click()
-    Endif
-    If rbwork.Value = True Then
-      btnwork_Click()
-    Endif
     If modBasic.$AutoSampleLoad = "All" Then
       LoadSpecimens()
     Else If modBasic.$AutoSampleLoad = "Machine" Then
       LoadSpecimensMachine()
     Endif
-    If rbinvoice.Value = True Then
-      ShowSampledBill($encid, txtlabbill.Text)
-    Else If rbencounter.Value = True Then
-      ShowSampled($encid)
-    Else If rbindoor.Value = True Then
-      ShowSampled($encid)
-    Endif
-    If chkall.Value = True Then
-      GridView1.Row = xRow
-    Endif
-    Balloon.Info(("Information updated"), btnupdate)
-    Balloon.Delay = modBasic.$BalloonDelay
-
   Endif
+
+End
+
+Private Sub GetQUickSampling()
+
+  Dim Row As Integer
+  Dim res As Result
+  Dim xallow As Boolean
+
+  Dim xspec As String
+  Dim xsampid As String
+  Dim txtsampno As String
+  Dim xorder As Integer
+  Dim resx As Result
+
+  For Row = 0 To GridView1.Rows.Count - 1
+    If Not GridView1[Row, 4].Text Then
+
+      If Not xspec Then
+        xspec = modFixLab.GetTestSpecimen(GridView1[Row, 3].Text)
+        If xspec Then
+          xsampid = modLabSub.GetAutoIncreasingNo()
+          If modBasic.$LabAutoSampleSuffix = "Yes" Then
+            txtsampno = xsampid & modFixLab.GetTestSampleSuffix(GridView1[Row, 3].Text)
+          Else
+            txtsampno = xsampid
+          Endif
+          xallow = modLabTest.AllowSampleID($encid, txtsampno)
+          If xallow = True Then
+            GridView1[Row, 1].Picture = Picture["icons/checked.png"]
+            xorder = modFixLab.GetLabTestOrder(GridView1[Row, 3].Text)
+            modLabSub.UpdateLabTestSample(GridView1[Row, 0].Text, txtsampno, xspec, "", "", "", "", xorder,, $tblpatlabtest)
+
+            ''subtest
+            res = modDatabase.$myConn.Exec("select fldsubtest from " & $tblpatlabsubtest & " where fldtestid=&1", GridView1[Row, 0].Text)
+            If res.Available = False Then
+              Select modFixLab.GetLabTestOptionType(GridView1[Row, 3].Text)
+                Case "Fixed Components", "Left/Right Components"
+                  resx = modDatabase.$myConn.Exec("select fldsubtest,fldtanswertype,fldindex from tbltestquali where fldtestid=&1 GROUP BY fldsubtest", GridView1[Row, 3].Text)
+                  If resx.Available Then
+                    For Each resx
+                      modLabSub.InsertLabSubTestUnit(GridView1[Row, 10].Text, GridView1[Row, 0].Text, GridView1[Row, 3].Text, resx["fldsubtest"], resx["fldtanswertype"], resx["fldindex"], $tblpatlabsubtest)
+                    Next
+                  Endif
+              End Select
+            Endif
+
+          Endif
+        Endif
+      Endif
+
+      If xspec And If xsampid Then
+        If modBasic.$LabAutoSampleSuffix = "Yes" Then
+          txtsampno = xsampid & modFixLab.GetTestSampleSuffix(GridView1[Row, 3].Text)
+        Else
+          txtsampno = xsampid
+        Endif
+        xallow = modLabTest.AllowSampleID($encid, txtsampno)
+        If xallow = True Then
+          If modFixLab.GetTestSpecimen(GridView1[Row, 3].Text) = xspec Then
+            GridView1[Row, 1].Picture = Picture["icons/checked.png"]
+            xorder = modFixLab.GetLabTestOrder(GridView1[Row, 3].Text)
+            modLabSub.UpdateLabTestSample(GridView1[Row, 0].Text, txtsampno, xspec, "", "", "", "", xorder,, $tblpatlabtest)
+
+            ''subtest
+            res = modDatabase.$myConn.Exec("select fldsubtest from " & $tblpatlabsubtest & " where fldtestid=&1", GridView1[Row, 0].Text)
+            If res.Available = False Then
+              Select modFixLab.GetLabTestOptionType(GridView1[Row, 3].Text)
+                Case "Fixed Components", "Left/Right Components"
+                  resx = modDatabase.$myConn.Exec("select fldsubtest,fldtanswertype,fldindex from tbltestquali where fldtestid=&1 GROUP BY fldsubtest", GridView1[Row, 3].Text)
+                  If resx.Available Then
+                    For Each resx
+                      modLabSub.InsertLabSubTestUnit(GridView1[Row, 10].Text, GridView1[Row, 0].Text, GridView1[Row, 3].Text, resx["fldsubtest"], resx["fldtanswertype"], resx["fldindex"], $tblpatlabsubtest)
+                    Next
+                  Endif
+              End Select
+            Endif
+
+          Endif
+        Endif
+      Endif
+
+    Endif
+  Next
+
+  If xspec And If xsampid Then
+    If modBasic.$AutoSampleLoad = "All" Then
+      LoadSpecimens()
+    Else If modBasic.$AutoSampleLoad = "Machine" Then
+      LoadSpecimensMachine()
+    Endif
+  Endif
+
+End
+
+Public Sub btnupdate_Click()
+
+  Dim xRow As Integer
+
+  xRow = GridView1.Row
+  If modBasic.$LabQuickMulti = "Yes" And If Not txtsamid.Text Then
+    GetQUickSampling()
+  Else
+    GetNormalSampling()
+  Endif
+
+  If rbbar.Value = True Then
+    btnbarcode_Click()
+  Endif
+  If rbwork.Value = True Then
+    btnwork_Click()
+  Endif
+
+  If rbinvoice.Value = True Then
+    ShowSampledBill($encid, txtlabbill.Text)
+  Else If rbencounter.Value = True Then
+    ShowSampled($encid)
+  Else If rbindoor.Value = True Then
+    ShowSampled($encid)
+  Endif
+  If chkall.Value = True Then
+    GridView1.Row = xRow
+  Endif
+  Balloon.Info(("Information updated"), btnupdate)
+  Balloon.Delay = modBasic.$BalloonDelay
 
 End
 
@@ -1538,7 +1646,11 @@ Public Sub mnudesel_Click()
   For i = 0 To GridView1.Rows.Count - 1
     GridView1[i, 1].Picture = Picture["icons/unchecked.png"]
   Next
-  btnupdate.Enabled = False
+  If modBasic.$LabQuickMulti = "Yes" Then
+    btnupdate.Enabled = True
+  Else
+    btnupdate.Enabled = False
+  Endif
 
 End
 

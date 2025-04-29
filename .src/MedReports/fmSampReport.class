@@ -269,7 +269,7 @@ Private Sub GetFieldList()
 
   xList = New String[]
   xhospfld = modDataRepo.HospitalField()
-  xList = ["fldid", "fldencounterval", "fldencounterval", modDataRepo.SerialField(), "fldencounterval", "fldtestid", "fldsampleid", "fldsampletype", "fldtime_sample", "fldtime_report", "fldstatus", modDataRepo.SerialField(), "fldtest_type", "fldid", "fldabnormal", "fldgroupid", modDataRepo.SerialField(), "flduptime_report", "fldtime_verify", "flduptime_verify", "flduserid_sample", "flduserid_report", "flduserid_verify"]
+  xList = ["fldid", "fldencounterval", "fldencounterval", modDataRepo.SerialField(), "fldencounterval", "fldtestid", "fldsampleid", "fldsampletype", "fldtime_sample", "fldtime_report", "fldstatus", modDataRepo.SerialField(), "fldtest_type", "fldid", "fldabnormal", "fldgroupid", modDataRepo.SerialField(), "flduptime_report", "fldtime_verify", "flduptime_verify", "flduserid_sample", "flduserid_report", "flduserid_verify", "fldgroupid", "fldbillno"]
   If xhospfld Then
     xList.Add(xhospfld)
   Endif
@@ -487,7 +487,7 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
     xxx = modGeneral.GetUserFullName(xVariable)
   Else If Column = 22 Then
     xxx = modGeneral.GetUserFullName(xVariable)
-  Else If Column = 23 Then
+  Else If Column = 25 Then
     xxx = modDataRepo.GetHospitalTextLabel(xVariable)
   Else
     xxx = xVariable
@@ -563,6 +563,8 @@ Private Sub FillPatientGrid()
     .Columns[20].Width = 150 * modBasic.$AppWidthRatio
     .Columns[21].Width = 150 * modBasic.$AppWidthRatio
     .Columns[22].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[23].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[24].Width = 150 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "EncID"
     .Columns[2].Text = "Name"
@@ -583,6 +585,8 @@ Private Sub FillPatientGrid()
     .Columns[20].Text = "SampledBy"
     .Columns[21].Text = "ReportedBy"
     .Columns[22].Text = "VerifiedBy"
+    .Columns[23].Text = "ItemNo"
+    .Columns[24].Text = "Invoice"
 
     If $newColumn.Count Then
       For i = 0 To $newColumn.Count - 1

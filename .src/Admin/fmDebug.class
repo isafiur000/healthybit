@@ -18,6 +18,7 @@ Private Sub GetList()
   cmbproblem.Add("Transfer NetCost")
   cmbproblem.Add("Admission Ward")
   cmbproblem.Add("Max Retail Price")
+  cmbproblem.Add("Fixed Rate Return")
   ' cmbproblem.Add("---healthybit 0.3.20 or newer ---")
   ' cmbproblem.Add("Patient Exam Option")
   ' cmbproblem.Add("Comp Examination")
@@ -94,6 +95,8 @@ Public Sub btncorr_Click()
       UpdateAdmissionWard()
     Else If cmbproblem.Text = "Max Retail Price" Then
       UpdateMaxRPValue()
+    Else If cmbproblem.Text = "Fixed Rate Return" Then
+      modDebugging.DebugFixedRateReturn()
 
     Else If cmbproblem.Text = "MacAddress Code" Then
       InsertMacAddCode()

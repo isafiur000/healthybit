@@ -29,6 +29,13 @@ Public Sub Form_Open()
     mnurepomenu.Enabled = True
   Endif
 
+  If Not modBasic.$AppWidthRatio Then
+    modBasic.$AppWidthRatio = 1
+  Endif
+  If Not modBasic.$AppGridRowHeight Then
+    modBasic.$AppGridRowHeight = 35
+  Endif
+
 End
 
 Public Sub Form_Close()

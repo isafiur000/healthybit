@@ -693,6 +693,7 @@ Private Sub EnterReturnEntry(sIndex As Integer)
   Dim xnew As Boolean
   Dim xday As String
   Dim xcshcrd As Float
+  Dim xitem As String
 
   xday = modSettings.ShowSettingFromFIle("InventorySetting/ReturnExpiry")
   If xday Then
@@ -705,24 +706,27 @@ Private Sub EnterReturnEntry(sIndex As Integer)
   modDatabase.$myConn.Begin
 
   If rbBill.Value = True Then
-    res = modDatabase.$myConn.Exec("select fldid,fldencounterval,flditemtype,flditemname,flditemrate,flditemqty,fldtaxper,flddiscper,fldparent,fldbillno,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit from " & $tblpatbilling & " where fldid=&1 and fldbillno=&2 and fldstatus=&3 and flditemtype=&4 and fldencounterval=&5 and (flditemqty-fldretqty)>&6", sIndex, Trim(txtbill.Text), "Cleared", cmbroute.text, $encid, 0)
+    res = modDatabase.$myConn.Exec("select fldid,fldencounterval,flditemno,flditemtype,flditemname,flditemrate,flditemqty,fldtaxper,flddiscper,fldparent,fldbillno,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit from " & $tblpatbilling & " where fldid=&1 and fldbillno=&2 and fldstatus=&3 and flditemtype=&4 and fldencounterval=&5 and (flditemqty-fldretqty)>&6", sIndex, Trim(txtbill.Text), "Cleared", cmbroute.text, $encid, 0)
   Else If rbEncid.Value = True Then
     If txtbill.Text Like "ARC" & "*" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldencounterval,flditemtype,flditemname,flditemrate,flditemqty,fldtaxper,flddiscper,fldparent,fldextracol,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit from " & $tblpatbilling & " where fldid=&1 and fldextracol=&2 and fldstatus=&3 and flditemtype=&4 and fldencounterval=&5 and (flditemqty-fldretqty)>&6", sIndex, Trim(txtbill.Text), "Done", cmbroute.text, $encid, 0)                                                    ''
+      res = modDatabase.$myConn.Exec("select fldid,fldencounterval,flditemno,flditemtype,flditemname,flditemrate,flditemqty,fldtaxper,flddiscper,fldparent,fldextracol,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit from " & $tblpatbilling & " where fldid=&1 and fldextracol=&2 and fldstatus=&3 and flditemtype=&4 and fldencounterval=&5 and (flditemqty-fldretqty)>&6", sIndex, Trim(txtbill.Text), "Done", cmbroute.text, $encid, 0)                                                    ''
     Else
       If modBasic.$BillReturnByEnc = "Yes" Then
-        res = modDatabase.$myConn.Exec("select fldid,fldencounterval,flditemtype,flditemname,flditemrate,flditemqty,fldtaxper,flddiscper,fldparent,fldextracol,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit from " & $tblpatbilling & " where fldid=&1 and fldencounterval=&2 and fldstatus=&3 and flditemtype=&4 and fldencounterval=&5 and (flditemqty-fldretqty)>&6", sIndex, Trim(txtbill.Text), "Done", cmbroute.text, $encid, 0)                                                    ''
+        res = modDatabase.$myConn.Exec("select fldid,fldencounterval,flditemno,flditemtype,flditemname,flditemrate,flditemqty,fldtaxper,flddiscper,fldparent,fldextracol,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit from " & $tblpatbilling & " where fldid=&1 and fldencounterval=&2 and fldstatus=&3 and flditemtype=&4 and fldencounterval=&5 and (flditemqty-fldretqty)>&6", sIndex, Trim(txtbill.Text), "Done", cmbroute.text, $encid, 0)                                                    ''
       Endif
     Endif
   Endif
 
   If res.Available Then
-    xnew = modStock.NewStock(cmbmedicine.Text, cmbbatch.Text, modBasic.$compID)
-
-    stockno = modStock.GetItemStockNo(cmbmedicine.Text, cmbbatch.Text, modBasic.$compID)
+    xitem = ""
+    xitem = modStock.GetStockNameFromStockno(res["flditemno"])
+    If xitem Then
+      xnew = modStock.NewStock(xitem, cmbbatch.Text, modBasic.$compID)
+      stockno = modStock.GetItemStockNo(xitem, cmbbatch.Text, modBasic.$compID)
+    Endif
     If stockno Then
       If xnew = True Then
-        AddNewEntry(stockno, res["flditemrate"])
+        AddNewEntry(stockno, xitem, res["flditemrate"])
       Endif
       If txtqty.Value <= txtmax.Value And If DateDiff(Date(), lbldate.Value, gb.Day) >= dy Then
         qty = 0 - txtqty.Value
@@ -755,13 +759,13 @@ Catch
 
 End
 
-Private Sub AddNewEntry(StockNo As Long, txtrate As Float)
+Private Sub AddNewEntry(StockNo As Long, StockName As String, txtrate As Float)
 
   Dim res As Result
 
   res = modDatabase.$myConn.Create("tblentry")
   res["fldstockno"] = StockNo
-  res["fldstockid"] = cmbmedicine.Text
+  res["fldstockid"] = StockName
   res["fldbatch"] = cmbbatch.Text
   res["fldexpiry"] = lbldate.Value
   res["fldqty"] = 0

@@ -1,5 +1,77 @@
 ' Gambas module file
 
+Public Sub DebugFixedRateReturn()
+
+  Dim res1 As Result
+  Dim xcateg As String
+  Dim xList As String[]
+  Dim getLst As String[]
+
+  Dim xnew As String
+  Dim xchange As String
+  Dim asx As String[]
+  Dim res As Result
+
+  xcateg = InputCombo("Category", "Name Correction", ["Medicines", "Surgicals", "Extra Items"], "", True)
+  If xcateg Then
+    xList = New String[]
+    If xcateg = "Medicines" Then
+      res1 = modDatabase.$myConn.Exec("select fldstockno,fldstockid,fldbatch,fldexpiry,fldqty,fldstatus,fldsellpr,fldmrp,fldsav,fldcategory,fldcomp from tblentry where fldcategory=&1 and fldstockid NOT IN(select fldbrandid from tblmedbrand)", "Medicines")
+    Else If xcateg = "Surgicals" Then
+      res1 = modDatabase.$myConn.Exec("select fldstockno,fldstockid,fldbatch,fldexpiry,fldqty,fldstatus,fldsellpr,fldmrp,fldsav,fldcategory,fldcomp from tblentry where fldcategory=&1 and fldstockid NOT IN(select fldbrandid from tblsurgbrand)", "Surgicals")
+    Else If xcateg = "Extra Items" Then
+      res1 = modDatabase.$myConn.Exec("select fldstockno,fldstockid,fldbatch,fldexpiry,fldqty,fldstatus,fldsellpr,fldmrp,fldsav,fldcategory,fldcomp from tblentry where fldcategory=&1 and fldstockid NOT IN(select fldbrandid from tblextrabrand)", "Extra Items")
+    Endif
+    If res1.Available Then
+      For Each res1
+        xnew = ""
+        xnew = modStock.GetStockNameFromStockno(GetInitialStockNo(res1["fldstockno"], res1["fldstockid"]))
+        If xnew Then
+          xList.Add(res1["fldstockno"] & "@" & xnew & "|" & res1["fldstockid"])
+        Endif
+      Next
+
+      If xList.Count Then
+        getLst = GridDualView("Select Items", xList)
+        If getLst.Count Then
+          For Each xchange In getLst
+            asx = Split(xchange, "@")
+            res = modDatabase.$myConn.Edit("tblentry", "fldstockno=&1", CLong(asx[0]))
+            res["fldstockid"] = asx[1]
+            res["fldbatch"] = res["fldbatch"] & ":HI"
+            res.Update
+          Next
+        Endif
+        Message.Info("Completed", "OK")
+      Endif
+
+    Endif
+  Endif
+
+End
+
+Private Function GetInitialStockNo(stockNo As Long, itemName As String) As Long
+
+  Dim res As Result
+  Dim res1 As Result
+  Dim xrtn As String
+  Dim xval As Long
+
+  res = modDatabase.$myConn.Exec("select fldretbill from tblpatbilling where flditemno=&1 and flditemname=&2 and fldretbill IS NOT NULL", stockNo, itemName)
+  If res.Available Then
+    res.MoveFirst
+    xrtn = res["fldretbill"]
+    res1 = modDatabase.$myConn.Exec("select flditemno from tblpatbilling where flditemname=&1 and fldbillno=&2", itemName, xrtn)
+    If res1.Available Then
+      res1.MoveFirst
+      xval = res1["flditemno"]
+    Endif
+  Endif
+
+  Return xval
+
+End
+
 Public Sub UpdateSupplierSummary()
 
   Dim res As Result
