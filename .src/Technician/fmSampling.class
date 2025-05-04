@@ -13,11 +13,14 @@ Public Sub Form_Open()
 
   Dim xoption As String
 
-  modGeneralMain.ArrangeEmbedForms(Me, Panel1)
-  Panel5.Height = Panel1.Height - (Panel2.Height + 5)
-  Panel7.Height = Panel1.Height - (Panel2.Height + 5)
-  Panel9.Height = Panel1.Height - (Panel2.Height + 5)
+  modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
+  ' modGeneralMain.ArrangeEmbedForms(Me, Panel1)
   Me.Icon = Picture[modGeneralMain.$strLogo]
+  Panel5.Width = Panel1.Width - (Panel7.Width + Panel9.Width)
+  ' Panel5.Height = Panel1.Height - (Panel2.Height + 5)
+  ' Panel7.Height = Panel1.Height - (Panel2.Height + 5)
+  ' Panel9.Height = Panel1.Height - (Panel2.Height + 5)
+
   cmbsamtype.List = modBasic.$LabSpecimenList
   If modGlobalSetting.ShowSettingFromDB("GeneralSettings/Laboratory_SampleDateLock") = "No" Then
     dtcurr.Enabled = True

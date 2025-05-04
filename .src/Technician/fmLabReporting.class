@@ -44,6 +44,7 @@ Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
   Me.Icon = Picture[modGeneralMain.$strLogo]
+  Panel7.Width = Panel1.Width - (Panel4.Width + Panel8.Width)
   btnhistory.Menu = "mnuhistory"
   cmbcategory.List = modMedicine.GetPathoCategoryList("Test")
   cmbcategory.Add("%")

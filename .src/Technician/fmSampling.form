@@ -28,28 +28,154 @@
   }
   { Panel1 Panel
     MoveScaled(0,0,122,81)
-    { Panel2 Panel
-      MoveScaled(0,0,121,4.375)
-      { !MessageView1 MessageView
-        MoveScaled(25,0.375,89,3.5)
-        #Public = True
-        Font = Font["Bold"]
-        Border = True
-      }
-      { btnbulkwork ToolButton
-        MoveScaled(116,0.375,3,3.5)
-        Picture = Picture["icon:/small/attach"]
-      }
-      { cmbfiscal ComboBox
-        MoveScaled(0.25,0.375,24,3.25)
-      }
-    }
-    { Panel5 Panel
-      MoveScaled(38,4,83,77)
+    { Panel7 Panel
+      MoveScaled(0,1,37,77)
       Expand = True
       Arrangement = Arrange.Vertical
+      { Panel16 Panel
+        MoveScaled(0,1,31,4)
+        { cmbfiscal ComboBox
+          MoveScaled(0,0.5,24,3.25)
+        }
+      }
+      { Panel14 Panel
+        MoveScaled(0,5,37,4)
+        { btnrefresh ToolButton
+          MoveScaled(25,0.375,3,3)
+          ToolTip = ("Refresh Request List [Shortcut is Ctrl+R]")
+          Picture = Picture["icon:/small/refresh"]
+        }
+        { btnsearch ToolButton
+          MoveScaled(29,0.375,3,3)
+          ToolTip = ("Search Patient Request by EncounterID [Shortcut is F1]")
+          Picture = Picture["icon:/small/find"]
+        }
+        { btnseartext ToolButton
+          MoveScaled(32,0.375,3,3)
+          Picture = Picture["icon:/small/find"]
+        }
+        { cmbcategory ComboBox
+          MoveScaled(0.25,0.375,24,3)
+          Sorted = True
+        }
+      }
+      { Panel12 Panel
+        MoveScaled(0,10,37,4)
+        { Panel13 Panel
+          MoveScaled(9.5,0.5,24,3)
+          { dtlisted DateBox
+            MoveScaled(0,0,14,3)
+          }
+          { dtneplist ToolButton
+            MoveScaled(14.375,0,3,3)
+            Picture = Picture["icon:/small/calendar"]
+          }
+          { txtrange SpinBox
+            MoveScaled(17.75,0,6,3)
+            MaxValue = 500
+          }
+        }
+        { chklist CheckBox
+          MoveScaled(1,0.5,8.625,3)
+          Text = ("Range")
+        }
+        { btnexpotree ToolButton
+          MoveScaled(34,0.5,3,3)
+          Picture = Picture["icon:/small/html"]
+        }
+      }
+      { Panel15 Panel
+        MoveScaled(0,15,37,4)
+        { cmbsourcedept ComboBox
+          MoveScaled(12,0.5,24,3)
+        }
+        { Label9 Label
+          MoveScaled(0,0.5,12,3)
+          Border = Border.Plain
+          Text = ("Department")
+        }
+      }
+      { Panel11 Panel
+        MoveScaled(0,20,37,3.5)
+        { rbencounter RadioButton
+          MoveScaled(1,0.25,10,3)
+          Text = ("Enc ID")
+        }
+        { rbinvoice RadioButton
+          MoveScaled(13,0.25,10,3)
+          Text = ("Invoice")
+        }
+        { rbindoor RadioButton
+          MoveScaled(26,0.25,10,3)
+          Text = ("Saved")
+          Value = True
+        }
+      }
+      { GridView2 GridView
+        MoveScaled(0,25,37,25)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Horizontal
+        AutoResize = False
+      }
+      { Panel8 Panel
+        MoveScaled(0,50,37,2)
+      }
+      { GridView3 GridView
+        MoveScaled(0,52,37,15)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Horizontal
+        AutoResize = False
+      }
+      { Panel6 Panel
+        MoveScaled(0,68,37,8)
+        { btnpayto ButtonBox
+          MoveScaled(11,1,25,3)
+          Picture = Picture["icon:/small/people"]
+          ReadOnly = True
+        }
+        { Label13 Label
+          MoveScaled(1,1,9,3)
+          Border = Border.Plain
+          Text = ("Payable:")
+        }
+        { btnaddin Button
+          MoveScaled(11,4.75,25,3)
+          Text = ("Accept [Ctrl + A]")
+          Picture = Picture["icon:/small/add"]
+        }
+        { chkselall CheckBox
+          MoveScaled(1,4.75,9,3)
+          Text = ("All")
+        }
+      }
+    }
+    { Panel9 Panel
+      MoveScaled(37,2,1,71)
+      Expand = True
+      Arrangement = Arrange.Vertical
+    }
+    { Panel5 Panel
+      MoveScaled(38,1,83,77)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { Panel17 Panel
+        MoveScaled(0,1,81,4.5)
+        { !MessageView1 MessageView
+          MoveScaled(0,0,75,4)
+          #Public = True
+          Font = Font["Bold"]
+          Expand = True
+          Border = True
+        }
+        { btnbulkwork ToolButton
+          MoveScaled(76,0,3,3.5)
+          Picture = Picture["icon:/small/attach"]
+        }
+      }
       { Panel3 Panel
-        MoveScaled(0,0,83,11)
+        MoveScaled(0,6,83,11)
         { !txtencid TextBox
           MoveScaled(13,0.375,21,3)
           #Public = True
@@ -131,7 +257,7 @@
         }
       }
       { Panel10 Panel
-        MoveScaled(0,12,76.875,35.875)
+        MoveScaled(0,18,76.875,35.875)
         Expand = True
         Arrangement = Arrange.Vertical
         { GridView1 GridView
@@ -143,7 +269,7 @@
         }
       }
       { Panel4 Panel
-        MoveScaled(0,51,83,16)
+        MoveScaled(0,57,83,16)
         { cmbsamtype ComboBox
           MoveScaled(51,1.5,24,3)
           Sorted = True
@@ -238,128 +364,6 @@
           Picture = Picture["icon:/small/mail"]
         }
       }
-    }
-    { Panel7 Panel
-      MoveScaled(0,4,37,77)
-      Expand = True
-      Arrangement = Arrange.Vertical
-      { Panel14 Panel
-        MoveScaled(0,0,37,4)
-        { btnrefresh ToolButton
-          MoveScaled(25,0.375,3,3)
-          ToolTip = ("Refresh Request List [Shortcut is Ctrl+R]")
-          Picture = Picture["icon:/small/refresh"]
-        }
-        { btnsearch ToolButton
-          MoveScaled(29,0.375,3,3)
-          ToolTip = ("Search Patient Request by EncounterID [Shortcut is F1]")
-          Picture = Picture["icon:/small/find"]
-        }
-        { btnseartext ToolButton
-          MoveScaled(32,0.375,3,3)
-          Picture = Picture["icon:/small/find"]
-        }
-        { cmbcategory ComboBox
-          MoveScaled(0.25,0.375,24,3)
-          Sorted = True
-        }
-      }
-      { Panel12 Panel
-        MoveScaled(0,5,37,4)
-        { Panel13 Panel
-          MoveScaled(9.5,0.5,24,3)
-          { dtlisted DateBox
-            MoveScaled(0,0,14,3)
-          }
-          { dtneplist ToolButton
-            MoveScaled(14.375,0,3,3)
-            Picture = Picture["icon:/small/calendar"]
-          }
-          { txtrange SpinBox
-            MoveScaled(17.75,0,6,3)
-            MaxValue = 500
-          }
-        }
-        { chklist CheckBox
-          MoveScaled(1,0.5,8.625,3)
-          Text = ("Range")
-        }
-        { btnexpotree ToolButton
-          MoveScaled(34,0.5,3,3)
-          Picture = Picture["icon:/small/html"]
-        }
-      }
-      { Panel15 Panel
-        MoveScaled(0,10,37,4)
-        { cmbsourcedept ComboBox
-          MoveScaled(12,0.5,24,3)
-        }
-        { Label9 Label
-          MoveScaled(0,0.5,12,3)
-          Border = Border.Plain
-          Text = ("Department")
-        }
-      }
-      { Panel11 Panel
-        MoveScaled(0,15,37,3.5)
-        { rbencounter RadioButton
-          MoveScaled(1,0.25,10,3)
-          Text = ("Enc ID")
-        }
-        { rbinvoice RadioButton
-          MoveScaled(13,0.25,10,3)
-          Text = ("Invoice")
-        }
-        { rbindoor RadioButton
-          MoveScaled(26,0.25,10,3)
-          Text = ("Saved")
-          Value = True
-        }
-      }
-      { GridView2 GridView
-        MoveScaled(0,20,37,25)
-        Expand = True
-        Mode = Select.Single
-        Header = GridView.Horizontal
-        AutoResize = False
-      }
-      { Panel8 Panel
-        MoveScaled(0,45,37,2)
-      }
-      { GridView3 GridView
-        MoveScaled(0,47,37,15)
-        Expand = True
-        Mode = Select.Single
-        Header = GridView.Horizontal
-        AutoResize = False
-      }
-      { Panel6 Panel
-        MoveScaled(0,63,37,8)
-        { btnpayto ButtonBox
-          MoveScaled(11,1,25,3)
-          Picture = Picture["icon:/small/people"]
-          ReadOnly = True
-        }
-        { Label13 Label
-          MoveScaled(1,1,9,3)
-          Border = Border.Plain
-          Text = ("Payable:")
-        }
-        { btnaddin Button
-          MoveScaled(11,4.75,25,3)
-          Text = ("Accept [Ctrl + A]")
-          Picture = Picture["icon:/small/add"]
-        }
-        { chkselall CheckBox
-          MoveScaled(1,4.75,9,3)
-          Text = ("All")
-        }
-      }
-    }
-    { Panel9 Panel
-      MoveScaled(37,5,1,71)
-      Expand = True
-      Arrangement = Arrange.Vertical
     }
   }
 }

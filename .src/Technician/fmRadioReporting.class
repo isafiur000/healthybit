@@ -27,6 +27,7 @@ Public Sub Form_Open()
   Dim xoption1 As String
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
+  Panel5.Width = Panel1.Width - (Panel3.Width + Panel6.Width)
   Me.Icon = Picture[modGeneralMain.$strLogo]
   btnhistory.Menu = "mnuhistory"
   cmbcategory.List = modMedicine.GetPathoCategoryList("Radio")

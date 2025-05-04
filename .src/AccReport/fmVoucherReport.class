@@ -17,6 +17,7 @@ Public Sub Form_Open()
   Dim xhospfld As String
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
+  Panel8.Width = Panel1.Width - (Panel5.Width + Panel9.Width)
   Me.Icon = Picture[modGeneralMain.$strLogo]
 
   cmbpayer.List = modControlSub.GetDirectFillresult(modDatabase.$syConn.Exec("select fldpayername as col from tblextrapayers"))

@@ -654,6 +654,8 @@ End
 
 Public Sub btnbrowser_Click()
 
+  modSettings.SaveSettingsToFile("AppSetting/WebViewerApp", cmbreportview.Text)
+  modBasic.$WebViewApp = cmbreportview.Text
   modSettings.SaveSettingsToFile("AppSetting/ReportBrowser", cmbrowser.Text)
   modBasic.$browserFormat = cmbrowser.Text
   Balloon.Info(("Information saved"), btnbrowser)
@@ -698,11 +700,6 @@ Public Sub btncompon_Click()
 End
 
 Public Sub btnreportview_Click()
-
-  modSettings.SaveSettingsToFile("AppSetting/WebViewerApp", cmbreportview.Text)
-  modBasic.$WebViewApp = cmbreportview.Text
-  Balloon.Info(("Information saved"), btnreportview)
-  Balloon.Delay = modBasic.$BalloonDelay
 
 End
 
@@ -909,11 +906,11 @@ Private Sub ShowAllUserSetting()
   If modSettings.ShowSettingFromFIle("Application/LeftPanel_Width") Then
     txtleftpanel.Value = CInt(modSettings.ShowSettingFromFIle("Application/LeftPanel_Width"))
   Endif
-  If modSettings.ShowSettingFromFIle("Application/WebView_Zoom") Then
-    txtwebzoom.Value = CInt(modSettings.ShowSettingFromFIle("Application/WebView_Zoom"))
-  Endif
   If modSettings.ShowSettingFromFIle("GeneralSettings/BalloonDelay") Then
     txtbaloon.Value = CInt(modSettings.ShowSettingFromFIle("GeneralSettings/BalloonDelay"))
+  Endif
+  If modSettings.ShowSettingFromFIle("Application/DeskWidth") Then
+    txtdeskwidth.Value = CInt(modSettings.ShowSettingFromFIle("Application/DeskWidth"))
   Endif
   If modSettings.ShowSettingFromFIle("Application/DeskHeightFactor") Then
     txtdeskht.Value = CInt(modSettings.ShowSettingFromFIle("Application/DeskHeightFactor"))
@@ -1016,15 +1013,6 @@ Public Sub btnconntime_Click()
 
 End
 
-Public Sub btnwebzoom_Click()
-
-  modSettings.SaveSettingsToFile("Application/WebView_Zoom", CStr(txtwebzoom.Value))
-  modBasic.$WebZoomValue = txtwebzoom.Value / 100
-  Balloon.Info(("Information saved"), btnwebzoom)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
 Public Sub btnleftpanel_Click()
 
   If txtleftpanel.Value > (modGeneralMain.$DeskWidth - (960 * modBasic.$AppScaleFactor)) Then
@@ -1042,6 +1030,14 @@ Private Sub SetLeftPanelWidth()
   modSettings.SaveSettingsToFile("Application/LeftPanel_Width", CStr(txtleftpanel.Value))
   modBasic.$FormLeftWidth = txtleftpanel.Value
   Balloon.Info(("Information saved"), btnleftpanel)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btndeskwidth_Click()
+
+  modSettings.SaveSettingsToFile("Application/DeskWidth", CStr(txtdeskwidth.Value))
+  Balloon.Info(("Information saved"), btndeskwidth)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -1072,6 +1068,9 @@ Private Sub ShowOptionSettings()
 
   cmbbothside.Text = modSettings.ShowSettingFromFIle("GeneralSettings/GridViewSearch")
   cmbrowheight.Text = modSettings.ShowSettingFromFIle("GeneralSettings/ResizeRowheight")
+  If modSettings.ShowSettingFromFIle("GeneralSettings/WebView_Zoom") Then
+    txtwebzoom.Value = CInt(modSettings.ShowSettingFromFIle("GeneralSettings/WebView_Zoom"))
+  Endif
   cmbencprefix.Text = modSettings.ShowSettingFromFIle("GeneralSettings/AutoEncounterPrefix")
   modSettings.ShowCheckBox(cmbtablet, "GeneralSettings/EnableTabletMode")
   modSettings.ShowCheckBox(chkautorefresh, "GeneralSettings/EnableAutoRefresh")
@@ -1247,6 +1246,15 @@ Public Sub btnrwheight_Click()
   modSettings.SaveSettingsToFile("GeneralSettings/ResizeRowheight", cmbrowheight.Text)
   modBasic.$RichtextResizeRow = cmbrowheight.Text
   Balloon.Info(("Information saved"), btnrwheight)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnwebzoom_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/WebView_Zoom", CStr(txtwebzoom.Value))
+  modBasic.$WebZoomValue = txtwebzoom.Value / 100
+  Balloon.Info(("Information saved"), btnwebzoom)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

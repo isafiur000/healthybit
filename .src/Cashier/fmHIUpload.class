@@ -980,7 +980,7 @@ Private Sub AutoUploadDocuments(sClaim As String, encid As String)
 
   res = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval from " & $tblpatreport & " where fldencounterval like &1 and (fldcateg like &2 or fldcateg like &3) and (flvisible=&4 or flvisible IS NULL)", encid, "General Reports", "Scanned Images", "Visible")
   If res.Available Then
-    For Each
+    For Each res
       aOutPath = ""
       xFilePath = ""
       xFilePath = modImage.GetBlobFileData(res["fldid"], $tblpatreport)

@@ -16,6 +16,7 @@ End
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
+  Panel3.Width = Panel1.Width - (Panel6.Width + Panel4.Width)
   Me.Icon = Picture[modGeneralMain.$strLogo]
   Me.Title = $sType
   Me.Tag = $sType

@@ -387,7 +387,7 @@
       MoveScaled(1,15,120,59)
       Enabled = False
       Expand = True
-      Arrangement = Arrange.Column
+      Arrangement = Arrange.Horizontal
       Count = 7
       Index = 0
       Text = ("New Delivery[F1]")
@@ -397,200 +397,216 @@
         Arrangement = Arrange.Vertical
         { Panel4 Panel
           MoveScaled(0,0,119,35)
-          { btnphysician ButtonBox
-            MoveScaled(18,0,31,3)
-            Picture = Picture["icon:/small/people"]
-            ReadOnly = True
-          }
-          { cmbattentype ComboBox
-            MoveScaled(18,3.5,28,3)
-            Sorted = True
-          }
-          { cmbnurse ComboBox
-            MoveScaled(18,7,28,3)
-            Sorted = True
-          }
-          { dtdelivery DateBox
-            MoveScaled(18,10.5,28,3)
-            Mode = DateChooser.DateTime
-          }
-          { cmbdeltype ComboBox
-            MoveScaled(18,14,28,3)
-            Sorted = True
-          }
-          { cmbpresent ComboBox
-            MoveScaled(18,17.5,31,3)
-          }
-          { cmbdelbaby ComboBox
-            MoveScaled(18,21,31,3)
-          }
-          { cmbcomplicat ComboBox
-            MoveScaled(18,24.5,28,3)
-            Sorted = True
-          }
-          { txtdelwt ValueBox
-            MoveScaled(71,28,10,3)
-          }
-          { txtdelblloss ValueBox
-            MoveScaled(71,31.5,10,3)
-          }
-          { txtdelicomment TextHTML
-            MoveScaled(50,4,68,23)
-            Tag = "Auto"
-          }
-          { btnaddbaby Button
-            MoveScaled(82,31.5,12,3)
-            Text = ("Add")
-            Picture = Picture["icon:/small/add"]
-          }
-          { btneditbaby Button
-            MoveScaled(95,31.5,12,3)
-            Text = ("Edit")
-            Picture = Picture["icon:/small/edit"]
-          }
-          { Label6 Label
-            MoveScaled(50,0.625,11,3)
-            Border = Border.Plain
-            Text = ("Comment")
-          }
-          { Label13 Label
-            MoveScaled(0,0,17,3)
-            Border = Border.Plain
-            Text = ("Consultant")
-          }
-          { Label14 Label
-            MoveScaled(0,3.5,17,3)
-            Border = Border.Plain
-            Text = ("Attendant Type*")
-          }
-          { Label1 Label
-            MoveScaled(0,10.5,17,3)
-            Border = Border.Plain
-            Text = ("Delivery Time")
-          }
-          { dtnepfir ToolButton
-            MoveScaled(46,10.5,3,3)
-            Picture = Picture["icon:/small/calendar"]
-          }
-          { Label2 Label
-            MoveScaled(0,14,17,3)
-            Border = Border.Plain
-            Text = ("Delivery Type*")
-          }
-          { btndeltype ToolButton
-            MoveScaled(46,14,3,3)
-            Picture = Picture["icon:/small/add"]
-          }
-          { Label3 Label
-            MoveScaled(0,21,17,3)
-            Border = Border.Plain
-            Text = ("Delivered Baby*")
-          }
-          { Label7 Label
-            MoveScaled(0,24.5,17,3)
-            Border = Border.Plain
-            Text = ("Baby Condition")
-          }
-          { Label8 Label
-            MoveScaled(82,28,5,3)
-            Border = Border.Plain
-            Text = ("gram")
-          }
-          { Label4 Label
-            MoveScaled(50,31.5,20,3)
-            Border = Border.Plain
-            Text = ("Blood Loss (mL)")
-          }
-          { Panel3 Panel
-            MoveScaled(97,28,21,2.75)
-            Border = Border.Plain
-            { rbsi RadioButton
-              MoveScaled(0,0,10,2.75)
-              Text = ("SI Unit")
-              Value = True
+          Arrangement = Arrange.Horizontal
+          { Panel29 Panel
+            MoveScaled(0,0,49.875,35.375)
+            { btnphysician ButtonBox
+              MoveScaled(18,0,31,3)
+              Picture = Picture["icon:/small/people"]
+              ReadOnly = True
             }
-            { rbmetric RadioButton
-              MoveScaled(11,0,10,2.75)
-              Text = ("Metric")
+            { Label14 Label
+              MoveScaled(0,3.5,17,3)
+              Border = Border.Plain
+              Text = ("Attendant Type*")
             }
-          }
-          { btndelcomment ToolButton
-            MoveScaled(66,0.625,3,3)
-            Picture = Picture["icon:/small/exec"]
-          }
-          { Panel18 Panel
-            MoveScaled(97,0.625,21,2.75)
-            Border = Border.Plain
-            { rbsingle RadioButton
-              MoveScaled(0,0,9,2.75)
-              Text = ("Single")
-              Value = True
+            { cmbattentype ComboBox
+              MoveScaled(18,3.5,28,3)
+              Sorted = True
             }
-            { rbmultiple RadioButton
-              MoveScaled(10,0,11,2.75)
-              Text = ("Multiple")
+            { Label18 Label
+              MoveScaled(0,7,17,3)
+              Border = Border.Plain
+              Text = ("Attendant Name")
+            }
+            { cmbnurse ComboBox
+              MoveScaled(18,7,28,3)
+              Sorted = True
+            }
+            { btnaddnurse ToolButton
+              MoveScaled(46,7,3,3)
+              Picture = Picture["icon:/small/add"]
+            }
+            { Label1 Label
+              MoveScaled(0,10.5,17,3)
+              Border = Border.Plain
+              Text = ("Delivery Time")
+            }
+            { dtdelivery DateBox
+              MoveScaled(18,10.5,28,3)
+              Mode = DateChooser.DateTime
+            }
+            { dtnepfir ToolButton
+              MoveScaled(46,10.5,3,3)
+              Picture = Picture["icon:/small/calendar"]
+            }
+            { Label2 Label
+              MoveScaled(0,14,17,3)
+              Border = Border.Plain
+              Text = ("Delivery Type*")
+            }
+            { cmbdeltype ComboBox
+              MoveScaled(18,14,28,3)
+              Sorted = True
+            }
+            { btndeltype ToolButton
+              MoveScaled(46,14,3,3)
+              Picture = Picture["icon:/small/add"]
+            }
+            { Label17 Label
+              MoveScaled(0,17.5,17,3)
+              Border = Border.Plain
+              Text = ("Presentation")
+            }
+            { cmbpresent ComboBox
+              MoveScaled(18,17.5,31,3)
+            }
+            { Label3 Label
+              MoveScaled(0,21,17,3)
+              Border = Border.Plain
+              Text = ("Delivered Baby*")
+            }
+            { cmbdelbaby ComboBox
+              MoveScaled(18,21,31,3)
+            }
+            { Label7 Label
+              MoveScaled(0,24.5,17,3)
+              Border = Border.Plain
+              Text = ("Baby Condition")
+            }
+            { cmbcomplicat ComboBox
+              MoveScaled(18,24.5,28,3)
+              Sorted = True
+            }
+            { btncomplicat ToolButton
+              MoveScaled(46,24.5,3,3)
+              Picture = Picture["icon:/small/add"]
+            }
+            { Label19 Label
+              MoveScaled(0,28,17,3)
+              Border = Border.Plain
+              Text = ("Cong. Anomalies")
+            }
+            { cmbdeformity ComboBox
+              MoveScaled(18,28,28,3)
+              Sorted = True
+            }
+            { btndeformity ToolButton
+              MoveScaled(46,28,3,3)
+              Picture = Picture["icon:/small/add"]
+            }
+            { Label20 Label
+              MoveScaled(0,31.5,17,3)
+              Border = Border.Plain
+              Text = ("Labour Induction")
+            }
+            { cmblabour ComboBox
+              MoveScaled(18,31.5,28,3)
+              Sorted = True
+            }
+            { btnlabour ToolButton
+              MoveScaled(46,31.5,3,3)
+              Picture = Picture["icon:/small/add"]
+            }
+            { Label13 Label
+              MoveScaled(0,0,17,3)
+              Border = Border.Plain
+              Text = ("Consultant")
             }
           }
-          { dctdelcomment ToolButton
-            MoveScaled(62,0.625,3,3)
-            Picture = Picture["icon:/small/edit"]
-          }
-          { Label16 Label
-            MoveScaled(50,28,20,3)
-            Border = Border.Plain
-            Text = ("Wt of Baby/Placenta")
-          }
-          { btncomplicat ToolButton
-            MoveScaled(46,24.5,3,3)
-            Picture = Picture["icon:/small/add"]
-          }
-          { btntempldelcomm ToolButton
-            MoveScaled(70,0.625,3,3)
-            Picture = Picture["icon:/small/attach"]
-          }
-          { btnaddnurse ToolButton
-            MoveScaled(46,7,3,3)
-            Picture = Picture["icon:/small/add"]
-          }
-          { Label17 Label
-            MoveScaled(0,17.5,17,3)
-            Border = Border.Plain
-            Text = ("Presentation")
-          }
-          { Label18 Label
-            MoveScaled(0,7,17,3)
-            Border = Border.Plain
-            Text = ("Attendant Name")
-          }
-          { Label19 Label
-            MoveScaled(0,28,17,3)
-            Border = Border.Plain
-            Text = ("Cong. Anomalies")
-          }
-          { cmbdeformity ComboBox
-            MoveScaled(18,28,28,3)
-            Sorted = True
-          }
-          { btndeformity ToolButton
-            MoveScaled(46,28,3,3)
-            Picture = Picture["icon:/small/add"]
-          }
-          { Label20 Label
-            MoveScaled(0,31.5,17,3)
-            Border = Border.Plain
-            Text = ("Labour Induction")
-          }
-          { cmblabour ComboBox
-            MoveScaled(18,31.5,28,3)
-            Sorted = True
-          }
-          { btnlabour ToolButton
-            MoveScaled(46,31.5,3,3)
-            Picture = Picture["icon:/small/add"]
+          { Panel28 Panel
+            MoveScaled(50,1,70,31)
+            Expand = True
+            Arrangement = Arrange.Vertical
+            { Panel26 Panel
+              MoveScaled(0,0,68.875,3.875)
+              { dctdelcomment ToolButton
+                MoveScaled(12,0.5,3,3)
+                Picture = Picture["icon:/small/edit"]
+              }
+              { btndelcomment ToolButton
+                MoveScaled(16,0.5,3,3)
+                Picture = Picture["icon:/small/exec"]
+              }
+              { btntempldelcomm ToolButton
+                MoveScaled(20,0.5,3,3)
+                Picture = Picture["icon:/small/attach"]
+              }
+              { Panel18 Panel
+                MoveScaled(47,0.5,21,2.75)
+                Border = Border.Plain
+                { rbsingle RadioButton
+                  MoveScaled(0,0,9,2.75)
+                  Text = ("Single")
+                  Value = True
+                }
+                { rbmultiple RadioButton
+                  MoveScaled(10,0,11,2.75)
+                  Text = ("Multiple")
+                }
+              }
+              { Label6 Label
+                MoveScaled(0,0.5,11,3)
+                Border = Border.Plain
+                Text = ("Comment")
+              }
+            }
+            { txtdelicomment TextHTML
+              MoveScaled(0,5,68,12)
+              Tag = "Auto"
+              Expand = True
+            }
+            { Panel27 Panel
+              MoveScaled(0,20,68.875,7.375)
+              { Label8 Label
+                MoveScaled(32,0,5,3)
+                Border = Border.Plain
+                Text = ("gram")
+              }
+              { txtdelwt ValueBox
+                MoveScaled(21,0,10,3)
+              }
+              { Label16 Label
+                MoveScaled(0,0,20,3)
+                Border = Border.Plain
+                Text = ("Wt of Baby/Placenta")
+              }
+              { Label4 Label
+                MoveScaled(0,3.5,20,3)
+                Border = Border.Plain
+                Text = ("Blood Loss (mL)")
+              }
+              { txtdelblloss ValueBox
+                MoveScaled(21,3.5,10,3)
+              }
+              { btnaddbaby Button
+                MoveScaled(32,3.5,12,3)
+                Text = ("Add")
+                Picture = Picture["icon:/small/add"]
+              }
+              { btneditbaby Button
+                MoveScaled(45,3.5,12,3)
+                Text = ("Edit")
+                Picture = Picture["icon:/small/edit"]
+              }
+              { Panel3 Panel
+                MoveScaled(47,0,21,2.75)
+                Border = Border.Plain
+                { rbsi RadioButton
+                  MoveScaled(0,0,10,2.75)
+                  Text = ("SI Unit")
+                  Value = True
+                }
+                { rbmetric RadioButton
+                  MoveScaled(11,0,10,2.75)
+                  Text = ("Metric")
+                }
+              }
+            }
           }
         }
         { GridView3 GridView
-          MoveScaled(0,36,118,12)
+          MoveScaled(0,39,118,12)
           Expand = True
           Mode = Select.Single
           Header = GridView.Both
@@ -601,10 +617,9 @@
       Text = ("Pre Delivery[F2]")
       { Panel6 Panel
         MoveScaled(0,1,29,48)
-        Expand = True
         Arrangement = Arrange.Vertical
         { lstpredel GridView
-          MoveScaled(0,0,29,43)
+          MoveScaled(0,0,29,30)
           Expand = True
           Mode = Select.Single
           Header = GridView.Horizontal
@@ -625,7 +640,6 @@
       }
       { Panel7 Panel
         MoveScaled(29,1,2,48)
-        Expand = True
         Arrangement = Arrange.Vertical
       }
       { grdpredel GridView
@@ -639,10 +653,9 @@
       Text = ("On Delivery[F3]")
       { Panel8 Panel
         MoveScaled(0,1,29,48)
-        Expand = True
         Arrangement = Arrange.Vertical
         { lstondel GridView
-          MoveScaled(0,0,29,44)
+          MoveScaled(0,0,29,25)
           Expand = True
           Mode = Select.Single
           Header = GridView.Horizontal
@@ -663,7 +676,6 @@
       }
       { Panel9 Panel
         MoveScaled(29,0,2,48)
-        Expand = True
         Arrangement = Arrange.Vertical
       }
       { grdondel GridView
@@ -677,10 +689,9 @@
       Text = ("Post Delivery[F4]")
       { Panel11 Panel
         MoveScaled(1,1,29,48)
-        Expand = True
         Arrangement = Arrange.Vertical
         { lstpostdel GridView
-          MoveScaled(-1,0,29,44)
+          MoveScaled(-1,0,29,26)
           Expand = True
           Mode = Select.Single
           Header = GridView.Horizontal
@@ -701,7 +712,6 @@
       }
       { Panel10 Panel
         MoveScaled(29,0,2,48)
-        Expand = True
         Arrangement = Arrange.Vertical
       }
       { grdpostdel GridView
@@ -715,7 +725,6 @@
       Text = ("New Born[F5]")
       { Panel13 Panel
         MoveScaled(0,0,29,49)
-        Expand = True
         Arrangement = Arrange.Vertical
         { Panel2 Panel
           MoveScaled(0,0,29,9)
@@ -742,7 +751,7 @@
           }
         }
         { lstbabyexam GridView
-          MoveScaled(0,10,29,33)
+          MoveScaled(0,10,29,20)
           Expand = True
           Mode = Select.Single
           Header = GridView.Horizontal
@@ -763,7 +772,6 @@
       }
       { Panel15 Panel
         MoveScaled(29,0,2,48)
-        Expand = True
         Arrangement = Arrange.Vertical
       }
       { Panel14 Panel
@@ -878,7 +886,7 @@
           }
         }
         { GridView5 GridView
-          MoveScaled(0,5,118,46)
+          MoveScaled(1,7,100,32)
           Expand = True
           Mode = Select.Single
           Header = GridView.Both
@@ -889,10 +897,9 @@
       Text = ("Complications [F7]")
       { Panel23 Panel
         MoveScaled(0,0,29,48)
-        Expand = True
         Arrangement = Arrange.Vertical
         { grdtreecompl ListBox
-          MoveScaled(0,0,29,44)
+          MoveScaled(0,0,29,32)
           Expand = True
         }
         { Panel24 Panel
@@ -911,7 +918,6 @@
       }
       { Panel25 Panel
         MoveScaled(29,0,2,48)
-        Expand = True
         Arrangement = Arrange.Vertical
       }
       { grdcompl GridView

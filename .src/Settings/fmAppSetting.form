@@ -509,12 +509,12 @@
       Text = ("Media Path")
     }
     { txtdict ButtonBox
-      MoveScaled(16,5,37,3)
+      MoveScaled(16,5,43,3)
       ToolTip = ("Dictionary text file for Text Editor.  \nThe setting can be different for different users.")
       Picture = Picture["icon:/small/select"]
     }
     { btndict ToolButton
-      MoveScaled(55,5,3,3)
+      MoveScaled(60,5,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label3 Label
@@ -554,15 +554,15 @@
       List = [("Top"), ("Bottom")]
     }
     { btnmedview ToolButton
-      MoveScaled(55,13,3,3)
+      MoveScaled(60,13,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { cmbrowser ComboBox
-      MoveScaled(23,17,20,3)
+      MoveScaled(44,17,14,3)
       ToolTip = ("Display format for HTML report.  \nThe setting can be different for different users.")
     }
     { btnbrowser ToolButton
-      MoveScaled(44,17,3,3)
+      MoveScaled(60,17,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label7 Label
@@ -576,7 +576,7 @@
       Sorted = True
     }
     { btnspread ToolButton
-      MoveScaled(55,21,3,3)
+      MoveScaled(60,21,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label63 Label
@@ -595,7 +595,7 @@
     { Label74 Label
       MoveScaled(1,17,21,3)
       Border = Border.Plain
-      Text = ("Select Report Viewer")
+      Text = ("Report Viewer")
     }
     { chkgridpos CheckBox
       MoveScaled(44,13,10,3)
@@ -607,11 +607,11 @@
       Text = ("Word List")
     }
     { txtmediapath ButtonBox
-      MoveScaled(16,9,37,3)
+      MoveScaled(16,9,43,3)
       Picture = Picture["icon:/small/select"]
     }
     { btnmediapath ToolButton
-      MoveScaled(55,9,3,3)
+      MoveScaled(60,9,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { chkexport CheckBox
@@ -631,7 +631,7 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label82 Label
-      MoveScaled(1,41,20,3)
+      MoveScaled(1,41,21,3)
       Border = Border.Plain
       Text = ("Enable Java Script")
     }
@@ -643,28 +643,19 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label96 Label
-      MoveScaled(1,49,20,3)
+      MoveScaled(1,45,21,3)
       Border = Border.Plain
       Text = ("Components Form")
     }
     { cmbcompon ComboBox
-      MoveScaled(23,49,20,3)
-    }
-    { btncompon ToolButton
-      MoveScaled(44,49,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label97 Label
-      MoveScaled(1,45,20,3)
-      Border = Border.Plain
-      Text = ("Report Viewer")
-    }
-    { cmbreportview ComboBox
       MoveScaled(23,45,20,3)
     }
-    { btnreportview ToolButton
+    { btncompon ToolButton
       MoveScaled(44,45,3,3)
       Picture = Picture["icon:/small/apply"]
+    }
+    { cmbreportview ComboBox
+      MoveScaled(23,17,20,3)
     }
     Index = 3
     Text = ("Scripts")
@@ -1154,6 +1145,18 @@
       MoveScaled(30,45,3,3)
       Picture = Picture["icon:/small/apply"]
     }
+    { Label73 Label
+      MoveScaled(1,49,14,3)
+      Border = Border.Plain
+      Text = ("Zoom (%)")
+    }
+    { txtwebzoom ValueBox
+      MoveScaled(16,49,13,3)
+    }
+    { btnwebzoom ToolButton
+      MoveScaled(30,49,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
     Index = 5
     Text = ("Application")
     { Label54 Label
@@ -1250,15 +1253,15 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label64 Label
-      MoveScaled(1,41,18,3)
+      MoveScaled(1,37,18,3)
       Border = Border.Plain
       Text = ("Left Panel Width")
     }
     { txtleftpanel ValueBox
-      MoveScaled(21,41,9,3)
+      MoveScaled(21,37,9,3)
     }
     { btnleftpanel ToolButton
-      MoveScaled(32,41,3,3)
+      MoveScaled(32,37,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label43 Label
@@ -1292,18 +1295,6 @@
       MoveScaled(41,21,3,3)
       Picture = Picture["icon:/small/apply"]
     }
-    { Label73 Label
-      MoveScaled(1,37,18,3)
-      Border = Border.Plain
-      Text = ("WebView Zoom (%)")
-    }
-    { txtwebzoom ValueBox
-      MoveScaled(21,37,9,3)
-    }
-    { btnwebzoom ToolButton
-      MoveScaled(32,37,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
     { Label87 Label
       MoveScaled(1,45,18,3)
       Border = Border.Plain
@@ -1329,6 +1320,18 @@
     { btnwindobar ToolButton
       MoveScaled(36,49,3,3)
       Picture = Picture["icon:/small/apply"]
+    }
+    { Label97 Label
+      MoveScaled(1,41,18,3)
+      Border = Border.Plain
+      Text = ("Desk Width")
+    }
+    { btndeskwidth ToolButton
+      MoveScaled(32,41,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { txtdeskwidth ValueBox
+      MoveScaled(21,41,9,3)
     }
     Index = 6
     Text = ("App Cache")

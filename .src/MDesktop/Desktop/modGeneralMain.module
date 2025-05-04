@@ -10,6 +10,7 @@ Private $xslider As Slider
 Public Const $strLogo As String = "icon:/small/file"
 Public $DeskWidth As Integer
 Private $DeskHeight As Integer
+Private $DeskCustWidth As String
 Private $HideFormList As String[]
 Private $advForm As FmAdvertise
 
@@ -219,6 +220,7 @@ Public Sub LoadMainForms(frm As Form, pnltop As Panel, pnlleft As Panel, wrkoffi
   headback = modSettings.ShowUserWiseSettingFromFIle("AppSetting_DeskHeaderBackColor")
   headfont = modSettings.ShowUserWiseSettingFromFIle("AppSetting_DeskHeaderFont")
   xDeskFact = modSettings.ShowSettingFromFIle("Application/DeskHeightFactor")
+  $DeskCustWidth = modSettings.ShowSettingFromFIle("Application/DeskWidth")
 
   If modSettings.ShowSettingFromFIle("Application/ShowWindowTopBar") = "Enable" Then
     frm.Border = True
@@ -277,7 +279,11 @@ Public Sub LoadMainForms(frm As Form, pnltop As Panel, pnlleft As Panel, wrkoffi
 
   'main form workspace
   modBasic.DebugString("Setting Desk Workspace in " & frm.Text)
-  wrkofficer.Width = 960 * modBasic.$AppScaleFactor
+  If $DeskCustWidth Then
+    wrkofficer.Width = CInt($DeskCustWidth) * modBasic.$AppScaleFactor
+  Else
+    wrkofficer.Width = 960 * modBasic.$AppScaleFactor
+  Endif
 
   'advertise embedder
   modBasic.DebugString("Setting Advertisement Panel in " & frm.Text)
@@ -316,11 +322,19 @@ Public Sub LoadMainForms(frm As Form, pnltop As Panel, pnlleft As Panel, wrkoffi
     If MMain.$GovtApp = "Yes" Then
       xleftlen = 5 * modBasic.$AppScaleFactor
     Else
-      xleftlen = 0.5 * ($DeskWidth - 960 * modBasic.$AppScaleFactor)
+      If $DeskCustWidth Then
+        xleftlen = 0.5 * ($DeskWidth - CInt($DeskCustWidth) * modBasic.$AppScaleFactor)
+      Else
+        xleftlen = 0.5 * ($DeskWidth - 960 * modBasic.$AppScaleFactor)
+      Endif
     Endif
   Endif
   pnlleft.Width = xleftlen
-  pnlright.Width = $DeskWidth - (xleftlen + 960 * modBasic.$AppScaleFactor)
+  If $DeskCustWidth Then
+    pnlright.Width = $DeskWidth - (xleftlen + CInt($DeskCustWidth) * modBasic.$AppScaleFactor)
+  Else
+    pnlright.Width = $DeskWidth - (xleftlen + 960 * modBasic.$AppScaleFactor)
+  Endif
 
   'left webview
   xadleft = modBasic.$FormLeftAdv
@@ -451,7 +465,11 @@ Public Sub ArrangeEmbedForms(frm As Form, pnl As Panel, Optional sArrange As Str
   frm.Expand = True
   pnl.Top = 0
   pnl.Left = 0
-  pnl.Width = 960 * modBasic.$AppScaleFactor
+  If $DeskCustWidth Then
+    pnl.Width = CInt($DeskCustWidth) * modBasic.$AppScaleFactor
+  Else
+    pnl.Width = 960 * modBasic.$AppScaleFactor
+  Endif
   If frm.Menus.Count Then
     If frm.Menus.Visible = True Then
       pnl.Height = xwrkht - (60 * modBasic.$AppScaleFactor)

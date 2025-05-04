@@ -254,64 +254,73 @@
       }
     }
     { Panel8 Panel
-      MoveScaled(1,39,119,33)
-      { GridView2 GridView
-        MoveScaled(0,4,74,29)
-        Mode = Select.Single
-        Header = GridView.Both
-        AutoResize = False
-      }
-      { Panel12 Panel
-        MoveScaled(0,0,74,4)
-        { chkremove CheckBox
-          MoveScaled(1,0.5,9,3)
-          Text = ("Null")
+      MoveScaled(1,39,119,34)
+      Expand = True
+      Arrangement = Arrange.Horizontal
+      { Panel19 Panel
+        MoveScaled(0,0,71,30)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        { Panel12 Panel
+          MoveScaled(0,0,71,4)
+          { chkremove CheckBox
+            MoveScaled(1,0.5,9,3)
+            Text = ("Null")
+          }
+          { cmbremove ComboBox
+            MoveScaled(10.5,0.5,15,3)
+          }
+          { btnremove Button
+            MoveScaled(27,0.5,13,3)
+            Text = ("Deselect")
+          }
+          { chkselall CheckBox
+            MoveScaled(45,0.5,12,3)
+            Visible = False
+            Text = ("Select All")
+          }
+          { chkverifyall CheckBox
+            MoveScaled(58,0.5,12,3)
+            Visible = False
+            Text = ("Verify All")
+          }
         }
-        { cmbremove ComboBox
-          MoveScaled(10.5,0.5,15,3)
-        }
-        { btnremove Button
-          MoveScaled(28,0.5,13,3)
-          Text = ("Deselect")
-        }
-        { chkselall CheckBox
-          MoveScaled(48,0.5,12,3)
-          Visible = False
-          Text = ("Select All")
-        }
-        { chkverifyall CheckBox
-          MoveScaled(61,0.5,12,3)
-          Visible = False
-          Text = ("Verify All")
+        { GridView2 GridView
+          MoveScaled(2,6,64,20)
+          Expand = True
+          Mode = Select.Single
+          Header = GridView.Both
+          AutoResize = False
         }
       }
       { Panel17 Panel
-        MoveScaled(74,0,45,34)
+        MoveScaled(71,0,48,34)
+        Arrangement = Arrange.Vertical
         { Panel14 Panel
-          MoveScaled(1,0,44,4)
+          MoveScaled(1,0,46.5,4)
           { chkprinted CheckBox
-            MoveScaled(10,0.5,10,3)
+            MoveScaled(12,0.5,10,3)
             Text = ("Printed")
             Value = CheckBox.True
           }
           { chkmark CheckBox
-            MoveScaled(28,0.5,15,3)
+            MoveScaled(30,0.5,15,3)
             Text = ("Mark Printed")
           }
           { chknew CheckBox
-            MoveScaled(0.5,0.5,9,3)
+            MoveScaled(1,0.5,9,3)
             Text = ("New")
             Value = CheckBox.True
           }
         }
         { Panel15 Panel
-          MoveScaled(1,4,44,3.5)
+          MoveScaled(1,4,46.5,3.5)
           { cmbfootest ComboBox
-            MoveScaled(4.5,0,33,3)
+            MoveScaled(5,0,36,3)
             Sorted = True
           }
           { btnfootlist ToolButton
-            MoveScaled(40,0,3,3)
+            MoveScaled(42,0,3,3)
             Picture = Picture["icon:/small/select"]
           }
           { btncommlist ToolButton
@@ -319,70 +328,70 @@
             Picture = Picture["icon:/small/add"]
           }
         }
-        { Panel13 Panel
-          MoveScaled(1,29,44,4)
-          { btnftp Button
-            MoveScaled(13,0.5,10,3)
-            Enabled = False
-            ToolTip = ("Ctrl+M to send SMS and save report to FTP")
-            Text = ("Net")
-            Picture = Picture["icon:/small/network"]
-          }
-          { btnheadless ToolButton
-            MoveScaled(27,0.5,3,3)
-            Enabled = False
-            Picture = Picture["icon:/small/print"]
-          }
-          { btnreport Button
-            MoveScaled(31,0.5,12,3)
-            Enabled = False
-            Text = Shortcut(("Report"), "R")
-            Picture = Picture["icon:/small/text"]
-          }
-          { btnrecord Button
-            MoveScaled(0,0.5,12,3)
-            Enabled = False
-            ToolTip = ("Ctrl+A to save report to FTP")
-            Text = Shortcut(("Archive"), "A")
-            Picture = Picture["icon:/small/save"]
-          }
-        }
         { ScrollView1 ScrollView
-          MoveScaled(1,7.5,44,18)
+          MoveScaled(1,7.5,46,18)
           Expand = True
           { txtcomment TextHTML
             MoveScaled(0,0,98.25,17)
           }
         }
         { Panel6 Panel
-          MoveScaled(1,26,44,3)
+          MoveScaled(1,26,46.5,3)
           Border = Border.Plain
           { rbform1 RadioButton
-            MoveScaled(0,0,6.625,3)
+            MoveScaled(2,0,6.625,3)
             Text = ("A")
             Value = True
           }
           { rbform2 RadioButton
-            MoveScaled(8,0,6.375,3)
+            MoveScaled(10,0,6.375,3)
             Text = ("B")
           }
           { rbform3 RadioButton
-            MoveScaled(17,0,6.375,3)
+            MoveScaled(19,0,6.375,3)
             Text = ("C")
           }
           { rbform4 RadioButton
-            MoveScaled(26,0,6.375,3)
+            MoveScaled(27,0,6.375,3)
             Text = ("D")
           }
           { rbimage RadioButton
-            MoveScaled(34,0,9,3)
+            MoveScaled(36,0,9,3)
             Text = ("Image")
+          }
+        }
+        { Panel13 Panel
+          MoveScaled(1,29,46.5,4)
+          { btnftp Button
+            MoveScaled(14,0.5,10,3)
+            Enabled = False
+            ToolTip = ("Ctrl+M to send SMS and save report to FTP")
+            Text = ("Net")
+            Picture = Picture["icon:/small/network"]
+          }
+          { btnheadless ToolButton
+            MoveScaled(29,0.5,3,3)
+            Enabled = False
+            Picture = Picture["icon:/small/print"]
+          }
+          { btnreport Button
+            MoveScaled(33,0.5,12,3)
+            Enabled = False
+            Text = Shortcut(("Report"), "R")
+            Picture = Picture["icon:/small/text"]
+          }
+          { btnrecord Button
+            MoveScaled(1,0.5,12,3)
+            Enabled = False
+            ToolTip = ("Ctrl+A to save report to FTP")
+            Text = Shortcut(("Archive"), "A")
+            Picture = Picture["icon:/small/save"]
           }
         }
       }
     }
     { txtportal ButtonBox
-      MoveScaled(1,73,118,3)
+      MoveScaled(1,73.5,118,3)
       Picture = Picture["icon:/small/html"]
     }
   }
