@@ -1,0 +1,24 @@
+' Gambas class file
+
+Private $ReportPath As String
+Private ReportFile As File
+
+Public Sub _new()
+
+  $ReportPath = Temp()
+  ReportFile = Open $ReportPath For Write Create
+
+End
+
+Public Sub Add(sArry As String[])
+
+  Write #ReportFile, sArry.Join(gb.Tab) & gb.NewLine
+
+End
+
+Public Function GetCSVFile() As String
+
+  Close #ReportFile
+  Return $ReportPath
+
+End

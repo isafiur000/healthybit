@@ -87,7 +87,10 @@ Public Sub GetFirstValues(SvrSock As ServerSocket, SvrTrans As ServerSocket)
 
   ''run external scripts
   modScript.ExecStartUpScript()
-  modScript.GetRemoteDBLog()
+  If modHelpVariable.$UploadLoginLog = "No" Then
+  Else
+    modScript.GetRemoteDBLog()
+  Endif
 
   ''get advertise panels
   modAdvertise.GetSideAdvImage()

@@ -309,7 +309,7 @@
         MoveScaled(0,13,70,58)
         Expand = True
         Arrangement = Arrange.Vertical
-        Count = 3
+        Count = 4
         Index = 0
         Text = ("GridView")
         { GridView1 GridView
@@ -351,12 +351,21 @@
             Picture = Picture["icon:/small/menu"]
           }
         }
+        Index = 3
+        Text = ("Data View")
+        { GridView2 GridView
+          MoveScaled(0,0,60,53)
+          Expand = True
+          Mode = Select.Single
+          Header = GridView.Both
+          AutoResize = False
+        }
         Index = 0
       }
       { Panel3 Panel
         MoveScaled(0,72,79,3.375)
         { chkchart CheckBox
-          MoveScaled(16,0.375,15,3)
+          MoveScaled(15,0,15,3)
           Text = ("QTY Chart")
         }
         { chkgrid CheckBox
@@ -365,12 +374,16 @@
           Value = CheckBox.True
         }
         { chkchfreq CheckBox
-          MoveScaled(32,0.375,15,3)
+          MoveScaled(30,0,15,3)
           Text = ("Freq Chart")
         }
         { chkexcoutlier CheckBox
-          MoveScaled(48,0.375,15,3)
+          MoveScaled(63,0,15,3)
           Text = ("Set Limit")
+        }
+        { chkdataview CheckBox
+          MoveScaled(45,0,15,3)
+          Text = ("Data View")
         }
       }
     }

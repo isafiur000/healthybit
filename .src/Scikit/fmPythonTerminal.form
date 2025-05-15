@@ -32,48 +32,52 @@
         MoveScaled(26,1,93,23)
         Enabled = False
         { btnprocess Button
-          MoveScaled(54,19,15,3)
-          Text = ("Data Info")
+          MoveScaled(54,19,11,3)
+          Text = ("Info")
         }
         { Label5 Label
-          MoveScaled(1,5,31,3)
+          MoveScaled(54,1,31,3)
           Border = Border.Plain
           Text = ("Encode Ordinal Variables")
         }
         { Label6 Label
-          MoveScaled(1,1,31,3)
+          MoveScaled(1,5,31,3)
           Border = Border.Plain
           Text = ("Drop Rows with missing values")
         }
         { btnordinalencode ToolButton
-          MoveScaled(33,5,3,3)
+          MoveScaled(86,1,3,3)
           Picture = Picture["icon:/small/apply"]
         }
         { btndropmissing ToolButton
-          MoveScaled(33,1,3,3)
+          MoveScaled(33,5,3,3)
           Picture = Picture["icon:/small/apply"]
         }
         { Label7 Label
-          MoveScaled(53,1,31,3)
+          MoveScaled(1,9,31,3)
           Border = Border.Plain
           Text = ("Randomize Row sequence")
         }
         { btnrandomrow ToolButton
-          MoveScaled(85,1,3,3)
+          MoveScaled(33,9,3,3)
           Picture = Picture["icon:/small/apply"]
         }
         { btnshowdata Button
-          MoveScaled(70,19,15,3)
-          Text = ("Show Data")
+          MoveScaled(66,19,11,3)
+          Text = ("Data")
         }
-        { Label8 Label
-          MoveScaled(53,5,31,3)
+        { Label13 Label
+          MoveScaled(1,1,31,3)
           Border = Border.Plain
-          Text = ("Show Correlations")
+          Text = ("Drop Selected Columns")
         }
-        { btndatacorrelation ToolButton
-          MoveScaled(85,5,3,3)
-          Picture = Picture["icon:/small/apply"]
+        { btndropcolumns ToolButton
+          MoveScaled(33,1,3,3)
+          Picture = Picture["icon:/small/delete"]
+        }
+        { btndatacorrelation Button
+          MoveScaled(78,19,11,3)
+          Text = ("Corr")
         }
       }
       Index = 1
@@ -84,7 +88,7 @@
         Text = ("Model")
       }
       { cmbmodel ComboBox
-        MoveScaled(76,1,28,3)
+        MoveScaled(76,1,41,3)
       }
       { Label2 Label
         MoveScaled(1,5,12,3)
@@ -103,7 +107,7 @@
         Text = ("%")
       }
       { btnmodeltrain Button
-        MoveScaled(105,1,12,3)
+        MoveScaled(105,5,12,3)
         Enabled = False
         Text = ("Train")
       }
@@ -120,25 +124,29 @@
         Text = ("Split Data")
       }
       { pnresult Panel
-        MoveScaled(68,5,50,14)
+        MoveScaled(68,9,50,8)
         Enabled = False
         { btnshowaccuracy ToolButton
-          MoveScaled(33,1,3,3)
+          MoveScaled(32,0,3,3)
           Picture = Picture["icon:/small/apply"]
         }
         { btnshowscatterplot ToolButton
-          MoveScaled(33,5,3,3)
+          MoveScaled(32,4,3,3)
           Picture = Picture["icon:/small/apply"]
         }
         { Label10 Label
-          MoveScaled(1,5,31,3)
+          MoveScaled(0,4,31,3)
           Border = Border.Plain
-          Text = ("Show Scatter Plot")
+          Text = ("Show Result Plot")
         }
         { Label9 Label
-          MoveScaled(1,1,31,3)
+          MoveScaled(0,0,31,3)
           Border = Border.Plain
           Text = ("Show Accuracy Scores")
+        }
+        { btnopen ToolButton
+          MoveScaled(36,4,3,3)
+          Picture = Picture["icon:/small/image"]
         }
       }
       { Label11 Label
@@ -162,12 +170,31 @@
         MoveScaled(105,20,12,3)
         Text = ("View")
       }
+      { pnlmodel Panel
+        MoveScaled(68,5,36,3)
+        Visible = False
+        { lblmodel Label
+          MoveScaled(0,0,15,3)
+          Border = Border.Plain
+          Text = ("Train Data")
+        }
+        { txtmodel TextBox
+          MoveScaled(16,0,17,3)
+        }
+      }
       Index = 0
     }
-    { TerminalView1 TerminalView
-      MoveScaled(-1,29,121,44)
+    { Panel4 Panel
+      MoveScaled(-1,29,121,46)
       Expand = True
-      Blink = True
+      Arrangement = Arrange.Vertical
+      { TerminalView1 TerminalView
+        MoveScaled(0,0,85,24)
+        Background = Color.White
+        Foreground = Color.Black
+        Expand = True
+        Blink = True
+      }
     }
   }
 }

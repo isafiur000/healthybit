@@ -1,0 +1,345 @@
+' Gambas class file
+
+Private $sType As String
+Private $sHead As String[]
+Private $sPath As String
+
+Private $aHead As String[]
+Private $imgPath As String
+
+Public Sub _new(sType As String, sHeads As String[], sPath As String)
+
+  $sType = sType
+  $sHead = sHeads
+  $sPath = sPath
+
+End
+
+Public Sub Form_Open()
+
+  Dim i As Integer
+
+  modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
+  Me.Icon = Picture[modGeneralMain.$strLogo]
+  TerminalView1.Shell("ipython3")
+
+  $aHead = $sHead.Copy()
+  For i = 0 To $aHead.Count - 1
+    $aHead[i] = "'" & $aHead[i] & "'"
+  Next
+
+  cmbmodel.List = GetModelList($sType)
+  cmbsplitdata.List = ["X_train", "X_test", "Y_train", "Y_test"]
+
+End
+
+Private Sub GetModelList(sType As String) As String[]
+
+  Dim xlst As String[]
+
+  xlst = New String[]
+  xlst.Add("Linear Regression")
+  xlst.Add("Logistic Regression")
+  xlst.Add("Polynomial Regression")
+
+  xlst.Add("Support Vector Machine")
+  xlst.Add("K-Nearest Neighbours")
+  xlst.Add("Decision Tree Classifier")
+
+  Return xlst
+
+End
+
+Public Sub btndatainstall_Click()
+
+  Dim xList As String[]
+
+  xList = New String[]
+  xList.Add("ipython3")
+  xList.Add("python3-numpy")
+  xList.Add("python3-pandas")
+  xList.Add("python3-scipy")
+  xList.Add("python3-sklearn")
+  xList.Add("python3-matplotlib")
+  xList.Add("python3-seaborn")
+  xList.Add("python3-graphviz")
+  modApplSub.InstallSelectedApplication(xList)
+
+End
+
+Private Sub PressEnterKey()
+
+  TerminalView1.Input(Chr$(10))
+
+End
+
+Private Sub TerminalInput(cmd As String)
+
+  TerminalView1.Input(cmd)
+  PressEnterKey()
+
+End
+
+Private Sub TerminalInputList(cmdList As String[])
+
+  TerminalView1.Input(cmdList.Join(gb.NewLine))
+  PressEnterKey()
+
+End
+
+Public Sub Form_Close()
+
+  TerminalInput("exit")
+
+End
+
+''================================= Load data ===============
+Public Sub btndatainit_Click()
+
+  Dim xlibs As String[] = ["import numpy", "import pandas", "import sklearn", "import matplotlib", "import seaborn"]
+
+  TerminalInputList(xlibs)
+  btndataload.Enabled = True
+
+End
+
+Public Sub btndataload_Click()
+
+  Dim cmdLst As New String[]
+
+  cmdLst.Add("orig_data = pandas.read_csv(\"" & $sPath & "\", sep = '" & "\\" & "t" & "')")
+  cmdLst.Add("orig_data.columns = " & "[" & $aHead.Join(", ") & "]")
+  cmdLst.Add("orig_data")
+  TerminalInputList(cmdLst)
+
+  Panel3.Enabled = True
+
+End
+
+''======================== Data Processing ===========================
+Public Sub btndropcolumns_Click()
+
+  Dim xList As String[]
+  Dim xcmd As String
+  Dim i As Integer
+
+  xList = SelectListView("Columns to drop", $sHead, False)
+  If xList.Count Then
+    For i = 0 To xList.Count - 1
+      $sHead.Remove($sHead.Find(xList[i]))
+      xList[i] = "'" & xList[i] & "'"
+    Next
+    xcmd = "orig_data = orig_data.drop([" & xList.Join(", ") & "], axis = 1)"
+    TerminalInput(xcmd)
+  Endif
+
+End
+
+Public Sub btndropmissing_Click()
+
+  TerminalInput("orig_data = orig_data.dropna()")
+
+End
+
+Public Sub btnordinalencode_Click()
+
+  Dim cmdLst As New String[]
+  Dim xList As String[]
+  Dim aVal As String
+
+  xList = SelectListView("Variables to encode", $sHead, False)
+  If xList And If xList.Count Then
+    cmdLst.Add("from sklearn.preprocessing import OrdinalEncoder")
+    cmdLst.Add("ord_enc = OrdinalEncoder()")
+    For Each aVal In xList
+      cmdLst.Add("orig_data['" & aVal & "'] = ord_enc.fit_transform(orig_data[['" & aVal & "']]).astype('int')")
+    Next
+    TerminalInputList(cmdLst)
+  Endif
+
+End
+
+Public Sub btnrandomrow_Click()
+
+  TerminalInput("orig_data = orig_data.sample(frac = 1)")
+
+End
+
+Public Sub btndatacorrelation_Click()
+
+  TerminalInput("orig_data.corr()")
+
+End
+
+Public Sub btnprocess_Click()
+
+  TerminalInput("orig_data.info()")
+
+End
+
+Public Sub btnshowdata_Click()
+
+  TerminalInput("orig_data")
+
+End
+
+''==================================== Split dataand process =======================
+Public Sub TabPanel1_Click()
+
+  If TabPanel1.Index = 1 Then
+    cmbdependent.List = $sHead
+  Endif
+
+End
+
+Public Sub btnsplidata_Click()
+
+  Dim cmdLst As New String[]
+  Dim trainval As Float
+
+  If cmbdependent.Text Then
+    trainval = valtrain.Value / 100
+    cmdLst.Add("from sklearn.model_selection import train_test_split")
+    cmdLst.Add("Y_data = orig_data['" & cmbdependent.Text & "']")
+    cmdLst.Add("X_data = orig_data.drop(['" & cmbdependent.Text & "'], axis = 1)")
+    cmdLst.Add("X_train, X_test, Y_train, Y_test = train_test_split(X_data ,Y_data , train_size = " & trainval & ", random_state=42)")
+    TerminalInputList(cmdLst)
+
+    btnmodeltrain.Enabled = True
+  Endif
+
+End
+
+Public Sub btnnormalize_Click()
+
+  Dim cmdLst As New String[]
+
+  cmdLst.Add("from sklearn.preprocessing import StandardScaler")
+  cmdLst.Add("SScaler = StandardScaler()")
+  cmdLst.Add("X_train = SScaler.fit_transform(X_train)")
+  cmdLst.Add("X_test = SScaler.fit_transform(X_test)")
+  TerminalInputList(cmdLst)
+
+End
+
+Public Sub btnsplitshow_Click()
+
+  If cmbsplitdata.Text Then
+    TerminalInput(cmbsplitdata.Text)
+  Endif
+
+End
+
+''--------------------------- Model training ===============================
+Public Sub cmbmodel_Click()
+
+  Select cmbmodel.Text
+    Case "Linear Regression", "Logistic Regression"
+      pnlmodel.Visible = False
+    Case "Decision Tree Classifier"
+      pnlmodel.Visible = True
+      lblmodel.Text = "Max Depth"
+      txtmodel.Text = "2"
+  End Select
+
+End
+
+Public Sub btnmodeltrain_Click()
+
+  Dim cmdLst As New String[]
+
+  Inc Application.Busy
+  Select cmbmodel.Text
+    Case "Linear Regression"
+      cmdLst.Add("from sklearn.linear_model import LinearRegression")
+      cmdLst.Add("lin_reg = LinearRegression()")
+      cmdLst.Add("reg_model = lin_reg.fit(X_train, Y_train)")
+    Case "Logistic Regression"
+      cmdLst.Add("from sklearn.linear_model import LogisticRegression")
+      cmdLst.Add("log_reg = LogisticRegression()")
+      cmdLst.Add("reg_model = log_reg.fit(X_train, Y_train)")
+
+    Case "Support Vector Machine"
+      cmdLst.Add("from sklearn.svm import SVC")
+      cmdLst.Add("clf_svm = SVC()")
+      cmdLst.Add("clf_model = clf_svm.fit(X_train, Y_train)")
+
+    Case "K-Nearest Neighbours"
+
+    Case "Decision Tree Classifier"
+      cmdLst.Add("from sklearn import tree")
+      cmdLst.Add("from sklearn.tree import DecisionTreeClassifier")
+      cmdLst.Add(Subst("clf_tree = DecisionTreeClassifier(max_depth=&1)", Trim(txtmodel.Text)))
+      cmdLst.Add("clf_model = clf_tree.fit(X_train, Y_train)")
+  End Select
+  TerminalInputList(cmdLst)
+  Dec Application.Busy
+
+  pnresult.Enabled = True
+
+End
+
+Public Sub btnshowaccuracy_Click()
+
+  Select cmbmodel.Text
+    Case "Linear Regression", "Logistic Regression"
+      TerminalInput("print('Training Score = ', reg_model.score(X_train, Y_train))")
+      TerminalInput("print('Testing Score = ', reg_model.score(X_test, Y_test))")
+
+    Case "Support Vector Machine"
+      TerminalInput("from sklearn.metrics import confusion_matrix, accuracy_score, classification_report")
+      TerminalInput("print('Training Accuracy = ', accuracy_score(Y_train, clf_model.predict(X_train)))")
+
+      TerminalInput("Y_pred_test = clf_model.predict(X_test)")
+      TerminalInput("print('Testing Accuracy = ', accuracy_score(Y_test, Y_pred_test))")
+
+      TerminalInput("cm = confusion_matrix(Y_test, Y_pred_test)")
+      TerminalInput("cm")
+
+      TerminalInput("Y_arr = numpy.array(Y_test)")
+      TerminalInput("print(classification_report(Y_arr, Y_pred_test))")
+
+    Case "Decision Tree Classifier"
+      TerminalInput("from sklearn.metrics import confusion_matrix, accuracy_score, classification_report")
+      TerminalInput("print('Training Accuracy = ', accuracy_score(Y_train, clf_model.predict(X_train)))")
+
+      TerminalInput("Y_pred_test = clf_model.predict(X_test)")
+      TerminalInput("print('Testing Accuracy = ', accuracy_score(Y_test, Y_pred_test))")
+
+  End Select
+
+End
+
+Public Sub btnshowscatterplot_Click()
+
+  Dim cmdLst As New String[]
+
+  Select cmbmodel.Text
+    Case "Linear Regression", "Logistic Regression"
+      $imgPath = Temp() & ".png"
+      cmdLst.Add("Y_pred_train = reg_model.predict(X_train)")
+      cmdLst.Add("matplotlib.pyplot.plot(X_train, Y_pred_train, color = 'blue')")
+      cmdLst.Add("matplotlib.pyplot.plot(X_train, Y_train, color = 'red')")
+      cmdLst.Add("matplotlib.pyplot.title('Regression Plot')")
+      cmdLst.Add("matplotlib.pyplot.savefig('" & $imgPath & "', format='png')")
+      TerminalInputList(cmdLst)
+
+    Case "Support Vector Machine"
+
+    Case "Decision Tree Classifier"
+      cmdLst.Add("tree.plot_tree(clf_model)")
+      $imgPath = Temp() & ".dot"
+      cmdLst.Add("import graphviz")
+      cmdLst.Add(Subst("dot_data = tree.export_graphviz(clf_model, out_file='" & $imgPath & "', feature_names = list(X_train.columns))", $imgPath))
+      TerminalInputList(cmdLst)
+  End Select
+
+End
+
+Public Sub btnopen_Click()
+
+  If Exist($imgPath) Then
+    Desktop.Open($imgPath)
+  Endif
+
+End
