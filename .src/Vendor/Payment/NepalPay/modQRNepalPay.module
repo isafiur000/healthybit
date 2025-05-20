@@ -68,14 +68,12 @@ Public Sub GetMerchantParameters(sLedCode As String)
 
 End
 
-Public Sub AddNepalPayTransResponse(encid As String, sTraceID As String, sColl As Collection)
+Public Sub AddNepalPayTransResponse(encid As String, sTraceID As String, xColl As Collection)
 
   Dim res As Result
-  Dim xColl As Collection
 
-  xColl = sColl["responseBody"][0]
   res = modDatabase.$myConn.Create("tblwebpayment")
-  res["fldbillno"] = xColl["merchantBillNo"]
+  res["fldbillno"] = sTraceID
   res["fldencounterval"] = encid
   res["flditemid"] = sTraceID
   res["fldlink"] = ""

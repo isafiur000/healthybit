@@ -93,7 +93,10 @@ Public Sub GetFirstValues(SvrSock As ServerSocket, SvrTrans As ServerSocket)
   Endif
 
   ''get advertise panels
-  modAdvertise.GetSideAdvImage()
+  If modHelpVariable.$DownloadAdvertise = "No" Then
+  Else
+    modAdvertise.GetSideAdvImage()
+  Endif
   WebSettings[WebSettings.JavascriptCanAccessClipboard] = True
   WebSettings[WebSettings.JavascriptCanOpenWindows] = True
   If modBasic.$WebktEnableJS = "Yes" Then

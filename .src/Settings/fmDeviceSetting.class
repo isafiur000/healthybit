@@ -1600,6 +1600,8 @@ Public Sub txturlqrscan_Click()
 
   If cmbproviderqrscan.Text = "nepalpay" Then
     txturlqrscan.Text = "https://opennpi.connectips.com/qr/generateQR"
+  Else If cmbproviderqrscan.Text = "fonepay" Then
+    txturlqrscan.Text = "https://merchantapi.fonepay.com/api/merchant/merchantDetailsForThirdParty/thirdPartyDynamicQrDownload"
   Else If cmbproviderqrscan.Text = "Chanakya" Then
     txturlqrscan.Text = "http://182.93.94.7:3333/api/backend-connect-ips-qr/generateQR"
   Endif
@@ -1610,6 +1612,8 @@ Public Sub txtqueryqrscan_Click()
 
   If cmbproviderqrscan.Text = "nepalpay" Then
     txtqueryqrscan.Text = "https://opennpi.connectips.com/nQR/v1/merchanttxnreport"
+  Else If cmbproviderqrscan.Text = "fonepay" Then
+    txturlqrscan.Text = "https://merchantapi.fonepay.com/api/merchant/merchantDetailsForThirdParty/thirdPartyDynamicQrGetStatus"
   Endif
 
 End
