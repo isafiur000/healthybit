@@ -28,8 +28,6 @@ Public Sub Form_Open()
   Dim xcursor As String
   Dim xcont As Control
   Dim OBSwatchall As Observer
-  Dim xrank As String
-  Dim xunit As String
 
   modGeneralMain.ArrangeFormCentre(Me, "False", True)
   DisplayTextBoxEnableSetting()
@@ -50,14 +48,8 @@ Public Sub Form_Open()
     cmbcategory.Visible = True
     pnlpolice.Visible = True
     cmbcategory.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldcategory as col from tblcategorylist"))
-    xrank = modSettings.ShowSettingFromFIle("RegistrationForm/RankList")
-    If Exist(xrank) Then
-      cmbrank.List = modString.GetStringArrayFromFile(xrank)
-    Endif
-    xunit = modSettings.ShowSettingFromFIle("RegistrationForm/UnitList")
-    If Exist(xunit) Then
-      cmbunit.List = modString.GetStringArrayFromFile(xunit)
-    Endif
+    cmbrank.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select flditem as col from tblranks"))
+    cmbunit.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select flditem as col from tblunits"))
   Endif
   ''---------end ------------------------
 
@@ -3207,27 +3199,21 @@ End
 
 Public Sub btnrank_Click()
 
-  Dim xpath As String
+  Dim hForm As FmAddVariableGrid
 
-  If Dialog.OpenFile() Then Return
-  xpath = Dialog.Path
-  If Exist(xpath) Then
-    modSettings.SaveSettingsToFile("RegistrationForm/RankList", xpath)
-    cmbrank.List = modString.GetStringArrayFromFile(xpath)
-  Endif
+  hForm = New FmAddVariableGrid("flditem", "tblranks")
+  hForm.ShowModal()
+  cmbrank.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select flditem as col from tblranks"))
 
 End
 
 Public Sub btnunit_Click()
 
-  Dim xpath As String
+  Dim hForm As FmAddVariableGrid
 
-  If Dialog.OpenFile() Then Return
-  xpath = Dialog.Path
-  If Exist(xpath) Then
-    modSettings.SaveSettingsToFile("RegistrationForm/UnitList", xpath)
-    cmbunit.List = modString.GetStringArrayFromFile(xpath)
-  Endif
+  hForm = New FmAddVariableGrid("flditem", "tblunits")
+  hForm.ShowModal()
+  cmbunit.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select flditem as col from tblunits"))
 
 End
 

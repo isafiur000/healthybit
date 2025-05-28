@@ -144,10 +144,13 @@ Public Sub btnOK_Click()
   modBasic.$lbluser = Trim(txtuser.Text)
   modHelpVariable.$LogInCategory = cmbusname.Text
   modHelpVariable.CreateUserCacheDir(modBasic.$lbluser)
-  modScript.GetAdvertiseData()
 
   modHelpVariable.ConnectionMain()
   modGeneralMain.EnableCollectionCache()
+  If modHelpVariable.$DownloadAdvertise = "No" Then
+  Else
+    modScript.GetAdvertiseData()
+  Endif
   If modDatabase.$myConn.Opened = True Then
 
     xgo = modDBApp.DateTimeDiffChecking()

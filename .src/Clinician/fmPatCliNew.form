@@ -765,91 +765,85 @@
       }
       { Panel32 Panel
         MoveScaled(83,0,37,35)
-        { chkallergy CheckBox
-          MoveScaled(16,0,9,2.75)
-          ToolTip = ("Check it to view Drug Allergies from all encounters")
-          Text = ("All Enc")
-        }
-        { tlbtndelallergy ToolButton
-          MoveScaled(26.375,0,3,3)
-          ToolTip = ("Delete Allergic Drug")
-          Picture = Picture["icon:/small/cancel"]
-        }
-        { btnallergymanual ToolButton
-          MoveScaled(29.625,0,3,3)
-          ToolTip = ("Select Allergic Drugs")
-          Picture = Picture["icon:/small/add"]
-        }
-        { btnallergy ToolButton
-          MoveScaled(33,0,3,3)
-          ToolTip = ("Select Allergic Drugs")
-          Picture = Picture["icon:/small/add"]
-        }
-        { lstallergy ListBox
-          MoveScaled(0,3,36,7)
-          ScrollBar = Scroll.Both
-          Sorted = True
-        }
-        { Label13 Label
-          MoveScaled(0,11,14,3)
+        Arrangement = Arrange.Vertical
+        { Panel33 Panel
+          MoveScaled(0,0,36.875,3)
           Border = Border.Plain
-          Text = ("P Diagnosis [F7]")
-        }
-        { tlbtndeldises ToolButton
-          MoveScaled(18.75,11,3,3)
-          ToolTip = ("Delete Selected Diagnosis")
-          Picture = Picture["icon:/small/cancel"]
-        }
-        { btnregimen ToolButton
-          MoveScaled(22.5,11,3,3)
-          ToolTip = ("View Drug Regimen for Selected Diagnosis")
-          Picture = Picture["icon:/small/info"]
-        }
-        { btndismanual ToolButton
-          MoveScaled(26,11,3,3)
-          ToolTip = ("Free Typing of Diagnosis")
-          Picture = Picture["icon:/small/add"]
-        }
-        { tbnsyndro ToolButton
-          MoveScaled(29.375,11,3,3)
-          ToolTip = ("Create Diagnosis Text")
-          Picture = Picture["icon:/small/add"]
-        }
-        { tbndisease ToolButton
-          MoveScaled(33,11,3,3)
-          ToolTip = ("Select Diagnosis from List")
-          Picture = Picture["icon:/small/add"]
+          { tlbtndeldises ToolButton
+            MoveScaled(22.5,0,3,3)
+            ToolTip = ("Delete Selected Diagnosis")
+            Picture = Picture["icon:/small/cancel"]
+          }
+          { btndismanual ToolButton
+            MoveScaled(26,0,3,3)
+            ToolTip = ("Write Provisional Diagnosis")
+            Picture = Picture["icon:/small/add"]
+          }
+          { tbnsyndro ToolButton
+            MoveScaled(29.375,0,3,3)
+            ToolTip = ("Select Provisional Diagnosis")
+            Picture = Picture["icon:/small/add"]
+          }
+          { tbndisease ToolButton
+            MoveScaled(33,0,3,3)
+            ToolTip = ("Select Provisional Diagnosis from List")
+            Picture = Picture["icon:/small/add"]
+          }
+          { Label13 Label
+            MoveScaled(0,0,12,3)
+            Border = Border.Plain
+            Text = ("Diagnosis")
+          }
+          { btnfinaldiagno ToolButton
+            MoveScaled(12,0,3,3)
+            ToolTip = ("Select Final Diagnosis from List")
+            Picture = Picture["icon:/small/add"]
+          }
         }
         { pnlquanti Panel
-          MoveScaled(0,6,15,16)
+          MoveScaled(0,4,15,16)
           Visible = False
         }
-        { lsticdisease ListBox
-          MoveScaled(0,14,36,14)
-          ScrollBar = Scroll.Both
-          Sorted = True
+        { lsticdisease TreeView
+          MoveScaled(0,16,37,7)
+          Expand = True
         }
-        { btnfinaldiagno ButtonBox
-          MoveScaled(0,28.5,36,3)
-          Picture = Picture["icon:/small/attach"]
-        }
-        { Label1 Label
-          MoveScaled(0,0,13.625,3)
+        { Panel4 Panel
+          MoveScaled(0,26,36.875,3)
           Border = Border.Plain
-          Text = ("Allergy [F6]")
+          { tlbtndelallergy ToolButton
+            MoveScaled(26.375,0,3,3)
+            ToolTip = ("Delete Allergic Drug")
+            Picture = Picture["icon:/small/cancel"]
+          }
+          { btnallergymanual ToolButton
+            MoveScaled(29.625,0,3,3)
+            ToolTip = ("Select Allergic Drugs")
+            Picture = Picture["icon:/small/add"]
+          }
+          { btnallergy ToolButton
+            MoveScaled(33,0,3,3)
+            ToolTip = ("Select Allergic Drugs")
+            Picture = Picture["icon:/small/add"]
+          }
+          { Label1 Label
+            MoveScaled(0,0,12,3)
+            Border = Border.Plain
+            Text = ("Drug Allergy")
+          }
         }
         { Panel16 Panel
-          MoveScaled(0,31.5,36.875,3)
+          MoveScaled(0,31.5,36.875,3.5)
           { btnpharm Button
-            MoveScaled(13,0,12,3)
+            MoveScaled(13,0.5,12,3)
             Text = ("Pharm [F12]")
           }
           { btnradioreq Button
-            MoveScaled(26,0,10,3)
+            MoveScaled(26,0.5,10,3)
             Text = ("Radio")
           }
           { btnlab Button
-            MoveScaled(0,0,12,3)
+            MoveScaled(0,0.5,12,3)
             Text = ("Labs [F11]")
           }
         }

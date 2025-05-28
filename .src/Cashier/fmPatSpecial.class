@@ -10,19 +10,12 @@ End
 
 Public Sub Form_Open()
 
-  Dim xrank As String
-  Dim xunit As String
   Dim res As Result
 
   cmbcategory.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldcategory as col from tblcategorylist"))
-  xrank = modSettings.ShowSettingFromFIle("RegistrationForm/RankList")
-  If Exist(xrank) Then
-    cmbrank.List = modString.GetStringArrayFromFile(xrank)
-  Endif
-  xunit = modSettings.ShowSettingFromFIle("RegistrationForm/UnitList")
-  If Exist(xunit) Then
-    cmbunit.List = modString.GetStringArrayFromFile(xunit)
-  Endif
+  cmbrank.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select flditem as col from tblranks"))
+  cmbunit.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select flditem as col from tblunits"))
+
   res = modDatabase.$myConn.Exec("select fldcategory,fldrank,fldunit from tblpatientinfo where fldpatientval=&1", $sPatNo)                         ''
   If res.Available Then
     cmbcategory.Text = res["fldcategory"]

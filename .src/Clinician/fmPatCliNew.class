@@ -1,8 +1,13 @@
 ' Gambas class file
 
+Public $PatientComp As String
+
 Private $sClinIndex As Long
 Private $sClinMode As String
-Public $PatientComp As String
+Private $rSympRes As Result
+Private $aSympFields As String[]
+Private $rExamRes As Result
+Private $aExamFields As String[]
 
 Private $NumForm As FmQuantiEntry
 Private $focus As Boolean
@@ -285,8 +290,7 @@ Public Sub Timer1_Timer()
 
   If modBasic.$AutoRefreshEnable = "Yes" Then
     If txtencid.Text Then
-      lsticdisease.List = modPathoSub.GetProvisionalDiagnosisList(Trim(txtencid.Text))
-      lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
+      modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease)
       ShowEssentialExam()
       If TabPanel2.Index = 0 Then
         ShowSymptomData()
@@ -467,9 +471,7 @@ Public Sub BasicInfoPatient()
     Timer1.Enabled = True
     GetConsultParam()
     txthistory.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "History of Illness")
-    lsticdisease.List = modPathoSub.GetProvisionalDiagnosisList(Trim(txtencid.Text))
-    lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
-    SHowFinalDiagnosis()
+    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease)
     ShowSymptomData()
     ShowEssentialExam()
     FillExamtable()
@@ -932,15 +934,17 @@ Public Sub tlbtndeldises_Click()
   Dim res As Result
 
   If txtencid.Text Then
-    If lsticdisease.Text Then
+    If lsticdisease.Current.Text Then
       If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
-        res = modDatabase.$myConn.Edit("tblpatfindings", "fldcode=&1 and fldencounterval=&2 and fldtype=&3 and fldsave=&4", lsticdisease.Text, Trim(txtencid.Text), "Provisional Diagnosis", True)
-        res["fldsave"] = False
-        res["xyz"] = False
-        res.Update
-        lsticdisease.List = modPathoSub.GetProvisionalDiagnosisList(Trim(txtencid.Text))
-        Balloon.Delete(("Information deleted"), tlbtndeldises)
-        Balloon.Delay = modBasic.$BalloonDelay
+        res = modDatabase.$myConn.Edit("tblpatfindings", "fldcode=&1 and fldencounterval=&2 and fldtype=&3 and fldsave=&4", lsticdisease.Current.Text, Trim(txtencid.Text), "Provisional Diagnosis", True)
+        If res.Available Then
+          res["fldsave"] = False
+          res["xyz"] = False
+          res.Update
+          Balloon.Delete(("Information deleted"), tlbtndeldises)
+          Balloon.Delay = modBasic.$BalloonDelay
+          modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease)
+        Endif
       Endif
     Endif
   Endif
@@ -964,7 +968,7 @@ Public Sub tbndisease_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
-        lsticdisease.List = modPathoSub.GetProvisionalDiagnosisList(Trim(txtencid.Text))
+        modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease)
       Endif
     Endif
   Endif
@@ -994,7 +998,7 @@ Public Sub tbnsyndro_Click()
           Endif
         Endif
 
-        lsticdisease.List = modPathoSub.GetProvisionalDiagnosisList(Trim(txtencid.Text))
+        modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease)
       Endif
     Endif
   Endif
@@ -1009,30 +1013,32 @@ Public Sub btndismanual_Click()
     xx = InputBox(("Enter custom Provisional Diagnosis"), ("Provisional Diagnosis"), "")
     If xx Then
       modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
-      lsticdisease.List = modPathoSub.GetProvisionalDiagnosisList(Trim(txtencid.Text))
+      modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease)
     Endif
   Endif
 
 End
 
-Public Sub btnregimen_Click()
-
-  Dim hForm As FmDrugDose
-
-  If lsticdisease.Text Then
-    hForm = New FmDrugDose(Trim(txtencid.Text), lsticdisease.Text)
-    hForm.ShowModal
-  Endif
-
-End
+' Public Sub btnregimen_Click()
+'
+'   Dim hForm As FmDrugDose
+'
+'   If lsticdisease.Current.Text Then
+'     hForm = New FmDrugDose(Trim(txtencid.Text), lsticdisease.Current.Text)
+'     hForm.ShowModal
+'   Endif
+'
+' End
 
 ''final diagnosis
 Public Sub btnfinaldiagno_Click()
 
   Dim sName As String[]
+  Dim xList As String[]
 
   If txtencid.Text Then
-    If lsticdisease.List.Count Then
+    xList = modPathoSub.GetProvisionalDiagnosisList(Trim(txtencid.Text))
+    If xList.Count Then
       If MMain.$Ayurveda = "Yes" Then
         sName = AyurvedicDiagnosis(modAMISRep.$AyurvedicDiagnosis)
       Else
@@ -1045,23 +1051,9 @@ Public Sub btnfinaldiagno_Click()
       If sName Then
         If sName[1] And If sName[0] Then
           modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
-          SHowFinalDiagnosis()
+          modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease)
         Endif
       Endif
-    Endif
-  Endif
-
-End
-
-Private Sub SHowFinalDiagnosis()
-
-  Dim res As Result
-
-  If txtencid.Text Then
-    res = modDatabase.$syConn.Exec("select fldcode,fldcodeid,fldcodenew from tblpatfindings where fldencounterval=&1 and fldtype=&2 and fldsave=&3", Trim(txtencid.Text), "Final Diagnosis", True)
-    If res.Available Then
-      res.MoveLast
-      btnfinaldiagno.Text = res["fldcode"]
     Endif
   Endif
 
@@ -1073,24 +1065,20 @@ Public Sub tlbtndelallergy_Click()
   Dim res As Result
 
   If txtencid.Text Then
-    If lstallergy.Text Then
+    If lsticdisease.Current.Text Then
       If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
-        res = modDatabase.$myConn.Edit("tblpatfindings", "fldcode=&1 and fldencounterval=&2 and fldtype=&3 and fldsave=&4", lstallergy.Text, Trim(txtencid.Text), "Allergic Drugs", True)
-        res["fldsave"] = False
-        res["xyz"] = False
-        res.Update
-        lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
-        Balloon.Delete(("Information deleted"), tlbtndelallergy)
-        Balloon.Delay = modBasic.$BalloonDelay
+        res = modDatabase.$myConn.Edit("tblpatfindings", "fldcode=&1 and fldencounterval=&2 and fldtype=&3 and fldsave=&4", lsticdisease.Current.Text, Trim(txtencid.Text), "Allergic Drugs", True)
+        If res.Available Then
+          res["fldsave"] = False
+          res["xyz"] = False
+          res.Update
+          Balloon.Delete(("Information deleted"), tlbtndelallergy)
+          Balloon.Delay = modBasic.$BalloonDelay
+          modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease)
+        Endif
       Endif
     Endif
   Endif
-
-End
-
-Public Sub chkallergy_Click()
-
-  lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
 
 End
 
@@ -1102,7 +1090,7 @@ Public Sub btnallergymanual_Click()
     xx = InputBox(("Enter custom Drug Allergy"), ("Drug Allergy"), "")
     If xx Then
       modPatientGeneral.AddPatientFindings("Allergic Drugs", Trim(txtencid.Text), xx, "", "")
-      lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
+      modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease)
     Endif
   Endif
 
@@ -1110,19 +1098,21 @@ End
 
 Public Sub btnallergy_Click()
 
+  Dim curLst As String[]
   Dim sName As String[]
   Dim sText As String
   Dim druglist As String[]
 
   If txtencid.Text Then
-    druglist = modString.GetRemainingArray(modBasic.$GenericMedName, lstallergy.List)
-    sName = GridListView(("Select Drugs"), druglist, lstallergy, lstallergy.Height + lsticdisease.Height + TabPanel1.Height)
+    curLst = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), True)
+    druglist = modString.GetRemainingArray(modBasic.$GenericMedName, curLst)
+    sName = GridListView(("Select Drugs"), druglist, lsticdisease, lsticdisease.Height + lsticdisease.Height + TabPanel1.Height)
     If sName And If sName.Count Then
       For Each sText In sName
         modPatientGeneral.AddPatientFindings("Allergic Drugs", Trim(txtencid.Text), sText, "", "")
       Next
     Endif
-    lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
+    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease)
   Endif
 
 End
@@ -1358,20 +1348,14 @@ End
 
 Public Sub FillExamtable()
 
-  Dim Column As Integer
-  Dim fld As ResultField
-  Dim res As Result
-
-  res = modDatabase.$myConn.Exec("select fldid,fldtype,fldhead,fldabnormal,fldid,fldid,fldtime,fldsave,fldencounterval from tblpatientexam where fldencounterval=&1 and fldinput=&2 and fldsave=&3", Trim(txtencid.Text), "Physician Examinations", True)
-  GridView1.Clear
-  GridView1.Columns.Count = res.Fields.Count
-  GridView1.Rows.Count = res.Count
+  $rExamRes = modDatabase.$myConn.Exec("select fldid,fldtype,fldhead,fldabnormal,fldid,fldid,fldtime,fldsave,fldencounterval from tblpatientexam where fldencounterval=&1 and fldinput=&2 and fldsave=&3", Trim(txtencid.Text), "Physician Examinations", True)
+  $aExamFields = New String[]
+  modGridView.ReadSmallData(GridView1, $rExamRes, $aExamFields)
 
   With GridView1
-    .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
     .Columns[1].Width = 1
-    .Columns[2].Width = 175 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 200 * modBasic.$AppWidthRatio
     .Columns[3].Width = 25 * modBasic.$AppWidthRatio
     .Columns[4].Width = 175 * modBasic.$AppWidthRatio
     .Columns[5].Width = 25 * modBasic.$AppWidthRatio
@@ -1383,35 +1367,32 @@ Public Sub FillExamtable()
     .Columns[6].Text = "ReportTime"
   End With
 
-  For Each res
-    Column = 0
-    For Each fld In res.Fields
-      modGeneralMain.GridExplicitDecoration(GridView1, res.Index, Column)
-      If Column = 3 Then
-        GridView1[res.Index, Column].Picture = Picture[modMisc.GetGridIcon(res[fld.Name])]
-        GridView1[res.Index, Column].Text = ""
-      Else If Column = 4 Then
-        GridView1[res.Index, Column].RichText = modClinic.GetExamValueString(Trim(txtencid.Text), res["fldid"], False)
-        If modBasic.$RichtextResizeRow = "Yes" Then
-          GridView1.Rows[res.Index].Height = Max(GridView1.Rows[res.Index].Height, GridView1[res.Index, Column].Font.RichTextHeight(GridView1[res.Index, Column].RichText, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
-        Endif
-      Else If Column = 5 Then
-        GridView1[res.Index, Column].Picture = Picture["icon:/small/cancel"]
-        GridView1[res.Index, Column].Text = ""
-      Else If Column = 6 Then
-        GridView1[res.Index, Column].Text = modReportVar.GetDateTimeReport(res["fldtime"], gb.GeneralDate)
-      Else If Column = 2 Then
-        GridView1[res.Index, Column].Text = res[fld.Name]
-        GridView1.Rows[res.Index].Height = Max(GridView1.Rows[res.Index].Height, GridView1[res.Index, Column].Font.RichTextHeight(GridView1[res.Index, Column].Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
-      Else
-        GridView1[res.Index, Column].Text = res[fld.Name]
-      Endif
-      GridView1[res.Index, Column].WordWrap = True
+End
 
-      Column = Column + 1
-    Next
-  Next
-  GridView1.Row = 0
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  $rExamRes.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView1, Row)
+  If Column = 3 Then
+    GridView1.Data.Picture = Picture[modMisc.GetGridIcon($rExamRes[$aExamFields[Column]])]
+    GridView1.Data.Text = ""
+  Else If Column = 4 Then
+    GridView1.Data.RichText = modClinic.GetExamValueString(Trim(txtencid.Text), $rExamRes[$aExamFields[Column]], False)
+    If modBasic.$RichtextResizeRow = "Yes" Then
+      GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.RichText, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
+    Endif
+  Else If Column = 5 Then
+    GridView1.Data.Picture = Picture["icon:/small/cancel"]
+    GridView1.Data.Text = ""
+  Else If Column = 6 Then
+    GridView1.Data.Text = modReportVar.GetDateTimeReport($rExamRes[$aExamFields[Column]], gb.GeneralDate)
+  Else If Column = 2 Then
+    GridView1.Data.Text = $rExamRes[$aExamFields[Column]]
+    GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
+  Else
+    GridView1.Data.Text = $rExamRes[$aExamFields[Column]]
+  Endif
+  GridView1.Data.WordWrap = True
 
 End
 
@@ -1679,42 +1660,17 @@ End
 Public Sub ShowSymptomData()
 
   Dim sql As String
-  Dim Column As Integer
-  Dim fld As ResultField
-  Dim res As Result
 
   sql = "select fldid,fldencounterval,fldtype,flditem,fldreportquanti,fldreportquali,fldid,fldid,fldtime,flddetail,fldreportquanti from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and fldsave=&3"
-  res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Presenting Symptoms", True)
-  grdchiefsymptom.Clear
-  grdchiefsymptom.Columns.Count = res.Fields.Count
-  grdchiefsymptom.Rows.Count = res.Count
-
-  For Each res
-    Column = 0
-    For Each fld In res.Fields
-      modGeneralMain.GridExplicitDecoration(grdchiefsymptom, res.Index, Column)
-      If Column = 8 Then
-        grdchiefsymptom[res.Index, Column].Text = modReportVar.GetDateTimeReport(res["fldtime"], gb.GeneralDate)
-      Else If Column = 7 Then
-        grdchiefsymptom[res.Index, Column].Picture = Picture["icon:/small/edit"]
-        grdchiefsymptom[res.Index, Column].Text = ""
-      Else If Column = 6 Then
-        grdchiefsymptom[res.Index, Column].Picture = Picture["icon:/small/cancel"]
-        grdchiefsymptom[res.Index, Column].Text = ""
-      Else
-        grdchiefsymptom[res.Index, Column].Text = res[fld.Name]
-      Endif
-      Column = Column + 1
-    Next
-  Next
-  grdchiefsymptom.Row = 0
+  $rSympRes = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Presenting Symptoms", True)
+  $aSympFields = New String[]
+  modGridView.ReadSmallData(grdchiefsymptom, $rSympRes, $aSympFields)
 
   With grdchiefsymptom
-    .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
     .Columns[1].Width = 1
     .Columns[2].Width = 1
-    .Columns[3].Width = 225 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 250 * modBasic.$AppWidthRatio
     .Columns[4].Width = 50 * modBasic.$AppWidthRatio
     .Columns[5].Width = 75 * modBasic.$AppWidthRatio
     .Columns[6].Width = 25 * modBasic.$AppWidthRatio
@@ -1729,6 +1685,28 @@ Public Sub ShowSymptomData()
     .Columns[8].Text = "DateTime"
     .Columns[9].Text = "Description"
   End With
+
+End
+
+Public Sub grdchiefsymptom_Data(Row As Integer, Column As Integer)
+
+  $rSympRes.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(grdchiefsymptom, Row)
+  If Column = 3 Then
+    grdchiefsymptom.Data.Text = $rSympRes[$aSympFields[Column]]
+    grdchiefsymptom.Rows[Row].Height = Max(grdchiefsymptom.Rows[Row].Height, grdchiefsymptom.Data.Font.RichTextHeight(grdchiefsymptom.Data.Text, grdchiefsymptom.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (grdchiefsymptom.Rows.Height - grdchiefsymptom.Font.Height))
+    grdchiefsymptom.Data.WordWrap = True
+  Else If Column = 8 Then
+    grdchiefsymptom.Data.Text = modReportVar.GetDateTimeReport($rSympRes[$aSympFields[Column]], gb.GeneralDate)
+  Else If Column = 7 Then
+    grdchiefsymptom.Data.Picture = Picture["icon:/small/edit"]
+    grdchiefsymptom.Data.Text = ""
+  Else If Column = 6 Then
+    grdchiefsymptom.Data.Picture = Picture["icon:/small/cancel"]
+    grdchiefsymptom.Data.Text = ""
+  Else
+    grdchiefsymptom.Data.Text = $rSympRes[$aSympFields[Column]]
+  Endif
 
 End
 

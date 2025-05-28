@@ -50,6 +50,8 @@ Public Sub Form_Open()
   xList = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select distinct(flddept) as col from tbldeptexam"))
   cmbdefopdexam.List = xList
   cmbdefipdexam.List = xList
+  cmbconsultlist.List = ["Paid", "All"]
+  cmbopvisitlist.List = ["Paid", "All"]
 
   cmbtelemed.List = ["Partial", "Complete", "Disable"]
   cmbvideopass.List = ["Enable", "Disable"]
@@ -201,6 +203,9 @@ Private Sub GetClinActivity()
   cmbdefopdexam.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/OPDExaminations", cmbtarget.Text)
   cmbdefipdexam.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/IPDExaminations", cmbtarget.Text)
 
+  cmbconsultlist.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/ConsultationList", cmbtarget.Text)
+  cmbopvisitlist.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/OPVisitList", cmbtarget.Text)
+
 End
 
 Public Sub btntriage_Click()
@@ -239,6 +244,22 @@ Public Sub btndefipdexam_Click()
 
   modGlobalSetting.SaveSettingToDB("ClinicForms/IPDExaminations", cmbdefipdexam.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btndefipdexam)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnconsultlist_Click()
+
+  modGlobalSetting.SaveSettingToDB("ClinicForms/ConsultationList", cmbconsultlist.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnconsultlist)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnopvisitlist_Click()
+
+  modGlobalSetting.SaveSettingToDB("ClinicForms/OPVisitList", cmbopvisitlist.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnopvisitlist)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -584,6 +605,8 @@ Public Sub btnsettall_Click()
   xList.Add("IPClinic/RestrictToDoseTime")
   xList.Add("ClinicForms/OPDExaminations")
   xList.Add("ClinicForms/IPDExaminations")
+  xList.Add("ClinicForms/ConsultationList")
+  xList.Add("ClinicForms/OPVisitList")
 
   xList.Add("ClinicForms/ExamList_Lock")
   xList.Add("ClinicForms/SymptomList_Lock")
