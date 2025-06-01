@@ -1899,8 +1899,6 @@ End
 
 Public Sub mnucolumns_Click()
 
-  Dim xGridView As GridView
-
   If Message.Question(modGridView.GetColumnsListString(GridView1), ("OK"), ("Setting")) = 2 Then
     fmChartSetting.Close
     fmChartSetting.ShowModal
@@ -1953,7 +1951,6 @@ End
 ''========================= Data View ========================
 Private Function GetDataViewColumns() As String[]
 
-  Dim colLst As String[]
   Dim xFldList As String[]
   Dim i As Integer
   Dim xcol As String
