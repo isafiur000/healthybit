@@ -16,6 +16,7 @@ Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Horizontal")
   Me.Icon = Picture[modGeneralMain.$strLogo]
+  Panel4.Width = Panel1.Width - (Panel5.Width + Panel6.Width)
   btnmnuqty.Menu = "mnuqty"
   btnmnufreq.Menu = "mnufreq"
 

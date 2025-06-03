@@ -533,6 +533,7 @@ Public $ClinRadioGrouping As String
 Public $ClinFlagAbnormExam As String
 Public $ClinSliderValue As String
 Public $ClinICDPunchFormat As String
+Public $CliniDiagnosticReport As String
 Public $ClinCategoryGrid As String
 
 Public $ClinInjSubRoutes As String
@@ -1056,7 +1057,7 @@ Public Sub LoadGeneralVariables()
   If xbaloon Then
     $BalloonDelay = CInt(xbaloon)
   Else
-    $BalloonDelay = 200
+    $BalloonDelay = 2000
   Endif
 
   xzoom = modSettings.ShowSettingFromFIle("GeneralSettings/WebView_Zoom")
@@ -2283,6 +2284,7 @@ Public Sub GlobalClinicSettings()
   $ClinFlagAbnormExam = modSettings.ShowSettingFromFIle("ClinicForms/FlagAbnormalExam")
   $ClinSliderValue = modSettings.ShowSettingFromFIle("ClinicForms/EnableSliderValue")
   $ClinICDPunchFormat = modSettings.ShowSettingFromFIle("ClinicForms/ICDEntryFormat")
+  $CliniDiagnosticReport = modSettings.ShowSettingFromFIle("ClinicForms/DiagnosticReports")
   $ClinCategoryGrid = modSettings.ShowSettingFromFIle("ClinicForms/CategoryGridView")
 
   $ClinInjSubRoutes = modSettings.ShowSettingFromFIle("ClinicForms/ShowInjectionSubRoutes")

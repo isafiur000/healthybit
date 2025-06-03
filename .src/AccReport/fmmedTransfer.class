@@ -11,8 +11,8 @@ Public Sub Form_Open()
   Dim xhospfld As String
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
-  Panel8.Width = Panel1.Width - (Panel6.Width + Panel9.Width)
   Me.Icon = Picture[modGeneralMain.$strLogo]
+  Panel8.Width = Panel1.Width - (Panel6.Width + Panel9.Width)
 
   cmbfromcomp.List = modBasic.$AllCompPerList
   cmbfromcomp.Text = "%"
@@ -122,6 +122,21 @@ Public Sub btnload_Click()
 
 End
 
+Public Sub txtsearch_Change()
+
+  Dim sql As String
+  Dim res As Result
+
+  $RepoStr = modDataRepo.GetWhereStringRepo(cmblocation.Text, cmbvalue.Text)
+  If cmbcategory.Text Then
+    sql = "select distinct(fldstockid) as col from tbltransfer where fldcategory like &1 and lower(fldstockid) like &2" & $RepoStr                                                                                                 ''
+    res = modDatabase.$syConn.Exec(sql, cmbcategory.Text, LCase(txtsearch.Text) & "%")
+    lstitem.List = modControlSub.GetDirectFillresult(res)
+    rball.Value = True
+  Endif
+
+End
+
 Public Sub cmbfromcomp_KeyRelease()
 
   modFillContainer.AutoFillComboBox(cmbfromcomp)
@@ -202,6 +217,7 @@ End
 
 Private Sub FillTransferGrid()
 
+  Dim totqty As Float
   Dim totamt As Float
 
   $aMyFields = New String[]
@@ -227,10 +243,13 @@ Private Sub FillTransferGrid()
     .Columns[7].Text = "RecvDate"
   End With
 
+  totqty = 0
   totamt = 0
   For Each $rData
+    totqty = totqty + $rData["fldqty"]
     totamt = totamt + ($rData["fldqty"] * $rData["fldnetcost"])
   Next
+  txtqty.Value = Round(totqty, -2)
   txtamt.Value = Round(totamt, -2)
 
 End

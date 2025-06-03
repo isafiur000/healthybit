@@ -1,10 +1,11 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,105,72)
+  MoveScaled(0,0,105,74)
   Tag = "Registration Form"
   Text = ("Registration Form")
   Resizable = False
+  Arrangement = Arrange.Vertical
   { mnufile Menu
     Text = ("File")
     { mnuscan Menu
@@ -490,8 +491,15 @@
       Text = ("Last Visit")
     }
   }
+  { pnldemograph Panel
+    MoveScaled(0,48,104,4)
+    Visible = False
+    Arrangement = Arrange.Vertical
+    AutoResize = True
+    Border = Border.Plain
+  }
   { TabPanel1 TabPanel
-    MoveScaled(0,49,103,17)
+    MoveScaled(0,52,103,17)
     Expand = True
     Arrangement = Arrange.Vertical
     Count = 2
@@ -561,6 +569,6 @@
     Index = 0
   }
   { Panel2 Panel
-    MoveScaled(1,67,48,1.625)
+    MoveScaled(1,69,48,1.625)
   }
 }

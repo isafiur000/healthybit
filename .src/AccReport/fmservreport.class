@@ -21,6 +21,7 @@ Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
   Me.Icon = Picture[modGeneralMain.$strLogo]
+  Panel9.Width = Panel1.Width - (Panel6.Width + Panel10.Width)
   MenuButton1.Menu = "mnuhidesumm"
   btnpatient.Menu = "mnuhidegrouped"
 
@@ -120,7 +121,9 @@ Public Sub chksplit_Click()
 
   GridView1.Rows.Count = 0
   Wait
-  $aMyFields.Clear()
+  If $aMyFields Then
+    $aMyFields.Clear()
+  Endif
 
 End
 
@@ -1051,6 +1054,17 @@ Public Sub btninventory_Click()
 
   Inc Application.Busy
   xPath = modRHTMLService.ServiceDetailSumReport(modDatabase.$syConn, dtfir.Value, dtlast.Value, CategoryListRep(), GetInvoiced(), cmbcomp.Text, cmbbillmode.Text, cmbdiscount.Text, cmbilltype.Text, cmblocation.Text, cmbvalue.Text, $tblpatbilling, $tblpatbilldetail)
+  Dec Application.Busy
+  modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
+
+End
+
+Public Sub btnpatdetail_Click()
+
+  Dim xPath As String
+
+  Inc Application.Busy
+  xPath = modRHTMLService.ServicePatientSumReport(modDatabase.$syConn, dtfir.Value, dtlast.Value, CategoryListRep(), GetInvoiced(), cmbcomp.Text, cmbbillmode.Text, cmbdiscount.Text, cmbilltype.Text, cmblocation.Text, cmbvalue.Text, $tblpatbilling, $tblpatbilldetail)
   Dec Application.Busy
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
 

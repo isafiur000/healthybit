@@ -681,106 +681,118 @@
       MoveScaled(1,15,119,13)
       Enabled = False
       Arrangement = Arrange.Horizontal
+      Spacing = True
       { Panel86 Panel
-        MoveScaled(0,0,41,9)
+        MoveScaled(0,0,39,9)
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel83 Panel
-          MoveScaled(0,0,40.875,3)
+          MoveScaled(0,0,39,3)
+          Arrangement = Arrange.Horizontal
+          Spacing = True
+          { Label12 Label
+            MoveScaled(0,0,16.625,3)
+            Expand = True
+            Text = ("Prov Diagnosis")
+          }
           { tlbtndelprov ToolButton
-            MoveScaled(22.375,0,3,3)
+            MoveScaled(20,0,3,3)
             ToolTip = ("Delete Selected Diagnosis")
             Picture = Picture["icon:/small/cancel"]
           }
           { btnregimprov ToolButton
-            MoveScaled(26,0,3,3)
+            MoveScaled(24,0,3,3)
             ToolTip = ("View Drug Regimen for Selected Diagnosis")
             Picture = Picture["icon:/small/info"]
           }
           { btnprovcustom ToolButton
-            MoveScaled(29.625,0,3,3)
+            MoveScaled(28,0,3,3)
             ToolTip = ("Free Typing of Diagnosis")
             Picture = Picture["icon:/small/add"]
           }
           { tbnprovdisease ToolButton
-            MoveScaled(33.375,0,3,3)
+            MoveScaled(31,0,3,3)
             ToolTip = ("Create Diagnosis Text")
             Picture = Picture["icon:/small/add"]
           }
           { btnprovsyndro ToolButton
-            MoveScaled(37,0,3,3)
+            MoveScaled(35,0,3,3)
             ToolTip = ("Select Diagnosis from List")
             Picture = Picture["icon:/small/add"]
           }
-          { Label12 Label
-            MoveScaled(0,0,16.625,2.5)
-            Border = Border.Plain
-            Text = ("Prov Diagnosis")
-          }
         }
         { lstsyndrome ListBox
-          MoveScaled(0,3,41,5)
+          MoveScaled(0,3,35,5)
           Expand = True
           ScrollBar = Scroll.Both
           Sorted = True
         }
       }
-      { Panel89 Panel
-        MoveScaled(41,1,2,8)
+      { Panel5 Panel
+        MoveScaled(39,0,2,9)
       }
       { Panel87 Panel
-        MoveScaled(43,0,41,9)
+        MoveScaled(41,0,39,9)
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel84 Panel
-          MoveScaled(0,0,40.875,3)
+          MoveScaled(0,0,39,3)
+          Arrangement = Arrange.Horizontal
+          Spacing = True
+          { Label13 Label
+            MoveScaled(0,0,16.625,3)
+            Expand = True
+            Text = ("Final Diagnosis")
+          }
           { tlbtndelfinal ToolButton
-            MoveScaled(22.375,0,3,3)
+            MoveScaled(19,0,3,3)
             ToolTip = ("Delete Selected Diagnosis")
             Picture = Picture["icon:/small/cancel"]
           }
           { btnregimfinal ToolButton
-            MoveScaled(26,0,3,3)
+            MoveScaled(23,0,3,3)
             ToolTip = ("View Drug Regimen for Selected Diagnosis")
             Picture = Picture["icon:/small/info"]
           }
-          { tbnfinaldisease ToolButton
-            MoveScaled(33.375,0,3,3)
-            ToolTip = ("Create Diagnosis Text")
-            Picture = Picture["icon:/small/add"]
-          }
           { btnfinalcustom ToolButton
-            MoveScaled(30,0,3,3)
+            MoveScaled(27,0,3,3)
             ToolTip = ("Free Typing of Diagnosis")
             Picture = Picture["icon:/small/add"]
           }
+          { tbnfinaldisease ToolButton
+            MoveScaled(30,0,3,3)
+            ToolTip = ("Create Diagnosis Text")
+            Picture = Picture["icon:/small/add"]
+          }
           { btnfinalsyndro ToolButton
-            MoveScaled(37,0,3,3)
+            MoveScaled(34,0,3,3)
             ToolTip = ("Select Diagnosis from List")
             Picture = Picture["icon:/small/add"]
           }
-          { Label13 Label
-            MoveScaled(0,0,16.625,2.5)
-            Border = Border.Plain
-            Text = ("Final Diagnosis")
-          }
         }
         { lsticdisease ListBox
-          MoveScaled(0,3,41,5)
+          MoveScaled(0,3,38,5)
           Expand = True
           ScrollBar = Scroll.Both
           Sorted = True
         }
       }
-      { Panel90 Panel
-        MoveScaled(84,0,2,8)
+      { Panel34 Panel
+        MoveScaled(80,0,2,9)
       }
       { Panel88 Panel
-        MoveScaled(86,0,34.75,8.875)
+        MoveScaled(82,0,34.75,8.875)
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel85 Panel
           MoveScaled(0,0,33.875,3)
+          Arrangement = Arrange.Horizontal
+          Spacing = True
+          { Label11 Label
+            MoveScaled(0,0,12.25,3)
+            Expand = True
+            Text = ("Drug Allergy")
+          }
           { chkallergy CheckBox
             MoveScaled(13.375,0,9.375,2.5)
             Text = ("All Enc")
@@ -800,11 +812,6 @@
             ToolTip = ("Select Allergic Drugs")
             Picture = Picture["icon:/small/add"]
           }
-          { Label11 Label
-            MoveScaled(0,0,13,2.5)
-            Border = Border.Plain
-            Text = ("Drug Allergy")
-          }
         }
         { lstallergy ListBox
           MoveScaled(0,3,33,5)
@@ -812,6 +819,9 @@
           ScrollBar = Scroll.Both
           Sorted = True
         }
+      }
+      { Panel35 Panel
+        MoveScaled(116.75,0,2,9)
       }
     }
     { xPanelentry Panel

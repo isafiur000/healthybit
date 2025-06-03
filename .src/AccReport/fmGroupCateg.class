@@ -19,6 +19,7 @@ Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
   Me.Icon = Picture[modGeneralMain.$strLogo]
+  Panel9.Width = Panel1.Width - (Panel6.Width + Panel10.Width)
 
   cmbcomp.List = modBasic.$AllCompPerList
   cmbcomp.Text = "%"

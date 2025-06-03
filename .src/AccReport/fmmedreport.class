@@ -27,6 +27,7 @@ Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
   Me.Icon = Picture[modGeneralMain.$strLogo]
+  Panel10.Width = Panel1.Width - (Panel7.Width + Panel11.Width)
 
   Select modHelpVariable.$LogInCategory
     Case "Pharmacist", "Purchase"

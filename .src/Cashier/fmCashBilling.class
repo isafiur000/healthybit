@@ -1770,6 +1770,8 @@ End
 
 Public Sub chksave_Click()
 
+  Dim msg As String
+
   If txtencid.Text And If cmbledgerac.Text And If cmbdisctype.Text Then
     If chksave.Value = True Then
       If cmbtype.Text And If cmbitem.Text And If txtqty.Value Then
@@ -1779,7 +1781,8 @@ Public Sub chksave_Click()
           BlankForEntry()
           cmbtype.SetFocus()
         Else
-          Balloon.Info(("Encounter Locked"), chksave)
+          msg = "Not Allowed. The reason may be:" & gb.NewLine & "1) Diagnosis requirement" & gb.NewLine & "2) Credit Lock Rule"
+          Balloon.Info(msg, chksave)
           Balloon.Delay = modBasic.$BalloonDelay
         Endif
 

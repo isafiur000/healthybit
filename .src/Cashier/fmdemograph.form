@@ -1,0 +1,29 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,104,13)
+  Border = False
+  Arrangement = Arrange.Vertical
+  AutoResize = True
+  { Frame1 Panel
+    MoveScaled(0,0,103,7)
+    Arrangement = Arrange.Row
+  }
+  { Panel4 Panel
+    MoveScaled(0,7,103,5)
+    { btnBrOK Button
+      MoveScaled(89,0.5,12,3.5)
+      ToolTip = ("[Ctrl+S] to save")
+      Text = Shortcut(("Save"), "S")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { btndefaiult Button
+      MoveScaled(0,0.5,12.625,3.5)
+      Text = ("Default")
+    }
+    { btnlastval Button
+      MoveScaled(14,0.5,15,3.5)
+      Text = ("Last Values")
+    }
+  }
+}

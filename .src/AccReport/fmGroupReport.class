@@ -21,6 +21,7 @@ Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
   Me.Icon = Picture[modGeneralMain.$strLogo]
+  Panel9.Width = Panel1.Width - (Panel6.Width + Panel10.Width)
   MenuButton1.Menu = "mnuhidesumm"
 
   cmbcomp.List = modBasic.$AllCompPerList
@@ -123,7 +124,9 @@ Public Sub chksplit_Click()
 
   GridView1.Rows.Count = 0
   Wait
-  $aMyFields.Clear()
+  If $aMyFields Then
+    $aMyFields.Clear()
+  Endif
 
 End
 
