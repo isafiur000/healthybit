@@ -1,0 +1,203 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,119,78)
+  Tag = "Diagnosis Report"
+  Text = ("Diagnosis Report")
+  { mnuchart Menu
+    Visible = False
+    { mnuexpochart Menu
+      Text = ("Export")
+    }
+    { mnustats Menu
+      Text = ("Stats")
+    }
+  }
+  { mnufile Menu
+    Text = ("File")
+    { mnuaddcolumn Menu
+      Text = ("Add Columns")
+    }
+    { mnuexpocolumn Menu
+      Text = ("Export Columns")
+    }
+    { mnusearch Menu
+      Text = ("Search(EncID)")
+    }
+    { mnusearname Menu
+      Text = ("Search(Name)")
+    }
+    { mnucolumns Menu
+      Text = ("Columns")
+    }
+  }
+  { mnuanalyze Menu
+    Text = ("Analyze")
+    { mnuencchart Menu
+      Text = ("Univariate")
+    }
+    { mnustcross Menu
+      Text = ("Bivariate")
+    }
+    { mnucrotab Menu
+      Text = ("CrossTab")
+    }
+    { mnugridsummary Menu
+      Text = ("Summary")
+    }
+    { mnucountuni Menu
+      Text = ("Col Count")
+    }
+  }
+  { mnusumm Menu
+    Text = ("Summary")
+  }
+  { Panel1 Panel
+    MoveScaled(0,0,119,74)
+    { Panel2 Panel
+      MoveScaled(1,0,118,8)
+      { Label2 Label
+        MoveScaled(0,4,5.75,3)
+        Border = Border.Plain
+        Text = ("To:")
+      }
+      { dtfir DateBox
+        MoveScaled(6,0.5,16,3)
+      }
+      { dtlast DateBox
+        MoveScaled(6,4,16,3)
+      }
+      { dtnepfir ToolButton
+        MoveScaled(22,0.5,3,3)
+        Picture = Picture["icon:/small/calendar"]
+      }
+      { dtneplast ToolButton
+        MoveScaled(22,4,3,3)
+        Picture = Picture["icon:/small/calendar"]
+      }
+      { btnrefresh Button
+        MoveScaled(104,0.5,12.5,3)
+        Text = ("Refresh")
+        Picture = Picture["icon:/small/refresh"]
+      }
+      { btnfullrep Button
+        MoveScaled(104,4,12.5,3)
+        Text = Shortcut(("Export"), "E")
+        Picture = Picture["icon:/small/html"]
+      }
+      { Label1 Label
+        MoveScaled(0,0.5,5.75,3)
+        Border = Border.Plain
+        Text = ("From:")
+      }
+      { Label6 Label
+        MoveScaled(30,4,8,3)
+        Border = Border.Plain
+        Text = ("Age (Yr)")
+      }
+      { txtfromage ValueBox
+        MoveScaled(39,4,6,3)
+      }
+      { txttoage ValueBox
+        MoveScaled(46,4,6,3)
+      }
+      { Label7 Label
+        MoveScaled(30,0.5,7.75,3)
+        Border = Border.Plain
+        Text = ("Gender")
+      }
+      { cmbgender ComboBox
+        MoveScaled(39,0.5,13,3)
+        Sorted = True
+      }
+      { Label3 Label
+        MoveScaled(57,0.5,6,3)
+        Border = Border.Plain
+        Text = ("Code")
+      }
+      { Label5 Label
+        MoveScaled(57,4,6,3)
+        Border = Border.Plain
+        Text = ("Text")
+      }
+      { pnlrep Panel
+        MoveScaled(86,0,17,8)
+        { cmblocation ComboBox
+          MoveScaled(1,0.5,15,3)
+        }
+        { cmbvalue ComboBox
+          MoveScaled(1,4,15,3)
+        }
+      }
+      { txtcodeval TextBox
+        MoveScaled(64,0.5,18,3)
+      }
+      { txtcodename TextBox
+        MoveScaled(64,4,18,3)
+      }
+    }
+    { TabStrip1 TabPanel
+      MoveScaled(1,9,117,59)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      Count = 2
+      Index = 0
+      Text = ("GridView")
+      { GridView1 GridView
+        MoveScaled(0,0,116,54)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Both
+        AutoResize = False
+      }
+      Index = 1
+      Text = ("ChartView")
+      { ScrollArea1 ScrollView
+        MoveScaled(0,0,116,54)
+        Expand = True
+        Arrangement = Arrange.Fill
+        { PictureBox1 ImageView
+          MoveScaled(0,0,114,52)
+          Expand = True
+        }
+        { btnmnuqty MenuButton
+          MoveScaled(0,0,5,4)
+          Ignore = True
+          Picture = Picture["icon:/small/menu"]
+        }
+      }
+      Index = 0
+    }
+    { Panel3 Panel
+      MoveScaled(1,69,118,4)
+      { chkchart CheckBox
+        MoveScaled(15,0.625,15,3)
+        Text = ("Chart View")
+      }
+      { chkgrid CheckBox
+        MoveScaled(0,0.625,14,3)
+        Text = ("Grid View")
+        Value = CheckBox.True
+      }
+      { chkfinal CheckBox
+        MoveScaled(41,0.625,9,3)
+        Text = ("Final")
+        Value = CheckBox.True
+      }
+      { chkprovisional CheckBox
+        MoveScaled(52,0.625,14,3)
+        Text = ("Provisional")
+        Value = CheckBox.True
+      }
+      { chknursing CheckBox
+        MoveScaled(67,0.625,13,3)
+        Text = ("Nursing")
+        Value = CheckBox.True
+      }
+      { chkpatient CheckBox
+        MoveScaled(97,0.625,19,3)
+        Text = ("Distinct Patient")
+      }
+    }
+  }
+}

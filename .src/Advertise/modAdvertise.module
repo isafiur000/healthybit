@@ -42,23 +42,20 @@ Public Sub DownLoadAdvertise()
   xTxt = "This  is  Hospital Information System developed by D Code Technology, Kathmandu"
   xURL = "https://bitnepal.safiur.com.np/healthybit/"
 
-  AdvertiseId = 0
-  sql = "select advid,advcontent,advlink from tbladvertise where advdepartment=&1 and advdate=&2"
-  res = $advCon.Exec(sql, modHelpVariable.$LogInGroup, Format(Now(), "yyyymmdd"))
   $AdvArray = New String[]
   $AdvLink = New String[]
+  AdvertiseId = 0
 
   $AdvArray.Add(xTxt)
   $AdvLink.Add(xURL)
 
+  sql = "select advid,advcontent,advlink from tbladvertise where advdepartment=&1 and advdate=&2"
+  res = $advCon.Exec(sql, modHelpVariable.$LogInGroup, Format(Now(), "yyyymmdd"))
   If res.Count Then
     For Each res
       $AdvArray.Add(res["advcontent"])
       $AdvLink.Add(UnBase64(res["advlink"]))
     Next
-  Else
-    $AdvArray.Add(xTxt)
-    $AdvLink.Add(xURL)
   Endif
 
 End
@@ -68,22 +65,9 @@ Public Sub GetAdvertise()
   Dim xx As Integer
 
   xx = AdvertiseId + 1
-  LABEL_CAPTION = " * * * * *  " & $AdvArray[xx] & "  * * * * * "
-  $adLink = $AdvLink[xx]
+  Try LABEL_CAPTION = " * * * * *  " & $AdvArray[xx] & "  * * * * * "
+  Try $adLink = $AdvLink[xx]
   AdvertiseId = xx
-
-Catch
-  ErrorAdvertise()
-
-End
-
-Private Sub ErrorAdvertise()
-
-  DownLoadAdvertise()
-  GetAdvertise()
-
-Catch
-  modBasic.DebugString(Error.Text)
 
 End
 

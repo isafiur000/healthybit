@@ -290,7 +290,7 @@ Public Sub BasicInfoPatient()
     GetDefaultBillingmodes()
     ButtonControl()
     $dateReg = modPatient.GetRecordDate(Trim(txtencid.Text))
-    lsticdisease.List = modPathoSub.GetNursingDiagnosisList(Trim(txtencid.Text))
+    lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Nursing Diagnosis", Trim(txtencid.Text))
     lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
     ShowSymptomData()
     ShowEssentialExam()
@@ -718,7 +718,7 @@ Public Sub tlbtndeldises_Click()
         res["fldsave"] = False
         res["xyz"] = False
         res.Update
-        lsticdisease.List = modPathoSub.GetNursingDiagnosisList(Trim(txtencid.Text))
+        lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Nursing Diagnosis", Trim(txtencid.Text))
         Balloon.Delete(("Information deleted"), tlbtndeldises)
         Balloon.Delay = modBasic.$BalloonDelay
       Endif
@@ -744,7 +744,7 @@ Public Sub tbndisease_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Nursing Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
-        lsticdisease.List = modPathoSub.GetNursingDiagnosisList(Trim(txtencid.Text))
+        lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Nursing Diagnosis", Trim(txtencid.Text))
       Endif
     Endif
   Endif
@@ -765,7 +765,7 @@ Public Sub tbnsyndro_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Nursing Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1])
-        lsticdisease.List = modPathoSub.GetNursingDiagnosisList(Trim(txtencid.Text))
+        lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Nursing Diagnosis", Trim(txtencid.Text))
       Endif
     Endif
   Endif
@@ -780,7 +780,7 @@ Public Sub btndismanual_Click()
     xx = InputBox(("Enter custom Nursing Diagnosis"), ("Nursing Diagnosis"), "")
     If xx Then
       modPatientGeneral.AddPatientFindings("Nursing Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
-      lsticdisease.List = modPathoSub.GetNursingDiagnosisList(Trim(txtencid.Text))
+      lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Nursing Diagnosis", Trim(txtencid.Text))
     Endif
   Endif
 

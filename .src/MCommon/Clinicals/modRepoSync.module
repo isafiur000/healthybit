@@ -747,11 +747,14 @@ End
 ''------------ advertise ---------------
 Public Sub UpdateAdvertiseContent()
 
-  ReadSyncConfig()
-  If $SyncService = "http" Then
-    If modAdvertise.$advCon.Opened = True Then
-      GetAPISyncTwoSource(modAdvertise.$advCon, "tbladvertise", True)
-      GetAPISyncTwoSource(modAdvertise.$advCon, "tbladlinks", True)
+  If modHelpVariable.$DownloadAdvertise = "No" Then
+  Else
+    ReadSyncConfig()
+    If $SyncService = "http" Then
+      If modAdvertise.$advCon.Opened = True Then
+        GetAPISyncTwoSource(modAdvertise.$advCon, "tbladvertise", True)
+        GetAPISyncTwoSource(modAdvertise.$advCon, "tbladlinks", True)
+      Endif
     Endif
   Endif
 
@@ -759,13 +762,16 @@ End
 
 Public Sub UpdateAdvertiseCreateDB()
 
-  ReadSyncConfig()
-  If $SyncService = "http" Then
-    modAdvertise.ConnectAdLocalDB()
-    If modAdvertise.$advCon.Opened = True Then
-      GetAPISyncTwoSource(modAdvertise.$advCon, "tbladvertise", True)
-      GetAPISyncTwoSource(modAdvertise.$advCon, "tbladlinks", True)
-      Try modAdvertise.$advCon.Close()
+  If modHelpVariable.$DownloadAdvertise = "No" Then
+  Else
+    ReadSyncConfig()
+    If $SyncService = "http" Then
+      modAdvertise.ConnectAdLocalDB()
+      If modAdvertise.$advCon.Opened = True Then
+        GetAPISyncTwoSource(modAdvertise.$advCon, "tbladvertise", True)
+        GetAPISyncTwoSource(modAdvertise.$advCon, "tbladlinks", True)
+        Try modAdvertise.$advCon.Close()
+      Endif
     Endif
   Endif
 

@@ -28,7 +28,7 @@ Public Sub Form_Open()
   txtcreatinine.Value = modLabTest.GetCurrTesValuePos("Last", $encid, $CreatName, MMain.$defUnit)
   cmbunit.Text = "mg/dL"
   lstallergy.List = modPathoSub.GetAllergyMedicineList($encid, chkallergy.Value)
-  lsticdisease.List = modPathoSub.GetProvisionalDiagnosisList($encid)
+  lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", $encid)
   If MMain.$SISHAppMode = "PHM" Then
   Else
     btnhepatic.Enabled = False
@@ -130,7 +130,7 @@ Public Sub tlbtndeldises_Click()
       res["fldsave"] = False
       res["xyz"] = False
       res.Update
-      lsticdisease.List = modPathoSub.GetProvisionalDiagnosisList($encid)
+      lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", $encid)
       Balloon.Delete(("Information deleted"), tlbtndeldises)
       Balloon.Delay = modBasic.$BalloonDelay
     Endif
@@ -147,7 +147,7 @@ Public Sub tbndisease_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, sName[0], sName[1], sName[2])
-        lsticdisease.List = modPathoSub.GetProvisionalDiagnosisList($encid)
+        lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", $encid)
       Endif
     Endif
   Endif
@@ -168,7 +168,7 @@ Public Sub tbnsyndro_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, sName[0], sName[1], sName[1])
-        lsticdisease.List = modPathoSub.GetProvisionalDiagnosisList($encid)
+        lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", $encid)
       Endif
     Endif
   Endif
@@ -183,7 +183,7 @@ Public Sub btndismanual_Click()
     xx = InputBox(("Enter custom Provisional Diagnosis"), ("Provisional Diagnosis"), "")
     If xx Then
       modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, xx, "Other", "Other")
-      lsticdisease.List = modPathoSub.GetProvisionalDiagnosisList($encid)
+      lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", $encid)
     Endif
   Endif
 

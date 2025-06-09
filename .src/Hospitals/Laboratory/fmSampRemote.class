@@ -527,7 +527,7 @@ Private Sub BasicInfoPatient()
   txtpatientaddress.Text = modPatient.GetPatientAddressByEnc($encid)
 
   xstatus = modPatient.CurrentAdmissionStatus($encid)
-  lsticdisease.List = modPathoSub.GetProvisionalDiagnosisList(Trim(txtencid.Text))
+  lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", Trim(txtencid.Text))
   modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", $encid)
 
   ShowSampled($encid)

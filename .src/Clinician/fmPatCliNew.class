@@ -1037,7 +1037,7 @@ Public Sub btnfinaldiagno_Click()
   Dim xList As String[]
 
   If txtencid.Text Then
-    xList = modPathoSub.GetProvisionalDiagnosisList(Trim(txtencid.Text))
+    xList = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", Trim(txtencid.Text))
     If xList.Count Then
       If MMain.$Ayurveda = "Yes" Then
         sName = AyurvedicDiagnosis(modAMISRep.$AyurvedicDiagnosis)

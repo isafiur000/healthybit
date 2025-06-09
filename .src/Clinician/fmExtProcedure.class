@@ -72,13 +72,12 @@ Public Sub BasicInfoPatient()
     $sTatus = modPatient.CurrentAdmissionStatus(Trim(txtencid.Text))
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
     GetDefaultBillingmodes()
-    lstsyndrome.List = modPathoSub.GetProvisionalDiagnosisList(Trim(txtencid.Text))
+    lstsyndrome.List = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", Trim(txtencid.Text))
     ButtonControl()
     modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
 
     ShowAddedProctable()
     ShowSymptomData()
-    lstsyndrome.List = modPathoSub.GetProvisionalDiagnosisList(Trim(txtencid.Text))
     TableView1.SetFocus
   Endif
 

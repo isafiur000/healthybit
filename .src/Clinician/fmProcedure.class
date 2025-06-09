@@ -311,7 +311,7 @@ Public Sub Form_KeyRelease()
     If $ProcIndex Then
       LoadTabPicture(TabPanel1.Index)
       lstdiscuss.List = modPatPatho.GetDiscusPanels(Trim(txtencid.Text), $ProcIndex)
-      lstfinaldiagno.List = modPathoSub.GetFinalDiagnosisList(Trim(txtencid.Text))
+      lstfinaldiagno.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
       txtprediscuss.RichText = GetLastValueProc("fldreport", "Pre-Operative Discussion")
       txtprecomment.RichText = GetLastValueProc("fldreport", "Pre-Operative Note")
       cmbpreindication.Text = GetLastValueProc("fldreportquali", "Pre-Operative Indication")
@@ -379,7 +379,7 @@ Public Sub TabPanel1_Click()
 
     Else If TabPanel1.Index = 1 Then
       lstdiscuss.List = modPatPatho.GetDiscusPanels(Trim(txtencid.Text), $ProcIndex)
-      lstfinaldiagno.List = modPathoSub.GetFinalDiagnosisList(Trim(txtencid.Text))
+      lstfinaldiagno.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
       txtprediscuss.RichText = GetLastValueProc("fldreport", "Pre-Operative Discussion")
       txtprecomment.RichText = GetLastValueProc("fldreport", "Pre-Operative Note")
       cmbpreindication.Text = GetLastValueProc("fldreportquali", "Pre-Operative Indication")

@@ -276,7 +276,6 @@ Private Sub SetStatus()
     Panel11.Enabled = True
     Panel10.Enabled = True
     Panel2.Enabled = True
-    btninserttext.Enabled = True
     btntable.Enabled = True
     btndict.Enabled = True
   Else If btnhtml.Value = False Then
@@ -289,7 +288,6 @@ Private Sub SetStatus()
     Panel11.Enabled = False
     Panel10.Enabled = False
     Panel2.Enabled = False
-    btninserttext.Enabled = False
     btntable.Enabled = False
     btndict.Enabled = False
   Endif
@@ -346,8 +344,17 @@ End
 
 Public Sub btninserttext_Click()
 
+  Dim xx As String
+
   If Dialog.OpenFile() Then Return
-  TextEdit1.RichText = TextEdit1.RichText & File.Load(Dialog.Path)
+  Try xx = File.Load(Dialog.Path)
+  If xx Then
+    If btnhtml.Value = True Then
+      TextEdit1.InsertRichText(xx)
+    Else
+      TextEdit1.Insert(xx)
+    Endif
+  Endif
 
 End
 

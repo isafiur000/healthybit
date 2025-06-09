@@ -6,7 +6,7 @@
   Resizable = False
   { IconPanel1 IconPanel
     MoveScaled(1,1,103,42)
-    Count = 8
+    Count = 9
     Index = 0
     Text = ("Calculation")
     { Label7 Label
@@ -263,18 +263,85 @@
     Index = 3
     Text = ("Inputs")
     { Label16 Label
-      MoveScaled(1,13,37,3)
+      MoveScaled(1,9,37,3)
       Border = Border.Plain
       Text = ("Show Examination Options")
     }
     { cmbexamoption ComboBox
-      MoveScaled(39,13,13,3)
+      MoveScaled(39,9,13,3)
     }
     { btnexamoption Button
+      MoveScaled(53,9,10,3)
+      Text = ("Set")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label18 Label
+      MoveScaled(1,1,37,3)
+      Border = Border.Plain
+      Text = ("Show TextArea for Qualitative")
+    }
+    { cmbqualtext ComboBox
+      MoveScaled(39,1,13,3)
+    }
+    { btnqualtext Button
+      MoveScaled(53,1,10,3)
+      Text = ("Set")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label20 Label
+      MoveScaled(1,5,37,3)
+      Border = Border.Plain
+      Text = ("Select Multiple Symptoms")
+    }
+    { cmbmultisymp ComboBox
+      MoveScaled(39,5,13,3)
+    }
+    { btnmultisymp Button
+      MoveScaled(53,5,10,3)
+      Text = ("Set")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label21 Label
+      MoveScaled(1,13,37,3)
+      Border = Border.Plain
+      Text = ("Laboratory Request Group")
+    }
+    { cmbgrouplab ComboBox
+      MoveScaled(39,13,13,3)
+    }
+    { btngrouplab Button
       MoveScaled(53,13,10,3)
       Text = ("Set")
       Picture = Picture["icon:/small/apply"]
     }
+    { Label22 Label
+      MoveScaled(1,17,37,3)
+      Border = Border.Plain
+      Text = ("Radiology Request Group")
+    }
+    { cmbgroupradio ComboBox
+      MoveScaled(39,17,13,3)
+    }
+    { btngroupradio Button
+      MoveScaled(53,17,10,3)
+      Text = ("Set")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label23 Label
+      MoveScaled(1,21,37,3)
+      Border = Border.Plain
+      Text = ("Flag Abnormal Examination")
+    }
+    { cmbabnormexam ComboBox
+      MoveScaled(39,21,13,3)
+    }
+    { btnabnormexam Button
+      MoveScaled(53,21,10,3)
+      Text = ("Set")
+      Picture = Picture["icon:/small/apply"]
+    }
+    Index = 4
+    Text = ("Forms")
     { Label17 Label
       MoveScaled(1,1,37,3)
       Border = Border.Plain
@@ -288,112 +355,47 @@
       Text = ("Set")
       Picture = Picture["icon:/small/apply"]
     }
-    { Label18 Label
-      MoveScaled(1,5,37,3)
-      Border = Border.Plain
-      Text = ("Show TextArea for Qualitative")
-    }
-    { cmbqualtext ComboBox
-      MoveScaled(39,5,13,3)
-    }
-    { btnqualtext Button
-      MoveScaled(53,5,10,3)
-      Text = ("Set")
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label19 Label
-      MoveScaled(1,17,37,3)
-      Border = Border.Plain
-      Text = ("Structured Examinations Entry")
-    }
-    { cmbgrpward ComboBox
-      MoveScaled(39,17,13,3)
-    }
-    { btngrpward Button
-      MoveScaled(53,17,10,3)
-      Text = ("Set")
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label20 Label
-      MoveScaled(1,9,37,3)
-      Border = Border.Plain
-      Text = ("Select Multiple Symptoms")
-    }
-    { cmbmultisymp ComboBox
-      MoveScaled(39,9,13,3)
-    }
-    { btnmultisymp Button
-      MoveScaled(53,9,10,3)
-      Text = ("Set")
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label21 Label
-      MoveScaled(1,21,37,3)
-      Border = Border.Plain
-      Text = ("Laboratory Request Group")
-    }
-    { cmbgrouplab ComboBox
-      MoveScaled(39,21,13,3)
-    }
-    { btngrouplab Button
-      MoveScaled(53,21,10,3)
-      Text = ("Set")
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label22 Label
-      MoveScaled(1,25,37,3)
-      Border = Border.Plain
-      Text = ("Radiology Request Group")
-    }
-    { cmbgroupradio ComboBox
-      MoveScaled(39,25,13,3)
-    }
-    { btngroupradio Button
-      MoveScaled(53,25,10,3)
-      Text = ("Set")
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label23 Label
-      MoveScaled(1,29,37,3)
-      Border = Border.Plain
-      Text = ("Flag Abnormal Examination")
-    }
-    { cmbabnormexam ComboBox
-      MoveScaled(39,29,13,3)
-    }
-    { btnabnormexam Button
-      MoveScaled(53,29,10,3)
-      Text = ("Set")
-      Picture = Picture["icon:/small/apply"]
-    }
     { Label24 Label
-      MoveScaled(1,33,37,3)
+      MoveScaled(1,9,37,3)
       Border = Border.Plain
       Text = ("Slider for Quantitative Value")
     }
     { cmbslider ComboBox
-      MoveScaled(39,33,13,3)
+      MoveScaled(39,9,13,3)
     }
     { btnslider Button
-      MoveScaled(53,33,10,3)
+      MoveScaled(53,9,10,3)
       Text = ("Set")
       Picture = Picture["icon:/small/apply"]
     }
     { Label25 Label
-      MoveScaled(1,37,37,3)
+      MoveScaled(1,13,37,3)
       Border = Border.Plain
       Text = ("ICD Diagnosis Format")
     }
     { cmbicdformat ComboBox
-      MoveScaled(39,37,13,3)
+      MoveScaled(39,13,13,3)
     }
     { btnicdformat Button
-      MoveScaled(53,37,10,3)
+      MoveScaled(53,13,10,3)
       Text = ("Set")
       Picture = Picture["icon:/small/apply"]
     }
-    Index = 4
-    Text = ("Reporting")
+    { Label19 Label
+      MoveScaled(1,5,37,3)
+      Border = Border.Plain
+      Text = ("Structured Examinations Entry")
+    }
+    { cmbgrpward ComboBox
+      MoveScaled(39,5,13,3)
+    }
+    { btngrpward Button
+      MoveScaled(53,5,10,3)
+      Text = ("Set")
+      Picture = Picture["icon:/small/apply"]
+    }
+    Index = 5
+    Text = ("Report")
     { Label26 Label
       MoveScaled(1,1,26,3)
       Border = Border.Plain
@@ -504,7 +506,7 @@
       MoveScaled(41,33,3,3)
       Picture = Picture["icon:/small/apply"]
     }
-    Index = 5
+    Index = 6
     Text = ("Pharmacy")
     { Label8 Label
       MoveScaled(1,1,37,3)
@@ -599,7 +601,24 @@
       Text = ("Set")
       Picture = Picture["icon:/small/apply"]
     }
-    Index = 6
+    Index = 7
+    Text = ("SMS")
+    { Label39 Label
+      MoveScaled(1,1,20,3)
+      Border = Border.Plain
+      Text = ("Physician SMS")
+    }
+    { txtsmsphy TextArea
+      MoveScaled(1,5,64,11)
+      Wrap = True
+      ScrollBar = Scroll.Vertical
+    }
+    { btnsavesmsphy Button
+      MoveScaled(55,1,10,3)
+      Text = ("Save")
+      Picture = Picture["icon:/small/apply"]
+    }
+    Index = 8
     Text = ("Data Source")
     { Label33 Label
       MoveScaled(1,1,26,3)
@@ -674,23 +693,6 @@
     }
     { btnmedadvice ToolButton
       MoveScaled(66,22,4,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    Index = 7
-    Text = ("SMS")
-    { Label39 Label
-      MoveScaled(1,1,20,3)
-      Border = Border.Plain
-      Text = ("Physician SMS")
-    }
-    { txtsmsphy TextArea
-      MoveScaled(1,5,64,11)
-      Wrap = True
-      ScrollBar = Scroll.Vertical
-    }
-    { btnsavesmsphy Button
-      MoveScaled(55,1,10,3)
-      Text = ("Save")
       Picture = Picture["icon:/small/apply"]
     }
     Index = 0

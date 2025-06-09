@@ -58,6 +58,7 @@ Public Sub Form_Open()
     cmbdept.List = modBasic.$IPDDepartmentsAll
   Endif
   cmbdept.Add("Unallocated")
+  cmbdept.Add("Waiting")
   cmbdept.Add("Free Beds")
   cmbdept.Add("%")
   If modHelpVariable.$LogInCategory = "Clinician" Then

@@ -60,6 +60,7 @@ Public Sub Form_Open()
   ShowFormatReport()
   ShowForulSource()
   ClinGeneralSetting()
+  ClinFormsSetting()
   SMSTextSetting()
 
 End
@@ -378,29 +379,14 @@ Public Sub btnformuldiagno_Click()
 End
 
 ''------------------------ Examination & Prescribing------------------------------------------
-
 Private Sub ClinGeneralSetting()
 
   cmbexamoption.Text = modSettings.ShowSettingFromFIle("ClinicForms/Display_Options")
-  cmbgridcateg.Text = modSettings.ShowSettingFromFIle("ClinicForms/CategoryGridView")
   cmbqualtext.Text = modSettings.ShowSettingFromFIle("ClinicForms/DisplayTextArea")
-  cmbgrpward.Text = modSettings.ShowSettingFromFIle("ClinicForms/GroupStructuredExams")
   cmbmultisymp.Text = modSettings.ShowSettingFromFIle("ClinicForms/MultipleSymptoms")
-
   cmbgrouplab.Text = modSettings.ShowSettingFromFIle("ClinicForms/TestGrouping")
   cmbgroupradio.Text = modSettings.ShowSettingFromFIle("ClinicForms/RadioGroupings")
   cmbabnormexam.Text = modSettings.ShowSettingFromFIle("ClinicForms/FlagAbnormalExam")
-  cmbslider.Text = modSettings.ShowSettingFromFIle("ClinicForms/EnableSliderValue")
-  cmbicdformat.Text = modSettings.ShowSettingFromFIle("ClinicForms/ICDEntryFormat")
-
-End
-
-Public Sub btngridcateg_Click()
-
-  modSettings.SaveSettingsToFile("ClinicForms/CategoryGridView", cmbgridcateg.Text)
-  modBasic.$ClinCategoryGrid = cmbgridcateg.Text
-  Balloon.Info(("Information saved"), btngridcateg)
-  Balloon.Delay = modBasic.$BalloonDelay
 
 End
 
@@ -409,14 +395,6 @@ Public Sub btnqualtext_Click()
   modSettings.SaveSettingsToFile("ClinicForms/DisplayTextArea", cmbqualtext.Text)
   modBasic.$DisplayQualiArea = cmbqualtext.Text
   Balloon.Info(("Information saved"), btnqualtext)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btngrpward_Click()
-
-  modSettings.SaveSettingsToFile("ClinicForms/GroupStructuredExams", cmbgrpward.Text)
-  Balloon.Info(("Information saved"), btngrpward)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -462,6 +440,33 @@ Public Sub btnabnormexam_Click()
   modSettings.SaveSettingsToFile("ClinicForms/FlagAbnormalExam", cmbabnormexam.Text)
   modBasic.$ClinFlagAbnormExam = cmbabnormexam.Text
   Balloon.Info(("Information saved"), btnabnormexam)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''------------------- Clinic forms -----------------------------
+Private Sub ClinFormsSetting()
+
+  cmbgridcateg.Text = modSettings.ShowSettingFromFIle("ClinicForms/CategoryGridView")
+  cmbgrpward.Text = modSettings.ShowSettingFromFIle("ClinicForms/GroupStructuredExams")
+  cmbslider.Text = modSettings.ShowSettingFromFIle("ClinicForms/EnableSliderValue")
+  cmbicdformat.Text = modSettings.ShowSettingFromFIle("ClinicForms/ICDEntryFormat")
+
+End
+
+Public Sub btngridcateg_Click()
+
+  modSettings.SaveSettingsToFile("ClinicForms/CategoryGridView", cmbgridcateg.Text)
+  modBasic.$ClinCategoryGrid = cmbgridcateg.Text
+  Balloon.Info(("Information saved"), btngridcateg)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btngrpward_Click()
+
+  modSettings.SaveSettingsToFile("ClinicForms/GroupStructuredExams", cmbgrpward.Text)
+  Balloon.Info(("Information saved"), btngrpward)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

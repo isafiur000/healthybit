@@ -4,6 +4,10 @@ Private $sType As String
 Private $sHead As String[]
 Private $sPath As String
 
+Private $DropCol As String[]
+Private $CodedCol As String[]
+Private $IndepCol As String[]
+
 Private $aHead As String[]
 Private $imgPath As String
 
@@ -98,6 +102,9 @@ Public Sub btndatainit_Click()
 
   Dim xlibs As String[] = ["import numpy", "import pandas", "import sklearn", "import matplotlib", "import seaborn"]
 
+  $DropCol = New String[]
+  $CodedCol = New String[]
+  $IndepCol = New String[]
   TerminalInputList(xlibs)
   btndataload.Enabled = True
 
@@ -126,6 +133,7 @@ Public Sub btndropcolumns_Click()
   xList = SelectListView("Columns to drop", $sHead, False)
   If xList.Count Then
     For i = 0 To xList.Count - 1
+      $DropCol.Add(xList[i])
       $sHead.Remove($sHead.Find(xList[i]))
       xList[i] = "'" & xList[i] & "'"
     Next
@@ -152,6 +160,7 @@ Public Sub btnordinalencode_Click()
     cmdLst.Add("from sklearn.preprocessing import OrdinalEncoder")
     cmdLst.Add("ord_enc = OrdinalEncoder()")
     For Each aVal In xList
+      $CodedCol.Add(aVal)
       cmdLst.Add("orig_data['" & aVal & "'] = ord_enc.fit_transform(orig_data[['" & aVal & "']]).astype('int')")
     Next
     TerminalInputList(cmdLst)
@@ -198,6 +207,9 @@ Public Sub btnsplidata_Click()
   Dim trainval As Float
 
   If cmbdependent.Text Then
+    $IndepCol = $sHead.Copy()
+    $IndepCol.Remove($IndepCol.Find(cmbdependent.Text))
+
     trainval = valtrain.Value / 100
     cmdLst.Add("from sklearn.model_selection import train_test_split")
     cmdLst.Add("Y_data = orig_data['" & cmbdependent.Text & "']")
@@ -333,6 +345,37 @@ Public Sub btnshowscatterplot_Click()
       cmdLst.Add(Subst("dot_data = tree.export_graphviz(clf_model, out_file='" & $imgPath & "', feature_names = list(X_train.columns))", $imgPath))
       TerminalInputList(cmdLst)
   End Select
+
+End
+
+Public Sub btnpredict_Click()
+
+  Dim cmdLst As New String[]
+  Dim aVar As Variant[]
+  Dim xindep As String
+  Dim xjson As String
+
+  aVar = New Variant[]
+  For Each xindep In $IndepCol
+    aVar.Add([xindep, "Number"])
+  Next
+  If aVar.Count Then
+    xjson = GetInputs(aVar)
+    If xjson Then
+
+      cmdLst.Add("import json")
+      cmdLst.Add("input_dict = json.loads('" & xjson & "')")
+      cmdLst.Add("input_df = pandas.DataFrame(input_dict, index=[0])")
+      cmdLst.Add("input_df")
+      Select cmbmodel.Text
+        Case "Linear Regression"
+          cmdLst.Add("predicted = reg_model.predict(input_df)")
+          cmdLst.Add("print('Predicted Value = ', predicted)")
+          TerminalInputList(cmdLst)
+      End Select
+
+    Endif
+  Endif
 
 End
 

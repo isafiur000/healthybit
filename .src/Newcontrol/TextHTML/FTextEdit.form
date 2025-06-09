@@ -218,22 +218,16 @@
       }
     }
     { Panel10 Panel
-      MoveScaled(0,28,9.5,3)
+      MoveScaled(3,28,6,3)
       Arrangement = Arrange.Horizontal
-      { btninserttext ToolButton
-        MoveScaled(0,0,3,3)
-        Enabled = False
-        ToolTip = ("Insert Text")
-        Picture = Picture["icon:/tiny/upload"]
-      }
       { btndict ToolButton
-        MoveScaled(3,0,3,3)
+        MoveScaled(0,0,3,3)
         ToolTip = ("Spell Checker")
         Picture = Picture["icon:/tiny/spell-check"]
         Toggle = True
       }
       { btntable ToolButton
-        MoveScaled(6,0,3,3)
+        MoveScaled(3,0,3,3)
         Enabled = False
         ToolTip = ("Insert Table")
         Picture = Picture["icon:/tiny/table"]
@@ -261,15 +255,20 @@
       }
     }
     { Panel12 Panel
-      MoveScaled(2,36,8,3)
+      MoveScaled(2,36,10,3)
       Arrangement = Arrange.Horizontal
+      { btninserttext ToolButton
+        MoveScaled(0,0,3,3)
+        ToolTip = ("Insert Text")
+        Picture = Picture["icon:/tiny/upload"]
+      }
       { btnkey ToolButton
-        MoveScaled(0,0,3.5,3)
+        MoveScaled(3,0,3,3)
         ToolTip = ("Add User ID to KeyList")
         Picture = Picture["icon:/tiny/user"]
       }
       { btnmenu MenuButton
-        MoveScaled(4,0,3.5,3)
+        MoveScaled(6,0,3.5,3)
         Picture = Picture["icon:/tiny/menu"]
         Menu = "mnufile"
       }
