@@ -180,7 +180,7 @@ Public Sub btnsaveimg_Click()
     Endif
     If Exist(sPath) Then
       Inc Application.Busy
-      sLongID = modImage.SavePatientFileGeneral($encid, $sType, txtdetail.Text, sPath)    ''
+      sLongID = modImage.SavePatientFileGeneral($encid, $sType, txtdetail.Text, sPath, modNonMedical.GetReportReference($encid, True))    ''
       Dec Application.Busy
       If sLongID Then
         txtdetail.Text = ""
@@ -222,7 +222,7 @@ Public Sub btnupload_Click()
 
         Endif
       Endif
-      sLongID = modImage.SavePatientFileGeneral($encid, $sType, txtdetail.Text, xPath)    ''
+      sLongID = modImage.SavePatientFileGeneral($encid, $sType, txtdetail.Text, xPath, modNonMedical.GetReportReference($encid, True))    ''
       If aOutPath Then
         LCDLabel1.Text = "UPLOADED"
         If sLongID Then

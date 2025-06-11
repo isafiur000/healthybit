@@ -171,6 +171,7 @@ End
 
 Private Sub DisplayImage(sPath As String)
 
+  PictureBox1.Visible = True
   docviewleft.Visible = False
   DocumentView1.Visible = False
   modImage.StretchtPictureToBox(PictureBox1, sPath)
@@ -180,6 +181,8 @@ End
 Private Sub DisplayPDF(sPath As String)
 
   PictureBox1.Visible = False
+  docviewleft.Visible = True
+  DocumentView1.Visible = True
   If $hPDF And If $hPDF.Count Then
     $hPDF.Close()
   Endif

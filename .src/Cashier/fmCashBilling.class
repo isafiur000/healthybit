@@ -5531,3 +5531,15 @@ Public Sub mnumedhilimit_Click()
   xx = GetTextArea("API Output", modDevAll.GetJsonFormat(JSON.Encode($HiCapAPIView)))
 
 End
+
+Public Sub btndiagnolist_Click()
+
+  Dim xList As String[]
+  Dim xx As String
+
+  xList = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", Trim(txtencid.Text))
+  If xList.Count Then
+    xx = MessageHtml(Trim(txtencid.Text), "<h4>Provisional Diagnosis</h4>" & xList.Join("<br>"), ["OK"])
+  Endif
+
+End

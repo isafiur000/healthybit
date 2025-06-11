@@ -35,7 +35,7 @@ Public Sub ArchiveScannedMultiImage(encid As String)
     sList = GetWebCamValueList(modDevice.WebCamDevice())
     If sList And If sList.Count Then
       For Row = 0 To sList.Count - 1
-        sLongID = modImage.SavePatientFileGeneral(encid, "Scanned Images", "Scanned Images:" & modString.GetDateString(Now()) & "-" & CStr(Row), sList[Row])
+        sLongID = modImage.SavePatientFileGeneral(encid, "Scanned Images", "Scanned Images:" & modString.GetDateString(Now()) & "-" & CStr(Row), sList[Row], modNonMedical.GetReportReference(encid, True))
       Next
     Endif
   Endif

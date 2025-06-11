@@ -16,6 +16,9 @@ Private $tblpatreport As String
 Private $tblpatbilldetail As String
 Private $tbltempbilldetail As String
 
+Private $sExtra As String
+Private $hPDF As PdfDocument
+
 Public Sub _new(encid As String, sClaim As String, sAccount As String, sYear As String)
 
   $encid = encid
@@ -166,10 +169,18 @@ End
 
 Private Sub ShowDocuments()
 
+  Dim xstr As String
+
+  If chkclaim.Value = True Then
+    xstr = " and fldhashcode=&5"
+  Else
+    xstr = ""
+  Endif
+
   If rbpending.Value = True Then
-    $rData = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval from " & $tblpatreport & " where fldencounterval like &1 and fldcateg like &2 and (fldflag=&3 or fldflag IS NULL) and (flvisible=&4 or flvisible IS NULL)", $encid, cmbsource.Text, False, "Visible")
+    $rData = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,flvisible from " & $tblpatreport & " where fldencounterval like &1 and fldcateg like &2 and (fldflag=&3 or fldflag IS NULL) and (flvisible=&4 or flvisible IS NULL)" & xstr, $encid, cmbsource.Text, False, "Visible", $sAccount & "|" & $sClaim)
   Else If rbdone.Value = True Then
-    $rData = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval from " & $tblpatreport & " where fldencounterval like &1 and fldcateg like &2 and fldflag=&3 and (flvisible=&4 or flvisible IS NULL)", $encid, cmbsource.Text, True, "Visible")
+    $rData = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,flvisible from " & $tblpatreport & " where fldencounterval like &1 and fldcateg like &2 and fldflag=&3 and (flvisible=&4 or flvisible IS NULL)" & xstr, $encid, cmbsource.Text, True, "Visible", $sAccount & "|" & $sClaim)
   Endif
   ResizeGridView()
 
@@ -184,11 +195,12 @@ Private Sub ResizeGridView()
     .Columns[0].Width = 1
     .Columns[1].Width = 150 * modBasic.$AppWidthRatio
     .Columns[2].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 200 * modBasic.$AppWidthRatio
     .Columns[4].Width = 250 * modBasic.$AppWidthRatio
     .Columns[5].Width = 1
     .Columns[6].Width = 1
     .Columns[7].Width = 1
+    .Columns[8].Width = 1
 
     .Columns[1].Text = "DateTime"
     .Columns[2].Text = "Category"
@@ -208,6 +220,80 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]
   Endif
+
+End
+
+Public Sub GridView1_Click()
+
+  Dim xFPath As String
+
+  If GridView1.Column = 3 Then
+    xFPath = modImage.GetBlobFileData(GridView1[GridView1.Row, 0].Text, $tblpatreport)
+    If Exist(xFPath) Then
+
+      Select Case Lower(File.Ext(xFPath))
+        Case "bmp", "jpg", "jpeg", "png", "gif", "svg", "tiff"
+          DisplayImage(xFPath)
+        Case Else
+          DisplayPDF(xFPath)
+      End Select
+
+    Endif
+  Endif
+
+End
+
+Private Sub DisplayImage(sPath As String)
+
+  PictureBox1.Visible = True
+  docviewleft.Visible = False
+  DocumentView1.Visible = False
+  modImage.StretchtPictureToBox(PictureBox1, sPath)
+
+End
+
+Private Sub DisplayPDF(sPath As String)
+
+  PictureBox1.Visible = False
+  docviewleft.Visible = True
+  DocumentView1.Visible = True
+  If $hPDF And If $hPDF.Count Then
+    $hPDF.Close()
+  Endif
+
+  $hPDF = New PdfDocument
+  $hPDF.Open(sPath)
+  DocumentView1.Count = $hPDF.Count
+  docviewleft.Count = 0
+  docviewleft.DocHeight = $hPDF[1].Height / 0.72
+  docviewleft.DocWidth = $hPDF[1].Width / 0.72
+  DocumentView1.DocWidth = $hPDF[1].Width / 0.72
+  DocumentView1.DocHeight = $hPDF[1].Height / 0.72
+
+  DocumentView1.Arrangement = 0
+  DocumentView1.Refresh()
+
+End
+
+Public Sub DocumentView1_Layout(Page As Integer)
+
+  Last.Layout.Height = $hPDF[Page + 1].Height / 0.72
+  Last.Layout.Width = $hPDF[Page + 1].Width / 0.72
+
+End
+
+Public Sub DocumentView1_Draw(Page As Integer, Width As Integer, Height As Integer)
+
+  If Page > $hPDF.Count - 1 Then Return
+
+  $hPDF.Zoom = Last.Zoom / 0.72
+  Draw.Image($hPDF[Page + 1].Image, 0, 0)
+
+End
+
+Public Sub DocumentView1_MouseDown()
+
+  Print DocumentView1.Find(Mouse.x, Mouse.y)
 
 End
 
@@ -257,6 +343,32 @@ Public Sub mnuemail_Click()
 End
 
 Public Sub mnuftp_Click()
+
+End
+
+Public Sub GridView1_Menu()
+
+  mnuhide.Popup
+
+End
+
+Public Sub mnuhidefile_Click()
+
+  Dim xx As String
+  Dim xopt As String[] = ["Visible", "Hidden"]
+  Dim res As Result
+
+  If GridView1.Rows.Selection.Count > 0 Then
+    xx = InputCombo("Set Visibility", GridView1[GridView1.Row, 3].Text, xopt, GridView1[GridView1.Row, 8].Text, True)
+    If xx Then
+      res = modDatabase.$myConn.Edit($tblpatreport, "fldid=&1", GridView1[GridView1.Row, 0].Text)
+      If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
+        res["flvisible"] = xx
+        res.Update
+        ShowDocuments()
+      Endif
+    Endif
+  Endif
 
 End
 
@@ -611,8 +723,8 @@ Private Sub ResizeInvGridView()
     .Columns[2].Width = 75 * modBasic.$AppWidthRatio
     .Columns[3].Width = 125 * modBasic.$AppWidthRatio
     .Columns[4].Width = 125 * modBasic.$AppWidthRatio
-    .Columns[5].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[6].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[6].Width = 100 * modBasic.$AppWidthRatio
 
     .Columns[0].Text = "DateTime"
     .Columns[1].Text = "Invoice"

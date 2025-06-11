@@ -304,18 +304,21 @@ End
 
 Private Sub OpenDemographics()
 
-  ' Dim hForm2 As FmPatdemograph
+  Dim hForm2 As FmPatdemograph
   Dim hForm1 As Fmdemograph
   Dim hForm As FmPatAccEdit
 
   If modBasic.$RegistAutoDemograph Then
     Select modBasic.$RegistAutoDemograph
       Case "Acount", "Clinical"
-        pnldemograph.Visible = True
-        hForm1 = New Fmdemograph(txtencounter.Text, modBasic.$RegistAutoDemograph, pnldemograph)
-        hForm1.SetFocus
-        ' hForm2 = New FmPatdemograph(txtencounter.Text, modBasic.$RegistAutoDemograph)
-        ' hForm2.ShowModal
+        If modBasic.$RegistEmbedDemograph = "Yes" Then
+          pnldemograph.Visible = True
+          hForm1 = New Fmdemograph(txtencounter.Text, modBasic.$RegistAutoDemograph, pnldemograph)
+          hForm1.SetFocus
+        Else
+          hForm2 = New FmPatdemograph(txtencounter.Text, modBasic.$RegistAutoDemograph)
+          hForm2.ShowModal
+        Endif
       Case "Essential"
         hForm = New FmPatAccEdit(txtencounter.Text)
         hForm.ShowModal

@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,103,55)
+  MoveScaled(0,0,107,83)
   Text = ("HI Documents")
   { mnufile Menu
     Text = ("File")
@@ -42,8 +42,14 @@
       Text = ("Upload Discharge")
     }
   }
+  { mnuhide Menu
+    Text = ("Menu1")
+    { mnuhidefile Menu
+      Text = ("Hide")
+    }
+  }
   { TabPanel1 TabPanel
-    MoveScaled(1,1,101,50)
+    MoveScaled(1,1,105,78)
     Count = 2
     Index = 0
     Text = ("Invoices")
@@ -62,40 +68,40 @@
         }
       }
       { btnuploadinv Button
-        MoveScaled(84,0.625,16,3)
+        MoveScaled(87,0.625,16,3)
         Text = ("Upload")
         Picture = Picture["icon:/small/up"]
-      }
-      { btnrefreshinv ToolButton
-        MoveScaled(47,0.625,3,3.25)
-        Picture = Picture["icon:/small/refresh"]
       }
       { cmbsourcinv ComboBox
         MoveScaled(1,0.625,16.75,3)
       }
       { btnviewinvoice Button
-        MoveScaled(70,0.625,13,3)
+        MoveScaled(73,0.625,13,3)
         Text = ("View")
         Picture = Picture["icon:/small/pdf"]
       }
       { chkmergeinv CheckBox
-        MoveScaled(54,0.625,12,3)
+        MoveScaled(58,0.625,12,3)
         Text = ("Merge All")
+      }
+      { btnrefreshinv Button
+        MoveScaled(47,0.625,7,3)
+        Picture = Picture["icon:/small/refresh"]
       }
     }
     { GridView2 GridView
-      MoveScaled(1,4,99,39)
+      MoveScaled(1,4,103,66)
       Mode = Select.Single
       Header = GridView.Both
       AutoResize = False
     }
     { ProgressBar1 ProgressBar
-      MoveScaled(1,43,99,2.5)
+      MoveScaled(1,71,103,2.5)
     }
     Index = 1
     Text = ("Reports")
     { Panel1 Panel
-      MoveScaled(0,0,100,4)
+      MoveScaled(0,0,104,4)
       { Panel4 Panel
         MoveScaled(37,0.625,25,3)
         { rbpending RadioButton
@@ -109,45 +115,66 @@
         }
       }
       { btnupload Button
-        MoveScaled(87,0.625,12,3)
+        MoveScaled(91,0.625,12,3)
         Text = ("Upload")
         Picture = Picture["icon:/small/up"]
-      }
-      { btnrefresh ToolButton
-        MoveScaled(62,0.625,3,3.25)
-        Picture = Picture["icon:/small/refresh"]
       }
       { cmbsource ComboBox
         MoveScaled(17,0.625,18,3)
       }
       { mnucreate MenuButton
-        MoveScaled(69,0.625,17,3)
+        MoveScaled(73,0.625,17,3)
         Text = ("Generate")
       }
       { cmbfiscal ComboBox
         MoveScaled(0.625,0.625,15,3)
       }
+      { btnrefresh Button
+        MoveScaled(62,0.625,7,3)
+        Picture = Picture["icon:/small/refresh"]
+      }
     }
     { GridView1 GridView
-      MoveScaled(0.625,4,99,37)
+      MoveScaled(1,4,103,21)
       Mode = Select.Multiple
       Header = GridView.Both
       AutoResize = False
     }
     { Panel5 Panel
-      MoveScaled(0,41,100,4)
+      MoveScaled(0,25,104,4)
       { chkblnwht CheckBox
-        MoveScaled(40.375,0.625,19,3)
+        MoveScaled(23,0.625,19,3)
         Text = ("Black-in-White")
       }
       { btnview Button
-        MoveScaled(80.375,0.625,12,3)
+        MoveScaled(51,0.625,12,3)
         Text = ("View")
         Picture = Picture["icon:/small/view-preview"]
       }
       { chkmergedocs CheckBox
         MoveScaled(0.625,0.625,19,3)
         Text = ("Merge Selected")
+      }
+      { chkclaim CheckBox
+        MoveScaled(84,0.625,15,3)
+        Text = ("Linked Only")
+      }
+    }
+    { Panel6 Panel
+      MoveScaled(0,29,104,44)
+      Arrangement = Arrange.Horizontal
+      Border = Border.Plain
+      { docviewleft DocumentView
+        MoveScaled(3,0,1,40)
+      }
+      { DocumentView1 DocumentView
+        MoveScaled(9,0,44,39)
+        Expand = True
+      }
+      { PictureBox1 ImageView
+        MoveScaled(57,0,41,39)
+        Visible = False
+        Expand = True
       }
     }
     Index = 0

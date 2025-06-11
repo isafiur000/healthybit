@@ -54,7 +54,7 @@ Public Sub btnsaveimg_Click()
   sPath = $sPath
   If Exist(sPath) Then
     Inc Application.Busy
-    sLongID = modImage.SavePatientFileGeneral($encid, "General Reports", "OPD Prescription", sPath)    ''
+    sLongID = modImage.SavePatientFileGeneral($encid, "General Reports", "OPD Prescription", sPath, modNonMedical.GetReportReference($encid, True))    ''
     Dec Application.Busy
     If sLongID Then
       Balloon.Info(("File saved"), btnsaveimg)
@@ -84,7 +84,7 @@ Public Sub btnupload_Click()
 
       Endif
     Endif
-    sLongID = modImage.SavePatientFileGeneral($encid, "General Reports", "OPD Prescription", xPath)    ''
+    sLongID = modImage.SavePatientFileGeneral($encid, "General Reports", "OPD Prescription", xPath, modNonMedical.GetReportReference($encid, True))    ''
     If aOutPath Then
       LCDLabel1.Text = "UPLOADED"
       If sLongID Then
