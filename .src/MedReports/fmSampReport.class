@@ -2120,9 +2120,9 @@ Public Sub mnumultivariate_Click()
       sArry = New String[]
       For Column = 0 To xHeader.Count - 1
         If Column < $varList.Count + 4 Then
-          sArry.Add(GridView2[Row, Column].Text)
+          sArry.Add(Quote(GridView2[Row, Column].Text))
         Else
-          sArry.Add(modString.ConvertRichTextToPlain(GridView2[Row, Column].RichText))
+          sArry.Add(Quote(modString.ConvertRichTextToPlain(GridView2[Row, Column].RichText)))
         Endif
       Next
       CForm.Add(sArry)

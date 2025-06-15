@@ -1,0 +1,84 @@
+' Gambas class file
+
+Private $sExec As String
+Private $sFolder As String
+Private $sDevice As String
+Private $sValue As String[]
+
+Public Sub Run(sExec As String, sFolder As String, sDevice As String) As String[]
+
+  $sExec = sExec
+  $sFolder = sFolder
+  $sDevice = sDevice
+
+  If Me.ShowModal() Then Return $sValue
+
+End
+
+Public Sub Form_Open()
+
+  btnapplication.Text = $sExec
+  lblfolder.Text = $sFolder
+
+End
+
+Public Sub btnapplication_Click()
+
+  Dim arcmd As String
+
+  ClearFolder()
+  Wait
+  Timer1.Enabled = True
+  If $sDevice Then
+    arcmd = $sExec & " -d " & $sDevice
+  Else
+    arcmd = $sExec
+  Endif
+  modBasic.DebugString(arcmd)
+  Shell arcmd
+
+  ShowImageFiles()
+
+End
+
+Private Sub ClearFolder()
+
+  Dim FileList As String[]
+  Dim sFile As String
+
+  FileList = Dir($sFolder, Null, gb.File)
+  For Each sFile In FileList
+    Kill $sFolder &/ sFile
+  Next
+
+End
+
+Private Sub ShowImageFiles()
+
+  FileView1.Dir = $sFolder
+  FileView1.Filter = ["*.jpg", "*.jpeg", "*.png", "*.bmp"]
+  FileView1.ShowPreview = False
+
+End
+
+Public Sub Timer1_Timer()
+
+  FileView1.Reload()
+
+End
+
+Public Sub btnsaveimage_Click()
+
+  Dim xList As String[]
+  Dim FileList As String[]
+  Dim sFile As String
+
+  xList = New String[]
+  FileList = Dir($sFolder, Null, gb.File)
+  For Each sFile In FileList
+    xList.Add($sFolder &/ sFile)
+  Next
+  $sValue = xList
+  Me.Close(True)
+
+End

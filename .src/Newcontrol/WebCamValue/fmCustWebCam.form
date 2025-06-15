@@ -1,0 +1,28 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,75,66)
+  { FileView1 FileView
+    MoveScaled(1,5,73,56)
+  }
+  { Panel2 Panel
+    MoveScaled(0,0,74,5)
+    { btnapplication Button
+      MoveScaled(1,0.5,30,4)
+      Text = ("Open Application")
+      Default = True
+    }
+    { btnsaveimage Button
+      MoveScaled(42,0.5,30,4)
+      Text = ("Save Images")
+    }
+    { Timer1 #Timer
+      #MoveScaled(31,0)
+      Delay = 2000
+    }
+  }
+  { lblfolder Label
+    MoveScaled(1,62,73,3.5)
+    Border = Border.Plain
+  }
+}

@@ -5,7 +5,7 @@ Private ReportFile As File
 
 Public Sub _new()
 
-  $ReportPath = Temp()
+  $ReportPath = Temp() & ".csv"
   ReportFile = Open $ReportPath For Write Create
 
 End

@@ -220,7 +220,11 @@ Private Function TransferItem(sItem As String, sQTY As Float, sComp As String) A
           res["fldqty"] = 0
           res["fldstatus"] = modStock.ItemSaleStatus(res1["fldstockid"], sComp)
           res["fldsellpr"] = res1["fldsellpr"]
-          res["fldmrp"] = res1["fldmrp"]
+          If res1["fldmrp"] Then
+            res["fldmrp"] = res1["fldmrp"]
+          Else
+            res["fldmrp"] = 0
+          Endif
           res["fldsav"] = False
           res["fldcategory"] = res1["fldcategory"]
           res["fldcomp"] = sComp

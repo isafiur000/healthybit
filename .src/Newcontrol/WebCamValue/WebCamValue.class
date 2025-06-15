@@ -2,8 +2,15 @@
 
 Static Public Sub _call(sDevice As String, sUniq As Boolean) As String[]
 
-  If modBasic.$CamMethod = "video4linux" Then
-    Return fmWebCamOld.Run(sDevice, sUniq)
+  If modBasic.$CamMethod Then
+    If modBasic.$CamMethod = "video4linux" Then
+      Return fmWebCamOld.Run(sDevice, sUniq)
+    Else If modBasic.$CamMethod = "gstreamer" Then
+      Return fmWebCamValue.Run(sDevice, sUniq)
+    Else
+      Return fmCustWebCam.Run(modBasic.$CamMethod, modBasic.$CamOutputMode, sDevice)
+    Endif
+
   Else
     Return fmWebCamValue.Run(sDevice, sUniq)
   Endif

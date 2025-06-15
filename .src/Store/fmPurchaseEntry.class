@@ -475,7 +475,11 @@ Public Sub txtbatch_LostFocus()
       res.MoveFirst
       If res["fldexpiry"] Then
         dtexpiry.Value = res["fldexpiry"]
-        txtmrp.Value = Round(res["fldmrp"], -2)
+        If res["fldmrp"] Then
+          txtmrp.Value = Round(res["fldmrp"], -2)
+        Else
+          txtmrp.Value = 0
+        Endif
         dtexpiry.Enabled = False
         dtnepexpiry.Enabled = False
         txttotalcost.SetFocus
