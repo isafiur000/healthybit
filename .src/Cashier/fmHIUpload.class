@@ -898,7 +898,7 @@ Public Sub mnupendinginvo_Click()
         For Each res
           sInvList.Add(res["fldbillno"])
         Next
-        AutoUploadClaimDocs(GridView1[Row, 0].Text, sInvList)
+        AutoUploadClaimDocs(GridView1[Row, 0].Text, sInvList, True)
       Endif
 
     Next
@@ -912,7 +912,15 @@ Public Sub mnubulkinvoice_Click()
   Dim Row As Integer
   Dim res As Result
   Dim sInvList As String[]
+  Dim xmsg As Integer
+  Dim xshow As Boolean
 
+  xmsg = Message.Question("Message Output during uploads", "Enable", "Disable")
+  If xmsg = 2 Then
+    xshow = False
+  Else
+    xshow = True
+  Endif
   If cmbstate.Text = "Completed" Then
     For Row = 0 To GridView1.Rows.Count - 1
 
@@ -923,7 +931,7 @@ Public Sub mnubulkinvoice_Click()
         For Each res
           sInvList.Add(res["fldbillno"])
         Next
-        AutoUploadClaimDocs(GridView1[Row, 0].Text, sInvList)
+        AutoUploadClaimDocs(GridView1[Row, 0].Text, sInvList, xshow)
       Endif
 
     Next
@@ -931,7 +939,7 @@ Public Sub mnubulkinvoice_Click()
 
 End
 
-Private Sub AutoUploadClaimDocs(sClaim As String, sInvList As String[])
+Private Sub AutoUploadClaimDocs(sClaim As String, sInvList As String[], sMessage As Boolean)
 
   Dim aOutPath As String
   Dim xinvoice As String
@@ -945,7 +953,7 @@ Private Sub AutoUploadClaimDocs(sClaim As String, sInvList As String[])
     Wait
     If Exist(xFilePath) Then
       Inc Application.Busy
-      aOutPath = modClaimAPI.UploadImagesFilesClaimServerHI(sClaim, xFilePath, modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory))
+      aOutPath = modClaimAPI.UploadImagesFilesClaimServerHI(sClaim, xFilePath, sMessage, modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory))
       Dec Application.Busy
       If aOutPath = xFilePath Then
         For Each xinvoice In sInvList
@@ -962,17 +970,25 @@ End
 Public Sub mnudonedocs_Click()
 
   Dim Row As Integer
+  Dim xmsg As Integer
+  Dim xshow As Boolean
 
+  xmsg = Message.Question("Message Output during uploads", "Enable", "Disable")
+  If xmsg = 2 Then
+    xshow = False
+  Else
+    xshow = True
+  Endif
   If cmbstate.Text = "Completed" Then
     For Row = 0 To GridView1.Rows.Count - 1
       ClearSubInputs()
-      AutoUploadDocuments(GridView1[Row, 0].Text, GridView1[Row, 2].Text)
+      AutoUploadDocuments(GridView1[Row, 0].Text, GridView1[Row, 2].Text, xshow)
     Next
   Endif
 
 End
 
-Private Sub AutoUploadDocuments(sClaim As String, encid As String)
+Private Sub AutoUploadDocuments(sClaim As String, encid As String, sMessage As Boolean)
 
   Dim res As Result
   Dim xFilePath As String
@@ -986,7 +1002,7 @@ Private Sub AutoUploadDocuments(sClaim As String, encid As String)
       xFilePath = modImage.GetBlobFileData(res["fldid"], $tblpatreport)
       If Exist(xFilePath) Then
         Inc Application.Busy
-        aOutPath = modClaimAPI.UploadImagesFilesClaimServerHI(sClaim, xFilePath, modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory))
+        aOutPath = modClaimAPI.UploadImagesFilesClaimServerHI(sClaim, xFilePath, sMessage, modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory))
         Dec Application.Busy
       Endif
     Next

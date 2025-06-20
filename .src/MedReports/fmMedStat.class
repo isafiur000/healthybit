@@ -1,5 +1,6 @@
 ' Gambas class file
 
+Private $ColCount As Integer
 Private $encArr As String[]
 Private $encTot As String[]
 Private $newColumn As String[]
@@ -136,77 +137,118 @@ Private Sub FillItemCombo(cmbcategory As ComboBox, cmbitem As ComboBox, txtitem 
   Else
 
     If cmbcategory.Text = "Final Diagnosis Code" Then
-      sql = "select distinct(fldcodenew) as col from tblpatfindings where fldtype=&1 and fldsave=&2" & $RepoStr
-      res = modDatabase.$syConn.Exec(sql, "Final Diagnosis", True)
+      If MMain.$WebReport = "Multiple" Then
+        sql = "select distinct(fldcodenew) as col from tblpatfindings where fldtype=&1 and fldsave=&2" & $RepoStr
+        res = modDatabase.$syConn.Exec(sql, "Final Diagnosis", True)
+      Else
+        res = modDatabase.$icdConn.Exec("select fldicdcode as col from tblicddisease")
+      Endif
       txtitem.Enabled = False
       txtfrom.Enabled = False
       txtto.Enabled = False
     Else If cmbcategory.Text = "Provisional Diagnosis Code" Then
-      sql = "select distinct(fldcodenew) as col from tblpatfindings where fldtype=&1 and fldsave=&2" & $RepoStr
-      res = modDatabase.$syConn.Exec(sql, "Provisional Diagnosis", True)
+      If MMain.$WebReport = "Multiple" Then
+        sql = "select distinct(fldcodenew) as col from tblpatfindings where fldtype=&1 and fldsave=&2" & $RepoStr
+        res = modDatabase.$syConn.Exec(sql, "Provisional Diagnosis", True)
+      Else
+        res = modDatabase.$icdConn.Exec("select fldicdcode as col from tblicddisease")
+      Endif
       txtitem.Enabled = False
       txtfrom.Enabled = False
       txtto.Enabled = False
     Else If cmbcategory.Text = "Final Diagnosis" Then
-      sql = "select distinct(fldcode) as col from tblpatfindings where fldtype=&1 and fldsave=&2" & $RepoStr
-      res = modDatabase.$syConn.Exec(sql, "Final Diagnosis", True)
+      If MMain.$WebReport = "Multiple" Then
+        sql = "select distinct(fldcode) as col from tblpatfindings where fldtype=&1 and fldsave=&2" & $RepoStr
+        res = modDatabase.$syConn.Exec(sql, "Final Diagnosis", True)
+      Else
+        res = modDatabase.$icdConn.Exec("select fldicdnme as col from tblicddisease")
+      Endif
       txtitem.Enabled = False
       txtfrom.Enabled = False
       txtto.Enabled = False
     Else If cmbcategory.Text = "Provisional Diagnosis" Then
-      sql = "select distinct(fldcode) as col from tblpatfindings where fldtype=&1 and fldsave=&2" & $RepoStr
-      res = modDatabase.$syConn.Exec(sql, "Provisional Diagnosis", True)
+      If MMain.$WebReport = "Multiple" Then
+        sql = "select distinct(fldcode) as col from tblpatfindings where fldtype=&1 and fldsave=&2" & $RepoStr
+        res = modDatabase.$syConn.Exec(sql, "Provisional Diagnosis", True)
+      Else
+        res = modDatabase.$icdConn.Exec("select fldicdnme as col from tblicddisease")
+      Endif
       txtitem.Enabled = False
       txtfrom.Enabled = False
       txtto.Enabled = False
     Else If cmbcategory.Text = "Examination" Then
-      sql = "select distinct(fldhead) as col from tblpatientexam where fldsave=&1" & $RepoStr
-      res = modDatabase.$syConn.Exec(sql, True)
+      If MMain.$WebReport = "Multiple" Then
+        sql = "select distinct(fldhead) as col from tblpatientexam where fldsave=&1" & $RepoStr
+        res = modDatabase.$syConn.Exec(sql, True)
+      Else
+        res = modDatabase.$syConn.Exec("select fldexamid as col from tblexam")
+      Endif
       txtitem.Enabled = True
       txtfrom.Enabled = True
       txtto.Enabled = True
     Else If cmbcategory.Text = "Allergic Drugs" Then
-      sql = "select distinct(fldcode) as col from tblpatfindings where fldtype=&1 and fldsave=&2" & $RepoStr
-      res = modDatabase.$syConn.Exec(sql, "Allergic Drugs", True)
+      If MMain.$WebReport = "Multiple" Then
+        sql = "select distinct(fldcode) as col from tblpatfindings where fldtype=&1 and fldsave=&2" & $RepoStr
+        res = modDatabase.$syConn.Exec(sql, "Allergic Drugs", True)
+      Else
+        res = modDatabase.$syConn.Exec("select fldcodename as col from tblcode")
+      Endif
       txtitem.Enabled = False
       txtfrom.Enabled = False
       txtto.Enabled = False
     Else If cmbcategory.Text = "Medicines" Then
-      sql = "select distinct(fldcodename) as col from tbldrug where flddrug in(select flddrug from tblmedbrand where fldbrandid in(select flditem from tblpatdosing where fldsave_order=&1))"
-      res = modDatabase.$syConn.Exec(sql, True)
+      If MMain.$WebReport = "Multiple" Then
+        sql = "select distinct(fldcodename) as col from tbldrug where flddrug in(select flddrug from tblmedbrand where fldbrandid in(select flditem from tblpatdosing where fldsave_order=&1))"
+        res = modDatabase.$syConn.Exec(sql, True)
+      Else
+        res = modDatabase.$syConn.Exec("select fldcodename as col from tblcode")
+      Endif
       txtitem.Enabled = True
       txtfrom.Enabled = True
       txtto.Enabled = True
     Else If cmbcategory.Text = "Diagnostic Tests" Then
-      sql = "select distinct(fldtestid) as col from tblpatlabtest where (fldstatus=&1 or fldstatus=&2)" & $RepoStr
-      res = modDatabase.$syConn.Exec(sql, "Reported", "Verified")
+      If MMain.$WebReport = "Multiple" Then
+        sql = "select distinct(fldtestid) as col from tblpatlabtest where (fldstatus=&1 or fldstatus=&2)" & $RepoStr
+        res = modDatabase.$syConn.Exec(sql, "Reported", "Verified")
+      Else
+        res = modDatabase.$syConn.Exec("select fldtestid as col from tbltest")
+      Endif
       txtitem.Enabled = True
       txtfrom.Enabled = True
       txtto.Enabled = True
+
     Else If cmbcategory.Text = "Major Procedures" Then
-      sql = "select distinct(fldreportquali) as col from tblpatsubgeneral where fldchapter=&1 and flditemid in(select fldid from tblpatgeneral where fldinput=&2)" & $RepoStr
-      res = modDatabase.$syConn.Exec(sql, "Components", "Procedures")
-      txtitem.Enabled = False
-      txtfrom.Enabled = False
-      txtto.Enabled = False
 
     Else If cmbcategory.Text = "Radio Diagnostics" Then
 
     Else If cmbcategory.Text = "Patient Symptoms" Then
-      sql = "select distinct(flditem) as col from tblexamgeneral where fldinput=&1 and fldsave=&2" & $RepoStr
-      res = modDatabase.$syConn.Exec(sql, "Patient Symptoms", True)
+      If MMain.$WebReport = "Multiple" Then
+        sql = "select distinct(flditem) as col from tblexamgeneral where fldinput=&1 and fldsave=&2" & $RepoStr
+        res = modDatabase.$syConn.Exec(sql, "Patient Symptoms", True)
+      Else
+        res = modDatabase.$syConn.Exec("select fldsymptom as col from tblsymptoms")
+      Endif
       txtitem.Enabled = False
       txtfrom.Enabled = False
       txtto.Enabled = False
     Else If cmbcategory.Text = "Presenting Complaints" Then
-      sql = "select distinct(flditem) as col from tblexamgeneral where fldinput=&1 and fldsave=&2" & $RepoStr
-      res = modDatabase.$syConn.Exec(sql, "Presenting Symptoms", True)
+      If MMain.$WebReport = "Multiple" Then
+        sql = "select distinct(flditem) as col from tblexamgeneral where fldinput=&1 and fldsave=&2" & $RepoStr
+        res = modDatabase.$syConn.Exec(sql, "Presenting Symptoms", True)
+      Else
+        res = modDatabase.$syConn.Exec("select fldsymptom as col from tblsymptoms")
+      Endif
       txtitem.Enabled = False
       txtfrom.Enabled = True
       txtto.Enabled = True
     Else If cmbcategory.Text = "Clinical Demographics" Then
-      sql = "select distinct(flditem) as col from tblexamgeneral where fldinput=&1" & $RepoStr
-      res = modDatabase.$syConn.Exec(sql, "Demographics")
+      If MMain.$WebReport = "Multiple" Then
+        sql = "select distinct(flditem) as col from tblexamgeneral where fldinput=&1" & $RepoStr
+        res = modDatabase.$syConn.Exec(sql, "Demographics")
+      Else
+        sql = "select distinct(flditem) as col from tblexamgeneral where fldinput=&1" & $RepoStr
+        res = modDatabase.$syConn.Exec(sql, "Demographics")
+      Endif
       txtitem.Enabled = True
       txtfrom.Enabled = False
       txtto.Enabled = False
@@ -702,6 +744,7 @@ Private Sub FillEncGrid()
     GridView1.Columns.Count = 8
   Endif
   GridView1.Rows.Count = $encTot.Count
+  $ColCount = 8
   With GridView1
     .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 125 * modBasic.$AppWidthRatio
@@ -1578,5 +1621,58 @@ Public Sub mnuexpocolumn_Click()
 
   hForm = New FmCustColumnSet(Me.Tag)
   hForm.ShowModal
+
+End
+
+Public Sub mnumachine_Click()
+
+  Dim CForm As CMultivariate
+  Dim sArry As String[]
+  Dim Row As Integer
+  Dim Column As Integer
+  Dim sPath As String
+  Dim xHeader As String[]
+  Dim hPython As FmPythonTerminal
+
+  If MMain.$IsGUIApp = True Then
+    $ProgressBar1 = modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory)
+    $ProgressBar1.Visible = True
+    $ProgressBar1.Value = 0
+  Endif
+
+  If GridView1.Rows.Count Then
+    xHeader = New String[]
+    For Column = 0 To GridView1.Columns.Count - 1
+      xHeader.Add(GridView1.Columns[Column].Text)
+    Next
+
+    Inc Application.Busy
+    CForm = New CMultivariate
+    For Row = 0 To GridView1.Rows.Count - 1
+      sArry = New String[]
+      For Column = 0 To xHeader.Count - 1
+        If Column < $ColCount Then
+          sArry.Add(Quote(GridView1[Row, Column].Text))
+        Else
+          sArry.Add(Quote(modString.ConvertRichTextToPlain(GridView1[Row, Column].RichText)))
+        Endif
+      Next
+      CForm.Add(sArry)
+      If MMain.$IsGUIApp = True Then
+        $ProgressBar1.Value = (Row + 1) / GridView1.Rows.Count
+        Wait
+      Endif
+    Next
+    sPath = CForm.GetCSVFile()
+    Dec Application.Busy
+    If MMain.$IsGUIApp = True Then
+      $ProgressBar1.Visible = False
+    Endif
+
+    If Exist(sPath) Then
+      hPython = New FmPythonTerminal("Multivariate", xHeader, sPath)
+      modWorkSpace.Add(hPython)
+    Endif
+  Endif
 
 End

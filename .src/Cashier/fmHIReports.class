@@ -831,7 +831,7 @@ Private Sub GetClaimUploadProcess(sClaim As String, sInvList As String[])
     xFilePath = GetInvoiceReceiptData(sInvList)
     Wait
     If Exist(xFilePath) Then
-      aOutPath = modClaimAPI.UploadImagesFilesClaimServerHI(sClaim, xFilePath, ProgressBar1)
+      aOutPath = modClaimAPI.UploadImagesFilesClaimServerHI(sClaim, xFilePath, True, ProgressBar1)
 
       If aOutPath = xFilePath Then
         For Each xinvoice In sInvList

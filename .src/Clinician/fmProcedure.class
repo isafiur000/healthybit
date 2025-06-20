@@ -165,7 +165,6 @@ Private Sub ButtonControl()
   btnsubChange.Enabled = xx
   btncustonpoint.Enabled = xx
   bnlistpoint.Enabled = xx
-  btnicdpoint.Enabled = xx
   btndelcomponent.Enabled = xx
   btncomment.Enabled = xx
   ''preoperative
@@ -1300,26 +1299,6 @@ Public Sub bnlistpoint_Click()
       modPatientGeneral.AddSubGeneralQualiData($ProcIndex, Trim(txtencid.Text), "Components", xx, "Other")
       lstcomponent.List = modPatPatho.GetComponentProcedure(Trim(txtencid.Text), $ProcIndex)
       Balloon.Info(("Information saved"), bnlistpoint)
-      Balloon.Delay = modBasic.$BalloonDelay
-
-    Endif
-  Endif
-
-End
-
-Public Sub btnicdpoint_Click()
-
-  Dim sName As String[]
-  Dim sList As String[]
-
-  sList = New String[]
-  If txtencid.Text And If $ProcIndex Then
-    sName = ICDTree(modDatabase.$icdConn, "Procedure", sList, sList, sList, "")
-    If sName Then
-
-      modPatientGeneral.AddSubGeneralQualiData($ProcIndex, Trim(txtencid.Text), "Components", sName[1], sName[0])
-      lstcomponent.List = modPatPatho.GetComponentProcedure(Trim(txtencid.Text), $ProcIndex)
-      Balloon.Info(("Information saved"), btnicdpoint)
       Balloon.Delay = modBasic.$BalloonDelay
 
     Endif
@@ -3065,7 +3044,6 @@ Private Sub UserAccessRestrict()
   If $UserRestrict.Exist("Procedure Components") Then
     btncustonpoint.Enabled = False
     bnlistpoint.Enabled = False
-    btnicdpoint.Enabled = False
     btndelcomponent.Enabled = False
   Endif
   If $UserRestrict.Exist("Procedure Summary") Then

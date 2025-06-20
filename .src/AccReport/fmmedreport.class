@@ -1611,6 +1611,17 @@ Public Sub mnuTransferSumm_Click()
 
 End
 
+Public Sub mnutransrequest_Click()
+
+  Dim xPath As String
+
+  Inc Application.Busy
+  xPath = modHTMLStock.GetTransferFromRequestSummary(dtfir.Value, dtlast.Value, cmbcomp.Text)
+  Dec Application.Busy
+  modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
+
+End
+
 Public Sub mnuconsumSumm_Click()
 
   Dim xPath As String

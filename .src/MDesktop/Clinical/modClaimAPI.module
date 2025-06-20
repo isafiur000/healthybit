@@ -103,7 +103,7 @@ Public Function GetSequenceColl(xVar As Variant) As Collection
 End
 
 ''======================= claimdoc =================================
-Public Function UploadImagesFilesClaimServerHI(xProvideClaimCode As String, xFilePath As String, ProgressBar1 As ProgressBar) As String
+Public Function UploadImagesFilesClaimServerHI(xProvideClaimCode As String, xFilePath As String, sMessge As Boolean, ProgressBar1 As ProgressBar) As String
 
   Dim xCheckData As JSONCollection
   Dim xClaimStr As String
@@ -197,39 +197,53 @@ Public Function UploadImagesFilesClaimServerHI(xProvideClaimCode As String, xFil
                     aOutPath = xFilePath
                     ProgressBar1.Value = 1
                     Wait
-                    ' Balloon.Info(("File Upload Completed"), btnuploadinv)
-                    ' Balloon.Delay = modBasic.$BalloonDelay
                     modBasic.DebugString(Trim(uploadColl["data"]["message"]))
                   Else
-                    Message.Warning("Reached to server but unsuccessful to get upload status", ("OK"))
+                    If sMessge = True Then
+                      Message.Warning("Reached to server but unsuccessful to get upload status", ("OK"))
+                    Endif
                   Endif  ''if upload is succcessful
                 Else
-                  Message.Warning("File Upload status not returned by server", ("OK"))
+                  If sMessge = True Then
+                    Message.Warning("File Upload status not returned by server", ("OK"))
+                  Endif
                 Endif  ''if upload string is returned
               Endif
 
             Else
-              Message.Warning("Unique Claim ID is null", ("OK"))
+              If sMessge = True Then
+                Message.Warning("Unique Claim ID is null", ("OK"))
+              Endif
             Endif ''if unique id is present
 
           Else
-            Message.Warning("Reached to server but unsuccessful to get Unique Claim ID" & "<br>" & xCheckStr, ("OK"))
+            If sMessge = True Then
+              Message.Warning("Reached to server but unsuccessful to get Unique Claim ID" & "<br>" & xCheckStr, ("OK"))
+            Endif
           Endif  ''if create is successful
         Else
-          Message.Warning("Unique Claim ID not returned by server", ("OK"))
+          If sMessge = True Then
+            Message.Warning("Unique Claim ID not returned by server", ("OK"))
+          Endif
         Endif ''if create string is returned
 
       Else
-        Message.Warning("Access Code is null" & "<br>" & xAccessCode, ("OK"))
+        If sMessge = True Then
+          Message.Warning("Access Code is null" & "<br>" & xAccessCode, ("OK"))
+        Endif
       Endif  ''if access code is present
 
     Else
-      Message.Warning("Reached to server but unsuccessful to get Access code" & "<br>" & xClaimStr, ("OK"))
+      If sMessge = True Then
+        Message.Warning("Reached to server but unsuccessful to get Access code" & "<br>" & xClaimStr, ("OK"))
+      Endif
     Endif ''if check is successful
 
   Else
 
-    Message.Warning("Access Code not returned by server", "OK")
+    If sMessge = True Then
+      Message.Warning("Access Code not returned by server", "OK")
+    Endif
   Endif ''if claim string is returned
 
   Return aOutPath

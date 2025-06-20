@@ -64,6 +64,12 @@
       Text = ("Col Count")
     }
   }
+  { mnudataview Menu
+    Text = ("Dataview")
+    { mnumachine Menu
+      Text = ("ML Analysis")
+    }
+  }
   { Panel1 Panel
     MoveScaled(0,0,119,72)
     { Panel2 Panel
@@ -88,28 +94,27 @@
         Picture = Picture["icon:/small/calendar"]
       }
       { Label3 Label
-        MoveScaled(28,1,12.25,3)
+        MoveScaled(28,1,9,3)
         Border = Border.Plain
-        Text = ("Search Area")
+        Text = ("Category")
       }
       { Label4 Label
-        MoveScaled(28,4.625,12.25,3)
+        MoveScaled(61,4.625,7,3)
         Border = Border.Plain
-        Text = ("Search Text")
+        Text = ("Search")
       }
       { cmbtype ComboBox
-        MoveScaled(41,1,22,3)
+        MoveScaled(38,1,20,3)
       }
       { txtsearch TextBox
-        MoveScaled(41,4.625,22,3)
+        MoveScaled(69,4.625,13,3)
       }
       { btnrefresh Button
-        MoveScaled(66,4.625,13,3)
-        Text = ("Refresh")
+        MoveScaled(110,1,6,3)
         Picture = Picture["icon:/small/refresh"]
       }
       { btnfullrep Button
-        MoveScaled(80,4.625,5,3)
+        MoveScaled(110,4.625,6,3)
         Picture = Picture["icon:/small/html"]
       }
       { Label1 Label
@@ -118,22 +123,22 @@
         Text = ("From:")
       }
       { Label5 Label
-        MoveScaled(66,1,7,3)
+        MoveScaled(61,1,7,3)
         Border = Border.Plain
         Text = ("Gender")
       }
       { cmbsex ComboBox
-        MoveScaled(73,1,12,3)
+        MoveScaled(69,1,13,3)
       }
       { pnlocat Panel
-        MoveScaled(88,0,27,8)
+        MoveScaled(85,0,24,8)
         { Label6 Label
           MoveScaled(0.375,1,8,3)
           Border = Border.Plain
           Text = ("Selected")
         }
         { cmblocation ComboBox
-          MoveScaled(9,1,17,3)
+          MoveScaled(9,1,14,3)
         }
         { Label10 Label
           MoveScaled(0.375,4.625,8,3)
@@ -141,8 +146,16 @@
           Text = ("Value")
         }
         { cmbvalue ComboBox
-          MoveScaled(9,4.625,17,3)
+          MoveScaled(9,4.625,14,3)
         }
+      }
+      { Label7 Label
+        MoveScaled(28,4.625,9,3)
+        Border = Border.Plain
+        Text = ("Class")
+      }
+      { cmbclass ComboBox
+        MoveScaled(38,4.625,20,3)
       }
     }
     { TabStrip1 TabPanel

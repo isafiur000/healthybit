@@ -835,6 +835,22 @@ Public Sub chkpatient_Click()
 
 End
 
+Public Sub GridView1_Menu()
+
+  mnuhide.Popup()
+
+End
+
+Public Sub mnucompreport_Click()
+
+  If GridView1.Rows.Count > 0 Then
+    If modPatientSub.AllowEncIDHistory(GridView1[GridView1.Row, 0].Text, modDatabase.$syConn) = True Then
+      modPatReports.GetSelectedPatientValues(GridView1[GridView1.Row, 0].Text, MMain.$defUnit)
+    Endif
+  Endif
+
+End
+
 Public Sub mnumachlearn_Click()
 
   Dim CForm As CMultivariate
@@ -862,7 +878,7 @@ Public Sub mnumachlearn_Click()
     For Row = 0 To GridView1.Rows.Count - 1
       sArry = New String[]
       For Column = 0 To xHeader.Count - 1
-        If Column < $ColCount - 1 Then
+        If Column < $ColCount Then
           sArry.Add(Quote(GridView1[Row, Column].Text))
         Else
           sArry.Add(Quote(modString.ConvertRichTextToPlain(GridView1[Row, Column].RichText)))

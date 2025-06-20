@@ -217,7 +217,7 @@ Public Sub btnupload_Click()
       asx = Split($sExtra, "|")
       If asx[1] Then
         If asx[0] = modBasic.$HIPackage Or If asx[0] = modBasic.$HIPackageER Then
-          aOutPath = modClaimAPI.UploadImagesFilesClaimServerHI(asx[1], xPath, modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory))
+          aOutPath = modClaimAPI.UploadImagesFilesClaimServerHI(asx[1], xPath, True, modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory))
         Else If asx[0] = modBasic.$SSFAccident Or If asx[0] = modBasic.$SSFMedical Or If asx[0] = modBasic.$SSFCritical Then
 
         Endif

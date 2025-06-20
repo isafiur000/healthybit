@@ -5388,7 +5388,7 @@ Private Sub AutoUploadClaimDocs(sPackage As String, sClaim As String, TypeLst As
       xFilePath = modClaimAPI.GetHIInvoiceReceiptData(sInvList)
       Wait
       If Exist(xFilePath) Then
-        aOutPath = modClaimAPI.UploadImagesFilesClaimServerHI(sClaim, xFilePath, modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory))
+        aOutPath = modClaimAPI.UploadImagesFilesClaimServerHI(sClaim, xFilePath, True, modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory))
         If aOutPath = xFilePath Then
           For Each xinvoice In sInvList
             modAccount.InsertClaimInvoice(xinvoice)

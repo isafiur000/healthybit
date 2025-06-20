@@ -819,6 +819,64 @@ Public Function CompleteAccessList() As String[]
 
 End
 
+Public Function GetDefaultClinHistories() As String[]
+
+  Dim xxx As String[]
+
+  xxx = New String[]
+  xxx.Add("Past History")
+  xxx.Add("Treatment History")
+  xxx.Add("Medication History")
+  xxx.Add("Family History")
+  xxx.Add("Personal History")
+  xxx.Add("Surgical History")
+  xxx.Add("Occupational History")
+  xxx.Add("Social History")
+
+  Return xxx
+
+End
+
+Public Function GetPatHistoryVar() As String[]
+
+  Dim res1 As Result
+  Dim xxx As String[]
+
+  xxx = New String[]
+  xxx.Add("History of Illness")
+  res1 = modDatabase.$myConn.Exec("select distinct(flditem) as flditem from tblhistory")
+  If res1.Available Then
+    For Each res1
+      xxx.Add("History@" & res1["flditem"])
+    Next
+  Else
+    xxx.Insert(modMedicine.GetDefaultClinHistories())
+  Endif
+
+  Return xxx
+
+End
+
+Public Function GetDischargeVar() As String[]
+
+  Dim xxx As String[]
+  Dim res2 As Result
+
+  xxx = New String[]
+  res2 = modDatabase.$myConn.Exec("select distinct(flditem) as flditem from tbldischarge")
+  If res2.Available Then
+    For Each res2
+      xxx.Add("Discharge@" & res2["flditem"])
+    Next
+  Else
+    xxx.Add("Condition at Discharge")
+    xxx.Add("Advice on Discharge")
+  Endif
+
+  Return xxx
+
+End
+
 Public Function GetCustReportVariables(sSelect As Boolean) As String[]
 
   Dim xxx As String[]
@@ -835,13 +893,7 @@ Public Function GetCustReportVariables(sSelect As Boolean) As String[]
   ' xxx.Add("Presenting Complaints")
   ' xxx.Add("General Complaints")
 
-  xxx.Add("History of Illness")
-  res1 = modDatabase.$myConn.Exec("select distinct(flditem) as flditem from tblhistory")
-  If res1.Available Then
-    For Each res1
-      xxx.Add("History@" & res1["flditem"])
-    Next
-  Endif
+  xxx.Insert(modMedicine.GetPatHistoryVar())
 
   xxx.Add("Provisional Diagnosis")
   xxx.Add("Final Diagnosis")
@@ -894,15 +946,7 @@ Public Function GetCustReportVariables(sSelect As Boolean) As String[]
   xxx.Add("Planned Procedures")
   xxx.Add("Discharge Examinations")
   xxx.Add("Discharge Medication")
-  res2 = modDatabase.$myConn.Exec("select distinct(flditem) as flditem from tbldischarge")
-  If res2.Available Then
-    For Each res2
-      xxx.Add("Discharge@" & res2["flditem"])
-    Next
-  Else
-    xxx.Add("Condition at Discharge")
-    xxx.Add("Advice on Discharge")
-  Endif
+  xxx.Insert(modMedicine.GetDischargeVar())
 
   Return xxx
 
@@ -937,25 +981,14 @@ Public Function GetMedVariables() As String[]
 
   xxx.Add("Cause of Admission")
   xxx.Add("General Complaints")
-  xxx.Add("History of Illness")
-  res1 = modDatabase.$myConn.Exec("select distinct(flditem) as flditem from tblhistory")
-  If res1.Available Then
-    For Each res1
-      xxx.Add("History@" & res1["flditem"])
-    Next
-  Endif
+  xxx.Insert(modMedicine.GetPatHistoryVar())
 
   xxx.Add("OPD Advice")
   xxx.Add("Progress Note")
   xxx.Add("Clinicians Note")
   xxx.Add("Nurses Note")
   xxx.Add("Transfer Note")
-  res2 = modDatabase.$myConn.Exec("select distinct(flditem) as flditem from tbldischarge")
-  If res2.Available Then
-    For Each res2
-      xxx.Add("Discharge@" & res2["flditem"])
-    Next
-  Endif
+  xxx.Insert(modMedicine.GetDischargeVar())
 
   xxx.Add("Equipments Used")
   xxx.Add("Event Timings")
@@ -999,13 +1032,7 @@ Public Function GetCloudAIVariables() As String[]
   xxx.Add("Drug Allergy")
 
   xxx.Add("Cause of Admission")
-  xxx.Add("History of Illness")
-  res1 = modDatabase.$myConn.Exec("select distinct(flditem) as flditem from tblhistory")
-  If res1.Available Then
-    For Each res1
-      xxx.Add("History@" & res1["flditem"])
-    Next
-  Endif
+  xxx.Insert(modMedicine.GetPatHistoryVar())
 
   xxx.Add("OPD Advice")
   xxx.Add("Expert Advice")
@@ -1019,15 +1046,7 @@ Public Function GetCloudAIVariables() As String[]
   xxx.Add("Transfer Note")
 
   xxx.Add("Discharge Examinations")
-  res2 = modDatabase.$myConn.Exec("select distinct(flditem) as flditem from tbldischarge")
-  If res2.Available Then
-    For Each res2
-      xxx.Add("Discharge@" & res2["flditem"])
-    Next
-  Else
-    xxx.Add("Condition at Discharge")
-    xxx.Add("Advice on Discharge")
-  Endif
+  xxx.Insert(modMedicine.GetDischargeVar())
 
   Return xxx
 
