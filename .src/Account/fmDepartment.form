@@ -22,6 +22,9 @@
   { txtdept TextBox
     MoveScaled(15,5,28,3)
   }
+  { txtdeptcode TextBox
+    MoveScaled(54,5,7,3)
+  }
   { cmbactive ComboBox
     MoveScaled(15,9,28,3)
   }
@@ -46,12 +49,12 @@
     MoveScaled(1,25,61,3.625)
     { btnBrOK Button
       MoveScaled(33,0,11,3.25)
-      Text = Shortcut(("Save"), "S")
+      Text = ("Add")
       Picture = Picture["icon:/small/add"]
     }
     { btnedit Button
       MoveScaled(44,0,11,3.25)
-      Text = ("Update")
+      Text = ("Edit")
       Picture = Picture["icon:/small/edit"]
     }
     { btnbedfee Button
@@ -119,5 +122,10 @@
     MoveScaled(45,13,8,3)
     Border = Border.Plain
     Text = ("Interval")
+  }
+  { Label9 Label
+    MoveScaled(45,5,8,3)
+    Border = Border.Plain
+    Text = ("Code")
   }
 }

@@ -744,3 +744,13 @@ Public Sub mnubugreport_Click()
   modGeneralMain.SendBugReport(modBasic.$lbluser)
 
 End
+
+Public Sub mudashupload_Click()
+
+  Dim sDate As Date
+
+  ' sDate = Date("2025", "01", "02")
+  sDate = Now()
+  modBagmatiDash.LoadBagmatiDash(sDate)
+
+End

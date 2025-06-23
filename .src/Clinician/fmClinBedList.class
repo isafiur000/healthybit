@@ -677,12 +677,18 @@ Public Sub mnudashboard_Click()
 
   Dim xPath As String
   Dim xdate As Date[]
+  Dim xList As String[]
 
   If cmbdept.Text Then
     xdate = DoubleDates("Select Dates", "IP Summary", [Now(), Now()])
     If xdate Then
       Inc Application.Busy
-      xPath = modCHTMLDate.GetIPEventsReport(modDatabase.$syConn, xdate[0], xdate[1], cmbdept.Text, cmblocation.Text, cmbvalue.Text)
+      If cmbdept.Text = "%" Then
+        xList = modBasic.$IPDDepartmentsAll
+      Else
+        xList = [cmbdept.Text]
+      Endif
+      xPath = modCHTMLDate.GetIPEventsReport(modDatabase.$syConn, xdate[0], xdate[1], xList, cmblocation.Text, cmbvalue.Text)
       Dec Application.Busy
       modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
     Endif
@@ -693,10 +699,16 @@ End
 Public Sub mnutoday_Click()
 
   Dim xPath As String
+  Dim xList As String[]
 
   If cmbdept.Text Then
     Inc Application.Busy
-    xPath = modCHTMLDate.GetIPEventsReport(modDatabase.$syConn, Now(), Now(), cmbdept.Text, cmblocation.Text, cmbvalue.Text)
+    If cmbdept.Text = "%" Then
+      xList = modBasic.$IPDDepartmentsAll
+    Else
+      xList = [cmbdept.Text]
+    Endif
+    xPath = modCHTMLDate.GetIPEventsReport(modDatabase.$syConn, Now(), Now(), xList, cmblocation.Text, cmbvalue.Text)
     Dec Application.Busy
     modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
   Endif
