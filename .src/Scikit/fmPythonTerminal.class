@@ -4,11 +4,10 @@ Private $sType As String
 Private $sHead As String[]
 Private $sPath As String
 
-Private $DropCol As String[]
-Private $CodedCol As String[]
+Private $Columns As String[]
+Private $CodedCol As String[] ''list of coded columns
 Private $IndepCol As String[]
 
-Private $aHead As String[]
 Private $imgPath As String
 
 Public Sub _new(sType As String, sHeads As String[], sPath As String)
@@ -16,41 +15,6 @@ Public Sub _new(sType As String, sHeads As String[], sPath As String)
   $sType = sType
   $sHead = sHeads
   $sPath = sPath
-
-End
-
-Public Sub Form_Open()
-
-  Dim i As Integer
-
-  modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
-  Me.Icon = Picture[modGeneralMain.$strLogo]
-  TerminalView1.Shell("ipython3")
-
-  $aHead = $sHead.Copy()
-  For i = 0 To $aHead.Count - 1
-    $aHead[i] = "'" & $aHead[i] & "'"
-  Next
-
-  cmbmodel.List = GetModelList($sType)
-  cmbsplitdata.List = ["X_train", "X_test", "Y_train", "Y_test"]
-
-End
-
-Private Sub GetModelList(sType As String) As String[]
-
-  Dim xlst As String[]
-
-  xlst = New String[]
-  xlst.Add("Linear Regression")
-  xlst.Add("Logistic Regression")
-  xlst.Add("Polynomial Regression")
-
-  xlst.Add("Support Vector Machine")
-  xlst.Add("K-Nearest Neighbours")
-  xlst.Add("Decision Tree Classifier")
-
-  Return xlst
 
 End
 
@@ -81,13 +45,36 @@ Private Sub TerminalInput(cmd As String)
 
   TerminalView1.Input(cmd)
   PressEnterKey()
+  TerminalView1.EnsureVisible()
 
 End
 
-Private Sub TerminalInputList(cmdList As String[])
+Private Sub TerminalInputList(cmdLst As String[])
 
-  TerminalView1.Input(cmdList.Join(gb.NewLine))
+  TerminalView1.Input(cmdLst.Join(gb.NewLine))
   PressEnterKey()
+  TerminalView1.EnsureVisible()
+
+End
+
+Private Function GetIpythonOutput(sOutput As String) As String
+
+  Dim cmdLst As New String[]
+  Dim sfile As String
+  Dim sText As String
+
+  sfile = Temp() & ".txt"
+  cmdLst.Add("with open('" & sfile & "', 'w') as f:")
+  cmdLst.Add("f.write(" & sOutput & ")")
+  TerminalInputList(cmdLst)
+  PressEnterKey()
+
+  While (Exist(sfile) = False)
+    Wait 0.5
+  Wend
+  sText = File.Load(sfile)
+
+  Return sText
 
 End
 
@@ -97,15 +84,41 @@ Public Sub Form_Close()
 
 End
 
+Public Sub Form_Open()
+
+  modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
+  Me.Icon = Picture[modGeneralMain.$strLogo]
+  TerminalView1.Shell("ipython3")
+
+  rbensemble.Value = True
+  cmbmodel.List = GetModelList()
+  cmbsplitdata.List = ["X_train", "X_test", "Y_train", "Y_test"]
+
+  cmbnullmethod.List = ["SimpleImputer", "KNNImputer", "IterativeImputer"]
+  cmbnullval.List = ["Null", "Zero"]
+  cmbnullval.Text = "Zero"
+
+  cmbencoding.List = ["OrdinalEncoder", "OneHotEncoder"]
+  cmbscaling.List = ["MinMaxScaler", "StandardScaler"]
+
+End
+
 ''================================= Load data ===============
 Public Sub btndatainit_Click()
 
+  Dim cmdLst As New String[]
   Dim xlibs As String[] = ["import numpy", "import pandas", "import sklearn", "import matplotlib"]
 
-  $DropCol = New String[]
+  $Columns = New String[]
   $CodedCol = New String[]
   $IndepCol = New String[]
   TerminalInputList(xlibs)
+
+  cmdLst.Add("'numpy version :', numpy.__version__")
+  cmdLst.Add("'pandas version :', pandas.__version__")
+  cmdLst.Add("'sklearn version :', sklearn.__version__")
+  cmdLst.Add("'matplotlib version :', matplotlib.__version__")
+  TerminalInputList(cmdLst)
   btndataload.Enabled = True
 
 End
@@ -113,28 +126,86 @@ End
 Public Sub btndataload_Click()
 
   Dim cmdLst As New String[]
+  Dim aHead As String[]
+  Dim i As Integer
 
+  $Columns = $sHead.Copy()
+  aHead = $sHead.Copy()
+  For i = 0 To aHead.Count - 1
+    aHead[i] = "'" & aHead[i] & "'"
+  Next
   cmdLst.Add("orig_data = pandas.read_csv(\"" & $sPath & "\", sep = '" & "\\" & "t" & "')")
-  cmdLst.Add("orig_data.columns = " & "[" & $aHead.Join(", ") & "]")
+  cmdLst.Add("orig_data.columns = " & "[" & aHead.Join(", ") & "]")
   cmdLst.Add("orig_data")
   TerminalInputList(cmdLst)
 
-  Panel3.Enabled = True
+  TabPanel1.Enabled = True
 
 End
 
-''======================== Data Processing ===========================
+Private Sub GetModelList() As String[]
+
+  Dim xlst As String[]
+
+  xlst = New String[]
+  If rbregression.Value = True Then
+    xlst.Add("Linear Regression")
+    xlst.Add("SGD Regression")
+    xlst.Add("Ridge Regression")
+    xlst.Add("Lasso Regression")
+    xlst.Add("ElasticNet Regression")
+    xlst.Add("Logistic Regression")
+    xlst.Add("Linear SVR")
+    xlst.Add("Nonlinear SVR")
+    xlst.Add("DecisionTree Regression")
+    pnlregress.Visible = True
+    pnlclassif.Visible = False
+  Else If rbclass.Value = True Then
+    xlst.Add("Dummy Classifier")
+    xlst.Add("SGD Classifier")
+    xlst.Add("KNeighbors Classifier")
+    xlst.Add("Linear SVC")
+    xlst.Add("Nonlinear SVC")
+    xlst.Add("DecisionTree Classifier")
+    pnlregress.Visible = False
+    pnlclassif.Visible = True
+  Else If rbensemble.Value = True Then
+    xlst = New String[]
+  Endif
+
+  Return xlst
+
+End
+
+Public Sub rbregression_Click()
+
+  cmbmodel.List = GetModelList()
+
+End
+
+Public Sub rbclass_Click()
+
+  cmbmodel.List = GetModelList()
+
+End
+
+Public Sub rbensemble_Click()
+
+  cmbmodel.List = GetModelList()
+
+End
+
+''======================== Pre Processing ===========================
 Public Sub btndropcolumns_Click()
 
   Dim xList As String[]
   Dim xcmd As String
   Dim i As Integer
 
-  xList = SelectListView("Columns to drop", $sHead, False)
+  xList = SelectListView("Columns to drop", $Columns, False)
   If xList.Count Then
     For i = 0 To xList.Count - 1
-      $DropCol.Add(xList[i])
-      $sHead.Remove($sHead.Find(xList[i]))
+      $Columns.Remove($Columns.Find(xList[i]))
       xList[i] = "'" & xList[i] & "'"
     Next
     xcmd = "orig_data = orig_data.drop([" & xList.Join(", ") & "], axis = 1)"
@@ -149,40 +220,9 @@ Public Sub btndropmissing_Click()
 
 End
 
-Public Sub btnordinalencode_Click()
-
-  Dim cmdLst As New String[]
-  Dim xList As String[]
-  Dim aVal As String
-
-  xList = SelectListView("Variables to encode", $sHead, False)
-  If xList And If xList.Count Then
-    cmdLst.Add("from sklearn.preprocessing import OrdinalEncoder")
-    cmdLst.Add("ord_enc = OrdinalEncoder()")
-    For Each aVal In xList
-      $CodedCol.Add(aVal)
-      cmdLst.Add("orig_data['" & aVal & "'] = ord_enc.fit_transform(orig_data[['" & aVal & "']]).astype('int')")
-    Next
-    TerminalInputList(cmdLst)
-  Endif
-
-End
-
 Public Sub btnrandomrow_Click()
 
   TerminalInput("orig_data = orig_data.sample(frac = 1)")
-
-End
-
-Public Sub btndatacorrelation_Click()
-
-  TerminalInput("orig_data.corr()")
-
-End
-
-Public Sub btnprocess_Click()
-
-  TerminalInput("orig_data.info()")
 
 End
 
@@ -192,11 +232,197 @@ Public Sub btnshowdata_Click()
 
 End
 
+Public Sub btninfo_Click()
+
+  TerminalInput("orig_data.info()")
+
+End
+
+Public Sub btndetail_Click()
+
+  TerminalInput("orig_data.describe()")
+
+End
+
+Public Sub btncolcount_Click()
+
+  Dim xList As String[]
+  Dim xcolm As String
+
+  xList = SelectListView("Columns to count", $Columns, False)
+  If xList.Count Then
+    For Each xcolm In xList
+      TerminalInput("orig_data['" & xcolm & "'].value_counts()")
+    Next
+  Endif
+
+End
+
+Public Sub btndatacorrelation_Click()
+
+  Dim cmdLst As New String[]
+
+  cmdLst.Add("corr_data = orig_data.select_dtypes(include=[numpy.number])")
+  cmdLst.Add("corr_data.corr()")
+  TerminalInputList(cmdLst)
+
+End
+
+Public Sub btnscatter_Click()
+
+  Dim cmdLst As New String[]
+  Dim xPath As String
+
+  xPath = Temp() & ".png"
+  cmdLst.Add("from matplotlib import pyplot")
+  cmdLst.Add("from pandas.plotting import scatter_matrix")
+  cmdLst.Add("numeric_cols = orig_data.select_dtypes(include=[numpy.number]).columns")
+  cmdLst.Add("scatter_matrix(orig_data[numeric_cols], alpha=0.8, figsize=(8, 8), diagonal='hist')")
+  cmdLst.Add("pyplot.savefig('" & xPath & "', format='png')")
+  TerminalInputList(cmdLst)
+
+  While (Exist(xPath) = False)
+    Wait 0.5
+  Wend
+  Desktop.Open(xPath)
+
+End
+
+''=========================== Numerical columns ====================
+Public Sub cmbnullmethod_Click()
+
+  If cmbnullmethod.Text = "SimpleImputer" Then
+    lblnullmethod.Text = "strategy"
+    cmbnulstrategy.List = ["mean", "median", "most_frequent"]
+  Else If cmbnullmethod.Text = "KNNImputer" Then
+    lblnullmethod.Text = "weights"
+    cmbnulstrategy.List = ["uniform", "distance"]
+  Else If cmbnullmethod.Text = "IterativeImputer" Then
+    lblnullmethod.Text = "initial_strategy"
+    cmbnulstrategy.List = ["mean", "median", "most_frequent"]
+  Endif
+
+End
+
+Public Sub btnreplace_Click()
+
+  Dim cmdLst As New String[]
+  Dim xnull As Variant
+
+  If cmbnullval.Text = "Null" Then
+    xnull = "numpy.nan"
+  Else
+    xnull = "0"
+  Endif
+
+  If cmbnulstrategy.Text Then
+    cmdLst.Add("object_cols = orig_data.select_dtypes(exclude=[numpy.number]).columns")
+    cmdLst.Add("numeric_cols = orig_data.select_dtypes(include=[numpy.number]).columns")
+
+    If cmbnullmethod.Text = "SimpleImputer" Then
+      cmdLst.Add("from sklearn.impute import SimpleImputer")
+      cmdLst.Add("imputer = SimpleImputer(missing_values = " & xnull & ", strategy='" & cmbnulstrategy.Text & "')")
+    Else If cmbnullmethod.Text = "KNNImputer" Then
+      cmdLst.Add("from sklearn.impute import KNNImputer")
+      cmdLst.Add("imputer = KNNImputer(missing_values = " & xnull & ", weights='" & cmbnulstrategy.Text & "')")
+    Else If cmbnullmethod.Text = "IterativeImputer" Then
+      cmdLst.Add("from sklearn.impute import IterativeImputer")
+      cmdLst.Add("imputer = IterativeImputer(missing_values = " & xnull & ", initial_strategy='" & cmbnulstrategy.Text & "')")
+    Endif
+
+    cmdLst.Add("imputed_data = pandas.DataFrame(imputer.fit_transform(orig_data[numeric_cols]), columns=numeric_cols)")
+    cmdLst.Add("imputed_orig = pandas.concat([imputed_data, orig_data[object_cols].reset_index(drop=True)], axis=1)")
+    cmdLst.Add("orig_data = imputed_orig")
+    TerminalInputList(cmdLst)
+
+    TerminalInput("imputer.statistics_")
+    ' TerminalInput("orig_data = orig_obj.merge(new_num, on=1))")
+  Endif
+
+End
+
+Public Sub btnscale_Click()
+
+  Dim cmdLst As New String[]
+
+  If cmbscaling.Text Then
+    cmdLst.Add("object_cols = orig_data.select_dtypes(exclude=[numpy.number]).columns")
+    cmdLst.Add("num_cols = orig_data.select_dtypes(include=[numpy.number]).columns")
+    If cmbscaling.Text = "MinMaxScaler" Then
+      cmdLst.Add("from sklearn.preprocessing import MinMaxScaler")
+      cmdLst.Add("minmax_scaler = MinMaxScaler(feature_range=(-1, 1))")
+      cmdLst.Add("scaled_data = pandas.DataFrame(minmax_scaler.fit_transform(orig_data[num_cols]), columns=num_cols)")
+    Else If cmbscaling.Text = "StandardScaler" Then
+      cmdLst.Add("from sklearn.preprocessing import StandardScaler")
+      cmdLst.Add("std_scaler = StandardScaler()")
+      cmdLst.Add("scaled_data = pandas.DataFrame(std_scaler.fit_transform(orig_data[num_cols]), columns=num_cols)")
+    Endif
+    cmdLst.Add("scaled_orig = pandas.concat([scaled_data, orig_data[object_cols].reset_index(drop=True)], axis=1)")
+    cmdLst.Add("orig_data = scaled_orig")
+    TerminalInputList(cmdLst)
+  Endif
+
+End
+
+''=========================== category columns ===============
+Public Sub btnencode_Click()
+
+  Dim cmdLst As New String[]
+  Dim xList As String[]
+  Dim i As Integer
+
+  xList = SelectListView("Variables to encode", modString.GetRemainingArray($Columns, $CodedCol), False)
+  If xList And If xList.Count Then
+
+    If cmbencoding.Text Then
+      If cmbencoding.Text = "OrdinalEncoder" Then
+        cmdLst.Add("from sklearn.preprocessing import OrdinalEncoder")
+        cmdLst.Add("ord_encoder = OrdinalEncoder()")
+        For i = 0 To xList.Count - 1
+          $CodedCol.Add(xList[i])
+          xList[i] = "'" & xList[i] & "'"
+        Next
+        cmdLst.Add("orig_data[[" & xList.Join(", ") & "]] = ord_encoder.fit_transform(orig_data[[" & xList.Join(", ") & "]])")
+        cmdLst.Add("ord_encoder.categories_")
+        TerminalInputList(cmdLst)
+      Else If cmbencoding.Text = "OneHotEncoder" Then
+        cmdLst.Add("from sklearn.preprocessing import OneHotEncoder")
+        cmdLst.Add("cat_encoder = OneHotEncoder(sparse=False, drop='first')")
+        For i = 0 To xList.Count - 1
+          $CodedCol.Add(xList[i])
+          xList[i] = "'" & xList[i] & "'"
+        Next
+        cmdLst.Add("ohe_new = cat_encoder.fit_transform(orig_data[[" & xList.Join(", ") & "]])")
+        cmdLst.Add("ohe_columns = cat_encoder.get_feature_names([" & xList.Join(", ") & "])")
+        cmdLst.Add("ohe_data = pandas.DataFrame(ohe_new, columns=ohe_columns)")
+        cmdLst.Add("orig_data = orig_data.drop(columns=[" & xList.Join(", ") & "]).join(ohe_data)")
+        cmdLst.Add("cat_encoder.categories_")
+        TerminalInputList(cmdLst)
+        UpdateCurrentColumns()
+      Endif
+    Endif
+
+  Endif
+
+End
+
+Private Sub UpdateCurrentColumns()
+
+  Dim cols As String
+
+  TerminalInput("my_string = '|'.join(orig_data.columns)")
+  cols = GetIpythonOutput("my_string")
+  If cols Then
+    $Columns = Split(cols, "|")
+  Endif
+
+End
+
 ''==================================== Split dataand process =======================
 Public Sub TabPanel1_Click()
 
-  If TabPanel1.Index = 1 Then
-    cmbdependent.List = $sHead
+  If TabPanel1.Index = 3 Then
+    cmbdependent.List = $Columns
   Endif
 
 End
@@ -207,30 +433,19 @@ Public Sub btnsplidata_Click()
   Dim trainval As Float
 
   If cmbdependent.Text Then
-    $IndepCol = $sHead.Copy()
+    $IndepCol = $Columns.Copy()
     $IndepCol.Remove($IndepCol.Find(cmbdependent.Text))
 
     trainval = valtrain.Value / 100
     cmdLst.Add("from sklearn.model_selection import train_test_split")
     cmdLst.Add("Y_data = orig_data['" & cmbdependent.Text & "']")
     cmdLst.Add("X_data = orig_data.drop(['" & cmbdependent.Text & "'], axis = 1)")
-    cmdLst.Add("X_train, X_test, Y_train, Y_test = train_test_split(X_data ,Y_data , train_size = " & trainval & ", random_state=42)")
+    cmdLst.Add("X_train, X_test, Y_train, Y_test = train_test_split(X_data, Y_data, train_size = " & trainval & ", random_state=42)")
     TerminalInputList(cmdLst)
 
     btnmodeltrain.Enabled = True
+    btnsavemodel.Enabled = True
   Endif
-
-End
-
-Public Sub btnnormalize_Click()
-
-  Dim cmdLst As New String[]
-
-  cmdLst.Add("from sklearn.preprocessing import StandardScaler")
-  cmdLst.Add("SScaler = StandardScaler()")
-  cmdLst.Add("X_train = SScaler.fit_transform(X_train)")
-  cmdLst.Add("X_test = SScaler.fit_transform(X_test)")
-  TerminalInputList(cmdLst)
 
 End
 
@@ -242,16 +457,41 @@ Public Sub btnsplitshow_Click()
 
 End
 
+Public Sub btnpolynomial_Click()
+
+  Dim cmdLst As New String[]
+
+  If txtpolynomial.Value Then
+    cmdLst.Add("from sklearn.preprocessing import PolynomialFeatures")
+    cmdLst.Add("poly_features = PolynomialFeatures(degree=" & txtpolynomial.Value & ", include_bias=False)")
+    cmdLst.Add("X_train_poly = poly_features.fit_transform(X_train)")
+    cmdLst.Add("X_train = X_train_poly")
+    cmdLst.Add("X_test_poly = poly_features.fit_transform(X_test)")
+    cmdLst.Add("X_test = X_test_poly")
+    TerminalInputList(cmdLst)
+  Endif
+
+End
+
 ''--------------------------- Model training ===============================
 Public Sub cmbmodel_Click()
 
   Select cmbmodel.Text
-    Case "Linear Regression", "Logistic Regression"
-      pnlmodel.Visible = False
-    Case "Decision Tree Classifier"
-      pnlmodel.Visible = True
-      lblmodel.Text = "Max Depth"
-      txtmodel.Text = "2"
+    Case "Linear Regression"
+    Case "SGD Regression"
+    Case "Ridge Regression"
+    Case "Lasso Regression"
+    Case "ElasticNet Regression"
+    Case "Logistic Regression"
+    Case "Linear SVR"
+    Case "Nonlinear SVR"
+    Case "DecisionTree Regression"
+    Case "Dummy Classifier"
+    Case "SGD Classifier"
+    Case "KNeighbors Classifier"
+    Case "Linear SVC"
+    Case "Nonlinear SVC"
+    Case "DecisionTree Classifier"
   End Select
 
 End
@@ -260,65 +500,206 @@ Public Sub btnmodeltrain_Click()
 
   Dim cmdLst As New String[]
 
-  Inc Application.Busy
-  Select cmbmodel.Text
-    Case "Linear Regression"
-      cmdLst.Add("from sklearn.linear_model import LinearRegression")
-      cmdLst.Add("lin_reg = LinearRegression()")
-      cmdLst.Add("reg_model = lin_reg.fit(X_train, Y_train)")
-    Case "Logistic Regression"
-      cmdLst.Add("from sklearn.linear_model import LogisticRegression")
-      cmdLst.Add("log_reg = LogisticRegression()")
-      cmdLst.Add("reg_model = log_reg.fit(X_train, Y_train)")
-
-    Case "Support Vector Machine"
-      cmdLst.Add("from sklearn.svm import SVC")
-      cmdLst.Add("clf_svm = SVC()")
-      cmdLst.Add("clf_model = clf_svm.fit(X_train, Y_train)")
-
-    Case "K-Nearest Neighbours"
-
-    Case "Decision Tree Classifier"
-      cmdLst.Add("from sklearn import tree")
-      cmdLst.Add("from sklearn.tree import DecisionTreeClassifier")
-      cmdLst.Add(Subst("clf_tree = DecisionTreeClassifier(max_depth=&1)", Trim(txtmodel.Text)))
-      cmdLst.Add("clf_model = clf_tree.fit(X_train, Y_train)")
-  End Select
-  TerminalInputList(cmdLst)
-  Dec Application.Busy
-
-  pnresult.Enabled = True
+  If cmbmodel.Text Then
+    Inc Application.Busy
+    Select cmbmodel.Text
+      Case "Linear Regression"
+        cmdLst.Add("from sklearn.linear_model import LinearRegression")
+        cmdLst.Add("lin_reg = LinearRegression()")
+        cmdLst.Add("lin_reg.fit(X_train, Y_train)")
+        cmdLst.Add("lin_reg.intercept_")
+        cmdLst.Add("lin_reg.coef_")
+      Case "SGD Regression"
+        cmdLst.Add("from sklearn.linear_model import SGDRegressor")
+        cmdLst.Add("sgd_reg = SGDRegressor(max_iter=1000, tol=1e-5, penalty=None, eta0=0.01, n_iter_no_change=100, random_state=42)")
+        cmdLst.Add("sgd_reg.fit(X_train, Y_train.ravel())")
+        cmdLst.Add("sgd_reg.intercept_")
+        cmdLst.Add("sgd_reg.coef_")
+      Case "Ridge Regression"
+        cmdLst.Add("from sklearn.linear_model import Ridge")
+        cmdLst.Add("ridge_reg = Ridge(alpha=0.1, solver='cholesky')")
+        cmdLst.Add("ridge_reg.fit(X_train, Y_train)")
+        cmdLst.Add("ridge_reg.intercept_")
+        cmdLst.Add("ridge_reg.coef_")
+      Case "Lasso Regression"
+        cmdLst.Add("from sklearn.linear_model import Lasso")
+        cmdLst.Add("lasso_reg = Lasso(alpha=0.1)")
+        cmdLst.Add("lasso_reg.fit(X_train, Y_train)")
+        cmdLst.Add("lasso_reg.intercept_")
+        cmdLst.Add("lasso_reg.coef_")
+      Case "ElasticNet Regression"
+        cmdLst.Add("from sklearn.linear_model import ElasticNet")
+        cmdLst.Add("elastic_net = ElasticNet(alpha=0.1, l1_ratio=0.5)")
+        cmdLst.Add("elastic_net.fit(X_train, Y_train)")
+        cmdLst.Add("elastic_net.intercept_")
+        cmdLst.Add("elastic_net.coef_")
+      Case "Logistic Regression"
+        cmdLst.Add("from sklearn.linear_model import LogisticRegression")
+        cmdLst.Add("log_reg = LogisticRegression(random_state=42)")
+        cmdLst.Add("log_reg.fit(X_train, Y_train)")
+        ' cmdLst.Add("log_reg.intercept_")
+        ' cmdLst.Add("log_reg.coef_")
+      Case "Linear SVR"
+        cmdLst.Add("from sklearn.svm import LinearSVR")
+        cmdLst.Add("linsvm_reg = LinearSVR(epsilon=0.5, random_state=42)")
+        cmdLst.Add("linsvm_reg.fit(X_train, Y_train)")
+      Case "Nonlinear SVR"
+        cmdLst.Add("from sklearn.svm import SVR")
+        cmdLst.Add("svm_reg = SVR(kernel='poly', degree=2, C=0.01, epsilon=0.1)")
+        cmdLst.Add("svm_reg.fit(X_train, Y_train)")
+      Case "DecisionTree Regression"
+        cmdLst.Add("from sklearn.tree import DecisionTreeRegressor")
+        cmdLst.Add("tree_reg = DecisionTreeRegressor(max_depth=2, random_state=42)")
+        cmdLst.Add("tree_reg.fit(X_train, Y_train)")
+      Case "Dummy Classifier"
+        cmdLst.Add("from sklearn.dummy import DummyClassifier")
+        cmdLst.Add("dummy_clf = DummyClassifier()")
+        cmdLst.Add("dummy_clf.fit(X_train, Y_train)")
+      Case "SGD Classifier"
+        cmdLst.Add("from sklearn.linear_model import SGDClassifier")
+        cmdLst.Add("sgd_clf = SGDClassifier(random_state=42)")
+        cmdLst.Add("sgd_clf.fit(X_train, Y_train)")
+      Case "KNeighbors Classifier"
+        cmdLst.Add("from sklearn.neighbors import KNeighborsClassifier")
+        cmdLst.Add("knn_clf = KNeighborsClassifier()")
+        cmdLst.Add("knn_clf.fit(X_train, Y_train)")
+      Case "Linear SVC"
+        cmdLst.Add("from sklearn.svm import LinearSVC")
+        cmdLst.Add("linsvm_clf = LinearSVC(C=1, random_state=42)")
+        cmdLst.Add("linsvm_clf.fit(X_train, Y_train)")
+      Case "Nonlinear SVC"
+        cmdLst.Add("from sklearn.svm import SVC")
+        cmdLst.Add("svm_clf = SVC(kernel='poly', degree=3, coef0=1, C=5)")
+        cmdLst.Add("svm_clf.fit(X_train, Y_train)")
+      Case "DecisionTree Classifier"
+        cmdLst.Add("from sklearn.tree import DecisionTreeClassifier")
+        cmdLst.Add("tree_clf = DecisionTreeClassifier(max_depth=2, random_state=42)")
+        cmdLst.Add("tree_clf.fit(X_train, Y_train)")
+    End Select
+    TerminalInputList(cmdLst)
+    Dec Application.Busy
+    btnevaluate.Enabled = True
+    btnmodeltrain.Enabled = False
+  Endif
 
 End
 
-Public Sub btnshowaccuracy_Click()
+Public Sub btnsavemodel_Click()
 
-  Select cmbmodel.Text
-    Case "Linear Regression", "Logistic Regression"
+  Dim cmdLst As New String[]
+  Dim xpath As String
+
+  If cmbmodel.Text Then
+    If Dialog.SelectDirectory() Then Return
+    xpath = Dialog.Path &/ modString.GetNowString() & ".pkl"
+
+    Inc Application.Busy
+    cmdLst.Add("import joblib")
+    Select cmbmodel.Text
+      Case "Linear Regression"
+        cmdLst.Add("joblib.dump(lin_reg, '" & xpath & "')")
+      Case "SGD Regression"
+        cmdLst.Add("joblib.dump(sgd_reg, '" & xpath & "')")
+      Case "Ridge Regression"
+        cmdLst.Add("joblib.dump(ridge_reg, '" & xpath & "')")
+      Case "Lasso Regression"
+        cmdLst.Add("joblib.dump(lasso_reg, '" & xpath & "')")
+      Case "ElasticNet Regression"
+        cmdLst.Add("joblib.dump(elastic_net, '" & xpath & "')")
+      Case "Logistic Regression"
+        cmdLst.Add("joblib.dump(log_reg, '" & xpath & "')")
+      Case "Linear SVR"
+        cmdLst.Add("joblib.dump(linsvm_reg, '" & xpath & "')")
+      Case "Nonlinear SVR"
+        cmdLst.Add("joblib.dump(svm_reg, '" & xpath & "')")
+      Case "DecisionTree Regression"
+        cmdLst.Add("joblib.dump(tree_reg, '" & xpath & "')")
+      Case "Dummy Classifier"
+        cmdLst.Add("joblib.dump(dummy_clf, '" & xpath & "')")
+      Case "SGD Classifier"
+        cmdLst.Add("joblib.dump(sgd_clf, '" & xpath & "')")
+      Case "KNeighbors Classifier"
+        cmdLst.Add("joblib.dump(knn_clf, '" & xpath & "')")
+      Case "Linear SVC"
+        cmdLst.Add("joblib.dump(linsvm_clf, '" & xpath & "')")
+      Case "Nonlinear SVC"
+        cmdLst.Add("joblib.dump(svm_clf, '" & xpath & "')")
+      Case "DecisionTree Classifier"
+        cmdLst.Add("joblib.dump(tree_clf, '" & xpath & "')")
+    End Select
+    TerminalInputList(cmdLst)
+    Dec Application.Busy
+  Endif
+
+End
+
+Public Sub btnevaluate_Click()
+
+  Dim cmdLst As New String[]
+
+  If rbregression.Value = True Then
+    Select cmbmodel.Text
+      Case "Linear Regression"
+        TerminalInput("reg_model = lin_reg")
+      Case "SGD Regression"
+        TerminalInput("reg_model = sgd_reg")
+      Case "Ridge Regression"
+        TerminalInput("reg_model = ridge_reg")
+      Case "Lasso Regression"
+        TerminalInput("reg_model = lasso_reg")
+      Case "ElasticNet Regression"
+        TerminalInput("reg_model = elastic_net")
+      Case "Logistic Regression"
+        TerminalInput("reg_model = log_reg")
+      Case "Linear SVR"
+        TerminalInput("reg_model = linsvm_reg")
+      Case "Nonlinear SVR"
+        TerminalInput("reg_model = svm_reg")
+      Case "DecisionTree Regression"
+        TerminalInput("reg_model = tree_reg")
+    End Select
+
+    If chkaccuracy.Value = True Then
       TerminalInput("print('Training Score = ', reg_model.score(X_train, Y_train))")
       TerminalInput("print('Testing Score = ', reg_model.score(X_test, Y_test))")
+    Endif
 
-    Case "Support Vector Machine"
-      TerminalInput("from sklearn.metrics import confusion_matrix, accuracy_score, classification_report")
-      TerminalInput("print('Training Accuracy = ', accuracy_score(Y_train, clf_model.predict(X_train)))")
+  Else If rbclass.Value = True Then
+    Select cmbmodel.Text
+      Case "Dummy Classifier"
+        cmdLst.Add("clf_model = dummy_clf")
+      Case "SGD Classifier"
+        cmdLst.Add("clf_model = sgd_clf")
+      Case "KNeighbors Classifier"
+        cmdLst.Add("clf_model = knn_clf")
+      Case "Linear SVC"
+        cmdLst.Add("clf_model = linsvm_clf")
+      Case "Nonlinear SVC"
+        cmdLst.Add("clf_model = svm_clf")
+      Case "DecisionTree Classifier"
+        cmdLst.Add("clf_model = tree_clf")
+    End Select
+    cmdLst.Add("from sklearn.model_selection import cross_val_predict")
+    cmdLst.Add("y_train_pred = cross_val_predict(clf_model, X_train, Y_train)")
 
-      TerminalInput("Y_pred_test = clf_model.predict(X_test)")
-      TerminalInput("print('Testing Accuracy = ', accuracy_score(Y_test, Y_pred_test))")
+    If chkconfusion.Value = True Then
+      cmdLst.Add("from sklearn.metrics import confusion_matrix")
+      cmdLst.Add("cm = confusion_matrix(Y_train, y_train_pred)")
+      cmdLst.Add("cm")
+    Endif
+    If chkprecision.Value = True Then
+      cmdLst.Add("from sklearn.metrics import precision_score, recall_score")
+      ' cmdLst.Add("precision_score(Y_train, y_train_pred)")
+      ' cmdLst.Add("recall_score(Y_train, y_train_pred)")
+      cmdLst.Add("print('Precision Score = ', precision_score(Y_train, y_train_pred))")
+      cmdLst.Add("print('Recall Score = ', recall_score(Y_train, y_train_pred))")
+      cmdLst.Add("from sklearn.metrics import f1_score")
+      ' cmdLst.Add("f1_score(Y_train, y_train_pred)")
+      cmdLst.Add("print('F1 Score = ', f1_score(Y_train, y_train_pred))")
+    Endif
 
-      TerminalInput("cm = confusion_matrix(Y_test, Y_pred_test)")
-      TerminalInput("cm")
-
-      TerminalInput("Y_arr = numpy.array(Y_test)")
-      TerminalInput("print(classification_report(Y_arr, Y_pred_test))")
-
-    Case "Decision Tree Classifier"
-      TerminalInput("from sklearn.metrics import confusion_matrix, accuracy_score, classification_report")
-      TerminalInput("print('Training Accuracy = ', accuracy_score(Y_train, clf_model.predict(X_train)))")
-
-      TerminalInput("Y_pred_test = clf_model.predict(X_test)")
-      TerminalInput("print('Testing Accuracy = ', accuracy_score(Y_test, Y_pred_test))")
-
-  End Select
+    TerminalInputList(cmdLst)
+  Endif
 
 End
 
@@ -327,24 +708,39 @@ Public Sub btnshowscatterplot_Click()
   Dim cmdLst As New String[]
 
   Select cmbmodel.Text
-    Case "Linear Regression", "Logistic Regression"
+    Case "Linear Regression", "SGD Regression", "Ridge Regression", "Lasso Regression", "Lasso Regression", "Logistic Regression"
       $imgPath = Temp() & ".png"
+      cmdLst.Add("from matplotlib import pyplot")
       cmdLst.Add("Y_pred_train = reg_model.predict(X_train)")
-      cmdLst.Add("matplotlib.pyplot.plot(X_train, Y_pred_train, color = 'blue')")
-      cmdLst.Add("matplotlib.pyplot.plot(X_train, Y_train, color = 'red')")
-      cmdLst.Add("matplotlib.pyplot.title('Regression Plot')")
-      cmdLst.Add("matplotlib.pyplot.savefig('" & $imgPath & "', format='png')")
+      cmdLst.Add("pyplot.plot(X_train, Y_pred_train, color = 'blue')")
+      cmdLst.Add("pyplot.plot(X_train, Y_train, color = 'red')")
+      cmdLst.Add("pyplot.title('Regression Plot')")
+      cmdLst.Add("pyplot.savefig('" & $imgPath & "', format='png')")
       TerminalInputList(cmdLst)
 
     Case "Support Vector Machine"
 
-    Case "Decision Tree Classifier"
-      cmdLst.Add("tree.plot_tree(clf_model)")
-      $imgPath = Temp() & ".dot"
+    Case "DecisionTree Regression", "DecisionTree Classifier"
+      cmdLst.Add("from sklearn import tree")
       cmdLst.Add("import graphviz")
-      cmdLst.Add(Subst("dot_data = tree.export_graphviz(clf_model, out_file='" & $imgPath & "', feature_names = list(X_train.columns))", $imgPath))
+      $imgPath = Temp() & ".dot"
+      If cmbmodel.Text = "DecisionTree Regression" Then
+        cmdLst.Add("tree.plot_tree(tree_reg)")
+        cmdLst.Add(Subst("dot_data = tree.export_graphviz(tree_reg, out_file='" & $imgPath & "', feature_names = list(X_train.columns))", $imgPath))
+      Else If cmbmodel.Text = "DecisionTree Classifier" Then
+        cmdLst.Add("tree.plot_tree(tree_clf)")
+        cmdLst.Add(Subst("dot_data = tree.export_graphviz(tree_clf, out_file='" & $imgPath & "', feature_names = list(X_train.columns))", $imgPath))
+      Endif
       TerminalInputList(cmdLst)
   End Select
+
+End
+
+Public Sub btnopen_Click()
+
+  If Exist($imgPath) Then
+    Desktop.Open($imgPath)
+  Endif
 
 End
 
@@ -360,29 +756,63 @@ Public Sub btnpredict_Click()
     aVar.Add([xindep, "Number"])
   Next
   If aVar.Count Then
-    xjson = GetInputs(aVar)
+    xjson = GetInputs(aVar, True)
     If xjson Then
 
       cmdLst.Add("import json")
       cmdLst.Add("input_dict = json.loads('" & xjson & "')")
       cmdLst.Add("input_df = pandas.DataFrame(input_dict, index=[0])")
       cmdLst.Add("input_df")
-      Select cmbmodel.Text
-        Case "Linear Regression"
-          cmdLst.Add("predicted = reg_model.predict(input_df)")
-          cmdLst.Add("print('Predicted Value = ', predicted)")
-          TerminalInputList(cmdLst)
-      End Select
+
+      If rbregression.Value = True Then
+        Select cmbmodel.Text
+          Case "Linear Regression"
+            cmdLst.Add("predict_val = lin_reg.predict(input_df)")
+          Case "SGD Regression"
+            cmdLst.Add("predict_val = sgd_reg.predict(input_df)")
+          Case "Ridge Regression"
+            cmdLst.Add("predict_val = ridge_reg.predict(input_df)")
+          Case "Lasso Regression"
+            cmdLst.Add("predict_val = lasso_reg.predict(input_df)")
+          Case "ElasticNet Regression"
+            cmdLst.Add("predict_val = elastic_net.predict(input_df)")
+          Case "Logistic Regression"
+            cmdLst.Add("predict_val = log_reg.predict(input_df)")
+          Case "Linear SVR"
+            cmdLst.Add("predict_val = linsvm_reg.predict(input_df)")
+          Case "Nonlinear SVR"
+            cmdLst.Add("predict_val = svm_reg.predict(input_df)")
+          Case "DecisionTree Regression"
+            cmdLst.Add("predict_val = tree_reg.predict(input_df)")
+        End Select
+        cmdLst.Add("prediction = predict_val[0]")
+        cmdLst.Add("print('Predicted Value = ', prediction)")
+        TerminalInputList(cmdLst)
+        txtpredict.Text = GetIpythonOutput("f'{prediction}'")
+
+      Else If rbclass.Value = True Then
+        Select cmbmodel.Text
+          Case "Dummy Classifier"
+            cmdLst.Add("predict_val = dummy_clf.predict(input_df)")
+          Case "SGD Classifier"
+            cmdLst.Add("predict_val = sgd_clf.predict(input_df)")
+          Case "KNeighbors Classifier"
+            cmdLst.Add("predict_val = knn_clf.predict(input_df)")
+          Case "Linear SVC"
+            cmdLst.Add("predict_val = linsvm_clf.predict(input_df)")
+          Case "Nonlinear SVC"
+            cmdLst.Add("predict_val = svm_clf.predict(input_df)")
+          Case "DecisionTree Classifier"
+            cmdLst.Add("predict_val = tree_clf.predict(input_df)")
+        End Select
+        cmdLst.Add("prediction = predict_val[0]")
+        cmdLst.Add("print('Predicted Value = ', prediction)")
+        TerminalInputList(cmdLst)
+        txtpredict.Text = GetIpythonOutput("f'{prediction}'")
+
+      Endif
 
     Endif
-  Endif
-
-End
-
-Public Sub btnopen_Click()
-
-  If Exist($imgPath) Then
-    Desktop.Open($imgPath)
   Endif
 
 End

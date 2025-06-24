@@ -993,6 +993,7 @@ Private Sub AutoUploadDocuments(sClaim As String, encid As String, sMessage As B
   Dim res As Result
   Dim xFilePath As String
   Dim aOutPath As String
+  Dim resx As Result
 
   res = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval from " & $tblpatreport & " where fldencounterval like &1 and (fldcateg like &2 or fldcateg like &3) and (flvisible=&4 or flvisible IS NULL)", encid, "General Reports", "Scanned Images", "Visible")
   If res.Available Then
@@ -1004,6 +1005,11 @@ Private Sub AutoUploadDocuments(sClaim As String, encid As String, sMessage As B
         Inc Application.Busy
         aOutPath = modClaimAPI.UploadImagesFilesClaimServerHI(sClaim, xFilePath, sMessage, modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory))
         Dec Application.Busy
+        If aOutPath Then
+          resx = modDatabase.$myConn.Edit("tblpatreport", "fldid=&1", res["fldid"])
+          resx["fldflag"] = True
+          resx.Update
+        Endif
       Endif
     Next
   Endif

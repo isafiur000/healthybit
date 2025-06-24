@@ -1,7 +1,7 @@
 ' Gambas class file
 
-Static Public Sub _call({Default} As Variant[]) As String                              ''
+Static Public Sub _call({Default} As Variant[], ShowNull As Boolean) As String                              ''
 
-  Return fmGetInputs.Run({Default})
+  Return fmGetInputs.Run({Default}, ShowNull)
 
 End
