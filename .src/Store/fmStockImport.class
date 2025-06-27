@@ -275,6 +275,7 @@ Private Sub AddNewEntry(StockNo As Long, stockid As String, ItemCategory As Stri
     res["fldexpiry"] = modDate.StartSqlDate(sExpiry)
     res["fldqty"] = 0
     res["fldstatus"] = modStock.ItemSaleStatus(stockid, modBasic.$compID)
+    res["fldcost"] = 0
     res["fldsellpr"] = sellPrice
     res["fldmrp"] = 0
     res["fldsav"] = False

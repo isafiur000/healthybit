@@ -168,10 +168,12 @@ Private Sub BlankAllControl()
   $xRetnIndex = 0
   cmbroute.Text = ""
   cmbmedicine.Text = ""
-  cmbbatch.Clear()
   cmbbatch.Text = ""
   txtmax.Value = 0
   txtqty.Value = 0
+  txtcost.Value = 0
+  txtsell.Value = 0
+  txtmrp.Value = 0
 
 End
 
@@ -534,10 +536,21 @@ Private Sub ShowItemParams(sIndex As Long)
   If res.Available Then
     cmbmedicine.Text = res["flditemname"]
     txtmax.Value = res["flditemqty"] - res["fldretqty"]
-    res1 = modDatabase.$myConn.Exec("select fldbatch,fldexpiry from tblentry where fldstockno=&1", res["flditemno"])
+    res1 = modDatabase.$myConn.Exec("select fldbatch,fldexpiry,fldcost,fldsellpr,fldmrp from tblentry where fldstockno=&1", res["flditemno"])
     If res1.Available Then
       cmbbatch.Text = res1["fldbatch"]
       lbldate.Value = res1["fldexpiry"]
+      If res["fldcost"] Then
+        txtcost.Value = res["fldcost"]
+      Else
+        txtcost.Value = 0
+      Endif
+      txtsell.Value = res["fldsellpr"]
+      If res["fldmrp"] Then
+        txtmrp.Value = res["fldmrp"]
+      Else
+        txtmrp.Value = 0
+      Endif
     Endif
   Endif
 
@@ -547,13 +560,6 @@ End
 '
 '   modFillContainer.AutoFillComboBox(cmbmedicine)
 '   modFillContainer.RestrictComboToContent(cmbmedicine)
-'
-' End
-
-' Public Sub cmbbatch_KeyRelease()
-'
-'   modFillContainer.AutoFillComboBox(cmbbatch)
-'   modFillContainer.RestrictComboToContent(cmbbatch)
 '
 ' End
 
@@ -726,7 +732,7 @@ Private Sub EnterReturnEntry(sIndex As Integer)
     Endif
     If stockno Then
       If xnew = True Then
-        AddNewEntry(stockno, xitem, res["flditemrate"])
+        AddNewEntry(stockno, xitem)
       Endif
       If txtqty.Value <= txtmax.Value And If DateDiff(Date(), lbldate.Value, gb.Day) >= dy Then
         qty = 0 - txtqty.Value
@@ -759,7 +765,7 @@ Catch
 
 End
 
-Private Sub AddNewEntry(StockNo As Long, StockName As String, txtrate As Float)
+Private Sub AddNewEntry(StockNo As Long, StockName As String)
 
   Dim res As Result
 
@@ -770,8 +776,9 @@ Private Sub AddNewEntry(StockNo As Long, StockName As String, txtrate As Float)
   res["fldexpiry"] = lbldate.Value
   res["fldqty"] = 0
   res["fldstatus"] = modStock.ItemSaleStatus(cmbmedicine.Text, modBasic.$compID)
-  res["fldsellpr"] = txtrate
-  res["fldmrp"] = 0
+  res["fldcost"] = txtcost.Value
+  res["fldsellpr"] = txtsell.Value
+  res["fldmrp"] = txtmrp.Value
   res["fldsav"] = True
   res["fldcategory"] = cmbroute.Text
   res["fldcomp"] = modBasic.$compID

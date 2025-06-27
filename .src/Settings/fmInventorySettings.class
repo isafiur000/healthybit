@@ -15,9 +15,13 @@ Public Sub Form_Open()
   cmbpurcomplist.List = modMedicine.GetExtraDepartments()
   cmbpurextraparam.List = ["Enable", "Disable"]
 
+  cmbinvenreport.List = ["Enable", "Disable"]
+  cmbinvamount.List = ["Exact", "Average", "Latest", "Fixed"]
+
   ShowGeneralSettings()
   ShowOutOrder()
   ShowDefProfit()
+  ShowInventoryReport()
 
 End
 
@@ -189,6 +193,32 @@ Public Sub btnstockalert_Click()
 
   modSettings.SaveSettingsToFile("InventorySetting/InventoryAlert", cmbstockalert.Text)
   Balloon.Info(("Information saved"), btnstockalert)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''------------ Report -----------
+Private Sub ShowInventoryReport()
+
+  cmbinvenreport.Text = modSettings.ShowSettingFromFIle("InventorySetting/QuickInventory")
+  cmbinvamount.Text = modSettings.ShowSettingFromFIle("InventorySetting/InventoryAmount")
+
+End
+
+Public Sub btninvenreport_Click()
+
+  modSettings.SaveSettingsToFile("InventorySetting/QuickInventory", cmbinvenreport.Text)
+  modBasic.$InvQuickReport = cmbinvenreport.Text
+  Balloon.Info(("Information saved"), btninvenreport)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btninvamount_Click()
+
+  modSettings.SaveSettingsToFile("InventorySetting/InventoryAmount", cmbinvamount.Text)
+  modBasic.$InvReportCost = cmbinvamount.Text
+  Balloon.Info(("Information saved"), btninvamount)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

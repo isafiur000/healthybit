@@ -32,11 +32,11 @@ Public Sub Form_Open()
       btnconsult.Text = modGeneral.GetUserFullName(btnconsult.Tag)
       btnconsult.Enabled = False
     Endif
-    $showList = modGlobalSetting.ShowSettingFromDB("ClinicForms/ConsultationList")
+    $showList = modBasic.$ClinConsultationList
   Else If $sTable = "tblopvisit" Then
     Me.Title = "OPD Visit List"
     Me.Tag = "OPD Visit List"
-    $showList = modGlobalSetting.ShowSettingFromDB("ClinicForms/OPVisitList")
+    $showList = modBasic.$ClinOPVisitList
   Endif
 
   If MMain.$WebReport = "Multiple" Then

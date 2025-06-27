@@ -45,18 +45,15 @@
         Sorted = True
       }
       { cmbbatch ComboBox
-        MoveScaled(70,5,13,3)
+        MoveScaled(70.5,5,16,3)
       }
       { lbldate DateBox
-        MoveScaled(83,5,14,3)
-        Enabled = False
-      }
-      { txtsellpr ValueBox
-        MoveScaled(97,5,5.625,3)
+        MoveScaled(87,5,15,3)
         Enabled = False
       }
       { txtqty ValueBox
         MoveScaled(111,5,7,3)
+        ToolTip = ("Physical Stock")
       }
       { chksave CheckBox
         MoveScaled(1,5,2.625,2.5)
@@ -90,7 +87,24 @@
       { txtmax ValueBox
         MoveScaled(103,5,7,3)
         Enabled = False
-        Text = ("ValueBox1")
+        ToolTip = ("Computer Stock")
+      }
+      { chkbackup CheckBox
+        MoveScaled(43,1,17,3)
+        Text = ("Backup Stock")
+        Value = CheckBox.True
+      }
+      { txtmrp ValueBox
+        MoveScaled(70,1,5,3)
+        Visible = False
+      }
+      { txtcost ValueBox
+        MoveScaled(76,1,6,3)
+        Visible = False
+      }
+      { txtsellpr ValueBox
+        MoveScaled(64,1,5.625,3)
+        Visible = False
       }
     }
     { GridView1 GridView

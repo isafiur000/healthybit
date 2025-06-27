@@ -45,8 +45,6 @@ Public Sub Form_Open()
   cmbgender.List = ["Yes", "No"]
   cmbtotal.List = ["Yes", "No"]
   cmbrowdate.List = ["Enable", "Disable"]
-  cmbinvenreport.List = ["Enable", "Disable"]
-  cmbinvamount.List = ["Exact", "Average", "Purchase"]
 
   cmbhmisproc.List = ["Billing", "Service"]
   cmbhmisradio.List = ["Billing", "Service"]
@@ -564,8 +562,6 @@ Private Sub ShowHealthReport()
   cmbgender.Text = modSettings.ShowSettingFromFIle("HealthReport/ShowGender")
   cmbtotal.Text = modSettings.ShowSettingFromFIle("HealthReport/ShowTotal")
   cmbrowdate.Text = modSettings.ShowSettingFromFIle("HealthReport/RowDateFormat")
-  cmbinvenreport.Text = modSettings.ShowSettingFromFIle("HealthReport/QuickInventory")
-  cmbinvamount.Text = modSettings.ShowSettingFromFIle("HealthReport/InventoryAmount")
 
 End
 
@@ -589,22 +585,6 @@ Public Sub btnrowdate_Click()
 
   modSettings.SaveSettingsToFile("HealthReport/RowDateFormat", cmbrowdate.Text)
   Balloon.Info(("Information saved"), btnrowdate)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btninvenreport_Click()
-
-  modSettings.SaveSettingsToFile("HealthReport/QuickInventory", cmbinvenreport.Text)
-  Balloon.Info(("Information saved"), btninvenreport)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btninvamount_Click()
-
-  modSettings.SaveSettingsToFile("HealthReport/InventoryAmount", cmbinvamount.Text)
-  Balloon.Info(("Information saved"), btninvamount)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

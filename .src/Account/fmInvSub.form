@@ -7,7 +7,7 @@
   Resizable = False
   { TabPanel4 TabPanel
     MoveScaled(0,1,48,49)
-    Count = 3
+    Count = 4
     Index = 0
     Text = ("Reference")
     { TabPanel1 TabPanel
@@ -489,6 +489,24 @@
         Picture = Picture["icon:/small/edit"]
       }
       Index = 0
+    }
+    Index = 3
+    Text = ("Suffix")
+    { Label50 Label
+      MoveScaled(1,1,25,3)
+      Border = Border.Plain
+      Text = ("Batch Number")
+    }
+    { txtBatch TextBox
+      MoveScaled(27,1,10,3)
+    }
+    { chkBatch CheckBox
+      MoveScaled(38,1,2.5,3)
+    }
+    { btnsuffix Button
+      MoveScaled(29,7,12,3)
+      Text = ("Update")
+      Picture = Picture["icon:/small/edit"]
     }
     Index = 0
   }

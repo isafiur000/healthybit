@@ -102,14 +102,24 @@ Public Sub cmbbatch_Click()
 
   Dim res As Result
 
-  res = modDatabase.$myConn.Exec("select fldstockno,fldexpiry,fldqty,fldstatus,fldcategory,fldsellpr from tblentry where fldstockid=&1 and fldbatch=&2 and fldcomp=&3", cmbmedicine.Text, cmbbatch.Text, modBasic.$compID)                                                   ''
+  res = modDatabase.$myConn.Exec("select fldstockno,fldexpiry,fldqty,fldstatus,fldcategory,fldcost,fldsellpr,fldmrp from tblentry where fldstockid=&1 and fldbatch=&2 and fldcomp=&3", cmbmedicine.Text, cmbbatch.Text, modBasic.$compID)                                                   ''
   If res.Available = True Then
     res.MoveFirst
+    txtcategory.Text = res["fldcategory"]
     lbldate.Value = res["fldexpiry"]
     txtmax.Value = res["fldqty"]
     txtstockno.Value = res["fldstockno"]
     txtsellpr.Value = res["fldsellpr"]
-    txtcategory.Text = res["fldcategory"]
+    If res["fldmrp"] Then
+      txtmrp.Value = res["fldmrp"]
+    Else
+      txtmrp.Value = 0
+    Endif
+    If res["fldcost"] Then
+      txtcost.Value = res["fldcost"]
+    Else
+      txtcost.Value = 0
+    Endif
   Else
     lbldate.Value = modStock.GetExpiryFromBatch(cmbmedicine.Text, cmbbatch.Text)
     txtsellpr.Value = modStock.GetAverageSellingPrice(cmbmedicine.Text)
@@ -141,8 +151,9 @@ Private Sub SaveEntry()
         rs["fldexpiry"] = lbldate.Value
         rs["fldqty"] = 0
         rs["fldstatus"] = modStock.ItemSaleStatus(cmbmedicine.Text, modBasic.$compID)
+        rs["fldcost"] = txtcost.Value
         rs["fldsellpr"] = txtsellpr.Value
-        rs["fldmrp"] = 0
+        rs["fldmrp"] = txtmrp.Value
         rs["fldsav"] = True
         rs["fldcategory"] = txtcategory.Text
         rs["fldcomp"] = modBasic.$compID
@@ -156,7 +167,7 @@ Private Sub SaveEntry()
   res["fldstockno"] = stockno
   res["fldstockid"] = cmbmedicine.Text
   res["fldcategory"] = txtcategory.Text
-  res["fldnetcost"] = modStock.GetAverageCostPriceByStockNo(txtstockno.Value)
+  res["fldnetcost"] = txtcost.Value
   res["fldsellpr"] = txtsellpr.Value
   res["fldcompqty"] = txtmax.Value
   res["fldcurrqty"] = txtqty.Value
@@ -188,6 +199,8 @@ Private Sub BlankAllBox()
   txtqty.Value = 0
   txtmax.Value = 0
   txtsellpr.Value = 0
+  txtmrp.Value = 0
+  txtcost.Value = 0
   txtstockno.Value = 0
   txtcategory.Text = ""
 
@@ -235,6 +248,7 @@ End
 Public Sub cmbbatch_KeyRelease()
 
   modFillContainer.AutoFillComboBox(cmbbatch)
+  modFillContainer.RestrictComboToContent(cmbbatch)
 
 End
 
@@ -339,7 +353,9 @@ Public Sub mnusave_Click()
   If res.Available = True Then
 
     Inc Application.Busy
-    modStockSub.BackupEntryStock(modBasic.$compID)
+    If chkbackup.Value = True Then
+      modStockSub.BackupEntryStock(modBasic.$compID)
+    Endif
     idLock = modBillLock.LockTableForID("Reference")
     If idLock = True Then
 
@@ -391,14 +407,18 @@ Public Sub mnuall_Click()
   Dim res As Result
 
   If Message.Question(("Do you want to transfer all your inventory ?"), ("No"), ("Yes")) = 2 Then
-    res = modDatabase.$myConn.Exec("select fldstockno,fldstockid,fldqty,fldcategory,fldsellpr from tblentry where fldcomp=&1", modBasic.$compID)                                                   ''
+    res = modDatabase.$myConn.Exec("select fldstockno,fldstockid,fldqty,fldcategory,fldsellpr,fldcost from tblentry where fldcomp=&1", modBasic.$compID)                                                   ''
     If res.Available = True Then
       For Each res
         res1 = modDatabase.$myConn.Create("tbladjustment")
         res1["fldstockno"] = res["fldstockno"]
         res1["fldstockid"] = res["fldstockid"]
         res1["fldcategory"] = res["fldcategory"]
-        res1["fldnetcost"] = modStock.GetAverageCostPriceByStockNo(res["fldstockno"])
+        If res["fldcost"] Then
+          res1["fldnetcost"] = res["fldcost"]
+        Else
+          res1["fldnetcost"] = 0
+        Endif
         res1["fldsellpr"] = res["fldsellpr"]
         res1["fldcompqty"] = res["fldqty"]
         res1["fldcurrqty"] = 0

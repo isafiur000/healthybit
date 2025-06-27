@@ -142,6 +142,18 @@
         Alignment = Align.Center
         Border = Border.Plain
       }
+      { txtcost ValueBox
+        MoveScaled(59,1,4,3)
+        Visible = False
+      }
+      { txtsell ValueBox
+        MoveScaled(64,1,4,3)
+        Visible = False
+      }
+      { txtmrp ValueBox
+        MoveScaled(69,1,4,3)
+        Visible = False
+      }
     }
     { TabPanel1 TabPanel
       MoveScaled(0,9,119,44)
@@ -163,8 +175,9 @@
           MoveScaled(15,4,59,3)
           Sorted = True
         }
-        { cmbbatch ComboBox
-          MoveScaled(74,4,14,3)
+        { cmbbatch TextBox
+          MoveScaled(74.5,4,13,3)
+          ReadOnly = True
         }
         { txtqty ValueBox
           MoveScaled(111,4,7,3)

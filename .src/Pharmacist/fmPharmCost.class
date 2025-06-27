@@ -6,7 +6,7 @@ Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me)
   cmbroute.List = modMedicine.ComboRoute()
-  If modHelpVariable.$LogInCategory <> "Dispensar" Then
+  If modHelpVariable.$LogInCategory = "Account" Or If modHelpVariable.$LogInCategory = "Pharmacist" Then
     cmbcomp.List = modBasic.$AllCompPerList
   Else
     cmbcomp.Add(modBasic.$compID)
@@ -14,6 +14,13 @@ Public Sub Form_Open()
     cmbcomp.Enabled = False
   Endif
   lblrupee.Text = modBasic.$currency
+  lblrupcost.Text = modBasic.$currency
+  lblrupmrp.Text = modBasic.$currency
+  If modHelpVariable.$LogInCategory = "Account" Or If modHelpVariable.$LogInCategory = "Pharmacist" Then
+    txtnetcost.ReadOnly = False
+    txtrate.ReadOnly = False
+    txtmrp.ReadOnly = False
+  Endif
   cmbcomp.SetFocus
 
 End
@@ -40,7 +47,9 @@ Private Sub BlankCOntrol()
 
   txtbatch.Text = ""
   dtexpiry.Value = ""
+  txtnetcost.Value = 0
   txtrate.Value = 0
+  txtmrp.Value = 0
   txtorder.Value = 0
   txtstockno.Value = 0
 
@@ -177,11 +186,21 @@ Public Sub GridView1_Click()
   Dim res As Result
 
   txtstockno.Value = GridView1[GridView1.Row, 0].Text
-  res = modDatabase.$myConn.Exec("select fldbatch,fldexpiry,fldqty,fldsellpr,fldstatus from tblentry where fldstockno=&1", txtstockno.Value)
+  res = modDatabase.$myConn.Exec("select fldbatch,fldexpiry,fldqty,fldcost,fldsellpr,fldmrp,fldstatus from tblentry where fldstockno=&1", txtstockno.Value)
   If res.Available Then
     txtbatch.Text = res["fldbatch"]
     dtexpiry.Value = res["fldexpiry"]
+    If res["fldcost"] Then
+      txtnetcost.Value = res["fldcost"]
+    Else
+      txtnetcost.Value = 0
+    Endif
     txtrate.Value = res["fldsellpr"]
+    If res["fldmrp"] Then
+      txtmrp.Value = res["fldmrp"]
+    Else
+      txtmrp.Value = 0
+    Endif
     txtorder.Value = res["fldstatus"]
   Endif
 
@@ -204,8 +223,10 @@ Public Sub btnupdate_Click()
       res = modDatabase.$myConn.Edit("tblentry", "fldstockno=&1", txtstockno.Value)
       res["fldbatch"] = Trim(txtbatch.Text)
       res["fldexpiry"] = dtexpiry.Value
-      If modHelpVariable.$LogInCategory <> "Dispensar" Then
+      If modHelpVariable.$LogInCategory = "Account" Or If modHelpVariable.$LogInCategory = "Pharmacist" Then
         res["fldsellpr"] = txtrate.Value
+        res["fldcost"] = txtnetcost.Value
+        res["fldmrp"] = txtmrp.Value
       Endif
       res["fldstatus"] = txtorder.Value
       res["xyz"] = False

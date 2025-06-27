@@ -52,6 +52,7 @@ Public Sub Form_Open()
   cmbdefipdexam.List = xList
   cmbconsultlist.List = ["Paid", "All"]
   cmbopvisitlist.List = ["Paid", "All"]
+  cmbclinforms.List = ["Paid", "All"]
 
   cmbtelemed.List = ["Partial", "Complete", "Disable"]
   cmbvideopass.List = ["Enable", "Disable"]
@@ -205,6 +206,7 @@ Private Sub GetClinActivity()
 
   cmbconsultlist.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/ConsultationList", cmbtarget.Text)
   cmbopvisitlist.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/OPVisitList", cmbtarget.Text)
+  cmbclinforms.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/PatientForms", cmbtarget.Text)
 
 End
 
@@ -260,6 +262,14 @@ Public Sub btnopvisitlist_Click()
 
   modGlobalSetting.SaveSettingToDB("ClinicForms/OPVisitList", cmbopvisitlist.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btnopvisitlist)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnclinforms_Click()
+
+  modGlobalSetting.SaveSettingToDB("ClinicForms/PatientForms", cmbclinforms.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnclinforms)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -607,6 +617,7 @@ Public Sub btnsettall_Click()
   xList.Add("ClinicForms/IPDExaminations")
   xList.Add("ClinicForms/ConsultationList")
   xList.Add("ClinicForms/OPVisitList")
+  xList.Add("ClinicForms/PatientForms")
 
   xList.Add("ClinicForms/ExamList_Lock")
   xList.Add("ClinicForms/SymptomList_Lock")

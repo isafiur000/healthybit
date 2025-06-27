@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,103,64)
+  MoveScaled(0,0,103,68)
   Tag = "Stock Out Order"
   Text = ("Stock Out Order")
   Resizable = False
@@ -27,7 +27,7 @@
     Picture = Picture["icon:/small/refresh"]
   }
   { GridView1 GridView
-    MoveScaled(1,33,75,30)
+    MoveScaled(1,33,75,34)
     Mode = Select.Single
     Header = GridView.Both
     AutoResize = False
@@ -39,13 +39,14 @@
     MoveScaled(85,41,17.25,3.5)
   }
   { txtrate ValueBox
-    MoveScaled(92,45,10,3.5)
+    MoveScaled(92,49,10,3.5)
+    ReadOnly = True
   }
   { txtorder ValueBox
-    MoveScaled(92,49,10,3.5)
+    MoveScaled(92,57,10,3.5)
   }
   { btnupdate Button
-    MoveScaled(85,53,17,4)
+    MoveScaled(85,61,17,4)
     Text = Shortcut(("Update"), "U")
     Picture = Picture["icon:/small/apply"]
   }
@@ -65,21 +66,21 @@
     Picture = Picture["icon:/small/file"]
   }
   { Label3 Label
-    MoveScaled(77,45,7.25,3.5)
+    MoveScaled(77,49,7.25,3.5)
     Border = Border.Plain
-    Text = ("Rate")
+    Text = ("Sell")
   }
   { Label4 Label
-    MoveScaled(85,49,6.625,3.5)
+    MoveScaled(85,57,6.625,3.5)
     Border = Border.Plain
     Text = ("Order")
   }
   { txtstockno ValueBox
-    MoveScaled(77,49,7,3.5)
+    MoveScaled(77,57,7,3.5)
     Visible = False
   }
   { lblrupee Label
-    MoveScaled(85,45,6.625,3.5)
+    MoveScaled(85,49,6.625,3.5)
     Border = Border.Plain
   }
   { btnstatus Button
@@ -93,5 +94,31 @@
     MoveScaled(82,1,20,3)
     Text = ("Bulk Update")
     Menu = "mnuall"
+  }
+  { Label5 Label
+    MoveScaled(77,45,7.25,3.5)
+    Border = Border.Plain
+    Text = ("Cost")
+  }
+  { lblrupcost Label
+    MoveScaled(85,45,6.625,3.5)
+    Border = Border.Plain
+  }
+  { txtnetcost ValueBox
+    MoveScaled(92,45,10,3.5)
+    ReadOnly = True
+  }
+  { Label6 Label
+    MoveScaled(77,53,7.25,3.5)
+    Border = Border.Plain
+    Text = ("MRP")
+  }
+  { lblrupmrp Label
+    MoveScaled(85,53,6.625,3.5)
+    Border = Border.Plain
+  }
+  { txtmrp ValueBox
+    MoveScaled(92,53,10,3.5)
+    ReadOnly = True
   }
 }

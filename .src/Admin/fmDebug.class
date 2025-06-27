@@ -19,6 +19,7 @@ Private Sub GetList()
   cmbproblem.Add("Admission Ward")
   cmbproblem.Add("Max Retail Price")
   cmbproblem.Add("Fixed Rate Return")
+  cmbproblem.Add("Inventory NetCost")
   ' cmbproblem.Add("---healthybit 0.3.20 or newer ---")
   ' cmbproblem.Add("Patient Exam Option")
   ' cmbproblem.Add("Comp Examination")
@@ -97,6 +98,8 @@ Public Sub btncorr_Click()
       UpdateMaxRPValue()
     Else If cmbproblem.Text = "Fixed Rate Return" Then
       modDebugging.DebugFixedRateReturn()
+    Else If cmbproblem.Text = "Inventory NetCost" Then
+      UpdateInventoryNetCost()
 
     Else If cmbproblem.Text = "MacAddress Code" Then
       InsertMacAddCode()
@@ -162,6 +165,23 @@ End
 '   ValueBox1.Value = $fin.Count
 '
 ' End
+
+''Inventory NetCost
+Private Sub UpdateInventoryNetCost()
+
+  Dim res As Result
+
+  modBasic.$InvReportCost = "Latest"
+  res = modDatabase.$myConn.Edit("tblentry", "fldcost IS NULL")
+  If res.Available Then
+    For Each res
+      res["fldcost"] = modStock.GetAverageCostPriceByStockNo(res["fldstockno"])
+      res.Update
+    Next
+  Endif
+  Message.Info("Completed")
+
+End
 
 ''Max Retail Price
 Private Sub UpdateMaxRPValue()

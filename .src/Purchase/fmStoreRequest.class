@@ -201,7 +201,7 @@ Private Function TransferItem(sItem As String, sQTY As Float, sComp As String) A
   Dim xclear As Boolean
 
   xclear = False
-  res1 = modDatabase.$myConn.Exec("select fldstockno,fldstockid,fldcategory,fldbatch,fldexpiry,fldqty,fldstatus,fldcategory,fldsellpr,fldmrp from tblentry where fldstockid=&1 and fldstatus=&2 and fldcomp=&3", sItem, 1, modBasic.$compID)                                                   ''
+  res1 = modDatabase.$myConn.Exec("select fldstockno,fldstockid,fldcategory,fldbatch,fldexpiry,fldqty,fldstatus,fldcategory,fldsellpr,fldmrp,fldcost from tblentry where fldstockid=&1 and fldstatus=&2 and fldcomp=&3", sItem, 1, modBasic.$compID)                                                   ''
   If res1.Available Then
     res1.MoveFirst
     If sComp <> modBasic.$compID And If sQTY <= res1["fldqty"] Then
@@ -219,6 +219,11 @@ Private Function TransferItem(sItem As String, sQTY As Float, sComp As String) A
           res["fldexpiry"] = res1["fldexpiry"]
           res["fldqty"] = 0
           res["fldstatus"] = modStock.ItemSaleStatus(res1["fldstockid"], sComp)
+          If res1["fldcost"] Then
+            res["fldcost"] = res1["fldcost"]
+          Else
+            res["fldcost"] = 0
+          Endif
           res["fldsellpr"] = res1["fldsellpr"]
           If res1["fldmrp"] Then
             res["fldmrp"] = res1["fldmrp"]
@@ -238,7 +243,11 @@ Private Function TransferItem(sItem As String, sQTY As Float, sComp As String) A
         res["fldstockid"] = res1["fldstockid"]
         res["fldcategory"] = res1["fldcategory"]
         res["fldqty"] = sQTY
-        res["fldnetcost"] = modStock.GetAverageCostPriceByStockNo(res1["fldstockno"])
+        If res1["fldcost"] Then
+          res["fldnetcost"] = res1["fldcost"]
+        Else
+          res["fldnetcost"] = 0
+        Endif
         res["fldsellpr"] = res1["fldsellpr"]
         res["fldsav"] = False
         res["fldfromentrytime"] = Now()

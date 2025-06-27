@@ -122,11 +122,11 @@ Public Sub cmbbatch_Click()
     lbldate.Value = res["fldexpiry"]
     ' txtmax.Value = res["fldqty"]
     txtstockno.Value = res["fldstockno"]
-    res1 = modDatabase.$myConn.Exec("select distinct(fldsuppname) as col from tblpurchase where fldstockno=&1 and fldreturnqty=&2", txtstockno.Value, 0)
+    res1 = modDatabase.$myConn.Exec("select distinct(fldsuppname) as col from tblpurchase where fldstockno=&1 and fldtotalqty>fldreturnqty", txtstockno.Value)
     If res1.Available Then
       cmbvendor.List = modControlSub.GetDirectFillresult(res1)
     Else
-      cmbvendor.Text = "Purchase from Other Location"
+      cmbvendor.Text = "Purchased from Other Location"
     Endif
   Endif
 
@@ -266,7 +266,7 @@ Public Sub cmbvendor_Click()
   Dim res As Result
 
   lbladdress.Text = modSupplier.GetAddFromSuppName(cmbvendor.Text)
-  res = modDatabase.$myConn.Exec("select fldreference as col from tblpurchase where fldstockno=&1 and fldsuppname=&2 and fldreturnqty=&3", txtstockno.Value, cmbvendor.Text, 0)
+  res = modDatabase.$myConn.Exec("select fldreference as col from tblpurchase where fldstockno=&1 and fldsuppname=&2 and fldtotalqty>fldreturnqty", txtstockno.Value, cmbvendor.Text)
   cmbreference.List = modControlSub.GetDirectFillresult(res)
 
 End
@@ -276,7 +276,7 @@ Public Sub cmbreference_Click()
   Dim res As Result
   Dim xList As String[]
 
-  res = modDatabase.$myConn.Exec("select fldbillno,fldnetcost,fldtotalqty,fldreturnqty from tblpurchase where fldstockno=&1 and fldsuppname=&2 and fldreference=&3 and fldreturnqty=&4", txtstockno.Value, cmbvendor.Text, cmbreference.Text, 0)
+  res = modDatabase.$myConn.Exec("select fldbillno,fldnetcost,fldtotalqty,fldreturnqty from tblpurchase where fldstockno=&1 and fldsuppname=&2 and fldreference=&3 and fldtotalqty>fldreturnqty", txtstockno.Value, cmbvendor.Text, cmbreference.Text)
   If res.Available Then
     If res.Count = 1 Then
       res.MoveFirst
@@ -302,7 +302,7 @@ Public Sub cmbrate_Click()
   Dim res As Result
 
   txtnetcost.Value = CFloat(cmbrate.Text)
-  res = modDatabase.$myConn.Exec("select fldbillno,fldnetcost,fldtotalqty,fldreturnqty from tblpurchase where fldstockno=&1 and fldsuppname=&2 and fldreference=&3 and fldreturnqty=&4 and fldnetcost=&5", txtstockno.Value, cmbvendor.Text, cmbreference.Text, 0, txtnetcost.Value)
+  res = modDatabase.$myConn.Exec("select fldbillno,fldnetcost,fldtotalqty,fldreturnqty from tblpurchase where fldstockno=&1 and fldsuppname=&2 and fldreference=&3 and fldnetcost=&4 and fldtotalqty>fldreturnqty", txtstockno.Value, cmbvendor.Text, cmbreference.Text, txtnetcost.Value)
   If res.Available Then
     res.MoveFirst
     lblinvoice.Text = res["fldbillno"]

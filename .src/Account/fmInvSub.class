@@ -127,6 +127,9 @@ Private Sub ShowSubscript()
         txtTDA.Text = rs["fldinvsub"]
       Else If rs["fldinvcode"] = "ARC" Then
         txtARC.Text = rs["fldinvsub"]
+        ''Suffix
+      Else If rs["fldinvcode"] = "Batch" Then
+        txtBatch.Text = rs["fldinvsub"]
       Endif
     Next
   Endif
@@ -472,6 +475,18 @@ Public Sub btneditinvoice_Click()
     Endif
   Endif
   Balloon.Info(("Information updated"), btneditinvoice)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''--------------------------- Suffix ---------------------
+Public Sub btnsuffix_Click()
+
+  If chkBatch.Value = True Then
+    UpdateInvSub("Batch", txtBatch.Text)
+  Endif
+
+  Balloon.Info(("Information updated"), btnupdate)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
