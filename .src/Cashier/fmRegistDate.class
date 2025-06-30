@@ -4,14 +4,17 @@ Private $rData As Result
 Private $aMyFields As String[]
 Private $sType As String
 
+Private $patMessage As String 
+Private $clinMessage As String
+
 Public Sub _new(sType As String)
-
+  
   $sType = sType
-
+  
 End
 
 Public Sub Form_Open()
-
+  
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
   Me.Title = $sType
@@ -34,7 +37,7 @@ Public Sub Form_Open()
   cmbilled.Text = "%"
   cmbcomp.List = modBasic.$AllCompList
   cmbcomp.Text = modBasic.$compID
-
+  
   If $sType = "Registration List" Then
     lblvisit.Visible = True
     cmbvisitype.Visible = True
@@ -46,31 +49,34 @@ Public Sub Form_Open()
       pnlBulk.Visible = True
     Endif
   Endif
-
+  
   dtfir.Value = Now()
   dtlast.Value = Now()
   cmbselect.Text = "%"
   cmbbillmode.Text = "%"
-
+  
+  $patMessage = modSettings.ShowSettingFromFIle("Registration/PatientMessage")
+  $clinMessage = modSettings.ShowSettingFromFIle("Registration/PhysicianMessage")
+  
 End
 
 Public Sub Form_Resize()
-
+  
   modGeneralMain.ShowSelectedFormMenu(Me)
-
+  
 End
 
 Public Sub Form_Close()
-
+  
   modGeneralMain.RecordFormExit(Me)
-
+  
 End
 
 Public Sub btnconsult_Click()
-
+  
   Dim xList As Variant[]
   Dim xMedUser As String[]
-
+  
   If modBasic.$LockConsultant = "LockByQuota" Then
     xList = modConsult.GetUserPostingList(cmbselect.Text, lbldate.Value, cmbbillmode.Text)
   Else
@@ -84,28 +90,28 @@ Public Sub btnconsult_Click()
     btnconsult.Tag = ""
     btnconsult.Text = ""
   Endif
-
+  
 End
 
 Private Function GetTableFIelds() As String[]
-
+  
   Dim xFldList As String[]
-
+  
   If $sType = "Registration List" Then
     xFldList = ["fldencounterval", "fldconsulttime", "fldconsulttime", "fldconsultname", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldid", "fldconsulttime", "fldid", "flduserid", "fldcomment", "fldbillingmode", "fldencounterval", "flduserid", "fldencounterval", "fldstatus"]
   Else If $sType = "Booking List" Then
     xFldList = ["fldbookingval", "fldconsultdate", "fldconsultdate", "fldadmitlocat", "fldbookingval", "fldbookingval", "fldptsex", "fldptcontact", "fldbookingval", "fldconsultdate", "fldbookingval", "flduserid", "fldcomment", "fldbillingmode", "fldpatientval", "flduserid", "fldemail", "fldstate"]
   Endif
-
+  
   Return xFldList
-
+  
 End
 
 Private Sub FillPatDateGrid()
-
+  
   Dim sql As String
   Dim xFldList As String[]
-
+  
   xFldList = GetTableFIelds()
   If $sType = "Registration List" Then
     If cmbilled.Text = "Billed" Then
@@ -126,7 +132,7 @@ Private Sub FillPatDateGrid()
           $rData = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(lbldate.Value), modDate.EndSqlDate(lbldate.Value), cmbselect.Text, cmbregtype.Text, cmbbillmode.Text, cmbvisitype.Text, "General Services", True, cmbcomp.Text)
         Endif
       Endif
-
+      
     Else
       If cmbvisitype.Text = "%" Or If cmbvisitype.Text = "" Then
         If btnconsult.Tag Then
@@ -145,9 +151,9 @@ Private Sub FillPatDateGrid()
           $rData = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(lbldate.Value), modDate.EndSqlDate(lbldate.Value), cmbselect.Text, cmbregtype.Text, cmbbillmode.Text, cmbvisitype.Text, cmbcomp.Text)
         Endif
       Endif
-
+      
     Endif
-
+    
   Else If $sType = "Booking List" Then
     If btnconsult.Text Then
       sql = "select " & xFldList.Join(",") & " from tblpatientbook where fldconsultdate>=&1 and fldconsultdate<=&2 and fldadmitlocat like &3 and flduserid like &4 and fldstate=&5 and fldbillingmode like &6 and fldcomp=&7 ORDER BY fldconsultdate"                                                                              ''
@@ -156,17 +162,17 @@ Private Sub FillPatDateGrid()
       sql = "select " & xFldList.Join(",") & " from tblpatientbook where fldconsultdate>=&1 and fldconsultdate<=&2 and fldadmitlocat like &3 and fldstate=&4 and fldbillingmode like &5 and fldcomp=&6 ORDER BY fldconsultdate"                                                                              ''
       $rData = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(lbldate.Value), modDate.EndSqlDate(lbldate.Value), cmbselect.Text, cmbregtype.Text, cmbbillmode.Text, cmbcomp.Text)
     Endif
-
+    
   Endif
-
+  
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
   RezizeGrid()
-
+  
 End
 
 Private Sub RezizeGrid()
-
+  
   With GridView1
     .Columns[0].Width = 25 * modBasic.$AppWidthRatio
     .Columns[1].Width = 100 * modBasic.$AppWidthRatio
@@ -186,7 +192,7 @@ Private Sub RezizeGrid()
     .Columns[15].Width = 1
     .Columns[16].Width = 1
     .Columns[17].Width = 75 * modBasic.$AppWidthRatio
-
+    
     .Columns[1].Text = "Date"
     .Columns[2].Text = "Time"
     .Columns[3].Text = "Department"
@@ -203,11 +209,11 @@ Private Sub RezizeGrid()
     .Columns[14].Text = "FileNo"
     .Columns[17].Text = "Status"
   End With
-
+  
 End
 
 Public Sub GridView1_Data(Row As Integer, Column As Integer)
-
+  
   $rData.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView1, Row)
   If Column = 0 Then
@@ -216,63 +222,63 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
     GridView1.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.MediumDate)
   Else If Column = 2 Then
     GridView1.Data.Text = Format($rData[$aMyFields[Column]], gb.ShortTime)
-
+    
   Else If Column = 5 Then
     If $sType = "Registration List" Then
       GridView1.Data.Text = modPatient.GetPatientNameByEnc($rData[$aMyFields[Column]])
     Else If $sType = "Booking List" Then
       GridView1.Data.Text = modPatient.GetPatFullNameBooking($rData[$aMyFields[Column]])
     Endif
-
+    
   Else If Column = 6 Then
     If $sType = "Registration List" Then
       GridView1.Data.Text = modPatient.GetPatientAgeString($rData[$aMyFields[Column]], Now()) & "/" & modPatient.GetPatientSex($rData[$aMyFields[Column]])
     Else If $sType = "Booking List" Then
       GridView1.Data.Text = $rData[$aMyFields[Column]]
     Endif
-
+    
   Else If Column = 7 Then
     If $sType = "Registration List" Then
       GridView1.Data.Text = modPatient.GetPatientContactByEnc($rData[$aMyFields[Column]])
     Else If $sType = "Booking List" Then
       GridView1.Data.Text = $rData[$aMyFields[Column]]
     Endif
-
+    
   Else If Column = 11 Then
     GridView1.Data.Text = modGeneral.GetUserFullName($rData[$aMyFields[Column]])
-
+    
   Else If Column = 14 Then
     If $sType = "Registration List" Then
       GridView1.Data.Text = modPatient.GetPatientFileByEnc($rData[$aMyFields[Column]])
     Else If $sType = "Booking List" Then
       GridView1.Data.Text = modPatient.GetPatientFileByPatNo($rData[$aMyFields[Column]])
     Endif
-
+    
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]
   Endif
   GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
   GridView1.Data.WordWrap = True
-
+  
 End
 
 Public Sub GridView1_Menu()
-
+  
   mnuhide.Popup
-
+  
 End
 
 Public Sub mnuedit_Click()
-
+  
   Dim hForm1 As FmEditConsult
   Dim row As Integer
   Dim col As Integer
   Dim xx As Variant[]
-
+  
   If GridView1.Rows.Selection.Count Then
     row = GridView1.Row
     col = GridView1.Column
-
+    
     xx = New Variant[]
     xx.Add(GridView1[GridView1.Row, 8].Text)
     If $sType = "Registration List" Then
@@ -282,26 +288,26 @@ Public Sub mnuedit_Click()
     Endif
     hForm1.ShowModal
     FillPatDateGrid()
-
+    
     GridView1.Row = row
     GridView1.Column = col
   Endif
-
+  
 End
 
 Public Sub mnueditall_Click()
-
+  
   Dim hForm1 As FmEditConsult
   Dim i As Integer
   Dim xx As Variant[]
-
+  
   xx = New Variant[]
   For i = 0 To GridView1.Rows.Count - 1
     If GridView1[i, 0].Picture = Picture["icons/checked.png"] Then
       xx.Add(GridView1[i, 8].Text)
     Endif
   Next
-
+  
   If xx.Count Then
     If $sType = "Registration List" Then
       hForm1 = New FmEditConsult(xx, "tblconsult")
@@ -311,16 +317,16 @@ Public Sub mnueditall_Click()
     hForm1.ShowModal
   Endif
   FillPatDateGrid()
-
+  
 End
 
 Public Sub mnufollow_Click()
-
+  
   Dim res As Result
   Dim dt As Date
   Dim row As Integer
   Dim col As Integer
-
+  
   If GridView1.Rows.Selection.Count Then
     row = GridView1.Row
     col = GridView1.Column
@@ -334,29 +340,29 @@ Public Sub mnufollow_Click()
     GridView1.Row = row
     GridView1.Column = col
   Endif
-
+  
 End
 
 Public Sub GridView1_Click()
-
+  
   If GridView1.Column = 0 Then
     modGridView.CheckUncheckGridNoDB(GridView1, 0)
   Endif
-
+  
 End
 
 ''-----------------------------  button and menu ------------------------------------------------
 Public Sub btnrefresh_Click()
-
+  
   FillPatDateGrid()
   GridView1.SetFocus
-
+  
 End
 
 Public Sub btnnew_Click()
-
+  
   Dim hForm As FmNewConsult
-
+  
   If $sType = "Registration List" Then
     hForm = New FmNewConsult(txtencid.Text)
     hForm.ShowModal
@@ -365,39 +371,39 @@ Public Sub btnnew_Click()
   Endif
   FillPatDateGrid()
   txtencid.Text = ""
-
+  
 End
 
 Public Sub btnexport_Click()
-
+  
   modCHTMLReport.ExportGridToHTML(GridView1, $sType, modReportVar.GetDateTimeReport(lbldate.Value, gb.MediumDate))
-
+  
 End
 
 Public Sub mnuselall_Click()
-
+  
   Dim i As Integer
-
+  
   For i = 0 To GridView1.Rows.Count - 1
     GridView1[i, 0].Picture = Picture["icons/checked.png"]
   Next
-
+  
 End
 
 Public Sub mnudesel_Click()
-
+  
   Dim i As Integer
-
+  
   For i = 0 To GridView1.Rows.Count - 1
     GridView1[i, 0].Picture = Picture["icons/unchecked.png"]
   Next
-
+  
 End
 
 Public Sub btnsearch_Click()
-
+  
   Dim xx As String
-
+  
   If $sType = "Registration List" Then
     If modBasic.$AutoEncPrefix Then
       xx = InputBox(("Enter Encounter ID"), $sType, modBasic.$EncIdPrefix)
@@ -411,14 +417,14 @@ Public Sub btnsearch_Click()
     SearchData(xx)
     GridView1.SetFocus
   Endif
-
+  
 End
 
 Private Sub SearchData(encid As String)
-
+  
   Dim sql As String
   Dim xFldList As String[]
-
+  
   xFldList = GetTableFIelds()
   If $sType = "Registration List" Then
     If btnconsult.Tag Then
@@ -428,7 +434,7 @@ Private Sub SearchData(encid As String)
       sql = "select " & xFldList.Join(",") & " from tblconsult where fldencounterval=&1"                                                                              ''
       $rData = modDatabase.$myConn.Exec(sql, encid)
     Endif
-
+    
   Else If $sType = "Booking List" Then
     If btnconsult.Text Then
       sql = "select " & xFldList.Join(",") & " from tblpatientbook where fldbookingval=&1"                                                                              ''
@@ -437,51 +443,51 @@ Private Sub SearchData(encid As String)
       sql = "select " & xFldList.Join(",") & " from tblpatientbook where fldbookingval=&1"                                                                              ''
       $rData = modDatabase.$myConn.Exec(sql, encid)
     Endif
-
+    
   Endif
-
+  
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
   RezizeGrid()
-
+  
 End
 
 Public Sub Form_KeyRelease()
-
+  
   If Key.Code = Key["R"] And If Key.Control Then
     btnrefresh_Click()
   Else If Key.Code = Key.F1 Then
     btnnew_Click()
   Endif
-
+  
 End
 
 Public Sub btnrepo_Click()
-
+  
   Dim xPath As String
-
+  
   Inc Application.Busy
   xPath = modGENReport.ShowConsultQuota(lbldate.Value, cmbselect.Text, cmbbillmode.Text, cmbcomp.Text, btnconsult.Tag)
   Dec Application.Busy
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
-
+  
 End
 
 Public Sub dtnepfir_Click()
-
+  
   Dim xx As String
-
+  
   xx = BSDateFormat(("Enter BS Date in yyyy/mm/dd format"), ("Date Converter"), modDate.ConvertToLocaldate(lbldate.Value))
   If xx Then
     lbldate.Value = modDate.ConvertToEnglishdate(xx)
   Endif
-
+  
 End
 
 Public Sub btntemplprint_Click()
-
+  
   Dim i As Integer
-
+  
   For i = 0 To GridView1.Rows.Count - 1
     If GridView1[i, 0].Picture = Picture["icons/checked.png"] Then
       modPatientSub.PrintRegistExtraReport(GridView1[i, 4].Text)
@@ -491,68 +497,68 @@ Public Sub btntemplprint_Click()
     Endif
   Next
   FillPatDateGrid()
-
+  
 End
 
 Public Sub cmbbillmode_KeyRelease()
-
+  
   modFillContainer.AutoFillComboBox(cmbbillmode)
   modFillContainer.RestrictComboToContent(cmbbillmode)
-
+  
 End
 
 Public Sub cmbselect_KeyRelease()
-
+  
   modFillContainer.AutoFillComboBox(cmbselect)
   modFillContainer.RestrictComboToContent(cmbselect)
-
+  
 End
 
 Public Sub btnconsult_Change()
-
+  
   If btnconsult.Text = "" Then
     btnconsult.Tag = ""
   Endif
-
+  
 End
 
 Public Sub btnconsult_KeyRelease()
-
+  
   If Key.Code = Key.Return Or If Key.Code = Key.Enter Or If Key.Code = Key.AltKey Then
     If btnconsult.Tag Then
     Else
       btnconsult_Click()
     Endif
   Endif
-
+  
 End
 
 Public Sub dtnep1_Click()
-
+  
   Dim xx As String
-
+  
   xx = BSDateFormat(("Enter BS Date in yyyy/mm/dd format"), ("Date Converter"), modDate.ConvertToLocaldate(dtfir.Value))
   If xx Then
     dtfir.Value = modDate.ConvertToEnglishdate(xx)
   Endif
-
+  
 End
 
 Public Sub dtnep2_Click()
-
+  
   Dim xx As String
-
+  
   xx = BSDateFormat(("Enter BS Date in yyyy/mm/dd format"), ("Date Converter"), modDate.ConvertToLocaldate(dtlast.Value))
   If xx Then
     dtlast.Value = modDate.ConvertToEnglishdate(xx)
   Endif
-
+  
 End
 
 Public Sub btnsumregd_Click()
-
+  
   Dim xPath As String
-
+  
   If $sType = "Registration List" Then
     Inc Application.Busy
     xPath = modCHTMLPatSummary.ShowRegisterConsultantwiseReport(dtfir.Value, dtlast.Value, cmbselect.Text, cmbbillmode.Text, cmbilled.Text, cmbcomp.Text)
@@ -560,13 +566,13 @@ Public Sub btnsumregd_Click()
   Else If $sType = "Booking List" Then
   Endif
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
-
+  
 End
 
 Public Sub btnsumregconsult_Click()
-
+  
   Dim xPath As String
-
+  
   If $sType = "Registration List" Then
     Inc Application.Busy
     xPath = modCHTMLPatSummary.ShowRegisterConsultDeptReport(dtfir.Value, dtlast.Value, cmbselect.Text, cmbbillmode.Text, cmbilled.Text, cmbcomp.Text)
@@ -574,13 +580,13 @@ Public Sub btnsumregconsult_Click()
   Else If $sType = "Booking List" Then
   Endif
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
-
+  
 End
 
 Public Sub btnreporegd_Click()
-
+  
   Dim xPath As String
-
+  
   If $sType = "Registration List" Then
     Inc Application.Busy
     xPath = modCHTMLPatSummary.ShowRegisterConsultReport(dtfir.Value, dtlast.Value, cmbselect.Text, cmbbillmode.Text, cmbilled.Text, cmbregtype.Text, cmbcomp.Text, btnconsult.Tag)
@@ -591,32 +597,32 @@ Public Sub btnreporegd_Click()
     Dec Application.Busy
   Endif
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
-
+  
 End
 
 Public Sub btndocreport_Click()
-
+  
   Dim xPath As String
-
+  
   If lbldate.Value And If cmbbillmode.Text And If btnconsult.Tag Then
     Inc Application.Busy
     xPath = modGENReport.ShowDocwiseConsultReport(lbldate.Value, cmbbillmode.Text, btnconsult.Tag)
     Dec Application.Busy
     modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
   Endif
-
+  
 End
 
 ''----------------------------------- extra activities -------------------------------------------------
 Public Sub btnsmstotal_Click()
-
+  
   Dim sText As String
   Dim sphno As String
-
+  
   If btnconsult.Tag Then
     sphno = modGeneral.GetUserContact(btnconsult.Tag)
   Endif
-
+  
   If sphno Then
     sText = "Date: " & modReportVar.GetDateTimeReport(lbldate.Value, gb.MediumDate) & " Total Patients: " & CStr(GridView1.Rows.Count)
     If sText Then
@@ -627,28 +633,28 @@ Public Sub btnsmstotal_Click()
       Endif
     Endif
   Endif
-
+  
 End
 
 Public Sub mnuinfolabel_Click()
-
+  
   Dim $hReport As CRegistLabel
-
+  
   If GridView1.Rows.Selection.Count > 0 Then
     If modNonMedical.AllowRegistSlipWithInvoiceEncid(GridView1[GridView1.Row, 4].Text) = True Then
       $hReport = New CRegistLabel(GridView1[GridView1.Row, 4].Text)
       modControlSub.OpenHTMLPreview(GridView1[GridView1.Row, 4].Text, $hReport.RegistLabelPath(), "LabelSize")
     Endif
   Endif
-
+  
 End
 
 Public Sub mnuemail_Click()
-
+  
   Dim i As Integer
   Dim xx As String[]
   Dim hForm As FmRemoteMail
-
+  
   If Desktop.NetworkAvailable = True Then
     xx = New String[]
     For i = 0 To GridView1.Rows.Count - 1
@@ -663,15 +669,15 @@ Public Sub mnuemail_Click()
     hForm = New FmRemoteMail(xx, "", $sType, "")
     hForm.ShowModal
   Endif
-
+  
 End
 
 Public Sub mnusmspat_Click()
-
+  
   Dim i As Integer
   Dim sText As String
   Dim sphno As String
-
+  
   For i = 0 To GridView1.Rows.Count - 1
     If GridView1[i, 0].Picture = Picture["icons/checked.png"] Then
       If $sType = "Registration List" Then
@@ -680,7 +686,7 @@ Public Sub mnusmspat_Click()
         sphno = GridView1[i, 7].Text
       Endif
       If sphno Then
-        sText = modSettings.ShowSettingFromFIle("Registration/PatientMessage")
+        sText = $patMessage
         If sText Then
           If $sType = "Registration List" Then
             sText = modReportVar.GetPatientSMSVAr(GridView1[i, 4].Text, sText)
@@ -695,24 +701,24 @@ Public Sub mnusmspat_Click()
           Endif
         Endif
       Endif
-
+      
       GridView1[i, 0].Picture = Picture["icons/unchecked.png"]
     Endif
   Next
-
+  
 End
 
 Public Sub mnusmsphy_Click()
-
+  
   Dim i As Integer
   Dim sText As String
   Dim sphno As String
-
+  
   For i = 0 To GridView1.Rows.Count - 1
     If GridView1[i, 0].Picture = Picture["icons/checked.png"] Then
       sphno = modGeneral.GetUserContact(GridView1[i, 15].Text)
       If sphno Then
-        sText = modSettings.ShowSettingFromFIle("Registration/PhysicianMessage")
+        sText = $clinMessage
         If sText Then
           If $sType = "Registration List" Then
             sText = modReportVar.GetDoctorSMSVAr(GridView1[i, 4].Text, sText)
@@ -727,15 +733,15 @@ Public Sub mnusmsphy_Click()
           Endif
         Endif
       Endif
-
+      
       GridView1[i, 0].Picture = Picture["icons/unchecked.png"]
     Endif
   Next
-
+  
 End
 
 Public Sub btnquotasum_Click()
-
+  
   Dim bokdone As Integer
   Dim bokplan As Integer
   Dim bokcan As Integer
@@ -743,7 +749,7 @@ Public Sub btnquotasum_Click()
   Dim regd As Integer
   Dim regcan As Integer
   Dim xx As String
-
+  
   If cmbselect.Text And If lbldate.Value And If cmbbillmode.Text Then
     bokplan = modConsult.GetPatientBooked("Planned", cmbselect.Text, lbldate.Value, cmbbillmode.Text, btnconsult.Tag)
     bokdone = modConsult.GetPatientBooked("Done", cmbselect.Text, lbldate.Value, cmbbillmode.Text, btnconsult.Tag)
@@ -759,15 +765,15 @@ Public Sub btnquotasum_Click()
     xx = xx & "<b>" & "Registered Cancelled: " & "</b>" & CStr(regcan)
     Message.Info(xx, ("OK"))
   Endif
-
+  
 End
 
 Public Sub btntxtsearch_Click()
-
+  
   Dim sql As String
   Dim xname As String[]
   Dim xFldList As String[]
-
+  
   xFldList = GetTableFIelds()
   xname = InputDoubleText(("Search Patient Name"), ["First Name", "SurName"], ["%", "%"], modBasic.$SurNameList)
   If xname Then
@@ -785,18 +791,18 @@ Public Sub btntxtsearch_Click()
       Endif
     Endif
     $rData = modDatabase.$myConn.Exec(sql, LCase(xname[0]), LCase(xname[1]))
-
+    
     $aMyFields = New String[]
     modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
     RezizeGrid()
   Endif
-
+  
 End
 
 Private Function GetReportVarBooking(bookid As String, $Line As String) As String
-
+  
   Dim res As Result
-
+  
   res = modDatabase.$myConn.Exec("select fldpatientval,fldptnamefir,fldptnamelast,fldptsex,fldptaddvill,fldptaddward,fldptadddist,fldptcontact,fldptguardian,fldrelation,fldptbirday,fldptadmindate,fldemail,fldptcode,fldconsultdate,fldadmitlocat,flduserid,fldbillingmode,fldcomment from tblpatientbook where fldbookingval=&1", bookid)
   If res.Available Then
     If (String.InStr($Line, "BookingNo") > 0) Then                                   ''
@@ -845,7 +851,7 @@ Private Function GetReportVarBooking(bookid As String, $Line As String) As Strin
     If (String.InStr($Line, "PatientDOB") > 0) Then                                   ''
       $Line = Replace($Line, "{PatientDOB}", modReportVar.GetDateTimeReport(res["fldptbirday"], gb.MediumDate))
     Endif
-
+    
     If (String.InStr($Line, "LastConsultDept") > 0) Then                                   ''
       $Line = Replace($Line, "{LastConsultDept}", res["fldadmitlocat"])
     Endif
@@ -868,34 +874,34 @@ Private Function GetReportVarBooking(bookid As String, $Line As String) As Strin
       $Line = Replace($Line, "{LastConsultTime}", modReportVar.GetDateTimeReport(res["fldconsultdate"], gb.MediumTime))
     Endif
   Endif
-
+  
   Return $Line
-
+  
 End
 
 Public Sub mnuregistration_Click()
-
+  
   If $sType = "Booking List" Then
     WalletBilling()
   Endif
-
+  
 End
 
 Private Sub WalletBilling()
-
+  
   Dim Row As Integer
   Dim res1 As Result
   Dim res2 As Result
-
+  
   Dim res As Result
   Dim xpatno As String
   Dim encid As String
   Dim autobil As Boolean
   Dim idLock As Boolean
-
+  
   Dim hForm As FmInvPrint
   Dim xtotamt As Float
-
+  
   For Row = 0 To GridView1.Rows.Count - 1
     If GridView1[Row, 17].Text = "Paid" Then
       res1 = modDatabase.$myConn.Exec("select fldpatientval,fldptnamefir,fldptnamelast,fldptsex,fldptaddvill,fldptaddward,fldptadddist,fldptcontact,fldptguardian,fldrelation,fldptbirday,fldptadmindate,fldemail,fldptcode,fldconsultdate,fldadmitlocat,flduserid,fldcomp,fldstate,flddisctype,fldbillingmode,fldorduserid,fldpayreference,fldcomment,fldremotemail from tblpatientbook where fldbookingval=&1", GridView1[Row, 4].Text)
@@ -904,7 +910,7 @@ Private Sub WalletBilling()
         xpatno = ""
         encid = ""
         xtotamt = 0
-
+        
         xtotamt = modBillings.GetAutoRegistCost(res1["fldadmitlocat"], res1["flddisctype"], res1["fldbillingmode"], "New")
         If xtotamt = res2["fldtransamt"] Then
           Inc Application.Busy
@@ -912,7 +918,7 @@ Private Sub WalletBilling()
           idLock = modBillLock.LockTableForID("Registration")
           If idLock = True Then
             modDatabase.$myConn.Begin
-
+            
             ''patient demographics
             If res1["fldpatientval"] Then
               xpatno = res1["fldpatientval"]
@@ -940,7 +946,7 @@ Private Sub WalletBilling()
                 res["fldcomment"] = ""
                 res["fldencrypt"] = modBasic.$PatInfoEncrypt
                 res["fldpassword"] = ""
-
+                
                 res["flduserid"] = modBasic.$lbluser
                 res["fldtime"] = Now()
                 res["fldupuser"] = ""
@@ -949,7 +955,7 @@ Private Sub WalletBilling()
                 res.Update()
               Endif
             Endif
-
+            
             ''Encounter
             If xpatno Then
               encid = modBillLock.EncounterIDValue()
@@ -965,7 +971,7 @@ Private Sub WalletBilling()
                 res["fldcomp"] = modBasic.$compID
                 res["fldvisit"] = modPatient.GetPatientHMISStattus(xpatno)
                 res["fldfollow"] = "New"
-
+                
                 res["fldcurrlocat"] = ""
                 res["flddoa"] = ""
                 res["flddod"] = ""
@@ -977,13 +983,13 @@ Private Sub WalletBilling()
                 res["fldvalidity"] = DateAdd(Now(), gb.Year, 1)
                 res["fldfollowdate"] = ""
                 res["fldreferto"] = ""
-
+                
                 res["fldregistid"] = modPatient.GetPatientHMISRegVal(xpatno)
                 res["fldadmitid"] = ""
                 res["xyz"] = False
                 res.Update()
               Endif
-
+              
               ''billing
               autobil = modBillings.InsertRegistrationBilling("Full", encid, res1["fldadmitlocat"], res1["flddisctype"], res1["fldbillingmode"], "New", res1["flduserid"])
               If modGeneral.GetCategoryFromDept(res1["fldadmitlocat"]) = "Consultation" Then
@@ -991,18 +997,18 @@ Private Sub WalletBilling()
               Else
                 modPatientSub.AddOPVisitData(encid, res1["fldadmitlocat"], res1["fldconsultdate"], res1["fldbillingmode"], "Paid Consultation")
               Endif
-
+              
               ''update booking table
               If GridView1[Row, 4].Text Then
                 modPatientSub.UpdateBookingTable(GridView1[Row, 4].Text, xpatno, encid)
                 modPatientSub.UpdateRemoteUserNo(modPatient.GetPatRemoteMailBooking(GridView1[Row, 4].Text), xpatno)
               Endif
-
+              
             Else
               modDatabase.$myConn.Rollback
             Endif 'check if patientno is present
             modDatabase.$myConn.Commit
-
+            
             modBillLock.ReleaseLockTable("Registration")
           Endif
           Dec Application.Busy
@@ -1011,23 +1017,23 @@ Private Sub WalletBilling()
             hForm.ShowModal
           Endif
         Endif
-
+        
       Endif
     Endif
   Next
-
+  
 End
 
 ''------------ JSON import -----------------
 Public Sub txtimport_Click()
-
+  
   If Dialog.OpenFile() Then Return
   txtimport.Text = Dialog.Path
-
+  
 End
 
 Public Sub btnimport_Click()
-
+  
   Dim xstr As String
   Dim xVar As Variant[]
   Dim aVar As Variant
@@ -1035,14 +1041,14 @@ Public Sub btnimport_Click()
   Dim xpatno As String
   Dim xbillmode As String
   Dim idLock As Boolean
-
+  
   If $sType = "Registration List" Then
     If txtimport.Text And If Exist(txtimport.Text) Then
       xstr = File.Load(txtimport.Text)
       If xstr Then
         Try xVar = JSON.Decode(xstr)
         If xVar And If xVar.Count Then
-
+          
           Inc Application.Busy
           For Each aVar In xVar
             sColl = New Collection
@@ -1051,7 +1057,7 @@ Public Sub btnimport_Click()
             If xbillmode Then
               idLock = modBillLock.LockTableForID("Registration")
               If idLock = True Then
-
+                
                 modDatabase.$myConn.Begin
                 If sColl["fldpatientval"] Then
                   If modPatient.SearchPatNo(sColl["fldpatientval"]) = False Then
@@ -1064,7 +1070,7 @@ Public Sub btnimport_Click()
                 Endif
                 SaveRegistrationData(xpatno, sColl, xbillmode)
                 modDatabase.$myConn.Commit
-
+                
                 modBillLock.ReleaseLockTable("Registration")
               Endif
             Endif
@@ -1072,12 +1078,12 @@ Public Sub btnimport_Click()
           Next
           Dec Application.Busy
           FillPatDateGrid()
-
+          
         Endif
       Endif
     Endif
   Endif
-
+  
 Catch
   modDatabase.$myConn.Rollback
   If idLock = True Then
@@ -1085,14 +1091,14 @@ Catch
   Endif
   Dec Application.Busy
   modHelpVariable.CreateErrorReport()
-
+  
 End
 
 Private Function RegisterFirstTime(sColl As Collection) As String
-
+  
   Dim res As Result
   Dim xpatno As String
-
+  
   xpatno = modBillLock.PatientNoValue()
   If xpatno Then
     res = modDatabase.$myConn.Create("tblpatientinfo")
@@ -1116,26 +1122,26 @@ Private Function RegisterFirstTime(sColl As Collection) As String
     res["fldcomment"] = ""
     res["fldencrypt"] = False
     res["fldpassword"] = ""
-
+    
     res["flduserid"] = modBasic.$lbluser
     res["fldtime"] = Now()
     res["fldupuser"] = ""
     res["flduptime"] = ""
     res["xyz"] = False
     res.Update()
-
+    
     Return xpatno
   Endif
-
+  
 End
 
 Private Sub SaveRegistrationData(sPatNo As String, sColl As Collection, sBillMode As String)
-
+  
   Dim res As Result
   Dim xencounter As String
   Dim xvisit As String
   Dim xconsdate As Date
-
+  
   If sPatNo Then
     xvisit = modPatient.GetPatientHMISStattus(sPatNo)
     xconsdate = modDate.GetDateFromJSON(sColl["fldconsulttime"])
@@ -1152,7 +1158,7 @@ Private Sub SaveRegistrationData(sPatNo As String, sColl As Collection, sBillMod
       res["fldcomp"] = modBasic.$compID
       res["fldvisit"] = xvisit
       res["fldfollow"] = sColl["fldfollow"]
-
+      
       res["fldcurrlocat"] = ""
       res["flddoa"] = ""
       res["flddod"] = ""
@@ -1164,7 +1170,7 @@ Private Sub SaveRegistrationData(sPatNo As String, sColl As Collection, sBillMod
       res["fldvalidity"] = DateAdd(Now(), gb.Year, 1)
       res["fldfollowdate"] = ""
       res["fldreferto"] = ""
-
+      
       res["fldregistid"] = modPatient.GetPatientHMISRegVal(sPatNo)
       res["fldadmitid"] = ""
       res["xyz"] = False
@@ -1172,5 +1178,5 @@ Private Sub SaveRegistrationData(sPatNo As String, sColl As Collection, sBillMod
     Endif
     modPatientSub.AddConsultData(xencounter, sColl["fldconsultname"], xconsdate, sBillMode, "Paid Consultation", sColl["flddocid"])
   Endif
-
+  
 End

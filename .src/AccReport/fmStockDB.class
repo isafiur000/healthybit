@@ -5,7 +5,7 @@ Private $aMyFields As String[]
 Private $strType As String
 
 Public Sub Form_Open()
-
+  
   modGeneralMain.ArrangeFormCentre(Me)
   If MMain.$WebReport = "Multiple" Then
     If modBasic.$HospCode Then
@@ -33,7 +33,7 @@ Public Sub Form_Open()
   rbany.Value = True
   chkcurrent.Value = True
   cmbroute.Text = "%"
-
+  
   Select modHelpVariable.$LogInCategory
     Case "Dispensar"
       cmblocat.Text = modBasic.$compID
@@ -51,34 +51,34 @@ Public Sub Form_Open()
       cmblocat.Text = "%"
   End Select
   txtname.SetFocus
-
+  
 End
 
 Public Sub Form_Close()
-
+  
   modGeneralMain.RecordFormExit(Me)
-
+  
 End
 
 Public Sub Form_Resize()
-
+  
   modGeneralMain.ShowSelectedFormMenu(Me)
-
+  
 End
 
 Public Sub cmblocation_Click()
-
+  
   cmbvalue.Clear()
   If cmblocation.Text Then
     cmbvalue.List = modDataRepo.GetRepoValueListType(cmblocation.Text)
   Endif
-
+  
 End
 
 Private Sub GetTotalValue()
-
+  
   Dim xtot As Float
-
+  
   xtot = 0
   If MMain.$WebReport = "Multiple" Then
     For Each $rData
@@ -88,12 +88,12 @@ Private Sub GetTotalValue()
     Next
   Endif
   txtamt.Value = Round(xtot, -2)
-
+  
 End
 
 'NOTE:TWO CON
 Private Sub ShowStockGrid()
-
+  
   Dim xstr As String
   Dim xorder As String
   Dim xstate As String
@@ -101,7 +101,7 @@ Private Sub ShowStockGrid()
   Dim xsearch As String
   Dim xroute As String
   Dim xgroup As String
-
+  
   If rbmed.Value = True Then
     If rbbrand.Value = True And If Len(Trim(txtname.Text)) Then
       xroute = " and fldstockid in(select fldbrandid from tblmedbrand where lower(fldbrand) like &1 and flddrug in(select flddrug From tbldrug where fldroute like &7))"
@@ -113,7 +113,7 @@ Private Sub ShowStockGrid()
   Else If rbextra.Value = True Then
     xroute = ""
   Endif
-
+  
   If rbany.Value = True Then
     xstate = ""
   Else If rbnear.Value = True Then
@@ -122,7 +122,7 @@ Private Sub ShowStockGrid()
     xstate = " and fldexpiry<=&5"
   Endif
   xnear = modMisc.GetExpiryMonth(cmbmonth.Text)
-
+  
   If chkabsent.Value = True Then
     xgroup = " GROUP BY fldstockid HAVING SUM(fldqty)=&3"
   Else If chkallstock.Value = True Then
@@ -131,13 +131,13 @@ Private Sub ShowStockGrid()
     xgroup = " GROUP BY fldstockid HAVING SUM(fldqty)>&3"
   Endif
   xorder = " ORDER BY fldstockid ASC"
-
+  
   If chkleftmain.Value Then
     xsearch = "%" & LCase(txtname.Text) & "%"
   Else
     xsearch = LCase(txtname.Text) & "%"
   Endif
-
+  
   If MMain.$WebReport = "Multiple" Then
     xstr = modDataRepo.GetWhereStringRepo(cmblocation.Text, cmbvalue.Text)
     If rbmed.Value = True Then
@@ -147,7 +147,7 @@ Private Sub ShowStockGrid()
     Else If rbextra.Value = True Then
       $rData = modDatabase.$syConn.Exec("select fldstockid,fldstockid,AVG(fldsellpr) as xsell,SUM(fldqty) as qty,fldstockid from tblentry where lower(fldstockid) like &1 and fldcomp like &2 and fldcategory=&4" & xstate & xstr & xgroup & xorder, xsearch, cmblocat.Text, 0, "Extra Items", Now(), DateAdd(Now(), gb.Month, xnear))
     Endif
-
+    
   Else
     If rbmed.Value = True Then
       If rbbrand.Value = True And If Len(Trim(txtname.Text)) Then
@@ -160,9 +160,9 @@ Private Sub ShowStockGrid()
     Else If rbextra.Value = True Then
       $rData = modDatabase.$syConn.Exec("select fldstockid,fldstockid,fldstockid,SUM(fldqty) as qty,fldstockid from tblentry where lower(fldstockid) like &1 and fldcomp like &2 and fldcategory=&4" & xstate & xroute & xgroup & xorder, xsearch, cmblocat.Text, 0, "Extra Items", Now(), DateAdd(Now(), gb.Month, xnear), cmbroute.Text)
     Endif
-
+    
   Endif
-
+  
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
   With GridView1
@@ -176,7 +176,7 @@ Private Sub ShowStockGrid()
     Endif
     .Columns[3].Width = 65 * modBasic.$AppWidthRatio
     .Columns[4].Width = 1
-
+    
     .Columns[0].Text = "Generic Name"
     If MMain.$WebReport = "Multiple" Then
       .Columns[1].Text = "Type"
@@ -188,11 +188,11 @@ Private Sub ShowStockGrid()
     .Columns[3].Text = "QTY"
   End With
   txtamt.Value = 0
-
+  
 End
 
 Public Sub GridView1_Data(Row As Integer, Column As Integer)
-
+  
   $rData.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView1, Row)
   If Column = 1 Then
@@ -214,52 +214,52 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   Endif
   GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
   GridView1.Data.WordWrap = True
-
+  
 End
 
 Public Sub rbmed_Click()
-
+  
   $strType = "Medicines"
   cmbroute.List = ["%", "oral", "liquid", "fluid", "injection", "resp", "topical", "eye/ear", "anal/vaginal"]
-
+  
 End
 
 Public Sub rbsurg_Click()
-
+  
   $strType = "Surgicals"
   cmbroute.List = ["%", "suture", "msurg", "ortho"]
-
+  
 End
 
 Public Sub rbextra_Click()
-
+  
   $strType = "Extra Items"
   cmbroute.List = ["%", "extra"]
-
+  
 End
 
 Public Sub btnrefresh_Click()
-
+  
   ShowStockGrid()
   GetTotalValue()
-
+  
 End
 
 Public Sub txtname_Change()
-
+  
   ShowStockGrid()
-
+  
 End
 
 Public Sub GridView1_Click()
-
+  
   Dim hForm As FRequest
   Dim sql As String
   Dim res As Result
   Dim xitem As String
   Dim xstate As String
   Dim xnear As Integer
-
+  
   If rbany.Value = True Then
     xstate = ""
   Else If rbnear.Value = True Then
@@ -279,42 +279,42 @@ Public Sub GridView1_Click()
     hForm = New FRequest(res, xitem, "StockDB", False)
     hForm.ShowModal
   Endif
-
+  
 End
 
 Public Sub btnfullrep_Click()
-
+  
   modCHTMLReport.ExportGridToHTML(GridView1, $strType, "Total Quantity")
-
+  
 End
 
 Public Sub btninvent_Click()
-
+  
   Dim xPath As String
-
+  
   Inc Application.Busy
   xPath = modHTMLStock.ShowTotalInventory($strType, cmblocat.Text, cmblocation.Text, cmbvalue.Text)
   Dec Application.Busy
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
-
+  
 End
 
 Public Sub txtname_KeyPress()
-
+  
   modGeneralMain.InputTextKeyOnly()
-
+  
 End
 
 Public Sub rbnear_Click()
-
+  
   cmbmonth.Text = "3 Month"
-
+  
 End
 
 Public Sub Form_KeyRelease()
-
+  
   If Key.Code = Key.Esc Then
     Me.Close()
   Endif
-
+  
 End

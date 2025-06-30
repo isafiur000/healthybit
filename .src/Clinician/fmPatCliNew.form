@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,122,87)
+  MoveScaled(0,0,122,109)
   Tag = "Clinician Form"
   Text = ("Clinician Form")
   { mnufile Menu
@@ -399,7 +399,7 @@
     }
   }
   { Panel1 Panel
-    MoveScaled(0,0,121,83)
+    MoveScaled(0,0,121,101)
     { Frame1 Frame
       MoveScaled(0,0,120,14)
       Text = ("Patient Profile")
@@ -561,7 +561,7 @@
           Arrangement = Arrange.Vertical
           Count = 2
           Index = 0
-          Text = ("Chief Complaints")
+          Text = ("Chief Complaints [F3]")
           { Panel13 Panel
             MoveScaled(0,0,60,3)
             Arrangement = Arrange.Horizontal
@@ -606,7 +606,7 @@
             Ignore = True
           }
           Index = 1
-          Text = ("General Complaints")
+          Text = ("General Complaints [F4]")
           { Panel10 Panel
             MoveScaled(0,0,60,3)
             { dcthelpgencomp ToolButton
@@ -857,13 +857,13 @@
       MoveScaled(1,52,118,1)
     }
     { TabPanel1 TabPanel
-      MoveScaled(1,54,119,26)
+      MoveScaled(1,55,119,45)
       Enabled = False
       Expand = True
       Arrangement = Arrange.Horizontal
-      Count = 4
+      Count = 5
       Index = 0
-      Text = ("History & Findings")
+      Text = ("History & Findings [F6]")
       { Panel3 Panel
         MoveScaled(0,0,119,19)
         Expand = True
@@ -901,7 +901,7 @@
             { Label4 Label
               MoveScaled(0,0.625,20,3)
               Border = Border.Plain
-              Text = ("History of Illness [F3]")
+              Text = ("History of Illness")
             }
           }
           { txthistory TextHTML
@@ -970,7 +970,7 @@
             { Label9 Label
               MoveScaled(0,0.625,12,3)
               Border = Border.Plain
-              Text = ("Findings [F4]")
+              Text = ("Findings ")
             }
             { btntriage ToolButton
               MoveScaled(54,0.625,3,3)
@@ -997,7 +997,14 @@
         }
       }
       Index = 1
-      Text = ("Advice & Planning")
+      Text = ("Test Results [F7]")
+      { pnlabexams Panel
+        MoveScaled(2,1,78,27)
+        Expand = True
+        Arrangement = Arrange.Vertical
+      }
+      Index = 2
+      Text = ("Advice & Planning [F8]")
       { Panel22 Panel
         MoveScaled(0,0,121,19)
         Expand = True
@@ -1099,8 +1106,8 @@
           }
         }
       }
-      Index = 2
-      Text = ("Telemedicine")
+      Index = 3
+      Text = ("Telemedicine [F9]")
       { pnltelemed Panel
         MoveScaled(0,0,121,19)
         Enabled = False
@@ -1225,8 +1232,13 @@
           }
         }
       }
-      Index = 3
-      Text = ("History")
+      Index = 4
+      Text = ("History [F10]")
+      { pnlhistory Panel
+        MoveScaled(1,1,83,26)
+        Expand = True
+        Arrangement = Arrange.Vertical
+      }
       Index = 0
     }
   }

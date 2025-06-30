@@ -10,16 +10,16 @@ Public $LabIDTestMethod As Collection
 
 ''------------------------------------- Procedure by patient ----------------------------------------------------------
 Public Function UniLabValueList(encid As String, sTest As String) As String[]
-
+  
   Dim res As Result
   Dim xx As String[]
   Dim rex As Result
-
+  
   xx = New String[]
   rex = modDatabase.$syConn.Exec("select fldpatlabtest,fldpatlabsubtest from tblfisclosing where (fldstate=&1 or fldstate IS NULL)", "Active")
   If rex.Available Then
     For Each rex
-
+      
       res = modDatabase.$myConn.Exec("select fldtime_sample,fldreportquali from " & rex["fldpatlabtest"] & " where fldencounterval=&1 and fldtestid=&2", encid, sTest)
       If res.Available Then
         For Each res
@@ -28,10 +28,10 @@ Public Function UniLabValueList(encid As String, sTest As String) As String[]
           Endif
         Next
       Endif
-
+      
     Next
   Endif
-
+  
   res = modDatabase.$myConn.Exec("select fldtime_sample,fldreportquali from tblpatlabtest where fldencounterval=&1 and fldtestid=&2", encid, sTest)
   If res.Available Then
     For Each res
@@ -40,16 +40,16 @@ Public Function UniLabValueList(encid As String, sTest As String) As String[]
       Endif
     Next
   Endif
-
+  
   Return xx
-
+  
 End
 
 Public Function PaientAllTestNameArray(encid As String, Optional sTable As String) As String[]
-
+  
   Dim res As Result
   Dim xx As String[]
-
+  
   If sTable Then
     res = modDatabase.$myConn.Exec("select distinct(fldtestid) as col from " & sTable & " where fldencounterval=&1 and (fldstatus=&2 or fldstatus=&3) and flvisible=&4", encid, "Reported", "Verified", "Visible")
   Else
@@ -60,15 +60,15 @@ Public Function PaientAllTestNameArray(encid As String, Optional sTable As Strin
     xx.Sort()
   Endif
   Return xx
-
+  
 End
 
 Public Sub GetQualiTestListByPatient(encid As String, Optional sTable As String) As String[]
-
+  
   Dim sql As String
   Dim res As Result
   Dim xx As String[]
-
+  
   If sTable Then
     sql = "select distinct(fldtestid) as col from " & sTable & " where fldencounterval=&1 and fldtest_type=&2 and flvisible=&3 and (fldstatus=&4 or fldstatus=&5)"
   Else
@@ -76,17 +76,17 @@ Public Sub GetQualiTestListByPatient(encid As String, Optional sTable As String)
   Endif
   res = modDatabase.$myConn.Exec(sql, encid, "Qualitative", "Visible", "Reported", "Verified")
   xx = modControlSub.GetDirectFillresult(res)
-
+  
   Return xx
-
+  
 End
 
 Public Sub GetQuantiTestListByPatient(encid As String, Optional sTable As String) As String[]
-
+  
   Dim sql As String
   Dim res As Result
   Dim xx As String[]
-
+  
   If sTable Then
     sql = "select distinct(fldtestid) as col from " & sTable & " where fldencounterval=&1 and fldtest_type=&2 and flvisible=&3 and (fldstatus=&4 or fldstatus=&5)"
   Else
@@ -94,16 +94,16 @@ Public Sub GetQuantiTestListByPatient(encid As String, Optional sTable As String
   Endif
   res = modDatabase.$myConn.Exec(sql, encid, "Quantitative", "Visible", "Reported", "Verified")
   xx = modControlSub.GetDirectFillresult(res)
-
+  
   Return xx
-
+  
 End
 
 Public Function AllowSampleID(encid As String, sLabNo As String) As Boolean
-
+  
   Dim res As Result
   Dim xval As Boolean
-
+  
   res = modDatabase.$myConn.Exec("select distinct(fldencounterval) as col from tblpatlabtest where fldsampleid=&1", sLabNo)
   If res.Available Then
     res.MoveLast
@@ -116,14 +116,14 @@ Public Function AllowSampleID(encid As String, sLabNo As String) As Boolean
     xval = True
   Endif
   Return xval
-
+  
 End
 
 Public Function GetSampleTimeFromLabID(id As Long, Optional sTable As String) As Date
-
+  
   Dim res As Result
   Dim xx As Date
-
+  
   If sTable Then
     res = modDatabase.$myConn.Exec("select fldtime_sample from " & sTable & " where fldid=&1", id)
   Else
@@ -139,14 +139,14 @@ Public Function GetSampleTimeFromLabID(id As Long, Optional sTable As String) As
     xx = ""
   Endif
   Return xx
-
+  
 End
 
 Public Function GetEncIDFromLabID(id As Long, Optional sTable As String) As String
-
+  
   Dim res As Result
   Dim xx As String
-
+  
   If sTable Then
     res = modDatabase.$myConn.Exec("select fldencounterval from " & sTable & " where fldid=&1", id)
   Else
@@ -161,17 +161,17 @@ Public Function GetEncIDFromLabID(id As Long, Optional sTable As String) As Stri
   Else
     xx = ""
   Endif
-
+  
   Return xx
-
+  
 End
 
 Public Function GetTestnameFromTestID(id As Long, Optional sTable As String, Optional encid As String) As String
-
+  
   Dim res As Result
   Dim xx As String
   Dim xappend As String
-
+  
   If encid Then
     If sTable Then
       res = modDatabase.$myConn.Exec("select fldtestid,fldsampletype from " & sTable & " where fldid=&1 and fldencounterval=&2", id, encid)
@@ -199,16 +199,16 @@ Public Function GetTestnameFromTestID(id As Long, Optional sTable As String, Opt
   Else
     xx = ""
   Endif
-
+  
   Return xx
-
+  
 End
 
 Public Function GetTestMethodLabID(id As Long, Optional sTable As String) As String
-
+  
   Dim res As Result
   Dim xx As String
-
+  
   If sTable Then
     res = modDatabase.$myConn.Exec("select fldmethod from " & sTable & " where fldid=&1", id)
   Else
@@ -226,16 +226,16 @@ Public Function GetTestMethodLabID(id As Long, Optional sTable As String) As Str
   Else
     xx = ""
   Endif
-
+  
   Return xx
-
+  
 End
 
 Public Function GetEncounterFromSampleID(txtsampleid As String, Optional sTable As String) As String
-
+  
   Dim res As Result
   Dim encid As String
-
+  
   If sTable Then
     res = modDatabase.$myConn.Exec("select fldencounterval from " & sTable & " where fldsampleid=&1", txtsampleid)
   Else
@@ -249,27 +249,27 @@ Public Function GetEncounterFromSampleID(txtsampleid As String, Optional sTable 
       encid = ""
     Endif
   Endif
-
+  
   Return encid
-
+  
 End
 
 ''--------------------- Reference Ranges ------------------------------
 Public Function LabBothLimitValue(strTest As String, encid As String, strUnit As String, Optional sMethod As String) As Float[]
-
+  
   Dim sql As String
   Dim rs As Result
   Dim minLimit As Float
   Dim maxLimit As Float
   Dim sqstr As String
   Dim xval As Float[]
-
+  
   If Not sMethod Or If sMethod = "Regular" Then
     sqstr = ""
   Else
     sqstr = " and fldmethod=&6"
   Endif
-
+  
   If strUnit = "Metric" Then
     sql = "select fldmetlow as xlow,fldmethigh as xhigh from tbltestlimit where fldtestid=&1 and (fldptsex=&2 or fldptsex=&3) and (fldagegroup=&4 or fldagegroup=&5)" & sqstr
   Else If strUnit = "SI" Then
@@ -292,22 +292,22 @@ Public Function LabBothLimitValue(strTest As String, encid As String, strUnit As
     minLimit = 0
     maxLimit = 0
   Endif
-
+  
   xval = [minLimit, maxLimit]
   Return xval
-
+  
 End
 
 ''get as array (use minimal)
 Public Function GetTestBothLimits(id As Long, strUnit As String, Optional sTable As String) As Float[]
-
+  
   Dim res As Result
   Dim sql As String
   Dim LwLimit As Float
   Dim UpLimit As Float
   Dim xlimit As Float[]
   Dim xval As Float[]
-
+  
   If sTable Then
     sql = "select fldencounterval,fldtestid,fldmethod from " & sTable & " where fldid=&1 and fldtest_type=&2"
   Else
@@ -328,22 +328,22 @@ Public Function GetTestBothLimits(id As Long, strUnit As String, Optional sTable
     LwLimit = 0
     UpLimit = 0
   Endif
-
+  
   xval = [LwLimit, UpLimit]
   Return xval
-
+  
 End
 
 ''get for report
 Public Function GetTestLimitSrting(id As Long, strUnit As String, Optional sTable As String, Optional encid As String) As String
-
+  
   Dim xx As String
   Dim res As Result
   Dim xmax As Float
   Dim xmin As Float
   Dim xlimit As Float[]
   Dim xunit As String
-
+  
   If encid Then
     If sTable Then
       res = modDatabase.$myConn.Exec("select fldencounterval,fldtestid,fldtest_type,fldmethod from " & sTable & " where fldid=&1 and fldencounterval=&2", id, encid)
@@ -387,29 +387,29 @@ Public Function GetTestLimitSrting(id As Long, strUnit As String, Optional sTabl
         xx = modFixLab.GetLabQualiTestTextReference(GetTestnameFromTestID(id, "tblpatlabtest", res["fldencounterval"]))   ''only for text reference
       Endif
     Endif
-
+    
   Else
     xx = ""
   Endif
-
+  
   Return xx
-
+  
 End
 
 ''---------------------- Normal Value ------------------------------------
 Public Function LabNormalValue(strTest As String, encid As String, strUnit As String, Optional sMethod As String) As Float
-
+  
   Dim sql As String
   Dim rs As Result
   Dim NormalLimit As Float
   Dim sqstr As String
-
+  
   If Not sMethod Or If sMethod = "Regular" Then
     sqstr = ""
   Else
     sqstr = " and fldmethod=&6"
   Endif
-
+  
   If strUnit = "Metric" Then
     sql = "select fldmetnormal as xnormal from tbltestlimit where fldtestid=&1 and (fldptsex=&2 or fldptsex=&3) and (fldagegroup=&4 or fldagegroup=&5)" & sqstr
   Else If strUnit = "SI" Then
@@ -426,14 +426,14 @@ Public Function LabNormalValue(strTest As String, encid As String, strUnit As St
   Else
     NormalLimit = 0
   Endif
-
+  
   Return NormalLimit
-
+  
 End
 
 ''--------------------------- Acceptable Range --------------------------------
 Public Function GetLabAcceptableRange(strTest As String, encid As String, strUnit As String, Optional sMethod As String) As Float[]
-
+  
   Dim sql As String
   Dim rs As Result
   Dim LowerLimit As Float
@@ -441,13 +441,13 @@ Public Function GetLabAcceptableRange(strTest As String, encid As String, strUni
   Dim sqstr As String
   Dim xval As Float[]
   Dim xconv As Float
-
+  
   If Not sMethod Or If sMethod = "Regular" Then
     sqstr = ""
   Else
     sqstr = " and fldmethod=&6"
   Endif
-
+  
   sql = "select fldminimum,fldmaximum from tbltestlimit where fldtestid=&1 and (fldptsex=&2 or fldptsex=&3) and (fldagegroup=&4 or fldagegroup=&5)" & sqstr
   rs = modDatabase.$medConn.Exec(sql, strTest, modPatient.GetPatientSex(encid), "Both Sex", modPatient.GetAgeGroupFIxed(encid, Now()), "All Age", sMethod)
   If rs.Available = True Then
@@ -466,7 +466,7 @@ Public Function GetLabAcceptableRange(strTest As String, encid As String, strUni
     LowerLimit = 0
     UpperLimit = 0
   Endif
-
+  
   If strUnit = "Metric" Then
     xval = [LowerLimit, UpperLimit]
   Else If strUnit = "SI" Then
@@ -478,17 +478,17 @@ Public Function GetLabAcceptableRange(strTest As String, encid As String, strUni
     xval = [LowerLimit * xconv, UpperLimit * xconv]
   Endif
   Return xval
-
+  
 End
 
 Public Function GetLabAcceptableLimits(id As Variant, strUnit As String, Optional sTable As String) As Float[]
-
+  
   Dim res As Result
   Dim LwLimit As Float
   Dim UpLimit As Float
   Dim xlimit As Float[]
   Dim xval As Float[]
-
+  
   If sTable Then
     res = modDatabase.$myConn.Exec("select fldencounterval,fldtestid,fldmethod from " & sTable & " where fldid=&1 and fldtest_type=&2", id, "Quantitative")
   Else
@@ -509,25 +509,25 @@ Public Function GetLabAcceptableLimits(id As Variant, strUnit As String, Optiona
     UpLimit = 0
   Endif
   xval = [LwLimit, UpLimit]
-
+  
   Return xval
-
+  
 End
 
 ''------------------------ Sensitivity/Specificity ------------------
 Private Function LabQuantiTableValue(sField As String, strTest As String, encid As String, Optional sMethod As String) As Float
-
+  
   Dim sql As String
   Dim rs As Result
   Dim svalue As Float
   Dim sqstr As String
-
+  
   If Not sMethod Or If sMethod = "Regular" Then
     sqstr = ""
   Else
     sqstr = " and fldmethod=&6"
   Endif
-
+  
   sql = Subst("select &1 as xfld from tbltestlimit", sField) & " where fldtestid=&1 and (fldptsex=&2 or fldptsex=&3) and (fldagegroup=&4 or fldagegroup=&5)" & sqstr
   rs = modDatabase.$medConn.Exec(sql, strTest, modPatient.GetPatientSex(encid), "Both Sex", modPatient.GetAgeGroupFIxed(encid, Now()), "All Age", sMethod)
   If rs.Available = True Then
@@ -540,21 +540,21 @@ Private Function LabQuantiTableValue(sField As String, strTest As String, encid 
   Else
     svalue = 0
   Endif
-
+  
   If svalue = 0 Then
     svalue = modFixLab.LabFieldValue(sField, strTest)
   Endif
-
+  
   Return svalue
-
+  
 End
 
 Public Function GetTestSensiSpecArray(id As Long, Optional sTable As String) As Float[]
-
+  
   Dim xxx As Float[]
   Dim res As Result
   Dim sql As String
-
+  
   xxx = New Float[]
   If sTable Then
     sql = "select fldencounterval,fldtestid,fldmethod,fldtest_type from " & sTable & " where fldid=&1"
@@ -571,32 +571,32 @@ Public Function GetTestSensiSpecArray(id As Long, Optional sTable As String) As 
         xxx.Add(LabQuantiTableValue("fldsensitivity", res["fldtestid"], res["fldencounterval"]))
         xxx.Add(LabQuantiTableValue("fldspecificity", res["fldtestid"], res["fldencounterval"]))
       Endif
-
+      
     Else
       xxx.Add(modFixLab.LabFieldValue("fldsensitivity", res["fldtestid"]))
       xxx.Add(modFixLab.LabFieldValue("fldspecificity", res["fldtestid"]))
-
+      
     Endif
   Endif
-
+  
   Return xxx
-
+  
 End
 
 ''----------------------- Conversion Factor -----------------------------
 Public Function LabConversionValue(encid As String, strTest As String, Optional sMethod As String) As Float
-
+  
   Dim ssl As String
   Dim rs As Result
   Dim ConvFactor As Float
   Dim sqstr As String
-
+  
   If Not sMethod Or If sMethod = "Regular" Then
     sqstr = ""
   Else
     sqstr = " and fldmethod=&6"
   Endif
-
+  
   ssl = "select fldconvfactor from tbltestlimit where fldtestid=&1 and (fldptsex=&2 or fldptsex=&3) and (fldagegroup=&4 or fldagegroup=&5)" & sqstr
   rs = modDatabase.$medConn.Exec(ssl, strTest, modPatient.GetPatientSex(encid), "Both Sex", modPatient.GetAgeGroupFIxed(encid, Now()), "All Age", sMethod)
   If rs.Available = True Then
@@ -609,25 +609,25 @@ Public Function LabConversionValue(encid As String, strTest As String, Optional 
   Else
     ConvFactor = 1
   Endif
-
+  
   Return ConvFactor
-
+  
 End
 
 ''----------------------------------- Test Unit ---------------------------------------
 Public Function LabTestUnit(strTest As String, encid As String, strUnit As String, Optional sMethod As String) As String
-
+  
   Dim ssl As String
   Dim rs As Result
   Dim LabUnit As String
   Dim sqstr As String
-
+  
   If Not sMethod Or If sMethod = "Regular" Then
     sqstr = ""
   Else
     sqstr = " and fldmethod=&6"
   Endif
-
+  
   If strUnit = "Metric" Then
     ssl = "select fldmetunit as xunit from tbltestlimit where fldtestid=&1 and (fldptsex=&2 or fldptsex=&3) and (fldagegroup=&4 or fldagegroup=&5)" & sqstr
   Else If strUnit = "SI" Then
@@ -644,16 +644,16 @@ Public Function LabTestUnit(strTest As String, encid As String, strUnit As Strin
   Else
     LabUnit = ""
   Endif
-
+  
   Return LabUnit
-
+  
 End
 
 Public Function GetTestUnitSrting(id As Long, strUnit As String, Optional sTable As String) As String
-
+  
   Dim res As Result
   Dim xval As String
-
+  
   If sTable Then
     res = modDatabase.$myConn.Exec("select fldencounterval,fldtestid,fldtest_type,fldmethod from " & sTable & " where fldid=&1", id)
   Else
@@ -672,16 +672,16 @@ Public Function GetTestUnitSrting(id As Long, strUnit As String, Optional sTable
   Else
     xval = ""
   Endif
-
+  
   Return xval
-
+  
 End
 
 ''------------------------------------ OBSERVATIONS -----------------------------------
 Public Function GetLabQuantiConvert(sValue As Float, sUnit As String, ConvFactor As Float, TargetUnit As String) As Float
-
+  
   Dim metr As Float
-
+  
   If TargetUnit = "Metric" Then
     If sUnit = "Metric" Then
       metr = sValue
@@ -696,13 +696,13 @@ Public Function GetLabQuantiConvert(sValue As Float, sUnit As String, ConvFactor
     Endif
   Endif
   Return metr
-
+  
 End
 
 Public Function GetLabQuantiValueAll(encid As String, testName As String, sValue As Float, sUnit As String, sMethod As String, TargetUnit As String) As Float
-
+  
   Dim metr As Float
-
+  
   If TargetUnit = "Metric" Then
     If sUnit = "Metric" Then
       metr = sValue
@@ -725,15 +725,15 @@ Public Function GetLabQuantiValueAll(encid As String, testName As String, sValue
     Endif
   Endif
   Return metr
-
+  
 End
 
 Public Function GetTestQuantiValueLabID(encid As String, id As Long, strUnit As String, Optional sTable As String) As Float
-
+  
   Dim res As Result
   Dim sql As String
   Dim LabVal As Float
-
+  
   If sTable Then
     sql = "select fldencounterval,fldtestid,fldreportquanti,fldtestunit,fldmethod from " & sTable & " where fldid=&1 and fldencounterval=&2"
   Else
@@ -746,13 +746,13 @@ Public Function GetTestQuantiValueLabID(encid As String, id As Long, strUnit As 
     LabVal = 0
   Endif
   Return LabVal
-
+  
 End
 
 ''--------------Observation in RichText Format
 ''minimal view for lab reports
 Public Function GetLabTestValueString(id As Long, strUnit As String, sReport As Boolean, encid As String, Optional sTable As String) As String
-
+  
   Dim xx As String
   Dim res As Result
   Dim xval As String
@@ -760,13 +760,13 @@ Public Function GetLabTestValueString(id As Long, strUnit As String, sReport As 
   Dim xType As String
   Dim xcaption As String
   Dim CParam As CLabParam
-
+  
   Dim newval As String
   Dim accval As Float[]
   Dim xunit As String
   Dim xconv As Float
   Dim $sTable As String
-
+  
   If sTable Then
     $sTable = sTable
   Else
@@ -782,7 +782,7 @@ Public Function GetLabTestValueString(id As Long, strUnit As String, sReport As 
     If modBasic.$SuperUser = False And If xcaption = "$Encryption" Then
       xx = "****"
     Else
-
+      
       If res["fldtest_type"] = "Quantitative" Then
         If res["fldmethod"] Then
           CParam = New CLabParam(res["fldencounterval"], res["fldtestid"], strUnit, res["fldmethod"])
@@ -820,7 +820,7 @@ Public Function GetLabTestValueString(id As Long, strUnit As String, sReport As 
             xval = ""
           Endif
         Endif
-
+        
       Else
         If res["fldreportquali"] Then
           xType = modAllExam.GetVariableOptionType("Test", res["fldtestid"])
@@ -849,13 +849,13 @@ Public Function GetLabTestValueString(id As Long, strUnit As String, sReport As 
           Else
             xval = Trim(res["fldreportquali"])
           Endif
-
+          
         Else
           xval = ""
         Endif
-
+        
       Endif
-
+      
       If xval And If sReport = True Then
         If res["fldabnormal"] = True And If modBasic.$AbnFormat Then
           xx = modString.GetAbnormalFormattedString(xval)
@@ -865,26 +865,26 @@ Public Function GetLabTestValueString(id As Long, strUnit As String, sReport As 
       Else
         xx = xval
       Endif
-
+      
     Endif
   Else
     xx = ""
   Endif
-
+  
   Return xx
-
+  
 End
 
 ''only for Report Printing (from technician)
 Public Function GetLabTestValueGridString(encid As String, sIndex As Variant, strUnit As String, flag As Boolean, Optional sTable As String) As String
-
+  
   Dim xx As String
   Dim xval As Float
   Dim newval As String
   Dim res As Result
   Dim sql As String
   Dim CParam As CLabParam
-
+  
   Dim accval As Float[]
   Dim astr As String
   Dim xType As String
@@ -892,7 +892,7 @@ Public Function GetLabTestValueGridString(encid As String, sIndex As Variant, st
   Dim xconv As Float
   Dim xcaption As String
   Dim xTable As String
-
+  
   If sTable Then
     xTable = sTable
   Else
@@ -909,7 +909,7 @@ Public Function GetLabTestValueGridString(encid As String, sIndex As Variant, st
     If modBasic.$SuperUser = False And If xcaption = "$Encryption" Then
       astr = "****"
     Else
-
+      
       If res["fldtest_type"] = "Quantitative" Then
         If res["fldmethod"] Then
           CParam = New CLabParam(res["fldencounterval"], res["fldtestid"], strUnit, res["fldmethod"])
@@ -967,7 +967,7 @@ Public Function GetLabTestValueGridString(encid As String, sIndex As Variant, st
           xx = ""
         Endif
       Endif
-
+      
       If xx And If flag = True Then
         If res["fldabnormal"] = True And If modBasic.$AbnFormat Then
           astr = modString.GetAbnormalFormattedString(xx)
@@ -977,19 +977,19 @@ Public Function GetLabTestValueGridString(encid As String, sIndex As Variant, st
       Else
         astr = xx
       Endif
-
+      
     Endif
   Else
     astr = ""
   Endif
-
+  
   Return astr
-
+  
 End
 
 ''only to view (with full subtests)
 Public Function GetLabTestValueSubString(id As Variant, strUnit As String, fullView As Boolean, Optional sTableMain As String, Optional sTableSub As String) As String
-
+  
   Dim res As Result
   Dim res1 As Result
   Dim sql As String
@@ -1000,7 +1000,7 @@ Public Function GetLabTestValueSubString(id As Variant, strUnit As String, fullV
   Dim xcaption As String
   Dim xTableMain As String
   Dim xTableSub As String
-
+  
   If sTableMain Then
     xTableMain = sTableMain
   Else
@@ -1022,7 +1022,7 @@ Public Function GetLabTestValueSubString(id As Variant, strUnit As String, fullV
     If modBasic.$SuperUser = False And If xcaption = "$Encryption" Then
       xx = "****"
     Else
-
+      
       If res["fldtest_type"] = "Quantitative" Then
         xval = modLabTest.GetLabQuantiValueAll(res["fldencounterval"], res["fldtestid"], res["fldreportquanti"], res["fldtestunit"], res["fldmethod"], strUnit)
         If modBasic.$QuantiUnitEnable = "Disable" Then
@@ -1034,7 +1034,7 @@ Public Function GetLabTestValueSubString(id As Variant, strUnit As String, fullV
             xx = CStr(xval) & Space(1) & LabTestUnit(res["fldtestid"], res["fldencounterval"], strUnit)
           Endif
         Endif
-
+        
       Else
         If res["fldreportquali"] Then
           xType = modAllExam.GetVariableOptionType("Test", res["fldtestid"])
@@ -1054,7 +1054,7 @@ Public Function GetLabTestValueSubString(id As Variant, strUnit As String, fullV
         Else
           xx = ""
         Endif
-
+        
         xquali = New String[]
         If fullView = True Then
           If MMain.$WebEntry = True Then ''remoteoptimized
@@ -1091,7 +1091,7 @@ Public Function GetLabTestValueSubString(id As Variant, strUnit As String, fullV
                 Endif
               Endif
             Endif
-
+            
           Else
             res1 = modDatabase.$myConn.Exec("select fldsubtest,fldreport,fldid,fldtestid,fldtanswertype,fldindex from " & xTableSub & " where fldtestid=&1 and fldencounterval=&2", res["fldid"], res["fldencounterval"])
             If res1.Available = True Then
@@ -1126,30 +1126,30 @@ Public Function GetLabTestValueSubString(id As Variant, strUnit As String, fullV
                 Endif
               Endif
             Endif
-
+            
           Endif
         Endif
-
+        
       Endif
-
+      
     Endif
   Else
     xx = ""
   Endif
-
+  
   Return xx
-
+  
 End
 
 Public Function GetLabotarotyValuePosition(encid As String, sTest As String, strUnit As String, sType As String, Optional sTable As String, Optional sTableSub As String) As String[]
-
+  
   Dim res As Result
   Dim sql As String
   Dim xx As String[]
   Dim xcaption As String
   Dim xTable As String
   Dim xTabSub As String
-
+  
   If sTable Then
     xTable = sTable
   Else
@@ -1168,7 +1168,7 @@ Public Function GetLabotarotyValuePosition(encid As String, sTest As String, str
     xx.Add("****")
     xx.Add("****")
   Else
-
+    
     If MMain.$WebEntry = True Then ''remoteoptimized
       sql = "select fldrepoid,fldtime_sample,fldtestid,fldsampletype,flduserid_report from " & xTable & " where fldencounterval=&1 and fldtestid=&2 and (fldstatus=&3 or fldstatus=&4) and flvisible=&5"
     Else
@@ -1199,21 +1199,21 @@ Public Function GetLabotarotyValuePosition(encid As String, sTest As String, str
       xx.Add("")
       xx.Add("")
     Endif
-
+    
   Endif
   Return xx
-
+  
 End
 
 ''------------ Nest Level table data ------------------------
 Public Function GetLabSubTestQuali(encid As String, sTestName As String, ptTestid As Long, Optional sTableSub As String) As String
-
+  
   Dim res As Result
   Dim xx As String[]
   Dim xquali As String
   Dim xType As String
   Dim xtable As String
-
+  
   xx = New String[]
   If sTableSub Then
     res = modDatabase.$myConn.Exec("select fldsubtest,fldreport,fldid,fldtestid,fldtanswertype,fldindex from " & sTableSub & " where fldtestid=&1 and fldsave=&2 and fldencounterval=&3", ptTestid, True, encid)
@@ -1247,7 +1247,7 @@ Public Function GetLabSubTestQuali(encid As String, sTestName As String, ptTesti
         Endif
       Endif
     Next
-
+    
     If xx.Count Then
       If xType = "Left/Right Components" Then
         xtable = modString.GetLeftRightTableHeader(True) & xx.Join(gb.NewLine)
@@ -1257,23 +1257,23 @@ Public Function GetLabSubTestQuali(encid As String, sTestName As String, ptTesti
     Else
       xtable = ""
     Endif
-
+    
   Endif
-
+  
   Return xtable
-
+  
 End
 
 Public Function GetSubSensiTableReportString(sType As String, testid As Long, subtestid As Long, sIndex As String, sTable As Boolean, Optional sHospCode As String) As String
-
+  
   Dim res As Result
   Dim xx As String[]
   Dim xstr As String[]
   Dim xval As String
-
+  
   Dim aa As String[]
   Dim bb As String[]
-
+  
   Dim arDisk As String[]
   Dim arMIC As String[]
   Dim arETest As String[]
@@ -1281,7 +1281,7 @@ Public Function GetSubSensiTableReportString(sType As String, testid As Long, su
   Dim bsx As String
   Dim asx As String
   Dim alst As String[]
-
+  
   If sHospCode Then
     If sIndex Then
       res = modDatabase.$myConn.Exec("select fldvariable,fldvalue,fldcolm2 from tblpatlabsubtable where fldtestid=&1 and fldsubtestid=&2 and fldindex=&3 and fldvalue<>&4 and fldhospcode=&5 ORDER BY fldcolm2 DESC", testid, subtestid, sIndex, "Cancelled", sHospCode)
@@ -1295,11 +1295,11 @@ Public Function GetSubSensiTableReportString(sType As String, testid As Long, su
       res = modDatabase.$myConn.Exec("select fldvariable,fldvalue,fldcolm2 from tblpatlabsubtable where fldtestid=&1 and fldsubtestid=&2 and fldindex IS &3 and fldvalue<>&4 ORDER BY fldcolm2 DESC", testid, subtestid, Null, "Cancelled")
     Endif
   Endif
-
+  
   If res.Available = False Then
     xval = ""
   Else
-
+    
     If sType = "WHO Sensitivity" Then
       If sTable = True Then
         aa = New String[]
@@ -1396,7 +1396,7 @@ Public Function GetSubSensiTableReportString(sType As String, testid As Long, su
         Endif
         xval = xx.Join(gb.NewLine)
       Endif
-
+      
     Else
       If sTable = True Then
         aa = New String[]
@@ -1428,22 +1428,22 @@ Public Function GetSubSensiTableReportString(sType As String, testid As Long, su
         Endif
         xval = xx.Join(gb.NewLine)
       Endif
-
+      
     Endif
-
+    
   Endif
-
+  
   Return xval
-
+  
 End
 
 Public Function GetSubTestTableReportString(testid As Long, subtestid As Long, sTable As Boolean, sIndex As String, Optional sHospCode As String) As String
-
+  
   Dim res As Result
   Dim xx As String[]
   Dim xstr As String[]
   Dim xval As String
-
+  
   If sIndex Then
     If sHospCode Then
       res = modDatabase.$myConn.Exec("select fldvariable,fldvalue,fldcolm2,fldcolm3,fldcolm4 from tblpatlabsubtable where fldtestid=&1 and fldsubtestid=&2 and fldindex=&3 and fldhospcode=&4", testid, subtestid, sIndex, sHospCode)
@@ -1458,7 +1458,7 @@ Public Function GetSubTestTableReportString(testid As Long, subtestid As Long, s
     Endif
   Endif
   If res.Available Then
-
+    
     If sTable = True Then
       xval = modRepoTemplete.HTMLTableSyntax()
       For Each res
@@ -1492,7 +1492,7 @@ Public Function GetSubTestTableReportString(testid As Long, subtestid As Long, s
         Endif
       Next
       xval = xval & "</table>" & gb.NewLine
-
+      
     Else
       xx = New String[]
       For Each res
@@ -1517,21 +1517,21 @@ Public Function GetSubTestTableReportString(testid As Long, subtestid As Long, s
       Next
       xval = xx.Join(gb.NewLine)
     Endif
-
+    
   Else
     xval = ""
   Endif
   Return xval
-
+  
 End
 
 Private Function GetTestColumnTableHeaders(testid As Long, subtestid As Long, sIndex As String, Optional sHospCode As String) As String[]
-
+  
   Dim sDefault As String
   Dim asx As String[]
   Dim aCols As String[]
   Dim rsh As Result
-
+  
   If sHospCode Then
     If sIndex Then
       rsh = modDatabase.$myConn.Exec("select fldparent,fldsubtest from tblpatlabsubtest where fldtestid=&1 and fldid=&2 and fldindex=&3 and fldhospcode=&4", testid, subtestid, sIndex, sHospCode)
@@ -1545,7 +1545,7 @@ Private Function GetTestColumnTableHeaders(testid As Long, subtestid As Long, sI
       rsh = modDatabase.$myConn.Exec("select fldparent,fldsubtest from tblpatlabsubtest where fldtestid=&1 and fldid=&2 and fldindex IS &3", testid, subtestid, Null)
     Endif
   Endif
-
+  
   If rsh.Available Then
     rsh.MoveFirst
     sDefault = modAllExam.GetESubxamDefaultValue("Test", rsh["fldparent"], rsh["fldsubtest"])
@@ -1557,18 +1557,18 @@ Private Function GetTestColumnTableHeaders(testid As Long, subtestid As Long, sI
       Endif
     Endif
   Endif
-
+  
 End
 
 Public Function GetSubTestTriTableString(testid As Long, subtestid As Long, sTable As Boolean, sIndex As String, Optional sHospCode As String) As String
-
+  
   Dim aCols As String[]
   Dim res As Result
   Dim xx As String
   Dim aa As String
   Dim bb As String
   Dim cc As String
-
+  
   If sHospCode Then
     If sIndex Then
       res = modDatabase.$myConn.Exec("select fldvariable,fldvalue,fldcolm2,fldcolm3 from tblpatlabsubtable where fldtestid=&1 and fldsubtestid=&2 and fldindex=&3 and fldhospcode=&4", testid, subtestid, sIndex, sHospCode)
@@ -1582,14 +1582,14 @@ Public Function GetSubTestTriTableString(testid As Long, subtestid As Long, sTab
       res = modDatabase.$myConn.Exec("select fldvariable,fldvalue,fldcolm2,fldcolm3 from tblpatlabsubtable where fldtestid=&1 and fldsubtestid=&2 and fldindex IS &3", testid, subtestid, Null)
     Endif
   Endif
-
+  
   If res.Available Then
     If sHospCode Then
       aCols = GetTestColumnTableHeaders(testid, subtestid, sIndex, sHospCode)
     Else
       aCols = GetTestColumnTableHeaders(testid, subtestid, sIndex)
     Endif
-
+    
     If sTable = True Then
       xx = modRepoTemplete.HTMLTableSyntax()
       xx = xx & "<tr>" & gb.NewLine
@@ -1631,7 +1631,7 @@ Public Function GetSubTestTriTableString(testid As Long, subtestid As Long, sTab
         Endif
       Next
       xx = xx & "</table>" & gb.NewLine
-
+      
     Else
       xx = ""
       For Each res
@@ -1660,22 +1660,22 @@ Public Function GetSubTestTriTableString(testid As Long, subtestid As Long, sTab
         Endif
       Next
     Endif
-
+    
   Else
     xx = ""
   Endif
   Return xx
-
+  
 End
 
 Public Function GetSubTestDualTableString(testid As Long, subtestid As Long, sTable As Boolean, sIndex As String, Optional sHospCode As String) As String
-
+  
   Dim aCols As String[]
   Dim res As Result
   Dim xx As String
   Dim aa As String
   Dim bb As String
-
+  
   If sHospCode Then
     If sIndex Then
       res = modDatabase.$myConn.Exec("select fldvariable,fldvalue,fldcolm2 from tblpatlabsubtable where fldtestid=&1 and fldsubtestid=&2 and fldindex=&3 and fldhospcode=&4", testid, subtestid, sIndex, sHospCode)
@@ -1689,14 +1689,14 @@ Public Function GetSubTestDualTableString(testid As Long, subtestid As Long, sTa
       res = modDatabase.$myConn.Exec("select fldvariable,fldvalue,fldcolm2 from tblpatlabsubtable where fldtestid=&1 and fldsubtestid=&2 and fldindex IS &3", testid, subtestid, Null)
     Endif
   Endif
-
+  
   If res.Available Then
     If sHospCode Then
       aCols = GetTestColumnTableHeaders(testid, subtestid, sIndex, sHospCode)
     Else
       aCols = GetTestColumnTableHeaders(testid, subtestid, sIndex)
     Endif
-
+    
     If sTable = True Then
       xx = modRepoTemplete.HTMLTableSyntax()
       xx = xx & "<tr>" & gb.NewLine
@@ -1730,7 +1730,7 @@ Public Function GetSubTestDualTableString(testid As Long, subtestid As Long, sTa
         Endif
       Next
       xx = xx & "</table>" & gb.NewLine
-
+      
     Else
       xx = ""
       For Each res
@@ -1754,20 +1754,20 @@ Public Function GetSubTestDualTableString(testid As Long, subtestid As Long, sTa
         Endif
       Next
     Endif
-
+    
   Else
     xx = ""
   Endif
   Return xx
-
+  
 End
 
 Public Function GetLabTATHours(labid As Variant, Optional sTable As String) As Integer
-
+  
   Dim res As Result
   Dim xval As Integer
   Dim xTable As String
-
+  
   If sTable Then
     xTable = sTable
   Else
@@ -1788,70 +1788,70 @@ Public Function GetLabTATHours(labid As Variant, Optional sTable As String) As I
     xval = 0
   Endif
   Return xval
-
+  
 End
 
 ''------------------------------------ LAB VALUES ALTERATION -------------------------------------------------
 'NOTE:TWO CON
 Public Function GetLabTestDrugHypo(labid As Long, sTable As String) As String[]
-
+  
   Dim xxx As String[]
   Dim res As Result
-
+  
   res = modDatabase.$myConn.Exec("select distinct(fldchild) from tblcodehypo where fldparent=&1 and fldchild in(select fldcodename from tbldrug where flddrug in(select flddrug from tblmedbrand where fldbrandid in(select flditem from tblpatdosing where fldencounterval=&2 and fldtime<&3)))", GetTestnameFromTestID(labid, sTable), GetEncIDFromLabID(labid, sTable), GetSampleTimeFromLabID(labid, sTable))                      ''
   xxx = modControlSub.GetDirectFillresult(res)
-
+  
   Return xxx
-
+  
 End
 
 'NOTE:TWO CON
 Public Function GetLabTestDrugHyper(labid As Long, sTable As String) As String[]
-
+  
   Dim xxx As String[]
   Dim res As Result
-
+  
   res = modDatabase.$myConn.Exec("select distinct(fldchild) from tblcodehyper where fldparent=&1 and fldchild in(select fldcodename from tbldrug where flddrug in(select flddrug from tblmedbrand where fldbrandid in(select flditem from tblpatdosing where fldencounterval=&2 and fldtime<&3)))", GetTestnameFromTestID(labid, sTable), GetEncIDFromLabID(labid, sTable), GetSampleTimeFromLabID(labid, sTable))
   xxx = modControlSub.GetDirectFillresult(res)
-
+  
   Return xxx
-
+  
 End
 
 'NOTE:TWO CON
 Public Function GetTestDiseaseHypo(labid As Long, sTable As String) As String[]
-
+  
   Dim xxx As String[]
   Dim res As Result
-
+  
   res = modDatabase.$myConn.Exec("select distinct(fldchild) from tblsyndrohypo where fldparent=&1 and fldchild in(select fldcode as col from tblpatfindings where fldencounterval=&2 and (fldtype=&3 or fldtype=&4) and fldsave=&5)", GetTestnameFromTestID(labid, sTable), GetEncIDFromLabID(labid, sTable), "Final Diagnosis", "Provisional Diagnosis", True)                                                         ''
   xxx = modControlSub.GetDirectFillresult(res)
-
+  
   Return xxx
-
+  
 End
 
 'NOTE:TWO CON
 Public Function GetTestDiseaseHyer(labid As Long, sTable As String) As String[]
-
+  
   Dim xxx As String[]
   Dim res As Result
-
+  
   res = modDatabase.$myConn.Exec("select distinct(fldchild) from tblsyndrohyper where fldparent=&1 and fldchild in(select fldcode as col from tblpatfindings where fldencounterval=&2 and (fldtype=&3 or fldtype=&4) and fldsave=&5)", GetTestnameFromTestID(labid, sTable), GetEncIDFromLabID(labid, sTable), "Final Diagnosis", "Provisional Diagnosis", True)                                                         ''
   xxx = modControlSub.GetDirectFillresult(res)
-
+  
   Return xxx
-
+  
 End
 
 Public Function TestInterpretByTestID(labid As Long, Optional sTable As String) As String
-
+  
   Dim sql As String
   Dim res As Result
   Dim xx As String
   Dim xval As Float
   Dim encid As String
-
+  
   sql = "select fldcomment,fldmax,fldmin,fldunit from tbltestcomment where fldtestid=&1 and (fldptsex=&2 or fldptsex=&3) and (fldagegroup=&4 or fldagegroup=&5)"
   If sTable Then
     encid = GetEncIDFromLabID(labid, sTable)
@@ -1860,7 +1860,7 @@ Public Function TestInterpretByTestID(labid As Long, Optional sTable As String) 
     encid = GetEncIDFromLabID(labid, "tblpatlabtest")
     res = modDatabase.$medConn.Exec(sql, GetTestnameFromTestID(labid, "tblpatlabtest"), modPatient.GetPatientSex(encid), "Both Sex", modPatient.GetAgeGroupFIxed(encid, Now()), "All Age")
   Endif
-
+  
   If res.Available = True Then
     For Each res
       If res["fldcomment"] And If res["fldunit"] Then
@@ -1880,33 +1880,33 @@ Public Function TestInterpretByTestID(labid As Long, Optional sTable As String) 
   Else
     xx = ""
   Endif
-
+  
   Return xx
-
+  
 End
 
 Private Function GetEBMLabValue(encid As String, sTest As String, sMethod As String, unt As String, sDiagnosis As String, Optional sTable As String) As String
-
+  
   Dim tstgender As String
   Dim tstdob As Date
   Dim tsdistrict As String
   Dim xdt1 As Integer
   Dim xdt2 As Integer
-
+  
   Dim sql As String
   Dim res As Result
   Dim xxx As String[]
   Dim xpath As String
   Dim xval As String
   Dim arcmd As String[]
-
+  
   Dim xmethod As String
   Dim xpatinfo As String
   Dim xjoin As String
   Dim xdiagno As String
   Dim xdiagnoval As String
   Dim xTable As String
-
+  
   If sTable Then
     xTable = sTable
   Else
@@ -1918,7 +1918,7 @@ Private Function GetEBMLabValue(encid As String, sTest As String, sMethod As Str
   Else
     xmethod = ""
   Endif
-
+  
   If modBasic.$EBMGender = "Yes" Or If modBasic.$EBMDistrict = "Yes" Or If modBasic.$EBMAge = "Yes" Then
     xjoin = " from (" & xTable & " inner join tblencounter on " & xTable & ".fldencounterval=tblencounter.fldencounterval) inner join tblpatientinfo on tblencounter.fldpatientval=tblpatientinfo.fldpatientval"
     xpatinfo = ""
@@ -1936,12 +1936,12 @@ Private Function GetEBMLabValue(encid As String, sTest As String, sMethod As Str
       xdt2 = modBasic.$EBMAgeRange
       xpatinfo = xpatinfo & " and " & modMedReports.GetAgeStringByTable(xTable, modDatabase.$syConn) & ">= &8 and " & modMedReports.GetAgeStringByTable(xTable, modDatabase.$syConn) & "<&9"
     Endif
-
+    
   Else
     xjoin = " from " & xTable
     xpatinfo = ""
   Endif
-
+  
   If modBasic.$EBMDiagno = "Yes" Then
     If sDiagnosis Then
       xdiagno = " and " & xTable & ".fldencounterval in(select fldencounterval from tblpatfindings where fldcodenew like &{10} and fldsave=&{11} and fldcodenew<>&{12})"
@@ -1954,10 +1954,10 @@ Private Function GetEBMLabValue(encid As String, sTest As String, sMethod As Str
     xdiagno = ""
     xdiagnoval = "%"
   Endif
-
+  
   If modBasic.$EBMEthnic = "Yes" Then
   Endif
-
+  
   sql = "select " & xTable & ".fldencounterval as fldencounterval," & xTable & ".fldid as fldid," & xTable & ".fldtestid as fldtestid," & xTable & ".fldreportquanti as fldreportquanti," & xTable & ".fldtestunit as fldtestunit," & xTable & ".fldmethod as fldmethod" & xjoin & " where (" & xTable & ".fldstatus=&1 or " & xTable & ".fldstatus=&2) and " & xTable & ".fldtestid=&3 and " & xTable & ".fldtest_type=&4" & xmethod & xpatinfo & xdiagno
   res = modDatabase.$syConn.Exec(sql, "Reported", "Verified", sTest, "Quantitative", sMethod, tstgender, tsdistrict, xdt1, xdt2, xdiagnoval, True, "Other")                                      ''
   If res.Available Then
@@ -1976,17 +1976,17 @@ Private Function GetEBMLabValue(encid As String, sTest As String, sMethod As Str
   Else
     xval = ""
   Endif
-
+  
   Return xval
-
+  
 End
 
 Public Function GetStatLabReport(labid As Long, unt As String, sDiagnosis As String, Optional sTable As String) As String
-
+  
   Dim res1 As Result
   Dim xval As String
   Dim xTable As String
-
+  
   If sTable Then
     xTable = sTable
   Else
@@ -2009,13 +2009,13 @@ Public Function GetStatLabReport(labid As Long, unt As String, sDiagnosis As Str
     Endif
   Endif
   Return xval
-
+  
 End
 
 Public Function LabReportCommentPatient(labid As Long, unt As String, sType As String, Optional sTable As String) As String
-
+  
   Dim xx As String[]
-
+  
   Dim xrefrange As String
   Dim druglow As String[]
   Dim drughigh As String[]
@@ -2026,7 +2026,7 @@ Public Function LabReportCommentPatient(labid As Long, unt As String, sType As S
   Dim xTable As String
   Dim xtestname As String
   Dim xfooter As String
-
+  
   If sTable Then
     xTable = sTable
   Else
@@ -2040,7 +2040,7 @@ Public Function LabReportCommentPatient(labid As Long, unt As String, sType As S
       xx.Add("Ref Range: " & xrefrange)
     Endif
     ' Endif
-
+    
     If modBasic.$CommSensSpec = "Yes" Then
       xsenspec = GetTestSensiSpecArray(labid, xTable)
       If xsenspec And If xsenspec.Count = 2 Then
@@ -2050,7 +2050,7 @@ Public Function LabReportCommentPatient(labid As Long, unt As String, sType As S
         Endif
       Endif
     Endif
-
+    
   Else If sType = "Quantitative" Then
     xx = New String[]
     ' If modBasic.$CommRefRange = "Yes" Then
@@ -2059,7 +2059,7 @@ Public Function LabReportCommentPatient(labid As Long, unt As String, sType As S
       xx.Add("Ref Range: " & xrefrange & " " & GetTestUnitSrting(labid, unt, xTable))
     Endif
     ' Endif
-
+    
     If modBasic.$CommSensSpec = "Yes" Then
       xsenspec = GetTestSensiSpecArray(labid, xTable)
       If xsenspec.Count = 2 Then
@@ -2069,7 +2069,7 @@ Public Function LabReportCommentPatient(labid As Long, unt As String, sType As S
         Endif
       Endif
     Endif
-
+    
     If modBasic.$CommMedEffect = "Yes" Then
       druglow = GetLabTestDrugHypo(labid, xTable)
       If druglow And If druglow.Count Then
@@ -2080,7 +2080,7 @@ Public Function LabReportCommentPatient(labid As Long, unt As String, sType As S
         xx.Add("Increased By:" & gb.NewLine & drughigh.Join("; "))
       Endif
     Endif
-
+    
     If modBasic.$CommCauseSyndro = "Yes" Then
       syndrolow = GetTestDiseaseHypo(labid, xTable)
       If syndrolow And If syndrolow.Count Then
@@ -2091,14 +2091,14 @@ Public Function LabReportCommentPatient(labid As Long, unt As String, sType As S
         xx.Add("Increased In:" & gb.NewLine & syndrohigh.Join("; "))
       Endif
     Endif
-
+    
     If modBasic.$CommInterpret = "Yes" Then
       xintpret = TestInterpretByTestID(labid, xTable)
       If xintpret Then
         xx.Add("RESULT: " & xintpret)
       Endif
     Endif
-
+    
     If modBasic.$CommFooterInfo = "Yes" Then
       xtestname = GetTestnameFromTestID(labid, xTable)
       xfooter = modFixLab.GetLabFooterInfo(xtestname)
@@ -2106,20 +2106,20 @@ Public Function LabReportCommentPatient(labid As Long, unt As String, sType As S
         xx.Add("COMMENT: " & xfooter)
       Endif
     Endif
-
+    
   Endif
-
+  
   Return xx.Join(gb.Tab)
-
+  
 End
 
 Public Function GetHypoTestList(encid As String) As String[]
-
+  
   Dim res As Result
   Dim xx As String[]
   Dim xval As Float
   Dim xlimit As Float[]
-
+  
   xx = New String[]
   res = modDatabase.$myConn.Exec("select distinct(fldtestid) as col from tblpatlabtest where fldencounterval=&1 and (fldstatus=&2 or fldstatus=&3) and fldtest_type=&4", encid, "Reported", "Verified", "Quantitative")
   For Each res
@@ -2133,16 +2133,16 @@ Public Function GetHypoTestList(encid As String) As String[]
   Next
   xx.Sort(gb.Ascent)
   Return xx
-
+  
 End
 
 Public Function GetHyperTestList(encid As String) As String[]
-
+  
   Dim res As Result
   Dim xx As String[]
   Dim xval As Float
   Dim xlimit As Float[]
-
+  
   xx = New String[]
   res = modDatabase.$myConn.Exec("select distinct(fldtestid) as col from tblpatlabtest where fldencounterval=&1 and (fldstatus=&2 or fldstatus=&3) and fldtest_type=&4", encid, "Reported", "Verified", "Quantitative")
   For Each res
@@ -2156,16 +2156,16 @@ Public Function GetHyperTestList(encid As String) As String[]
   Next
   xx.Sort(gb.Ascent)
   Return xx
-
+  
 End
 
 ''=========================================== Drug Sensitivity Table ===========================================
 Public Function GetSensitivityTable(encid As String, testid As Long, sTableSub As String) As String
-
+  
   Dim res As Result
   Dim restab As Result
   Dim xtable As String
-
+  
   Dim aVar As Variant[]
   Dim aCol As Collection
   Dim xval As String
@@ -2173,7 +2173,7 @@ Public Function GetSensitivityTable(encid As String, testid As Long, sTableSub A
   Dim xFinal As String[]
   Dim antiName As String
   Dim i As Integer
-
+  
   aVar = New Variant[]
   xanti = New String[]
   If sTableSub Then
@@ -2182,13 +2182,13 @@ Public Function GetSensitivityTable(encid As String, testid As Long, sTableSub A
     res = modDatabase.$myConn.Exec("select fldsubtest,fldreport,fldid,fldtestid,fldtanswertype,fldindex from tblpatlabsubtest where fldencounterval=&1 and fldtestid=&2 and fldchk=&3 and fldsave=&4 and (fldtanswertype=&5 or fldtanswertype=&6)", encid, testid, True, True, "Drug Sensitivity", "WHO Sensitivity")
   Endif
   If res.Available Then
-
+    
     xtable = modRepoTemplete.HTMLTableSyntax()
     xtable = xtable & "<tr>" & gb.NewLine
     xtable = xtable & "<td class='reportmid_table_h'>" & "Antibiotics" & "</td>" & gb.NewLine
     For Each res
       xtable = xtable & "<td class='reportmid_table_h'>" & res["fldsubtest"] & "</td>" & gb.NewLine
-
+      
       aCol = New Collection
       If res["fldindex"] Then
         restab = modDatabase.$myConn.Exec("select distinct(fldvariable) as antibiotic from tblpatlabsubtable where fldtestid=&1 and fldvalue<>&2 and fldindex=&3 ORDER BY fldvariable ASC", testid, "Cancelled", res["fldindex"])
@@ -2203,10 +2203,10 @@ Public Function GetSensitivityTable(encid As String, testid As Long, sTableSub A
         Next
       Endif
       aVar.Add(aCol)
-
+      
     Next
     xtable = xtable & "</tr>" & gb.NewLine
-
+    
     xFinal = modString.GetDistinctStringArray(xanti)
     If xFinal Then
       xFinal.Sort()
@@ -2219,19 +2219,19 @@ Public Function GetSensitivityTable(encid As String, testid As Long, sTableSub A
         xtable = xtable & "</tr>" & gb.NewLine
       Next
     Endif
-
+    
     xtable = xtable & "</table>" & gb.NewLine
   Endif
-
+  
   Return xtable
-
+  
 End
 
 Private Function GetSensiValue(testid As Long, subtestid As Long, sIndex As String, antibiotic As String) As String
-
+  
   Dim res As Result
   Dim xx As String
-
+  
   If sIndex Then
     res = modDatabase.$myConn.Exec("select distinct(fldvalue) from tblpatlabsubtable where fldtestid=&1 and fldsubtestid=&2 and fldindex=&3 and fldvariable=&4 and fldvalue<>&5", testid, subtestid, sIndex, antibiotic, "Cancelled")
   Else
@@ -2247,30 +2247,30 @@ Private Function GetSensiValue(testid As Long, subtestid As Long, sIndex As Stri
     xx = ""
   Endif
   Return xx
-
+  
 End
 
 ''---------------- Position wise value -------------------
 Public Function GetCurrTesValuePos(sPos As String, encid As String, strTest As String, Optional sUnit As String) As Variant
-
+  
   Dim sql As String
   Dim res As Result
   Dim metr As Variant
   Dim unt As String
   Dim xType As String
   Dim xcaption As String
-
+  
   If sUnit Then
     unt = sUnit
   Else
     unt = MMain.$defUnit
   Endif
-
+  
   xcaption = modFixLab.GetLabTestCaption(strTest)
   If modBasic.$SuperUser = False And If xcaption = "$Encryption" Then
     metr = "****"
   Else
-
+    
     sql = "select fldtestid,fldreportquali,fldreportquanti,fldtestunit,fldmethod,fldtest_type from tblpatlabtest where fldencounterval=&1 and (fldstatus=&2 or fldstatus=&3) and fldtestid=&4 and fldreportquali IS NOT &5"
     res = modDatabase.$myConn.Exec(sql, encid, "Reported", "Verified", strTest, Null)
     If res.Available = True Then
@@ -2279,7 +2279,7 @@ Public Function GetCurrTesValuePos(sPos As String, encid As String, strTest As S
       Else
         res.MoveLast
       Endif
-
+      
       If res["fldtest_type"] = "Quantitative" Then
         If res["fldreportquanti"] Then
           metr = modLabTest.GetLabQuantiValueAll(encid, strTest, res["fldreportquanti"], res["fldtestunit"], res["fldmethod"], unt)
@@ -2302,7 +2302,7 @@ Public Function GetCurrTesValuePos(sPos As String, encid As String, strTest As S
       metr = ""
     Endif
   Endif
-
+  
   Return metr
-
+  
 End

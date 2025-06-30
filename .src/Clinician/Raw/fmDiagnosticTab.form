@@ -1,0 +1,86 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,118.125,64)
+  Expand = True
+  Arrangement = Arrange.Vertical
+  { Panel5 Panel
+    MoveScaled(0,0,117,61)
+    Expand = True
+    Arrangement = Arrange.Vertical
+    { Panel1 Panel
+      MoveScaled(0,0,116,4)
+      { Panel2 Panel
+        MoveScaled(0,0.5,52,3)
+        { rblabs RadioButton
+          MoveScaled(1,0,9,3)
+          Text = ("LABS")
+          Value = True
+        }
+        { rbradio RadioButton
+          MoveScaled(9.5,0,10,3)
+          Text = ("RADIO")
+        }
+        { rbexam RadioButton
+          MoveScaled(19.5,0,10,3)
+          Text = ("EXAMS")
+        }
+        { rbstruct RadioButton
+          MoveScaled(30,0,11,3)
+          Text = ("STRUCT")
+        }
+        { rbvitals RadioButton
+          MoveScaled(41,0,10,3)
+          Text = ("VITALS")
+        }
+      }
+      { Panel4 Panel
+        MoveScaled(56,0.5,19,3)
+        Border = Border.Plain
+        { rbdaterepo RadioButton
+          MoveScaled(0,0,8,3)
+          Text = ("Date")
+        }
+        { rbnamerepo RadioButton
+          MoveScaled(9,0,9,3)
+          Text = ("Name")
+          Value = True
+        }
+      }
+      { btnshowexams ToolButton
+        MoveScaled(79,0.5,14,3)
+        Text = ("Refresh")
+        Picture = Picture["icon:/small/refresh"]
+        Border = True
+      }
+      { Panel9 Panel
+        MoveScaled(95,0.5,21,2.75)
+        Border = Border.Plain
+        { rbsi RadioButton
+          MoveScaled(0,0,10,2.75)
+          Text = ("SI Unit")
+        }
+        { rbmetric RadioButton
+          MoveScaled(11,0,10,2.75)
+          Text = ("Metric")
+          Value = True
+        }
+      }
+    }
+    { TableView1 ColumnView
+      MoveScaled(0,5,101,25)
+      Expand = True
+      Mode = Select.None
+      Resizable = True
+      AutoResize = False
+      ShowLines = True
+    }
+    { GridView2 GridView
+      MoveScaled(0,32,100,19)
+      Visible = False
+      Expand = True
+      Mode = Select.Single
+      Header = GridView.Both
+    }
+  }
+}

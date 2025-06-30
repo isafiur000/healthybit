@@ -1,0 +1,104 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,105,76)
+  Expand = True
+  Arrangement = Arrange.Vertical
+  { Panel1 Panel
+    MoveScaled(0,1,104,73)
+    Expand = True
+    Arrangement = Arrange.Horizontal
+    { WebContainer2 Panel
+      MoveScaled(0,0,22,71)
+      Arrangement = Arrange.Vertical
+      Border = Border.Plain
+      { Panel5 Panel
+        MoveScaled(0,0,22,4)
+        { chkall CheckBox
+          MoveScaled(0.5,0.5,13,3)
+          Text = ("Select All")
+        }
+        { btnselect ToolButton
+          MoveScaled(17,0.5,3.5,3)
+          Enabled = False
+          Picture = Picture["icon:/small/text-list"]
+          Border = True
+        }
+      }
+      { lstcontent ListBox
+        MoveScaled(1,5,20,36)
+        Expand = True
+        Mode = Select.Multiple
+      }
+      { Panel6 Panel
+        MoveScaled(0,41,22,4)
+        { chkselect CheckBox
+          MoveScaled(0.5,0.5,12,3)
+          Text = ("Selected")
+        }
+        { btnup ToolButton
+          MoveScaled(13,0.5,3.5,3)
+          Enabled = False
+          Picture = Picture["icon:/small/up"]
+          Border = True
+        }
+        { btndown ToolButton
+          MoveScaled(17,0.5,3.5,3)
+          Enabled = False
+          Picture = Picture["icon:/small/down"]
+          Border = True
+        }
+      }
+    }
+    { WebContainer3 Panel
+      MoveScaled(22,0,22,71)
+      Arrangement = Arrange.Vertical
+      Border = Border.Plain
+      { lstencounter ListBox
+        MoveScaled(0,4,20,36)
+        Expand = True
+      }
+      { txtnewencid TextBox
+        MoveScaled(0,40,21,3)
+        ReadOnly = True
+      }
+      { Panel8 Panel
+        MoveScaled(0,43,22,4)
+        { btncopy ToolButton
+          MoveScaled(2,0.5,18,3)
+          Text = ("Open")
+          Border = True
+        }
+      }
+    }
+    { Panel2 Panel
+      MoveScaled(44,0,59,51)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { Panel4 Panel
+        MoveScaled(0,0,59,4)
+        { lbldate Label
+          MoveScaled(0.5,0.5,17,3)
+          Border = Border.Plain
+        }
+        { Panel9 Panel
+          MoveScaled(23,0.5,21,2.75)
+          Border = Border.Plain
+          { rbsi RadioButton
+            MoveScaled(0,0,10,2.75)
+            Text = ("SI Unit")
+          }
+          { rbmetric RadioButton
+            MoveScaled(11,0,10,2.75)
+            Text = ("Metric")
+            Value = True
+          }
+        }
+      }
+      { WebView1 HtmlView
+        MoveScaled(2,9,36,22)
+        Expand = True
+      }
+    }
+  }
+}

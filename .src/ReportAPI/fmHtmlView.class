@@ -5,7 +5,7 @@ Private $encid As String
 Private $sType As String
 
 Public Sub _new(sLink As String, sLock As Boolean, encid As String, sType As String)
-
+  
   $sLink = sLink
   $encid = encid
   $sType = sType
@@ -18,7 +18,7 @@ Public Sub _new(sLink As String, sLock As Boolean, encid As String, sType As Str
     If $encid Then
       btnarchive.Enabled = True
       btnprintarch.Enabled = True
-
+      
       If modBasic.$WebViewFunction Then
         If modBasic.$WebViewFunction = "Print" Then
           btnprint.Enabled = True
@@ -42,14 +42,14 @@ Public Sub _new(sLink As String, sLock As Boolean, encid As String, sType As Str
           btnprintarch.Enabled = True
         Endif
       Endif
-
+      
     Endif
   Endif
-
+  
 End
 
 Public Sub Form_Open()
-
+  
   Inc Application.Busy
   WebView1.Url = $sLink
   If modBasic.$WebZoomValue Then
@@ -57,29 +57,29 @@ Public Sub Form_Open()
     WebView1.Zoom = Slider1.Value / 100
   Endif
   Dec Application.Busy
-
+  
 End
 
 Public Sub WebView1_Load()
-
+  
   WebView1.Enabled = True
-
+  
 End
 
 Public Sub Slider1_Change()
-
+  
   Inc Application.Busy
   WebView1.Zoom = Slider1.Value / 100
   Dec Application.Busy
-
+  
 End
 
 Public Sub btnprint_Click()
-
+  
   Dim sPath As String
   Dim xLink As String
   Dim i As Integer
-
+  
   xLink = Replace($sLink, "file://", "")
   sPath = modPrint.ConvertHTMLToPDFString(xLink, "ReportSize")
   If txtprintcount.Value Then
@@ -87,28 +87,28 @@ Public Sub btnprint_Click()
       modPrint.DefaultPrinting(sPath, "ReportSize")
     Next
   Endif
-
+  
 End
 
 Public Sub btnpdf_Click()
-
+  
   Dim sPath As String
   Dim xLink As String
-
+  
   xLink = Replace($sLink, "file://", "")
   sPath = modPrint.ConvertHTMLToPDFString(xLink, "ReportSize")
   modDevice.DesktopOpenFile(sPath)
-
+  
 End
 
 Public Sub btnarchive_Click()
-
+  
   Dim astr As String
   Dim sLongID As Long
   Dim sPath As String
   Dim xLink As String
   Dim sTitle As String
-
+  
   If $sType Then
     sTitle = $sType
   Else
@@ -122,23 +122,23 @@ Public Sub btnarchive_Click()
     sLongID = modImage.SavePatientFileGeneral($encid, sTitle, astr, sPath, modReportVar.$ReportHash)                       ''
     Dec Application.Busy
   Endif
-
+  
   If sLongID Then
     Balloon.Info(("File saved"), btnarchive)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
-
+  
 End
 
 Public Sub btnprintarch_Click()
-
+  
   Dim astr As String
   Dim sLongID As Long
   Dim sPath As String
   Dim xLink As String
   Dim i As Integer
   Dim sTitle As String
-
+  
   If $sType Then
     sTitle = $sType
   Else
@@ -157,22 +157,22 @@ Public Sub btnprintarch_Click()
       Next
     Endif
   Endif
-
+  
   If sLongID Then
     Balloon.Info(("File saved"), btnprintarch)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
-
+  
 End
 
 Public Sub btnclose_Click()
-
+  
   Me.Close()
-
+  
 End
 
 Public Sub Form_KeyRelease()
-
+  
   If Key.Control And If Key.Code = Key["X"] Then
     Me.Close()
   Else If Key.Control And If Key.Code = Key["P"] Then
@@ -180,5 +180,5 @@ Public Sub Form_KeyRelease()
   Else If Key.Control And If Key.Code = Key["A"] Then
     btnarchive_Click()
   Endif
-
+  
 End

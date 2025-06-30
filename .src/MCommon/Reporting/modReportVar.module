@@ -24,11 +24,11 @@ Public Const $AbnStart As String = "<!-- ABNORMAL -->"
 Public Const $AbnEnd As String = "<!-- /ABNORMAL -->"
 
 Public Function SQLAllowTableList() As String[]
-
+  
   Dim hTable As Table
   Dim xx As String[]
   Dim xPrivAccTable As String[]
-
+  
   xPrivAccTable = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldvalue as col from tbltabsettings where fldcomp=&1 and fldcategory=&2", modBasic.$compID, "DisableSQLQuery/TableList"))
   xx = New String[]
   For Each hTable In modDatabase.$myConn.Tables
@@ -43,23 +43,23 @@ Public Function SQLAllowTableList() As String[]
   Next
   xx.Sort(gb.Ascent)
   Return xx
-
+  
 End
 
 ''----------------------------------- Formating ----------------------------------------------
 '##DATE FUNCTION##
 Public Function GetDateTimeReport(sDate As Date, sMode As Integer) As String
-
+  
   Dim xx As String
   Dim yy As String
-
+  
   If sDate Then
-
+    
     If sMode = gb.GeneralDate Then
       xx = modDate.GetDateTimeInFormatForAll(sDate, modBasic.$DateFormat, modBasic.$DateContent)
     Else If sMode = gb.MediumDate Then
       xx = modDate.GetDateOnlyInFormatForAll(sDate, modBasic.$DateFormat, modBasic.$DateContent)
-
+      
     Else If sMode = gb.LongTime Then
       xx = Format(sDate, gb.LongTime)
     Else If sMode = gb.MediumTime Then
@@ -67,30 +67,30 @@ Public Function GetDateTimeReport(sDate As Date, sMode As Integer) As String
     Else If sMode = gb.ShortTime Then
       xx = Format(sDate, gb.ShortTime)
     Endif
-
+    
     If modBasic.$NumFont Then
       yy = modString.GetLocalNumber(xx)
     Else
       yy = xx
     Endif
-
+    
   Else
     yy = ""
   Endif
-
+  
   Return yy
-
+  
 End
 
 Public Function GetLocaleNumberFormat(sAmt As Float, sFormat As Integer) As String
-
+  
   Dim xx As String
   Dim sVal As String
-
+  
   If Not sAmt And If modBasic.$NullOnZero = "Enable" Then
     xx = ""
   Else
-
+    
     If sFormat = gb.Currency Then
       If modBasic.$QuantiUnitEnable = "Disable" Then
         sVal = Format(sAmt, gb.Fixed)
@@ -116,7 +116,7 @@ Public Function GetLocaleNumberFormat(sAmt As Float, sFormat As Integer) As Stri
           Endif
         Endif
       Endif
-
+      
     Else
       If modBasic.$NumFormat Then
         sVal = Format(sAmt, modBasic.$NumFormat)
@@ -134,27 +134,27 @@ Public Function GetLocaleNumberFormat(sAmt As Float, sFormat As Integer) As Stri
       Else
         xx = sVal
       Endif
-
+      
     Endif
   Endif
-
+  
   Return xx
-
+  
 End
 
 ''-------------- For Custom Report (two columns) --------------------
 Public Function GetCustomReportValue(sType As String, encid As String, sHead As String, Optional sUnit As String) As String[]
-
+  
   Dim xval As String[]
   Dim asx As String[]
   Dim xunit As String
-
+  
   If sUnit Then
     xunit = sUnit
   Else
     xunit = "Metric"
   Endif
-
+  
   If sType = "Course of Treatment" Then
     xval = modPatReports.AddCourseOfTreatment(encid, sHead)
   Else If sType = "Bed Transitions" Then
@@ -169,7 +169,7 @@ Public Function GetCustomReportValue(sType As String, encid As String, sHead As 
     xval = modPatReports.AddPresentingComplaints(encid, sHead)
   Else If sType = "General Complaints" Then
     xval = modPatReports.AddGenComplaints(encid, sHead)
-
+    
   Else If sType = "History of Illness" Then
     xval = modPatReports.AddHistoryOfIllness(encid, sHead)
   Else If sType = "Past History" Then
@@ -188,7 +188,7 @@ Public Function GetCustomReportValue(sType As String, encid As String, sHead As 
     xval = modPatReports.AddOccupationalHistory(encid, sHead)
   Else If sType = "Social History" Then
     xval = modPatReports.AddSocialHistory(encid, sHead)
-
+    
   Else If sType = "Provisional Diagnosis" Then
     xval = modPatReports.AddProvisionalDiagnosis(encid, sHead)
   Else If sType = "Final Diagnosis" Then
@@ -203,7 +203,7 @@ Public Function GetCustomReportValue(sType As String, encid As String, sHead As 
     xval = modPatReports.AddSurgicalsRequests(encid, sHead)
   Else If sType = "Extra Items Requests" Then
     xval = modPatReports.AddExtraItemsRequests(encid, sHead)
-
+    
   Else If sType = "Medicines Dispensed" Then
     xval = modPatReports.AddMedicineDispensed(encid, sHead)
   Else If sType = "Surgicals Dispensed" Then
@@ -212,7 +212,7 @@ Public Function GetCustomReportValue(sType As String, encid As String, sHead As 
     xval = modPatReports.AddExtraDispensed(encid, sHead)
   Else If sType = "Nutrition Approved" Then
     xval = modPatReports.AddNutritionApproved(encid, sHead)
-
+    
   Else If sType = "Initial Planning" Then
     xval = modPatReports.AddOPDAdvice(encid, sHead)
   Else If sType = "OPD Advice" Then
@@ -221,7 +221,7 @@ Public Function GetCustomReportValue(sType As String, encid As String, sHead As 
     xval = modPatReports.AddExpertAdvice(encid, sHead)
   Else If sType = "Expert Advice" Then
     xval = modPatReports.AddExpertAdvice(encid, sHead)
-
+    
   Else If sType = "Prominent Symptoms" Then
     xval = modPatReports.AddProminientSymptoms(encid, sHead)
   Else If sType = "Major Procedures" Then
@@ -246,7 +246,7 @@ Public Function GetCustomReportValue(sType As String, encid As String, sHead As 
     xval = modPatReports.AddDeliveryProfile(encid, sHead)
   Else If sType = "Extra Procedures" Then
     xval = modPatReports.AddExtraProcedures(encid, sHead)
-
+    
   Else If sType = "Clinical Notes" Then
     xval = modPatReports.AddClinicalNotes(encid, sHead)
   Else If sType = "Progress Note" Then
@@ -257,7 +257,7 @@ Public Function GetCustomReportValue(sType As String, encid As String, sHead As 
     xval = modPatReports.AddNursesNotes(encid, sHead)
   Else If sType = "Transfer Note" Then
     xval = modPatReports.AddTransferNotes(encid, sHead)
-
+    
   Else If sType = "IP Monitoring" Then
     xval = modPatReports.AddIPMonitoring(encid, sHead)
   Else If sType = "Therapeutic Planning" Then
@@ -271,7 +271,7 @@ Public Function GetCustomReportValue(sType As String, encid As String, sHead As 
     xval = modPatReports.AddConditionAtDischarge(encid, sHead)
   Else If sType = "Advice on Discharge" Then
     xval = modPatReports.AddAdviceDischarge(encid, sHead)
-
+    
   Else If sType = "Clinical Findings" Then
     xval = modPatReports.AddClinFindingsAll(encid, "Non-Vital")
   Else If sType = "Physician Examinations" Then
@@ -288,32 +288,32 @@ Public Function GetCustomReportValue(sType As String, encid As String, sHead As 
     xval = modPatReports.AddDepartmentStructured(encid, "Departmental Examinations")
   Else If sType = "Discharge Examinations" Then
     xval = modPatReports.AddDischargeFindings(encid, "Discharge Examinations")
-
+    
   Else If sType = "Laboratory Tests" Then
     xval = modPatReports.AddSelectedTest(encid, modLabTest.PaientAllTestNameArray(encid), xunit)
   Else If sType = "Radiological Findings" Then
     xval = modPatReports.AddSelectedRadio(encid, modRadioTest.PaientAllRadioNameArray(encid))
-
+    
   Else If sType Like "History@" & "*" Then
     asx = Split(sType, "@")
     xval = modPatReports.AddSelectedHistory(encid, UnQuote(asx[1]))
   Else If sType Like "Discharge@" & "*" Then
     asx = Split(sType, "@")
     xval = modPatReports.AddSelectedDischarge(encid, UnQuote(asx[1]))
-
+    
   Else
     xval = modPatReports.AddCustomParam(sType)
   Endif
-
+  
   Return xval
-
+  
 End
 
 ''---------- Value for Add Column to Grids -----------------------------------
 Public Function GetPatientVariableValue(sVariable As String, encid As String) As Variant
-
+  
   Dim xval As Variant
-
+  
   If sVariable = "{PatientNo}" Then
     xval = modPatient.GetPatientNoByEnc(encid)
   Else If sVariable = "{PatientFileNo}" Then
@@ -322,7 +322,7 @@ Public Function GetPatientVariableValue(sVariable As String, encid As String) As
     xval = modPatient.GetPatientNameByEnc(encid)
   Else If sVariable = "{PatientEthnicity}" Then
     xval = modPatient.GetPatientEthnicity(encid)
-
+    
   Else If sVariable = "{PatientGender}" Then
     xval = modPatient.GetPatientSex(encid)
   Else If sVariable = "{Age/Sex}" Then
@@ -337,7 +337,7 @@ Public Function GetPatientVariableValue(sVariable As String, encid As String) As
     xval = modPatient.GetAgeGroupCustom(encid)
   Else If sVariable = "{AgeInDays}" Then
     xval = DateDiff(modPatient.GetPatientBirthDay(encid), Now(), gb.Day)
-
+    
   Else If sVariable = "{PatientMunicipality}" Then
     xval = modPatient.GetPatFirAddressByEnc(encid)
   Else If sVariable = "{PatientWardAddress}" Then
@@ -358,14 +358,14 @@ Public Function GetPatientVariableValue(sVariable As String, encid As String) As
     xval = modPatient.GetPatientContactByEnc(encid)
   Else If sVariable = "{PatientCode}" Then
     xval = modPatient.GetPatientExtCOdebyEnc(encid)
-
+    
   Else If sVariable = "{ServiceType}" Then
     xval = modPatient.GetPatServiceType(encid)
   Else If sVariable = "{ServiceRank}" Then
     xval = modPatient.GetPatServiceRank(encid)
   Else If sVariable = "{ServiceUnit}" Then
     xval = modPatient.GetPatServiceUnit(encid)
-
+    
   Else If sVariable = "{VisitMode}" Then
     xval = modPatient.GetPatVisitType(encid)
   Else If sVariable = "{DiscountPackae}" Then
@@ -426,7 +426,7 @@ Public Function GetPatientVariableValue(sVariable As String, encid As String) As
     xval = Hex(modPatient.GetPatientColor(encid), 6)
   Else If sVariable = "{PatientTriageSymbol}" Then
     xval = modMisc.GetColorValSymbol(modPatient.GetPatientColor(encid))
-
+    
   Else If sVariable = "{RegistrationUser}" Then
     xval = modPatient.GetPptientImpDateUser(encid, "Consultation")
   Else If sVariable = "{AdmissionUser}" Then
@@ -435,7 +435,7 @@ Public Function GetPatientVariableValue(sVariable As String, encid As String) As
     xval = modPatient.GetPptientImpDateUser(encid, "Discharge")
   Else If sVariable = "{ClearanceUser}" Then
     xval = modPatient.GetPptientImpDateUser(encid, "Clearance")
-
+    
   Else If sVariable = "{MotherEncounter}" Then
     xval = modPatient.GetMotherEncounter(encid)
   Else If sVariable = "{MotherPatientNo}" Then
@@ -460,7 +460,7 @@ Public Function GetPatientVariableValue(sVariable As String, encid As String) As
     xval = modPatient.GetObstetricFieldEnc(modPathoSub.GetObstetricField("Presentation"), encid)
   Else If sVariable = "{ObsStatus}" Then
     xval = modPatient.GetObstetricFieldEnc(modPathoSub.GetObstetricField("Status"), encid)
-
+    
   Else If sVariable = "{LastConsultDate}" Then
     xval = GetDateTimeReport(GetLastValue("tblconsult", "fldconsulttime", "fldencounterval", encid), gb.MediumDate)
   Else If sVariable = "{LastConsultDept}" Then
@@ -475,7 +475,7 @@ Public Function GetPatientVariableValue(sVariable As String, encid As String) As
     xval = GetDateTimeReport(modPatient.GetLastVisitDate(encid), gb.MediumTime)
   Else If sVariable = "{LastVisitLocation}" Then
     xval = modPatient.GetLastVisitLocation(encid)
-
+    
   Else If sVariable = "{TotalExpense}" Then
     xval = modNonMedical.TotalExpenseAmountbyPatient(modDatabase.$myConn, encid)
   Else If sVariable = "{TotalPayment}" Then
@@ -486,7 +486,7 @@ Public Function GetPatientVariableValue(sVariable As String, encid As String) As
     xval = modNonMedical.TotalUnpaidValuePatient(modDatabase.$myConn, encid)
   Else If sVariable = "{BalanceDeposit}" Then
     xval = modNonMedical.GetPatientDeposit(modDatabase.$myConn, encid) - modNonMedical.TotalUnpaidValuePatient(modDatabase.$myConn, encid)
-
+    
   Else If sVariable = "{LastInvoiceNumber}" Then
     xval = modNonMedical.GetSelectedBillNo(encid, "Last")
   Else If sVariable = "{FirstInvoiceNumber}" Then
@@ -505,7 +505,7 @@ Public Function GetPatientVariableValue(sVariable As String, encid As String) As
     xval = modClaim.GetCurrentClaimCodePrint(encid)
   Else If sVariable = "{FirstClaimCode}" Then
     xval = modClaim.GetCurrentClaimCodePrint(encid)
-
+    
   Else If sVariable = "{HepaticStatus}" Then
     xval = modClinic.GetHepaticStatus(encid)
   Else If sVariable = "{PregnancyStatus}" Then
@@ -526,7 +526,7 @@ Public Function GetPatientVariableValue(sVariable As String, encid As String) As
     xval = modPatient.PatientDiagnoCurClassList(encid).Join(gb.NewLine)
   Else If sVariable = "{DrugAllergy}" Then
     xval = modPatient.PatientFindingList(encid, "Allergic Drugs").Join(gb.NewLine)
-
+    
   Else If sVariable = "{AdmissionCause}" Then
     xval = modString.TextToHTML(modPatPatho.ShowSelectedHistory(encid, "Cause of Admission"))
   Else If sVariable = "{HistoryofIllness}" Then
@@ -551,7 +551,7 @@ Public Function GetPatientVariableValue(sVariable As String, encid As String) As
   Else If sVariable = "{SocialHistory}" Then
     xval = modString.TextToHTML(modPatPatho.ShowSelectedHistory(encid, "Social History"))
     ''---------------- end backward compatibility ------------------------
-
+    
   Else If sVariable = "{OPDRecommendation}" Then
     xval = modString.TextToHTML(modPatPatho.ShowSelectedNotes(encid, "Initial Planning"))
   Else If sVariable = "{ExpertRecommendation}" Then
@@ -568,7 +568,7 @@ Public Function GetPatientVariableValue(sVariable As String, encid As String) As
     xval = modPatient.GetHaiClassificationSet(encid, "BSI")
   Else If sVariable = "{UTISummary}" Then
     xval = modPatient.GetHaiClassificationSet(encid, "UTI")
-
+    
   Else If sVariable = "{ProgressImpression}" Then
     xval = modPatPatho.ShowSelNoteImpression(encid, "Progress Note")
   Else If sVariable = "{ClinicianImpression}" Then
@@ -577,27 +577,27 @@ Public Function GetPatientVariableValue(sVariable As String, encid As String) As
     xval = modPatPatho.ShowSelNoteImpression(encid, "Nurses Note")
   Else If sVariable = "{TransferImpression}" Then
     xval = modPatPatho.ShowSelNoteImpression(encid, "Transfer Note")
-
+    
   Else
     xval = GetCalcValue(sVariable, encid)
   Endif
   Return xval
-
+  
 End
 
 ''------------------ Add table as Add Column (without HTML for AI) --------------
 Public Function GetColumnValueRaw(sType As String, encid As String, Optional sUnit As String) As String
-
+  
   Dim xval As String
   Dim asx As String[]
   Dim xunit As String
-
+  
   If sUnit Then
     xunit = sUnit
   Else
     xunit = "Metric"
   Endif
-
+  
   If sType = "Chief Complaints" Then
     xval = modPatReports.GetPatientPresentingSymptomReport(encid).Join(gb.NewLine) & gb.NewLine & modPatPatho.ShowSelectedHistory(encid, "General Complaints")
   Else If sType = "Presenting Complaints" Then
@@ -610,7 +610,7 @@ Public Function GetColumnValueRaw(sType As String, encid As String, Optional sUn
     xval = modPatient.PatientFindingList(encid, "Allergic Drugs").Join(gb.NewLine)
   Else If sType = "Investigation Advised" Then
     xval = modPatReports.OPDOrderLabRequest(encid).Join(gb.NewLine)
-
+    
     ''History
   Else If sType = "Cause of Admission" Then
     xval = modPatPatho.ShowSelectedHistory(encid, "Cause of Admission")
@@ -621,7 +621,7 @@ Public Function GetColumnValueRaw(sType As String, encid As String, Optional sUn
   Else If sType Like "History@" & "*" Then
     asx = Split(sType, "@")
     xval = modPatPatho.ShowSelectedHistory(encid, UnQuote(asx[1]))
-
+    
   Else If sType = "Past History" Then
     xval = modPatPatho.ShowSelectedHistory(encid, "Past History")
   Else If sType = "Treatment History" Then
@@ -638,7 +638,7 @@ Public Function GetColumnValueRaw(sType As String, encid As String, Optional sUn
     xval = modPatPatho.ShowSelectedHistory(encid, "Occupational History")
   Else If sType = "Social History" Then
     xval = modPatPatho.ShowSelectedHistory(encid, "Social History")
-
+    
     ''Notes
   Else If sType = "Initial Planning" Then
     xval = modPatReports.GetPatientNoteReport(encid, "Initial Planning")
@@ -648,7 +648,7 @@ Public Function GetColumnValueRaw(sType As String, encid As String, Optional sUn
     xval = modPatReports.GetPatientNoteReport(encid, "Initial Planning")
   Else If sType = "Expert Advice" Then
     xval = modPatReports.GetPatientNoteReport(encid, "Final Planning")
-
+    
   Else If sType = "Progress Note" Then
     xval = modPatReports.GetPatientNoteReport(encid, "Progress Note")
   Else If sType = "Clinicians Note" Then
@@ -660,7 +660,7 @@ Public Function GetColumnValueRaw(sType As String, encid As String, Optional sUn
   Else If sType Like "Discharge@" & "*" Then
     asx = Split(sType, "@")
     xval = modPatPatho.ShowSelectedNotes(encid, UnQuote(asx[1]))
-
+    
     ''Examinations
   Else If sType = "Clinical Findings" Then
     xval = modPatReports.GetSelectFindingReport(encid, "Non-Vital").Join(gb.NewLine)
@@ -674,19 +674,19 @@ Public Function GetColumnValueRaw(sType As String, encid As String, Optional sUn
     xval = modPatReports.GetSelectFindingReport(encid, "Nursing Examinations").Join(gb.NewLine)
   Else If sType = "Discharge Examinations" Then
     xval = modPatReports.GetSelectFindingReport(encid, "Discharge Examinations").Join(gb.NewLine)
-
+    
   Endif
-
+  
   Return xval
-
+  
 End
 
 ''---------{$ColumnTable:<Variable>$}
 Private Function GetColumnTableValue(sType As String, encid As String, Optional sUnit As String) As String
-
+  
   Dim xfinal As String
   Dim asx As String[]
-
+  
   If sUnit Then
     ' xval = GetColumnValueRaw(sType, encid, sUnit)
     asx = GetCustomReportValue(sType, encid, sType, sUnit)
@@ -700,15 +700,15 @@ Private Function GetColumnTableValue(sType As String, encid As String, Optional 
     xfinal = ""
   Endif
   Return xfinal
-
+  
 End
 
 Private Function GetLastValue(sTable As String, sField As String, sOption As String, sValue As Variant) As Variant
-
+  
   Dim res As Result
   Dim sql As String
   Dim xx As Variant
-
+  
   sql = Subst("select &1 from &2 where &3", sField, sTable, sOption) & "=&1"
   res = modDatabase.$myConn.Exec(sql, sValue)
   If res.Available Then
@@ -718,15 +718,15 @@ Private Function GetLastValue(sTable As String, sField As String, sOption As Str
     xx = ""
   Endif
   Return xx
-
+  
 End
 
 Private Function GetSelectedValue(sTable As String, sField As String, sOption As String, sValue As Long, Optional encid As String) As Variant
-
+  
   Dim res As Result
   Dim sql As String
   Dim xx As Variant
-
+  
   If encid Then
     sql = Subst("select &1 from &2 where &3", sField, sTable, sOption) & "=&1 and fldencounterval=&2"
     res = modDatabase.$myConn.Exec(sql, sValue, encid)
@@ -740,15 +740,15 @@ Private Function GetSelectedValue(sTable As String, sField As String, sOption As
     xx = ""
   Endif
   Return xx
-
+  
 End
 
 Public Function GetReportNumber($encid As String, $Line As String) As String
-
+  
   If (String.InStr($Line, "RegdConsultationFree") > 0) Then
     $Line = Replace($Line, "{RegdConsultationFree}", GetLocaleNumberFormat(modBillings.GetRegistrationCost($encid), -2))
   Endif
-
+  
   If (String.InStr($Line, "TotalExpense") > 0) Then
     $Line = Replace($Line, "{TotalExpense}", GetLocaleNumberFormat(modNonMedical.TotalExpenseAmountbyPatient(modDatabase.$myConn, $encid), -2))
   Endif
@@ -764,18 +764,18 @@ Public Function GetReportNumber($encid As String, $Line As String) As String
   If (String.InStr($Line, "BalanceDeposit") > 0) Then
     $Line = Replace($Line, "{BalanceDeposit}", GetLocaleNumberFormat(modNonMedical.GetPatientDeposit(modDatabase.$myConn, $encid) - modNonMedical.TotalUnpaidValuePatient(modDatabase.$myConn, $encid), -2))
   Endif
-
+  
   If (String.InStr($Line, "LastInvoiceAmount") > 0) Then
     $Line = Replace($Line, "{LastInvoiceAmount}", CStr(modNonMedical.GetSelectedBillAmt($encid, "Last")))
   Endif
   If (String.InStr($Line, "FirstInvoiceAmount") > 0) Then
     $Line = Replace($Line, "{FirstInvoiceAmount}", CStr(modNonMedical.GetSelectedBillAmt($encid, "First")))
   Endif
-
+  
   If (String.InStr($Line, "AdmitDurationHour") > 0) Then
     $Line = Replace($Line, "{AdmitDurationHour}", Format(modPatient.GetHospitalStayInHours($encid) / 24, gb.Fixed))
   Endif
-
+  
   If (String.InStr($Line, "Gravida") > 0) Then
     $Line = Replace($Line, "{Gravida}", CStr(modPatient.GetObstetricFieldEnc(modPathoSub.GetObstetricField("Gravida"), $encid)))
   Endif
@@ -791,14 +791,14 @@ Public Function GetReportNumber($encid As String, $Line As String) As String
   If (String.InStr($Line, "Gestation") > 0) Then
     $Line = Replace($Line, "{Gestation}", CStr(modPatient.GetObstetricFieldEnc(modPathoSub.GetObstetricField("Gestation"), $encid)))
   Endif
-
+  
   If (String.InStr($Line, "Weight") > 0) Then
     $Line = Replace($Line, "{Weight}", CStr(modClinic.GetBodyWeight($encid)))
   Endif
   If (String.InStr($Line, "Height") > 0) Then
     $Line = Replace($Line, "{Height}", CStr(modClinic.GetPatientHeightinCm($encid)))
   Endif
-
+  
   If (String.InStr($Line, "Pulse_Rate") > 0) Then
     $Line = Replace($Line, "{Pulse_Rate}", modClinic.GetCurrExamValueSysConst($encid, "Pulse_Rate", "Last"))
   Endif
@@ -820,15 +820,15 @@ Public Function GetReportNumber($encid As String, $Line As String) As String
   If (String.InStr($Line, "Temperature_System") > 0) Then
     $Line = Replace($Line, "{Temperature_System}", modClinic.GetCurrExamValueSysConst($encid, "Temperature_System", "Last"))
   Endif
-
+  
   Return $Line
-
+  
 End
 
 Public Function GetCalcValue(sVariable As String, encid As String) As String
-
+  
   Dim sLine As String
-
+  
   sLine = sVariable
   If (String.InStr(sLine, "AgeInDays") > 0) Then
     sLine = Replace(sLine, "{AgeInDays}", CStr(DateDiff(modPatient.GetPatientBirthDay(encid), Now(), gb.Day)))
@@ -842,7 +842,7 @@ Public Function GetCalcValue(sVariable As String, encid As String) As String
   If (String.InStr(sLine, "Body_Mass_Index") > 0) Then
     sLine = Replace(sLine, "{Body_Mass_Index}", CStr(modSysCons.GetCalculationAValue("Body_Mass_Index", encid)))
   Endif
-
+  
   While (String.InStr(sLine, "$Last_Exam:") > 0)
     sLine = modReportVar.GetReporExamLastVal(encid, sLine)
   Wend
@@ -864,50 +864,50 @@ Public Function GetCalcValue(sVariable As String, encid As String) As String
   While (String.InStr(sLine, "$Right_Exam:") > 0)
     sLine = modReportVar.GetReporExamRight(encid, sLine)
   Wend
-
+  
   While (String.InStr(sLine, "$Last_Test:") > 0)
     sLine = modReportVar.GetReportTestLastVal(encid, sLine)
   Wend
   While (String.InStr(sLine, "$First_Test:") > 0)
     sLine = modReportVar.GetReportTestFirstVal(encid, sLine)
   Wend
-
+  
   While (String.InStr(sLine, "$Last_Radio:") > 0)
     sLine = modReportVar.GetReporRadioLastVal(encid, sLine)
   Wend
-
+  
   While (String.InStr(sLine, "$First_Radio:") > 0)
     sLine = modReportVar.GetReporRadioFirstVal(encid, sLine)
   Wend
-
+  
   While (String.InStr(sLine, "$Last_Demog:") > 0)
     sLine = modReportVar.GetReporDemogLastVal(encid, sLine)
   Wend
-
+  
   While (String.InStr(sLine, "$Last_History:") > 0)
     sLine = modReportVar.GetReporHistoryLastVal(encid, sLine)
   Wend
   While (String.InStr(sLine, "$Last_Discharge:") > 0)
     sLine = modReportVar.GetReporDischargeLastVal(encid, sLine)
   Wend
-
+  
   While (String.InStr(sLine, "$ColumnTable:") > 0)
     sLine = modReportVar.GetColumnTableLastVal(encid, sLine)
   Wend
-
+  
   While (String.InStr(sLine, "$Calc[") > 0)
     sLine = modReportVar.GetReportCalculation(sLine)
   Wend
-
+  
   Return sLine
-
+  
 End
 
 Public Function GetCalcValueFloat(sVariable As String, encid As String) As Float
-
+  
   Dim xxx As String
   Dim xval As Float
-
+  
   sVariable = GetReportNumber(encid, sVariable)
   xxx = GetCalcValue(sVariable, encid)
   If xxx Then
@@ -920,13 +920,13 @@ Public Function GetCalcValueFloat(sVariable As String, encid As String) As Float
     xval = 0
   Endif
   Return xval
-
+  
 End
 
 Public Function GetCalcValueString(sVariable As String, encid As String) As String
-
+  
   Dim xxx As String
-
+  
   xxx = sVariable
   xxx = GetReportVarTitle(xxx)
   xxx = GetReportVarPatient(encid, xxx)
@@ -934,16 +934,16 @@ Public Function GetCalcValueString(sVariable As String, encid As String) As Stri
   xxx = GetReportLastConsult(encid, xxx)
   xxx = GetReportBirthDetail(encid, xxx)
   xxx = GetReportVarExam(encid, xxx)
-
+  
   Return xxx
-
+  
 End
 
 Public Function GetCalcValueVariant(sVariable As String, encid As String) As Variant
-
+  
   Dim xxx As String
   Dim xval As Variant
-
+  
   xxx = sVariable
   xxx = GetCalcValueString(xxx, encid)
   xxx = GetCalcValue(xxx, encid)
@@ -957,13 +957,13 @@ Public Function GetCalcValueVariant(sVariable As String, encid As String) As Var
     xval = ""
   Endif
   Return xval
-
+  
 End
 
 Public Function GetSysConstantValue(sType As String, sysconst As String, encid As String) As String
-
+  
   Dim xval As String
-
+  
   If sType = "Exam" Then
     xval = modClinic.GetCurrExamValueSysConst(encid, sysconst, "Last")
   Else If sType = "Radio" Then
@@ -973,16 +973,16 @@ Public Function GetSysConstantValue(sType As String, sysconst As String, encid A
   Else If sType = "Demog" Then
     xval = modPatPatho.GetDemographicValue(encid, sysconst)
   Endif
-
+  
   Return xval
-
+  
 End
 
 Public Function GetLastQuantiParamValue(sType As String, sExam As String, encid As String) As Float
-
+  
   Dim xval As Variant
   Dim xfloat As Float
-
+  
   If sType = "Exam" Then
     xval = modClinic.GetCurrExamValueFromID("Last", encid, sExam)
   Else If sType = "Radio" Then
@@ -992,21 +992,21 @@ Public Function GetLastQuantiParamValue(sType As String, sExam As String, encid 
   Else If sType = "Demog" Then
     xval = modPatPatho.GetDemographicValue(encid, sExam)
   Endif
-
+  
   If xval Then
     xfloat = xval
   Else
     xfloat = 0
   Endif
-
+  
   Return xfloat
-
+  
 End
 
 Public Function GetLastQualiParamValue(sType As String, sExam As String, encid As String) As Variant
-
+  
   Dim xval As Variant
-
+  
   If sType = "Exam" Then
     xval = modClinic.GetCurrExamValueFromID("Last", encid, sExam)
   Else If sType = "Radio" Then
@@ -1016,15 +1016,15 @@ Public Function GetLastQualiParamValue(sType As String, sExam As String, encid A
   Else If sType = "Demog" Then
     xval = modPatPatho.GetDemographicValue(encid, sExam)
   Endif
-
+  
   Return xval
-
+  
 End
 
 ''--------------------------------- Variables --------------------------------------------------
 ''used by all report
 Public Function GetReportVarTitle($Line As String) As String
-
+  
   'Hospital Related
   If (String.InStr($Line, "HospitalName") > 0) Then
     $Line = Replace($Line, "{HospitalName}", modHelpVariable.$HospitalName)
@@ -1050,14 +1050,14 @@ Public Function GetReportVarTitle($Line As String) As String
   If (String.InStr($Line, "PatPortalURL") > 0) Then
     $Line = Replace($Line, "{PatPortalURL}", modBasic.$PatPortalURL)
   Endif
-
+  
   Return $Line
-
+  
 End
 
 ''used by all reports
 Public Function GetReportVarPatient($encid As String, $Line As String) As String
-
+  
   ' Patient Related
   If (String.InStr($Line, "Encounter") > 0) Then
     $Line = Replace($Line, "{Encounter}", $encid)
@@ -1077,7 +1077,7 @@ Public Function GetReportVarPatient($encid As String, $Line As String) As String
   If (String.InStr($Line, "PatientEthnicity") > 0) Then
     $Line = Replace($Line, "{PatientEthnicity}", modPatient.GetPatientEthnicity($encid))
   Endif
-
+  
   If (String.InStr($Line, "PatientMunicipality") > 0) Then
     $Line = Replace($Line, "{PatientMunicipality}", modPatient.GetPatFirAddressByEnc($encid))
   Endif
@@ -1126,7 +1126,7 @@ Public Function GetReportVarPatient($encid As String, $Line As String) As String
   If (String.InStr($Line, "DiscountPackae") > 0) Then
     $Line = Replace($Line, "{DiscountPackae}", modPatient.ShowDiscountCategEnc($encid))
   Endif
-
+  
   If (String.InStr($Line, "MotherEncounter") > 0) Then
     $Line = Replace($Line, "{MotherEncounter}", modPatient.GetMotherEncounter($encid))
   Endif
@@ -1136,7 +1136,7 @@ Public Function GetReportVarPatient($encid As String, $Line As String) As String
   If (String.InStr($Line, "MotherName") > 0) Then
     $Line = Replace($Line, "{MotherName}", modPatient.GetPatientNameByEnc(modPatient.GetMotherEncounter($encid)))
   Endif
-
+  
   ''Service variables
   If (String.InStr($Line, "ServiceType") > 0) Then
     $Line = Replace($Line, "{ServiceType}", modPatient.GetPatServiceType($encid))
@@ -1147,14 +1147,14 @@ Public Function GetReportVarPatient($encid As String, $Line As String) As String
   If (String.InStr($Line, "ServiceUnit") > 0) Then
     $Line = Replace($Line, "{ServiceUnit}", modPatient.GetPatServiceUnit($encid))
   Endif
-
+  
   Return $Line
-
+  
 End
 
 ''not used by invoice but used by report and custom report
 Public Function GetReportVarEncounter($encid As String, $Line As String) As String
-
+  
   'Encounter Related
   If (String.InStr($Line, "RegdDepartment") > 0) Then
     $Line = Replace($Line, "{RegdDepartment}", modPatient.GetAdmitLocation($encid))
@@ -1204,7 +1204,7 @@ Public Function GetReportVarEncounter($encid As String, $Line As String) As Stri
   If (String.InStr($Line, "RegdConsultationFree") > 0) Then
     $Line = Replace($Line, "{RegdConsultationFree}", GetLocaleNumberFormat(modBillings.GetRegistrationCost($encid), gb.Currency))
   Endif
-
+  
   If (String.InStr($Line, "TotalExpense") > 0) Then
     $Line = Replace($Line, "{TotalExpense}", GetLocaleNumberFormat(modNonMedical.TotalExpenseAmountbyPatient(modDatabase.$myConn, $encid), gb.Currency))
   Endif
@@ -1220,28 +1220,28 @@ Public Function GetReportVarEncounter($encid As String, $Line As String) As Stri
   If (String.InStr($Line, "BalanceDeposit") > 0) Then
     $Line = Replace($Line, "{BalanceDeposit}", GetLocaleNumberFormat(modNonMedical.GetPatientDeposit(modDatabase.$myConn, $encid) - modNonMedical.TotalUnpaidValuePatient(modDatabase.$myConn, $encid), gb.Currency))
   Endif
-
+  
   If (String.InStr($Line, "LastInvoiceNumber") > 0) Then
     $Line = Replace($Line, "{LastInvoiceNumber}", modNonMedical.GetSelectedBillNo($encid, "Last"))
   Endif
   If (String.InStr($Line, "FirstInvoiceNumber") > 0) Then
     $Line = Replace($Line, "{FirstInvoiceNumber}", modNonMedical.GetSelectedBillNo($encid, "First"))
   Endif
-
+  
   If (String.InStr($Line, "LastInvoiceAmount") > 0) Then
     $Line = Replace($Line, "{LastInvoiceAmount}", CStr(modNonMedical.GetSelectedBillAmt($encid, "Last")))
   Endif
   If (String.InStr($Line, "FirstInvoiceAmount") > 0) Then
     $Line = Replace($Line, "{FirstInvoiceAmount}", CStr(modNonMedical.GetSelectedBillAmt($encid, "First")))
   Endif
-
+  
   If (String.InStr($Line, "LastReceiptNumber") > 0) Then
     $Line = Replace($Line, "{LastReceiptNumber}", modNonMedical.GetSelectedReceiptNo($encid, "Last"))
   Endif
   If (String.InStr($Line, "FirstReceiptNumber") > 0) Then
     $Line = Replace($Line, "{FirstReceiptNumber}", modNonMedical.GetSelectedReceiptNo($encid, "First"))
   Endif
-
+  
   If (String.InStr($Line, "HIClaimCode") > 0) Then
     $Line = Replace($Line, "{HIClaimCode}", modNonMedical.GetNHSICLaimCode($encid))
   Endif
@@ -1257,7 +1257,7 @@ Public Function GetReportVarEncounter($encid As String, $Line As String) As Stri
   If (String.InStr($Line, "FirstClaimCode") > 0) Then
     $Line = Replace($Line, "{FirstClaimCode}", modClaim.GetCurrentClaimCodePrint($encid))
   Endif
-
+  
   If (String.InStr($Line, "RegistrationDateTime") > 0) Then
     $Line = Replace($Line, "{RegistrationDateTime}", GetDateTimeReport(modPatient.GetRecordDate($encid), gb.GeneralDate))
   Endif
@@ -1267,7 +1267,7 @@ Public Function GetReportVarEncounter($encid As String, $Line As String) As Stri
   If (String.InStr($Line, "RegistrationTime") > 0) Then
     $Line = Replace($Line, "{RegistrationTime}", GetDateTimeReport(modPatient.GetRecordDate($encid), gb.MediumTime))
   Endif
-
+  
   If (String.InStr($Line, "AdmissionDateTime") > 0) Then
     $Line = Replace($Line, "{AdmissionDateTime}", GetDateTimeReport(modPatient.GetAdmissionDate($encid), gb.GeneralDate))
   Endif
@@ -1277,7 +1277,7 @@ Public Function GetReportVarEncounter($encid As String, $Line As String) As Stri
   If (String.InStr($Line, "AdmissionTime") > 0) Then
     $Line = Replace($Line, "{AdmissionTime}", GetDateTimeReport(modPatient.GetAdmissionDate($encid), gb.MediumTime))
   Endif
-
+  
   If (String.InStr($Line, "DischargeDateTime") > 0) Then
     $Line = Replace($Line, "{DischargeDateTime}", GetDateTimeReport(modPatient.GetDischargeDate($encid), gb.GeneralDate))
   Endif
@@ -1302,7 +1302,7 @@ Public Function GetReportVarEncounter($encid As String, $Line As String) As Stri
   If (String.InStr($Line, "ReferLocation") > 0) Then
     $Line = Replace($Line, "{ReferLocation}", modPatient.GetReferLocation($encid))
   Endif
-
+  
   If (String.InStr($Line, "RegistrationUser") > 0) Then
     $Line = Replace($Line, "{RegistrationUser}", modPatient.GetPptientImpDateUser($encid, "Consultation"))
   Endif
@@ -1315,7 +1315,7 @@ Public Function GetReportVarEncounter($encid As String, $Line As String) As Stri
   If (String.InStr($Line, "ClearanceUser") > 0) Then
     $Line = Replace($Line, "{ClearanceUser}", modPatient.GetPptientImpDateUser($encid, "Clearance"))
   Endif
-
+  
   If (String.InStr($Line, "FinalDiagnosis") > 0) Then
     $Line = Replace($Line, "{FinalDiagnosis}", modString.TextToHTML(modPatient.PatientFindingList($encid, "Final Diagnosis").Join(gb.NewLine)))
   Endif
@@ -1343,7 +1343,7 @@ Public Function GetReportVarEncounter($encid As String, $Line As String) As Stri
   If (String.InStr($Line, "PatientTriageSymbol") > 0) Then
     $Line = Replace($Line, "{PatientTriageSymbol}", modMisc.GetColorValSymbol(modPatient.GetPatientColor($encid)))
   Endif
-
+  
   If (String.InStr($Line, "Gravida") > 0) Then
     $Line = Replace($Line, "{Gravida}", CStr(modPatient.GetObstetricFieldEnc(modPathoSub.GetObstetricField("Gravida"), $encid)))
   Endif
@@ -1371,16 +1371,16 @@ Public Function GetReportVarEncounter($encid As String, $Line As String) As Stri
   If (String.InStr($Line, "ObsStatus") > 0) Then
     $Line = Replace($Line, "{ObsStatus}", CStr(modPatient.GetObstetricFieldEnc(modPathoSub.GetObstetricField("Status"), $encid)))
   Endif
-
+  
   Return $Line
-
+  
 End
 
 ''used by custom report and by invoice on enabling extra label
 Public Function GetReportLastConsult($encid As String, $Line As String) As String
-
+  
   Dim res As Result
-
+  
   ''consultation
   If (String.InStr($Line, "LastConsultDept") > 0) Then
     $Line = Replace($Line, "{LastConsultDept}", GetLastValue("tblconsult", "fldconsultname", "fldencounterval", $encid))
@@ -1409,7 +1409,7 @@ Public Function GetReportLastConsult($encid As String, $Line As String) As Strin
   If (String.InStr($Line, "LastConsultOutcome") > 0) Then
     $Line = Replace($Line, "{LastConsultOutcome}", GetLastValue("tblconsult", "fldoutcome", "fldencounterval", $encid))
   Endif
-
+  
   If (String.InStr($Line, "LastConsultQue") > 0) Then
     res = modDatabase.$myConn.Exec("select fldconsultname,fldconsulttime,fldstatus,flduserid,fldbillingmode from tblconsult where fldencounterval=&1", $encid)
     If res.Available Then
@@ -1419,7 +1419,7 @@ Public Function GetReportLastConsult($encid As String, $Line As String) As Strin
       $Line = Replace($Line, "{LastConsultQue}", "")
     Endif
   Endif
-
+  
   ''OP Visit
   If (String.InStr($Line, "LastOPVisitDept") > 0) Then
     $Line = Replace($Line, "{LastOPVisitDept}", GetLastValue("tblopvisit", "fldconsultname", "fldencounterval", $encid))
@@ -1445,7 +1445,7 @@ Public Function GetReportLastConsult($encid As String, $Line As String) As Strin
   If (String.InStr($Line, "LastOPVisitOutcome") > 0) Then
     $Line = Replace($Line, "{LastOPVisitOutcome}", GetLastValue("tblopvisit", "fldoutcome", "fldencounterval", $encid))
   Endif
-
+  
   ''any
   If (String.InStr($Line, "LastVisitDate") > 0) Then
     $Line = Replace($Line, "{LastVisitDate}", GetDateTimeReport(modPatient.GetLastVisitDate($encid), gb.MediumDate))
@@ -1456,13 +1456,13 @@ Public Function GetReportLastConsult($encid As String, $Line As String) As Strin
   If (String.InStr($Line, "LastVisitLocation") > 0) Then
     $Line = Replace($Line, "{LastVisitLocation}", modPatient.GetLastVisitLocation($encid))
   Endif
-
+  
   Return $Line
-
+  
 End
 
 Public Function GetReportCurrConsult($encid As String, $Line As String, VarIndex As Long) As String
-
+  
   ''consultation
   If (String.InStr($Line, "CurrConsultDept") > 0) Then
     $Line = Replace($Line, "{CurrConsultDept}", GetSelectedValue("tblconsult", "fldconsultname", "fldid", VarIndex, $encid))
@@ -1491,13 +1491,13 @@ Public Function GetReportCurrConsult($encid As String, $Line As String, VarIndex
   If (String.InStr($Line, "CurrConsultOutcome") > 0) Then
     $Line = Replace($Line, "{CurrConsultOutcome}", GetSelectedValue("tblconsult", "fldoutcome", "fldid", VarIndex, $encid))
   Endif
-
+  
   Return $Line
-
+  
 End
 
 Public Function GetReportCurrOPVisit($encid As String, $Line As String, VarIndex As Long) As String
-
+  
   ''OP Visit
   If (String.InStr($Line, "CurrConsultDept") > 0) Then
     $Line = Replace($Line, "{CurrConsultDept}", GetSelectedValue("tblopvisit", "fldconsultname", "fldid", VarIndex, $encid))
@@ -1523,14 +1523,14 @@ Public Function GetReportCurrOPVisit($encid As String, $Line As String, VarIndex
   If (String.InStr($Line, "CurrConsultOutcome") > 0) Then
     $Line = Replace($Line, "{CurrConsultOutcome}", GetSelectedValue("tblopvisit", "fldoutcome", "fldid", VarIndex, $encid))
   Endif
-
+  
   Return $Line
-
+  
 End
 
 ''used for birth report custom report
 Public Function GetReportBirthDetail($encid As String, $Line As String) As String
-
+  
   If (String.InStr($Line, "Birth_MotherEncID") > 0) Then
     $Line = Replace($Line, "{Birth_MotherEncID}", modPatient.GetBirthValue("fldencounterval", $encid))
   Endif
@@ -1546,14 +1546,14 @@ Public Function GetReportBirthDetail($encid As String, $Line As String) As Strin
   If (String.InStr($Line, "Birth_DeliveryConsult") > 0) Then
     $Line = Replace($Line, "{Birth_DeliveryConsult}", modGeneral.GetUserFullName(modPatient.GetBirthValue("flddelphysician", $encid)))
   Endif
-
+  
   If (String.InStr($Line, "Birth_DeliveryDate") > 0) Then
     $Line = Replace($Line, "{Birth_DeliveryDate}", GetDateTimeReport(modPatient.GetBirthValue("flddeltime", $encid), gb.MediumDate))
   Endif
   If (String.InStr($Line, "Birth_DeliveryTime") > 0) Then
     $Line = Replace($Line, "{Birth_DeliveryTime}", GetDateTimeReport(modPatient.GetBirthValue("flddeltime", $encid), gb.MediumTime))
   Endif
-
+  
   If (String.InStr($Line, "Birth_BloodLoss") > 0) Then
     $Line = Replace($Line, "{Birth_BloodLoss}", CStr(modPatient.GetBirthValue("fldbloodloss", $encid)) & " mL")
   Endif
@@ -1563,14 +1563,14 @@ Public Function GetReportBirthDetail($encid As String, $Line As String) As Strin
   If (String.InStr($Line, "Birth_BabyBirthCode") > 0) Then
     $Line = Replace($Line, "{Birth_BabyBirthCode}", modPatient.GetBirthValue("fldbabyref", $encid))
   Endif
-
+  
   Return $Line
-
+  
 End
 
 ''used for procedure report custom report
 Public Function GetReportProcedureDetail($encid As String, $Line As String, sid As Long) As String
-
+  
   If (String.InStr($Line, "Procedure_Status") > 0) Then
     $Line = Replace($Line, "{Procedure_Status}", GetLastProcedureValue($encid, sid, "fldreportquali"))
   Endif
@@ -1589,7 +1589,7 @@ Public Function GetReportProcedureDetail($encid As String, $Line As String, sid 
   If (String.InStr($Line, "Procedure_Comment") > 0) Then
     $Line = Replace($Line, "{Procedure_Comment}", modPatPatho.GetUniProcedureDetail($encid, sid, "Operation Note"))
   Endif
-
+  
   If (String.InStr($Line, "Procedure_PreOperative_Indication") > 0) Then
     $Line = Replace($Line, "{Procedure_PreOperative_Indication}", modPatPatho.GetProcedureItemValue($encid, sid, "Pre-Operative Indication"))
   Endif
@@ -1599,31 +1599,31 @@ Public Function GetReportProcedureDetail($encid As String, $Line As String, sid 
   If (String.InStr($Line, "Procedure_PreOperative_Discussion") > 0) Then
     $Line = Replace($Line, "{Procedure_PreOperative_Discussion}", modPatPatho.GetUniProcedureDetail($encid, sid, "Pre-Operative Discussion"))
   Endif
-
+  
   If (String.InStr($Line, "Procedure_Anaesthesia_Technique") > 0) Then
     $Line = Replace($Line, "{Procedure_Anaesthesia_Technique}", modPatPatho.GetProcedureItemValue($encid, sid, "Anaesthesia Technique"))
   Endif
   If (String.InStr($Line, "Procedure_Anaesthesia_Comment") > 0) Then
     $Line = Replace($Line, "{Procedure_Anaesthesia_Comment}", modPatPatho.GetUniProcedureDetail($encid, sid, "Anaesthesia Note"))
   Endif
-
+  
   If (String.InStr($Line, "Procedure_PostOperative_Indication") > 0) Then
     $Line = Replace($Line, "{Procedure_PostOperative_Indication}", modPatPatho.GetProcedureItemValue($encid, sid, "Post-Operative Indication"))
   Endif
   If (String.InStr($Line, "Procedure_PostOperative_Comment") > 0) Then
     $Line = Replace($Line, "{Procedure_PostOperative_Comment}", modPatPatho.GetUniProcedureDetail($encid, sid, "Post-Operative Note"))
   Endif
-
+  
   Return $Line
-
+  
 End
 
 Private Function GetLastProcedureValue($encid As String, sid As Long, sField As String) As String
-
+  
   Dim sql As String
   Dim res As Result
   Dim xx As String
-
+  
   sql = Subst("select &1 from tblpatgeneral", sField) & " where fldid=&1 and fldencounterval=&2"
   res = modDatabase.$myConn.Exec(sql, sid, $encid)
   If res.Available Then
@@ -1632,12 +1632,12 @@ Private Function GetLastProcedureValue($encid As String, sid As Long, sField As 
     xx = ""
   Endif
   Return xx
-
+  
 End
 
 ''used by custom report only
 Public Function GetReportVarHistory($encid As String, $Line As String) As String
-
+  
   ''from exam table
   If (String.InStr($Line, "PresentingSymptoms") > 0) Then
     $Line = Replace($Line, "{PresentingSymptoms}", modString.TextToHTML(modPatReports.GetPatientPresentingSymptomReport($encid).Join(gb.NewLine)))
@@ -1645,7 +1645,7 @@ Public Function GetReportVarHistory($encid As String, $Line As String) As String
   If (String.InStr($Line, "GeneralComplaints") > 0) Then
     $Line = Replace($Line, "{GeneralComplaints}", modPatPatho.ShowSelectedHistory($encid, "General Complaints"))
   Endif
-
+  
   If (String.InStr($Line, "ClinicalFindings") > 0) Then
     $Line = Replace($Line, "{ClinicalFindings}", modString.TextToHTML(modPatReports.GetSelectFindingReport($encid, "Non-Vital").Join(gb.NewLine)))
   Endif
@@ -1670,7 +1670,7 @@ Public Function GetReportVarHistory($encid As String, $Line As String) As String
   If (String.InStr($Line, "DischargeExaminations") > 0) Then
     $Line = Replace($Line, "{DischargeExaminations}", modString.TextToHTML(modPatReports.GetSelectFindingReport($encid, "Discharge Examinations").Join(gb.NewLine)))
   Endif
-
+  
   If (String.InStr($Line, "AdmissionCause") > 0) Then
     $Line = Replace($Line, "{AdmissionCause}", modPatPatho.ShowSelectedHistory($encid, "Cause of Admission"))
   Endif
@@ -1703,7 +1703,7 @@ Public Function GetReportVarHistory($encid As String, $Line As String) As String
     $Line = Replace($Line, "{SocialHistory}", modPatPatho.ShowSelectedHistory($encid, "Social History"))
   Endif
   ''-------------------- end backward compatibility ---------------------------
-
+  
   If (String.InStr($Line, "InvestigationAdvised") > 0) Then
     $Line = Replace($Line, "{InvestigationAdvised}", modString.TextToHTML(modPatReports.OPDOrderLabRequest($encid).Join(gb.NewLine)))
   Endif
@@ -1716,7 +1716,7 @@ Public Function GetReportVarHistory($encid As String, $Line As String) As String
   If (String.InStr($Line, "ExtraRequests") > 0) Then
     $Line = Replace($Line, "{ExtraRequests}", modString.TextToHTML(modPatReports.OPDRequestMedString($encid, "Extra Items")))
   Endif
-
+  
   If (String.InStr($Line, "OPDRecommendation") > 0) Then
     $Line = Replace($Line, "{OPDRecommendation}", modPatReports.GetPatientNoteReport($encid, "Initial Planning"))
   Endif
@@ -1747,14 +1747,14 @@ Public Function GetReportVarHistory($encid As String, $Line As String) As String
   If (String.InStr($Line, "UTISummary") > 0) Then
     $Line = Replace($Line, "{UTISummary}", modPatient.GetHaiClassificationSet($encid, "UTI"))
   Endif
-
+  
   Return $Line
-
+  
 End
 
 ''used by custom report only
 Public Function GetReportVarExam($encid As String, $Line As String) As String
-
+  
   ''general
   If (String.InStr($Line, "HepaticStatus") > 0) Then
     $Line = Replace($Line, "{HepaticStatus}", modClinic.GetHepaticStatus($encid))
@@ -1768,7 +1768,7 @@ Public Function GetReportVarExam($encid As String, $Line As String) As String
   If (String.InStr($Line, "Height") > 0) Then
     $Line = Replace($Line, "{Height}", CStr(modClinic.GetPatientHeightinCm($encid)) & " cm")
   Endif
-
+  
   If (String.InStr($Line, "Pulse_Rate") > 0) Then
     $Line = Replace($Line, "{Pulse_Rate}", modClinic.GetCurrExamValueSysConst($encid, "Pulse_Rate", "Last"))
   Endif
@@ -1793,17 +1793,17 @@ Public Function GetReportVarExam($encid As String, $Line As String) As String
   If (String.InStr($Line, "Temperature_System") > 0) Then
     $Line = Replace($Line, "{Temperature_System}", modClinic.GetCurrExamValueSysConst($encid, "Temperature_System", "Last"))
   Endif
-
+  
   Return $Line
-
+  
 End
 
 ''other exam and tests
 Public Function GetReporExamLastVal($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$Last_Exam:") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$Last_Exam:", "$")
     xval = modClinic.GetCurrExamValueSysConst($encid, UnQuote(xx), "Last")
@@ -1814,14 +1814,14 @@ Public Function GetReporExamLastVal($encid As String, $Line As String) As String
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReporExamFirstVal($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$First_Exam:") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$First_Exam:", "$")
     xval = modClinic.GetCurrExamValueSysConst($encid, UnQuote(xx), "First")
@@ -1832,14 +1832,14 @@ Public Function GetReporExamFirstVal($encid As String, $Line As String) As Strin
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReporExamStructured($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$Struct_Exam:") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$Struct_Exam:", "$")
     xval = modClinic.GetCurrExamTimeValueStructured($encid, UnQuote(xx))
@@ -1850,14 +1850,14 @@ Public Function GetReporExamStructured($encid As String, $Line As String) As Str
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReporExamTriage($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$Triage_Exam:") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$Triage_Exam:", "$")
     xval = modClinic.GetCurrExamTimeValueSysConst($encid, UnQuote(xx), "Triage Examinations")
@@ -1868,14 +1868,14 @@ Public Function GetReporExamTriage($encid As String, $Line As String) As String
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReporExamDischarge($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$Discharge_Exam:") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$Discharge_Exam:", "$")
     xval = modClinic.GetCurrExamTimeValueSysConst($encid, UnQuote(xx), "Discharge Examinations")
@@ -1886,14 +1886,14 @@ Public Function GetReporExamDischarge($encid As String, $Line As String) As Stri
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReporExamLeft($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$Left_Exam:") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$Left_Exam:", "$")
     xval = modClinic.GetCurrLeftRightExamValue($encid, UnQuote(xx), "LEFT")
@@ -1904,14 +1904,14 @@ Public Function GetReporExamLeft($encid As String, $Line As String) As String
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReporExamRight($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$Right_Exam:") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$Right_Exam:", "$")
     xval = modClinic.GetCurrLeftRightExamValue($encid, UnQuote(xx), "RIGHT")
@@ -1922,14 +1922,14 @@ Public Function GetReporExamRight($encid As String, $Line As String) As String
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReportTestLastVal($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$Last_Test:") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$Last_Test:", "$")
     xval = modLabTest.GetCurrTesValuePos("Last", $encid, modFixLab.GetLabTestIDFromSysConst(Trim(xx)), MMain.$defUnit)
@@ -1940,14 +1940,14 @@ Public Function GetReportTestLastVal($encid As String, $Line As String) As Strin
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReportTestFirstVal($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$First_Test:") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$First_Test:", "$")
     xval = modLabTest.GetCurrTesValuePos("First", $encid, modFixLab.GetLabTestIDFromSysConst(Trim(xx)), MMain.$defUnit)
@@ -1958,14 +1958,14 @@ Public Function GetReportTestFirstVal($encid As String, $Line As String) As Stri
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReporRadioLastVal($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$Last_Radio:") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$Last_Radio:", "$")
     xval = modRadioTest.GetCurrRadioValueSysConst($encid, UnQuote(xx), "Last")
@@ -1976,14 +1976,14 @@ Public Function GetReporRadioLastVal($encid As String, $Line As String) As Strin
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReporRadioFirstVal($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$First_Radio:") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$First_Radio:", "$")
     xval = modRadioTest.GetCurrRadioValueSysConst($encid, UnQuote(xx), "First")
@@ -1994,15 +1994,15 @@ Public Function GetReporRadioFirstVal($encid As String, $Line As String) As Stri
     Endif
   Endif
   Return $Line
-
+  
 End
 
 ''demographics
 Public Function GetReporDemogLastVal($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$Last_Demog:") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$Last_Demog:", "$")
     xval = modPatPatho.GetDemographicValue($encid, UnQuote(xx))
@@ -2013,14 +2013,14 @@ Public Function GetReporDemogLastVal($encid As String, $Line As String) As Strin
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReporHistoryLastVal($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$Last_History:") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$Last_History:", "$")
     xval = modPatPatho.ShowSelectedHistory($encid, UnQuote(xx))
@@ -2031,14 +2031,14 @@ Public Function GetReporHistoryLastVal($encid As String, $Line As String) As Str
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReporDischargeLastVal($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$Last_Discharge:") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$Last_Discharge:", "$")
     xval = modPatPatho.ShowSelectedNotes($encid, UnQuote(xx))
@@ -2049,14 +2049,14 @@ Public Function GetReporDischargeLastVal($encid As String, $Line As String) As S
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetColumnTableLastVal($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$ColumnTable:") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$ColumnTable:", "$")
     xval = GetColumnTableValue(UnQuote(xx), $encid, "")
@@ -2067,30 +2067,30 @@ Public Function GetColumnTableLastVal($encid As String, $Line As String) As Stri
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetUserProfileCustom($Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$UserProfile[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$UserProfile[", "]")
     xval = GetFooterText(UnQuote(xx))
     $Line = Replace($Line, "$UserProfile[" & xx & "]", Trim(xval))
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReporQueryCustom($Line As String) As String
-
+  
   Dim xx As String
   Dim res As Result
   Dim ref As String
   Dim xval As String
-
+  
   Dim asx As String[]
   Dim xallowtab As String[]
   Dim xselect As String[]
@@ -2098,7 +2098,7 @@ Public Function GetReporQueryCustom($Line As String) As String
   Dim xwhere As String[]
   Dim sql As String
   Dim xcheck As Integer
-
+  
   If (String.InStr($Line, "$SQLValue[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$SQLValue[", "]")
     asx = Split(xx, ";")
@@ -2110,7 +2110,7 @@ Public Function GetReporQueryCustom($Line As String) As String
       xselect = Split(asx[0], "=")
       xtable = Split(asx[1], "=")
       xwhere = Split(asx[2], "=")
-
+      
       xallowtab = modBasic.$RepQuerytable
       If xallowtab.Exist(UnQuote(xtable[1])) = True Then
         If xselect[0] = "SELECT" And If xtable[0] = "TABLE" And If xwhere[0] = "WHERE" Then
@@ -2128,23 +2128,23 @@ Public Function GetReporQueryCustom($Line As String) As String
       Else
         $Line = Replace($Line, "$SQLValue[" & xx & "]", "")
       Endif
-
+      
     Else
       $Line = Replace($Line, "$SQLValue[" & xx & "]", "")
     Endif
   Endif
-
+  
   Return $Line
-
+  
 End
 
 Public Function GetReporQueryArrayCustom($Line As String) As String
-
+  
   Dim xx As String
   Dim res As Result
   Dim ref As String
   Dim xval As String[]
-
+  
   Dim asx As String[]
   Dim xallowtab As String[]
   Dim xselect As String[]
@@ -2152,7 +2152,7 @@ Public Function GetReporQueryArrayCustom($Line As String) As String
   Dim xwhere As String[]
   Dim sql As String
   Dim xcheck As Integer
-
+  
   If (String.InStr($Line, "$SQLArray[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$SQLArray[", "]")
     asx = Split(xx, ";")
@@ -2164,7 +2164,7 @@ Public Function GetReporQueryArrayCustom($Line As String) As String
       xselect = Split(asx[0], "=")
       xtable = Split(asx[1], "=")
       xwhere = Split(asx[2], "=")
-
+      
       xallowtab = modBasic.$RepQuerytable
       If xallowtab.Exist(UnQuote(xtable[1])) = True Then
         If xselect[0] = "SELECT" And If xtable[0] = "TABLE" And If xwhere[0] = "WHERE" Then
@@ -2184,22 +2184,22 @@ Public Function GetReporQueryArrayCustom($Line As String) As String
       Else
         $Line = Replace($Line, "$SQLArray[" & xx & "]", "")
       Endif
-
+      
     Else
       $Line = Replace($Line, "$SQLArray[" & xx & "]", "")
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReporQueryTableCustom($Line As String) As String
-
+  
   Dim xx As String
   Dim res As Result
   Dim ref As ResultField
   Dim xval As String
-
+  
   Dim asx As String[]
   Dim xallowtab As String[]
   Dim xselect As String[]
@@ -2207,7 +2207,7 @@ Public Function GetReporQueryTableCustom($Line As String) As String
   Dim xwhere As String[]
   Dim sql As String
   Dim xcheck As Integer
-
+  
   If (String.InStr($Line, "$SQLTable[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$SQLTable[", "]")
     asx = Split(xx, ";")
@@ -2219,14 +2219,14 @@ Public Function GetReporQueryTableCustom($Line As String) As String
       xselect = Split(asx[0], "=")
       xtable = Split(asx[1], "=")
       xwhere = Split(asx[2], "=")
-
+      
       xallowtab = modBasic.$RepQuerytable
       If xallowtab.Exist(UnQuote(xtable[1])) = True Then
         If xselect[0] = "SELECT" And If xtable[0] = "TABLE" And If xwhere[0] = "WHERE" Then
           sql = Subst("SELECT &1 FROM &2 WHERE ", modDBApp.GetSecureSQL(UnQuote(xselect[1])), UnQuote(xtable[1])) & UnQuote(xwhere.Extract(1, xwhere.Count - 1).Join("="))
           res = modDatabase.$myConn.Exec(sql)
           If res.Available Then
-
+            
             xval = modRepoTemplete.HTMLTableSyntax()
             xval = xval & "<tr>" & gb.NewLine
             For Each ref In res.Fields
@@ -2241,7 +2241,7 @@ Public Function GetReporQueryTableCustom($Line As String) As String
               xval = xval & "</tr>" & gb.NewLine
             Next
             xval = xval & "</table>" & gb.NewLine
-
+            
           Endif
           $Line = Replace($Line, "$SQLTable[" & xx & "]", xval)
         Else
@@ -2250,23 +2250,23 @@ Public Function GetReporQueryTableCustom($Line As String) As String
       Else
         $Line = Replace($Line, "$SQLTable[" & xx & "]", "")
       Endif
-
+      
     Else
       $Line = Replace($Line, "$SQLTable[" & xx & "]", "")
     Endif
   Endif
-
+  
   Return $Line
-
+  
 End
 
 Public Function GetReporQuerySerialTableCustom($Line As String) As String
-
+  
   Dim xx As String
   Dim res As Result
   Dim ref As ResultField
   Dim xval As String
-
+  
   Dim asx As String[]
   Dim xallowtab As String[]
   Dim xselect As String[]
@@ -2275,7 +2275,7 @@ Public Function GetReporQuerySerialTableCustom($Line As String) As String
   Dim sql As String
   Dim k As Integer
   Dim xcheck As Integer
-
+  
   If (String.InStr($Line, "$SQLAutoTable[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$SQLAutoTable[", "]")
     asx = Split(xx, ";")
@@ -2287,14 +2287,14 @@ Public Function GetReporQuerySerialTableCustom($Line As String) As String
       xselect = Split(asx[0], "=")
       xtable = Split(asx[1], "=")
       xwhere = Split(asx[2], "=")
-
+      
       xallowtab = modBasic.$RepQuerytable
       If xallowtab.Exist(UnQuote(xtable[1])) = True Then
         If xselect[0] = "SELECT" And If xtable[0] = "TABLE" And If xwhere[0] = "WHERE" Then
           sql = Subst("SELECT &1 FROM &2 WHERE ", modDBApp.GetSecureSQL(UnQuote(xselect[1])), UnQuote(xtable[1])) & UnQuote(xwhere.Extract(1, xwhere.Count - 1).Join("="))
           res = modDatabase.$myConn.Exec(sql)
           If res.Available Then
-
+            
             xval = modRepoTemplete.HTMLTableSyntax()
             xval = xval & "<tr>" & gb.NewLine
             xval = xval & "<td class='reportmid_table_h'>" & "SNo" & "</td>" & gb.NewLine
@@ -2313,7 +2313,7 @@ Public Function GetReporQuerySerialTableCustom($Line As String) As String
               k = k + 1
             Next
             xval = xval & "</table>" & gb.NewLine
-
+            
           Endif
           $Line = Replace($Line, "$SQLAutoTable[" & xx & "]", xval)
         Else
@@ -2322,22 +2322,22 @@ Public Function GetReporQuerySerialTableCustom($Line As String) As String
       Else
         $Line = Replace($Line, "$SQLAutoTable[" & xx & "]", "")
       Endif
-
+      
     Else
       $Line = Replace($Line, "$SQLAutoTable[" & xx & "]", "")
     Endif
   Endif
-
+  
   Return $Line
-
+  
 End
 
 Public Function GetCustFormatValue($Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
   Dim asx As String[]
-
+  
   If (String.InStr($Line, "$Format[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$Format[", "]")
     asx = Split(xx, ";")
@@ -2353,15 +2353,15 @@ Public Function GetCustFormatValue($Line As String) As String
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReportExecArgs($Line As String) As String
-
+  
   Dim xx As String
   Dim xargs As String[]
   Dim xval As String
-
+  
   If (String.InStr($Line, "$Exec[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$Exec[", "]")
     xargs = Split(xx, ";")
@@ -2374,14 +2374,14 @@ Public Function GetReportExecArgs($Line As String) As String
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetShellScriptValue($Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$ShellScript[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$ShellScript[", "]")
     modBasic.DebugString("Execute " & xx)
@@ -2393,13 +2393,13 @@ Public Function GetShellScriptValue($Line As String) As String
     Endif
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReportScript($Line As String) As String
-
+  
   Dim xx As String
-
+  
   If (String.InStr($Line, "$Script1[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$Script1[", "]")
     $Line = Replace($Line, "$Script1[" & xx & "]", GetExternalVariable(1, xx))
@@ -2421,30 +2421,30 @@ Public Function GetReportScript($Line As String) As String
     $Line = Replace($Line, "$Script5[" & xx & "]", GetExternalVariable(5, xx))
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetReportCalculation($Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$Calc[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$Calc[", "]")
     xval = CalculateSelectedText(UnQuote(xx))
     $Line = Replace($Line, "$Calc[" & xx & "]", xval)
   Endif
   Return $Line
-
+  
 End
 
 ''use only for numericals
 Private Function CalculateSelectedText(sExpression As String) As String
-
+  
   Dim arcmd As String
   Dim yy As String
   Dim xx As String
-
+  
   arcmd = "gbx3 -e " & Quote(Trim(sExpression))
   modBasic.$ErrorLastString = sExpression
   modBasic.DebugString("Execute " & arcmd)
@@ -2455,11 +2455,11 @@ Private Function CalculateSelectedText(sExpression As String) As String
     xx = Trim(yy)
   Endif
   Return xx
-
+  
 End
 
 Public Function ClearRemainingString($Line As String) As String
-
+  
   If (String.InStr($Line, "FooterSummary") > 0) Then
     $Line = Replace($Line, "{FooterSummary}", "")
   Endif
@@ -2472,13 +2472,13 @@ Public Function ClearRemainingString($Line As String) As String
   If (String.InStr($Line, "Footer3") > 0) Then
     $Line = Replace($Line, "{Footer3}", "")
   Endif
-
+  
   Return $Line
-
+  
 End
 
 Public Function GetPatientSMSVAr($encid As String, $Line As String) As String
-
+  
   $Line = modReportVar.GetReportVarPatient($encid, $Line)
   $Line = modReportVar.GetReportVarEncounter($encid, $Line)
   If (String.InStr($Line, "WebPatPassword") > 0) Then
@@ -2487,25 +2487,25 @@ Public Function GetPatientSMSVAr($encid As String, $Line As String) As String
   If (String.InStr($Line, "WebEncPassword") > 0) Then
     $Line = Replace($Line, "{WebEncPassword}", modPassword.GetPatientWebPassword($encid, False))
   Endif
-
+  
   Return $Line
-
+  
 End
 
 Public Function GetDoctorSMSVAr($encid As String, $Line As String) As String
-
+  
   $Line = modReportVar.GetReportVarPatient($encid, $Line)
   $Line = modReportVar.GetReportVarEncounter($encid, $Line)
-
+  
   Return $Line
-
+  
 End
 
 Public Function GetFooterOne($Line As String) As String
-
+  
   Dim usr1 As String
   Dim xusrfoot As String
-
+  
   If $FoottUser1 Then
     usr1 = $FoottUser1
   Else
@@ -2516,22 +2516,22 @@ Public Function GetFooterOne($Line As String) As String
       usr1 = ""
     Endif
   Endif
-
+  
   If usr1 Then
     If (String.InStr($Line, "Footer1") > 0) Then
       $Line = Replace($Line, "{Footer1}", GetFooterText(usr1))                                                                            ''
     Endif
   Endif
-
+  
   Return $Line
-
+  
 End
 
 Public Function GetFooterTwo($Line As String) As String
-
+  
   Dim usr2 As String
   Dim xusrfoot As String
-
+  
   If $FoottUser2 Then
     usr2 = $FoottUser2
   Else
@@ -2542,22 +2542,22 @@ Public Function GetFooterTwo($Line As String) As String
       usr2 = ""
     Endif
   Endif
-
+  
   If usr2 Then
     If (String.InStr($Line, "Footer2") > 0) Then
       $Line = Replace($Line, "{Footer2}", GetFooterText(usr2))
     Endif
   Endif
-
+  
   Return $Line
-
+  
 End
 
 Public Function GetFooterThree($Line As String) As String
-
+  
   Dim usr3 As String
   Dim xusrfoot As String
-
+  
   If $FoottUser3 Then
     usr3 = $FoottUser3
   Else
@@ -2568,21 +2568,21 @@ Public Function GetFooterThree($Line As String) As String
       usr3 = ""
     Endif
   Endif
-
+  
   If usr3 Then
     If (String.InStr($Line, "Footer3") > 0) Then
       $Line = Replace($Line, "{Footer3}", GetFooterText(usr3))
     Endif
   Endif
-
+  
   Return $Line
-
+  
 End
 
 Public Function GetFooterComment($Line As String, $commentText As String) As String
-
+  
   Dim xcomment As String
-
+  
   If (String.InStr($Line, "COMMENT") > 0) Then
     xcomment = modSettings.ShowSettingFromFIle("ReportFormat/ShowComment")
     If xcomment Then
@@ -2595,45 +2595,45 @@ Public Function GetFooterComment($Line As String, $commentText As String) As Str
       $Line = Replace($Line, "{COMMENT}", "")
     Endif
   Endif
-
+  
   Return $Line
-
+  
 End
 
 Public Function GetReportFooterSetting($Line As String, $commentText As String) As String
-
+  
   $Line = GetFooterOne($Line)
   $Line = GetFooterTwo($Line)
   $Line = GetFooterThree($Line)
   $Line = GetFooterComment($Line, $commentText)
-
+  
   Return $Line
-
+  
 End
 
 Public Function BlankLinesAccSetting(sSetting As String) As String
-
+  
   Dim xx As String
   Dim xsetn As String
-
+  
   xsetn = modSettings.ShowSettingFromFIle(sSetting)
   If xsetn Then
     xx = modString.HTMLBlankLines(CInt(xsetn))
   Else
     xx = ""
   Endif
-
+  
   Return xx
-
+  
 End
 
 Public Function GetExternalVariable(i As Integer, Optional sArg As String) As String
-
+  
   Dim xx As String
   Dim xscript As String
   Dim xexec As String
   Dim xarg As String[]
-
+  
   xscript = modSettings.ShowSettingFromFIle("Report" & "/ExternalScript" & CStr(i))
   xexec = modSettings.ShowSettingFromFIle("Report" & "/Exec_ExternalScript" & CStr(i))
   xarg = New String[]
@@ -2651,12 +2651,12 @@ Public Function GetExternalVariable(i As Integer, Optional sArg As String) As St
     xx = ""
   Endif
   Return xx
-
+  
 End
 
 ''====================== Different in desktop/web =================
 Public Function GetReportVarImages($encid As String, $Line As String) As String
-
+  
   If (String.InStr($Line, "PatientImage") > 0) Then
     $Line = Replace($Line, "{PatientImage}", modImage.DisplayPersonImageData("Patient", modPatient.GetPatientNoByEnc($encid)))
   Endif
@@ -2666,18 +2666,18 @@ Public Function GetReportVarImages($encid As String, $Line As String) As String
   If (String.InStr($Line, "PatientQRCode") > 0) Then
     $Line = Replace($Line, "{PatientQRCode}", modDevAll.MakeQRCode($encid))
   Endif
-
+  
   Return $Line
-
+  
 End
 
 ''--------------------------------------------- Barcode option ----------------------------
 Public Function GetPortalLinkQRCode($encid As String, sType As String) As String
-
+  
   Dim xurLink As String
   Dim xval As String
   Dim xfinal As String
-
+  
   xurLink = modSettings.ShowSettingFromFIle(sType & "/QRCodeLink")
   If xurLink Then
     If xurLink = "Archive:All Categories" Then
@@ -2690,20 +2690,20 @@ Public Function GetPortalLinkQRCode($encid As String, sType As String) As String
       xval = modGeneral.GetQRCodeRemoteReport($encid, modBasic.$PatPortalURL, "general")
     Endif
     xfinal = xval
-
+    
   Else
     xfinal = ""
   Endif
-
+  
   Return xfinal
-
+  
 End
 
 Public Function GetBarcodeImage($encid As String, Optional sHash As String) As String
-
+  
   Dim barcode As String
   Dim xpatimg As String
-
+  
   xpatimg = modSettings.ShowSettingFromFIle("ReportFormat/PatientImage")
   If xpatimg = "No Image" Then
     barcode = ""
@@ -2720,91 +2720,91 @@ Public Function GetBarcodeImage($encid As String, Optional sHash As String) As S
   Else
     barcode = modDevAll.MakeQRCode($encid)
   Endif
-
+  
   Return barcode
-
+  
 End
 
 ''embed images
 Public Function GetBarCodeCustom($Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$BarCode[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$BarCode[", "]")
     xval = modDevAll.GetBarCodeWithOptions(xx)
     $Line = Replace($Line, "$BarCode[" & xx & "]", Trim(xval))
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetQRCodeCustom($Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$QRCode[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$QRCode[", "]")
     xval = modDevAll.MakeQRCode(xx)
     $Line = Replace($Line, "$QRCode[" & xx & "]", Trim(xval))
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetRemoteScanQRCode($encid As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$ScanQRCodeDirect[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$ScanQRCodeDirect[", "]")
     xval = modGeneral.GetQRCodeRemoteReport($encid, xx, "direct")
     $Line = Replace($Line, "$ScanQRCodeDirect[" & xx & "]", Trim(xval))
   Endif
-
+  
   If (String.InStr($Line, "$ScanQRCodeTest[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$ScanQRCodeTest[", "]")
     xval = modGeneral.GetQRCodeRemoteReport($encid, xx, "test")
     $Line = Replace($Line, "$ScanQRCodeTest[" & xx & "]", Trim(xval))
   Endif
-
+  
   If (String.InStr($Line, "$ScanQRCodeRadio[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$ScanQRCodeRadio[", "]")
     xval = modGeneral.GetQRCodeRemoteReport($encid, xx, "radio")
     $Line = Replace($Line, "$ScanQRCodeRadio[" & xx & "]", Trim(xval))
   Endif
-
+  
   If (String.InStr($Line, "$ScanQRCodeGeneral[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$ScanQRCodeGeneral[", "]")
     xval = modGeneral.GetQRCodeRemoteReport($encid, xx, "general")
     $Line = Replace($Line, "$ScanQRCodeGeneral[" & xx & "]", Trim(xval))
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetRemoteScanHashCode($encid As String, sHash As String, $Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$ScanQRCodeHash[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$ScanQRCodeHash[", "]")
     xval = modGeneral.GetQRCodeRemoteReport($encid, xx, $encid & "@" & sHash)
     $Line = Replace($Line, "$ScanQRCodeHash[" & xx & "]", Trim(xval))
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetBarCodeInvoicePrint(sBillNo As String) As String
-
+  
   Dim xval As String
   Dim xbar As String
-
+  
   xbar = modDevAll.GetBarCodeWithOptions(sBillNo)
   If Exist(xbar) Then
     xval = xbar
@@ -2812,14 +2812,14 @@ Public Function GetBarCodeInvoicePrint(sBillNo As String) As String
     xval = ""
   Endif
   Return xval
-
+  
 End
 
 Public Function GetQRCodeInvoicePrint(sBillNo As String) As String
-
+  
   Dim xval As String
   Dim xbar As String
-
+  
   xbar = modDevAll.MakeQRCode(sBillNo)
   If Exist(xbar) Then
     xval = xbar
@@ -2827,29 +2827,29 @@ Public Function GetQRCodeInvoicePrint(sBillNo As String) As String
     xval = ""
   Endif
   Return xval
-
+  
 End
 
 Public Function GetPatImageCustom($Line As String) As String
-
+  
   Dim xx As String
   Dim xval As String
-
+  
   If (String.InStr($Line, "$PatImage[") > 0) Then
     xx = modString.GetSelectedTextBetween($Line, "$PatImage[", "]")
     xval = modImage.DisplayPersonImageData("Patient", modPatient.GetPatientNoByEnc(xx))
     $Line = Replace($Line, "$PatImage[" & xx & "]", Trim(xval))
   Endif
   Return $Line
-
+  
 End
 
 Public Function GetInvoiceDetailSpcificPrint(sLine As String) As String
-
+  
   Dim xx As String
   Dim asx As String[]
   Dim xval As String
-
+  
   If (String.InStr(sLine, "$InvoiceData[") > 0) Then
     xx = modString.GetSelectedTextBetween(sLine, "$InvoiceData[", "]")
     asx = Split(xx, ";")
@@ -2861,21 +2861,21 @@ Public Function GetInvoiceDetailSpcificPrint(sLine As String) As String
     sLine = Replace(sLine, "$InvoiceData[" & xx & "]", Trim(xval))
   Endif
   Return sLine
-
+  
 End
 
 ''----------------------------------------- Report Footer --------------------------------------------
 Public Function GetFooterText(sUser As String) As String
-
+  
   Dim res As Result
   Dim tmpfile As String
   Dim sText As String
   Dim hFile As Blob
   Dim xsigna As String '
-
+  
   res = modDatabase.$myConn.Exec("select fldname,fldnamefont,fldsigimage,fldtitle,flddetail,flddefault from tblreportuser where flduserid=&1", sUser)
   If res.Available = True Then
-
+    
     If res["flddefault"] = "Image" Then
       hFile = res["fldsigimage"]
       If hFile.Length Then
@@ -2887,22 +2887,22 @@ Public Function GetFooterText(sUser As String) As String
     Else
       sText = modString.GetFormatTextFontString(res["fldname"], res["fldnamefont"]) & "<br>" & modString.TextToHTML(res["fldtitle"],,, True) & "<br>" & modString.TextToHTML(res["flddetail"],, "9pt")
     Endif
-
+    
   Else
     sText = modGeneral.GetUserFullName(sUser)
   Endif
-
+  
   Return sText
-
+  
 End
 
 ''=============== List ==================
 Public Sub GetReportVarCollection(sType As String) As Variant[]
-
+  
   Dim ListView1 As Variant[]
-
+  
   ListView1 = New Variant[]
-
+  
   If sType = "General Param" Then
     ListView1.Add(["{HospitalName}", "Hospital Name"])
     ListView1.Add(["{HospitalAddress}", "Hospital Address"])
@@ -2914,7 +2914,7 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{Footer1}", "Signature1"])
     ListView1.Add(["{Footer2}", "Signature2"])
     ListView1.Add(["{Footer3}", "Signature3"])
-
+    
   Else If sType = "Patient Param" Then
     ListView1.Add(["{Encounter}", "Encounter ID"])
     ListView1.Add(["{PatientNo}", "Patient No"])
@@ -2937,19 +2937,19 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{ContactNo}", "Contact No"])
     ListView1.Add(["{Age/Sex}", "Age/Sex"])
     ListView1.Add(["{PatientDOB}", "Date of Birth"])
-
+    
     ListView1.Add(["{PatientImage}", "Photograph"])
     ListView1.Add(["{PatientBarCode}", "Bar Code"])
     ListView1.Add(["{PatientQRCode}", "QR Code"])
-
+    
     ListView1.Add(["{MotherEncounter}", "Mother Encounter ID"])
     ListView1.Add(["{MotherPatientNo}", "Mother Patient No"])
     ListView1.Add(["{MotherName}", "Mother Name"])
-
+    
     ListView1.Add(["{ServiceType}", "Service Type"])
     ListView1.Add(["{ServiceRank}", "Service Rank"])
     ListView1.Add(["{ServiceUnit}", "Service Unit"])
-
+    
   Else If sType = "Encounter Param" Then
     ListView1.Add(["{DiscountPackae}", "Discount Package"])
     ListView1.Add(["{RegdDepartment}", "Regd Department"])
@@ -2968,26 +2968,26 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{Consultant}", "Consultant"])
     ListView1.Add(["{ConsultantID}", "Consultant ID"])
     ListView1.Add(["{RegdConsultationFree}", "RegdConsultation Free"])
-
+    
     ListView1.Add(["{TotalExpense}", "Total Expense"])
     ListView1.Add(["{TotalPayment}", "Total Payment"])
     ListView1.Add(["{CurrentDeposit}", "Current Deposit"])
     ListView1.Add(["{NonInvoicedExpenses}", "Non-Invoiced Expenses"])
     ListView1.Add(["{BalanceDeposit}", "Balance Deposit"])
-
+    
     ListView1.Add(["{LastInvoiceNumber}", "Last InvoiceNumber"])
     ListView1.Add(["{FirstInvoiceNumber}", "First InvoiceNumber"])
     ListView1.Add(["{FirstInvoiceAmount}", "First InvoiceAmount"])
     ListView1.Add(["{LastInvoiceAmount}", "Last InvoiceAmount"])
     ListView1.Add(["{FirstReceiptNumber}", "First ReceiptNumber"])
     ListView1.Add(["{LastReceiptNumber}", "Last ReceiptNumber"])
-
+    
     ListView1.Add(["{HIClaimCode}", "HI Claim Code"])
     ListView1.Add(["{SSFClaimCode}", "SSF Claim Code"])
     ListView1.Add(["{LastInvReference}", "Last InvoiceReference"])
     ListView1.Add(["{FirstClaimCode}", "First Claim Code"])
     ListView1.Add(["{LastClaimCode}", "Last Claim Code"])
-
+    
     ListView1.Add(["{RegistrationDateTime}", "Registration DateTime"])
     ListView1.Add(["{RegistrationDate}", "Registration Date"])
     ListView1.Add(["{RegistrationTime}", "Registration Time"])
@@ -3002,12 +3002,12 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{FollowUpDate}", "Follow Up Date"])
     ListView1.Add(["{FollowUpTime}", "Follow Up Time"])
     ListView1.Add(["{ReferLocation}", "Refer Location"])
-
+    
     ListView1.Add(["{RegistrationUser}", "Registration User"])
     ListView1.Add(["{AdmissionUser}", "Admission User"])
     ListView1.Add(["{DischargeUser}", "Discharge User"])
     ListView1.Add(["{ClearanceUser}", "Discharge Clearance"])
-
+    
     ListView1.Add(["{FinalDiagnosis}", "Final Diagnosis"])
     ListView1.Add(["{ProvisionalDiagnosis}", "Provisional Diagnosis"])
     ListView1.Add(["{FinalDiagnosisClass}", "Final Diagnosis Class"])
@@ -3017,7 +3017,7 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{DrugAllergy}", "Drug Allergy"])
     ListView1.Add(["{PatientTriageColor}", "Triage Color"])
     ListView1.Add(["{PatientTriageSymbol}", "Triage Symbol"])
-
+    
   Else If sType = "Obstetrics Param" Then
     ListView1.Add(["{Gravida}", "Gravida"])
     ListView1.Add(["{Parity}", "Parity"])
@@ -3028,7 +3028,7 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{Gestation}", "Gestation Age"])
     ListView1.Add(["{ObsPresentation}", "Obs Presentation"])
     ListView1.Add(["{ObsStatus}", "Obs Status"])
-
+    
   Else If sType = "Consultation Param" Then
     ListView1.Add(["{LastConsultDept}", "LastConsultDept"])
     ListView1.Add(["{LastConsultRoom}", "LastConsultRoom"])
@@ -3051,7 +3051,7 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{LastVisitDate}", "LastVisitDate"])
     ListView1.Add(["{LastVisitTime}", "LastVisitTime"])
     ListView1.Add(["{LastVisitLocation}", "LastVisitLocation"])
-
+    
   Else If sType = "Delivery Param" Then
     ListView1.Add(["{Birth_MotherEncID}", "Birth:MotherEncID"])
     ListView1.Add(["{Birth_MotherName}", "Birth:MotherName"])
@@ -3063,7 +3063,7 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{Birth_BloodLoss}", "Birth:BloodLoss"])
     ListView1.Add(["{Birth_BabyWeight}", "Birth:BabyWeight"])
     ListView1.Add(["{Birth_BabyBirthCode}", "Birth:BabyCode"])
-
+    
   Else If sType = "Procedure Param" Then
     ListView1.Add(["{Procedure_Status}", "Procedure:Status"])
     ListView1.Add(["{Procedure_Name}", "Procedure:Name"])
@@ -3071,7 +3071,7 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{Procedure_Summary}", "Procedure:Summary"])
     ListView1.Add(["{Procedure_Personnel}", "Procedure:Personnel"])
     ListView1.Add(["{Procedure_Comment}", "Procedure:Comment"])
-
+    
     ListView1.Add(["{Procedure_PreOperative_Indication}", "Procedure:PreOperative_Indication"])
     ListView1.Add(["{Procedure_PreOperative_Comment}", "Procedure:PreOperative_Comment"])
     ListView1.Add(["{Procedure_PreOperative_Discussion}", "Procedure:PreOperative_Discussion"])
@@ -3079,11 +3079,11 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{Procedure_Anaesthesia_Comment}", "Procedure:Anaesthesia_Comment"])
     ListView1.Add(["{Procedure_PostOperative_Indication}", "Procedure:PostOperative_Indication"])
     ListView1.Add(["{Procedure_PostOperative_Comment}", "Procedure:PostOperative_Comment"])
-
+    
   Else If sType = "Clinical Param" Then
     ListView1.Add(["{PresentingSymptoms}", "Presenting Complaints"])
     ListView1.Add(["{GeneralComplaints}", "General Complaints"])
-
+    
     ListView1.Add(["{ClinicalFindings}", "Clinical Findings"])
     ListView1.Add(["{TriageExaminations}", "Triage Examinations"])
     ListView1.Add(["{EssentialExaminations}", "Essential Examinations"])
@@ -3092,7 +3092,7 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{PhysicianStructured}", "Physician Structured"])
     ListView1.Add(["{DepartmentStructured}", "Department Structured"])
     ListView1.Add(["{DischargeExaminations}", "Discharge Examinations"])
-
+    
     ListView1.Add(["{AdmissionCause}", "Cause of Admission"])
     ListView1.Add(["{HistoryofIllness}", "History of Illness"])
     ListView1.Add(["{PastHistory}", "Past History"])
@@ -3103,12 +3103,12 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{SurgicalHistory}", "Surgical History"])
     ListView1.Add(["{OccupationalHistory}", "Occupational History"])
     ListView1.Add(["{SocialHistory}", "Social History"])
-
+    
     ListView1.Add(["{InvestigationAdvised}", "Investigation Advised"])
     ListView1.Add(["{TreatmentAdvised}", "Treatment Advised"])
     ListView1.Add(["{SurgicalRequests}", "Surgical Request"])
     ListView1.Add(["{ExtraRequests}", "Extra Request"])
-
+    
     ListView1.Add(["{OPDRecommendation}", "Initial Planning"])
     ListView1.Add(["{ExpertRecommendation}", "Final Planning"])
     ListView1.Add(["{IndoorMedicines}", "Indoor Medications"])
@@ -3119,7 +3119,7 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{CauseOfDeath}", "Cause of Death"])
     ListView1.Add(["{BSISummary}", "BSI Summary"])
     ListView1.Add(["{UTISummary}", "UTI Summary"])
-
+    
   Else If sType = "Examination" Then
     ListView1.Add(["{HepaticStatus}", "Hepatic Status"])
     ListView1.Add(["{PregnancyStatus}", "Pregnancy Status"])
@@ -3133,7 +3133,7 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{Oxygen_Saturation}", "Oxygen Saturation"])
     ListView1.Add(["{Respiration_Rate}", "Respiration Rate"])
     ListView1.Add(["{Temperature_System}", "Temperature"])
-
+    
   Else If sType = "Supplier Details" Then
     ListView1.Add(["{SupplierName}", "Name"])
     ListView1.Add(["{SupplierAddress}", "Address"])
@@ -3143,7 +3143,7 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{SupplierEMail}", "E-Mail"])
     ListView1.Add(["{SupplierUserName}", "Rep Name"])
     ListView1.Add(["{SupplierUserContact}", "Rep Phone"])
-
+    
   Else If sType = "Purchase Entry" Then
     ListView1.Add(["{PurchaseReferenceNo}", "Entry Reference No"])
     ListView1.Add(["{PurchaseReferenceDate}", "Entry Reference Date"])
@@ -3151,7 +3151,7 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{PurchaseInvoiceNumber}", "Purchase Invoice No"])
     ListView1.Add(["{PurchaseInvoiceDate}", "Purchase Invoice Date"])
     ListView1.Add(["{PurchasePaymentType}", "Purchase Payment Type"])
-
+    
   Else If sType = "Purchase Order" Then
     ListView1.Add(["{PurchaseRequestNo}", "Purchase Order No"])
     ListView1.Add(["{PurchaseRequestDate}", "Purchase Order Date"])
@@ -3159,7 +3159,7 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{PurchaseRequestDelivery}", "Purchase Delivery Date"])
     ListView1.Add(["{PurchaseRequestVerifyUser}", "Order Verify User"])
     ListView1.Add(["{PurchaseRequestVerifyDate}", "Order Verify Date"])
-
+    
   Else If sType = "Store Request" Then
     ListView1.Add(["{StoreRequestNo}", "Store Request No"])
     ListView1.Add(["{StoreRequestDate}", "Store Request Date"])
@@ -3168,7 +3168,7 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{StoreRequestedComp}", "Store Request From"])
     ListView1.Add(["{StoreRequestVerifyUser}", "Request Verify User"])
     ListView1.Add(["{StoreRequestVerifyDate}", "Request Verify Date"])
-
+    
   Else If sType = "Store Transfer" Then
     ListView1.Add(["{StoreTransferNo}", "Store Transfer Reference"])
     ListView1.Add(["{StoreTransferReason}", "Store Transfer Reason"])
@@ -3177,9 +3177,9 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{StoreTransferDate}", "Store Transfer Date"])
     ListView1.Add(["{StoreTransferEntryUser}", "Store Request User"])
     ListView1.Add(["{StoreTransferVerifyUser}", "Store Verify User"])
-
+    
   Endif
-
+  
   Return ListView1
-
+  
 End

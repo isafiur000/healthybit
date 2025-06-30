@@ -45,7 +45,7 @@
           Text = ("Randomize Row sequence")
         }
         { btndatacorrelation Button
-          MoveScaled(49,21,11,3)
+          MoveScaled(61,21,11,3)
           Text = ("Corr")
         }
         { btnrandomrow ToolButton
@@ -53,16 +53,20 @@
           Picture = Picture["icon:/small/apply"]
         }
         { btndetail Button
-          MoveScaled(25,21,11,3)
+          MoveScaled(37,21,11,3)
           Text = ("Detail")
         }
         { btncolcount Button
-          MoveScaled(37,21,11,3)
+          MoveScaled(49,21,11,3)
           Text = ("Count")
         }
         { btnscatter Button
-          MoveScaled(61,21,11,3)
+          MoveScaled(73,21,11,3)
           Text = ("Plot")
+        }
+        { btnshownull Button
+          MoveScaled(25,21,11,3)
+          Text = ("Null")
         }
         Index = 1
         Text = ("Numerical")
@@ -156,7 +160,7 @@
           Text = ("Split")
         }
         { Frame4 Frame
-          MoveScaled(1,10,43,7)
+          MoveScaled(1,17,43,7)
           Text = ("Polynomial Feature")
           Alignment = Align.Left
           { lblnullmethod4 Label
@@ -173,16 +177,34 @@
           }
         }
         { Label12 Label
-          MoveScaled(1,20,11,3)
+          MoveScaled(51,21,11,3)
           Border = Border.Plain
           Text = ("Show Data")
         }
         { cmbsplitdata ComboBox
-          MoveScaled(13,20,16,3)
+          MoveScaled(63,21,16,3)
         }
         { btnsplitshow Button
-          MoveScaled(31,20,12,3)
+          MoveScaled(81,21,12,3)
           Text = ("View")
+        }
+        { Frame5 Frame
+          MoveScaled(1,9,43,7)
+          Text = ("PCA")
+          Alignment = Align.Left
+          { lblnullmethod2 Label
+            MoveScaled(1,3,9,3)
+            Border = Border.Plain
+            Text = ("Variance")
+          }
+          { btnpca Button
+            MoveScaled(30,3,11,3)
+            Text = ("Convert")
+          }
+          { txtpca ValueBox
+            MoveScaled(11,3,8,3)
+            Text = ("0.95")
+          }
         }
         Index = 4
         Text = ("Training")
@@ -191,7 +213,55 @@
         }
         { pnlmodel Panel
           MoveScaled(1,5,41,19)
-          Arrangement = Arrange.Horizontal
+          Arrangement = Arrange.Vertical
+          { pnlone Panel
+            MoveScaled(0,0,40,3.5)
+            Visible = False
+            { txtmodelone TextBox
+              MoveScaled(22,0,17,3)
+            }
+            { lblmodelone Label
+              MoveScaled(0,0,21,3)
+              Border = Border.Plain
+              Text = ("Param")
+            }
+          }
+          { pnltwo Panel
+            MoveScaled(0,3.5,40,3.5)
+            Visible = False
+            { txtmodeltwo TextBox
+              MoveScaled(22,0,17,3)
+            }
+            { lblmodel2two Label
+              MoveScaled(0,0,21,3)
+              Border = Border.Plain
+              Text = ("Param")
+            }
+          }
+          { pnlthree Panel
+            MoveScaled(0,7,40,3.5)
+            Visible = False
+            { txtmodelthree TextBox
+              MoveScaled(22,0,17,3)
+            }
+            { lblmodelthree Label
+              MoveScaled(0,0,21,3)
+              Border = Border.Plain
+              Text = ("Param")
+            }
+          }
+          { pnlfour Panel
+            MoveScaled(0,10.5,40,3.5)
+            Visible = False
+            { txtmodelfour TextBox
+              MoveScaled(22,0,17,3)
+            }
+            { lblmodelfour Label
+              MoveScaled(0,0,21,3)
+              Border = Border.Plain
+              Text = ("Param")
+            }
+          }
           { Panel10 Panel
             MoveScaled(0,14,40,3.5)
             { btnmodeltrain Button
@@ -203,54 +273,6 @@
               MoveScaled(30,0,9,3)
               Enabled = False
               Text = ("Save")
-            }
-          }
-          { pnlfour Panel
-            MoveScaled(0,10.5,40,3.5)
-            Visible = False
-            { txtmodelfour TextBox
-              MoveScaled(12,0,17,3)
-            }
-            { lblmodelfour Label
-              MoveScaled(0,0,11,3)
-              Border = Border.Plain
-              Text = ("Param")
-            }
-          }
-          { pnlone Panel
-            MoveScaled(0,0,40,3.5)
-            Visible = False
-            { txtmodelone TextBox
-              MoveScaled(12,0,17,3)
-            }
-            { lblmodelone Label
-              MoveScaled(0,0,11,3)
-              Border = Border.Plain
-              Text = ("Param")
-            }
-          }
-          { pnlthree Panel
-            MoveScaled(0,7,40,3.5)
-            Visible = False
-            { txtmodelthree TextBox
-              MoveScaled(12,0,17,3)
-            }
-            { lblmodelthree Label
-              MoveScaled(0,0,11,3)
-              Border = Border.Plain
-              Text = ("Param")
-            }
-          }
-          { pnltwo Panel
-            MoveScaled(0,3.5,40,3.5)
-            Visible = False
-            { txtmodeltwo TextBox
-              MoveScaled(12,0,17,3)
-            }
-            { lblmodel2two Label
-              MoveScaled(0,0,11,3)
-              Border = Border.Plain
-              Text = ("Param")
             }
           }
         }
@@ -332,20 +354,20 @@
           Border = False
         }
         { Panel6 Panel
-          MoveScaled(1,11,23,11)
+          MoveScaled(1,11,23,8)
           { rbregression RadioButton
             MoveScaled(1,1,21,3)
             Text = ("Regression")
+            Value = True
           }
           { rbclass RadioButton
             MoveScaled(1,4,21,3)
             Text = ("Classification")
           }
-          { rbensemble RadioButton
-            MoveScaled(1,7,21,3)
-            Text = ("Ensemble Methods")
-            Value = True
-          }
+        }
+        { chkbagging CheckBox
+          MoveScaled(2,20,22,3)
+          Text = ("Bagging")
         }
       }
     }
