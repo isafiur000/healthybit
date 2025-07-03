@@ -6,9 +6,9 @@ Public $DbEngine As String  ''InnoDB  ''HEAP
 ''====================== FIXED TABLES: CAN BE PUT REMOTELY ============================
 ''---------------------------- For CreateDatabaseForSish_Medicine( ----------------------------
 Public Sub CREATEtblmedcategory($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmedcategory") Then
     hTable = $con.Tables.Add("tblmedcategory", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -17,13 +17,13 @@ Public Sub CREATEtblmedcategory($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsensidrugs($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsensidrugs") Then
     hTable = $con.Tables.Add("tblsensidrugs", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -32,13 +32,13 @@ Public Sub CREATEtblsensidrugs($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblchemclass($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblchemclass") Then
     hTable = $con.Tables.Add("tblchemclass", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -47,13 +47,13 @@ Public Sub CREATEtblchemclass($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldosageforms($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldosageforms") Then
     hTable = $con.Tables.Add("tbldosageforms", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -62,13 +62,13 @@ Public Sub CREATEtbldosageforms($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmanufacturer($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmanufacturer") Then
     hTable = $con.Tables.Add("tblmanufacturer", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -77,13 +77,13 @@ Public Sub CREATEtblmanufacturer($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblextradepartment($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblextradepartment") Then
     hTable = $con.Tables.Add("tblextradepartment", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -92,13 +92,13 @@ Public Sub CREATEtblextradepartment($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmedgroup($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmedgroup") Then
     hTable = $con.Tables.Add("tblmedgroup", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -107,13 +107,13 @@ Public Sub CREATEtblmedgroup($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcode($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcode") Then
     hTable = $con.Tables.Add("tblcode", $DbEngine)
     hTable.Fields.Add("fldcodename", db.String, 150)
@@ -143,13 +143,13 @@ Public Sub CREATEtblcode($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcodelimit($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcodelimit") Then
     hTable = $con.Tables.Add("tblcodelimit", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -168,13 +168,13 @@ Public Sub CREATEtblcodelimit($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcompatdrug($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcompatdrug") Then
     hTable = $con.Tables.Add("tblcompatdrug", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -187,13 +187,13 @@ Public Sub CREATEtblcompatdrug($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldparent_fldchild", ["fldparent", "fldchild"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcompatfluid($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcompatfluid") Then
     hTable = $con.Tables.Add("tblcompatfluid", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -206,13 +206,13 @@ Public Sub CREATEtblcompatfluid($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldparent_fldchild", ["fldparent", "fldchild"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldilutionfluid($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldilutionfluid") Then
     hTable = $con.Tables.Add("tbldilutionfluid", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -224,13 +224,13 @@ Public Sub CREATEtbldilutionfluid($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblincompatdrug($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblincompatdrug") Then
     hTable = $con.Tables.Add("tblincompatdrug", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -243,13 +243,13 @@ Public Sub CREATEtblincompatdrug($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldparent_fldchild", ["fldparent", "fldchild"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblincompatfluid($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblincompatfluid") Then
     hTable = $con.Tables.Add("tblincompatfluid", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -262,13 +262,13 @@ Public Sub CREATEtblincompatfluid($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldparent_fldchild", ["fldparent", "fldchild"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblreconstfluid($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblreconstfluid") Then
     hTable = $con.Tables.Add("tblreconstfluid", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -280,13 +280,13 @@ Public Sub CREATEtblreconstfluid($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldrug($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldrug") Then
     hTable = $con.Tables.Add("tbldrug", $DbEngine)
     hTable.Fields.Add("flddrug", db.String, 200)
@@ -303,13 +303,13 @@ Public Sub CREATEtbldrug($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblinjection($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblinjection") Then
     hTable = $con.Tables.Add("tblinjection", $DbEngine)
     hTable.Fields.Add("fldinjection", db.String, 255)
@@ -328,13 +328,13 @@ Public Sub CREATEtblinjection($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbllabel($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbllabel") Then
     hTable = $con.Tables.Add("tbllabel", $DbEngine)
     hTable.Fields.Add("fldlabel", db.String, 225)
@@ -359,13 +359,13 @@ Public Sub CREATEtbllabel($con As Connection)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
     modDBApp.ChangeSingleCOlumnCOllation($con, "tbllabel", "fldopinfo", "VARCHAR( 255 )", "utf8mb4", "utf8mb4_unicode_ci")
   Endif
-  
+
 End
 
 Public Sub CREATEtblmedbrand($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmedbrand") Then
     hTable = $con.Tables.Add("tblmedbrand", $DbEngine)
     hTable.Fields.Add("fldbrandid", db.String, 250)
@@ -392,13 +392,13 @@ Public Sub CREATEtblmedbrand($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblregimen($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblregimen") Then
     hTable = $con.Tables.Add("tblregimen", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -417,13 +417,13 @@ Public Sub CREATEtblregimen($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmedhepatic($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmedhepatic") Then
     hTable = $con.Tables.Add("tblmedhepatic", $DbEngine)
     hTable.Fields.Add("medid", db.Serial)
@@ -437,13 +437,13 @@ Public Sub CREATEtblmedhepatic($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldcodename_fldcondition", ["fldcodename", "fldcondition"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmedinteraction($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmedinteraction") Then
     hTable = $con.Tables.Add("tblmedinteraction", $DbEngine)
     hTable.Fields.Add("medid", db.Serial)
@@ -457,13 +457,13 @@ Public Sub CREATEtblmedinteraction($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldcodename_fldcondition", ["fldcodename", "fldcondition"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmedpregnancy($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmedpregnancy") Then
     hTable = $con.Tables.Add("tblmedpregnancy", $DbEngine)
     hTable.Fields.Add("medid", db.Serial)
@@ -477,13 +477,13 @@ Public Sub CREATEtblmedpregnancy($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldcodename_fldcondition", ["fldcodename", "fldcondition"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmedrenal($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmedrenal") Then
     hTable = $con.Tables.Add("tblmedrenal", $DbEngine)
     hTable.Fields.Add("medid", db.Serial)
@@ -498,13 +498,13 @@ Public Sub CREATEtblmedrenal($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldcodename_fldgfrfrom", ["fldcodename", "fldgfrfrom"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmedcontraindication($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmedcontraindication") Then
     hTable = $con.Tables.Add("tblmedcontraindication", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -518,13 +518,13 @@ Public Sub CREATEtblmedcontraindication($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldparent_fldchild", ["fldparent", "fldchild"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmedadveffect($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmedadveffect") Then
     hTable = $con.Tables.Add("tblmedadveffect", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -538,13 +538,13 @@ Public Sub CREATEtblmedadveffect($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldparent_fldchild", ["fldparent", "fldchild"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmedmonitor($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmedmonitor") Then
     hTable = $con.Tables.Add("tblmedmonitor", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -558,13 +558,13 @@ Public Sub CREATEtblmedmonitor($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldparent_fldchild", ["fldparent", "fldchild"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbllocallabel($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbllocallabel") Then
     hTable = $con.Tables.Add("tbllocallabel", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -578,13 +578,13 @@ Public Sub CREATEtbllocallabel($con As Connection)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
     modDBApp.ChangeSingleCOlumnCOllation($con, "tbllocallabel", "fldlocaldire", "VARCHAR( 255 )", "utf8mb4", "utf8mb4_unicode_ci")
   Endif
-  
+
 End
 
 Public Sub CREATEtblsurgicalname($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsurgicalname") Then
     hTable = $con.Tables.Add("tblsurgicalname", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -595,13 +595,13 @@ Public Sub CREATEtblsurgicalname($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsuturetype($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsuturetype") Then
     hTable = $con.Tables.Add("tblsuturetype", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -612,13 +612,13 @@ Public Sub CREATEtblsuturetype($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsurgicals($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsurgicals") Then
     hTable = $con.Tables.Add("tblsurgicals", $DbEngine)
     hTable.Fields.Add("fldsurgid", db.String, 200)
@@ -633,13 +633,13 @@ Public Sub CREATEtblsurgicals($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsurgbrand($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsurgbrand") Then
     hTable = $con.Tables.Add("tblsurgbrand", $DbEngine)
     hTable.Fields.Add("fldbrandid", db.String, 250)
@@ -659,13 +659,13 @@ Public Sub CREATEtblsurgbrand($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblextra($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblextra") Then
     hTable = $con.Tables.Add("tblextra", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -674,13 +674,13 @@ Public Sub CREATEtblextra($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblextrabrand($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblextrabrand") Then
     hTable = $con.Tables.Add("tblextrabrand", $DbEngine)
     hTable.Fields.Add("fldbrandid", db.String, 250)
@@ -702,14 +702,14 @@ Public Sub CREATEtblextrabrand($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''--- not coding
 Public Sub CREATEtblproductgroup($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblproductgroup") Then
     hTable = $con.Tables.Add("tblproductgroup", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -727,13 +727,13 @@ Public Sub CREATEtblproductgroup($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmedregimen($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmedregimen") Then
     hTable = $con.Tables.Add("tblmedregimen", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -749,14 +749,14 @@ Public Sub CREATEtblmedregimen($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''---- diet
 Public Sub CREATEtblfoodlist($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblfoodlist") Then
     hTable = $con.Tables.Add("tblfoodlist", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -765,13 +765,13 @@ Public Sub CREATEtblfoodlist($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblfoodtype($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblfoodtype") Then
     hTable = $con.Tables.Add("tblfoodtype", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -780,13 +780,13 @@ Public Sub CREATEtblfoodtype($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblfoodcontent($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblfoodcontent") Then
     hTable = $con.Tables.Add("tblfoodcontent", $DbEngine)
     hTable.Fields.Add("fldfoodid", db.String, 250)
@@ -805,7 +805,7 @@ Public Sub CREATEtblfoodcontent($con As Connection)
     hTable.Fields.Add("fldlipidcont", db.String, 250)
     hTable.Fields.Add("fldmineral", db.Float)
     hTable.Fields.Add("fldfibre", db.Float)
-    
+
     hTable.Fields.Add("fldcalcium", db.Float)
     hTable.Fields.Add("fldphosphorous", db.Float)
     hTable.Fields.Add("fldiron", db.Float)
@@ -817,20 +817,20 @@ Public Sub CREATEtblfoodcontent($con As Connection)
     hTable.Fields.Add("fldfreefolic", db.Float)
     hTable.Fields.Add("fldtotalfolic", db.Float)
     hTable.Fields.Add("fldvitaminc", db.Float)
-    
+
     hTable.Fields.Add("fldprep", db.String, 255)
     SetMedSyncTable(hTable)
     hTable.PrimaryKey = ["fldfoodid"]
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblfoodmix($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblfoodmix") Then
     hTable = $con.Tables.Add("tblfoodmix", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -842,13 +842,13 @@ Public Sub CREATEtblfoodmix($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblfoodgroup($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblfoodgroup") Then
     hTable = $con.Tables.Add("tblfoodgroup", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -862,13 +862,13 @@ Public Sub CREATEtblfoodgroup($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldietgroup($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldietgroup") Then
     hTable = $con.Tables.Add("tbldietgroup", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -881,13 +881,13 @@ Public Sub CREATEtbldietgroup($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblnutrition($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblnutrition") Then
     hTable = $con.Tables.Add("tblnutrition", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -907,14 +907,14 @@ Public Sub CREATEtblnutrition($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''----------------------------FOR CreateDatabaseForSish_Pathology---------------------------
 Public Sub CREATEtblpathocategory($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpathocategory") Then
     hTable = $con.Tables.Add("tblpathocategory", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -924,13 +924,13 @@ Public Sub CREATEtblpathocategory($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblbodyfluid($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblbodyfluid") Then
     hTable = $con.Tables.Add("tblbodyfluid", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -939,13 +939,13 @@ Public Sub CREATEtblbodyfluid($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsurveillance($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsurveillance") Then
     hTable = $con.Tables.Add("tblsurveillance", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -957,13 +957,13 @@ Public Sub CREATEtblsurveillance($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblbilldisease($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblbilldisease") Then
     hTable = $con.Tables.Add("tblbilldisease", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -975,13 +975,13 @@ Public Sub CREATEtblbilldisease($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblethnicgroup($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblethnicgroup") Then
     hTable = $con.Tables.Add("tblethnicgroup", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -991,13 +991,13 @@ Public Sub CREATEtblethnicgroup($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldiagnogroup($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldiagnogroup") Then
     hTable = $con.Tables.Add("tbldiagnogroup", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1010,13 +1010,13 @@ Public Sub CREATEtbldiagnogroup($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsymptoms($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsymptoms") Then
     hTable = $con.Tables.Add("tblsymptoms", $DbEngine)
     hTable.Fields.Add("fldsymptom", db.String, 250)
@@ -1027,13 +1027,13 @@ Public Sub CREATEtblsymptoms($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsubsymptoms($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsubsymptoms") Then
     hTable = $con.Tables.Add("tblsubsymptoms", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1043,13 +1043,13 @@ Public Sub CREATEtblsubsymptoms($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpathosymp($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpathosymp") Then
     hTable = $con.Tables.Add("tblpathosymp", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -1069,13 +1069,13 @@ Public Sub CREATEtblpathosymp($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsyndromes($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsyndromes") Then
     hTable = $con.Tables.Add("tblsyndromes", $DbEngine)
     hTable.Fields.Add("fldsyndrome", db.String, 250)
@@ -1085,13 +1085,13 @@ Public Sub CREATEtblsyndromes($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpathotest($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpathotest") Then
     hTable = $con.Tables.Add("tblpathotest", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -1112,13 +1112,13 @@ Public Sub CREATEtblpathotest($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpathoexam($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpathoexam") Then
     hTable = $con.Tables.Add("tblpathoexam", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -1138,13 +1138,13 @@ Public Sub CREATEtblpathoexam($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltriage($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltriage") Then
     hTable = $con.Tables.Add("tbltriage", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -1165,13 +1165,13 @@ Public Sub CREATEtbltriage($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblaiquery($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblaiquery") Then
     hTable = $con.Tables.Add("tblaiquery", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1181,14 +1181,14 @@ Public Sub CREATEtblaiquery($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''----------------------------FOR CreateDatabaseForSish_Diagnostic---------------------------
 Public Sub CREATEtblsysconst($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsysconst") Then
     hTable = $con.Tables.Add("tblsysconst", $DbEngine)
     hTable.Fields.Add("fldsysconst", db.String, 150)
@@ -1197,13 +1197,13 @@ Public Sub CREATEtblsysconst($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblagegroups($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblagegroups") Then
     hTable = $con.Tables.Add("tblagegroups", $DbEngine)
     hTable.Fields.Add("fldgroup", db.String, 200)
@@ -1213,13 +1213,13 @@ Public Sub CREATEtblagegroups($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltestmethod($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltestmethod") Then
     hTable = $con.Tables.Add("tbltestmethod", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1229,13 +1229,13 @@ Public Sub CREATEtbltestmethod($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblorganism($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblorganism") Then
     hTable = $con.Tables.Add("tblorganism", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1244,13 +1244,13 @@ Public Sub CREATEtblorganism($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsampletype($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsampletype") Then
     hTable = $con.Tables.Add("tblsampletype", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1259,13 +1259,13 @@ Public Sub CREATEtblsampletype($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltestcondition($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltestcondition") Then
     hTable = $con.Tables.Add("tbltestcondition", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1274,13 +1274,13 @@ Public Sub CREATEtbltestcondition($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbllabchemical($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbllabchemical") Then
     hTable = $con.Tables.Add("tbllabchemical", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1293,13 +1293,13 @@ Public Sub CREATEtbllabchemical($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltestmachine($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltestmachine") Then
     hTable = $con.Tables.Add("tbltestmachine", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1309,13 +1309,13 @@ Public Sub CREATEtbltestmachine($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltest($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltest") Then
     hTable = $con.Tables.Add("tbltest", $DbEngine)
     hTable.Fields.Add("fldtestid", db.String, 200)
@@ -1345,13 +1345,13 @@ Public Sub CREATEtbltest($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltestoption($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltestoption") Then
     hTable = $con.Tables.Add("tbltestoption", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1366,13 +1366,13 @@ Public Sub CREATEtbltestoption($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltestlimit($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltestlimit") Then
     hTable = $con.Tables.Add("tbltestlimit", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1397,13 +1397,13 @@ Public Sub CREATEtbltestlimit($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltestcomment($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltestcomment") Then
     hTable = $con.Tables.Add("tbltestcomment", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1418,13 +1418,13 @@ Public Sub CREATEtbltestcomment($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcodehypo($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcodehypo") Then
     hTable = $con.Tables.Add("tblcodehypo", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -1437,13 +1437,13 @@ Public Sub CREATEtblcodehypo($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldparent_fldchild", ["fldparent", "fldchild"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcodehyper($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcodehyper") Then
     hTable = $con.Tables.Add("tblcodehyper", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -1456,13 +1456,13 @@ Public Sub CREATEtblcodehyper($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldparent_fldchild", ["fldparent", "fldchild"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsyndrohypo($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsyndrohypo") Then
     hTable = $con.Tables.Add("tblsyndrohypo", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -1475,13 +1475,13 @@ Public Sub CREATEtblsyndrohypo($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldparent_fldchild", ["fldparent", "fldchild"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsyndrohyper($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsyndrohyper") Then
     hTable = $con.Tables.Add("tblsyndrohyper", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -1494,13 +1494,13 @@ Public Sub CREATEtblsyndrohyper($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldparent_fldchild", ["fldparent", "fldchild"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltestquali($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltestquali") Then
     hTable = $con.Tables.Add("tbltestquali", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1518,13 +1518,13 @@ Public Sub CREATEtbltestquali($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsubtestquali($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsubtestquali") Then
     hTable = $con.Tables.Add("tblsubtestquali", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1540,13 +1540,13 @@ Public Sub CREATEtblsubtestquali($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblantipanel($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblantipanel") Then
     hTable = $con.Tables.Add("tblantipanel", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1555,7 +1555,7 @@ Public Sub CREATEtblantipanel($con As Connection)
     hTable.Fields.Add("flditemname", db.String, 200)
     hTable.Fields.Add("fldspecimen", db.String, 250)
     hTable.Fields.Add("fldactive", db.String, 50)
-    
+
     hTable.Fields.Add("fldsensimax", db.Float)
     hTable.Fields.Add("fldsensimin", db.Float)
     hTable.Fields.Add("fldintermax", db.Float)
@@ -1566,13 +1566,13 @@ Public Sub CREATEtblantipanel($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblgrouptest($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblgrouptest") Then
     hTable = $con.Tables.Add("tblgrouptest", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1584,13 +1584,13 @@ Public Sub CREATEtblgrouptest($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblstructexam($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblstructexam") Then
     hTable = $con.Tables.Add("tblstructexam", $DbEngine)
     hTable.Fields.Add("fldheadcode", db.String, 250)
@@ -1619,13 +1619,13 @@ Public Sub CREATEtblstructexam($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblstructexamoption($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblstructexamoption") Then
     hTable = $con.Tables.Add("tblstructexamoption", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1643,13 +1643,13 @@ Public Sub CREATEtblstructexamoption($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcompexam($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcompexam") Then
     hTable = $con.Tables.Add("tblcompexam", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1663,13 +1663,13 @@ Public Sub CREATEtblcompexam($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldeptexam($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldeptexam") Then
     hTable = $con.Tables.Add("tbldeptexam", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1682,13 +1682,13 @@ Public Sub CREATEtbldeptexam($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldeptexamoption($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldeptexamoption") Then
     hTable = $con.Tables.Add("tbldeptexamoption", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1702,13 +1702,13 @@ Public Sub CREATEtbldeptexamoption($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblgroupexam($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblgroupexam") Then
     hTable = $con.Tables.Add("tblgroupexam", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1719,13 +1719,13 @@ Public Sub CREATEtblgroupexam($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblexam($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblexam") Then
     hTable = $con.Tables.Add("tblexam", $DbEngine)
     hTable.Fields.Add("fldexamid", db.String, 200)
@@ -1751,13 +1751,13 @@ Public Sub CREATEtblexam($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblexamoption($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblexamoption") Then
     hTable = $con.Tables.Add("tblexamoption", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1772,13 +1772,13 @@ Public Sub CREATEtblexamoption($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblexamlimit($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblexamlimit") Then
     hTable = $con.Tables.Add("tblexamlimit", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1798,13 +1798,13 @@ Public Sub CREATEtblexamlimit($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblexamcomment($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblexamcomment") Then
     hTable = $con.Tables.Add("tblexamcomment", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1818,13 +1818,13 @@ Public Sub CREATEtblexamcomment($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcodebrady($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcodebrady") Then
     hTable = $con.Tables.Add("tblcodebrady", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -1837,13 +1837,13 @@ Public Sub CREATEtblcodebrady($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldparent_fldchild", ["fldparent", "fldchild"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcodetachy($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcodetachy") Then
     hTable = $con.Tables.Add("tblcodetachy", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -1856,13 +1856,13 @@ Public Sub CREATEtblcodetachy($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldparent_fldchild", ["fldparent", "fldchild"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsyndrobrady($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsyndrobrady") Then
     hTable = $con.Tables.Add("tblsyndrobrady", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -1875,13 +1875,13 @@ Public Sub CREATEtblsyndrobrady($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldparent_fldchild", ["fldparent", "fldchild"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsyndrotachy($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsyndrotachy") Then
     hTable = $con.Tables.Add("tblsyndrotachy", $DbEngine)
     hTable.Fields.Add("flid", db.Serial)
@@ -1894,13 +1894,13 @@ Public Sub CREATEtblsyndrotachy($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldparent_fldchild", ["fldparent", "fldchild"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblexamquali($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblexamquali") Then
     hTable = $con.Tables.Add("tblexamquali", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1918,13 +1918,13 @@ Public Sub CREATEtblexamquali($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsubexamquali($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsubexamquali") Then
     hTable = $con.Tables.Add("tblsubexamquali", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1940,13 +1940,13 @@ Public Sub CREATEtblsubexamquali($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblradio($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblradio") Then
     hTable = $con.Tables.Add("tblradio", $DbEngine)
     hTable.Fields.Add("fldexamid", db.String, 200)
@@ -1972,13 +1972,13 @@ Public Sub CREATEtblradio($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblradiooption($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblradiooption") Then
     hTable = $con.Tables.Add("tblradiooption", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -1993,13 +1993,13 @@ Public Sub CREATEtblradiooption($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblradiolimit($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblradiolimit") Then
     hTable = $con.Tables.Add("tblradiolimit", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2019,13 +2019,13 @@ Public Sub CREATEtblradiolimit($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblradiocomment($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblradiocomment") Then
     hTable = $con.Tables.Add("tblradiocomment", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2039,13 +2039,13 @@ Public Sub CREATEtblradiocomment($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblradioquali($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblradioquali") Then
     hTable = $con.Tables.Add("tblradioquali", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2063,13 +2063,13 @@ Public Sub CREATEtblradioquali($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsubradioquali($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsubradioquali") Then
     hTable = $con.Tables.Add("tblsubradioquali", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2085,13 +2085,13 @@ Public Sub CREATEtblsubradioquali($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblgroupradio($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblgroupradio") Then
     hTable = $con.Tables.Add("tblgroupradio", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2105,13 +2105,13 @@ Public Sub CREATEtblgroupradio($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblprocname($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblprocname") Then
     hTable = $con.Tables.Add("tblprocname", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2120,13 +2120,13 @@ Public Sub CREATEtblprocname($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblgroupproc($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblgroupproc") Then
     hTable = $con.Tables.Add("tblgroupproc", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2136,13 +2136,13 @@ Public Sub CREATEtblgroupproc($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldemographic($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldemographic") Then
     hTable = $con.Tables.Add("tbldemographic", $DbEngine)
     hTable.Fields.Add("flddemoid", db.String, 200)
@@ -2154,13 +2154,13 @@ Public Sub CREATEtbldemographic($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldemogoption($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldemogoption") Then
     hTable = $con.Tables.Add("tbldemogoption", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2173,13 +2173,13 @@ Public Sub CREATEtbldemogoption($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcomplaints($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcomplaints") Then
     hTable = $con.Tables.Add("tblcomplaints", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2191,13 +2191,13 @@ Public Sub CREATEtblcomplaints($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldischarge($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldischarge") Then
     hTable = $con.Tables.Add("tbldischarge", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2215,13 +2215,13 @@ Public Sub CREATEtbldischarge($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblhistory($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblhistory") Then
     hTable = $con.Tables.Add("tblhistory", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2239,13 +2239,13 @@ Public Sub CREATEtblhistory($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldelivery($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldelivery") Then
     hTable = $con.Tables.Add("tbldelivery", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2254,13 +2254,13 @@ Public Sub CREATEtbldelivery($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldelcomplication($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldelcomplication") Then
     hTable = $con.Tables.Add("tbldelcomplication", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2269,13 +2269,13 @@ Public Sub CREATEtbldelcomplication($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldeldeformity($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldeldeformity") Then
     hTable = $con.Tables.Add("tbldeldeformity", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2284,13 +2284,13 @@ Public Sub CREATEtbldeldeformity($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldellabour($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldellabour") Then
     hTable = $con.Tables.Add("tbldellabour", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2299,13 +2299,13 @@ Public Sub CREATEtbldellabour($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblreferlist($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblreferlist") Then
     hTable = $con.Tables.Add("tblreferlist", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2315,13 +2315,13 @@ Public Sub CREATEtblreferlist($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblprocedure($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblprocedure") Then
     hTable = $con.Tables.Add("tblprocedure", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2330,13 +2330,13 @@ Public Sub CREATEtblprocedure($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblprocedureuser($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblprocedureuser") Then
     hTable = $con.Tables.Add("tblprocedureuser", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2345,13 +2345,13 @@ Public Sub CREATEtblprocedureuser($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblanaesthesia($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblanaesthesia") Then
     hTable = $con.Tables.Add("tblanaesthesia", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2360,13 +2360,13 @@ Public Sub CREATEtblanaesthesia($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblevents($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblevents") Then
     hTable = $con.Tables.Add("tblevents", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2377,13 +2377,13 @@ Public Sub CREATEtblevents($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldevices($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldevices") Then
     hTable = $con.Tables.Add("tbldevices", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2393,13 +2393,13 @@ Public Sub CREATEtbldevices($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblrepomapping($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblrepomapping") Then
     hTable = $con.Tables.Add("tblrepomapping", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2410,14 +2410,14 @@ Public Sub CREATEtblrepomapping($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''----------------------------FOR CreateDatabaseForSish_Data---------------------------
 Public Sub CREATEtblmedimage($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmedimage") Then
     hTable = $con.Tables.Add("tblmedimage", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2436,13 +2436,13 @@ Public Sub CREATEtblmedimage($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblelectrolyte($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblelectrolyte") Then
     hTable = $con.Tables.Add("tblelectrolyte", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2455,13 +2455,13 @@ Public Sub CREATEtblelectrolyte($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblresearch($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblresearch") Then
     hTable = $con.Tables.Add("tblresearch", $DbEngine)
     hTable.Fields.Add("fldstudycode", db.String, 150)
@@ -2500,15 +2500,15 @@ Public Sub CREATEtblresearch($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''========================== PATIENT DATA: LOCAL STORAGE ===============================
 ''----------------------------FOR CreateDatabaseForSish_System---------------------------
 Public Sub CREATEtblautoid($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblautoid") Then
     hTable = $con.Tables.Add("tblautoid", $DbEngine)
     hTable.Fields.Add("fldtype", db.String, 25)
@@ -2518,13 +2518,13 @@ Public Sub CREATEtblautoid($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblinvid($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblinvid") Then
     hTable = $con.Tables.Add("tblinvid", $DbEngine)
     hTable.Fields.Add("fldinvcode", db.String, 25)
@@ -2535,13 +2535,13 @@ Public Sub CREATEtblinvid($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatsubs($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatsubs") Then
     hTable = $con.Tables.Add("tblpatsubs", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2556,13 +2556,13 @@ Public Sub CREATEtblpatsubs($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbllock($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbllock") Then
     hTable = $con.Tables.Add("tbllock", $DbEngine)
     hTable.Fields.Add("fldlock", db.String, 50)
@@ -2570,13 +2570,13 @@ Public Sub CREATEtbllock($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblfiscalid($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblfiscalid") Then
     hTable = $con.Tables.Add("tblfiscalid", $DbEngine)
     hTable.Fields.Add("fldindex", db.String, 250)
@@ -2589,20 +2589,20 @@ Public Sub CREATEtblfiscalid($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblfisclosing($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblfisclosing") Then
     hTable = $con.Tables.Add("tblfisclosing", $DbEngine)
     hTable.Fields.Add("fldindex", db.String, 250)
     hTable.Fields.Add("fldfrom", db.Date)
     hTable.Fields.Add("fldend", db.Date)
     hTable.Fields.Add("fldstate", db.String, 75)
-    
+
     hTable.Fields.Add("fldpatbilling", db.String, 150)
     hTable.Fields.Add("fldpatbilldetail", db.String, 150)
     hTable.Fields.Add("fldtempbilldetail", db.String, 150)
@@ -2614,18 +2614,18 @@ Public Sub CREATEtblfisclosing($con As Connection)
     hTable.Fields.Add("fldpatradiosubtest", db.String, 150)
     hTable.Fields.Add("fldpatdosing", db.String, 150)
     hTable.Fields.Add("fldpatreport", db.String, 150)
-    
+
     hTable.PrimaryKey = ["fldindex"]
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblenclock($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblenclock") Then
     hTable = $con.Tables.Add("tblenclock", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2636,13 +2636,13 @@ Public Sub CREATEtblenclock($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltabsettings($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltabsettings") Then
     hTable = $con.Tables.Add("tbltabsettings", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2655,13 +2655,13 @@ Public Sub CREATEtbltabsettings($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsettings($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsettings") Then
     hTable = $con.Tables.Add("tblsettings", $DbEngine)
     hTable.Fields.Add("fldindex", db.String, 250)
@@ -2674,13 +2674,13 @@ Public Sub CREATEtblsettings($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblhmissetting($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblhmissetting") Then
     hTable = $con.Tables.Add("tblhmissetting", $DbEngine)
     If $DbFormat = "REP" Then
@@ -2707,13 +2707,13 @@ Public Sub CREATEtblhmissetting($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblgnupg($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblgnupg") Then
     hTable = $con.Tables.Add("tblgnupg", $DbEngine)
     hTable.Fields.Add("fldkeyid", db.String, 250)
@@ -2732,13 +2732,13 @@ Public Sub CREATEtblgnupg($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblautoemail($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblautoemail") Then
     hTable = $con.Tables.Add("tblautoemail", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2757,13 +2757,13 @@ Public Sub CREATEtblautoemail($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcronjob($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcronjob") Then
     hTable = $con.Tables.Add("tblcronjob", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2780,13 +2780,13 @@ Public Sub CREATEtblcronjob($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblirdactivity($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblirdactivity") Then
     hTable = $con.Tables.Add("tblirdactivity", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2803,13 +2803,13 @@ Public Sub CREATEtblirdactivity($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblactivity($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblactivity") Then
     hTable = $con.Tables.Add("tblactivity", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2826,13 +2826,13 @@ Public Sub CREATEtblactivity($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbljobrecord($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbljobrecord") Then
     hTable = $con.Tables.Add("tbljobrecord", $DbEngine)
     hTable.Fields.Add("fldindex", db.String, 250)
@@ -2851,13 +2851,13 @@ Public Sub CREATEtbljobrecord($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsystemlog($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsystemlog") Then
     hTable = $con.Tables.Add("tblsystemlog", $DbEngine)
     hTable.Fields.Add("fldindex", db.String, 250)
@@ -2879,13 +2879,13 @@ Public Sub CREATEtblsystemlog($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblauthenticate($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblauthenticate") Then
     hTable = $con.Tables.Add("tblauthenticate", $DbEngine)
     hTable.Fields.Add("fldhash", db.String, 250)
@@ -2894,13 +2894,13 @@ Public Sub CREATEtblauthenticate($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblreposync($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If $DbFormat = "REP" Then
     If Not $con.Tables.Exist("tblreposync") Then
       hTable = $con.Tables.Add("tblreposync", $DbEngine)
@@ -2914,13 +2914,13 @@ Public Sub CREATEtblreposync($con As Connection)
       modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
     Endif
   Endif
-  
+
 End
 
 Public Sub CREATEtblreportlog($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblreportlog") Then
     hTable = $con.Tables.Add("tblreportlog", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2944,13 +2944,13 @@ Public Sub CREATEtblreportlog($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmessagelog($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmessagelog") Then
     hTable = $con.Tables.Add("tblmessagelog", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2960,7 +2960,7 @@ Public Sub CREATEtblmessagelog($con As Connection)
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
-    
+
     hTable.Fields.Add("fldhostmac", db.String, 250)
     hTable.Fields.Add("fldhostuser", db.String, 250)
     hTable.Fields.Add("fldhostip", db.String, 250)
@@ -2969,13 +2969,13 @@ Public Sub CREATEtblmessagelog($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsmslog($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsmslog") Then
     hTable = $con.Tables.Add("tblsmslog", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -2992,7 +2992,7 @@ Public Sub CREATEtblsmslog($con As Connection)
     hTable.Fields.Add("fldcomp", db.String, 50)
     hTable.Fields.Add("fldstatus", db.String, 50)
     hTable.Fields.Add("fldsmsdate", db.Date)
-    
+
     hTable.Fields.Add("fldhostmac", db.String, 250)
     hTable.Fields.Add("fldhostuser", db.String, 250)
     hTable.Fields.Add("fldhostip", db.String, 250)
@@ -3001,13 +3001,13 @@ Public Sub CREATEtblsmslog($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblstafflist($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblstafflist") Then
     hTable = $con.Tables.Add("tblstafflist", $DbEngine)
     If $DbFormat = "REP" Then
@@ -3035,7 +3035,7 @@ Public Sub CREATEtblstafflist($con As Connection)
     hTable.Fields.Add("fldpatientval", db.String, 250)
     hTable.Fields.Add("flddisctype", db.String, 250)
     hTable.Fields.Add("fldstatus", db.String, 50)
-    
+
     hTable.Fields.Add("fldcitizen", db.String, 250)
     hTable.Fields.Add("fldcontype", db.String, 200)
     hTable.Fields.Add("fldreligion", db.String, 250)
@@ -3044,12 +3044,12 @@ Public Sub CREATEtblstafflist($con As Connection)
     hTable.Fields.Add("fldbankname", db.String, 250)
     hTable.Fields.Add("fldbankaccount", db.String, 250)
     hTable.Fields.Add("fldtaxpercent", db.Float)
-    
+
     hTable.Fields.Add("flddept", db.String, 250)
     hTable.Fields.Add("fldpost", db.String, 200)  ''designation
     hTable.Fields.Add("fldrank", db.String, 250)
     hTable.Fields.Add("fldunit", db.String, 250)
-    
+
     hTable.Fields.Add("fldremark", db.String, 250)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("xyz", db.Boolean)
@@ -3066,13 +3066,13 @@ Public Sub CREATEtblstafflist($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_flduserid", ["flduserid"], True)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsociallist($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsociallist") Then
     hTable = $con.Tables.Add("tblsociallist", $DbEngine)
     If $DbFormat = "REP" Then
@@ -3100,12 +3100,12 @@ Public Sub CREATEtblsociallist($con As Connection)
     hTable.Fields.Add("fldpatientval", db.String, 250)
     hTable.Fields.Add("flddisctype", db.String, 250)
     hTable.Fields.Add("fldstatus", db.String, 50)
-    
+
     hTable.Fields.Add("fldcitizen", db.String, 250)
     hTable.Fields.Add("fldidentify", db.String, 250)
     hTable.Fields.Add("fldscheme", db.String, 200)
     hTable.Fields.Add("fldservice", db.String, 250)
-    
+
     hTable.Fields.Add("fldreferhosp", db.String, 250)
     hTable.Fields.Add("fldreferdist", db.String, 250)
     hTable.Fields.Add("fldreferdate", db.Date)
@@ -3114,7 +3114,7 @@ Public Sub CREATEtblsociallist($con As Connection)
     hTable.Fields.Add("fldcreditdate", db.Date)
     hTable.Fields.Add("flddisclimit", db.Float)
     hTable.Fields.Add("flddiscdate", db.Date)
-    
+
     hTable.Fields.Add("fldremark", db.String, 250)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("xyz", db.Boolean)
@@ -3130,13 +3130,13 @@ Public Sub CREATEtblsociallist($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldpatientval_flddisctype", ["fldpatientval", "flddisctype"], True)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbluser($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbluser") Then
     hTable = $con.Tables.Add("tbluser", $DbEngine)
     hTable.Fields.Add("flduserid", db.String, 20)
@@ -3151,7 +3151,7 @@ Public Sub CREATEtbluser($con As Connection)
     hTable.Fields.Add("fldcontact", db.String, 150)
     hTable.Fields.Add("fldemail", db.String, 250)
     hTable.Fields.Add("fldstatus", db.String, 50)
-    
+
     hTable.Fields.Add("fldfaculty", db.Boolean)
     hTable.Fields.Add("fldpayable", db.Boolean)
     hTable.Fields.Add("fldreferral", db.Boolean)
@@ -3170,13 +3170,13 @@ Public Sub CREATEtbluser($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblusercategory($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblusercategory") Then
     hTable = $con.Tables.Add("tblusercategory", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3185,13 +3185,13 @@ Public Sub CREATEtblusercategory($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmiscategory($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmiscategory") Then
     hTable = $con.Tables.Add("tblmiscategory", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3201,13 +3201,13 @@ Public Sub CREATEtblmiscategory($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbluserimage($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbluserimage") Then
     hTable = $con.Tables.Add("tbluserimage", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3229,13 +3229,13 @@ Public Sub CREATEtbluserimage($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblreportuser($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblreportuser") Then
     hTable = $con.Tables.Add("tblreportuser", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3254,13 +3254,13 @@ Public Sub CREATEtblreportuser($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblkey($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblkey") Then
     hTable = $con.Tables.Add("tblkey", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3270,13 +3270,13 @@ Public Sub CREATEtblkey($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblnewkey($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblnewkey") Then
     hTable = $con.Tables.Add("tblnewkey", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3286,13 +3286,13 @@ Public Sub CREATEtblnewkey($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbluseraccess($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbluseraccess") Then
     hTable = $con.Tables.Add("tbluseraccess", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3302,13 +3302,13 @@ Public Sub CREATEtbluseraccess($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcompaccess($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcompaccess") Then
     hTable = $con.Tables.Add("tblcompaccess", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3318,13 +3318,13 @@ Public Sub CREATEtblcompaccess($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmacaccess($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmacaccess") Then
     hTable = $con.Tables.Add("tblmacaccess", $DbEngine)
     hTable.Fields.Add("fldhostmac", db.String, 250)
@@ -3346,13 +3346,13 @@ Public Sub CREATEtblmacaccess($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbluserformaccess($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbluserformaccess") Then
     hTable = $con.Tables.Add("tbluserformaccess", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3364,13 +3364,13 @@ Public Sub CREATEtbluserformaccess($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblclinicentry($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblclinicentry") Then
     hTable = $con.Tables.Add("tblclinicentry", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3382,13 +3382,13 @@ Public Sub CREATEtblclinicentry($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpersonal($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpersonal") Then
     hTable = $con.Tables.Add("tblpersonal", $DbEngine)
     hTable.Fields.Add("perid", db.Serial)
@@ -3409,13 +3409,13 @@ Public Sub CREATEtblpersonal($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblfileshare($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblfileshare") Then
     hTable = $con.Tables.Add("tblfileshare", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3427,14 +3427,14 @@ Public Sub CREATEtblfileshare($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''----------------------------FOR CreateDatabaseForSish_Finance---------------------------
 Public Sub CREATEtblsurname($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsurname") Then
     hTable = $con.Tables.Add("tblsurname", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3443,13 +3443,13 @@ Public Sub CREATEtblsurname($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblhospitals($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblhospitals") Then
     hTable = $con.Tables.Add("tblhospitals", $DbEngine)
     hTable.Fields.Add("fldhospcode", db.String, 50)
@@ -3474,7 +3474,7 @@ Public Sub CREATEtblhospitals($con As Connection)
       hTable.Fields.Add("fldsbanum", db.Float)
       hTable.Fields.Add("fldlarcnum", db.Float)
       hTable.Fields.Add("fldimncinum", db.Float)
-      
+
       hTable.Fields.Add("fldhfbool1", db.Boolean)
       hTable.Fields.Add("fldhfbool2", db.Boolean)
       hTable.Fields.Add("fldhfbool3", db.Boolean)
@@ -3504,13 +3504,13 @@ Public Sub CREATEtblhospitals($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmunicipals($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmunicipals") Then
     hTable = $con.Tables.Add("tblmunicipals", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3521,13 +3521,13 @@ Public Sub CREATEtblmunicipals($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblrelations($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblrelations") Then
     hTable = $con.Tables.Add("tblrelations", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3536,13 +3536,13 @@ Public Sub CREATEtblrelations($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblranks($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblranks") Then
     hTable = $con.Tables.Add("tblranks", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3551,13 +3551,13 @@ Public Sub CREATEtblranks($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblunits($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblunits") Then
     hTable = $con.Tables.Add("tblunits", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3566,13 +3566,13 @@ Public Sub CREATEtblunits($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblipdservice($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblipdservice") Then
     hTable = $con.Tables.Add("tblipdservice", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3582,13 +3582,13 @@ Public Sub CREATEtblipdservice($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldepartment($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldepartment") Then
     hTable = $con.Tables.Add("tbldepartment", $DbEngine)
     If $DbFormat = "REP" Then
@@ -3607,7 +3607,7 @@ Public Sub CREATEtbldepartment($con As Connection)
     hTable.Fields.Add("fldcomp", db.String, 50)
     hTable.Fields.Add("fldinterval", db.Integer)
     hTable.Fields.Add("fldstart", db.Date)
-    
+
     hTable.Fields.Add("xyz", db.Boolean)
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
@@ -3620,13 +3620,13 @@ Public Sub CREATEtbldepartment($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldeptgroup($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldeptgroup") Then
     hTable = $con.Tables.Add("tbldeptgroup", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3636,13 +3636,13 @@ Public Sub CREATEtbldeptgroup($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldepartmentbed($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldepartmentbed") Then
     hTable = $con.Tables.Add("tbldepartmentbed", $DbEngine)
     If $DbFormat = "REP" Then
@@ -3661,7 +3661,7 @@ Public Sub CREATEtbldepartmentbed($con As Connection)
     hTable.Fields.Add("fldaddservice", db.String, 150)
     hTable.Fields.Add("fldflag", db.Boolean)
     hTable.Fields.Add("fldfreedate", db.Date)
-    
+
     hTable.Fields.Add("xyz", db.Boolean)
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
@@ -3674,13 +3674,13 @@ Public Sub CREATEtbldepartmentbed($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldepartbedcharge($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldepartbedcharge") Then
     hTable = $con.Tables.Add("tbldepartbedcharge", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3697,13 +3697,13 @@ Public Sub CREATEtbldepartbedcharge($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldiscount($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldiscount") Then
     hTable = $con.Tables.Add("tbldiscount", $DbEngine)
     If $DbFormat = "REP" Then
@@ -3732,7 +3732,7 @@ Public Sub CREATEtbldiscount($con As Connection)
     hTable.Fields.Add("fldonline", db.String, 100)
     hTable.Fields.Add("fldoffspring", db.String, 100)
     hTable.Fields.Add("fldbankaccount", db.String, 200)
-    
+
     hTable.Fields.Add("fldlab", db.Float)
     hTable.Fields.Add("fldradio", db.Float)
     hTable.Fields.Add("fldproc", db.Float)
@@ -3743,7 +3743,7 @@ Public Sub CREATEtbldiscount($con As Connection)
     hTable.Fields.Add("fldsurgical", db.Float)
     hTable.Fields.Add("fldextra", db.Float)
     hTable.Fields.Add("fldregist", db.Float)
-    
+
     hTable.Fields.Add("fldcrdlab", db.Float)
     hTable.Fields.Add("fldcrdradio", db.Float)
     hTable.Fields.Add("fldcrdproc", db.Float)
@@ -3753,7 +3753,7 @@ Public Sub CREATEtbldiscount($con As Connection)
     hTable.Fields.Add("fldcrdmedicine", db.Float)
     hTable.Fields.Add("fldcrdsurgical", db.Float)
     hTable.Fields.Add("fldcrdextra", db.Float)
-    
+
     hTable.Fields.Add("fldqtylab", db.Float)
     hTable.Fields.Add("fldqtyradio", db.Float)
     hTable.Fields.Add("fldqtyproc", db.Float)
@@ -3763,7 +3763,7 @@ Public Sub CREATEtbldiscount($con As Connection)
     hTable.Fields.Add("fldqtymedicine", db.Float)
     hTable.Fields.Add("fldqtysurgical", db.Float)
     hTable.Fields.Add("fldqtyextra", db.Float)
-    
+
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
@@ -3780,13 +3780,13 @@ Public Sub CREATEtbldiscount($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblforcediscount($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblforcediscount") Then
     hTable = $con.Tables.Add("tblforcediscount", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3796,13 +3796,13 @@ Public Sub CREATEtblforcediscount($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblnodiscount($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblnodiscount") Then
     hTable = $con.Tables.Add("tblnodiscount", $DbEngine)
     hTable.Fields.Add("flditemname", db.String, 250)
@@ -3814,13 +3814,33 @@ Public Sub CREATEtblnodiscount($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
+End
+
+Public Sub CREATEtbllockedservice($con As Connection)
+
+  Dim hTable As Table
+
+  If Not $con.Tables.Exist("tbllockedservice") Then
+    hTable = $con.Tables.Add("tbllockedservice", $DbEngine)
+    hTable.Fields.Add("fldid", db.Serial)
+    hTable.Fields.Add("flddisctype", db.String, 100)
+    hTable.Fields.Add("flditemname", db.String, 250)
+    hTable.Fields.Add("flditemtype", db.String, 200)
+    hTable.Fields.Add("flduserid", db.String, 25)
+    hTable.Fields.Add("fldtime", db.Date)
+    hTable.Fields.Add("fldcomp", db.String, 50)
+    hTable.PrimaryKey = ["fldid"]
+    hTable.Update
+    modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
+  Endif
+
 End
 
 Public Sub CREATEtblcustdiscount($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcustdiscount") Then
     hTable = $con.Tables.Add("tblcustdiscount", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3835,13 +3855,13 @@ Public Sub CREATEtblcustdiscount($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcustquantity($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcustquantity") Then
     hTable = $con.Tables.Add("tblcustquantity", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3856,13 +3876,13 @@ Public Sub CREATEtblcustquantity($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcustcredit($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcustcredit") Then
     hTable = $con.Tables.Add("tblcustcredit", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3877,13 +3897,13 @@ Public Sub CREATEtblcustcredit($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpackgroup($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpackgroup") Then
     hTable = $con.Tables.Add("tblpackgroup", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3893,13 +3913,13 @@ Public Sub CREATEtblpackgroup($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblaccdemograp($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblaccdemograp") Then
     hTable = $con.Tables.Add("tblaccdemograp", $DbEngine)
     hTable.Fields.Add("flddemoid", db.String, 200)
@@ -3909,13 +3929,13 @@ Public Sub CREATEtblaccdemograp($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblaccdemogoption($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblaccdemogoption") Then
     hTable = $con.Tables.Add("tblaccdemogoption", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3927,13 +3947,13 @@ Public Sub CREATEtblaccdemogoption($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblbillingset($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblbillingset") Then
     hTable = $con.Tables.Add("tblbillingset", $DbEngine)
     hTable.Fields.Add("fldsetname", db.String, 50)
@@ -3941,13 +3961,13 @@ Public Sub CREATEtblbillingset($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpackschedule($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpackschedule") Then
     hTable = $con.Tables.Add("tblpackschedule", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3964,13 +3984,13 @@ Public Sub CREATEtblpackschedule($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblbillitem($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblbillitem") Then
     hTable = $con.Tables.Add("tblbillitem", $DbEngine)
     hTable.Fields.Add("fldbillitem", db.String, 200)
@@ -3979,13 +3999,13 @@ Public Sub CREATEtblbillitem($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblbillsection($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblbillsection") Then
     hTable = $con.Tables.Add("tblbillsection", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -3995,13 +4015,13 @@ Public Sub CREATEtblbillsection($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcurrency($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcurrency") Then
     hTable = $con.Tables.Add("tblcurrency", $DbEngine)
     hTable.Fields.Add("flditemunit", db.String, 50)
@@ -4010,13 +4030,13 @@ Public Sub CREATEtblcurrency($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblservicecost($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   ' If Not $con.Tables.Exist("tbltestcost") Then ''old name
   If Not $con.Tables.Exist("tblservicecost") Then
     hTable = $con.Tables.Add("tblservicecost", $DbEngine)
@@ -4031,7 +4051,7 @@ Public Sub CREATEtblservicecost($con As Connection)
     hTable.Fields.Add("fldtarget", db.String, 50)  ''Target Comp or rate For
     hTable.Fields.Add("fldstatus", db.String, 50)  ''current status
     hTable.Fields.Add("fldwaitday", db.Integer)
-    
+
     hTable.Fields.Add("fldgroup", db.String, 50)  ''BRate Plan
     hTable.Fields.Add("fldreport", db.String, 200)  ''Section
     hTable.Fields.Add("fldtaxcode", db.String, 150)
@@ -4039,13 +4059,13 @@ Public Sub CREATEtblservicecost($con As Connection)
     hTable.Fields.Add("fldeditdisc", db.Boolean)
     hTable.Fields.Add("fldpayable", db.Boolean)
     hTable.Fields.Add("fldpatentry", db.Boolean)
-    
+
     hTable.Fields.Add("fldhospitalshare", db.Float)
     hTable.Fields.Add("fldinstrumshare", db.Float)
     hTable.Fields.Add("flddepartshare", db.Float)
     hTable.Fields.Add("fldanesthshare", db.Float)
     hTable.Fields.Add("fldothershare", db.Float)
-    
+
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
@@ -4058,13 +4078,13 @@ Public Sub CREATEtblservicecost($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblreportgroup($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblreportgroup") Then
     hTable = $con.Tables.Add("tblreportgroup", $DbEngine)
     hTable.Fields.Add("flditemname", db.String, 250)
@@ -4075,13 +4095,13 @@ Public Sub CREATEtblreportgroup($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmasterdept($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmasterdept") Then
     hTable = $con.Tables.Add("tblmasterdept", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4091,13 +4111,13 @@ Public Sub CREATEtblmasterdept($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcostgroup($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcostgroup") Then
     hTable = $con.Tables.Add("tblcostgroup", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4108,13 +4128,13 @@ Public Sub CREATEtblcostgroup($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblextrasetting($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblextrasetting") Then
     hTable = $con.Tables.Add("tblextrasetting", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4126,13 +4146,13 @@ Public Sub CREATEtblextrasetting($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldepconsult($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldepconsult") Then
     hTable = $con.Tables.Add("tbldepconsult", $DbEngine)
     If $DbFormat = "REP" Then
@@ -4167,13 +4187,13 @@ Public Sub CREATEtbldepconsult($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblprocedureshare($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblprocedureshare") Then
     hTable = $con.Tables.Add("tblprocedureshare", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4192,13 +4212,13 @@ Public Sub CREATEtblprocedureshare($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblusershare($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblusershare") Then
     hTable = $con.Tables.Add("tblusershare", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4214,13 +4234,13 @@ Public Sub CREATEtblusershare($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbluserpay($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbluserpay") Then
     hTable = $con.Tables.Add("tbluserpay", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4235,13 +4255,13 @@ Public Sub CREATEtbluserpay($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblservicegroup($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblservicegroup") Then
     hTable = $con.Tables.Add("tblservicegroup", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4253,13 +4273,13 @@ Public Sub CREATEtblservicegroup($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcostbreak($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcostbreak") Then
     hTable = $con.Tables.Add("tblcostbreak", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4271,13 +4291,13 @@ Public Sub CREATEtblcostbreak($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblautogroup($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblautogroup") Then
     hTable = $con.Tables.Add("tblautogroup", $DbEngine)
     If $DbFormat = "REP" Then
@@ -4308,13 +4328,13 @@ Public Sub CREATEtblautogroup($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltaxgroup($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltaxgroup") Then
     hTable = $con.Tables.Add("tbltaxgroup", $DbEngine)
     hTable.Fields.Add("fldgroup", db.String, 150)
@@ -4323,13 +4343,13 @@ Public Sub CREATEtbltaxgroup($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldiscgroup($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldiscgroup") Then
     hTable = $con.Tables.Add("tbldiscgroup", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4338,13 +4358,13 @@ Public Sub CREATEtbldiscgroup($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcashvendor($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcashvendor") Then
     hTable = $con.Tables.Add("tblcashvendor", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4353,13 +4373,13 @@ Public Sub CREATEtblcashvendor($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbljournal($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbljournal") Then
     hTable = $con.Tables.Add("tbljournal", $DbEngine)
     If $DbFormat = "REP" Then
@@ -4389,13 +4409,13 @@ Public Sub CREATEtbljournal($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblacledger($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblacledger") Then
     hTable = $con.Tables.Add("tblacledger", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4406,13 +4426,13 @@ Public Sub CREATEtblacledger($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcategorylist($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcategorylist") Then
     hTable = $con.Tables.Add("tblcategorylist", $DbEngine)
     hTable.Fields.Add("fldcategory", db.String, 250)
@@ -4423,13 +4443,13 @@ Public Sub CREATEtblcategorylist($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblschemecategory($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblschemecategory") Then
     hTable = $con.Tables.Add("tblschemecategory", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4439,13 +4459,13 @@ Public Sub CREATEtblschemecategory($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblextrapayers($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblextrapayers") Then
     hTable = $con.Tables.Add("tblextrapayers", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4455,13 +4475,13 @@ Public Sub CREATEtblextrapayers($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblextrapayitems($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblextrapayitems") Then
     hTable = $con.Tables.Add("tblextrapayitems", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4470,13 +4490,13 @@ Public Sub CREATEtblextrapayitems($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblassetsname($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblassetsname") Then
     hTable = $con.Tables.Add("tblassetsname", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4487,13 +4507,13 @@ Public Sub CREATEtblassetsname($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblassetsentry($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblassetsentry") Then
     hTable = $con.Tables.Add("tblassetsentry", $DbEngine)
     If $DbFormat = "REP" Then
@@ -4509,7 +4529,7 @@ Public Sub CREATEtblassetsentry($con As Connection)
     hTable.Fields.Add("fldmanufacturer", db.String, 250)
     hTable.Fields.Add("fldmodel", db.String, 250)
     hTable.Fields.Add("fldserial", db.String, 250)
-    
+
     hTable.Fields.Add("fldledger", db.String, 250)
     hTable.Fields.Add("fldbillno", db.String, 250)
     hTable.Fields.Add("fldsuppname", db.String, 250)
@@ -4539,14 +4559,14 @@ Public Sub CREATEtblassetsentry($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''---------------------------- For CreateDatabaseForSish_Inventory ----------------------------
 Public Sub CREATEtblentry($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblentry") Then
     hTable = $con.Tables.Add("tblentry", $DbEngine)
     If $DbFormat = "REP" Then
@@ -4580,13 +4600,13 @@ Public Sub CREATEtblentry($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblentrybackup($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblentrybackup") Then
     hTable = $con.Tables.Add("tblentrybackup", $DbEngine)
     If $DbFormat = "REP" Then
@@ -4609,7 +4629,7 @@ Public Sub CREATEtblentrybackup($con As Connection)
     hTable.Fields.Add("fldcomp", db.String, 50)
     hTable.Fields.Add("fldcode", db.String, 50)    ''used for serial port
     hTable.Fields.Add("fldpast", db.Float) ''past dispensed qty
-    
+
     hTable.Fields.Add("fldentrytime", db.Date)
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("xyz", db.Boolean)
@@ -4624,13 +4644,13 @@ Public Sub CREATEtblentrybackup($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblstockrate($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblstockrate") Then
     hTable = $con.Tables.Add("tblstockrate", $DbEngine)
     If $DbFormat = "REP" Then
@@ -4668,13 +4688,13 @@ Public Sub CREATEtblstockrate($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbladjustment($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbladjustment") Then
     hTable = $con.Tables.Add("tbladjustment", $DbEngine)
     If $DbFormat = "REP" Then
@@ -4709,13 +4729,13 @@ Public Sub CREATEtbladjustment($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpurchase($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpurchase") Then
     hTable = $con.Tables.Add("tblpurchase", $DbEngine)
     If $DbFormat = "REP" Then
@@ -4766,13 +4786,13 @@ Public Sub CREATEtblpurchase($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldreference", ["fldreference"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpurchasebill($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpurchasebill") Then
     hTable = $con.Tables.Add("tblpurchasebill", $DbEngine)
     If $DbFormat = "REP" Then
@@ -4810,13 +4830,13 @@ Public Sub CREATEtblpurchasebill($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldreference", ["fldreference"], True)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblstockreturn($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblstockreturn") Then
     hTable = $con.Tables.Add("tblstockreturn", $DbEngine)
     If $DbFormat = "REP" Then
@@ -4849,13 +4869,13 @@ Public Sub CREATEtblstockreturn($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsupplier($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsupplier") Then
     hTable = $con.Tables.Add("tblsupplier", $DbEngine)
     hTable.Fields.Add("fldsuppname", db.String, 250)
@@ -4882,13 +4902,13 @@ Public Sub CREATEtblsupplier($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltenderlist($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltenderlist") Then
     hTable = $con.Tables.Add("tbltenderlist", $DbEngine)
     If $DbFormat = "REP" Then
@@ -4921,13 +4941,13 @@ Public Sub CREATEtbltenderlist($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpayment($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpayment") Then
     hTable = $con.Tables.Add("tblpayment", $DbEngine)
     If $DbFormat = "REP" Then
@@ -4964,13 +4984,13 @@ Public Sub CREATEtblpayment($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpurorder($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpurorder") Then
     hTable = $con.Tables.Add("tblpurorder", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -4993,19 +5013,19 @@ Public Sub CREATEtblpurorder($con As Connection)
     hTable.Fields.Add("fldrecvref", db.String, 250)
     hTable.Fields.Add("fldrecvuserid", db.String, 25)
     hTable.Fields.Add("fldrecvtime", db.Date)
-    
+
     hTable.PrimaryKey = ["fldid"]
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
   Endif
-  
+
 End
 
 Public Sub CREATEtblrequest($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblrequest") Then
     hTable = $con.Tables.Add("tblrequest", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -5018,28 +5038,28 @@ Public Sub CREATEtblrequest($con As Connection)
     hTable.Fields.Add("fldexpdate", db.Date)
     hTable.Fields.Add("fldreference", db.String, 250)
     hTable.Fields.Add("fldremarks", db.String, 250)
-    
+
     hTable.Fields.Add("fldorduserid", db.String, 25)
     hTable.Fields.Add("fldordtime", db.Date)
     hTable.Fields.Add("fldordcomp", db.String, 50)
-    
+
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
     hTable.Fields.Add("fldsave", db.Boolean)
-    
+
     hTable.PrimaryKey = ["fldid"]
     hTable.Update
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltransfer($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltransfer") Then
     hTable = $con.Tables.Add("tbltransfer", $DbEngine)
     If $DbFormat = "REP" Then
@@ -5056,7 +5076,7 @@ Public Sub CREATEtbltransfer($con As Connection)
     hTable.Fields.Add("fldnetcost", db.Float)
     hTable.Fields.Add("fldsellpr", db.Float)
     hTable.Fields.Add("fldsav", db.Boolean)
-    
+
     hTable.Fields.Add("fldfromentrytime", db.Date)
     hTable.Fields.Add("fldfromuser", db.String, 25)
     hTable.Fields.Add("fldfromcomp", db.String, 50)
@@ -5065,7 +5085,7 @@ Public Sub CREATEtbltransfer($con As Connection)
     hTable.Fields.Add("fldtouser", db.String, 25)
     hTable.Fields.Add("fldtocomp", db.String, 50)
     hTable.Fields.Add("fldtosav", db.Boolean)
-    
+
     hTable.Fields.Add("fldlockcomp", db.String, 50)
     hTable.Fields.Add("fldrequest", db.String, 250)
     hTable.Fields.Add("fldcomment", db.String, 250)
@@ -5084,13 +5104,13 @@ Public Sub CREATEtbltransfer($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldreference", ["fldreference"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltarget($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltarget") Then
     hTable = $con.Tables.Add("tbltarget", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -5099,13 +5119,13 @@ Public Sub CREATEtbltarget($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblbulksale($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblbulksale") Then
     hTable = $con.Tables.Add("tblbulksale", $DbEngine)
     If $DbFormat = "REP" Then
@@ -5126,7 +5146,7 @@ Public Sub CREATEtblbulksale($con As Connection)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
     hTable.Fields.Add("fldsave", db.Boolean)
-    
+
     hTable.Fields.Add("fldrequest", db.String, 250)
     hTable.Fields.Add("fldcomment", db.String, 250)
     hTable.Fields.Add("fldreference", db.String, 250)
@@ -5145,14 +5165,14 @@ Public Sub CREATEtblbulksale($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldreference", ["fldreference"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''----------- blood/other products inventory
 Public Sub CREATEtblmedinventory($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmedinventory") Then
     hTable = $con.Tables.Add("tblmedinventory", $DbEngine)
     If $DbFormat = "REP" Then
@@ -5187,14 +5207,14 @@ Public Sub CREATEtblmedinventory($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldcode", ["fldcode"], True)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''----------------------------FOR CreateDatabaseForSish_Patient---------------------------
 Public Sub CREATEtblpatientbook($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatientbook") Then
     hTable = $con.Tables.Add("tblpatientbook", $DbEngine)
     hTable.Fields.Add("fldbookingval", db.String, 150)
@@ -5236,13 +5256,13 @@ Public Sub CREATEtblpatientbook($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldpatientval", ["fldpatientval"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblonlinebook($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblonlinebook") Then
     hTable = $con.Tables.Add("tblonlinebook", $DbEngine)
     hTable.Fields.Add("fldbookingval", db.String, 150)
@@ -5287,13 +5307,13 @@ Public Sub CREATEtblonlinebook($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldpatientval", ["fldpatientval"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatientinfo($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatientinfo") Then
     hTable = $con.Tables.Add("tblpatientinfo", $DbEngine)
     hTable.Fields.Add("fldpatientval", db.String, 150)
@@ -5326,7 +5346,7 @@ Public Sub CREATEtblpatientinfo($con As Connection)
     hTable.Fields.Add("fldupuser", db.String, 25)
     hTable.Fields.Add("flduptime", db.Date)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -5337,13 +5357,13 @@ Public Sub CREATEtblpatientinfo($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldptbirday", ["fldptbirday"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblencounter($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblencounter") Then
     hTable = $con.Tables.Add("tblencounter", $DbEngine)
     hTable.Fields.Add("fldencounterval", db.String, 150)
@@ -5356,7 +5376,7 @@ Public Sub CREATEtblencounter($con As Connection)
     hTable.Fields.Add("fldcomp", db.String, 50)
     hTable.Fields.Add("fldvisit", db.String, 50)
     hTable.Fields.Add("fldfollow", db.String, 50)
-    
+
     hTable.Fields.Add("fldcurrlocat", db.String, 100)
     hTable.Fields.Add("fldadmitward", db.String, 100)
     hTable.Fields.Add("fldadmitbed", db.String, 100)
@@ -5370,12 +5390,12 @@ Public Sub CREATEtblencounter($con As Connection)
     hTable.Fields.Add("fldvalidity", db.Date)
     hTable.Fields.Add("fldfollowdate", db.Date)
     hTable.Fields.Add("fldreferto", db.String, 250)
-    
+
     hTable.Fields.Add("fldregistid", db.String, 150)
     hTable.Fields.Add("fldadmitid", db.String, 150)
     hTable.Fields.Add("fldpassword", db.String, 250)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -5389,13 +5409,13 @@ Public Sub CREATEtblencounter($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_flddod", ["flddod"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcreditlimit($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcreditlimit") Then
     hTable = $con.Tables.Add("tblcreditlimit", $DbEngine)
     If $DbFormat = "REP" Then
@@ -5428,13 +5448,13 @@ Public Sub CREATEtblcreditlimit($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblclaimcode($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblclaimcode") Then
     hTable = $con.Tables.Add("tblclaimcode", $DbEngine)
     hTable.Fields.Add("fldclaimid", db.String, 150)
@@ -5456,20 +5476,20 @@ Public Sub CREATEtblclaimcode($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblssfclaim($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblssfclaim") Then
     hTable = $con.Tables.Add("tblssfclaim", $DbEngine)
     hTable.Fields.Add("fldclaimid", db.String, 150)
     hTable.Fields.Add("fldencounterval", db.String, 150)
     hTable.Fields.Add("fldptcode", db.String, 250)
     hTable.Fields.Add("fldstatus", db.String, 25)
-    
+
     hTable.Fields.Add("fldemployer", db.String, 250)
     hTable.Fields.Add("fldscheme", db.String, 100)
     hTable.Fields.Add("fldsubproduct", db.String, 100)
@@ -5486,7 +5506,7 @@ Public Sub CREATEtblssfclaim($con As Connection)
     hTable.Fields.Add("fldheart", db.String, 100)
     hTable.Fields.Add("fldhighbp", db.String, 100)
     hTable.Fields.Add("flddiabetes", db.String, 100)
-    
+
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
     hTable.Fields.Add("flduserid", db.String, 25)
@@ -5502,13 +5522,13 @@ Public Sub CREATEtblssfclaim($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpataccgeneral($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpataccgeneral") Then
     hTable = $con.Tables.Add("tblpataccgeneral", $DbEngine)
     If $DbFormat = "REP" Then
@@ -5548,13 +5568,13 @@ Public Sub CREATEtblpataccgeneral($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatdevice($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatdevice") Then
     hTable = $con.Tables.Add("tblpatdevice", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -5572,13 +5592,13 @@ Public Sub CREATEtblpatdevice($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldencounterval", ["fldencounterval"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatientdate($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatientdate") Then
     hTable = $con.Tables.Add("tblpatientdate", $DbEngine)
     If $DbFormat = "REP" Then
@@ -5609,13 +5629,13 @@ Public Sub CREATEtblpatientdate($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatientexam($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatientexam") Then
     hTable = $con.Tables.Add("tblpatientexam", $DbEngine)
     If $DbFormat = "REP" Then
@@ -5648,7 +5668,7 @@ Public Sub CREATEtblpatientexam($con As Connection)
     hTable.Fields.Add("fldfilepath", db.String, 250)
     hTable.Fields.Add("flduptime", db.Date)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -5662,13 +5682,13 @@ Public Sub CREATEtblpatientexam($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatientsubexam($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatientsubexam") Then
     hTable = $con.Tables.Add("tblpatientsubexam", $DbEngine)
     If $DbFormat = "REP" Then
@@ -5695,7 +5715,7 @@ Public Sub CREATEtblpatientsubexam($con As Connection)
     hTable.Fields.Add("fldchk", db.Boolean)
     hTable.Fields.Add("fldfilepath", db.String, 250)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -5710,13 +5730,13 @@ Public Sub CREATEtblpatientsubexam($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldindex", ["fldindex"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatexamsubtable($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatexamsubtable") Then
     hTable = $con.Tables.Add("tblpatexamsubtable", $DbEngine)
     If $DbFormat = "REP" Then
@@ -5735,7 +5755,7 @@ Public Sub CREATEtblpatexamsubtable($con As Connection)
     hTable.Fields.Add("fldcolm3", db.String, 250)
     hTable.Fields.Add("fldcolm4", db.String, 250)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -5748,13 +5768,13 @@ Public Sub CREATEtblpatexamsubtable($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldsubexamid", ["fldsubexamid"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatlabtest($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatlabtest") Then
     hTable = $con.Tables.Add("tblpatlabtest", $DbEngine)
     If $DbFormat = "REP" Then
@@ -5784,41 +5804,41 @@ Public Sub CREATEtblpatlabtest($con As Connection)
     hTable.Fields.Add("fldcondition", db.String, 250)
     hTable.Fields.Add("fldcomment", db.String, 255)
     hTable.Fields.Add("flvisible", db.String, 50)
-    
+
     hTable.Fields.Add("fldtest_type", db.String, 50)
     hTable.Fields.Add("fldbillno", db.String, 250)
     hTable.Fields.Add("fldchk", db.Boolean)
     hTable.Fields.Add("fldorder", db.Integer)
-    
+
     hTable.Fields.Add("flduserid_sample", db.String, 25)
     hTable.Fields.Add("fldtime_sample", db.Date)
     hTable.Fields.Add("fldcomp_sample", db.String, 50)
     hTable.Fields.Add("fldsave_sample", db.Boolean)
     hTable.Fields.Add("flduptime_sample", db.Date)
-    
+
     hTable.Fields.Add("flduserid_start", db.String, 25)
     hTable.Fields.Add("fldtime_start", db.Date)
     hTable.Fields.Add("fldcomp_start", db.String, 50)
     hTable.Fields.Add("fldsave_start", db.Boolean)
     hTable.Fields.Add("flduptime_start", db.Date)
-    
+
     hTable.Fields.Add("flduserid_report", db.String, 25)
     hTable.Fields.Add("fldtime_report", db.Date)
     hTable.Fields.Add("fldcomp_report", db.String, 50)
     hTable.Fields.Add("fldsave_report", db.Boolean)
     hTable.Fields.Add("flduptime_report", db.Date)
     hTable.Fields.Add("fldupuser_report", db.String, 25)
-    
+
     hTable.Fields.Add("flduserid_verify", db.String, 25)
     hTable.Fields.Add("fldtime_verify", db.Date)
     hTable.Fields.Add("fldcomp_verify", db.String, 50)
     hTable.Fields.Add("fldsave_verify", db.Boolean)
     hTable.Fields.Add("flduptime_verify", db.Date)
     hTable.Fields.Add("fldupuser_verify", db.String, 25)
-    
+
     hTable.Fields.Add("fldflag", db.Boolean)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -5834,13 +5854,13 @@ Public Sub CREATEtblpatlabtest($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime_sample", ["fldtime_sample"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatlabsubtest($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatlabsubtest") Then
     hTable = $con.Tables.Add("tblpatlabsubtest", $DbEngine)
     If $DbFormat = "REP" Then
@@ -5868,7 +5888,7 @@ Public Sub CREATEtblpatlabsubtest($con As Connection)
     hTable.Fields.Add("fldorder", db.Integer)
     hTable.Fields.Add("fldfilepath", db.String, 250)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -5883,13 +5903,13 @@ Public Sub CREATEtblpatlabsubtest($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldindex", ["fldindex"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatlabsubtable($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatlabsubtable") Then
     hTable = $con.Tables.Add("tblpatlabsubtable", $DbEngine)
     If $DbFormat = "REP" Then
@@ -5908,7 +5928,7 @@ Public Sub CREATEtblpatlabsubtable($con As Connection)
     hTable.Fields.Add("fldcolm3", db.String, 250)
     hTable.Fields.Add("fldcolm4", db.String, 250)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -5922,13 +5942,13 @@ Public Sub CREATEtblpatlabsubtable($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldindex", ["fldindex"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatfindings($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatfindings") Then
     hTable = $con.Tables.Add("tblpatfindings", $DbEngine)
     If $DbFormat = "REP" Then
@@ -5948,7 +5968,7 @@ Public Sub CREATEtblpatfindings($con As Connection)
     hTable.Fields.Add("fldsave", db.Boolean)
     hTable.Fields.Add("fldflag", db.Boolean)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -5962,13 +5982,13 @@ Public Sub CREATEtblpatfindings($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblexamgeneral($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblexamgeneral") Then
     hTable = $con.Tables.Add("tblexamgeneral", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6007,13 +6027,13 @@ Public Sub CREATEtblexamgeneral($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatgeneral($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatgeneral") Then
     hTable = $con.Tables.Add("tblpatgeneral", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6057,13 +6077,13 @@ Public Sub CREATEtblpatgeneral($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatsubgeneral($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatsubgeneral") Then
     hTable = $con.Tables.Add("tblpatsubgeneral", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6100,13 +6120,13 @@ Public Sub CREATEtblpatsubgeneral($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_flditemid", ["flditemid"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatgenshare($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatgenshare") Then
     hTable = $con.Tables.Add("tblpatgenshare", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6125,7 +6145,7 @@ Public Sub CREATEtblpatgenshare($con As Connection)
     hTable.Fields.Add("fldchange", db.Float)
     hTable.Fields.Add("fldchreason", db.String, 250)
     hTable.Fields.Add("fldactive", db.String, 25)
-    
+
     hTable.Fields.Add("fldshareamt", db.Float)
     hTable.Fields.Add("fldtdsper", db.Float)
     hTable.Fields.Add("fldsharenet", db.Float)
@@ -6149,13 +6169,13 @@ Public Sub CREATEtblpatgenshare($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblsharepayment($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblsharepayment") Then
     hTable = $con.Tables.Add("tblsharepayment", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6172,7 +6192,7 @@ Public Sub CREATEtblsharepayment($con As Connection)
     hTable.Fields.Add("fldsharenet", db.Float)
     hTable.Fields.Add("fldextra", db.Float)
     hTable.Fields.Add("fldcomment", db.String, 250)
-    
+
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
@@ -6191,13 +6211,13 @@ Public Sub CREATEtblsharepayment($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatplanning($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatplanning") Then
     hTable = $con.Tables.Add("tblpatplanning", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6239,13 +6259,13 @@ Public Sub CREATEtblpatplanning($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatevents($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatevents") Then
     hTable = $con.Tables.Add("tblpatevents", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6259,21 +6279,21 @@ Public Sub CREATEtblpatevents($con As Connection)
     hTable.Fields.Add("fldtype", db.String, 250)
     hTable.Fields.Add("flddetail", db.String, 255)
     hTable.Fields.Add("fldcomment", db.String, 255)
-    
+
     hTable.Fields.Add("fldfirstuserid", db.String, 25)
     hTable.Fields.Add("fldfirsttime", db.Date)
     hTable.Fields.Add("fldfirstcomp", db.String, 50)
     hTable.Fields.Add("fldfirstsave", db.Boolean)
-    
+
     hTable.Fields.Add("fldseconduserid", db.String, 25)
     hTable.Fields.Add("fldsecondtime", db.Date)
     hTable.Fields.Add("fldsecondcomp", db.String, 50)
     hTable.Fields.Add("fldsecondsave", db.Boolean)
-    
+
     hTable.Fields.Add("fldstatus", db.String, 100)
     hTable.Fields.Add("fldsave", db.Boolean)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -6287,13 +6307,13 @@ Public Sub CREATEtblpatevents($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldfirsttime", ["fldfirsttime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpattiming($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpattiming") Then
     hTable = $con.Tables.Add("tblpattiming", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6307,19 +6327,19 @@ Public Sub CREATEtblpattiming($con As Connection)
     hTable.Fields.Add("flditem", db.String, 250)
     hTable.Fields.Add("fldbillitem", db.String, 250)
     hTable.Fields.Add("flddisctype", db.String, 150)
-    
+
     hTable.Fields.Add("fldfirstreport", db.String, 250)
     hTable.Fields.Add("fldfirstuserid", db.String, 25)
     hTable.Fields.Add("fldfirsttime", db.Date)
     hTable.Fields.Add("fldfirstcomp", db.String, 50)
     hTable.Fields.Add("fldfirstsave", db.Boolean)
-    
+
     hTable.Fields.Add("fldsecondreport", db.String, 250)
     hTable.Fields.Add("fldseconduserid", db.String, 25)
     hTable.Fields.Add("fldsecondtime", db.Date)
     hTable.Fields.Add("fldsecondcomp", db.String, 50)
     hTable.Fields.Add("fldsecondsave", db.Boolean)
-    
+
     hTable.Fields.Add("fldcomment", db.String, 255)
     hTable.Fields.Add("fldsave", db.Boolean)
     hTable.Fields.Add("xyz", db.Boolean)
@@ -6336,13 +6356,13 @@ Public Sub CREATEtblpattiming($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldfirsttime", ["fldfirsttime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblconsult($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblconsult") Then
     hTable = $con.Tables.Add("tblconsult", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6367,7 +6387,7 @@ Public Sub CREATEtblconsult($con As Connection)
     hTable.Fields.Add("fldsave", db.Boolean)
     hTable.Fields.Add("fldconsultid", db.String, 150)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -6381,13 +6401,13 @@ Public Sub CREATEtblconsult($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldconsulttime", ["fldconsulttime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblopvisit($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblopvisit") Then
     hTable = $con.Tables.Add("tblopvisit", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6411,7 +6431,7 @@ Public Sub CREATEtblopvisit($con As Connection)
     hTable.Fields.Add("fldsave", db.Boolean)
     hTable.Fields.Add("fldemerid", db.String, 150)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -6425,13 +6445,13 @@ Public Sub CREATEtblopvisit($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldconsulttime", ["fldconsulttime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblgenviolence($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblgenviolence") Then
     hTable = $con.Tables.Add("tblgenviolence", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6449,13 +6469,13 @@ Public Sub CREATEtblgenviolence($con As Connection)
     hTable.Fields.Add("fldrelation", db.String, 100)
     hTable.Fields.Add("fldperpsex", db.String, 25)
     hTable.Fields.Add("fldperpage", db.Float)
-    
+
     hTable.Fields.Add("fldcommtype", db.String, 250)
     hTable.Fields.Add("fldcommcause", db.String, 250)
     hTable.Fields.Add("fldcommability", db.String, 250)
     hTable.Fields.Add("fldcommservice", db.String, 250)
     hTable.Fields.Add("fldcomment", db.String, 250)
-    
+
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
@@ -6476,13 +6496,13 @@ Public Sub CREATEtblgenviolence($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblobstetrics($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblobstetrics") Then
     hTable = $con.Tables.Add("tblobstetrics", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6503,7 +6523,7 @@ Public Sub CREATEtblobstetrics($con As Connection)
     hTable.Fields.Add("fldpresent", db.String, 250)
     hTable.Fields.Add("fldstatus", db.String, 250)
     hTable.Fields.Add("fldpast", db.String, 250)
-    
+
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
@@ -6511,7 +6531,7 @@ Public Sub CREATEtblobstetrics($con As Connection)
     hTable.Fields.Add("flduptime", db.Date)
     hTable.Fields.Add("flddelref", db.String, 150)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -6525,13 +6545,13 @@ Public Sub CREATEtblobstetrics($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldlast", ["fldlast"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblconfinement($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblconfinement") Then
     hTable = $con.Tables.Add("tblconfinement", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6560,7 +6580,7 @@ Public Sub CREATEtblconfinement($con As Connection)
     Endif
     hTable.Fields.Add("flddelassist", db.String, 250)
     hTable.Fields.Add("flddelspot", db.String, 250)
-    
+
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
@@ -6569,7 +6589,7 @@ Public Sub CREATEtblconfinement($con As Connection)
     hTable.Fields.Add("flduptime", db.Date)
     hTable.Fields.Add("fldbabyref", db.String, 150)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -6583,13 +6603,13 @@ Public Sub CREATEtblconfinement($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_flddeltime", ["flddeltime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatradiotest($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatradiotest") Then
     hTable = $con.Tables.Add("tblpatradiotest", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6622,28 +6642,28 @@ Public Sub CREATEtblpatradiotest($con As Connection)
     hTable.Fields.Add("fldpacstudy", db.String, 255)
     hTable.Fields.Add("fldpacseries", db.String, 255)
     hTable.Fields.Add("fldpacsform", db.String, 25)
-    
+
     hTable.Fields.Add("fldtest_type", db.String, 50)
     hTable.Fields.Add("fldbillno", db.String, 250)
     hTable.Fields.Add("fldchk", db.Boolean)
     hTable.Fields.Add("fldorder", db.Integer)
-    
+
     hTable.Fields.Add("flduserid_report", db.String, 25)
     hTable.Fields.Add("fldtime_report", db.Date)
     hTable.Fields.Add("fldcomp_report", db.String, 50)
     hTable.Fields.Add("fldsave_report", db.Boolean)
     hTable.Fields.Add("flduptime_report", db.Date)
     hTable.Fields.Add("fldupuser_report", db.String, 25)
-    
+
     hTable.Fields.Add("flduserid_verify", db.String, 25)
     hTable.Fields.Add("fldtime_verify", db.Date)
     hTable.Fields.Add("fldcomp_verify", db.String, 50)
     hTable.Fields.Add("fldsave_verify", db.Boolean)
     hTable.Fields.Add("flduptime_verify", db.Date)
     hTable.Fields.Add("fldupuser_verify", db.String, 25)
-    
+
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -6658,13 +6678,13 @@ Public Sub CREATEtblpatradiotest($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime_report", ["fldtime_report"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatradiosubtest($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatradiosubtest") Then
     hTable = $con.Tables.Add("tblpatradiosubtest", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6706,13 +6726,13 @@ Public Sub CREATEtblpatradiosubtest($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldindex", ["fldindex"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatradiosubtable($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatradiosubtable") Then
     hTable = $con.Tables.Add("tblpatradiosubtable", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6744,13 +6764,13 @@ Public Sub CREATEtblpatradiosubtable($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldindex", ["fldindex"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblmonitor($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblmonitor") Then
     hTable = $con.Tables.Add("tblmonitor", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6783,13 +6803,13 @@ Public Sub CREATEtblmonitor($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldencounterval", ["fldencounterval"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblextradosing($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblextradosing") Then
     hTable = $con.Tables.Add("tblextradosing", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6824,13 +6844,13 @@ Public Sub CREATEtblextradosing($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldencounterval", ["fldencounterval"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblusercollection($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblusercollection") Then
     hTable = $con.Tables.Add("tblusercollection", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -6854,7 +6874,7 @@ Public Sub CREATEtblusercollection($con As Connection)
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
-    
+
     hTable.Fields.Add("flduserid_verify", db.String, 25)
     hTable.Fields.Add("fldtime_verify", db.Date)
     hTable.Fields.Add("fldcomp_verify", db.String, 50)
@@ -6864,13 +6884,13 @@ Public Sub CREATEtblusercollection($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatcharity($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatcharity") Then
     hTable = $con.Tables.Add("tblpatcharity", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -6887,13 +6907,13 @@ Public Sub CREATEtblpatcharity($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldencounterval", ["fldencounterval"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblextrareceipt($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblextrareceipt") Then
     hTable = $con.Tables.Add("tblextrareceipt", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6930,13 +6950,13 @@ Public Sub CREATEtblextrareceipt($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblfiscal($con As Connection) '''required by IRD
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblfiscal") Then
     hTable = $con.Tables.Add("tblfiscal", $DbEngine)
     If $DbFormat = "REP" Then
@@ -6975,13 +6995,13 @@ Public Sub CREATEtblfiscal($con As Connection) '''required by IRD
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblduebilling($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblduebilling") Then
     hTable = $con.Tables.Add("tblduebilling", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7001,7 +7021,7 @@ Public Sub CREATEtblduebilling($con As Connection)
     hTable.Fields.Add("fldorduserid", db.String, 25)
     hTable.Fields.Add("fldordtime", db.Date)
     hTable.Fields.Add("fldordcomp", db.String, 50)
-    
+
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
@@ -7009,11 +7029,11 @@ Public Sub CREATEtblduebilling($con As Connection)
     hTable.Fields.Add("fldbillno", db.String, 250) ''multiple same bill no
     hTable.Fields.Add("fldprint", db.Boolean)
     hTable.Fields.Add("fldstatus", db.String, 25)
-    
+
     hTable.Fields.Add("fldbilltype", db.String, 25)
     hTable.Fields.Add("fldacledger", db.String, 250)
     hTable.Fields.Add("fldhostmac", db.String, 250)
-    
+
     hTable.Fields.Add("fldalert", db.Boolean)
     hTable.Fields.Add("fldextracol", db.String, 250)
     hTable.Fields.Add("fldextrarow", db.String, 250)
@@ -7032,13 +7052,13 @@ Public Sub CREATEtblduebilling($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatbilling($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatbilling") Then
     hTable = $con.Tables.Add("tblpatbilling", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7064,7 +7084,7 @@ Public Sub CREATEtblpatbilling($con As Connection)
     hTable.Fields.Add("fldorduserid", db.String, 25)
     hTable.Fields.Add("fldordtime", db.Date)
     hTable.Fields.Add("fldordcomp", db.String, 50)
-    
+
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
@@ -7077,17 +7097,17 @@ Public Sub CREATEtblpatbilling($con As Connection)
     hTable.Fields.Add("fldpayto", db.String, 25)
     hTable.Fields.Add("fldrefer", db.String, 25)
     hTable.Fields.Add("fldsample", db.String, 50)
-    
+
     hTable.Fields.Add("fldbilltype", db.String, 25)
     hTable.Fields.Add("flddisctype", db.String, 150)
     hTable.Fields.Add("fldacledger", db.String, 250)
     hTable.Fields.Add("fldcurrlocat", db.String, 100)
     hTable.Fields.Add("fldhostmac", db.String, 250)
-    
+
     hTable.Fields.Add("fldreason", db.String, 250)
     hTable.Fields.Add("fldretbill", db.String, 250)
     hTable.Fields.Add("fldretqty", db.Float)
-    
+
     hTable.Fields.Add("fldalert", db.Boolean)
     hTable.Fields.Add("fldextracol", db.String, 250)
     hTable.Fields.Add("fldextrarow", db.String, 250)
@@ -7111,13 +7131,13 @@ Public Sub CREATEtblpatbilling($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldextracol", ["fldextracol"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatbilldetail($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatbilldetail") Then
     hTable = $con.Tables.Add("tblpatbilldetail", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7161,13 +7181,13 @@ Public Sub CREATEtblpatbilldetail($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldchequeno", ["fldchequeno"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltempbilldetail($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltempbilldetail") Then
     hTable = $con.Tables.Add("tbltempbilldetail", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7212,13 +7232,13 @@ Public Sub CREATEtbltempbilldetail($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldchequeno", ["fldchequeno"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblduebilldetail($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblduebilldetail") Then
     hTable = $con.Tables.Add("tblduebilldetail", $DbEngine)
     hTable.Fields.Add("fldbillno", db.String, 250)
@@ -7240,13 +7260,13 @@ Public Sub CREATEtblduebilldetail($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbladvreceiptdetail($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbladvreceiptdetail") Then
     hTable = $con.Tables.Add("tbladvreceiptdetail", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7291,13 +7311,13 @@ Public Sub CREATEtbladvreceiptdetail($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblcashsources($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcashsources") Then
     hTable = $con.Tables.Add("tblcashsources", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7311,7 +7331,7 @@ Public Sub CREATEtblcashsources($con As Connection)
     hTable.Fields.Add("fldvendor", db.String, 150)
     hTable.Fields.Add("fldreference", db.String, 250)
     hTable.Fields.Add("fldcashamt", db.Float)
-    
+
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
@@ -7331,13 +7351,13 @@ Public Sub CREATEtblcashsources($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblwebpayment($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblwebpayment") Then
     hTable = $con.Tables.Add("tblwebpayment", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7350,28 +7370,28 @@ Public Sub CREATEtblwebpayment($con As Connection)
     hTable.Fields.Add("fldencounterval", db.String, 150)
     hTable.Fields.Add("flditemid", db.String, 250)
     hTable.Fields.Add("fldlink", db.String, 250)
-    
+
     hTable.Fields.Add("fldvendor", db.String, 150)
     hTable.Fields.Add("fldvendormode", db.String, 150)
     hTable.Fields.Add("fldstate", db.String, 150)
-    
+
     hTable.Fields.Add("fldtransid", db.String, 250)
     hTable.Fields.Add("fldtransamt", db.Float)
     hTable.Fields.Add("fldtranstoken", db.String, 250)
     hTable.Fields.Add("fldfeeamt", db.Float)
     hTable.Fields.Add("fldrefund", db.Boolean)
     hTable.Fields.Add("fldtransdate", db.Date)
-    
+
     hTable.Fields.Add("fldpayerid", db.String, 250)
     hTable.Fields.Add("fldpayername", db.String, 250)
     hTable.Fields.Add("fldpayermobile", db.String, 150)
     hTable.Fields.Add("fldpayeremail", db.String, 150)
-    
+
     hTable.Fields.Add("fldmerchid", db.String, 250)
     hTable.Fields.Add("fldmerchname", db.String, 250)
     hTable.Fields.Add("fldmerchmobile", db.String, 150)
     hTable.Fields.Add("fldmerchemail", db.String, 150)
-    
+
     hTable.Fields.Add("flduserid", db.String, 150)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
@@ -7392,13 +7412,13 @@ Public Sub CREATEtblwebpayment($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatusershares($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatusershares") Then
     hTable = $con.Tables.Add("tblpatusershares", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -7413,7 +7433,7 @@ Public Sub CREATEtblpatusershares($con As Connection)
     hTable.Fields.Add("flduseramt", db.Float)
     hTable.Fields.Add("fldusertax", db.Float)
     hTable.Fields.Add("fldactive", db.String, 25)
-    
+
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
@@ -7421,13 +7441,13 @@ Public Sub CREATEtblpatusershares($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatbillcounts($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatbillcounts") Then
     hTable = $con.Tables.Add("tblpatbillcounts", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -7439,13 +7459,13 @@ Public Sub CREATEtblpatbillcounts($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatbillbooking($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatbillbooking") Then
     hTable = $con.Tables.Add("tblpatbillbooking", $DbEngine)
     hTable.Fields.Add("fldbillno", db.String, 250)
@@ -7455,13 +7475,13 @@ Public Sub CREATEtblpatbillbooking($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatmeditem($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatmeditem") Then
     hTable = $con.Tables.Add("tblpatmeditem", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7476,19 +7496,19 @@ Public Sub CREATEtblpatmeditem($con As Connection)
     hTable.Fields.Add("flditem", db.String, 255)
     hTable.Fields.Add("fldpatinfo", db.String, 250)
     hTable.Fields.Add("fldcomment", db.String, 150)
-    
+
     hTable.Fields.Add("flduserid_order", db.String, 25)
     hTable.Fields.Add("fldtime_order", db.Date)
     hTable.Fields.Add("fldcomp_order", db.String, 50)
     hTable.Fields.Add("fldsave_order", db.Boolean)
     hTable.Fields.Add("fldorder", db.String, 50)
-    
+
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
     hTable.Fields.Add("fldsave", db.Boolean)
     hTable.Fields.Add("fldstatus", db.String, 50)
-    
+
     hTable.Fields.Add("fldbillno", db.String, 250)
     hTable.Fields.Add("flduptime", db.Date)
     hTable.Fields.Add("xyz", db.Boolean)
@@ -7505,13 +7525,13 @@ Public Sub CREATEtblpatmeditem($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldrugproblems($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldrugproblems") Then
     hTable = $con.Tables.Add("tbldrugproblems", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7544,13 +7564,13 @@ Public Sub CREATEtbldrugproblems($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatdosing($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatdosing") Then
     hTable = $con.Tables.Add("tblpatdosing", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7575,7 +7595,7 @@ Public Sub CREATEtblpatdosing($con As Connection)
     hTable.Fields.Add("fldadminsite", db.String, 150)
     hTable.Fields.Add("flddosecount", db.Integer)
     hTable.Fields.Add("fldmixing", db.String, 250)
-    
+
     hTable.Fields.Add("flddispmode", db.String, 150)
     hTable.Fields.Add("fldorder", db.String, 50)
     hTable.Fields.Add("fldcurval", db.String, 50)
@@ -7591,7 +7611,7 @@ Public Sub CREATEtblpatdosing($con As Connection)
     hTable.Fields.Add("fldacledger", db.String, 250)
     hTable.Fields.Add("fldbilltype", db.String, 25)
     hTable.Fields.Add("flditemno", db.Long)
-    
+
     hTable.Fields.Add("flduserid_order", db.String, 25)
     hTable.Fields.Add("fldtime_order", db.Date)
     hTable.Fields.Add("fldcomp_order", db.String, 50)
@@ -7599,14 +7619,14 @@ Public Sub CREATEtblpatdosing($con As Connection)
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
-    
+
     hTable.Fields.Add("fldsave", db.Boolean)
     hTable.Fields.Add("fldlabel", db.Boolean)
     hTable.Fields.Add("fldstatus", db.String, 50)
     hTable.Fields.Add("flduptime", db.Date)
     hTable.Fields.Add("fldextracol", db.String, 250)
     hTable.Fields.Add("fldextrarow", db.String, 250)
-    
+
     hTable.Fields.Add("flduserid_disp", db.String, 25)
     hTable.Fields.Add("fldtime_disp", db.Date)
     hTable.Fields.Add("fldcomp_disp", db.String, 50)
@@ -7624,13 +7644,13 @@ Public Sub CREATEtblpatdosing($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatdoseremote($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatdoseremote") Then
     hTable = $con.Tables.Add("tblpatdoseremote", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7643,7 +7663,7 @@ Public Sub CREATEtblpatdoseremote($con As Connection)
     hTable.Fields.Add("flddoseno", db.Long)
     hTable.Fields.Add("fldqtydisp", db.Float)
     hTable.Fields.Add("fldqtyret", db.Float)
-    
+
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
@@ -7662,13 +7682,13 @@ Public Sub CREATEtblpatdoseremote($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltaperdose($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltaperdose") Then
     hTable = $con.Tables.Add("tbltaperdose", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7694,13 +7714,13 @@ Public Sub CREATEtbltaperdose($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_flddoseno", ["flddoseno"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblnurdosing($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblnurdosing") Then
     hTable = $con.Tables.Add("tblnurdosing", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7734,13 +7754,13 @@ Public Sub CREATEtblnurdosing($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblvaccdosing($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblvaccdosing") Then
     hTable = $con.Tables.Add("tblvaccdosing", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7755,7 +7775,7 @@ Public Sub CREATEtblvaccdosing($con As Connection)
     hTable.Fields.Add("fldtype", db.String, 100)
     hTable.Fields.Add("fldvalue", db.Float)
     hTable.Fields.Add("fldunit", db.String, 150)
-    
+
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
@@ -7774,13 +7794,13 @@ Public Sub CREATEtblvaccdosing($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpayimage($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpayimage") Then
     hTable = $con.Tables.Add("tblpayimage", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7819,13 +7839,13 @@ Public Sub CREATEtblpayimage($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldbookid", ["fldbookid"], True)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpersonimage($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpersonimage") Then
     hTable = $con.Tables.Add("tblpersonimage", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7859,13 +7879,13 @@ Public Sub CREATEtblpersonimage($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatimagedata($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatimagedata") Then
     hTable = $con.Tables.Add("tblpatimagedata", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7905,13 +7925,13 @@ Public Sub CREATEtblpatimagedata($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatserialimage($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatserialimage") Then
     hTable = $con.Tables.Add("tblpatserialimage", $DbEngine)
     If $DbFormat = "REP" Then
@@ -7952,13 +7972,13 @@ Public Sub CREATEtblpatserialimage($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatreport($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatreport") Then
     hTable = $con.Tables.Add("tblpatreport", $DbEngine)
     If $DbFormat = "REP" Then
@@ -8000,13 +8020,13 @@ Public Sub CREATEtblpatreport($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblbillupload($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblbillupload") Then
     hTable = $con.Tables.Add("tblbillupload", $DbEngine)
     hTable.Fields.Add("fldbillno", db.String, 250)
@@ -8024,13 +8044,13 @@ Public Sub CREATEtblbillupload($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblbillrepoload($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblbillrepoload") Then
     hTable = $con.Tables.Add("tblbillrepoload", $DbEngine)
     hTable.Fields.Add("fldbillno", db.String, 250)
@@ -8042,13 +8062,13 @@ Public Sub CREATEtblbillrepoload($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblofficedocs($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblofficedocs") Then
     hTable = $con.Tables.Add("tblofficedocs", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -8073,13 +8093,13 @@ Public Sub CREATEtblofficedocs($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpatientpass($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatientpass") Then
     hTable = $con.Tables.Add("tblpatientpass", $DbEngine)
     hTable.Fields.Add("fldpatientval", db.String, 150)
@@ -8098,13 +8118,13 @@ Public Sub CREATEtblpatientpass($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblremotefollow($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblremotefollow") Then
     hTable = $con.Tables.Add("tblremotefollow", $DbEngine)
     hTable.Fields.Add("fldencounterval", db.String, 150)
@@ -8125,13 +8145,13 @@ Public Sub CREATEtblremotefollow($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblremoteusers($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblremoteusers") Then
     hTable = $con.Tables.Add("tblremoteusers", $DbEngine)
     hTable.Fields.Add("fldusrcode", db.String, 250)
@@ -8148,7 +8168,7 @@ Public Sub CREATEtblremoteusers($con As Connection)
     hTable.Fields.Add("fldptbirday", db.Date)
     hTable.Fields.Add("fldptguardian", db.String, 250)
     hTable.Fields.Add("fldrelation", db.String, 250)
-    
+
     hTable.Fields.Add("fldptcode", db.String, 250)
     hTable.Fields.Add("flddiscount", db.String, 150)
     hTable.Fields.Add("fldadmitfile", db.String, 250)
@@ -8157,25 +8177,25 @@ Public Sub CREATEtblremoteusers($con As Connection)
     hTable.Fields.Add("fldpassword", db.String, 250)
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
-    
+
     hTable.Fields.Add("fldhashcode", db.String, 250)
     hTable.Fields.Add("fldvertime", db.Date)
     hTable.Fields.Add("fldhostuser", db.String, 250)
     hTable.Fields.Add("fldhostip", db.String, 250)
     hTable.Fields.Add("fldhostname", db.String, 250)
     hTable.Fields.Add("fldstatus", db.String, 50)
-    
+
     hTable.PrimaryKey = ["fldusrcode"]
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblpacsupload($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpacsupload") Then
     hTable = $con.Tables.Add("tblpacsupload", $DbEngine)
     hTable.Fields.Add("fldhash", db.String, 250)
@@ -8185,19 +8205,19 @@ Public Sub CREATEtblpacsupload($con As Connection)
       hTable.Fields.Add("fldrepomac", db.String, 150)
       hTable.Fields.Add("fldhospcode", db.String, 50)
     Endif
-    
+
     hTable.PrimaryKey = ["fldhash"]
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''----------------------------- For Blood/Other Products ---------------------------------------
 Public Sub CREATEtblblood($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblblood") Then
     hTable = $con.Tables.Add("tblblood", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -8206,13 +8226,13 @@ Public Sub CREATEtblblood($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblbloodstore($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblbloodstore") Then
     hTable = $con.Tables.Add("tblbloodstore", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -8223,13 +8243,13 @@ Public Sub CREATEtblbloodstore($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblvaccine($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblvaccine") Then
     hTable = $con.Tables.Add("tblvaccine", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -8238,15 +8258,15 @@ Public Sub CREATEtblvaccine($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''----------------------- FOR Telemedicine --------------------------
 ''only in repository
 Public Sub CREATEtbltelemeduser($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltelemeduser") Then
     hTable = $con.Tables.Add("tbltelemeduser", $DbEngine)
     hTable.Fields.Add("fldteleuser", db.String, 25)
@@ -8261,7 +8281,7 @@ Public Sub CREATEtbltelemeduser($con As Connection)
     hTable.Fields.Add("fldusercode", db.String, 250)
     hTable.Fields.Add("fldhospital", db.String, 250)
     hTable.Fields.Add("fldstatus", db.String, 50)
-    
+
     hTable.Fields.Add("fldgovtaccount", db.String, 250)
     hTable.Fields.Add("fldbankname", db.String, 250)
     hTable.Fields.Add("fldbankaccount", db.String, 250)
@@ -8278,14 +8298,14 @@ Public Sub CREATEtbltelemeduser($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldcontact", ["fldcontact"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''only in repository
 Public Sub CREATEtblcurrteleuser($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblcurrteleuser") Then
     hTable = $con.Tables.Add("tblcurrteleuser", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -8302,27 +8322,27 @@ Public Sub CREATEtblcurrteleuser($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltelemedtalk($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltelemedtalk") Then
     hTable = $con.Tables.Add("tbltelemedtalk", $DbEngine)
     hTable.Fields.Add("fldtalkid", db.String, 250)
     hTable.Fields.Add("fldencounterval", db.String, 150)
     hTable.Fields.Add("fldpatientval", db.String, 150)
     hTable.Fields.Add("fldhospital", db.String, 250)
-    
+
     hTable.Fields.Add("fldteleuser", db.String, 25)
     hTable.Fields.Add("fldsms", db.Boolean)
     hTable.Fields.Add("fldurgency", db.String, 150)
     hTable.Fields.Add("fldvidroom", db.String, 250)
     hTable.Fields.Add("fldvidpass", db.String, 250)
     hTable.Fields.Add("fldvidserver", db.String, 250)
-    
+
     If $DbEngine = "HEAP" Then
       hTable.Fields.Add("fldrequest", db.String, 5000)
     Else
@@ -8331,7 +8351,7 @@ Public Sub CREATEtbltelemedtalk($con As Connection)
     hTable.Fields.Add("fldorduserid", db.String, 25)
     hTable.Fields.Add("fldordtime", db.Date)
     hTable.Fields.Add("fldordcomp", db.String, 50)
-    
+
     If $DbEngine = "HEAP" Then
       hTable.Fields.Add("fldresponse", db.String, 5000)
     Else
@@ -8340,7 +8360,7 @@ Public Sub CREATEtbltelemedtalk($con As Connection)
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)
-    
+
     hTable.Fields.Add("fldcoment", db.String, 250)
     hTable.Fields.Add("fldupuser", db.String, 25)
     hTable.Fields.Add("flduptime", db.Date)
@@ -8351,19 +8371,19 @@ Public Sub CREATEtbltelemedtalk($con As Connection)
       hTable.Fields.Add("fldhospcode", db.String, 50)
     Endif
     hTable.PrimaryKey = ["fldtalkid"]
-    
+
     hTable.Update
     hTable.Indexes.Add(hTable.Name & "_fldencounterval", ["fldencounterval"], False)
     hTable.Indexes.Add(hTable.Name & "_fldtime", ["fldtime"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltelradiotest($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltelradiotest") Then
     hTable = $con.Tables.Add("tbltelradiotest", $DbEngine)
     If $DbFormat = "REP" Then
@@ -8397,12 +8417,12 @@ Public Sub CREATEtbltelradiotest($con As Connection)
     hTable.Fields.Add("fldpacstudy", db.String, 255)
     hTable.Fields.Add("fldpacseries", db.String, 255)
     hTable.Fields.Add("fldpacsform", db.String, 25)
-    
+
     hTable.Fields.Add("fldtest_type", db.String, 50)
     hTable.Fields.Add("fldbillno", db.String, 250)
     hTable.Fields.Add("fldchk", db.Boolean)
     hTable.Fields.Add("fldorder", db.Integer)
-    
+
     hTable.Fields.Add("flduserid_report", db.String, 25)
     hTable.Fields.Add("fldtime_report", db.Date)
     hTable.Fields.Add("fldcomp_report", db.String, 50)
@@ -8410,7 +8430,7 @@ Public Sub CREATEtbltelradiotest($con As Connection)
     hTable.Fields.Add("flduptime_report", db.Date)
     hTable.Fields.Add("fldupuser_report", db.String, 25)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -8425,13 +8445,13 @@ Public Sub CREATEtbltelradiotest($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldtime_report", ["fldtime_report"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbltelradiosubtest($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbltelradiosubtest") Then
     hTable = $con.Tables.Add("tbltelradiosubtest", $DbEngine)
     If $DbFormat = "REP" Then
@@ -8471,7 +8491,7 @@ Public Sub CREATEtbltelradiosubtest($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldindex", ["fldindex"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 '
@@ -8480,9 +8500,9 @@ End
 
 ''------------ FOR AYURVEDA ONLY ----------------------
 Public Sub CREATEtblamissetting($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblamissetting") Then
     hTable = $con.Tables.Add("tblamissetting", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -8496,14 +8516,14 @@ Public Sub CREATEtblamissetting($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''--------------- for Dashboard -------------------------
 Public Sub CREATEtblpopulation($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpopulation") Then
     hTable = $con.Tables.Add("tblpopulation", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -8521,13 +8541,13 @@ Public Sub CREATEtblpopulation($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtbldashparameters($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tbldashparameters") Then
     hTable = $con.Tables.Add("tbldashparameters", $DbEngine)
     hTable.Fields.Add("fldid", db.Serial)
@@ -8544,14 +8564,14 @@ Public Sub CREATEtbldashparameters($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''------------------------ FOR Research -------------------------
 Public Sub CREATEtblpatientstudy($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblpatientstudy") Then
     hTable = $con.Tables.Add("tblpatientstudy", $DbEngine)
     If $DbFormat = "REP" Then
@@ -8598,14 +8618,14 @@ Public Sub CREATEtblpatientstudy($con As Connection)
     hTable.Indexes.Add(hTable.Name & "_fldencounterval", ["fldencounterval"], False)
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''------------- For HAI Surveillance ----------------
 Public Sub CREATEtblhaidenominators($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblhaidenominators") Then
     hTable = $con.Tables.Add("tblhaidenominators", $DbEngine)
     If $DbFormat = "REP" Then
@@ -8626,7 +8646,7 @@ Public Sub CREATEtblhaidenominators($con As Connection)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -8638,13 +8658,13 @@ Public Sub CREATEtblhaidenominators($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 Public Sub CREATEtblhaicasereports($con As Connection)
-  
+
   Dim hTable As Table
-  
+
   If Not $con.Tables.Exist("tblhaicasereports") Then
     hTable = $con.Tables.Add("tblhaicasereports", $DbEngine)
     If $DbFormat = "REP" Then
@@ -8662,7 +8682,7 @@ Public Sub CREATEtblhaicasereports($con As Connection)
     hTable.Fields.Add("flduticlassify", db.String, 250)
     hTable.Fields.Add("fldbsiclassify", db.String, 250)
     hTable.Fields.Add("xyz", db.Boolean)
-    
+
     If $DbFormat = "REP" Then
       hTable.Fields.Add("fldrepodate", db.Date)
       hTable.Fields.Add("fldrepomac", db.String, 150)
@@ -8674,12 +8694,12 @@ Public Sub CREATEtblhaicasereports($con As Connection)
     hTable.Update
     modDBApp.AlterMySQLSpecCollationTable($con, hTable.Name)
   Endif
-  
+
 End
 
 ''----------------- Local Procedures --------------------
 Private Sub SetMedSyncTable(hTable As Table)
-  
+
   If $DbFormat = "REP" Then
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
@@ -8688,5 +8708,5 @@ Private Sub SetMedSyncTable(hTable As Table)
     hTable.Fields.Add("fldverifytime", db.Date)
     hTable.Fields.Add("fldnote", db.String, 250)
   Endif
-  
+
 End

@@ -1,6 +1,7 @@
 ' Gambas class file
 
 Private $ColCount As Integer
+Private $exColCount As Integer
 Private $encArr As String[]
 Private $encTot As String[]
 Private $newColumn As String[]
@@ -9,6 +10,13 @@ Private $ProgressBar1 As ProgressBar
 Private $encList As String[]
 Private $chartLimit As Float[]
 Private $RepoStr As String
+
+''Laboratory
+Private $LabList As String[]
+Private $varList As String[]
+Private $dataVar As Collection
+Private $warList As String[]
+Private $cataVar As Collection
 
 Public Sub Form_Open()
 
@@ -712,6 +720,9 @@ End
 
 Public Sub btnrefresh_Click()
 
+  $dataVar = New Collection
+  $cataVar = New Collection
+
   TabStrip1.Index = 0
   If chkexcoutlier.Value = True Then
     $chartLimit = InputDoubleVal(("Select Limits for Frequency Chart"), ["Lower Value", "Upper Value"], [0, 0])
@@ -735,16 +746,26 @@ End
 
 Private Sub FillEncGrid()
 
-  Dim i As Integer
+  Dim Column As Integer
 
   GridView1.Clear
-  If $newColumn.Count Then
-    GridView1.Columns.Count = 8 + $newColumn.Count
-  Else
-    GridView1.Columns.Count = 8
-  Endif
-  GridView1.Rows.Count = $encTot.Count
   $ColCount = 8
+  If $newColumn.Count Then
+    $exColCount = $ColCount + $newColumn.Count
+  Else
+    $exColCount = $ColCount
+  Endif
+
+  ''laboratory columns
+  If chklaball.Value = True Then
+    $varList = $LabList
+    $warList = $LabList
+    GridView1.Columns.Count = $exColCount + $varList.Count + $warList.Count
+  Else
+    GridView1.Columns.Count = $exColCount
+  Endif
+
+  GridView1.Rows.Count = $encTot.Count
   With GridView1
     .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 125 * modBasic.$AppWidthRatio
@@ -766,9 +787,22 @@ Private Sub FillEncGrid()
     .Columns[7].Text = "Contact"
 
     If $newColumn.Count Then
-      For i = 0 To $newColumn.Count - 1
-        .Columns[8 + i].Text = $newColumn[i]
-        .Columns[8 + i].Width = 150 * modBasic.$AppWidthRatio
+      For Column = 0 To $newColumn.Count - 1
+        .Columns[$ColCount + Column].Text = $newColumn[Column]
+        .Columns[$ColCount + Column].Width = 150 * modBasic.$AppWidthRatio
+      Next
+    Endif
+
+    ''laboratory columns
+    If chklaball.Value = True Then
+      For Column = 0 To $varList.Count - 1
+        .Columns[Column + $exColCount].Width = 150 * modBasic.$AppWidthRatio
+        .Columns[Column + $exColCount].Text = $varList[Column]
+      Next
+
+      For Column = 0 To $warList.Count - 1
+        .Columns[Column + $exColCount + $varList.Count].Width = 150 * modBasic.$AppWidthRatio
+        .Columns[Column + $exColCount + $varList.Count].Text = $warList[Column] & "(LAST)"
       Next
     Endif
 
@@ -780,8 +814,23 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
 
   Dim xxx As Variant
   Dim i As Integer
+  Dim aColl As Collection
+  Dim bColl As Collection
 
-  If Column = 1 Then
+  If chklaball.Value = True Then
+    If $varList And If $varList.Count Then
+      If $dataVar.Exist(xVariable) = False Then
+        $dataVar.Add(GetLabCollection(xVariable), xVariable)
+      Endif
+      If $cataVar.Exist(xVariable) = False Then
+        $cataVar.Add(GetLastLabCollection(xVariable), xVariable)
+      Endif
+    Endif
+  Endif
+
+  If Column = 0 Then
+    xxx = xVariable
+  Else If Column = 1 Then
     xxx = modPatient.GetPatientNameByEnc(xVariable, modDatabase.$syConn)
   Else If Column = 2 Then
     xxx = modPatient.GetPatientSex(xVariable, modDatabase.$syConn)
@@ -796,16 +845,37 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
   Else If Column = 7 Then
     xxx = modPatient.GetPatientContactByEnc(xVariable)
   Else
-    xxx = xVariable
+    If $newColumn.Count Then
+      For i = 0 To $newColumn.Count - 1
+        If Column = $ColCount + i Then
+          xxx = modCustPatient.NewColValue(Me.Tag, $newColumn[i], xVariable)
+        Endif
+      Next
+    Endif
+
+    ''laboratory columns
+    If chklaball.Value = True Then
+      If $varList And If $varList.Count Then
+        If Column >= $exColCount And If Column < $varList.Count + $exColCount Then
+          aColl = $dataVar[xVariable]
+          If $varList[Column - $exColCount] And If aColl.Exist($varList[Column - $exColCount]) Then
+            xxx = aColl[$varList[Column - $exColCount]]
+          Else
+            xxx = ""
+          Endif
+        Else If Column >= $exColCount And If Column < $warList.Count + $varList.Count + $exColCount Then
+          bColl = $cataVar[xVariable]
+          If $warList[Column - $exColCount - $varList.Count] And If bColl.Exist($warList[Column - $exColCount - $varList.Count]) Then
+            xxx = bColl[$warList[Column - $exColCount - $varList.Count]]
+          Else
+            xxx = ""
+          Endif
+        Endif
+      Endif
+    Endif
+
   Endif
 
-  If $newColumn.Count Then
-    For i = 0 To $newColumn.Count - 1
-      If Column = 8 + i Then
-        xxx = modCustPatient.NewColValue(Me.Tag, $newColumn[i], xVariable)
-      Endif
-    Next
-  Endif
   Return xxx
 
 End
@@ -1624,6 +1694,7 @@ Public Sub mnuexpocolumn_Click()
 
 End
 
+''----------------------------- ML -------------------------------
 Public Sub mnumachine_Click()
 
   Dim CForm As CMultivariate
@@ -1674,5 +1745,75 @@ Public Sub mnumachine_Click()
       modWorkSpace.Add(hPython)
     Endif
   Endif
+
+End
+
+''--------------- Data View (Labs) --------------------------
+Public Sub chklaball_Click()
+
+  Dim xList As String[]
+
+  xList = modMedicine.FillLabTestCombo("%")
+  If xList And If xList.Count Then
+    $LabList = GridListView(("Select Particulars"), xList)
+  Endif
+
+End
+
+Private Function GetLabCollection(encid As String) As Collection
+
+  Dim res As Result
+  Dim aColl As Collection
+  Dim aList As String[]
+  Dim i As Integer
+
+  aList = New String[]
+  aList = $LabList.Copy()
+  If aList And If aList.Count Then
+    For i = 0 To aList.Count - 1
+      aList[i] = "'" & aList[i] & "'"
+    Next
+
+    aColl = New Collection
+    res = modDatabase.$syConn.Exec("select fldtestid,fldreportquali from tblpatlabtest where fldencounterval=&1 and (fldstatus=&2 or fldstatus=&3) and fldtestid in(" & aList.Join(",") & ") ORDER BY fldtime_sample ASC", encid, "Reported", "Verified")
+    If res.Available Then
+      For Each res
+        If aColl.Exist(res["fldtestid"]) = False Then
+          aColl.Add(res["fldreportquali"], res["fldtestid"])
+        Endif
+      Next
+    Endif
+  Endif
+
+  Return aColl
+
+End
+
+Private Function GetLastLabCollection(encid As String) As Collection
+
+  Dim res As Result
+  Dim aColl As Collection
+  Dim aList As String[]
+  Dim i As Integer
+
+  aList = New String[]
+  aList = $LabList.Copy()
+  If aList And If aList.Count Then
+    For i = 0 To aList.Count - 1
+      aList[i] = "'" & aList[i] & "'"
+    Next
+
+    aColl = New Collection
+    res = modDatabase.$syConn.Exec("select fldtestid,fldreportquali from tblpatlabtest where fldencounterval=&1 and (fldstatus=&2 or fldstatus=&3) and fldtestid in(" & aList.Join(",") & ") ORDER BY fldtime_sample DESC", encid, "Reported", "Verified")
+    If res.Available Then
+      For Each res
+        If aColl.Exist(res["fldtestid"]) = False Then
+          aColl.Add(res["fldreportquali"], res["fldtestid"])
+        Endif
+      Next
+    Endif
+  Endif
+
+  Return aColl
 
 End

@@ -78,8 +78,45 @@
   }
   { Panel1 Panel
     MoveScaled(0,0,119,77)
+    { Panel5 Panel
+      MoveScaled(0,0,113,4)
+      { Label1 Label
+        MoveScaled(1,0.5,5,3)
+        Border = Border.Plain
+        Text = ("From")
+      }
+      { dtfir DateBox
+        MoveScaled(7,0.5,15,3)
+      }
+      { dtnepfir ToolButton
+        MoveScaled(22,0.5,3,3)
+        Picture = Picture["icon:/small/calendar"]
+      }
+      { Label2 Label
+        MoveScaled(28,0.5,5,3)
+        Border = Border.Plain
+        Text = ("To")
+      }
+      { dtlast DateBox
+        MoveScaled(34,0.5,15,3)
+      }
+      { dtneplast ToolButton
+        MoveScaled(49,0.5,3,3)
+        Picture = Picture["icon:/small/calendar"]
+      }
+      { btnrefresh Button
+        MoveScaled(80,0.5,16,3)
+        Text = ("Refresh")
+        Picture = Picture["icon:/small/refresh"]
+      }
+      { btnexport Button
+        MoveScaled(96,0.5,16,3.25)
+        Text = ("Export")
+        Picture = Picture["icon:/small/html"]
+      }
+    }
     { Panel2 Panel
-      MoveScaled(1,0,118,17)
+      MoveScaled(1,4,118,17)
       Arrangement = Arrange.Horizontal
       AutoResize = True
       { Frame1 Frame
@@ -235,45 +272,15 @@
         }
       }
     }
-    { Panel5 Panel
-      MoveScaled(0,20,113,4)
-      { Label1 Label
-        MoveScaled(1,0.5,5,3)
-        Border = Border.Plain
-        Text = ("From")
-      }
-      { dtfir DateBox
-        MoveScaled(7,0.5,15,3)
-      }
-      { dtnepfir ToolButton
-        MoveScaled(22,0.5,3,3)
-        Picture = Picture["icon:/small/calendar"]
-      }
-      { Label2 Label
-        MoveScaled(28,0.5,5,3)
-        Border = Border.Plain
-        Text = ("To")
-      }
-      { dtlast DateBox
-        MoveScaled(34,0.5,15,3)
-      }
-      { dtneplast ToolButton
-        MoveScaled(49,0.5,3,3)
-        Picture = Picture["icon:/small/calendar"]
-      }
-      { btnrefresh Button
-        MoveScaled(80,0.5,16,3.25)
-        Text = ("Refresh")
-        Picture = Picture["icon:/small/refresh"]
-      }
-      { btnexport Button
-        MoveScaled(96,0.5,16,3.25)
-        Text = ("Export")
-        Picture = Picture["icon:/small/html"]
+    { Panel15 Panel
+      MoveScaled(1,22,117,4)
+      { chklaball CheckBox
+        MoveScaled(1,0.5,19,3)
+        Text = ("Laboratory")
       }
     }
     { TabStrip1 TabPanel
-      MoveScaled(1,24,117,46)
+      MoveScaled(1,27,117,46)
       Expand = True
       Arrangement = Arrange.Vertical
       Count = 2
@@ -305,7 +312,7 @@
       Index = 0
     }
     { Panel3 Panel
-      MoveScaled(1,70,115,3)
+      MoveScaled(1,73,115,3)
       { Panel4 Panel
         MoveScaled(0,0,25,3)
         { rbsi RadioButton

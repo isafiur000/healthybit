@@ -291,6 +291,13 @@ Public Sub btnqrcodeshellset_Click()
 
 End
 
+Public Sub txtqrcodeshellpath_Click()
+
+  If Dialog.OpenFile() Then Return
+  txtqrcodeshellpath.Text = Dialog.Path
+
+End
+
 ''---------------------------------- Formatting ----------------------------------------
 
 Private Sub ShowPrintingParam()

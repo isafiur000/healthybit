@@ -166,6 +166,20 @@ Public Sub mnuregist_Click()
 
 End
 
+Public Sub mnunodiscount_Click()
+
+  Dim xPass As String
+
+  xPass = InputPassword("Provide Root Password", "Verification", "")
+  If modPassword.GetSuperVerification(modBasic.$lbluser, xPass) = True Then
+    fmNoDiscForm.Close
+    fmNoDiscForm.ShowModal
+  Else
+    Message.Info("Incorrect Root Password", ("OK"))
+  Endif
+
+End
+
 Public Sub Menu1_Click()
 
   fmExtraSetting.Close
