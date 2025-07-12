@@ -248,6 +248,7 @@ Private Sub DIsplayTextForm()
             .Columns[1].Expand = True '150 * modBasic.$AppWidthRatio
             .Columns[2].Width = 100 * modBasic.$AppWidthRatio
             .Columns[3].Width = 100 * modBasic.$AppWidthRatio
+            .Columns[4].Width = 25 * modBasic.$AppWidthRatio
             .Columns[1].Text = "Parameter"
             .Columns[2].Text = aCoLst[0]
             .Columns[3].Text = aCoLst[1]
@@ -257,6 +258,7 @@ Private Sub DIsplayTextForm()
             .Columns[2].Width = 100 * modBasic.$AppWidthRatio
             .Columns[3].Width = 100 * modBasic.$AppWidthRatio
             .Columns[4].Width = 100 * modBasic.$AppWidthRatio
+            .Columns[5].Width = 25 * modBasic.$AppWidthRatio
             .Columns[1].Text = "Parameter"
             .Columns[2].Text = aCoLst[0]
             .Columns[3].Text = aCoLst[1]
@@ -1470,6 +1472,7 @@ Private Sub AddSubTableData(testid As Long, subtestid As Long, sIndex As String,
     If asx.Count > 4 Then
       res["fldcolm4"] = asx[4]
     Endif
+    res["fldhide"] = False
     res["xyz"] = False
     res.Update
   Next
@@ -1511,55 +1514,55 @@ Private Sub LoadSubTable(subTestID As Long, frm As String, GridView1 As GridView
   i = GridView1.Tag
   If frm = "Test" Then
     If $xData[i][3] = "Multiple Selection" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable from tblpatlabsubtable where fldsubtestid=&1 and fldtestid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable from tblpatlabsubtable where fldsubtestid=&1 and fldtestid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "Drug Sensitivity" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue from tblpatlabsubtable where fldsubtestid=&1 and fldtestid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue from tblpatlabsubtable where fldsubtestid=&1 and fldtestid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "WHO Sensitivity" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldcolm3 from tblpatlabsubtable where fldsubtestid=&1 and fldtestid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldcolm3 from tblpatlabsubtable where fldsubtestid=&1 and fldtestid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "Single Column" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue from tblpatlabsubtable where fldsubtestid=&1 and fldtestid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue from tblpatlabsubtable where fldsubtestid=&1 and fldtestid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "Dual Columns" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2 from tblpatlabsubtable where fldsubtestid=&1 and fldtestid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldid from tblpatlabsubtable where fldsubtestid=&1 and fldtestid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "Triple Columns" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldcolm3 from tblpatlabsubtable where fldsubtestid=&1 and fldtestid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldcolm3,fldid from tblpatlabsubtable where fldsubtestid=&1 and fldtestid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "Text Table" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldcolm3,fldcolm4 from tblpatlabsubtable where fldsubtestid=&1 and fldtestid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldcolm3,fldcolm4 from tblpatlabsubtable where fldsubtestid=&1 and fldtestid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Endif
 
   Else If frm = "Exam" Then
     If $xData[i][3] = "Multiple Selection" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable from tblpatexamsubtable where fldsubexamid=&1 and fldexamid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable from tblpatexamsubtable where fldsubexamid=&1 and fldexamid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "Drug Sensitivity" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue from tblpatexamsubtable where fldsubexamid=&1 and fldexamid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue from tblpatexamsubtable where fldsubexamid=&1 and fldexamid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "WHO Sensitivity" Then
     Else If $xData[i][3] = "Single Column" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue from tblpatexamsubtable where fldsubexamid=&1 and fldexamid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue from tblpatexamsubtable where fldsubexamid=&1 and fldexamid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "Dual Columns" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2 from tblpatexamsubtable where fldsubexamid=&1 and fldexamid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldid from tblpatexamsubtable where fldsubexamid=&1 and fldexamid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "Triple Columns" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldcolm3 from tblpatexamsubtable where fldsubexamid=&1 and fldexamid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldcolm3,fldid from tblpatexamsubtable where fldsubexamid=&1 and fldexamid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "Text Table" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldcolm3,fldcolm4 from tblpatexamsubtable where fldsubexamid=&1 and fldexamid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldcolm3,fldcolm4 from tblpatexamsubtable where fldsubexamid=&1 and fldexamid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Endif
 
   Else If frm = "Radio" Then
     If $xData[i][3] = "Multiple Selection" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable from tblpatradiosubtable where fldsubexamid=&1 and fldexamid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable from tblpatradiosubtable where fldsubexamid=&1 and fldexamid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "Drug Sensitivity" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue from tblpatradiosubtable where fldsubexamid=&1 and fldexamid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue from tblpatradiosubtable where fldsubexamid=&1 and fldexamid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "WHO Sensitivity" Then
     Else If $xData[i][3] = "Single Column" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue from tblpatradiosubtable where fldsubexamid=&1 and fldexamid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue from tblpatradiosubtable where fldsubexamid=&1 and fldexamid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "Dual Columns" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2 from tblpatradiosubtable where fldsubexamid=&1 and fldexamid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldid from tblpatradiosubtable where fldsubexamid=&1 and fldexamid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "Triple Columns" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldcolm3 from tblpatradiosubtable where fldsubexamid=&1 and fldexamid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldcolm3,fldid from tblpatradiosubtable where fldsubexamid=&1 and fldexamid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Else If $xData[i][3] = "Text Table" Then
-      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldcolm3,fldcolm4 from tblpatradiosubtable where fldsubexamid=&1 and fldexamid=&2", subTestID, $id)
+      res = modDatabase.$myConn.Exec("select fldid,fldvariable,fldvalue,fldcolm2,fldcolm3,fldcolm4 from tblpatradiosubtable where fldsubexamid=&1 and fldexamid=&2 and (fldhide=&3 or fldhide IS NULL)", subTestID, $id, False)
     Endif
 
   Endif
-  modGridView.ReadExplicitData(GridView1, res)
+  modGridView.ReadExplicitData($xData[i][3], GridView1, res)
 
 End
 
@@ -1609,6 +1612,12 @@ Public Sub Gridgroup_Click()
     Else If aGridView[j].Column = 3 Then
       fld = "fldcolm2"
       xx = InputBox(("Edit Value"), "RIGHT", aGridView[j][aGridView[j].Row, 3].Text)
+    Else If aGridView[j].Column = 4 Then
+      If Message.Question("Are you sure ?", ("No"), "Yes") = 2 Then
+        modDatabase.$myConn.Delete(tbl, "fldid=&1", aGridView[j][aGridView[j].Row, 0].Text)
+        LoadSubTable($xData[j][2], $frm, aGridView[j])
+      Endif
+      xx = ""
     Endif
 
   Else If $xData[j][3] = "Triple Columns" Then
@@ -1621,6 +1630,12 @@ Public Sub Gridgroup_Click()
     Else If aGridView[j].Column = 4 Then
       fld = "fldcolm3"
       xx = InputBox(("Edit Value"), "COLUMN-III", aGridView[j][aGridView[j].Row, 4].Text)
+    Else If aGridView[j].Column = 5 Then
+      If Message.Question("Are you sure ?", ("No"), "Yes") = 2 Then
+        modDatabase.$myConn.Delete(tbl, "fldid=&1", aGridView[j][aGridView[j].Row, 0].Text)
+        LoadSubTable($xData[j][2], $frm, aGridView[j])
+      Endif
+      xx = ""
     Endif
 
   Else If $xData[j][3] = "Text Table" Then

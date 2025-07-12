@@ -14,6 +14,7 @@ Private $categStr As String
 Private $numStr As String
 Private $cateyStr As String
 Private $numYStr As String
+Private $preProcess As String[]
 
 Public Sub _new(sType As String, sHeads As String[], sPath As String)
 
@@ -107,6 +108,7 @@ Public Sub Form_Open()
 
   cmbencoding.List = ["OrdinalEncoder", "OneHotEncoder"]
   cmbscaling.List = ["MinMaxScaler", "StandardScaler"]
+  cmbscoreaverage.List = ["macro", "micro", "weighted"]
 
 End
 
@@ -169,8 +171,11 @@ Private Sub GetModelList() As String[]
     xlst.Add("Linear SVR")
     xlst.Add("Nonlinear SVR")
     xlst.Add("DecisionTree Regression")
+    valtrain.Value = 80
+    valtrain.Enabled = True
     pnlregress.Visible = True
     pnlclassif.Visible = False
+    pnlunsuper.Visible = False
   Else If rbclass.Value = True Then
     xlst.Add("Dummy Classifier")
     xlst.Add("SGD Classifier")
@@ -178,8 +183,19 @@ Private Sub GetModelList() As String[]
     xlst.Add("Linear SVC")
     xlst.Add("Nonlinear SVC")
     xlst.Add("DecisionTree Classifier")
+    valtrain.Value = 80
+    valtrain.Enabled = True
     pnlregress.Visible = False
     pnlclassif.Visible = True
+    pnlunsuper.Visible = False
+  Else If rbunsupervis.Value = True Then
+    xlst.Add("KMeans Clustering")
+    xlst.Add("DBSCAN")
+    valtrain.Value = 100
+    valtrain.Enabled = False
+    pnlregress.Visible = True
+    pnlclassif.Visible = False
+    pnlunsuper.Visible = True
   Endif
 
   Return xlst
@@ -189,18 +205,21 @@ End
 Public Sub rbregression_Click()
 
   cmbmodel.List = GetModelList()
+  btndepset.Text = "Select"
 
 End
 
 Public Sub rbclass_Click()
 
   cmbmodel.List = GetModelList()
+  btndepset.Text = "Select"
 
 End
 
-Public Sub rbensemble_Click()
+Public Sub rbunsupervis_Click()
 
   cmbmodel.List = GetModelList()
+  btndepset.Text = "Proceed"
 
 End
 
@@ -212,7 +231,7 @@ Public Sub btndropcolumns_Click()
   Dim i As Integer
 
   xList = SelectListView("Columns to drop", $Columns, False)
-  If xList.Count Then
+  If xList And If xList.Count Then
     For i = 0 To xList.Count - 1
       $Columns.Remove($Columns.Find(xList[i]))
       xList[i] = "'" & xList[i] & "'"
@@ -254,7 +273,7 @@ Public Sub btnshownull_Click()
   Dim xcolm As String
 
   xList = SelectListView("Columns with Empty Values", $Columns, False)
-  If xList.Count Then
+  If xList And If xList.Count Then
     For Each xcolm In xList
       TerminalInput(Subst("orig_data['&1'].isnull().sum()", xcolm))
     Next
@@ -274,7 +293,7 @@ Public Sub btncolcount_Click()
   Dim xcolm As String
 
   xList = SelectListView("Columns to count", $Columns, False)
-  If xList.Count Then
+  If xList And If xList.Count Then
     For Each xcolm In xList
       TerminalInput(Subst("orig_data['&1'].value_counts()", xcolm))
     Next
@@ -316,15 +335,23 @@ Public Sub btndepset_Click()
 
   Dim cmdLst As New String[]
 
-  If cmbdependent.Text Then
+  If rbunsupervis.Value = True Then
     $IndepCol = $Columns.Copy()
-    $IndepCol.Remove($IndepCol.Find(cmbdependent.Text))
-
-    cmdLst.Add("Y_data = orig_data['" & cmbdependent.Text & "']")
-    cmdLst.Add("X_data = orig_data.drop(['" & cmbdependent.Text & "'], axis = 1)")
-    TerminalInputList(cmdLst)
-    txtdeptype.Text = GetIpythonOutput("str(orig_data.dtypes['" & cmbdependent.Text & "'])")
+    TerminalInput("X_data = orig_data")
     Wizard1.ShowButton = True
+
+  Else
+    If cmbdependent.Text Then
+      $IndepCol = $Columns.Copy()
+      $IndepCol.Remove($IndepCol.Find(cmbdependent.Text))
+
+      cmdLst.Add("Y_data = orig_data['" & cmbdependent.Text & "']")
+      cmdLst.Add("X_data = orig_data.drop(['" & cmbdependent.Text & "'], axis = 1)")
+      TerminalInputList(cmdLst)
+      txtdeptype.Text = GetIpythonOutput("str(orig_data.dtypes['" & cmbdependent.Text & "'])")
+      Wizard1.ShowButton = True
+    Endif
+
   Endif
 
 End
@@ -422,7 +449,6 @@ End
 
 Private Sub GetPreprocessing()
 
-  Dim cmdLst As String[]
   Dim categLst As New String[]
   Dim numLst As New String[]
 
@@ -509,40 +535,36 @@ Private Sub GetPreprocessing()
 End
 
 ''==================================== Split dataand process =======================
-Public Sub btnsplidata_Click()
+Private Sub GetProcessedDataSet()
 
   Dim xList As New String[]
-  Dim yList As New String[]
   Dim aList As New String[]
-  Dim bList As New String[]
 
-  Dim cmdLst As New String[]
-  Dim trainval As Float
+  GetPreprocessing()
 
-  If cmbdependent.Text Then
-    $IndepCol = $Columns.Copy()
-    $IndepCol.Remove($IndepCol.Find(cmbdependent.Text))
-    GetPreprocessing()
+  ''for X_data
+  TerminalInputList($libprocess)
+  If $categStr Then
+    TerminalInput($categStr)
+    aList.Add("(cat_pipeline, make_column_selector(dtype_include=object))")
+  Endif
+  If $numStr Then
+    TerminalInput($numStr)
+    aList.Add("(num_pipeline, make_column_selector(dtype_include=numpy.number))")
+  Endif
+  If aList.Count Then
+    $preProcess = aList
+    xList.Add("preprocess_X = make_column_transformer(" & aList.Join(", ") & ")")
+    xList.Add("X_processed = preprocess_X.fit_transform(X_data)")
+    TerminalInputList(xList)
+  Else
+    $preProcess = New String[]
+    TerminalInput("X_processed = X_data")
+  Endif
 
-    ''for X_data
-    TerminalInputList($libprocess)
-    If $categStr Then
-      TerminalInput($categStr)
-      aList.Add("(cat_pipeline, make_column_selector(dtype_include=object))")
-    Endif
-    If $numStr Then
-      TerminalInput($numStr)
-      aList.Add("(num_pipeline, make_column_selector(dtype_include=numpy.number))")
-    Endif
-    If aList.Count Then
-      xList.Add("preprocess_X = make_column_transformer(" & aList.Join(", ") & ")")
-      xList.Add("X_processed = preprocess_X.fit_transform(X_data)")
-      TerminalInputList(xList)
-    Else
-      TerminalInput("X_processed = X_data")
-    Endif
-
-    ''Y_data
+  ''Y_data
+  If rbunsupervis.Value = True Then
+  Else
     If txtdeptype.Text = "object" Then
       If $cateyStr Then
         TerminalInput($cateyStr)
@@ -558,15 +580,36 @@ Public Sub btnsplidata_Click()
         TerminalInput("Y_processed = Y_data")
       Endif
     Endif
+  Endif
 
-    ''split dataset
-    trainval = valtrain.Value / 100
-    cmdLst.Add("from sklearn.model_selection import train_test_split")
-    cmdLst.Add(Subst("X_train, X_test, Y_train, Y_test = train_test_split(X_processed, Y_processed, train_size = &1, random_state=42)", trainval))
+End
+
+Public Sub btnsplidata_Click()
+
+  Dim cmdLst As New String[]
+  Dim trainval As Float
+
+  If rbunsupervis.Value = True Then
+    GetProcessedDataSet()
+    cmdLst.Add("X_train = X_processed")
     TerminalInputList(cmdLst)
-
     btnmodeltrain.Enabled = True
     btnsavemodel.Enabled = True
+
+  Else
+    If cmbdependent.Text Then
+      $IndepCol = $Columns.Copy()
+      $IndepCol.Remove($IndepCol.Find(cmbdependent.Text))
+
+      GetProcessedDataSet()
+      trainval = valtrain.Value / 100
+      cmdLst.Add("from sklearn.model_selection import train_test_split")
+      cmdLst.Add(Subst("X_train, X_test, Y_train, Y_test = train_test_split(X_processed, Y_processed, train_size = &1, random_state=42)", trainval))
+      TerminalInputList(cmdLst)
+      btnmodeltrain.Enabled = True
+      btnsavemodel.Enabled = True
+    Endif
+
   Endif
 
 End
@@ -671,6 +714,17 @@ Public Sub cmbmodel_Click()
       pnlone.Visible = True
       lblmodelone.Text = "max_depth"
       txtmodelone.Text = "2"
+    Case "KMeans Clustering"
+      pnlone.Visible = True
+      lblmodelone.Text = "n_clusters"
+      txtmodelone.Text = "3"
+    Case "DBSCAN"
+      pnlone.Visible = True
+      lblmodelone.Text = "min_samples"
+      txtmodelone.Text = "5"
+      pnltwo.Visible = True
+      lblmodel2two.Text = "eps"
+      txtmodeltwo.Text = "0.05"
   End Select
 
 End
@@ -680,6 +734,14 @@ Public Sub btnmodeltrain_Click()
   Dim cmdLst As New String[]
 
   If cmbmodel.Text Then
+    If txtdeptype.Text = "object" Then
+      If cmbencoding.Text = "OrdinalEncoder" Then
+        cmdLst.Add("Y_train = numpy.ravel(Y_train)")
+        TerminalInputList(cmdLst)
+      Else If cmbencoding.Text = "OneHotEncoder" Then
+      Endif
+    Endif
+
     Inc Application.Busy
     If rbregression.Value = True Then
       Select cmbmodel.Text
@@ -791,6 +853,18 @@ Public Sub btnmodeltrain_Click()
         End Select
       Endif
 
+    Else If rbunsupervis.Value = True Then
+      Select cmbmodel.Text
+        Case "KMeans Clustering"
+          cmdLst.Add("from sklearn.cluster import KMeans")
+          cmdLst.Add(Subst("kmeans = KMeans(n_clusters = &1, random_state = 42)", Trim(txtmodelone.Text)))
+          cmdLst.Add("kmeans.fit(X_train)")
+        Case "DBSCAN"
+          cmdLst.Add("from sklearn.cluster import DBSCAN")
+          cmdLst.Add(Subst("dbscan = DBSCAN(min_samples = &1, eps = &2)", Trim(txtmodelone.Text), Trim(txtmodeltwo.Text)))
+          cmdLst.Add("dbscan.fit(X_train)")
+      End Select
+
     Endif
     TerminalInputList(cmdLst)
     Dec Application.Busy
@@ -842,6 +916,10 @@ Public Sub btnsavemodel_Click()
         cmdLst.Add("joblib.dump(svm_clf, '" & xpath & "')")
       Case "DecisionTree Classifier"
         cmdLst.Add("joblib.dump(tree_clf, '" & xpath & "')")
+      Case "KMeans Clustering"
+        cmdLst.Add("joblib.dump(kmeans, '" & xpath & "')")
+      Case "DBSCAN"
+        cmdLst.Add("joblib.dump(dbscan, '" & xpath & "')")
     End Select
     TerminalInputList(cmdLst)
     Dec Application.Busy
@@ -905,14 +983,57 @@ Public Sub btnevaluate_Click()
     Endif
     If chkprecision.Value = True Then
       cmdLst.Add("from sklearn.metrics import precision_score, recall_score")
-      cmdLst.Add("print('Precision Score = ', precision_score(Y_train, y_train_pred))")
-      cmdLst.Add("print('Recall Score = ', recall_score(Y_train, y_train_pred))")
       cmdLst.Add("from sklearn.metrics import f1_score")
-      cmdLst.Add("print('F1 Score = ', f1_score(Y_train, y_train_pred))")
+      If cmbscoreaverage.Text Then
+        cmdLst.Add(Subst("print('Precision Score = ', precision_score(Y_train, y_train_pred, average='&1'))", cmbscoreaverage.Text))
+        cmdLst.Add(Subst("print('Recall Score = ', recall_score(Y_train, y_train_pred, average='&1'))", cmbscoreaverage.Text))
+        cmdLst.Add(Subst("print('F1 Score = ', f1_score(Y_train, y_train_pred, average='&1'))", cmbscoreaverage.Text))
+      Else
+        cmdLst.Add("print('Precision Score = ', precision_score(Y_train, y_train_pred))")
+        cmdLst.Add("print('Recall Score = ', recall_score(Y_train, y_train_pred))")
+        cmdLst.Add("print('F1 Score = ', f1_score(Y_train, y_train_pred))")
+      Endif
+    Endif
+    TerminalInputList(cmdLst)
+
+  Else If rbunsupervis.Value = True Then
+    Select cmbmodel.Text
+      Case "KMeans Clustering"
+        TerminalInput("unsup_model = kmeans")
+        TerminalInput("print('Training Score = ', kmeans.score(X_train))")
+      Case "DBSCAN"
+        TerminalInput("unsup_model = dbscan")
+    End Select
+
+    If chkaccuracy.Value = True Then
+      cmdLst.Add("from sklearn.metrics import silhouette_score")
+      cmdLst.Add("silhouette_score(X_train, unsup_model.labels_)")
+      TerminalInputList(cmdLst)
     Endif
 
-    TerminalInputList(cmdLst)
   Endif
+
+End
+
+Public Sub btnunsupervised_Click()
+
+  Dim cmdLst As New String[]
+  Dim xPath As String
+
+  Select cmbmodel.Text
+    Case "KMeans Clustering"
+      cmdLst.Add("X_Pred = kmeans.predict(X_processed)")
+    Case "DBSCAN"
+      cmdLst.Add("X_Pred = dbscan.labels_")
+  End Select
+  cmdLst.Add("X_data['cluster'] = X_Pred.tolist()")
+  cmdLst.Add("X_data")
+  If chksavefile.Value = True Then
+    If Dialog.SelectDirectory() Then Return
+    xPath = Dialog.Path &/ modString.GetNowString() & ".csv"
+    cmdLst.Add(Subst("X_data.to_csv('&1', sep='" & "\\" & "t" & "')", xPath))
+  Endif
+  TerminalInputList(cmdLst)
 
 End
 
@@ -959,6 +1080,8 @@ End
 
 Public Sub btnpredict_Click()
 
+  Dim amdLst As New String[]
+  Dim bmdLst As New String[]
   Dim cmdLst As New String[]
   Dim aVar As Variant[]
   Dim xindep As String
@@ -966,37 +1089,46 @@ Public Sub btnpredict_Click()
 
   aVar = New Variant[]
   For Each xindep In $IndepCol
-    aVar.Add([xindep, "Number"])
+    aVar.Add([xindep, "String"])
   Next
   If aVar.Count Then
     xjson = GetInputs(aVar, True)
     If xjson Then
 
-      cmdLst.Add("import json")
-      cmdLst.Add("input_dict = json.loads('" & xjson & "')")
-      cmdLst.Add("input_df = pandas.DataFrame(input_dict, index=[0])")
-      cmdLst.Add("input_df")
+      bmdLst.Add("import json")
+      bmdLst.Add("input_dict = json.loads('" & xjson & "')")
+      bmdLst.Add("input_df = pandas.DataFrame(input_dict, index=[0])")
+      bmdLst.Add("input_df")
+      TerminalInputList(bmdLst)
+
+      If $preProcess.Count Then
+        amdLst.Add("preprocess_input = make_column_transformer(" & $preProcess.Join(", ") & ")")
+        amdLst.Add("X_input = preprocess_input.fit_transform(input_df)")
+        TerminalInputList(amdLst)
+      Else
+        TerminalInput("X_input = input_df")
+      Endif
 
       If rbregression.Value = True Then
         Select cmbmodel.Text
           Case "Linear Regression"
-            cmdLst.Add("predict_val = lin_reg.predict(input_df)")
+            cmdLst.Add("predict_val = lin_reg.predict(X_input)")
           Case "SGD Regression"
-            cmdLst.Add("predict_val = sgd_reg.predict(input_df)")
+            cmdLst.Add("predict_val = sgd_reg.predict(X_input)")
           Case "Ridge Regression"
-            cmdLst.Add("predict_val = ridge_reg.predict(input_df)")
+            cmdLst.Add("predict_val = ridge_reg.predict(X_input)")
           Case "Lasso Regression"
-            cmdLst.Add("predict_val = lasso_reg.predict(input_df)")
+            cmdLst.Add("predict_val = lasso_reg.predict(X_input)")
           Case "ElasticNet Regression"
-            cmdLst.Add("predict_val = elastic_net.predict(input_df)")
+            cmdLst.Add("predict_val = elastic_net.predict(X_input)")
           Case "Logistic Regression"
-            cmdLst.Add("predict_val = log_reg.predict(input_df)")
+            cmdLst.Add("predict_val = log_reg.predict(X_input)")
           Case "Linear SVR"
-            cmdLst.Add("predict_val = linsvm_reg.predict(input_df)")
+            cmdLst.Add("predict_val = linsvm_reg.predict(X_input)")
           Case "Nonlinear SVR"
-            cmdLst.Add("predict_val = svm_reg.predict(input_df)")
+            cmdLst.Add("predict_val = svm_reg.predict(X_input)")
           Case "DecisionTree Regression"
-            cmdLst.Add("predict_val = tree_reg.predict(input_df)")
+            cmdLst.Add("predict_val = tree_reg.predict(X_input)")
         End Select
         cmdLst.Add("prediction = predict_val[0]")
         cmdLst.Add("print('Predicted Value = ', prediction)")
@@ -1006,17 +1138,17 @@ Public Sub btnpredict_Click()
       Else If rbclass.Value = True Then
         Select cmbmodel.Text
           Case "Dummy Classifier"
-            cmdLst.Add("predict_val = dummy_clf.predict(input_df)")
+            cmdLst.Add("predict_val = dummy_clf.predict(X_input)")
           Case "SGD Classifier"
-            cmdLst.Add("predict_val = sgd_clf.predict(input_df)")
+            cmdLst.Add("predict_val = sgd_clf.predict(X_input)")
           Case "KNeighbors Classifier"
-            cmdLst.Add("predict_val = knn_clf.predict(input_df)")
+            cmdLst.Add("predict_val = knn_clf.predict(X_input)")
           Case "Linear SVC"
-            cmdLst.Add("predict_val = linsvm_clf.predict(input_df)")
+            cmdLst.Add("predict_val = linsvm_clf.predict(X_input)")
           Case "Nonlinear SVC"
-            cmdLst.Add("predict_val = svm_clf.predict(input_df)")
+            cmdLst.Add("predict_val = svm_clf.predict(X_input)")
           Case "DecisionTree Classifier"
-            cmdLst.Add("predict_val = tree_clf.predict(input_df)")
+            cmdLst.Add("predict_val = tree_clf.predict(X_input)")
         End Select
         cmdLst.Add("prediction = predict_val[0]")
         cmdLst.Add("print('Predicted Value = ', prediction)")

@@ -37,56 +37,71 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label4 Label
-      MoveScaled(1,13,42,3)
+      MoveScaled(1,9,42,3)
       Border = Border.Plain
       Text = ("Display Item Storage Location using SerialPort")
     }
     { cmbserialopen ComboBox
-      MoveScaled(44,13,22,3)
+      MoveScaled(44,9,22,3)
       ToolTip = ("Select if you want to skip certain batch of inventory from billing based on their expiry date")
     }
     { btnserialopen ToolButton
-      MoveScaled(67,13,3.125,3)
+      MoveScaled(67,9,3.125,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label6 Label
-      MoveScaled(1,17,42,3)
+      MoveScaled(1,13,42,3)
       Border = Border.Plain
       Text = ("Hide Item Storage Location using SerialPort")
     }
     { cmbserialclose ComboBox
-      MoveScaled(44,17,22,3)
+      MoveScaled(44,13,22,3)
       ToolTip = ("Select if you want to skip certain batch of inventory from billing based on their expiry date")
     }
     { btnserialclose ToolButton
-      MoveScaled(67,17,3.125,3)
+      MoveScaled(67,13,3.125,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label7 Label
-      MoveScaled(1,21,23,3)
+      MoveScaled(1,17,23,3)
       Border = Border.Plain
       Text = ("Fixed Assets QR Code")
     }
     { txtfixedasset ButtonBox
-      MoveScaled(25,21,41,3)
+      MoveScaled(25,17,41,3)
       ToolTip = ("QR Code Path is {FixedAssetQRPath}")
       Picture = Picture["icon:/small/file"]
     }
     { btnfixedasset ToolButton
-      MoveScaled(67,21,4,3)
+      MoveScaled(67,17,4,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label2 Label
-      MoveScaled(1,9,42,3)
+      MoveScaled(1,21,42,3)
       Border = Border.Plain
       Text = ("Enable Inventory Alert")
     }
     { cmbstockalert ComboBox
-      MoveScaled(44,9,22,3)
+      MoveScaled(44,21,22,3)
       ToolTip = ("Select if you want to skip certain batch of inventory from billing based on their expiry date")
     }
     { btnstockalert ToolButton
-      MoveScaled(67,9,3.125,3)
+      MoveScaled(67,21,3.125,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { cmbrequest ComboBox
+      MoveScaled(44,25,22,3)
+    }
+    { Label16 Label
+      MoveScaled(1,25,34,3)
+      Border = Border.Plain
+      Text = ("Store Request Alert (Days)")
+    }
+    { txtrequest ValueBox
+      MoveScaled(36,25,7,3)
+    }
+    { btnrequest ToolButton
+      MoveScaled(67,25,3.125,3)
       Picture = Picture["icon:/small/apply"]
     }
     Index = 1

@@ -425,6 +425,7 @@ Public Sub btnadd_Click()
         res["fldcolm2"] = "Disk"
         res["fldcolm3"] = CStr(aValueBox1[i].Value)
         res["fldcolm4"] = ""
+        res["fldhide"] = False
         res["xyz"] = False
         res.Update
       Endif
@@ -444,6 +445,7 @@ Public Sub btnadd_Click()
         res2["fldcolm2"] = "MIC"
         res2["fldcolm3"] = CStr(aValueBox2[j].Value)
         res2["fldcolm4"] = ""
+        res2["fldhide"] = False
         res2["xyz"] = False
         res2.Update
       Endif
@@ -463,6 +465,7 @@ Public Sub btnadd_Click()
         res3["fldcolm2"] = "E-Test"
         res3["fldcolm3"] = CStr(aValueBox3[k].Value)
         res3["fldcolm4"] = ""
+        res3["fldhide"] = False
         res3["xyz"] = False
         res3.Update
       Endif
@@ -522,6 +525,7 @@ Private Sub EditSensiTableValue(sID As Long, subID As Long, sIndex As String, sT
     res["fldcolm2"] = "Biology"
     res["fldcolm3"] = ""
     res["fldcolm4"] = ""
+    res["fldhide"] = False
     res["xyz"] = False
     res.Update
 

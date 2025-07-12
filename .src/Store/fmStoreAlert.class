@@ -1,30 +1,19 @@
 ' Gambas class file
 
-Private $sType As String
+Private $sCompId As String
 Private $rData As Result
 Private $aMyFields As String[]
 Private $rData1 As Result
 Private $aMyFields1 As String[]
 
-Public Sub _new(sType As String)
-
-  $sType = sType
-
-End
-
 Public Sub Form_Open()
 
   ' modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
-  Me.Title = $sType
 
-  If $sType = "UnderStock" Then
-    Panelfir.Visible = True
-    Panelsec.Visible = True
-    lblfirst.Text = "Medicines & Surgicals"
-    lblsecond.Text = "Extra Items"
-    ShowUnderStockMedSurg()
-    ShowUnderStockExtra()
-  Endif
+  lblfirst.Text = "Medicines & Surgicals"
+  lblsecond.Text = "Extra Items"
+  ShowUnderStockMedSurg()
+  ShowUnderStockExtra()
 
 End
 
@@ -179,18 +168,14 @@ Private Function GetSelectedData() As String[]
   aList = New String[]
   For Row = 0 To GridView1.Rows.Count - 1
     If GridView1[Row, 0].Picture = Picture["icons/checked.png"] Then
-      If $sType = "UnderStock" Then
-        aList.Add(GridView1[Row, 1].Text)
-      Endif
+      aList.Add(GridView1[Row, 1].Text)
     Endif
   Next
 
   bList = New String[]
   For Rowx = 0 To GridView2.Rows.Count - 1
     If GridView2[Rowx, 0].Picture = Picture["icons/checked.png"] Then
-      If $sType = "UnderStock" Then
-        aList.Add(GridView2[Rowx, 1].Text)
-      Endif
+      aList.Add(GridView2[Rowx, 1].Text)
     Endif
   Next
 
@@ -201,29 +186,7 @@ Private Function GetSelectedData() As String[]
 
 End
 
-Public Sub btnemail_Click()
-
-  Dim hForm As FmRemoteMail
-  Dim xList As String[]
-  Dim xitem As String
-  Dim xmsg As String
-  Dim i As Integer
-
-  i = 1
-  If $sType = "UnderStock" Then
-    xmsg = "Understock Items are : " & gb.NewLine
-    xList = GetSelectedData()
-    For Each xitem In xList
-      xmsg = xmsg & CStr(i) & Space(2) & xitem & gb.NewLine
-      i = i + 1
-    Next
-
-  Endif
-  hForm = New FmRemoteMail([txtemail.Text], "", $sType & " Alert", xmsg)
-  hForm.ShowModal
-
-End
-
+''--------------------- Send E-mail -------------------
 Private Function GetSupplierEmail() As Variant[]
 
   Dim xxx As Variant[]
@@ -244,5 +207,26 @@ End
 Public Sub txtemail_Click()
 
   txtemail.Text = MedicalSelectedUser("Select Supplier E-Mail", GetSupplierEmail())
+
+End
+
+Public Sub btnemail_Click()
+
+  Dim hForm As FmRemoteMail
+  Dim xList As String[]
+  Dim xitem As String
+  Dim xmsg As String
+  Dim i As Integer
+
+  i = 1
+  xmsg = "Understock Items are : " & gb.NewLine
+  xList = GetSelectedData()
+  For Each xitem In xList
+    xmsg = xmsg & CStr(i) & Space(2) & xitem & gb.NewLine
+    i = i + 1
+  Next
+
+  hForm = New FmRemoteMail([txtemail.Text], "", "Under Stock Alert", xmsg)
+  hForm.ShowModal
 
 End

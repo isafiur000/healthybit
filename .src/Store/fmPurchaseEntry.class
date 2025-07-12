@@ -792,7 +792,7 @@ Public Sub txttotqty_LostFocus()
   Dim xmsg As String
 
   If txttotqty.Value > 0 Then
-    txtnetcost.Value = Round((txttotalcost.Value - txttotax.Value) / txttotqty.Value, -2)
+    txtnetcost.Value = Round((txttotalcost.Value - txttotax.Value) / txttotqty.Value, -5)
   Endif
 
   maxqty = 0

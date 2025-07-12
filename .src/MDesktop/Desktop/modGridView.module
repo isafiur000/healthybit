@@ -52,7 +52,7 @@ Public Sub ReadSmallMyData(GridView1 As GridView, $hres As MyResult, $aMyFields 
 
 End
 
-Public Sub ReadExplicitData(GridView1 As GridView, $hres As Result, Optional {index} As Integer)
+Public Sub ReadExplicitData(sType As String, GridView1 As GridView, $hres As Result, Optional {index} As Integer)
 
   Dim j As Integer
   Dim fld As ResultField
@@ -65,7 +65,17 @@ Public Sub ReadExplicitData(GridView1 As GridView, $hres As Result, Optional {in
     j = 0
     For Each fld In $hres.Fields
       modGeneralMain.GridExplicitDecoration(GridView1, $hres.Index, j)
-      GridView1[$hres.Index, j].Text = $hres[fld.Name]
+      If j = $hres.Fields.Count - 1 Then
+        Select sType
+          Case "Dual Columns", "Triple Columns"
+            GridView1[$hres.Index, j].Picture = Picture["icon:/small/cancel"]
+            GridView1[$hres.Index, j].Text = ""
+          Case Else
+            GridView1[$hres.Index, j].Text = $hres[fld.Name]
+        End Select
+      Else
+        GridView1[$hres.Index, j].Text = $hres[fld.Name]
+      Endif
       j = j + 1
     Next
   Next

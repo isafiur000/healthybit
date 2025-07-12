@@ -29,7 +29,7 @@
           Border = False
         }
         { Panel6 Panel
-          MoveScaled(1,10,23,8)
+          MoveScaled(1,10,23,11)
           { rbregression RadioButton
             MoveScaled(1,1,21,3)
             Text = ("Regression")
@@ -38,6 +38,10 @@
           { rbclass RadioButton
             MoveScaled(1,4,21,3)
             Text = ("Classification")
+          }
+          { rbunsupervis RadioButton
+            MoveScaled(1,7,21,3)
+            Text = ("Unsupervised")
           }
         }
       }
@@ -115,19 +119,22 @@
       Index = 1
       Text = ("Processing of Categorical Columns")
       { Panel8 Panel
-        MoveScaled(0,0,37,33)
+        MoveScaled(0,0,37,31)
         Arrangement = Arrange.Vertical
         { Panel2 Panel
-          MoveScaled(0,0,34,17)
+          MoveScaled(0,0,34,18)
           Arrangement = Arrange.Vertical
           AutoResize = True
           Margin = True
-          { chknullcateg CheckBox
-            MoveScaled(1,0,31,3)
-            Text = ("Replace Null Values")
+          { Panel18 Panel
+            MoveScaled(0,0,33,3.5)
+            { chknullcateg CheckBox
+              MoveScaled(0.5,0,25,3)
+              Text = ("Replace Null Values")
+            }
           }
           { pnlnullcateg Panel
-            MoveScaled(0,3.5,33,13)
+            MoveScaled(0,4,33,13)
             Visible = False
             { lblcategnull Label
               MoveScaled(1,5,9,3)
@@ -156,16 +163,19 @@
           }
         }
         { Panel7 Panel
-          MoveScaled(0,18,34.375,9.375)
+          MoveScaled(0,19,34,10)
           Arrangement = Arrange.Vertical
           AutoResize = True
           Margin = True
-          { chkcategencode CheckBox
-            MoveScaled(1,0,31,3)
-            Text = ("Category Encoding")
+          { Panel19 Panel
+            MoveScaled(0,0,32,3.5)
+            { chkcategencode CheckBox
+              MoveScaled(0.5,0,23,3)
+              Text = ("Category Encoding")
+            }
           }
           { pnlencode Panel
-            MoveScaled(0,3.5,33.5,5)
+            MoveScaled(0,4,33.5,5)
             Visible = False
             { cmbencoding ComboBox
               MoveScaled(11,1,21,3)
@@ -181,19 +191,22 @@
       Index = 2
       Text = ("Processing of Numerical Columns")
       { Panel12 Panel
-        MoveScaled(1,1,37,32)
+        MoveScaled(1,0,37,32)
         Arrangement = Arrange.Vertical
         { Panel9 Panel
-          MoveScaled(0,0,33.875,17.375)
+          MoveScaled(0,0,34,18)
           Arrangement = Arrange.Vertical
           AutoResize = True
           Margin = True
-          { chknullnumber CheckBox
-            MoveScaled(1,0,30,3)
-            Text = ("Replace Null Values")
+          { Panel20 Panel
+            MoveScaled(0,0,33,3.5)
+            { chknullnumber CheckBox
+              MoveScaled(0.5,0,25,3)
+              Text = ("Replace Null Values")
+            }
           }
           { pnlnullnumber Panel
-            MoveScaled(0,3.5,33,13)
+            MoveScaled(0,4,33,13)
             Visible = False
             { lblnumnull Label
               MoveScaled(1,5,9,3)
@@ -223,19 +236,22 @@
         }
       }
       { Panel15 Panel
-        MoveScaled(38,1,37,32)
+        MoveScaled(38,0,37,32)
         Arrangement = Arrange.Vertical
         { Panel13 Panel
-          MoveScaled(0,0,33.875,9.375)
+          MoveScaled(0,0,34,10)
           Arrangement = Arrange.Vertical
           AutoResize = True
           Margin = True
-          { chkpolynomial CheckBox
-            MoveScaled(1,0,30,3)
-            Text = ("Polynomial Features")
+          { Panel21 Panel
+            MoveScaled(0,0,33,3.5)
+            { chkpolynomial CheckBox
+              MoveScaled(0.5,0,25,3)
+              Text = ("Polynomial Features")
+            }
           }
           { pnlpolynom Panel
-            MoveScaled(0,3.5,33,5)
+            MoveScaled(0,4,33,5)
             Visible = False
             { lblnullmethod4 Label
               MoveScaled(1,1,9,3)
@@ -248,13 +264,16 @@
           }
         }
         { Panel14 Panel
-          MoveScaled(0,9.5,34.375,13.875)
+          MoveScaled(0,12,34,14)
           Arrangement = Arrange.Vertical
           AutoResize = True
           Margin = True
-          { chkscaling CheckBox
-            MoveScaled(1,0,31,3)
-            Text = ("Scaling")
+          { Panel22 Panel
+            MoveScaled(0,0,31.875,3.5)
+            { chkscaling CheckBox
+              MoveScaled(0.5,0,25,3)
+              Text = ("Scaling")
+            }
           }
           { pnlscaling Panel
             MoveScaled(0,4,33.5,9)
@@ -282,20 +301,8 @@
       }
       Index = 3
       Text = ("Training and Testing Dataset")
-      { Label4 Label
-        MoveScaled(1,31,11,3)
-        Border = Border.Plain
-        Text = ("Show Data")
-      }
-      { cmbsplitdata ComboBox
-        MoveScaled(13,31,16,3)
-      }
-      { btnsplitshow Button
-        MoveScaled(31,31,12,3)
-        Text = ("View")
-      }
       { Frame1 Frame
-        MoveScaled(0,1,47,8)
+        MoveScaled(0,1,47,7)
         Text = ("Split Dataset")
         Alignment = Align.Left
         { Label10 Label
@@ -306,7 +313,6 @@
         { valtrain SpinBox
           MoveScaled(14,3,10,3)
           MinValue = 50
-          MaxValue = 99
           Value = 80
         }
         { btnsplidata Button
@@ -322,9 +328,12 @@
       { Panel16 Panel
         MoveScaled(0,10,47,10)
         Arrangement = Arrange.Vertical
-        { chkPCA CheckBox
-          MoveScaled(1,0,33,3)
-          Text = ("PCA")
+        { Panel23 Panel
+          MoveScaled(0,0,44,3.5)
+          { chkPCA CheckBox
+            MoveScaled(0.5,0,15,3)
+            Text = ("PCA")
+          }
         }
         { pnlpca Panel
           MoveScaled(0,4,43,5)
@@ -341,6 +350,21 @@
             MoveScaled(30,1,12,3)
             Text = ("Exec")
           }
+        }
+      }
+      { Panel24 Panel
+        MoveScaled(0,30,46,4)
+        { cmbsplitdata ComboBox
+          MoveScaled(13,0,16,3)
+        }
+        { btnsplitshow Button
+          MoveScaled(31,0,12,3)
+          Text = ("View")
+        }
+        { Label4 Label
+          MoveScaled(1,0,11,3)
+          Border = Border.Plain
+          Text = ("Show Data")
         }
       }
       Index = 4
@@ -425,7 +449,7 @@
       Index = 5
       Text = ("Model Evaluation")
       { Panel3 Panel
-        MoveScaled(1,1,37,17)
+        MoveScaled(1,1,37,26)
         Arrangement = Arrange.Vertical
         { pnlregress Panel
           MoveScaled(0,0,37,4)
@@ -436,37 +460,60 @@
           }
         }
         { pnlclassif Panel
-          MoveScaled(0,4,37,8)
+          MoveScaled(0,4,37,11)
           Visible = False
           { chkconfusion CheckBox
-            MoveScaled(1,0,33,3.5)
+            MoveScaled(1,0,27,3.5)
             Text = ("Confusion Matrix")
           }
           { chkprecision CheckBox
-            MoveScaled(1,4,33,3.5)
+            MoveScaled(1,4,27,3)
             Text = ("Precision, Recall, F1 Score")
+          }
+          { lblmodelfour2 Label
+            MoveScaled(1,7.5,10,3)
+            Border = Border.Plain
+            Text = ("Average")
+          }
+          { cmbscoreaverage ComboBox
+            MoveScaled(12,7.5,18,3)
           }
         }
         { Panel11 Panel
-          MoveScaled(1,12,35,4)
+          MoveScaled(1,15,35,4)
           { btnevaluate Button
             MoveScaled(6,0.5,17,3)
             Enabled = False
             Text = ("Calculate")
           }
         }
+        { pnlunsuper Panel
+          MoveScaled(1,21,35,4)
+          Visible = False
+          { btnunsupervised Button
+            MoveScaled(18,0.5,14,3)
+            Text = ("Dataset")
+          }
+          { chksavefile CheckBox
+            MoveScaled(1,0.5,13,3)
+            Text = ("Save File")
+          }
+        }
       }
-      { chkpredictplot CheckBox
-        MoveScaled(3,19,22,3.5)
-        Text = ("Plot Output")
-      }
-      { btnshowscatterplot ToolButton
-        MoveScaled(27,19,3.5,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-      { btnopen ToolButton
-        MoveScaled(33,19,3,3)
-        Picture = Picture["icon:/small/image"]
+      { Panel17 Panel
+        MoveScaled(1,29,37,4)
+        { btnopen ToolButton
+          MoveScaled(31,0.5,3,3)
+          Picture = Picture["icon:/small/image"]
+        }
+        { chkpredictplot CheckBox
+          MoveScaled(1,0.5,22,3)
+          Text = ("Plot Output")
+        }
+        { btnshowscatterplot ToolButton
+          MoveScaled(25,0.5,3.5,3)
+          Picture = Picture["icon:/small/apply"]
+        }
       }
       Index = 6
       Text = ("Prediction")
@@ -484,7 +531,7 @@
       Expand = True
       Arrangement = Arrange.Vertical
       { TerminalView1 TerminalView
-        MoveScaled(7,3,85,24)
+        MoveScaled(2,3,85,24)
         Background = Color.White
         Foreground = Color.Black
         Expand = True

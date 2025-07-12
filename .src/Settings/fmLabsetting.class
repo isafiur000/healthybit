@@ -998,3 +998,16 @@ Private Sub SHowInterfaceLocals()
   modSettings.ShowCheckBox(chkinterfreporting, "Interface/ReportingDate")
 
 End
+
+Public Sub btnmethod_Click()
+
+  Dim hForm As FmAddVarTwoCombo
+  Dim methodLst As String[]
+
+  If cmbintfacevendor.Text Then
+    methodLst = modFixLab.GetTestExamEquipments("Test")
+    hForm = New FmAddVarTwoCombo("fldvendor", "fldethod", "fldmachine", "tblmachinemethod", cmbintfacevendor.Text, methodLst)
+    hForm.ShowModal
+  Endif
+
+End

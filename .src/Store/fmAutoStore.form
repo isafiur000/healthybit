@@ -1,0 +1,48 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,120,77.5)
+  Text = ("Auto Request")
+  Margin = True
+  { Panel1 Panel
+    MoveScaled(0,0,119,77)
+    Arrangement = Arrange.Vertical
+    { Panel2 Panel
+      MoveScaled(0,0,111.875,4.375)
+      { lblfirst Label
+        MoveScaled(0,0.5,78,3)
+        Border = Border.Plain
+        Text = ("Issue Date")
+      }
+      { chkseltop CheckBox
+        MoveScaled(93,0.5,18,3)
+        Text = ("Select All")
+      }
+    }
+    { GridView1 GridView
+      MoveScaled(0,4,118,67)
+      Expand = True
+      Mode = Select.Single
+      Header = GridView.Both
+    }
+    { Panel3 Panel
+      MoveScaled(0,71,82,4)
+      { btnadd Button
+        MoveScaled(40,0.5,19,3)
+        Text = ("Request")
+      }
+      { Label1 Label
+        MoveScaled(1,0.5,13,3)
+        Border = Border.Plain
+        Text = ("Supply From")
+      }
+      { cmbcomtaget ComboBox
+        MoveScaled(14,0.5,23,3)
+      }
+    }
+    { Timer1 #Timer
+      #MoveScaled(79,0)
+      Delay = 2000
+    }
+  }
+}

@@ -2,12 +2,12 @@
 
 { Form Form
   MoveScaled(0,0,120,77.5)
+  Text = ("Under Stock Items")
   Margin = True
   { Panel1 Panel
     MoveScaled(0,0,120,77)
     { Panelfir Panel
       MoveScaled(0,0,119,33)
-      Visible = False
       Expand = True
       Arrangement = Arrange.Vertical
       { Panel4 Panel
@@ -21,7 +21,7 @@
           MoveScaled(76,3,1,1)
         }
         { chkseltop CheckBox
-          MoveScaled(96,0.375,18,3)
+          MoveScaled(96,0.5,18,3)
           Text = ("Select All")
         }
       }
@@ -38,7 +38,6 @@
     }
     { Panelsec Panel
       MoveScaled(0,35,118,37)
-      Visible = False
       Expand = True
       Arrangement = Arrange.Vertical
       { Panel5 Panel
@@ -63,19 +62,22 @@
     }
     { Panel3 Panel
       MoveScaled(0,72,116,4)
-      { lblsecond2 Label
-        MoveScaled(0.5,0.5,13,3)
-        Border = Border.Plain
-        Text = ("Send E-Mail")
-      }
-      { txtemail ButtonBox
-        MoveScaled(15,0.5,50,3)
-        Picture = Picture["icon:/small/mail"]
-      }
-      { btnemail Button
-        MoveScaled(66,0.5,15,3)
-        Text = ("Send")
-        Picture = Picture["icon:/32/mail"]
+      { pnlemail Panel
+        MoveScaled(0.5,0,55.375,4)
+        { txtemail ButtonBox
+          MoveScaled(7.5,0.5,31,3)
+          Picture = Picture["icon:/small/mail"]
+        }
+        { btnemail Button
+          MoveScaled(39.5,0.5,15,3)
+          Text = ("Send")
+          Picture = Picture["icon:/32/mail"]
+        }
+        { lblsecond2 Label
+          MoveScaled(0,0.5,7,3)
+          Border = Border.Plain
+          Text = ("E-Mail")
+        }
       }
     }
   }

@@ -9,7 +9,10 @@ End
 Public Sub Form_Open()
 
   Dim xalert As String
-  Dim hForm As FmStoreAlert
+  Dim xalcomp As String
+  Dim xdays As String
+
+  Dim hForm1 As FmAutoStore
 
   modGeneralMain.GetFirstValues(ServerSocket1, ServerSocket2)
   modGeneralMain.LoadMainForms(Me, pnltop, pnlleft, Workspace1, pnlright, pnlbottom)
@@ -24,8 +27,16 @@ Public Sub Form_Open()
   xalert = modSettings.ShowSettingFromFIle("InventorySetting/InventoryAlert")
   If xalert Then
     If xalert = "UnderStock" Then
-      hForm = New FmStoreAlert(xalert)
-      modWorkSpace.Add(hForm)
+      modWorkSpace.Add(fmStoreAlert)
+    Else If xalert = "StockRequest" Then
+      xalcomp = modSettings.ShowSettingFromFIle("InventorySetting/RequestAlertComp")
+      xdays = modSettings.ShowSettingFromFIle("InventorySetting/RequestAlertDays")
+      If xdays Then
+        hForm1 = New FmAutoStore(xalcomp, CInt(xdays))
+      Else
+        hForm1 = New FmAutoStore(xalcomp, 7)
+      Endif
+      modWorkSpace.Add(hForm1)
     Else
       modDashBoard.GetAutoExpiryAlert(xalert)
     Endif

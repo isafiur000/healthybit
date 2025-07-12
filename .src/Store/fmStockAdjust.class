@@ -3,6 +3,8 @@
 Private $rData As Result
 Private $aMyFields As String[]
 
+Private $stockNoLst As Long[]
+
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
@@ -210,10 +212,16 @@ Public Sub chksave_Click()
 
   If chksave.Value Then
     If cmbmedicine.Text And If cmbbatch.Text Then
-      SaveEntry()
-      ShowTransferGrid()
-      BlankAllBox()
-      cmbroute.SetFocus
+      If txtstockno.Value And If $stockNoLst.Exist(txtstockno.Value) = False Then
+        SaveEntry()
+        ShowTransferGrid()
+        BlankAllBox()
+        cmbroute.SetFocus
+      Else
+        Message.Warning("Already punched", "OK")
+        BlankAllBox()
+        cmbroute.SetFocus
+      Endif
     Endif
   Endif
 
@@ -284,6 +292,13 @@ Private Sub ShowTransferGrid()
   End With
   txtcomptot.Value = Round(modGridView.SumGridAmountDoublet(GridView1, 6, 7), -2)
   txtcurtot.Value = Round(modGridView.SumGridAmountDoublet(GridView1, 6, 8), -2)
+
+  $stockNoLst = New Long[]
+  If $rData.Available Then
+    For Each $rData
+      $stockNoLst.Add($rData["fldstockno"])
+    Next
+  Endif
 
 End
 

@@ -888,21 +888,27 @@ Public Sub mnupendinginvo_Click()
   Dim res As Result
   Dim sInvList As String[]
 
-  If cmbstate.Text = "Completed" Then
-    For Row = 0 To GridView1.Rows.Count - 1
+  For Row = 0 To GridView1.Rows.Count - 1
+    ClearSubInputs()
+    sInvList = New String[]
+    res = modDatabase.$myConn.Exec("select fldbillno from tblpatbilldetail where fldencounterval=&1 and fldbankname=&2 and fldchequeno=&3 and fldbillno not in(select fldbillno from tblbillupload)", GridView1[Row, 2].Text, GridView1[Row, 1].Text, GridView1[Row, 0].Text)
+    If res.Available Then
+      For Each res
+        sInvList.Add(res["fldbillno"])
+      Next
+      AutoUploadClaimDocs(GridView1[Row, 0].Text, sInvList, True)
+    Endif
+  Next
 
-      ClearSubInputs()
-      sInvList = New String[]
-      res = modDatabase.$myConn.Exec("select fldbillno from tblpatbilldetail where fldencounterval=&1 and fldbankname=&2 and fldchequeno=&3 and fldbillno not in(select fldbillno from tblbillupload)", GridView1[Row, 2].Text, GridView1[Row, 1].Text, GridView1[Row, 0].Text)
-      If res.Available Then
-        For Each res
-          sInvList.Add(res["fldbillno"])
-        Next
-        AutoUploadClaimDocs(GridView1[Row, 0].Text, sInvList, True)
-      Endif
+End
 
-    Next
-  Endif
+Public Sub mnupendingdocs_Click()
+
+  Dim Row As Integer
+
+  For Row = 0 To GridView1.Rows.Count - 1
+    BulkPendingUploadDocs(GridView1[Row, 0].Text, GridView1[Row, 1].Text, GridView1[Row, 2].Text)
+  Next
 
 End
 
@@ -1004,6 +1010,34 @@ Private Sub AutoUploadDocuments(sClaim As String, encid As String, sMessage As B
       If Exist(xFilePath) Then
         Inc Application.Busy
         aOutPath = modClaimAPI.UploadImagesFilesClaimServerHI(sClaim, xFilePath, sMessage, modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory))
+        Dec Application.Busy
+        If aOutPath Then
+          resx = modDatabase.$myConn.Edit("tblpatreport", "fldid=&1", res["fldid"])
+          resx["fldflag"] = True
+          resx.Update
+        Endif
+      Endif
+    Next
+  Endif
+
+End
+
+Private Sub BulkPendingUploadDocs(sClaim As String, sAccount As String, encid As String)
+
+  Dim res As Result
+  Dim xFilePath As String
+  Dim aOutPath As String
+  Dim resx As Result
+
+  res = modDatabase.$myConn.Exec("select fldid from " & $tblpatreport & " where fldencounterval like &1 and (fldflag=&2 or fldflag IS NULL) and (flvisible=&3 or flvisible IS NULL) and fldhashcode=&4", encid, False, "Visible", sAccount & "|" & sClaim)
+  If res.Available Then
+    For Each res
+      aOutPath = ""
+      xFilePath = ""
+      xFilePath = modImage.GetBlobFileData(res["fldid"], $tblpatreport)
+      If Exist(xFilePath) Then
+        Inc Application.Busy
+        aOutPath = modClaimAPI.UploadImagesFilesClaimServerHI(sClaim, xFilePath, False, modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory))
         Dec Application.Busy
         If aOutPath Then
           resx = modDatabase.$myConn.Edit("tblpatreport", "fldid=&1", res["fldid"])
