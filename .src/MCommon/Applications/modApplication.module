@@ -141,6 +141,9 @@ Public Function OptionalAppList() As String[]
   If System.Exist("streamer") = False Then
     xx.Add("streamer")
   Endif
+  If System.Exist("fswebcam") = False Then
+    xx.Add("fswebcam")
+  Endif
   If System.Exist("gst-launch-1.0") = False Then
     xx.Add("gstreamer1.0-tools")
   Endif

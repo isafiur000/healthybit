@@ -1,16 +1,18 @@
 ' Gambas class file
 
 Private $sCompId As String
+Private $colmName As String
+Private $sWaitDay As Integer
 Private $dt1 As Date
 Private $dt2 As Date
 
 Private $xVar As Variant[]
 Private sTime As Date
-Private $sWaitDay As Integer
 
-Public Sub _new(sCompID As String, sDays As Integer)
+Public Sub _new(sCompID As String, sColumnName As String, sDays As Integer)
 
   $sCompId = sCompID
+  $colmName = sColumnName
   $sWaitDay = sDays
 
 End
@@ -57,7 +59,7 @@ Private Sub ShowStoreRequestMedSurg(CompId As String, dt1 As Date, dt2 As Date)
   Dim xcurr As Float
   Dim xnew As Float
 
-  sql = "select flditem,SUM(fldqtydisp-fldqtyret) as qty from tblpatdosing where fldtime>=&1 and fldtime<=&2 and fldsave_order=&3 and fldcomp like &4 GROUP BY flditem"
+  sql = "select flditem,SUM(fldqtydisp-fldqtyret) as qty from tblpatdosing where fldtime>=&1 and fldtime<=&2 and fldsave_order=&3 and " & $colmName & " like &4 GROUP BY flditem"
   res = modDatabase.$syConn.Exec(sql, dt1, dt2, True, compid)
 
   modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory).Value = 0

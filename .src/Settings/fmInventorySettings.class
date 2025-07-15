@@ -8,6 +8,7 @@ Public Sub Form_Open()
   cmbserialclose.List = ["OnSave", "FormClose", "None"]
   cmbstockalert.List = ["UnderStock", "StockRequest", "Expired", "Expire(1month)", "Expire(3month)"]
   cmbrequest.List = modBasic.$AllCompPerList
+  cmbalertformat.List = ["fldcomp", "fldcomp_disp"]
 
   cmbautoup.List = ["Enable", "Disable"]
   cmbsales.List = ["Manual", "FEFO"]
@@ -135,6 +136,7 @@ Private Sub ShowGeneralSettings()
   If modSettings.ShowSettingFromFIle("InventorySetting/RequestAlertDays") Then
     txtrequest.Value = CInt(modSettings.ShowSettingFromFIle("InventorySetting/RequestAlertDays"))
   Endif
+  cmbalertformat.Text = modSettings.ShowSettingFromFIle("InventorySetting/RequestAlertFormat")
 
   cmbserialopen.Text = modSettings.ShowSettingFromFIle("InventorySetting/ShowStorageLocation")
   cmbserialclose.Text = modSettings.ShowSettingFromFIle("InventorySetting/HideStorageLocation")
@@ -208,6 +210,7 @@ Public Sub btnrequest_Click()
   If txtrequest.Value Then
     modSettings.SaveSettingsToFile("InventorySetting/RequestAlertDays", CStr(txtrequest.Value))
   Endif
+  modSettings.SaveSettingsToFile("InventorySetting/RequestAlertFormat", cmbalertformat.Text)
   Balloon.Info(("Information saved"), btnrequest)
   Balloon.Delay = modBasic.$BalloonDelay
 

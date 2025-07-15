@@ -509,6 +509,7 @@ End
 Public Sub cmbmedicine_GotFocus()
 
   Dim xList As String[]
+  Dim xVar As Variant
 
   If Not cmbroute.Text Then
     cmbroute.SetFocus
@@ -516,11 +517,13 @@ Public Sub cmbmedicine_GotFocus()
     If Not cmbmedicine.Text Then
       ' xList = GetReturnItemList()
       xList = GetReturnMedicineString(Trim(txtbill.Text), cmbroute.text)
-      If xList Then
-        ' cmbmedicine.Text = GridViewNew("Select Particular", xList, False, cmbmedicine, GridView1.Height)
-        $xRetnIndex = PharmGridList("Select Particulars", "PharmReturn", "Generic", xList, Panel7, GridView1.Height)
+      ' cmbmedicine.Text = GridViewNew("Select Particular", xList, False, cmbmedicine, GridView1.Height)
+      xVar = PharmGridList("Select Particulars", "PharmReturn", "Generic", xList, Panel7, GridView1.Height)
+      If xVar Then
+        $xRetnIndex = xVar
         ShowItemParams($xRetnIndex)
       Endif
+
       txtqty.SetFocus
     Endif
   Endif
@@ -540,14 +543,14 @@ Private Sub ShowItemParams(sIndex As Long)
     If res1.Available Then
       cmbbatch.Text = res1["fldbatch"]
       lbldate.Value = res1["fldexpiry"]
-      If res["fldcost"] Then
-        txtcost.Value = res["fldcost"]
+      If res1["fldcost"] Then
+        txtcost.Value = res1["fldcost"]
       Else
         txtcost.Value = 0
       Endif
-      txtsell.Value = res["fldsellpr"]
-      If res["fldmrp"] Then
-        txtmrp.Value = res["fldmrp"]
+      txtsell.Value = res1["fldsellpr"]
+      If res1["fldmrp"] Then
+        txtmrp.Value = res1["fldmrp"]
       Else
         txtmrp.Value = 0
       Endif

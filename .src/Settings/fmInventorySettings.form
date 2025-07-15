@@ -90,19 +90,24 @@
       Picture = Picture["icon:/small/apply"]
     }
     { cmbrequest ComboBox
-      MoveScaled(44,25,22,3)
+      MoveScaled(50,25,16,3)
+      ToolTip = ("Department to monitor")
     }
     { Label16 Label
-      MoveScaled(1,25,34,3)
+      MoveScaled(1,25,27,3)
       Border = Border.Plain
-      Text = ("Store Request Alert (Days)")
+      Text = ("Store Request Alert Params")
     }
     { txtrequest ValueBox
-      MoveScaled(36,25,7,3)
+      MoveScaled(44,25,5,3)
+      ToolTip = ("Number of days to consider")
     }
     { btnrequest ToolButton
       MoveScaled(67,25,3.125,3)
       Picture = Picture["icon:/small/apply"]
+    }
+    { cmbalertformat ComboBox
+      MoveScaled(29,25,14,3)
     }
     Index = 1
     Text = ("Out Order")

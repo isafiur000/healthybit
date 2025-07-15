@@ -646,6 +646,7 @@ Public Sub btnOK_Click()
   If $ImgPath Then
     modImage.InsertPatientImage("Patient", Trim(txtpatno.Text), $ImgPath)
   Endif
+
   Wait
   If txtencounter.Text Then
     If txtreference.Text = "Claim Code" Then
@@ -2479,8 +2480,23 @@ Private Sub GetIMISDataAPI(xfile As String)
       xcredamt = hCElig.GetAllowedAmt()
       xpayval = hCElig.GetCopayValue()
       xpayType = hCElig.PatientPayType()
+      If Not xdistrict Then
+        xdistrict = hCElig.GetPatientDistrict()
+      Endif
+      If Not xfirserv Then
+        xfirserv = hCElig.GetPatientFirstService()
+      Endif
+      If Not ximage Then
+        ximage = hCElig.GetPatientImage()
+      Endif
     Endif
     Dec Application.Busy
+
+    If Exist(ximage) Then
+      If modBasic.$RegistSaveApiImage = "Yes" Then
+        $ImgPath = ximage
+      Endif
+    Endif
 
     If xname Then
       xallow = True
@@ -2824,6 +2840,12 @@ Private Sub GetSSFDataAPI(xfile As String)
     Endif
 
     Dec Application.Busy
+
+    If Exist(ximage) Then
+      If modBasic.$RegistSaveApiImage = "Yes" Then
+        $ImgPath = xpath
+      Endif
+    Endif
 
     If xname Then
       xallow = True

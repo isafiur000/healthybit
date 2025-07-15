@@ -508,12 +508,16 @@ Public Sub GetWebCamSnapShot(strPath As String, sDevice As String)
   Else
     xdevice = "/dev/v4l/by-id/" & Dir("/dev/v4l/by-id", "*")[0]
   Endif
-  If System.Exist("streamer") = True Then
-    arcmd = ["streamer", "-c", xdevice, "-o", strPath]
+  If System.Exist("fswebcam") = True Then
+    If modBasic.$CamImageSize Then
+      arcmd = ["fswebcam", "-d", xdevice, "-r", modBasic.$CamImageSize, strPath]
+    Else
+      arcmd = ["fswebcam", "-d", xdevice, strPath]
+    Endif
     modBasic.DebugString("Execute " & arcmd.Join(Space(1)))
     Exec arcmd Wait
   Else
-    modApplSub.InstallSelectedApplication(["streamer"])
+    modApplSub.InstallSelectedApplication(["fswebcam"])
   Endif
 
 End

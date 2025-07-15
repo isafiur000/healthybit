@@ -35,7 +35,7 @@ Public Sub btnOpen_Click()
   Dialog.Filter = ["*.jpg;*.jpeg;*.png;*.bmp", "Picture files"]
   If Dialog.OpenFile() Then Return
   PictureBox1.Tag = Dialog.Path
-  PictureBox1.Image = Image.Load(Dialog.Path)
+  Try PictureBox1.Image = Image.Load(Dialog.Path)
 
 End
 
@@ -50,26 +50,15 @@ End
 
 Public Sub btnedit_Click()
 
-  Dim res As Result
   Dim sPath As String
 
   If PictureBox1.Tag Then
     sPath = PictureBox1.Tag
-    Inc Application.Busy
-    res = modDatabase.$myConn.Edit("tblpersonimage", "fldcateg=&1 and fldname=&2", $categ, $imgName)
-    If res.Available = False Then
-      modImage.InsertPatientImage($categ, $imgName, PictureBox1.Tag)
-    Else
-      res["fldpic"] = File.Load(sPath)
-      res["fldlink"] = ""
-      res["flduserid"] = modBasic.$lbluser
-      res["fldcomp"] = modBasic.$compID
-      res["flduptime"] = Now()
-      res.Update()
+    If Exist(sPath) Then
+      modImage.UpdatePatientImage($categ, $imgName, sPath)
+      Balloon.Info(("Information updated"), btnedit)
+      Balloon.Delay = modBasic.$BalloonDelay
     Endif
-    Dec Application.Busy
-    Balloon.Info(("Information updated"), btnedit)
-    Balloon.Delay = modBasic.$BalloonDelay
   Endif
 
 End
