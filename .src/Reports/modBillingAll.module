@@ -7,6 +7,8 @@ Private $ProgressBar1 As ProgressBar
 Private Function GetLockString() As String
 
   Dim xvarsql As String
+  Dim compLst As String[]
+  Dim i As Integer
 
   If $InvLockLocation Then
     xvarsql = db.Subst(" and fldcomp like &1", $InvLockLocation)
@@ -18,6 +20,13 @@ Private Function GetLockString() As String
         If modBasic.$ViewLockInvoice = "User" Then
           xvarsql = db.Subst(" and flduserid like &1", modBasic.$lbluser)
           $FootComment = modBasic.$lbluser
+        Else If modBasic.$ViewLockInvoice = "Branch" Then
+          compLst = modBasic.$branchList.Copy()
+          For i = 0 To compLst.Count - 1
+            compLst[i] = "'" & compLst[i] & "'"
+          Next
+          xvarsql = " and fldcomp in(" & compLst.Join(",") & ")"
+          $FootComment = modBasic.$branch
         Else If modBasic.$ViewLockInvoice = "Location" Then
           xvarsql = db.Subst(" and fldcomp like &1", modBasic.$compID)
           $FootComment = modBasic.$compID
@@ -922,6 +931,7 @@ Public Function GetInvoiceReportBillingRangeGroupDetail($BillingReport As CRepor
         sUser = modBasic.$lbluser
         sComp = "%"
         $FootComment = modBasic.$lbluser
+      Else If modBasic.$ViewLockInvoice = "Branch" Then
       Else If modBasic.$ViewLockInvoice = "Location" Then
         sUser = "%"
         sComp = modBasic.$compID
@@ -1261,6 +1271,7 @@ Public Function GetInvoiceReportBillingRangeGroupBrief($BillingReport As CReport
         sUser = modBasic.$lbluser
         sComp = "%"
         $FootComment = modBasic.$lbluser
+      Else If modBasic.$ViewLockInvoice = "Branch" Then
       Else If modBasic.$ViewLockInvoice = "Location" Then
         sUser = "%"
         sComp = modBasic.$compID
@@ -1681,6 +1692,7 @@ Public Function GetInvoiceReportBillingRangeLocation($BillingReport As CReportHT
         sUser = modBasic.$lbluser
         sComp = "%"
         $FootComment = modBasic.$lbluser
+      Else If modBasic.$ViewLockInvoice = "Branch" Then
       Else If modBasic.$ViewLockInvoice = "Location" Then
         sUser = "%"
         sComp = modBasic.$compID

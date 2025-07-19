@@ -70,17 +70,17 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label15 Label
-      MoveScaled(1,12,21,3)
+      MoveScaled(1,16,21,3)
       Border = Border.Plain
       Text = ("Prefix for Sample ID")
     }
     { btnsamprefix Button
-      MoveScaled(50,12,11,3)
+      MoveScaled(50,16,11,3)
       Text = ("Update")
       Picture = Picture["icon:/small/apply"]
     }
     { txtsamprefix TextBox
-      MoveScaled(23,12,17,3)
+      MoveScaled(23,16,17,3)
       ToolTip = ("Select if auto increasing integer is generated on double click of sample ID textbox")
     }
     { Label42 Label
@@ -112,29 +112,43 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label51 Label
-      MoveScaled(1,20,21,3)
+      MoveScaled(1,24,21,3)
       Border = Border.Plain
       Text = ("Archiving Comment")
     }
     { cmbarchive ComboBox
-      MoveScaled(23,20,17,3)
+      MoveScaled(23,24,17,3)
     }
     { btnarchive Button
-      MoveScaled(50,20,11,3)
+      MoveScaled(50,24,11,3)
       Text = ("Update")
       Picture = Picture["icon:/small/apply"]
     }
     { Label59 Label
-      MoveScaled(1,16,21,3)
+      MoveScaled(1,20,21,3)
       Border = Border.Plain
       Text = ("Prefix for Radiology")
     }
     { txtradioprefix TextBox
-      MoveScaled(23,16,17,3)
+      MoveScaled(23,20,17,3)
       ToolTip = ("Select if auto increasing integer is generated on double click of sample ID textbox")
     }
     { btnradioprefix Button
-      MoveScaled(50,16,11,3)
+      MoveScaled(50,20,11,3)
+      Text = ("Update")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label69 Label
+      MoveScaled(1,12,21,3)
+      Border = Border.Plain
+      Text = ("Length of Sample ID")
+    }
+    { txtsamplength SpinBox
+      MoveScaled(23,12,12,3)
+      MaxValue = 20
+    }
+    { btnsamplength Button
+      MoveScaled(50,12,11,3)
       Text = ("Update")
       Picture = Picture["icon:/small/apply"]
     }
@@ -523,39 +537,51 @@
       Text = ("Display Text")
     }
     { Label50 Label
-      MoveScaled(1,27,14,3)
+      MoveScaled(1,30,14,3)
       Border = Border.Plain
       Text = ("Print Count")
     }
     { txtprintcount ValueBox
-      MoveScaled(16,27,12,3)
+      MoveScaled(16,30,12,3)
     }
     { btnprintcount ToolButton
-      MoveScaled(29,27,3,3)
+      MoveScaled(29,30,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label66 Label
-      MoveScaled(1,31,14,3)
+      MoveScaled(1,34,14,3)
       Border = Border.Plain
       Text = ("Multi Print")
     }
     { cmbmultipdf ComboBox
-      MoveScaled(16,31,16,3)
+      MoveScaled(16,34,16,3)
     }
     { btnmultipdf ToolButton
-      MoveScaled(33,31,3,3)
+      MoveScaled(33,34,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label67 Label
-      MoveScaled(1,35,14,3)
+      MoveScaled(1,38,14,3)
       Border = Border.Plain
       Text = ("Que No Based")
     }
     { cmblabque ComboBox
-      MoveScaled(16,35,16,3)
+      MoveScaled(16,38,16,3)
     }
     { btnlabque ToolButton
-      MoveScaled(33,35,3,3)
+      MoveScaled(33,38,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label70 Label
+      MoveScaled(1,24,13,3)
+      Border = Border.Plain
+      Text = ("Base64 Image")
+    }
+    { cmbbase64img ComboBox
+      MoveScaled(15,24,11,3)
+    }
+    { btnbase64img ToolButton
+      MoveScaled(26,24,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     Index = 4

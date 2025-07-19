@@ -269,6 +269,18 @@ Public Sub mnudepcredit_Click()
 
 End
 
+Public Sub mnubranches_Click()
+
+  Dim hForm As FmAddVarTwo
+  Dim yy As String[]
+
+  yy = New String[]
+  hForm = New FmAddVarTwo("fldbranch", "fldcompid", "tblhospbranch", yy, modBasic.$AllCompList)
+  hForm.Tag = "Hospital Branch"
+  hForm.ShowModal
+
+End
+
 Public Sub mnuappset_Click()
 
   fmAppSetting.Close

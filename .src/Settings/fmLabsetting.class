@@ -72,6 +72,7 @@ Public Sub Form_Open()
   cmbmultipdf.List = ["Continuous", "Separate"]
   cmbbarprint.List = ["Section", "TestName", "BillItem", "Section/BillItem", "None"]
   cmblabque.List = ["Department"]
+  cmbbase64img.List = ["Yes", "No"]
 
   cmbintfacetype.List = ["sqlite3", "mysql", "postgresql", "odbc", "http"]
   cmbintfaceunit.List = ["Metric", "SI"]
@@ -125,6 +126,9 @@ Private Sub GeneralSetting()
   txtsamprefix.Text = modSettings.ShowSettingFromFIle("Laboratory/SampleNoPrefix")
   txtradioprefix.Text = modSettings.ShowSettingFromFIle("Radiology/SamplePrefix")
   cmbarchive.Text = modSettings.ShowSettingFromFIle("Laboratory/ArchivingComment")
+  If modSettings.ShowSettingFromFIle("Laboratory/SampleNoLength") Then
+    txtsamplength.Value = CInt(modSettings.ShowSettingFromFIle("Laboratory/SampleNoLength"))
+  Endif
 
   cmbcompsample.Text = modSettings.ShowSettingFromFIle("Laboratory/FixSender_Sampling")
   cmbfixfrom.Text = modSettings.ShowSettingFromFIle("Laboratory/SenderType_Sampling")
@@ -166,6 +170,17 @@ Public Sub btnsampauto_Click()
   modBasic.$LabAutoSampNo = cmbsampauto.Text
   Balloon.Info(("Information saved"), btnsampauto)
   Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnsamplength_Click()
+
+  If txtsamplength.Value Then
+    modSettings.SaveSettingsToFile("Laboratory/SampleNoLength", CStr(txtsamplength.Value))
+    modBasic.$LabSampNoLength = txtsamplength.Value
+    Balloon.Info(("Information saved"), btnsamplength)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
 
 End
 
@@ -738,6 +753,7 @@ Private Sub SampleBarCodeSet()
     txtbarwhite.Value = CInt(modSettings.ShowSettingFromFIle("SampleBarcode/WhiteSpace"))
   Endif
   cmbmultipdf.Text = modSettings.ShowSettingFromFIle("SampleBarcode/PDF_MultiPage")
+  cmbbase64img.Text = modSettings.ShowSettingFromFIle("SampleBarcode/UseBase64Image")
 
 End
 
@@ -865,6 +881,15 @@ Public Sub btnmultipdf_Click()
   modSettings.SaveSettingsToFile("SampleBarcode/PDF_MultiPage", cmbmultipdf.Text)
   modBasic.$LabBarMultiPrint = cmbmultipdf.Text
   Balloon.Info(("Information updated"), btnmultipdf)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnbase64img_Click()
+
+  modSettings.SaveSettingsToFile("SampleBarcode/UseBase64Image", cmbbase64img.Text)
+  modBasic.$LabBase64Image = cmbbase64img.Text
+  Balloon.Info(("Information updated"), btnbase64img)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

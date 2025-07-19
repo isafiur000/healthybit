@@ -4,9 +4,11 @@ Private $sType As String
 Private $sHead As String[]
 Private $sPath As String
 Private $hProcess As Process
+Private $isOldVersion As Boolean
 
 Private $Columns As String[]
 Private $IndepCol As String[]
+Private $DateCol As String[]
 
 Private $imgPath As String
 Private $libprocess As String[]
@@ -112,6 +114,19 @@ Public Sub Form_Open()
 
 End
 
+Private Sub GetVersion()
+
+  Dim xver As String
+
+  xver = modApplication.DistributionVendor()
+  If xver = "Ubuntu22.04" Then
+    $isOldVersion = True
+  Else
+    $isOldVersion = False
+  Endif
+
+End
+
 ''================================= Load data ===============
 Public Sub btndatainit_Click()
 
@@ -143,13 +158,33 @@ Public Sub btndataload_Click()
   Dim aHead As String[]
   Dim i As Integer
 
+  Dim dateLst As String[]
+  Dim j As Integer
+  Dim xcolm As String
+
   $Columns = $sHead.Copy()
+  dateLst = SelectListView("Columns with DateTime Values", $Columns, False)
+
   aHead = $sHead.Copy()
   For i = 0 To aHead.Count - 1
     aHead[i] = "'" & aHead[i] & "'"
   Next
-  cmdLst.Add("orig_data = pandas.read_csv(\"" & $sPath & "\", sep = '" & "\\" & "t" & "')")
-  cmdLst.Add("orig_data.columns = " & "[" & aHead.Join(", ") & "]")
+  cmdLst.Add("columns = " & "[" & aHead.Join(", ") & "]")
+  If dateLst And If dateLst.Count Then
+    $DateCol = dateLst
+    For j = 0 To dateLst.Count - 1
+      dateLst[j] = "'" & dateLst[j] & "'"
+    Next
+    cmdLst.Add("datecolm = " & "[" & dateLst.Join(", ") & "]")
+    cmdLst.Add("orig_data = pandas.read_csv(\"" & $sPath & "\", sep = '" & "\\" & "t" & "', names = columns, parse_dates = datecolm)")
+  Else
+    cmdLst.Add("orig_data = pandas.read_csv(\"" & $sPath & "\", sep = '" & "\\" & "t" & "', names = columns)")
+  Endif
+  TerminalInputList(cmdLst)
+
+  For Each xcolm In $Columns
+    cmdLst.Add(Subst("orig_data['&1'].mask(orig_data['&1'] == '__', numpy.nan, inplace=True)", xcolm))
+  Next
   cmdLst.Add("orig_data")
   TerminalInputList(cmdLst)
   cmbdependent.List = $Columns
@@ -239,6 +274,22 @@ Public Sub btndropcolumns_Click()
     xcmd = "orig_data = orig_data.drop([" & xList.Join(", ") & "], axis = 1)"
     TerminalInput(xcmd)
     cmbdependent.List = $Columns
+  Endif
+
+End
+
+Public Sub btnfloadtype_Click()
+
+  Dim xList As String[]
+  Dim cmdLst As New String[]
+  Dim xcolm As String
+
+  xList = SelectListView("Convert Columns to Float", $Columns, False)
+  If xList And If xList.Count Then
+    For Each xcolm In xList
+      cmdLst.Add(Subst("orig_data['&1'] = orig_data['&1'].astype(float)", xcolm))
+    Next
+    TerminalInputList(cmdLst)
   Endif
 
 End
@@ -483,7 +534,11 @@ Private Sub GetPreprocessing()
       categLst.Add("OrdinalEncoder()")
     Else If cmbencoding.Text = "OneHotEncoder" Then
       $libprocess.Add("from sklearn.preprocessing import OneHotEncoder")
-      categLst.Add("OneHotEncoder(sparse=False, drop='first')")
+      If $isOldVersion = True Then
+        categLst.Add("OneHotEncoder(sparse=False, drop='first')")
+      Else
+        categLst.Add("OneHotEncoder(sparse_output=False, drop='first')")
+      Endif
     Endif
   Endif
   If categLst.Count Then
@@ -1060,10 +1115,10 @@ Public Sub btnshowscatterplot_Click()
       $imgPath = Temp() & ".dot"
       If cmbmodel.Text = "DecisionTree Regression" Then
         cmdLst.Add("tree.plot_tree(tree_reg)")
-        cmdLst.Add(Subst("dot_data = tree.export_graphviz(tree_reg, out_file='" & $imgPath & "', feature_names = list(X_train.columns))", $imgPath))
+        cmdLst.Add(Subst("dot_data = tree.export_graphviz(tree_reg, out_file='" & $imgPath & "', feature_names = list(X_data.columns))", $imgPath))
       Else If cmbmodel.Text = "DecisionTree Classifier" Then
         cmdLst.Add("tree.plot_tree(tree_clf)")
-        cmdLst.Add(Subst("dot_data = tree.export_graphviz(tree_clf, out_file='" & $imgPath & "', feature_names = list(X_train.columns))", $imgPath))
+        cmdLst.Add(Subst("dot_data = tree.export_graphviz(tree_clf, out_file='" & $imgPath & "', feature_names = list(X_data.columns))", $imgPath))
       Endif
       TerminalInputList(cmdLst)
   End Select
