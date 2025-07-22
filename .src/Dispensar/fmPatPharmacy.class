@@ -801,8 +801,6 @@ Private Sub BlankDosingBox()
   txtday.Enabled = True
   txtinventory.Value = 0
   txtitemrate.Value = 0
-  $HideErr = False
-  $HideDos = False
   txtitemrate.Background = Color.Default
   txtinventory.Background = Color.Default
   txtlastdispdate.Text = ""
@@ -1067,6 +1065,8 @@ Public Sub cmbmedicine_GotFocus()
         SHowInventoryStatus()
 
       Endif
+      $HideErr = False
+      $HideDos = False  ''fresh pass to textboxes
 
       If Not cmbmedicine.Text Then
         txtdose.SetFocus
@@ -1197,9 +1197,12 @@ Public Sub txtdose_GotFocus()
         txtdose.Enabled = False
         cmbfreq.Enabled = False
         txtday.Enabled = False
-        If CheckDuplicate() = True Then
-          txtqty.SetFocus
-          txtqty.SelectAll
+        If $HideDos = False Then  ''fresh pass to textboxes
+          $HideDos = True
+          If CheckDuplicate() = True Then
+            txtqty.SetFocus
+            txtqty.SelectAll
+          Endif
         Endif
 
       Else
@@ -1207,14 +1210,15 @@ Public Sub txtdose_GotFocus()
           txtdose.Enabled = False
           cmbfreq.Enabled = False
           txtday.Enabled = False
-          If $HideDos = False Then
+          If $HideDos = False Then  ''fresh pass to textboxes
             $HideDos = True
             CheckLastDispensing(cmbmedicine.Text)
+            If CheckDuplicate() = True Then
+              txtqty.SetFocus
+              txtqty.SelectAll
+            Endif
           Endif
-          If CheckDuplicate() = True Then
-            txtqty.SetFocus
-            txtqty.SelectAll
-          Endif
+
         Else
           txtdose.Enabled = True
           cmbfreq.Enabled = True
@@ -1225,14 +1229,14 @@ Public Sub txtdose_GotFocus()
             cmbfreq.Text = modMedDosing.RecommendedFrequencyDrug(xYear, cmbmedicine.Text)
           Endif
 
-          If $HideDos = False Then
+          If $HideDos = False Then  ''fresh pass to textboxes
             $HideDos = True
             CheckLastDispensing(cmbmedicine.Text)
+            If CheckDuplicate() = True Then
+              txtdose.SelectAll
+            Endif
           Endif
 
-          If CheckDuplicate() = True Then
-            txtdose.SelectAll
-          Endif
         Endif ''if dose regimen enabled
       Endif  ''suture/surg/med
 
@@ -1332,7 +1336,7 @@ Public Sub cmbfreq_KeyRelease()
   modFillContainer.AutoFillComboBox(cmbfreq)
   modFillContainer.RestrictComboToContent(cmbfreq)
   If Key.Code = Key.Down Then
-    $HideErr = True
+    $HideErr = False
   Endif
 
 End

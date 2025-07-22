@@ -956,12 +956,12 @@ Private Sub BlankDosingBox()
   txtday.Enabled = True
   txtinventory.Value = 0
   txtitemrate.Value = 0
-  $HideDos = False
   txtitemrate.Background = Color.Default
   txtinventory.Background = Color.Default
   txtlastdispdate.Text = ""
   txtlastdispdate.Foreground = Color.Default
   txttotalqty.Value = 0
+  txtpharmacy.Text = modBasic.$BillTargetMedicine
 
 End
 
@@ -3928,6 +3928,7 @@ Public Sub cmbmedicine_GotFocus()
         xList = modStock.FillMedicinesDispensingArrayList(cmbroute.Text, GetBrandGenerricType(), GetPharmTarget(cmbroute.Text), cmbmode.Text)
         cmbmedicine.Text = PharmGridList("Select Particulars", cmbroute.Text, GetBrandGenerricType(), xList, Panel12, TabStrip1.Height)
       Endif
+      $HideDos = False  ''fresh pass to textboxes
 
       If Not cmbmedicine.Text Then
         txtdose.SetFocus
@@ -4033,9 +4034,12 @@ Public Sub txtdose_GotFocus()
         txtdose.Enabled = False
         cmbfreq.Enabled = False
         txtday.Enabled = False
-        If CheckDuplicate() = True Then
-          txtqtymed.SetFocus
-          txtqtymed.SelectAll
+        If $HideDos = False Then  ''fresh pass to textboxes
+          $HideDos = True
+          If CheckDuplicate() = True Then
+            txtqtymed.SetFocus
+            txtqtymed.SelectAll
+          Endif
         Endif
 
       Else
@@ -4048,14 +4052,15 @@ Public Sub txtdose_GotFocus()
           txtdose.Enabled = False
           cmbfreq.Enabled = False
           txtday.Enabled = False
-          If $HideDos = False Then
+          If $HideDos = False Then  ''fresh pass to textboxes
             $HideDos = True
             CheckLastDispensing(cmbmedicine.Text)
+            If CheckDuplicate() = True Then
+              txtqtymed.SetFocus
+              txtqtymed.SelectAll
+            Endif
           Endif
-          If CheckDuplicate() = True Then
-            txtqtymed.SetFocus
-            txtqtymed.SelectAll
-          Endif
+
         Else
           txtdose.Enabled = True
           cmbfreq.Enabled = True
@@ -4066,14 +4071,14 @@ Public Sub txtdose_GotFocus()
             cmbfreq.Text = modMedDosing.RecommendedFrequencyDrug(xYear, cmbmedicine.Text)
           Endif
 
-          If $HideDos = False Then
+          If $HideDos = False Then '''fresh pass to textboxes
             $HideDos = True
             CheckLastDispensing(cmbmedicine.Text)
+            If CheckDuplicate() = True Then
+              txtdose.SelectAll
+            Endif
           Endif
 
-          If CheckDuplicate() = True Then
-            txtdose.SelectAll
-          Endif
         Endif  ''if dose regimen enabled
       Endif ''med/surg/extra
 

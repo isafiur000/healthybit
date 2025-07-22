@@ -284,11 +284,14 @@ Public Sub TabPanel1_Click()
     txthistory.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "History of Illness")
     txthistory.SetFocus
   Else If TabPanel1.Index = 1 Then
+
+  Else If TabPanel1.Index = 2 Then
     ShowPlanningsBoth()
     txtplan.SetFocus
-  Else If TabPanel1.Index = 2 Then
+  Else If TabPanel1.Index = 3 Then
     ShowTelemedSaved()
     txtquery.SetFocus
+  Else If TabPanel1.Index = 4 Then
   Endif
 
 End

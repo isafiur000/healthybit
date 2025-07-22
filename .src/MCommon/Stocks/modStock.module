@@ -173,7 +173,6 @@ Public Function FillMedicinesDispensingComboResult(txtroute As String, BrandOrGe
 
   Dim sql1 As String
   Dim sql2 As String
-  ' Dim comLst As String[]
   Dim xnoncomp As String
   Dim sqlLst As String[]
   Dim i As Integer
@@ -238,27 +237,24 @@ Public Function FillMedicinesDispensingComboResult(txtroute As String, BrandOrGe
 
     Case "oral", "liquid", "fluid", "injection", "resp", "topical", "eye/ear", "anal/vaginal"
       If modBasic.$BillTargetGenericLabel Or If modBasic.$BillTargetBrandLabel Then
-        ' comLst = New String[]
         sqlLst = New String[]
         If modBasic.$BillTargetGenericLabel Then
-          ' comLst.Add(modBasic.$BillTargetGenericLabel)
           If BrandOrGeneric = "Generic" Then '''for generic
             sql1 = "select tblentry.fldstockid as col,tblentry.fldbatch as fldbatch,tblentry.fldexpiry as fldexpiry,tblentry.fldsellpr as fldsellpr,tblentry.fldqty as fldqty,tblentry.fldstockid as stockid from tblentry where tblentry.fldstatus=&1 and tblentry.fldcomp=&8 and tblentry.fldqty>&3 and tblentry.fldstockid in(select tblmedbrand.fldbrandid From tblmedbrand where tblmedbrand.fldactive=&4 and tblmedbrand.flddeflabel=&7 and tblmedbrand.flddrug in(select tbldrug.flddrug From tbldrug where tbldrug.fldroute=&5)" & xstr & ")"
           Else If BrandOrGeneric = "Brand" Then '''for brand
             sql1 = "select tblmedbrand.fldbrand as col,tblentry.fldbatch as fldbatch,tblentry.fldexpiry as fldexpiry,tblentry.fldsellpr as fldsellpr,tblentry.fldqty as fldqty,tblentry.fldstockid as stockid from (tblmedbrand inner join tblentry on tblentry.fldstockid=tblmedbrand.fldbrandid) inner join tbldrug on tblmedbrand.flddrug=tbldrug.flddrug where tblentry.fldstatus=&1 and tblmedbrand.flddeflabel=&7 and tblentry.fldcomp=&8 and tblentry.fldqty>&3 and tblmedbrand.fldactive=&4 and tbldrug.fldroute=&5" & xstr
           Endif
           sqlLst.Add(sql1)
-          xList1 = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec(sql1, 1, xcomp, 0, "Active", txtroute, xbillmode, "Generic", modBasic.$BillTargetGenericLabel, "Brand", modBasic.$BillTargetBrandLabel))
+          xList1 = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select fldbrandid as col from tblmedbrand where flddeflabel=&1", "Generic"))
         Endif
         If modBasic.$BillTargetBrandLabel Then
-          ' comLst.Add(modBasic.$BillTargetBrandLabel)
           If BrandOrGeneric = "Generic" Then '''for generic
             sql2 = "select tblentry.fldstockid as col,tblentry.fldbatch as fldbatch,tblentry.fldexpiry as fldexpiry,tblentry.fldsellpr as fldsellpr,tblentry.fldqty as fldqty,tblentry.fldstockid as stockid from tblentry where tblentry.fldstatus=&1 and tblentry.fldcomp=&{10} and tblentry.fldqty>&3 and tblentry.fldstockid in(select tblmedbrand.fldbrandid From tblmedbrand where tblmedbrand.fldactive=&4 and tblmedbrand.flddeflabel=&9 and tblmedbrand.flddrug in(select tbldrug.flddrug From tbldrug where tbldrug.fldroute=&5)" & xstr & ")"
           Else If BrandOrGeneric = "Brand" Then '''for brand
             sql2 = "select tblmedbrand.fldbrand as col,tblentry.fldbatch as fldbatch,tblentry.fldexpiry as fldexpiry,tblentry.fldsellpr as fldsellpr,tblentry.fldqty as fldqty,tblentry.fldstockid as stockid from (tblmedbrand inner join tblentry on tblentry.fldstockid=tblmedbrand.fldbrandid) inner join tbldrug on tblmedbrand.flddrug=tbldrug.flddrug where tblentry.fldstatus=&1 and tblmedbrand.flddeflabel=&9 and tblentry.fldcomp=&{10} and tblentry.fldqty>&3 and tblmedbrand.fldactive=&4 and tbldrug.fldroute=&5" & xstr
           Endif
           sqlLst.Add(sql2)
-          xList2 = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec(sql2, 1, xcomp, 0, "Active", txtroute, xbillmode, "Generic", modBasic.$BillTargetGenericLabel, "Brand", modBasic.$BillTargetBrandLabel))
+          xList2 = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select fldbrandid as col from tblmedbrand where flddeflabel=&1", "Brand"))
         Endif
 
         xList = New String[]

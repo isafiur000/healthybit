@@ -33,6 +33,9 @@ Public Sub Form_Open()
   modBasic.LoadLargeLists()
   modBasic.CloudAISettings()
 
+  modBasic.$BillTargetGenericLabel = ""
+  modBasic.$BillTargetBrandLabel = ""
+
   If MMain.$SISHAppMode = "HIS" Then
   Else
     mnuextra.Visible = False
