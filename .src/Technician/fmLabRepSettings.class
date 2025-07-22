@@ -1268,7 +1268,7 @@ Private Sub EnterTextData()
   xx = Gridview1.Row
   If Gridview1[Gridview1.Row, 3].Text = "Qualitative" Then
     xType = modFixLab.GetLabTestOptionType(Gridview1[Gridview1.Row, 4].Text)
-    sql = "select fldid,fldsubtest,fldtanswertype,fldreport,fldabnormal,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1"
+    sql = "select fldid,fldsubtest,fldtanswertype,fldreport,fldabnormal,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1" & modLabSub.GetLabRepoOrder("SubTest")
     res = modDatabase.$myConn.Exec(sql, Gridview1[Gridview1.Row, 0].Text)
     If res.Available = False Then
       yqualival = GetQualiRich(Gridview1[Gridview1.Row, 4].Text, Gridview1[Gridview1.Row, 9].RichText, "Test")

@@ -7,6 +7,7 @@ Private $qtyChart As String[]
 Private $amtChart As String[]
 Private $ProgressBar1 As ProgressBar
 Private $SSQLFields As String[]
+Private $PolyCompLst As String[]
 
 Private $ColCount As Integer
 Private $newColumn As String[]
@@ -28,11 +29,22 @@ Public Sub Form_Open()
   cmbuser.Text = "%"
 
   cmbcomp.List = modBasic.$AllCompPerList
-  cmbcomp.Text = "%"
-  If modBasic.$ViewLockVoucher = "Location" Then
-    cmbcomp.Text = modBasic.$compID
-    cmbcomp.Enabled = False
-  Endif
+  $PolyCompLst = New String[]
+  Select modHelpVariable.$LogInCategory
+    Case "Cashier", "Dispensar", "Pharmacist", "Purchase", "Store"
+      If modBasic.$ViewLockVoucher = "Location" Then
+        cmbcomp.Text = modBasic.$compID
+        cmbcomp.Enabled = False
+      Else If modBasic.$ViewLockVoucher = "Branch" Then
+        $PolyCompLst = modBasic.$branchList
+        cmbcomp.List = modBasic.$branchList
+        cmbcomp.Text = "%"
+      Else
+        cmbcomp.Text = "%"
+      Endif
+    Case Else
+      cmbcomp.Text = "%"
+  End Select
 
   dtfir.Value = Now()
   dtlast.Value = Now()
@@ -118,13 +130,31 @@ Private Function ExecuteQuery(xFldList As String[], sItem As String) As Result
   Dim res As Result
   Dim txuser As String
 
+  Dim xcomp As String
+  Dim compLst As String[]
+  Dim i As Integer
+
   If modBasic.$ViewLockInvoice = "User" Then
     txuser = modBasic.$lbluser
   Else
     txuser = "%"
   Endif
 
-  sql = "select " & xFldList.Join(",") & " from tblextrareceipt where fldsave=&1 and fldtime>=&2 and fldtime<=&3 and fldpayername like &4 and flditemname like &5 and flduserid like &6 and fldcomp like &7 and flduserid like &8" & $RepoStr                                                  ''
+  If cmbcomp.Text = "%" Then
+    If $PolyCompLst.Count Then
+      compLst = $PolyCompLst.Copy()
+      For i = 0 To compLst.Count - 1
+        compLst[i] = "'" & compLst[i] & "'"
+      Next
+      xcomp = " and fldcomp in(" & compLst.Join(",") & ")"
+    Else
+      xcomp = ""
+    Endif
+  Else
+    xcomp = " and fldcomp=&7"
+  Endif
+
+  sql = "select " & xFldList.Join(",") & " from tblextrareceipt where fldsave=&1 and fldtime>=&2 and fldtime<=&3 and fldpayername like &4 and flditemname like &5 and flduserid like &6" & xcomp & " and flduserid like &8" & $RepoStr                                                  ''
   res = modDatabase.$syConn.Exec(sql, True, modDate.StartSqlDate(dtfir.value), modDate.EndSqlDate(dtlast.value), cmbpayer.Text, sItem, cmbuser.Text, cmbcomp.Text, txuser)
   Return res
 

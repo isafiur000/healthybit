@@ -256,47 +256,6 @@
     { chkconsult CheckBox
       MoveScaled(94,5,3,3)
     }
-    { btnreport Button
-      MoveScaled(1,41,11,3)
-      Text = ("Search")
-      Picture = Picture["icon:/small/find"]
-    }
-    { Label13 Label
-      MoveScaled(21,41,11.5,3)
-      Font = Font["Underline"]
-      Border = Border.Plain
-      Text = ("Max Allowed")
-    }
-    { Label15 Label
-      MoveScaled(42,41,14,3)
-      Font = Font["Underline"]
-      Border = Border.Plain
-      Text = ("Booked Waiting")
-    }
-    { Label17 Label
-      MoveScaled(65,41,11.5,3)
-      Font = Font["Underline"]
-      Border = Border.Plain
-      Text = ("Booked Regd")
-    }
-    { Label21 Label
-      MoveScaled(86,41,9.5,3)
-      Font = Font["Underline"]
-      Border = Border.Plain
-      Text = ("Valid Regd")
-    }
-    { txtbookdone ValueBox
-      MoveScaled(77,41,7,3)
-      ReadOnly = True
-    }
-    { txtbooked ValueBox
-      MoveScaled(56,41,7,3)
-      ReadOnly = True
-    }
-    { txtmaxquota ValueBox
-      MoveScaled(33,41,7,3)
-      ReadOnly = True
-    }
     { Label22 Label
       MoveScaled(53,1,11,2.75)
       Border = Border.Plain
@@ -318,10 +277,54 @@
       MoveScaled(39,9,5,3)
       Visible = False
     }
-    { txtregd ValueBox
-      MoveScaled(96,41,7,3)
-      Visible = False
-      ReadOnly = True
+    { Panel3 Panel
+      MoveScaled(0,41,102.875,4)
+      { Label13 Label
+        MoveScaled(20,0.5,11.5,3)
+        Font = Font["Underline"]
+        Border = Border.Plain
+        Text = ("Max Allowed")
+      }
+      { txtmaxquota ValueBox
+        MoveScaled(32,0.5,7,3)
+        ReadOnly = True
+      }
+      { Label15 Label
+        MoveScaled(41,0.5,14,3)
+        Font = Font["Underline"]
+        Border = Border.Plain
+        Text = ("Booked Waiting")
+      }
+      { txtbooked ValueBox
+        MoveScaled(55,0.5,7,3)
+        ReadOnly = True
+      }
+      { Label17 Label
+        MoveScaled(64,0.5,11.5,3)
+        Font = Font["Underline"]
+        Border = Border.Plain
+        Text = ("Booked Regd")
+      }
+      { txtbookdone ValueBox
+        MoveScaled(76,0.5,7,3)
+        ReadOnly = True
+      }
+      { Label21 Label
+        MoveScaled(85,0.5,9.5,3)
+        Font = Font["Underline"]
+        Border = Border.Plain
+        Text = ("Valid Regd")
+      }
+      { txtregd ValueBox
+        MoveScaled(95,0.5,7,3)
+        Visible = False
+        ReadOnly = True
+      }
+      { btnreport Button
+        MoveScaled(0.5,0.5,11,3)
+        Text = ("Search")
+        Picture = Picture["icon:/small/find"]
+      }
     }
   }
   { GridView1 GridView

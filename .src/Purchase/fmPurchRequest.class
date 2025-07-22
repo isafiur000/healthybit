@@ -468,10 +468,18 @@ Private Function GetPurOrderReferenceList() As String[]
 
   Dim res As Result
   Dim xx As String[]
+  Dim sCompLst As String[]
+  Dim i As Integer
 
   xx = New String[]
   If modBasic.$ViewLockInventory = "Location" Then
     res = modDatabase.$myConn.Exec("select fldreference,fldsuppname from tblpurorder where fldsave=&1 and fldcomp=&3 GROUP BY fldreference ORDER BY fldtime DESC", True, "Requested", modBasic.$compID)
+  Else If modBasic.$ViewLockInventory = "Branch" Then
+    sCompLst = modBasic.$branchList.Copy()
+    For i = 0 To sCompLst.Count - 1
+      sCompLst[i] = "'" & sCompLst[i] & "'"
+    Next
+    res = modDatabase.$myConn.Exec("select fldreference,fldsuppname from tblpurorder where fldsave=&1 and fldcomp in(" & sCompLst.Join(",") & ") GROUP BY fldreference ORDER BY fldtime DESC", True, "Requested", modBasic.$compID)
   Else If modBasic.$ViewLockInventory = "User" Then
     res = modDatabase.$myConn.Exec("select fldreference,fldsuppname from tblpurorder where fldsave=&1 and flduserid=&3 GROUP BY fldreference ORDER BY fldtime DESC", True, "Requested", modBasic.$lbluser)
   Else
@@ -662,10 +670,18 @@ Private Function GetVerifiedOrderReferenceList() As String[]
 
   Dim res As Result
   Dim xx As String[]
+  Dim sCompLst As String[]
+  Dim i As Integer
 
   xx = New String[]
   If modBasic.$ViewLockInventory = "Location" Then
     res = modDatabase.$myConn.Exec("select fldreference,fldsuppname from tblpurorder where fldstatus=&1 and fldcomp=&2 GROUP BY fldreference ORDER BY fldtime DESC", "Verified", modBasic.$compID)
+  Else If modBasic.$ViewLockInventory = "Branch" Then
+    sCompLst = modBasic.$branchList.Copy()
+    For i = 0 To sCompLst.Count - 1
+      sCompLst[i] = "'" & sCompLst[i] & "'"
+    Next
+    res = modDatabase.$myConn.Exec("select fldreference,fldsuppname from tblpurorder where fldstatus=&1 and fldcomp in(" & sCompLst.Join(",") & ") GROUP BY fldreference ORDER BY fldtime DESC", "Verified", modBasic.$compID)
   Else If modBasic.$ViewLockInventory = "User" Then
     res = modDatabase.$myConn.Exec("select fldreference,fldsuppname from tblpurorder where fldstatus=&1 and flduserid=&2 GROUP BY fldreference ORDER BY fldtime DESC", "Verified", modBasic.$lbluser)
   Else

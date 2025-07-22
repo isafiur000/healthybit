@@ -311,12 +311,29 @@ Public Sub cmbrate_Click()
 
 End
 
+Public Sub mnusorting_Click()
+
+  If mnusorting.Checked = True Then
+    mnusorting.Checked = False
+  Else If mnusorting.Checked = False Then
+    mnusorting.Checked = True
+  Endif
+  ShowTransferGrid()
+
+End
+
 Private Sub ShowTransferGrid()
 
   Dim Column As Integer
   Dim fld As ResultField
+  Dim xorder As String
 
-  $rData = modDatabase.$myConn.Exec("select fldid,fldcategory,fldstockno,fldstockid,fldstockno,fldstockno,fldqty,fldcost,fldsuppname,fldreference from tblstockreturn where fldcomp=&1 and fldsave=&2", modBasic.$compID, False)
+  If mnusorting.Checked = True Then
+    xorder = " ORDER BY fldstockid ASC"
+  Else
+    xorder = " ORDER BY fldid DESC"
+  Endif
+  $rData = modDatabase.$myConn.Exec("select fldid,fldcategory,fldstockno,fldstockid,fldstockno,fldstockno,fldqty,fldcost,fldsuppname,fldreference from tblstockreturn where fldcomp=&1 and fldsave=&2" & xorder, modBasic.$compID, False)
 
   GridView1.Clear
   GridView1.Columns.Count = $rData.Fields.Count

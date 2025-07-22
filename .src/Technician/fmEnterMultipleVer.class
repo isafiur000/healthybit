@@ -654,6 +654,12 @@ Public Sub Form_Open()
 
 End
 
+Public Sub Form_Activate()
+
+  DIsplayTextForm()
+
+End
+
 Public Sub Form_Close()
 
   modGeneralMain.DisableJavaScript()
@@ -715,12 +721,6 @@ End
 Public Sub btnrefresh_Click()
 
   modSettings.SaveSettingsToFile("MultipleTextBox/Height", Slider1.Value)
-  DIsplayTextForm()
-
-End
-
-Public Sub Form_Resize()
-
   DIsplayTextForm()
 
 End

@@ -354,6 +354,17 @@ Private Sub BlankComBox()
 
 End
 
+Public Sub mnusorting_Click()
+
+  If mnusorting.Checked = True Then
+    mnusorting.Checked = False
+  Else If mnusorting.Checked = False Then
+    mnusorting.Checked = True
+  Endif
+  ShowConsumeGrid()
+
+End
+
 Public Sub btnrefresh_Click()
 
   If cmbcomtaget.Text Then
@@ -388,7 +399,15 @@ End
 
 Private Sub ShowConsumeGrid()
 
-  $rData2 = modDatabase.$myConn.Exec("select fldid,fldstockno,fldcategory,fldstockid,fldstockno,fldstockno,fldqtydisp,fldreference,fldrequest,fldcomment from tblbulksale where fldtarget like &1 and fldsave=&2 and fldcomp=&3 ORDER BY fldid DESC", cmbcomtaget.Text, False, modBasic.$compID)
+  Dim xorder As String
+
+  If mnusorting.Checked = True Then
+    xorder = " ORDER BY fldstockid ASC"
+  Else
+    xorder = " ORDER BY fldid DESC"
+  Endif
+
+  $rData2 = modDatabase.$myConn.Exec("select fldid,fldstockno,fldcategory,fldstockid,fldstockno,fldstockno,fldqtydisp,fldreference,fldrequest,fldcomment from tblbulksale where fldtarget like &1 and fldsave=&2 and fldcomp=&3" & xorder, cmbcomtaget.Text, False, modBasic.$compID)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData2, $aMyFields)
 

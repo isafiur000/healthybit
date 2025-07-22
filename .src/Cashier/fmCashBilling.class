@@ -160,7 +160,7 @@ Private Function GetPharmTarget(sRoute As String) As String
     Case "extra"
       xtarg = modBasic.$BillTargetExtras
     Case Else
-      xtarg = modBasic.$BillTargetMedicine
+      xtarg = txtpharmacy.Text
   End Select
 
   Return xtarg
@@ -3991,7 +3991,34 @@ Private Sub SHowInventoryStatus()
 
 End
 
+Private Function GetLabelCompMed(xStockid As String) As String
+
+  Dim xlabel As String
+  Dim xcomp As String
+
+  xcomp = ""
+  If modBasic.$BillTargetGenericLabel Or If modBasic.$BillTargetBrandLabel Then
+    xlabel = modPharmLabel.MedicineLabelType(xStockid)
+    If xlabel Then
+      If xlabel = "Generic" Then
+        If modBasic.$BillTargetGenericLabel Then
+          xcomp = modBasic.$BillTargetGenericLabel
+        Endif
+      Else If xlabel = "Brand" Then
+        If modBasic.$BillTargetBrandLabel Then
+          xcomp = modBasic.$BillTargetBrandLabel
+        Endif
+      Endif
+    Endif
+  Endif
+
+  Return xcomp
+
+End
+
 Public Sub txtdose_GotFocus()
+
+  Dim xcomp As String
 
   If cmbmedicine.Text Then
     If modStockSub.GetComboControlGeneric(cmbroute.Text, cmbmedicine.Text, modDatabase.$medConn) = False Then
@@ -4012,6 +4039,10 @@ Public Sub txtdose_GotFocus()
         Endif
 
       Else
+        xcomp = GetLabelCompMed(cmbmedicine.Text)
+        If xcomp Then
+          txtpharmacy.Text = xcomp
+        Endif
         SHowInventoryStatus()
         If modBasic.$MedNoRegimen = "Enable" Then
           txtdose.Enabled = False

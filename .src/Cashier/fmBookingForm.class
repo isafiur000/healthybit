@@ -966,7 +966,14 @@ End
 
 Public Sub txtpatno_KeyPress()
 
-  modGeneralMain.InputUpCaseOnly()
+  If Key.Code = Key.Down Then
+    If Not txtpatno.Text Then
+      txtpatno.Text = PatSearch("PatientNo")
+      txtpatno.SetFocus
+    Endif
+  Else
+    modGeneralMain.InputUpCaseOnly()
+  Endif
 
 End
 
@@ -994,5 +1001,23 @@ End
 Public Sub txtmonths_GotFocus()
 
   txtmonths.SelectAll
+
+End
+
+Public Sub btnfindlastencid_Click()
+
+  Dim xx As String
+
+  If MMain.$CustomFormat = "Patan" Then
+    xx = InputBox("Enter Diary Number", "Search Patient", "")
+    If xx Then
+      txtpatno.Text = modPatient.GetPatientNoByFileNo(Trim(xx))
+    Endif
+  Else
+    xx = InputBox("Enter Encounter ID", "Search Patient", "")
+    If xx Then
+      txtpatno.Text = modPatient.GetPatientNoByEnc(Trim(xx))
+    Endif
+  Endif
 
 End

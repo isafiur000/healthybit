@@ -18,6 +18,7 @@ End
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
+  modGeneralMain.ShowFormSizeParam(Me)
   TextArea1.DictionaryPath = modBasic.$dictPathList
   TextArea1.SetFocus
 
@@ -33,6 +34,9 @@ Public Sub btnBrOK_Click()
     xx.Add(chkabnormal.Value)
     xx.Add("")
     $sValue = xx
+    modGeneralMain.SaveFormArrangement(Me)
+    modGeneralMain.SaveFormSizeParam(Me)
+
     Me.Close(True)
   Endif
 

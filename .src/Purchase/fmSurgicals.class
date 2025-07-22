@@ -406,6 +406,8 @@ Private Sub ShowAllBrand()
   Dim sql As String
   Dim sxl As String
   Dim res As Result
+  Dim sCompLst As String[]
+  Dim i As Integer
 
   sql = "select fldbrandid,fldsurgid,fldbrand,fldmanufacturer,flddetail,fldstandard,flddepart,fldmaxqty,fldminqty,fldleadtime,fldactive,fldtaxcode from tblsurgbrand where fldbrandid=&1"
   res = modDatabase.$myConn.Exec(sql, TreeView1.Current.Text)
@@ -429,6 +431,12 @@ Private Sub ShowAllBrand()
 
   If modBasic.$ViewLockInventory = "Location" Then
     sxl = "select tblentry.fldstockno,tblsurgbrand.fldbrand,tblentry.fldbatch,tblentry.fldexpiry,tblentry.fldsellpr,tblentry.fldqty,tblentry.fldstatus,tblentry.fldcomp from tblentry inner join tblsurgbrand on tblentry.fldstockid=tblsurgbrand.fldbrandid  where tblentry.fldstockid=&1 and tblentry.fldqty>&2 and tblentry.fldcomp=&3"                      ''
+  Else If modBasic.$ViewLockInventory = "Branch" Then
+    sCompLst = modBasic.$branchList.Copy()
+    For i = 0 To sCompLst.Count - 1
+      sCompLst[i] = "'" & sCompLst[i] & "'"
+    Next
+    sxl = "select tblentry.fldstockno,tblsurgbrand.fldbrand,tblentry.fldbatch,tblentry.fldexpiry,tblentry.fldsellpr,tblentry.fldqty,tblentry.fldstatus,tblentry.fldcomp from tblentry inner join tblsurgbrand on tblentry.fldstockid=tblsurgbrand.fldbrandid  where tblentry.fldstockid=&1 and tblentry.fldqty>&2 and tblentry.fldcomp in(" & sCompLst.Join(",") & ")"          '
   Else
     sxl = "select tblentry.fldstockno,tblsurgbrand.fldbrand,tblentry.fldbatch,tblentry.fldexpiry,tblentry.fldsellpr,tblentry.fldqty,tblentry.fldstatus,tblentry.fldcomp from tblentry inner join tblsurgbrand on tblentry.fldstockid=tblsurgbrand.fldbrandid  where tblentry.fldstockid=&1 and tblentry.fldqty>&2"
   Endif

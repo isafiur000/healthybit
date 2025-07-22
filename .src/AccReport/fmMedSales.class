@@ -5,6 +5,7 @@ Private $rData As Result
 Private $aMyFields As String[]
 Private $SSQLFields As String[]
 Private $ProgressBar1 As ProgressBar
+Private $PolyCompLst As String[]
 
 Private $ColCount As Integer
 Private $newColumn As String[]
@@ -19,15 +20,6 @@ Public Sub Form_Open()
   Panel6.Width = Panel1.Width - (Panel3.Width + Panel7.Width)
   btnmnuqty.Menu = "mnuchart"
 
-  cmbordcomp.List = modBasic.$AllCompPerList
-  cmbordcomp.Text = "%"
-  If modBasic.$ViewLockInventory = "Location" Then
-    cmbdispcomp.Text = modBasic.$compID
-    cmbdispcomp.Enabled = False
-  Else
-    cmbdispcomp.List = modBasic.$AllCompPerList
-    cmbdispcomp.Text = "%"
-  Endif
   If MMain.$WebReport = "Multiple" Then
     If modBasic.$HospCode Then
       ' cmblocation.Text = "Hospital"
@@ -40,6 +32,27 @@ Public Sub Form_Open()
   Else
     cmblocation.List = ["Category"]
   Endif
+
+  cmbordcomp.List = modBasic.$AllCompPerList
+  cmbordcomp.Text = "%"
+  $PolyCompLst = New String[]
+  Select modHelpVariable.$LogInCategory
+    Case "Cashier", "Dispensar", "Pharmacist", "Purchase", "Store"
+      If modBasic.$ViewLockInventory = "Location" Then
+        cmbdispcomp.Text = modBasic.$compID
+        cmbdispcomp.Enabled = False
+      Else If modBasic.$ViewLockInventory = "Branch" Then
+        $PolyCompLst = modBasic.$branchList
+        cmbdispcomp.List = modBasic.$branchList
+        cmbdispcomp.Text = "%"
+      Else
+        cmbdispcomp.List = modBasic.$AllCompPerList
+        cmbdispcomp.Text = "%"
+      Endif
+    Case Else
+      cmbdispcomp.List = modBasic.$AllCompPerList
+      cmbdispcomp.Text = "%"
+  End Select
 
   cmbadmission.List = ["Recorded", "Registered", "Follow Up", "Refer(OPD)", "Death(OPD)", "Admitted", "Discharged", "LAMA", "Refer", "Death", "Absconder", "%"]
   cmbadmission.Text = "%"
@@ -216,6 +229,30 @@ Private Function GetSQLColumns() As String[]
 
 End
 
+Private Function GetCompSQL() As String
+
+  Dim compLst As String[]
+  Dim xcomp As String
+  Dim i As Integer
+
+  If cmbdispcomp.Text = "%" Then
+    If $PolyCompLst.Count Then
+      compLst = $PolyCompLst.Copy()
+      For i = 0 To compLst.Count - 1
+        compLst[i] = "'" & compLst[i] & "'"
+      Next
+      xcomp = " and fldcomp in(" & compLst.Join(",") & ")"
+    Else
+      xcomp = ""
+    Endif
+  Else
+    xcomp = " and fldcomp=&4"
+  Endif
+
+  Return xcomp
+
+End
+
 Private Function ExecuteQuery($con As Connection, strItem As String, xFldList As String[]) As Result
 
   Dim sql As String
@@ -263,7 +300,7 @@ Private Function ExecuteQuery($con As Connection, strItem As String, xFldList As
     $RepoStr = ""
   Endif
 
-  sql = "select " & xFldList.Join(",") & " from tblpatbilling where flditemtype like &1 and fldtime>=&2 and fldtime<=&3 and fldcomp like &4 and fldsave=&5 and flditemname like &6" & xroute & xdosing & xformat & $RepoStr
+  sql = "select " & xFldList.Join(",") & " from tblpatbilling where flditemtype like &1 and fldtime>=&2 and fldtime<=&3" & GetCompSQL() & " and fldsave=&5 and flditemname like &6" & xroute & xdosing & xformat & $RepoStr
   res = $con.Exec(sql, xcateg, modDate.StartSqlDate(dtfir.value), modDate.EndSqlDate(dtlast.value), cmbdispcomp.Text, True, strItem, cmbroute.Text, cmbadmission.Text, cmbdispcomp.Text, cmbvalue.Text)
 
   Return res
@@ -321,7 +358,7 @@ Private Function ExecuteQueryList($con As Connection, strItem As String[], xFldL
     $RepoStr = ""
   Endif
 
-  sql = "select " & xFldList.Join(",") & " from tblpatbilling where flditemtype like &1 and fldtime>=&2 and fldtime<=&3 and fldcomp like &4 and fldsave=&5 and flditemname in(" & strItem.Join(",") & ")" & xroute & xdosing & xformat & $RepoStr
+  sql = "select " & xFldList.Join(",") & " from tblpatbilling where flditemtype like &1 and fldtime>=&2 and fldtime<=&3" & GetCompSQL() & " and fldsave=&5 and flditemname in(" & strItem.Join(",") & ")" & xroute & xdosing & xformat & $RepoStr
   res = $con.Exec(sql, xcateg, modDate.StartSqlDate(dtfir.value), modDate.EndSqlDate(dtlast.value), cmbdispcomp.Text, True, "%", cmbroute.Text, cmbadmission.Text, cmbdispcomp.Text, cmbvalue.Text)
 
   Return res

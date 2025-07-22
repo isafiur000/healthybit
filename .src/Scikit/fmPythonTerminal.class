@@ -183,7 +183,7 @@ Public Sub btndataload_Click()
   TerminalInputList(cmdLst)
 
   For Each xcolm In $Columns
-    cmdLst.Add(Subst("orig_data['&1'].mask(orig_data['&1'] == '__', numpy.nan, inplace=True)", xcolm))
+    cmdLst.Add(Subst("orig_data['&1'].mask(orig_data['&1'] == '__', None, inplace=True)", xcolm))
   Next
   cmdLst.Add("orig_data")
   TerminalInputList(cmdLst)
@@ -359,6 +359,16 @@ Public Sub btndatacorrelation_Click()
   cmdLst.Add("corr_data = orig_data.select_dtypes(include=[numpy.number])")
   cmdLst.Add("corr_data.corr()")
   TerminalInputList(cmdLst)
+
+End
+
+Public Sub btnsavenew_Click()
+
+  Dim xPath As String
+
+  If Dialog.SelectDirectory() Then Return
+  xPath = Dialog.Path &/ modString.GetNowString() & ".csv"
+  TerminalInput(Subst("orig_data.to_csv('&1', sep='" & "\\" & "t" & "')", xPath))
 
 End
 
