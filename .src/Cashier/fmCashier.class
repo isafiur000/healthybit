@@ -49,6 +49,10 @@ Public Sub Form_Open()
     Timer1.Enabled = True
   Endif
 
+  If modHelpVariable.$AutoDashUpload = "Yes" Then
+    Timer2.Enabled = True
+  Endif
+
 End
 
 Public Sub Form_Close()
@@ -752,5 +756,13 @@ Public Sub mudashupload_Click()
   ' sDate = Date("2025", "01", "02")
   sDate = Now()
   modBagmatiDash.LoadBagmatiDash(sDate)
+
+End
+
+Public Sub Timer2_Timer()
+
+  If Minute(Now()) = 1 And If Second(Now()) = 1 Then
+    modBagmatiDash.AutoLoadBagmatiNow()
+  Endif
 
 End

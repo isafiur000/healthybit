@@ -5,6 +5,7 @@
 Private Function GetLabVisibility(strTest As String) As String
 
   Dim xval As String
+  Dim asx As String[]
 
   If modBasic.$LabAddHidden Then
     If modBasic.$LabAddHidden = "All Departments" Then
@@ -14,7 +15,9 @@ Private Function GetLabVisibility(strTest As String) As String
     Else If modBasic.$LabAddHidden = "No" Then
       xval = "Visible"
     Else
-      If modFixLab.GetLabTestCategory(strTest) = modBasic.$LabAddHidden Then
+      asx = Split(modBasic.$LabAddHidden, ";")
+      ' If modFixLab.GetLabTestCategory(strTest) = modBasic.$LabAddHidden Then
+      If asx.Exist(modFixLab.GetLabTestCategory(strTest)) = True Then
         xval = "Hidden"
       Else
         xval = "Visible"

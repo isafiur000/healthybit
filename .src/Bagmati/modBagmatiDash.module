@@ -5,91 +5,151 @@ Public $BagmatiKey As String
 
 Private $ErrorLst As String[]
 
-Public Sub LoadBagmatiDash(xDate As Date)
+Public Sub AutoLoadBagmatiNow()
+
+  $BagmatiURL = modSettings.ShowSettingFromFIle("BagmatiDashboard/URL")
+  $BagmatiKey = modSettings.ShowSettingFromFIle("BagmatiDashboard/Key")
+
+  If $BagmatiURL And If $BagmatiKey Then
+    $ErrorLst = New String[]
+    UploadRegistrationData(Now(), False)
+    UploadWardData(Now(), False)
+    UploadDepartmentData(Now(), False)
+    UploadSSUData(Now(), False)
+    If $ErrorLst.Count Then
+      Message.Warning("Error in Upload: " & $ErrorLst.Join(", "), "OK")
+    Endif
+  Else
+    Message.Warning("Missing Dashboard Credentials.", "OK")
+  Endif
+
+End
+
+Public Sub LoadBagmatiDash(xDate As Date, question As Boolean)
 
   $BagmatiURL = modSettings.ShowSettingFromFIle("BagmatiDashboard/URL")
   $BagmatiKey = modSettings.ShowSettingFromFIle("BagmatiDashboard/Key")
 
   $ErrorLst = New String[]
-  UploadRegistrationData(xDate)
-  UploadWardData(xDate)
-  UploadDepartmentData(xDate)
-  UploadSSUData(xDate)
+  UploadRegistrationData(xDate, True)
+  UploadWardData(xDate, True)
+  UploadDepartmentData(xDate, True)
+  UploadSSUData(xDate, True)
   If $ErrorLst.Count Then
-    Message.Warning("Error in Upload: " & $ErrorLst.Join(", "))
+    Message.Warning("Error in Upload: " & $ErrorLst.Join(", "), "OJ")
   Else
     Message.Info("Process Completed", "OK")
   Endif
 
 End
 
-Private Sub UploadRegistrationData(xDate As Date)
+Private Sub UploadRegistrationData(xDate As Date, question As Boolean)
 
   Dim cForm As CBagmatiDash
   Dim xJson As JSONCollection
 
   xJson = GetRegistrationJson(xDate)
   If xJson.Count Then
-    If MessageHtml("Registration", JSON.Encode(xJson), ["Upload", "Cancel"]) = "Upload" Then
+    If question = True Then
+      If MessageHtml("Registration", JSON.Encode(xJson), ["Upload", "Cancel"]) = "Upload" Then
+        cForm = New CBagmatiDash("/api/registration", xJson)
+        If cForm.GetSuccess() = True Then
+        Else
+          $ErrorLst.Add("Registration")
+        Endif
+      Endif
+
+    Else
       cForm = New CBagmatiDash("/api/registration", xJson)
       If cForm.GetSuccess() = True Then
       Else
         $ErrorLst.Add("Registration")
       Endif
+
     Endif
   Endif
 
 End
 
-Private Sub UploadWardData(xDate As Date)
+Private Sub UploadWardData(xDate As Date, question As Boolean)
 
   Dim cForm As CBagmatiDash
   Dim xJson As JSONCollection
 
   xJson = GetInpatientJson(xDate)
   If xJson.Count Then
-    If MessageHtml("Ward Data", JSON.Encode(xJson), ["Upload", "Cancel"]) = "Upload" Then
+    If question = True Then
+      If MessageHtml("Ward Data", JSON.Encode(xJson), ["Upload", "Cancel"]) = "Upload" Then
+        cForm = New CBagmatiDash("/api/ward", xJson)
+        If cForm.GetSuccess() = True Then
+        Else
+          $ErrorLst.Add("Ward Data")
+        Endif
+      Endif
+
+    Else
       cForm = New CBagmatiDash("/api/ward", xJson)
       If cForm.GetSuccess() = True Then
       Else
         $ErrorLst.Add("Ward Data")
       Endif
+
     Endif
   Endif
 
 End
 
-Private Sub UploadDepartmentData(xDate As Date)
+Private Sub UploadDepartmentData(xDate As Date, question As Boolean)
 
   Dim cForm As CBagmatiDash
   Dim xJson As JSONCollection
 
   xJson = GetOutpatientJson(xDate)
   If xJson.Count Then
-    If MessageHtml("OPD Data", JSON.Encode(xJson), ["Upload", "Cancel"]) = "Upload" Then
+    If question = True Then
+      If MessageHtml("OPD Data", JSON.Encode(xJson), ["Upload", "Cancel"]) = "Upload" Then
+        cForm = New CBagmatiDash("/api/opd-department", xJson)
+        If cForm.GetSuccess() = True Then
+        Else
+          $ErrorLst.Add("OPD Data")
+        Endif
+      Endif
+
+    Else
       cForm = New CBagmatiDash("/api/opd-department", xJson)
       If cForm.GetSuccess() = True Then
       Else
         $ErrorLst.Add("OPD Data")
       Endif
+
     Endif
   Endif
 
 End
 
-Private Sub UploadSSUData(xDate As Date)
+Private Sub UploadSSUData(xDate As Date, question As Boolean)
 
   Dim cForm As CBagmatiDash
   Dim xJson As JSONCollection
 
   xJson = GetSSUPatientJson(xDate)
   If xJson.Count Then
-    If MessageHtml("SSU Data", JSON.Encode(xJson), ["Upload", "Cancel"]) = "Upload" Then
+    If question = True Then
+      If MessageHtml("SSU Data", JSON.Encode(xJson), ["Upload", "Cancel"]) = "Upload" Then
+        cForm = New CBagmatiDash("/api/ssu-patient", xJson)
+        If cForm.GetSuccess() = True Then
+        Else
+          $ErrorLst.Add("SSU Data")
+        Endif
+      Endif
+
+    Else
       cForm = New CBagmatiDash("/api/ssu-patient", xJson)
       If cForm.GetSuccess() = True Then
       Else
         $ErrorLst.Add("SSU Data")
       Endif
+
     Endif
   Endif
 

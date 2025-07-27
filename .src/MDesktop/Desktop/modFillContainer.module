@@ -1,7 +1,7 @@
 ' Gambas module file
 
 Public Sub FillComboBoxOnKeyRelease(ComboBox1 As ComboBox, sList As String[])
-  
+
   If Key.Code = Key.BackSpace Then
     ComboBox1.Clear
   Else
@@ -18,29 +18,29 @@ Public Sub FillComboBoxOnKeyRelease(ComboBox1 As ComboBox, sList As String[])
       Endif
     Endif
   Endif
-  
+
 End
 
 Public Sub RestrictCombo(cmb As ComboBox)
-  
+
   Dim xlist As String[]
-  
+
   If Len(Trim(cmb.Text)) Then
     xlist = cmb.List
     If xlist.Exist(cmb.Text) = False Then
       cmb.SetFocus
     Endif
   Endif
-  
+
 End
 
 ''Use on comboBox_KeyRelease()
 Public Sub AutoFillComboBox(ComboBoxItems As ComboBox)
-  
+
   Dim i As Integer
   Dim textToCursor As String
   Dim textPosition As Integer
-  
+
   Inc Application.Busy
   If Key.Code = Key.Down Then
     ComboBoxItems.Popup
@@ -52,7 +52,7 @@ Public Sub AutoFillComboBox(ComboBoxItems As ComboBox)
         Break
       Endif
     Next
-    
+
   Else If Key.Code = Key.BackSpace Then
     If ComboBoxItems.Pos = 0 Then
     Else
@@ -67,7 +67,7 @@ Public Sub AutoFillComboBox(ComboBoxItems As ComboBox)
         Endif
       Next
     Endif
-    
+
   Else
     If ComboBoxItems.Pos = 0 Then
     Else
@@ -82,20 +82,20 @@ Public Sub AutoFillComboBox(ComboBoxItems As ComboBox)
         Endif
       Next
     Endif
-    
+
   Endif
   Dec Application.Busy
-  
+
 End
 
 'use on key release
 Public Sub RestrictComboToContent(ComboBoxItems As ComboBox)
-  
+
   Dim i As Integer
   Dim m As Integer
   Dim n As Integer
   Dim txt As String
-  
+
   If Key.Code = Key.Space Then
     ComboBoxItems.Text = ""
   Else
@@ -114,11 +114,11 @@ Public Sub RestrictComboToContent(ComboBoxItems As ComboBox)
       Endif
     Endif
   Endif
-  
+
 End
 
 Public Sub ComboInsertNotItem(cmbdisctype As ComboBox, xscheme As String)
-  
+
   If xscheme Then
     If Not cmbdisctype.List.Exist(xscheme) Then
       cmbdisctype.Add(xscheme)
@@ -127,26 +127,26 @@ Public Sub ComboInsertNotItem(cmbdisctype As ComboBox, xscheme As String)
   Else
     cmbdisctype.Text = ""
   Endif
-  
+
 End
 
 '''--------------------------------- LISTBOX   -------------------------------------------------
 Public Sub FillListBox(ListBox1 As ListBox, res As Result, index As Boolean)
-  
+
   If res.Available Then
     ListBox1.List = modControlSub.GetDirectFillresult(res)
     If index = True Then
       ListBox1.Index = 0
     Endif
   Endif
-  
+
 End
 
 Public Function GetItemIndexListBox(ListBox1 As ListBox, sItem As String) As Integer
-  
+
   Dim xx As Integer
   Dim i As Integer
-  
+
   For i = 0 To ListBox1.List.Count - 1
     If ListBox1[i].Text = sItem Then
       xx = i
@@ -154,32 +154,32 @@ Public Function GetItemIndexListBox(ListBox1 As ListBox, sItem As String) As Int
     Endif
   Next
   Return xx
-  
+
 End
 
 Public Function GetSelectedItemsListBox(ListBox1 As ListBox) As String[]
-  
+
   Dim xList As String[]
   Dim i As Integer
-  
+
   xList = New String[]
   For i = 0 To ListBox1.Count - 1
     If ListBox1[i].Selected = True Then
       xList.Add(ListBox1[i].Text)
     Endif
   Next
-  
+
   Return xList
-  
+
 End
 
 '''------------------------------------ List View --------------------------------------------------------------------------------
 Public Sub FillListViewFromArray(ListBox1 As ListView, sArry As String[])
-  
+
   Dim pic1 As Picture
   Dim i As Integer
   Dim xx As String
-  
+
   pic1 = Picture["icons/unchecked.png"]
   ListBox1.Clear()
   i = 1
@@ -189,14 +189,14 @@ Public Sub FillListViewFromArray(ListBox1 As ListView, sArry As String[])
       i = i + 1
     Endif
   Next
-  
+
 End
 
 Public Sub FillListView(ListBox1 As ListView, res As Result)
-  
+
   Dim pic1 As Picture
   Dim i As Integer
-  
+
   pic1 = Picture["icons/unchecked.png"]
   ListBox1.Clear
   i = 1
@@ -208,38 +208,38 @@ Public Sub FillListView(ListBox1 As ListView, res As Result)
       Endif
     Next
   Endif
-  
+
 End
 
 Public Sub ShowCheckedListView(ListBox1 As ListView)
-  
+
   Dim pic1 As Picture
   Dim pic2 As Picture
-  
+
   pic1 = Picture["icons/unchecked.png"]
   pic2 = Picture["icons/checked.png"]
-  
+
   If ListBox1.Current.Picture = pic1 Then
     ListBox1.Current.Picture = pic2
   Else If ListBox1.Current.Picture = pic2 Then
     ListBox1.Current.Picture = pic1
   Endif
-  
+
 End
 
 '''------------------------------------------ TREEVIEW  -------------------------------------------------------------------------
 Public Sub ExpandClickTreeView(TreeView1 As TreeView)
-  
+
   If TreeView1.Current.Expanded = True Then
     TreeView1.Current.Expanded = False
   Else
     TreeView1.Current.Expanded = True
   Endif
-  
+
 End
 
 Public Sub ExpandAllTreeView(TreeView1 As TreeView)
-  
+
   With TreeView1
     .MoveFirst
     While .Available
@@ -247,47 +247,47 @@ Public Sub ExpandAllTreeView(TreeView1 As TreeView)
       .MoveNext
     Wend
   End With
-  
+
 End
 
 Public Sub ExpandClickColumnView(TreeView1 As ColumnView)
-  
+
   If TreeView1.Current.Expanded = True Then
     TreeView1.Current.Expanded = False
   Else
     TreeView1.Current.Expanded = True
   Endif
-  
+
 End
 
 Public Sub FillTreeView(sCon As Connection, TreeView1 As TreeView, key1 As String, str1 As String, key2 As String, str2 As String, key3 As String, str3 As String, key4 As String, str4 As String, txt1 As String, txt2 As String, txt3 As String, txt4 As String)                           ''
-  
+
   Dim res1 As Result
   Dim i As Integer
   Dim sKey1 As String
-  
+
   Dim res2 As Result
   Dim j As Integer
   Dim sKey2 As String
-  
+
   Dim res3 As Result
   Dim k As Integer
   Dim sKey3 As String
-  
+
   Dim res4 As Result
   Dim l As Integer
   Dim sKey4 As String
-  
+
   Dim pic1 As Picture
   Dim pic2 As Picture
   Dim pic3 As Picture
   Dim pic4 As Picture
-  
+
   pic1 = Picture["icons/coll1.png"]
   pic2 = Picture["icons/coll2.png"]
   pic3 = Picture["icons/coll3.png"]
   pic4 = Picture["icons/coll4.png"]
-  
+
   TreeView1.Clear()
   If txt1 = "" Then
     res1 = sCon.Exec(str1)
@@ -303,7 +303,7 @@ Public Sub FillTreeView(sCon As Connection, TreeView1 As TreeView, key1 As Strin
         sKey1 = key1
       Endif
       TreeView1.Add(sKey1, res1!fldparent, pic1)
-      
+
       If str2 Then
         If txt2 = "" Then
           res2 = sCon.Exec(str2, res1!fldparent)
@@ -319,7 +319,7 @@ Public Sub FillTreeView(sCon As Connection, TreeView1 As TreeView, key1 As Strin
               sKey2 = key2
             Endif
             TreeView1.Add(sKey2, res2!fldparent, pic2, sKey1)
-            
+
             If str3 Then
               If txt3 = "" Then
                 res3 = sCon.Exec(str3, res2!fldparent)
@@ -335,7 +335,7 @@ Public Sub FillTreeView(sCon As Connection, TreeView1 As TreeView, key1 As Strin
                     sKey3 = key3
                   Endif
                   TreeView1.Add(sKey3, res3!fldparent, pic3, sKey2)
-                  
+
                   If str4 Then
                     If txt4 = "" Then
                       res4 = sCon.Exec(str4, res3!fldparent)
@@ -355,69 +355,69 @@ Public Sub FillTreeView(sCon As Connection, TreeView1 As TreeView, key1 As Strin
                       Next
                     Endif
                   Endif
-                  
+
                   res3.MoveNext
                 Next
               Endif
             Endif
-            
+
             res2.MoveNext
           Next
         Endif
       Endif
-      
+
       res1.MoveNext
     Next
   Endif
-  
+
 End
 
 'get key of above treeview
 Public Function GetTextFromTreeKey(strKey As String) As String
-  
+
   Dim xx As String
   Dim ss As Integer
-  
+
   ss = RInStr(strKey, "@") + 1
   xx = Mid(strKey, ss, Len(strKey) - 1)
-  
+
   Return xx
-  
+
 End
 
 ''used in TreeViewCode()
 Public Sub CreateTreeViewFromCSV(TreeView1 As TreeView, sPath As String, sMark As String, sLevel As Integer, showText As Boolean)
-  
+
   Dim pic1 As Picture
   Dim pic2 As Picture
   Dim pic3 As Picture
   Dim pic4 As Picture
-  
+
   Dim aColl1 As Collection
   Dim aColl2 As Collection
   Dim aColl3 As Collection
   Dim aColl4 As Collection
-  
+
   Dim hFile As File
   Dim sLine As String
   Dim asx As String[]
-  
+
   pic1 = Picture["icons/coll1.png"]
   pic2 = Picture["icons/coll2.png"]
   pic3 = Picture["icons/coll3.png"]
   pic4 = Picture["icons/coll4.png"]
-  
+
   aColl1 = New Collection
   aColl2 = New Collection
   aColl3 = New Collection
   aColl4 = New Collection
-  
+
   TreeView1.Clear()
   hFile = Open sPath
   modBasic.DebugString("Open File " & sPath)
   For Each sLine In hFile.Lines
     asx = Split(sLine, sMark)
-    
+
     If aColl1.Exist(asx[0]) = False Then
       aColl1.Add(True, asx[0])
       If showText = True And If sLevel = 1 Then
@@ -426,7 +426,7 @@ Public Sub CreateTreeViewFromCSV(TreeView1 As TreeView, sPath As String, sMark A
         TreeView1.Add(asx[0], asx[0], pic1)
       Endif
     Endif
-    
+
     If sLevel > 1 Then
       If aColl2.Exist(asx[0] & "@" & asx[1]) = False Then
         aColl2.Add(True, asx[0] & "@" & asx[1])
@@ -437,7 +437,7 @@ Public Sub CreateTreeViewFromCSV(TreeView1 As TreeView, sPath As String, sMark A
         Endif
       Endif
     Endif
-    
+
     If sLevel > 2 Then
       If aColl3.Exist(asx[0] & "@" & asx[1] & "@" & asx[2]) = False Then
         aColl3.Add(True, asx[0] & "@" & asx[1] & "@" & asx[2])
@@ -448,7 +448,7 @@ Public Sub CreateTreeViewFromCSV(TreeView1 As TreeView, sPath As String, sMark A
         Endif
       Endif
     Endif
-    
+
     If sLevel > 3 Then
       If aColl4.Exist(asx[0] & "@" & asx[1] & "@" & asx[2] & "@" & asx[3]) = False Then
         aColl4.Add(True, asx[0] & "@" & asx[1] & "@" & asx[2] & "@" & asx[3])
@@ -459,27 +459,27 @@ Public Sub CreateTreeViewFromCSV(TreeView1 As TreeView, sPath As String, sMark A
         Endif
       Endif
     Endif
-    
+
   Next
   hFile.Close()
-  
+
 End
 
 Public Sub ShowMenuTreeMain(frm As Form, pnlleft As Panel)
-  
+
   Dim TreeView1 As TreeView
   Dim xmenu As Menu
   Dim ymenu As Menu
   Dim zmenu As Menu
-  
+
   Dim pic1 As Picture
   Dim pic2 As Picture
   Dim pic3 As Picture
-  
+
   pic1 = Picture["icons/coll1.png"]
   pic2 = Picture["icons/coll2.png"]
   pic3 = Picture["icons/coll3.png"]
-  
+
   TreeView1 = New TreeView(pnlleft)
   TreeView1.Background = Color.Yellow
   TreeView1.Expand = True
@@ -494,5 +494,5 @@ Public Sub ShowMenuTreeMain(frm As Form, pnlleft As Panel)
       Endif
     Next
   Next
-  
+
 End
