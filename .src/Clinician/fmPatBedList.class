@@ -138,7 +138,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   Else If Column = 4 Then
     GridView1.Data.RichText = modPatient.GetPatientAgeString(asx[0], Now()) & "/" & modPatient.GetPatientSex(asx[0], modDatabase.$syConn) & "<br>" & "<small>" & modReportVar.GetDateTimeReport(modPatient.GetAdmissionDate(asx[0]), gb.MediumDate) & "</small>"                           ''
   Else If Column = 5 Then
-    GridView1.Data.Picture = Picture["icon:/small/access"]
+    GridView1.Data.Picture = Picture["icon:/tiny/access"]
     GridView1.Data.Text = ""
   Else If Column = 6 Then
     GridView1.Data.Font.Grade = -1

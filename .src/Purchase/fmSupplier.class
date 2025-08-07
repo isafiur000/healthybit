@@ -207,10 +207,12 @@ End
 Public Sub btnedit_Click()
 
   Dim res As Result
+  Dim Row As Integer
 
   If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
-    If GridView1.Rows.Selection.Count > 0 Then
-      res = modDatabase.$myConn.Edit("tblsupplier", "fldsuppname=&1", GridView1[GridView1.Row, 0].Text)
+    Row = GridView2.Row
+    If txtsupname.Text And If cmbstatus.Text Then
+      res = modDatabase.$myConn.Edit("tblsupplier", "fldsuppname=&1", txtsupname.Text)
       res["fldsuppaddress"] = Trim(txtsupadd.Text)
       res["fldsupppan"] = Trim(txtpanno.Text)
       res["fldsuppledger"] = cmbledger.Text
@@ -228,6 +230,7 @@ Public Sub btnedit_Click()
       Balloon.Info(("Information updated"), btnedit)
       Balloon.Delay = modBasic.$BalloonDelay
     Endif
+    GridView2.Row = Row
   Endif
 
 End

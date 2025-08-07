@@ -89,10 +89,16 @@ Public Sub cmbmedicine_GotFocus()
     Else
 
       If Not cmbmedicine.Text Then
-        If cmbfixdepart.Text Then
-          res = modStock.ItemListForPurchaseResult(cmbroute.Text, GetBrandGenerricType(), cmbfixdepart.Text)
+        If chkout.Value = True Then
+          If cmbfixdepart.Text Then
+            res = modStock.ItemListForPurchaseResult(cmbroute.Text, GetBrandGenerricType(), cmbfixdepart.Text)
+          Else
+            res = modStock.ItemListForPurchaseResult(cmbroute.Text, GetBrandGenerricType())
+          Endif
         Else
-          res = modStock.ItemListForPurchaseResult(cmbroute.Text, GetBrandGenerricType())
+          If cmbcomtaget.Text Then
+            res = modStock.FillMedicinesTransferComboResult(cmbroute.Text, GetBrandGenerricType(), cmbcomtaget.Text)
+          Endif
         Endif
         cmbmedicine.Text = GridViewNew("Select Particulars", modControlSub.GetDirectFillresult(res), False, cmbmedicine, GridView1.Height + cmbmedicine.Height)
       Endif

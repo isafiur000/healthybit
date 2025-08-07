@@ -159,8 +159,6 @@ End
 Public Sub btnselect_Click()
 
   Dim i As Integer
-  Dim xauto As String
-
   Dim xrefer As String
   Dim xpayble As String
 
@@ -171,8 +169,7 @@ Public Sub btnselect_Click()
   Endif
   xpayble = modBillings.GetPayableUserSetting("Procedure", $encid)
 
-  xauto = modBasic.$AutoBillProcedure
-  If xauto = "Yes" Or If xauto = "Full" Or If xauto = "Partial" Then
+  If modBasic.$AutoBillProcedure = "Standard" Or If modBasic.$AutoBillProcedure = "Full" Or If modBasic.$AutoBillProcedure = "Partial" Then
     Inc Application.Busy
     For i = 1 To ListView1.Count
       If ListView1[CStr(i)].Picture = Picture["icons/checked.png"] Then     '
@@ -234,15 +231,13 @@ End
 Public Sub btnsave_Click()
 
   Dim res As Result
-  Dim xauto As String
 
   Dim xdat As Date
   Dim xx As String
   Dim xList As String[]
   Dim i As Integer
 
-  xauto = modBasic.$AutoBillProcedure
-  If xauto = "Yes" Or If xauto = "Full" Then
+  If modBasic.$AutoBillProcedure = "Standard" Or If modBasic.$AutoBillProcedure = "Full" Then
     res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval=&1 and flditemtype=&2 and fldtarget=&3 and fldsave=&4 and fldstatus=&5", $encid, "Procedures", "Extra", False, "Punched")                 ''
     Inc Application.Busy
     modDatabase.$myConn.Begin

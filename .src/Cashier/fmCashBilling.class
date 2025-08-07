@@ -938,6 +938,7 @@ Private Sub BlankForEntry()
   txtrate.Value = 0
   txtlastsaledate.Text = ""
   txtlastsaledate.Foreground = Color.Default
+  btnaddcomment.Tag = ""
 
 End
 
@@ -2117,9 +2118,10 @@ Public Sub GridView1_Click()
           If res1["fldacledger"] Then
             res["fldacledger"] = res1["fldacledger"]
           Endif
-          If res["fldcashincredit"] Then
-          Else
+          If res1["fldbilltype"] = "Cash" Then
             res["fldcashincredit"] = 0
+          Else
+            res["fldcashincredit"] = modNonMedical.CashInCreditPerForCategory(xpack, res["flditemtype"], res["flditemname"], res1["fldbillingmode"])
           Endif
           res.Update
           ShowNewEntry()
@@ -2260,9 +2262,10 @@ Public Sub mnupackageall_Click()
           If res1["fldacledger"] Then
             res["fldacledger"] = res1["fldacledger"]
           Endif
-          If res["fldcashincredit"] Then
-          Else
+          If res1["fldbilltype"] = "Cash" Then
             res["fldcashincredit"] = 0
+          Else
+            res["fldcashincredit"] = modNonMedical.CashInCreditPerForCategory(xpack, res["flditemtype"], res["flditemname"], res1["fldbillingmode"])
           Endif
           res.Update
         Next
@@ -2942,6 +2945,11 @@ Public Sub mnueditcashcredit_Click()
               Endif
               If res1["fldacledger"] Then
                 res["fldacledger"] = res1["fldacledger"]
+              Endif
+              If res1["fldbilltype"] = "Cash" Then
+                res["fldcashincredit"] = 0
+              Else
+                res["fldcashincredit"] = modNonMedical.CashInCreditPerForCategory(xpack, res["flditemtype"], res["flditemname"], res1["fldbillingmode"])
               Endif
               res.Update
               ShowOldEntry()
@@ -4800,9 +4808,10 @@ Public Sub mnupackphmall_Click()
           If res1["fldacledger"] Then
             res["fldacledger"] = res1["fldacledger"]
           Endif
-          If res["fldcashincredit"] Then
-          Else
+          If res1["fldbilltype"] = "Cash" Then
             res["fldcashincredit"] = 0
+          Else
+            ' res["fldcashincredit"] = modNonMedical.CashInCreditPerForCategory(xpack, res["flditemtype"], res["flditemname"], res1["fldbillingmode"])
           Endif
           res.Update
         Next
@@ -5262,6 +5271,12 @@ Public Sub btnaddicd_Click()
 
 End
 
+Public Sub btnaddcomment_Click()
+
+  btnaddcomment.Tag = InputBox("Add Comment", txtencid.Text, btnaddcomment.Tag)
+
+End
+
 Public Sub txtsearch_KeyRelease()
 
   If Key.Code = Key.Return Or If Key.Code = Key.Enter Or If Key.Code = Key.AltKey Then
@@ -5514,14 +5529,14 @@ Private Sub AutoClaimIMIS(sPackage As String, TypeList As String[])
           Next
 
           If ySNo.Count Then
-            hForm1 = New CimisAPIClaim($xNHISCode, Trim(txtencid.Text), txtreference.Text, True)
+            hForm1 = New CimisAPIClaim($xNHISCode, Trim(txtencid.Text), txtreference.Text, True, btnaddcomment.Tag)
             hForm1.AddBilling(ySNo)
             xout1 = hForm1.UploadClaim()
             xmsg1 = modClaimAPI.GetClaimOutRecording(ySNo, xout1, "tblpatbilling")
           Endif
           If xSNo.Count Then
             If xdiagno = "Diagnosis" Then
-              hForm = New CimisAPIClaim($xNHISCode, Trim(txtencid.Text), txtreference.Text, False)
+              hForm = New CimisAPIClaim($xNHISCode, Trim(txtencid.Text), txtreference.Text, False, btnaddcomment.Tag)
               hForm.AddBilling(xSNo)
               xout = hForm.UploadClaim()
               xmsg = modClaimAPI.GetClaimOutRecording(xSNo, xout, "tblpatbilling")

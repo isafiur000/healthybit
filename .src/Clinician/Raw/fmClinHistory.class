@@ -5,6 +5,9 @@ Private $sType As String
 Private $xFinList As String[]
 Private $PatNum As String
 
+Private $rData As Result
+Private $aMyFields As String[]
+
 Public Sub _new(patId As String, sType As String)
 
   $patId = patId
@@ -17,7 +20,7 @@ Public Sub Form_Open()
   If $sType = "PatientID" Then
     WebContainer3.Visible = True
     $PatNum = $patId
-    lstencounter.List = modPatient.GetEncListFromPatNo($patId)
+    ShowEncounterList()
   Else If $sType = "Encounter" Then
     WebContainer3.Visible = False
     txtnewencid.Text = $patId
@@ -28,7 +31,34 @@ Public Sub Form_Open()
     $xFinList = modMedicine.GetCustReportVariables(chkselect.Value)
   Endif
   AddListBiewContent($xFinList)
+  modGeneralMain.$RightAdView.SetHtml("")
   rbmetric.Value = True
+
+End
+
+Private Sub ShowEncounterList()
+
+  $rData = modDatabase.$myConn.Exec("select fldregdate,fldencounterval from tblencounter where fldpatientval=&1 ORDER BY fldregdate DESC", $patId)
+  $aMyFields = New String[]
+  modGridView.ReadSmallData(GridView1, $rData, $aMyFields, -1)
+  With GridView1
+    .Columns[0].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[0].Text = "Date"
+    .Columns[1].Text = "Encounter"
+  End With
+
+End
+
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  $rData.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView1, Row)
+  If Column = 0 Then
+    GridView1.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.MediumDate)
+  Else
+    GridView1.Data.Text = $rData[$aMyFields[Column]]
+  Endif
 
 End
 
@@ -80,10 +110,12 @@ Public Sub btnsaveencid_Click()
 
 End
 
-Public Sub lstencounter_Select()
+Public Sub GridView1_Click()
 
-  txtnewencid.Text = lstencounter.Text
-  ShowReportEncid(GetReportItems())
+  If GridView1.Rows.Selection.Count Then
+    txtnewencid.Text = GridView1[GridView1.Row, 1].Text
+    ShowReportEncid(GetReportItems())
+  Endif
 
 End
 
@@ -253,5 +285,12 @@ Public Sub btndown_Click()
     AddListBiewContent($xFinList)
     lstcontent.Index = bb
   Endif
+
+End
+
+Public Sub btnopenweb_Click()
+
+  modGeneralMain.$RightAdView.SetHtml(WebView1.Html)
+  modGeneralMain.$RightAdView.Refresh()
 
 End

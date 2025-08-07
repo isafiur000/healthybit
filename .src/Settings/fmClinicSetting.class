@@ -13,6 +13,7 @@ Public Sub btnshowsetting_Click()
     ShowOutcomeSett()
     ShowTelemedicineSett()
     ShowUserAccessRestriction()
+    ShowLabTargets()
     DataSyncSetting()
   Endif
 
@@ -591,6 +592,25 @@ Public Sub btnsaveaccess_Click()
   modGlobalSetting.EnterSettingFromDB(chkaccessstruct, "ClinicRestriction/StructuredForms", cmbtarget.Text)
   modGlobalSetting.EnterSettingFromDB(chkaccessOPD, "ClinicRestriction/OutPatientList", cmbtarget.Text)
   modGlobalSetting.EnterSettingFromDB(chkaccessIPD, "ClinicRestriction/InPatientList", cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnsaveaccess)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''------------------ Targets-----------------
+Private Sub ShowLabTargets()
+
+  modGlobalSetting.ShowCheckBoxFromDBAny(chklabtarget, "RestrictClinicalRequest/Laboratory", cmbtarget.Text)
+  modGlobalSetting.ShowCheckBoxFromDBAny(chkradiotarget, "RestrictClinicalRequest/Radiology", cmbtarget.Text)
+
+End
+
+Public Sub btnsavetarget_Click()
+
+  modGlobalSetting.EnterSettingFromDB(chklabtarget, "RestrictClinicalRequest/Laboratory", cmbtarget.Text)
+  modGlobalSetting.EnterSettingFromDB(chkradiotarget, "RestrictClinicalRequest/Radiology", cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnsavetarget)
+  Balloon.Delay = modBasic.$BalloonDelay
 
 End
 

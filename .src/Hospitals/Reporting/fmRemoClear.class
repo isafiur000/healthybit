@@ -352,7 +352,7 @@ Public Sub btnndcupdate_Click()
           If res1.Available Then
             res1.MoveFirst
             LabInsertBlankBillClearance(modHospitalReport.$lab1Con, res1["fldencounterval"], "Cash", "HospitalClearance", "InvoiceClearance", res1["fldbillno"], GridView1[Row, 5].Text, GridView1[Row, 7].Text, GridView1[Row, 8].Text)
-            GridView1[Row, 1].Picture = Picture["icon:/small/lock"]
+            GridView1[Row, 1].Picture = Picture["icon:/tiny/lock"]
           Endif
         Endif
       Endif
@@ -454,7 +454,7 @@ Public Sub btnnlnpupdate_Click()
           If res1.Available Then
             res1.MoveFirst
             LabInsertBlankBillClearance(modHospitalReport.$lab2Con, res1["fldencounterval"], "Cash", "HospitalClearance", "InvoiceClearance", res1["fldbillno"], GridView2[Row, 5].Text, GridView2[Row, 7].Text, GridView2[Row, 8].Text)
-            GridView2[Row, 1].Picture = Picture["icon:/small/lock"]
+            GridView2[Row, 1].Picture = Picture["icon:/tiny/lock"]
           Endif
         Endif
       Endif

@@ -1,14 +1,17 @@
 ' Gambas class file
 
+Private $sType As String
+Private $sList As String[]
+Private $sValue As Long
+
 Private $rData As Result
 Private $aMyFields As String[]
-Private $sValue As Long
-Private $sType As String
 Private $ItemList As String[]
 
-Public Sub Run(sType As String) As Long
+Public Sub Run(sType As String, Optional sList As String[]) As Long
 
   $sType = sType
+  $sList = sList
   If Me.ShowModal() Then Return $sValue
 
 End
@@ -18,11 +21,21 @@ Public Sub Form_Open()
   modGeneralMain.ArrangeFormCentre(Me, "False")
   $ItemList = New String[]
   If $sType = "Personal" Then
-    Me.Title = "Personal Regimen"
+    Me.Title = "Medicine Regimen"
     lstletter.Visible = True
+    Panel4.Visible = False
   Else
     Me.Title = "Medicine List"
+    cmbcategory.List = $sList
   Endif
+  cmbcategory.Text = $sType
+  SHowGrid()
+  lstletter.List = modString.GetFirstLetterArray($ItemList)
+
+End
+
+Public Sub btnrefresh_Click()
+
   SHowGrid()
   lstletter.List = modString.GetFirstLetterArray($ItemList)
 
@@ -48,9 +61,9 @@ Private Sub SHowGrid()
   Else
     sql = "select fldid,fldid,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,flddirection from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and fldcurval=&4 and lower(flditem) like &5 and fldid IN (SELECT MAX(fldid) FROM tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and fldcurval=&4 GROUP BY flditem)"
     If chkleftmain.Value = True Then
-      $rData = modDatabase.$myConn.Exec(sql, $sType, True, "Medicines", "Continue", "%" & LCase(Trim(txtname.Text)) & "%")
+      $rData = modDatabase.$myConn.Exec(sql, cmbcategory.Text, True, "Medicines", "Continue", "%" & LCase(Trim(txtname.Text)) & "%")
     Else
-      $rData = modDatabase.$myConn.Exec(sql, $sType, True, "Medicines", "Continue", LCase(Trim(txtname.Text)) & "%")
+      $rData = modDatabase.$myConn.Exec(sql, cmbcategory.Text, True, "Medicines", "Continue", LCase(Trim(txtname.Text)) & "%")
     Endif
   Endif
   $aMyFields = New String[]
@@ -68,7 +81,7 @@ Private Sub SHowGrid()
     .Columns[0].Width = 1
     .Columns[1].Width = 1
     .Columns[2].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 300 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 350 * modBasic.$AppWidthRatio
     .Columns[4].Width = 75 * modBasic.$AppWidthRatio
     .Columns[5].Width = 75 * modBasic.$AppWidthRatio
     .Columns[6].Width = 50 * modBasic.$AppWidthRatio

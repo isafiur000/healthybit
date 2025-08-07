@@ -420,7 +420,7 @@ Public Sub btnsms_Click()
 End
 
 ''--------------------------------------- General --------------------------------------
-Public Sub BasicInfoPatient()
+Private Sub BasicInfoPatient()
 
   If txtencid.Text Then
     modRepository.$RepoDataStatus = False
@@ -675,7 +675,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
       GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.RichText, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
     Endif
   Else If Column = 5 Then
-    GridView1.Data.Picture = Picture["icon:/small/cancel"]
+    GridView1.Data.Picture = Picture["icon:/tiny/cancel"]
     GridView1.Data.Text = ""
   Else If Column = 6 Then
     GridView1.Data.Text = modReportVar.GetDateTimeReport($rData["fldtime"], gb.GeneralDate)

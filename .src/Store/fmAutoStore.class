@@ -2,18 +2,23 @@
 
 Private $sCompId As String
 Private $colmName As String
-Private $sWaitDay As Integer
+Private $sCheckDay As Integer
+Private $sReqDay As Integer
+Private $sRounding As String
+
 Private $dt1 As Date
 Private $dt2 As Date
 
 Private $xVar As Variant[]
 Private sTime As Date
 
-Public Sub _new(sCompID As String, sColumnName As String, sDays As Integer)
+Public Sub _new(sCompID As String, sColumnName As String, sCheckDays As Integer, sRequestDays As Integer, sRounding As String)
 
   $sCompId = sCompID
   $colmName = sColumnName
-  $sWaitDay = sDays
+  $sCheckDay = sCheckDays
+  $sReqDay = sRequestDays
+  $sRounding = sRounding
 
 End
 
@@ -23,8 +28,8 @@ Public Sub Form_Open()
   ' Me.Icon = Picture[modGeneralMain.$strLogo]
   cmbcomtaget.List = modBasic.$AllCompPerList
   $dt2 = modDate.StartSqlDate(Now())
-  $dt1 = DateAdd($dt2, gb.Day, 0 - $sWaitDay)
-  lblfirst.Text = $sCompId & " : Based on Sales from " & modReportVar.GetDateTimeReport($dt1, gb.MediumDate) & " TO " & modReportVar.GetDateTimeReport($dt2, gb.MediumDate)
+  $dt1 = DateAdd($dt2, gb.Day, 0 - $sCheckDay)
+  lblfirst.Text = "Please Wait . . . ."
 
   $xVar = New Variant[]
   sTime = Now()
@@ -36,8 +41,8 @@ Public Sub Timer1_Timer()
 
   If DateDiff(sTime, Now(), gb.Second) > 1 Then
     Timer1.Enabled = False
-    If $sCompId And If $sWaitDay Then
-      ShowStoreRequestMedSurg($sCompId, $dt1, $dt2)
+    If $sCompId And If $sReqDay Then
+      ShowStoreRequestMedSurg($sCompId, $dt1, $dt2, $sReqDay, $sRounding)
     Endif
   Endif
 
@@ -49,27 +54,53 @@ Public Sub Form_Close()
 
 End
 
-Private Sub ShowStoreRequestMedSurg(CompId As String, dt1 As Date, dt2 As Date)
+Private Sub ShowStoreRequestMedSurg(CompId As String, dt1 As Date, dt2 As Date, orderDays As Integer, sRound As String)
 
   Dim sql As String
   Dim res As Result
   Dim aColl As Collection
+  Dim xinterval As Integer
 
-  Dim xsales As Float
   Dim xcurr As Float
+  Dim xsales As Float
+  Dim xsaleRate As Float
+  Dim xpacksize As Float
   Dim xnew As Float
 
-  sql = "select flditem,SUM(fldqtydisp-fldqtyret) as qty from tblpatdosing where fldtime>=&1 and fldtime<=&2 and fldsave_order=&3 and " & $colmName & " like &4 GROUP BY flditem"
+  xinterval = DateDiff(dt1, dt2, gb.Day)
+  sql = "select fldroute,flditem,SUM(fldqtydisp-fldqtyret) as qty from tblpatdosing where fldtime>=&1 and fldtime<=&2 and fldsave_order=&3 and " & $colmName & " like &4 GROUP BY flditem"
   res = modDatabase.$syConn.Exec(sql, dt1, dt2, True, compid)
 
   modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory).Value = 0
   For Each res
-    xsales = 0
     xcurr = 0
+    xsales = 0
+    xsaleRate = 0
+    xpacksize = 0
     xnew = 0
-    xsales = res["qty"]
+
     xcurr = modStock.TotalQTYbyBrand(res["flditem"], compid)
-    xnew = xsales - xcurr
+    xsales = res["qty"]
+    If xsales Then
+      xsaleRate = xsales / xinterval
+    Else
+      xsaleRate = 0
+    Endif
+
+    If sRound = "Pack Size" Then
+      Select res["fldroute"]
+        Case "suture", "msurg", "ortho", "extra"
+          xpacksize = 1
+        Case Else
+          xpacksize = modMedConstant.GetPacketSizeMedicine(res["flditem"])
+      End Select
+      xnew = Ceil(((xsaleRate * orderDays) - xcurr) / xpacksize) * xpacksize
+    Else If sRound = "Tens" Then
+      xnew = Ceil(((xsaleRate * orderDays) - xcurr) / 10) * 10
+    Else
+      xnew = Ceil((xsaleRate * orderDays) - xcurr)
+    Endif
+
     If xnew > 0 Then
       aColl = New Collection
       aColl.Add(res["flditem"], CStr(0))
@@ -99,6 +130,8 @@ Private Sub ShowStoreRequestMedSurg(CompId As String, dt1 As Date, dt2 As Date)
     .Columns[2].Text = "CurrQTY"
     .Columns[3].Text = "Request"
   End With
+
+  lblfirst.Text = $sCompId & " : Based on Sales from " & modReportVar.GetDateTimeReport($dt1, gb.MediumDate) & " TO " & modReportVar.GetDateTimeReport($dt2, gb.MediumDate)
 
 End
 

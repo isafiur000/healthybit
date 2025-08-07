@@ -108,7 +108,7 @@ Public Sub grdfluid_Click()
 
   Else If grdfluid.Column = 7 Then
     If grdfluid[grdfluid.Row, 6].Text = "Continue" Then
-      If grdfluid[grdfluid.Row, 7].Picture = Picture["icon:/small/next"] Then
+      If grdfluid[grdfluid.Row, 7].Picture = Picture["icon:/tiny/next"] Then
         yval = InputValue(("Enter Rate of Administration in mL/Hour"), grdfluid[grdfluid.Row, 2].Text, 0)
         If yval Then
           modPharmSub.InsertNurDosing(grdfluid[grdfluid.Row, 0].Text, $encid, yval, "mL/Hour", Now())
@@ -180,7 +180,7 @@ Public Sub grdfluiddata_Click()
   Dim Row As Integer
 
   If grdfluiddata.Column = 6 Then
-    If grdfluiddata[grdfluiddata.Row, 6].Picture = Picture["icon:/small/stop"] Then
+    If grdfluiddata[grdfluiddata.Row, 6].Picture = Picture["icon:/tiny/stop"] Then
       Row = grdfluid.Row
       res = modDatabase.$myConn.Edit("tblnurdosing", "fldid=&1", grdfluiddata[grdfluiddata.Row, 0].Text)
       res["fldtotime"] = Now()

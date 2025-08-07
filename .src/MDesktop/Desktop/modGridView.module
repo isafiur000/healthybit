@@ -68,7 +68,7 @@ Public Sub ReadExplicitData(sType As String, GridView1 As GridView, $hres As Res
       If j = $hres.Fields.Count - 1 Then
         Select sType
           Case "Dual Columns", "Triple Columns"
-            GridView1[$hres.Index, j].Picture = Picture["icon:/small/cancel"]
+            GridView1[$hres.Index, j].Picture = Picture["icon:/tiny/cancel"]
             GridView1[$hres.Index, j].Text = ""
           Case Else
             GridView1[$hres.Index, j].Text = $hres[fld.Name]

@@ -1,11 +1,21 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,1,91,53)
+  MoveScaled(0,1,100,51)
   Arrangement = Arrange.Vertical
   Margin = True
+  { Panel4 Panel
+    MoveScaled(0,0,90,4)
+    { cmbcategory ComboBox
+      MoveScaled(0.5,0.5,26,3)
+    }
+    { btnrefresh Button
+      MoveScaled(27,0.5,7,3)
+      Picture = Picture["icon:/small/refresh"]
+    }
+  }
   { Panel1 Panel
-    MoveScaled(0,0,91,4)
+    MoveScaled(0,4,99,4)
     { chkleftmain CheckBox
       MoveScaled(0,0.5,3,3)
     }
@@ -25,17 +35,17 @@
     }
   }
   { Panel3 Panel
-    MoveScaled(0,4,91,48)
+    MoveScaled(0,8,99,42)
     Arrangement = Arrange.Horizontal
     { GridView1 GridView
-      MoveScaled(1,1,83,27)
+      MoveScaled(1,1,93,40)
       Expand = True
       Mode = Select.Single
       Header = GridView.Both
       AutoResize = False
     }
     { lstletter ListBox
-      MoveScaled(86,0,4,47)
+      MoveScaled(95,0,4,41)
       Visible = False
       Sorted = True
     }

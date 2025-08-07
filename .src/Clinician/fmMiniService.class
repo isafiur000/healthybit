@@ -207,6 +207,19 @@ Public Sub GridView3_Select()
 
 End
 
+Public Sub btnaddone_Click()
+
+  If GridView3.Rows.Selection.Count Then
+    If modMisc.AllowDiagnoBilling($encid) = True Then
+      InsertClinicService(GridView3[GridView3.Row, 1].Text, GridView3[GridView3.Row, 0].Text, 1)
+      FillLabtable()
+    Else
+      Message.Warning("Diagnosis not provided", ("OK"))
+    Endif
+  Endif
+
+End
+
 Public Sub btnadd_Click()
 
   Dim xval As Float
@@ -255,7 +268,7 @@ Private Sub InsertClinicService(sCateg As String, sItem As String, sQty As Float
   Endif
 
   If xauto Then
-    If xauto = "Yes" Or If xauto = "Full" Or If xauto = "Partial" Then
+    If xauto = "Standard" Or If xauto = "Full" Or If xauto = "Partial" Then
       If btnrefer.Tag Then
         xrefer = btnrefer.Tag
       Else
@@ -298,7 +311,11 @@ Public Sub btnsave_Click()
       xauto = modBasic.$AutoBillOthers
     Endif
 
-    If xauto = "Yes" Or If xauto = "Full" Then
+    If xauto = "Standard" Then
+      If modNonMedical.AllowPreCheckDeposit($encid, res["fldditemamt"]) = True Then
+        SavePartialEntry(res)
+      Endif
+    Else If xauto = "Full" Then
       If modNonMedical.AllowPreEntryWithDeposit($encid, xform, res["fldditemamt"], btnsave) = True Then
         SavePartialEntry(res)
       Endif
@@ -340,7 +357,7 @@ Public Sub FillLabtable()
       If Column = 4 Then
         GridView1[res.Index, Column].Text = modReportVar.GetDateTimeReport(res["fldordtime"], gb.GeneralDate)
       Else If Column = 2 Then
-        GridView1[res.Index, Column].Picture = Picture["icon:/small/cancel"]
+        GridView1[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
         GridView1[res.Index, Column].Text = ""
       Else
         GridView1[res.Index, Column].Text = res[fld.Name]

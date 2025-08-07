@@ -720,6 +720,9 @@ Public Sub HTMLViewDOcument($path As String, encid As String, sType As String)
   aPath = "file://" & sTarget
   If modBasic.$browserFormat = "External" Then
     modDevice.DesktopOpenFile(aPath)                                          ''
+  Else If modBasic.$browserFormat = "RightPanel" Then
+    modGeneralMain.$RightAdView.Url = aPath
+    modGeneralMain.$RightAdView.Refresh()
   Else
     If modBasic.$WebViewApp = "webkit" Then
       hFormKit = New FmWebKitView(aPath, False, encid, sType)

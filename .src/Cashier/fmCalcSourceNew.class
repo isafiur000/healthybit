@@ -77,12 +77,12 @@ Private Sub SetBillGridView()
 
     If xcash > 0 Then
       If xbool = True Then
-        GridView1[Row, 0].Picture = Picture["icon:/small/cancel"]
+        GridView1[Row, 0].Picture = Picture["icon:/tiny/cancel"]
       Else If xbool = False Then
-        GridView1[Row, 0].Picture = Picture["icon:/small/added"]
+        GridView1[Row, 0].Picture = Picture["icon:/tiny/added"]
       Endif
     Else
-      GridView1[Row, 0].Picture = Picture["icon:/small/cancel"]
+      GridView1[Row, 0].Picture = Picture["icon:/tiny/cancel"]
     Endif
     GridView1[Row, 0].Text = ""
     GridView1[Row, 1].Text = xList[Row]
@@ -108,7 +108,7 @@ Public Sub GridView1_Select()
   txtinvoices.Text = GridView1[GridView1.Row, 1].Text
   txtrecv.Value = GridView1[GridView1.Row, 2].Text
   txtcashhand.Value = GridView1[GridView1.Row, 2].Text
-  If GridView1[GridView1.Row, 0].Picture = Picture["icon:/small/added"] Then
+  If GridView1[GridView1.Row, 0].Picture = Picture["icon:/tiny/added"] Then
     Frame1.Enabled = True
     Panel2.Enabled = True
     cmbformatone.SetFocus

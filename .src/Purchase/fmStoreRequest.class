@@ -12,10 +12,11 @@ Public Sub Form_Open()
   If modHelpVariable.$LogInCategory = "Purchase" Then
     cmbtarget.List = modBasic.$AllCompPerList
     cmbtarget.Text = "%"
+    btntransall.Visible = False
   Else If modHelpVariable.$LogInCategory = "Store" Then
     cmbtarget.Text = modBasic.$compID
     cmbtarget.Enabled = False
-    Panel7.Enabled = False
+    btnverify.Visible = False
   Endif
   cmbsource.List = modBasic.$AllCompPerList
   cmbsource.Text = "%"
@@ -110,7 +111,7 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
   Else If Column = 7 Then
     GridView2.Data.Text = modReportVar.GetDateTimeReport($rData1[$aMyFields1[Column]], gb.MediumDate)
   Else If Column = 9 Then
-    GridView2.Data.Picture = Picture["icon:/small/apply"]
+    GridView2.Data.Picture = Picture["icon:/tiny/apply"]
     GridView2.Data.Text = ""
   Else
     GridView2.Data.Text = $rData1[$aMyFields1[Column]]
@@ -343,5 +344,29 @@ End
 Public Sub btnexport_Click()
 
   modCHTMLReport.ExportGridToHTML(GridView2, txtreference.Text, modReportVar.GetDateTimeReport(Now(), gb.GeneralDate))
+
+End
+
+Public Sub btntransall_Click()
+
+  Dim Row As Integer
+  Dim res As Result
+  Dim xbool As Boolean
+
+  If modHelpVariable.$LogInCategory = "Store" Then
+    For Row = 0 To GridView2.Rows.Count - 1
+
+      res = modDatabase.$myConn.Edit("tblrequest", "fldid=&1 and fldstatus=&2 and fldsave=&3", GridView2[Row, 0].Text, "Requested", True)
+      If res.Available Then
+        xbool = TransferItem(GridView2[Row, 3].Text, CInt(GridView2[Row, 5].Text), GridView2[Row, 2].Text)
+        If xbool = True Then
+          res["fldstatus"] = "Completed"
+          res.Update
+        Endif
+      Endif
+
+    Next
+    SHowOrderGridView()
+  Endif
 
 End

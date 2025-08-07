@@ -2902,9 +2902,10 @@ Public Sub GridView1_Click()
           If res1["fldacledger"] Then
             res["fldacledger"] = res1["fldacledger"]
           Endif
-          If res["fldcashincredit"] Then
-          Else
+          If res1["fldbilltype"] = "Cash" Then
             res["fldcashincredit"] = 0
+          Else
+            res["fldcashincredit"] = modNonMedical.CashInCreditPerForCategory(xpack, res["flditemtype"], res["flditemname"], res1["fldbillingmode"])
           Endif
           res.Update
           ShowNewEntry()
@@ -3033,9 +3034,10 @@ Public Sub mnupackageall_Click()
           If res1["fldacledger"] Then
             res["fldacledger"] = res1["fldacledger"]
           Endif
-          If res["fldcashincredit"] Then
-          Else
+          If res1["fldbilltype"] = "Cash" Then
             res["fldcashincredit"] = 0
+          Else
+            res["fldcashincredit"] = modNonMedical.CashInCreditPerForCategory(xpack, res["flditemtype"], res["flditemname"], res1["fldbillingmode"])
           Endif
           res.Update
         Next
@@ -4098,9 +4100,10 @@ Public Sub mnupackphmall_Click()
           If res1["fldacledger"] Then
             res["fldacledger"] = res1["fldacledger"]
           Endif
-          If res["fldcashincredit"] Then
-          Else
+          If res1["fldbilltype"] = "Cash" Then
             res["fldcashincredit"] = 0
+          Else
+            ' res["fldcashincredit"] = modNonMedical.CashInCreditPerForCategory(xpack, res["flditemtype"], res["flditemname"], res1["fldbillingmode"])
           Endif
           res.Update
         Next
@@ -4700,6 +4703,11 @@ Public Sub mnueditcashcredit_Click()
             Endif
             If res1["fldacledger"] Then
               res["fldacledger"] = res1["fldacledger"]
+            Endif
+            If res1["fldbilltype"] = "Cash" Then
+              res["fldcashincredit"] = 0
+            Else
+              res["fldcashincredit"] = modNonMedical.CashInCreditPerForCategory(xpack, res["flditemtype"], res["flditemname"], res1["fldbillingmode"])
             Endif
             res.Update
             ShowOldEntry()

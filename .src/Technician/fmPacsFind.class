@@ -304,7 +304,7 @@ Public Sub GridView1_Click()
       For Row = 0 To aList.Count - 1
         GridView2[Row, 0].Text = ""
         GridView2[Row, 1].Text = GridView1[GridView1.Row, 6].Text
-        GridView2[Row, 2].Picture = Picture["icon:/small/attach"]
+        GridView2[Row, 2].Picture = Picture["icon:/tiny/attach"]
         GridView2[Row, 2].Text = ""
         GridView2[Row, 3].Text = aList[Row]
       Next
@@ -317,7 +317,7 @@ Public Sub GridView1_Click()
       For Row = 0 To aList.Count - 1
         GridView2[Row, 0].Text = aList[Row]["00080060"]["Value"][0]
         GridView2[Row, 1].Text = GridView1[GridView1.Row, 6].Text
-        GridView2[Row, 2].Picture = Picture["icon:/small/attach"]
+        GridView2[Row, 2].Picture = Picture["icon:/tiny/attach"]
         GridView2[Row, 2].Text = ""
         GridView2[Row, 3].Text = aList[Row]["0020000E"]["Value"][0]
       Next
@@ -330,7 +330,7 @@ Public Sub GridView1_Click()
       For Row = 0 To aList.Count - 1
         GridView2[Row, 0].Text = aList[Row]["Modality"]  ''GetDicomValue(FileList[Row], "Modality")
         GridView2[Row, 1].Text = GridView1[GridView1.Row, 6].Text
-        GridView2[Row, 2].Picture = Picture["icon:/small/attach"]
+        GridView2[Row, 2].Picture = Picture["icon:/tiny/attach"]
         GridView2[Row, 2].Text = ""
         GridView2[Row, 3].Text = aList[Row]["SeriesInstanceUID"]  'GetDicomValue(FileList[Row], "SeriesInstanceUID")
       Next

@@ -501,7 +501,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   Else If Column = 6 Then
     GridView1.Data.RichText = GetGridViewValue(Column, $rData[$aMyFields[Column]])
   Else If Column = 7 Then
-    ' GridView1.Data.Picture = Picture["icon:/small/access"]
+    ' GridView1.Data.Picture = Picture["icon:/tiny/access"]
     ' GridView1.Data.Text = ""
   Else If Column = 8 Then
     GridView1.Data.Font.Grade = -1
@@ -827,10 +827,7 @@ End
 
 Public Sub btnautobill_Click()
 
-  Dim autobil As String
-
-  autobil = modBasic.$AutoBillBed
-  If autobil = "Yes" Or If autobil = "Full" Or If autobil = "Partial" Then
+  If modBasic.$AutoBillBed = "Standard" Or If modBasic.$AutoBillBed = "Full" Or If modBasic.$AutoBillBed = "Partial" Then
     Message.Warning("Auto Billing of Bed Charges is enabled", ("OK"))
   Else
     If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then

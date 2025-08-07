@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,102,65)
+  MoveScaled(0,0,112.5,66)
   Text = ("Radiology Tests")
   Resizable = False
   { mnufile Menu
@@ -21,13 +21,24 @@
       Text = ("Target")
     }
   }
+  { mnuhidetree Menu
+    { mnudeltree Menu
+      Text = ("Delete")
+    }
+    { mnucommentree Menu
+      Text = ("Comment")
+    }
+    { mnutargetree Menu
+      Text = ("Target")
+    }
+  }
   { TabPanel1 TabPanel
-    MoveScaled(1,9,100,55)
-    Count = 3
+    MoveScaled(1,9,111,56)
+    Count = 4
     Index = 0
     Text = ("Pending [F1]")
     { GridView2 GridView
-      MoveScaled(1,0.625,98,18)
+      MoveScaled(1,0.625,109,18)
       Mode = Select.Single
       Header = GridView.Both
       AutoResize = False
@@ -38,87 +49,166 @@
       Text = ("Accepted but Not Reported")
     }
     { GridView3 GridView
-      MoveScaled(1,24,98,26)
+      MoveScaled(1,24,109,26)
       Mode = Select.Single
       Header = GridView.Both
       AutoResize = False
     }
     Index = 1
     Text = ("Request [F2]")
-    { txtsearch ButtonBox
-      MoveScaled(5,4.375,19,3)
-      Picture = Picture["icon:/small/cancel"]
-    }
-    { btnselect ToolButton
-      MoveScaled(36,19,7,8)
-      Tag = "Auto"
-      Picture = Picture["icon:/huge/right"]
-    }
-    { btnsave Button
-      MoveScaled(86,0.625,12,3)
-      Text = Shortcut(("Save"), "S")
-      Picture = Picture["icon:/small/apply"]
-    }
-    { GridView1 GridView
-      MoveScaled(43,4,55,46)
-      Mode = Select.Single
-      Header = GridView.Both
-      AutoResize = False
-      Resizable = False
-    }
-    { ListView1 ListView
-      MoveScaled(1,8,30,42.625)
-      Sorted = True
-    }
-    { lstletter ListBox
-      MoveScaled(31.625,4.375,4,46.375)
-      Sorted = True
-    }
-    { chkleftmain CheckBox
-      MoveScaled(1,4.375,3,3)
-    }
-    { chkall CheckBox
-      MoveScaled(25,4.375,6,3)
-      Text = ("All")
-    }
-    { pnlgroup Panel
-      MoveScaled(1,0.625,35.5,3.5)
-      Enabled = False
-      { btnclear ToolButton
-        MoveScaled(27,0,3,3)
-        Picture = Picture["icon:/small/cancel"]
+    { Panel1 Panel
+      MoveScaled(0,0,21.5,51)
+      Arrangement = Arrange.Vertical
+      { Panel9 Panel
+        MoveScaled(0,0,21,4)
+        { rblabs RadioButton
+          MoveScaled(1,0.5,9,3)
+          Text = ("Radio")
+        }
+        { rbcash RadioButton
+          MoveScaled(11,0.5,8,3)
+          Text = ("Cash")
+          Value = True
+        }
       }
-      { btnshowsel ToggleButton
-        MoveScaled(30.625,0,4,3)
-        Picture = Picture["icon:/small/options"]
+      { cmbtestgroup ListBox
+        MoveScaled(0,4,20,30)
+        Expand = True
       }
-      { cmbtestgroup ComboBox
-        MoveScaled(0,0,26.625,3)
+      { chkdefault CheckBox
+        MoveScaled(1,34,19,3.5)
+        Text = ("Default List")
+      }
+    }
+    { Panel4 Panel
+      MoveScaled(21.75,0,36,51)
+      Arrangement = Arrange.Vertical
+      { Panel5 Panel
+        MoveScaled(0,6,36,4)
+        { txtsearch ButtonBox
+          MoveScaled(3.5,0.5,13,3)
+          Picture = Picture["icon:/small/cancel"]
+        }
+        { chkall CheckBox
+          MoveScaled(18,0.5,6,3)
+          Text = ("All")
+        }
+        { chkleftmain CheckBox
+          MoveScaled(0,0.5,3,3)
+        }
+        { btnselect Button
+          MoveScaled(26,0.5,9,3)
+          Tag = "Auto"
+          Picture = Picture["icon:/small/right"]
+        }
+      }
+      { ListView1 ListView
+        MoveScaled(0,10,30,34)
+        Expand = True
         Sorted = True
       }
     }
-    { txtlastsaledate TextBox
-      MoveScaled(43,0.625,16,3)
-      Font = Font["Bold"]
-      ReadOnly = True
-      Placeholder = ("Last Sales")
+    { Panel8 Panel
+      MoveScaled(58,0,52,51)
+      Arrangement = Arrange.Vertical
+      { Panel3 Panel
+        MoveScaled(0,0,52,4)
+        { btnsave Button
+          MoveScaled(39,0.5,12,3)
+          Text = Shortcut(("Save"), "S")
+          Picture = Picture["icon:/small/apply"]
+        }
+        { txtlastsaledate TextBox
+          MoveScaled(0,0.5,16,3)
+          Font = Font["Bold"]
+          ReadOnly = True
+          Placeholder = ("Last Sales")
+        }
+      }
+      { GridView1 GridView
+        MoveScaled(0,4,40,35)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Both
+        AutoResize = False
+        Resizable = False
+      }
     }
     Index = 2
-    Text = ("Reported [F3]")
+    Text = ("Request [F3]")
+    { Panel10 Panel
+      MoveScaled(0,0,21,51)
+      Arrangement = Arrange.Vertical
+      { cmbcategory ListBox
+        MoveScaled(0,0,20,30)
+        Expand = True
+      }
+    }
+    { Panel12 Panel
+      MoveScaled(21.5,0,40,51)
+      Arrangement = Arrange.Vertical
+      { Panel11 Panel
+        MoveScaled(0,0,40,4)
+        { txtsearchtree ButtonBox
+          MoveScaled(4,0.5,14,3)
+          Picture = Picture["icon:/small/cancel"]
+        }
+        { btnselecttree Button
+          MoveScaled(25,0.5,13,3)
+          Tag = "Auto"
+          Picture = Picture["icon:/small/right"]
+        }
+        { chkleftTree CheckBox
+          MoveScaled(0,0.5,3,3)
+        }
+      }
+      { TreeView1 TreeView
+        MoveScaled(1,5,31,27)
+        Expand = True
+      }
+    }
+    { Panel7 Panel
+      MoveScaled(62,0,48,51)
+      Arrangement = Arrange.Vertical
+      { Panel6 Panel
+        MoveScaled(0,0,48,4)
+        { btnsavetree Button
+          MoveScaled(35,0.5,12,3)
+          Text = Shortcut(("Save"), "S")
+          Picture = Picture["icon:/small/apply"]
+        }
+        { txtlastsaledate2 TextBox
+          MoveScaled(0,0.5,16,3)
+          Font = Font["Bold"]
+          ReadOnly = True
+          Placeholder = ("Last Sales")
+        }
+      }
+      { GridView4 GridView
+        MoveScaled(0,4,40,36)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Both
+        AutoResize = False
+        Resizable = False
+      }
+    }
+    Index = 3
+    Text = ("Report [F4]")
+    { lsttestname ListBox
+      MoveScaled(1,1,26,49)
+      Sorted = True
+    }
     { TableView1 GridView
-      MoveScaled(28,0.625,71,49)
+      MoveScaled(28,1,82,49)
       Mode = Select.Single
       Header = GridView.Both
       AutoResize = False
-    }
-    { lsttestname ListBox
-      MoveScaled(1,0.625,26,49)
-      Sorted = True
     }
     Index = 0
   }
   { btnrefer ButtonBox
-    MoveScaled(70,1,30,3)
+    MoveScaled(81,1,30,3)
     Picture = Picture["icon:/small/people"]
     ReadOnly = True
   }
@@ -142,12 +232,12 @@
     ReadOnly = True
   }
   { Label6 Label
-    MoveScaled(59,1,10,3)
+    MoveScaled(70,1,10,3)
     Border = Border.Plain
     Text = ("Refer By:")
   }
   { Label2 Label
-    MoveScaled(29,5,7,3)
+    MoveScaled(32,5,7,3)
     Border = Border.Plain
     Text = ("Target")
   }
@@ -156,16 +246,12 @@
     ToolTip = ("Select target Department ID")
     Sorted = True
   }
-  { btndefault ToolButton
-    MoveScaled(36,5,3,3)
-    Picture = Picture["icon:/small/down"]
-  }
   { Label7 Label
-    MoveScaled(59,5,10,3)
+    MoveScaled(70,5,10,3)
     Border = Border.Plain
     Text = ("Scheme")
   }
   { cmbdisctype ComboBox
-    MoveScaled(70,5,30,3)
+    MoveScaled(81,5,30,3)
   }
 }

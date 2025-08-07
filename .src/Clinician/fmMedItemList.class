@@ -105,7 +105,7 @@ Public Sub FillRequestGrid()
       If Column = 1 Then
         GridView1[res.Index, Column].Text = modReportVar.GetDateTimeReport(res["fldtime_order"], gb.GeneralDate)
       Else If Column = 5 Then
-        GridView1[res.Index, Column].Picture = Picture["icon:/small/cancel"]
+        GridView1[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
         GridView1[res.Index, Column].Text = ""
       Else
         GridView1[res.Index, Column].Text = res[fld.Name]

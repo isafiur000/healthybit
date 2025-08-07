@@ -143,7 +143,7 @@ Private Sub FillGridView()
     For Each fld In res.Fields
       modGeneralMain.GridExplicitDecoration(GridView1, res.Index, Column)
       If Column = 5 Then
-        GridView1[res.Index, Column].Picture = Picture["icon:/small/cancel"]
+        GridView1[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
         GridView1[res.Index, Column].Text = ""
       Else
         GridView1[res.Index, Column].Text = res[fld.Name]

@@ -19,6 +19,7 @@ Public Sub Form_Open()
   cmblabelauto.List = ["High Risk", "Low Risk", "All Types"]
   cmbprescsource.List = ["LocalDB", "RemoteDB"]
   cmbmedalert.List = ["Patient No", "Patient Code", "Data Repo", "None"]
+  cmbqtypacksize.List = ["Enable", "Disable"]
   cmbphmstatus.List = ["Continue", "Reserve"]
   cmbpharmreq.List = ["Combined", "Separate"]
 
@@ -37,15 +38,18 @@ Public Sub Form_Open()
   cmbslider.List = ["Enable", "Disable"]
   cmbicdformat.List = ["TreeView", "GridView"]
 
-  cmbmedlabel.List = ["Brand", "Generic", "Both"]
   cmbbodyformat.List = ["Tabular", "Paragraph"]
   cmbshowday.List = ["Date", "User", "Date+User", "None"]
   cmbdiagnoday.List = ["Date", "User", "Date+User", "None"]
-  cmbmedicineday.List = ["Yes", "No"]
   cmbquantchart.List = ["Chart", "FitsrVal", "LastVal", "First-LastVal", "AllValues"]
   cmbqualival.List = ["FitsrVal", "LastVal", "First-LastVal", "AllValues"]
   cmbclinscale.List = ["Summary", "GroupWise"]
   cmbvisithistory.List = ["All Visits", "Last Visit"]
+
+  cmbmedlabel.List = ["Brand", "Generic", "Both"]
+  cmbmedicineday.List = ["Yes", "No"]
+  cmbdoseformat.List = ["Value", "Label"]
+  cmbfreqformat.List = ["Value", "Label"]
 
   cmbdeflab.List = modNonMedical.NonSTockCostingGroupList("Test")
   cmbdefradio.List = modNonMedical.NonSTockCostingGroupList("Radio")
@@ -58,6 +62,7 @@ Public Sub Form_Open()
 
   ShowDefaultGroup()
   ShowFormatReport()
+  MedicineReportSetting()
   ShowForulSource()
   ClinGeneralSetting()
   ClinFormsSetting()
@@ -277,6 +282,7 @@ Private Sub SHowLabeling()
   cmbprescsource.Text = modSettings.ShowSettingFromFIle("Prescription/Source")
   cmbmedalert.Text = modSettings.ShowSettingFromFIle("HistoryAlert/PatientCode")
   cmbphmstatus.Text = modSettings.ShowSettingFromFIle("MedicineRequest/DefaultStatus")
+  cmbqtypacksize.Text = modSettings.ShowSettingFromFIle("MedicineRequest/UsePackSize")
 
   txtpharmcloud.Text = modSettings.ShowSettingFromFIle("Invoice/AIResponse")
   cmbpharmreq.Text = modSettings.ShowSettingFromFIle("MedicineRequest/FormFormat")
@@ -315,6 +321,15 @@ Public Sub btnmedalert_Click()
   modSettings.SaveSettingsToFile("HistoryAlert/PatientCode", cmbmedalert.Text)
   modBasic.$SalesHistoryAlert = cmbmedalert.Text
   Balloon.Info(("Information saved"), btnmedalert)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnqtypacksize_Click()
+
+  modSettings.SaveSettingsToFile("MedicineRequest/UsePackSize", cmbqtypacksize.Text)
+  modBasic.$SalesQTYPack = cmbqtypacksize.Text
+  Balloon.Info(("Information saved"), btnqtypacksize)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -493,23 +508,13 @@ End
 Private Sub ShowFormatReport()
 
   cmbbodyformat.Text = modSettings.ShowSettingFromFIle("ClinicalReport/BodyFormat")
-  cmbmedlabel.Text = modSettings.ShowSettingFromFIle("ClinicalReport/MedicineName_Format")
   cmbshowday.Text = modSettings.ShowSettingFromFIle("ClinicalReport/ShowDay_Report")
   cmbdiagnoday.Text = modSettings.ShowSettingFromFIle("ClinicalReport/ShowDiagnosticDay_Report")
-  cmbmedicineday.Text = modSettings.ShowSettingFromFIle("ClinicalReport/ShowMedicineStartDate_Report")
 
   cmbquantchart.Text = modSettings.ShowSettingFromFIle("ClinicalReport/QuantiValue_Format")
   cmbqualival.Text = modSettings.ShowSettingFromFIle("ClinicalReport/QualiValue_Format")
   cmbclinscale.Text = modSettings.ShowSettingFromFIle("ClinicalReport/ScaleValue_Format")
   cmbvisithistory.Text = modSettings.ShowSettingFromFIle("ClinicalReport/HistorySource")
-
-End
-
-Public Sub btnmedlabel_Click()
-
-  modSettings.SaveSettingsToFile("ClinicalReport/MedicineName_Format", cmbmedlabel.Text)
-  Balloon.Info(("Information saved"), btnmedlabel)
-  Balloon.Delay = modBasic.$BalloonDelay
 
 End
 
@@ -567,15 +572,6 @@ Public Sub btndiagnoday_Click()
 
 End
 
-Public Sub btnmedicineday_Click()
-
-  modSettings.SaveSettingsToFile("ClinicalReport/ShowMedicineStartDate_Report", cmbmedicineday.Text)
-  modBasic.$ShowDayMesStartReport = cmbmedicineday.Text
-  Balloon.Info(("Information saved"), btnmedicineday)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
 Public Sub btnbodyformat_Click()
 
   modSettings.SaveSettingsToFile("ClinicalReport/BodyFormat", cmbbodyformat.Text)
@@ -585,6 +581,53 @@ Public Sub btnbodyformat_Click()
 
 End
 
+''------------------------ Medicine ------------------
+Private Sub MedicineReportSetting()
+
+  cmbmedlabel.Text = modSettings.ShowSettingFromFIle("ClinicalReport/MedicineName_Format")
+  cmbmedicineday.Text = modSettings.ShowSettingFromFIle("ClinicalReport/ShowMedicineStartDate_Report")
+  cmbdoseformat.Text = modSettings.ShowSettingFromFIle("ClinicalReport/MedicineDose_Format")
+  cmbfreqformat.Text = modSettings.ShowSettingFromFIle("ClinicalReport/MedicineFrequency_Format")
+
+End
+
+Public Sub btnmedlabel_Click()
+
+  modSettings.SaveSettingsToFile("ClinicalReport/MedicineName_Format", cmbmedlabel.Text)
+  modBasic.$MedicineNameFormat = cmbmedlabel.Text
+  Balloon.Info(("Information saved"), btnmedlabel)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnmedicineday_Click()
+
+  modSettings.SaveSettingsToFile("ClinicalReport/ShowMedicineStartDate_Report", cmbmedicineday.Text)
+  modBasic.$ShowDayMesStartReport = cmbmedicineday.Text
+  Balloon.Info(("Information saved"), btnmedicineday)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btndoseformat_Click()
+
+  modSettings.SaveSettingsToFile("ClinicalReport/MedicineDose_Format", cmbdoseformat.Text)
+  modBasic.$MedicineDoseFormat = cmbdoseformat.Text
+  Balloon.Info(("Information saved"), btndoseformat)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnfreqformat_Click()
+
+  modSettings.SaveSettingsToFile("ClinicalReport/MedicineFrequency_Format", cmbfreqformat.Text)
+  modBasic.$MedicineFrequencyFormat = cmbfreqformat.Text
+  Balloon.Info(("Information saved"), btnfreqformat)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''--------------------------------
 Public Sub txtsmsphy_KeyRelease()
 
   Dim hform As FmMedVariableEdit

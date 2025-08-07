@@ -205,16 +205,16 @@ Public Sub GridView1_Click()
     Endif
   Else If GridView1.Column = 5 Then
     res = modDatabase.$myConn.Edit("tblnurdosing", "fldid=&1", GridView1[GridView1.Row, 0].Text)
-    If GridView1[GridView1.Row, 5].Picture = Picture["icon:/small/play"] Then
+    If GridView1[GridView1.Row, 5].Picture = Picture["icon:/tiny/play"] Then
       res["fldfromtime"] = Now()
       res["xyz"] = False
       res.Update
-      GridView1[GridView1.Row, 5].Picture = Picture["icon:/small/stop"]
-    Else If GridView1[GridView1.Row, 5].Picture = Picture["icon:/small/stop"] Then
+      GridView1[GridView1.Row, 5].Picture = Picture["icon:/tiny/stop"]
+    Else If GridView1[GridView1.Row, 5].Picture = Picture["icon:/tiny/stop"] Then
       res["fldtotime"] = Now()
       res["xyz"] = False
       res.Update
-      GridView1[GridView1.Row, 5].Picture = Picture["icon:/small/lock"]
+      GridView1[GridView1.Row, 5].Picture = Picture["icon:/tiny/lock"]
     Endif
   Endif
 

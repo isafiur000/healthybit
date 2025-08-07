@@ -420,11 +420,11 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
   $rData2.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView2, Row)
   If Column = 4 Then
-    GridView2.Data.Picture = Picture["icon:/small/cancel"]
+    GridView2.Data.Picture = Picture["icon:/tiny/cancel"]
     GridView2.Data.Text = ""
   Else If Column = 5 Then
     If rbwaiting.Value = True Then
-      GridView2.Data.Picture = Picture["icon:/small/apply"]
+      GridView2.Data.Picture = Picture["icon:/tiny/apply"]
     Endif
     GridView2.Data.Text = ""
   Else If Column = 8 Then

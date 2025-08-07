@@ -72,7 +72,7 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
   Else If Column = 4 Then
     GridView2.Data.Text = modGeneral.GetUserFullName($rData2[$aMyFields2[Column]])
   Else If Column = 5 Then
-    GridView2.Data.Picture = Picture["icon:/small/apply"]
+    GridView2.Data.Picture = Picture["icon:/tiny/apply"]
     GridView2.Data.Text = ""
   Else
     GridView2.Data.Text = $rData2[$aMyFields2[Column]]

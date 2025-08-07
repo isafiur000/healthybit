@@ -172,7 +172,7 @@ Private Sub UpdateInventoryNetCost()
   Dim res As Result
 
   modBasic.$InvReportCost = "Latest"
-  res = modDatabase.$myConn.Edit("tblentry", "fldcost IS NULL")
+  res = modDatabase.$myConn.Edit("tblentry", "fldcost=&1 or fldcost IS NULL", 0)
   If res.Available Then
     For Each res
       res["fldcost"] = modStock.GetAverageCostPriceByStockNo(res["fldstockno"])
@@ -246,6 +246,7 @@ Private Sub UpdateTransferNetCost()
   Dim res As Result
   Dim xcost As Float
 
+  modBasic.$InvReportCost = "Latest"
   res = modDatabase.$myConn.Edit("tbltransfer", "fldnetcost=&1", 0)
   If res.Available Then
     For Each res
@@ -463,6 +464,7 @@ Private Sub UpdateNetCostTransfeAdjust()
   Dim ras1 As Result
   Dim ras2 As Result
 
+  modBasic.$InvReportCost = "Latest"
   ras1 = modDatabase.$myConn.Exec("UPDATE tbltransfer SET fldnetcost=Null WHERE fldnetcost=0")
   res1 = modDatabase.$myConn.Exec("select distinct(fldoldstockno) as stckno from tbltransfer where fldnetcost IS &1", Null)
   If res1.Available Then

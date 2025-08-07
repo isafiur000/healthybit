@@ -11,7 +11,7 @@
     }
   }
   { Panel3 Panel
-    MoveScaled(0,1.875,119,4)
+    MoveScaled(0,2,119,7.5)
     { cmbcomtaget ComboBox
       MoveScaled(9,0.5,16.5,3)
       Sorted = True
@@ -21,10 +21,10 @@
       Picture = Picture["icon:/small/refresh"]
     }
     { cmbvendor ComboBox
-      MoveScaled(45,0.5,27.5,3)
+      MoveScaled(9,4,63,3)
     }
     { dtexpect DateBox
-      MoveScaled(83,0.5,14,3)
+      MoveScaled(104,4,14,3)
     }
     { Label4 Label
       MoveScaled(1,0.5,7,3)
@@ -32,22 +32,26 @@
       Text = ("Target")
     }
     { Label1 Label
-      MoveScaled(76,0.5,7,3)
+      MoveScaled(97,4,7,3)
       Border = Border.Plain
       Text = ("Before")
     }
     { Label6 Label
-      MoveScaled(38,0.5,7,3)
+      MoveScaled(1,4,7,3)
       Border = Border.Plain
       Text = ("Vendor")
     }
     { cmbfixdepart ComboBox
-      MoveScaled(99,0.5,19,3)
+      MoveScaled(97,0.5,21,3)
       Placeholder = ("Extra Department")
+    }
+    { chkout CheckBox
+      MoveScaled(58,0.5,16,3)
+      Text = ("Out of Stock")
     }
   }
   { Panel4 Panel
-    MoveScaled(0,6.875,119,4)
+    MoveScaled(0,12,119,4)
     { cmbroute ComboBox
       MoveScaled(1,0.5,11,3)
       ToolTip = ("Category of Item")
@@ -88,14 +92,14 @@
     }
   }
   { GridView1 GridView
-    MoveScaled(1,14.875,101,24)
+    MoveScaled(1,21,101,24)
     Expand = True
     Mode = Select.Single
     Header = GridView.Both
     AutoResize = False
   }
   { Panel5 Panel
-    MoveScaled(1,39.875,115,4)
+    MoveScaled(1,46,115,4)
     { btnsave Button
       MoveScaled(1,0.5,15,3)
       Text = ("Save")

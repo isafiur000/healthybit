@@ -195,6 +195,7 @@ Private Sub BlankDosingBox()
   txtdirection.Text = ""
   $HideErr = False
   $HideDos = False
+  lbldose.Text = ""
 
 End
 
@@ -293,6 +294,9 @@ Public Sub btnsetregimen_Click()
         txtday.Value = res["fldday"]
         txtqty.Value = res["fldqty"]
         txtdirection.Text = res["fldusage"]
+        If res["fldbrandid"] Then
+          lbldose.Text = modMedConstant.GetDrugDosingUnit(res["fldbrandid"])
+        Endif
         txtqty.SetFocus
       Endif
     Endif
@@ -310,7 +314,7 @@ Public Sub btnrepeat_Click()
 
   If modMisc.AllowDiagnoBilling($encid) = True Then
 
-    sIdx = GetSetRegimen($LastEncid)
+    sIdx = GetSetRegimen($LastEncid, modPatient.GetEncListFromPatNo($PatientNum))
     If sIdx Then
       res = modDatabase.$myConn.Exec("select fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,flddirection from tblpatdosing where fldid=&1", sIdx)
       If res.Available Then
@@ -321,6 +325,9 @@ Public Sub btnrepeat_Click()
         txtday.Value = res["flddays"]
         txtqty.Value = res["fldqtydisp"]
         txtdirection.Text = res["flddirection"]
+        If res["flditem"] Then
+          lbldose.Text = modMedConstant.GetDrugDosingUnit(res["flditem"])
+        Endif
         txtqty.SetFocus
       Endif
     Endif
@@ -372,6 +379,7 @@ End
 Public Sub cmbmedicine_GotFocus()
 
   Dim res As Result
+  Dim res1 As Result
   Dim xlist1 As String[]
   Dim xlist As String[]
 
@@ -384,31 +392,38 @@ Public Sub cmbmedicine_GotFocus()
       txtdose.Parent.Tag = "Auto"
 
       If cmbroute.Text = "suture" Or If cmbroute.Text = "msurg" Or If cmbroute.Text = "ortho" Or If cmbroute.Text = "extra" Then
+        res = modStock.FillMedicinesPrescribingComboResult(cmbroute.Text, GetBrandGenerricType(), $sBillMode)
+        xlist = modControlSub.GetDirectFillresult(res)
         If chkout.Value = True Then
-          res = modStock.ItemListForPurchaseBillMode(cmbroute.Text, GetBrandGenerricType(), $sBillMode)
+          res1 = modStock.ItemListForPurchaseBillMode(cmbroute.Text, GetBrandGenerricType(), $sBillMode)
+          xlist1 = modControlSub.GetDirectFillresult(res1)
+          cmbmedicine.Text = GridViewMark("Select Particulars", xlist, xlist1, Panel7, GridView1.Height + cmbmedicine.Height)
         Else
-          res = modStock.FillMedicinesPrescribingComboResult(cmbroute.Text, GetBrandGenerricType(), $sBillMode)
+          cmbmedicine.Text = GridViewNew("Select Particulars", modControlSub.GetDirectFillresult(res), False, Panel7, GridView1.Height + cmbmedicine.Height)
         Endif
-        cmbmedicine.Text = GridViewNew("Select Particulars", modControlSub.GetDirectFillresult(res), False, Panel7, GridView1.Height + cmbmedicine.Height)
+
       Else
+        res = modStock.FillMedicinesPrescribingComboResult(cmbroute.Text, GetBrandGenerricType(), $sBillMode)
         If chkout.Value = True Then
-          res = modStock.ItemListForPurchaseBillMode(cmbroute.Text, GetBrandGenerricType(), $sBillMode)
-        Else
-          res = modStock.FillMedicinesPrescribingComboResult(cmbroute.Text, GetBrandGenerricType(), $sBillMode)
-        Endif
-        If modBasic.$ClinCategoryGrid = "Yes" Then
-          xlist1 = modControlSub.GetDirectFillresult(res)
-          If xlist1 Then
-            xlist = modMedConstant.GetStockIDWithCategory(xlist1)
-            If xlist Then
-              cmbmedicine.Text = GridViewGroup("Select Medicine", xlist, False, Panel7, GridView1.Height + cmbmedicine.Height)
-            Endif
-          Endif
-        Else
+          res1 = modStock.ItemListForPurchaseBillMode(cmbroute.Text, GetBrandGenerricType(), $sBillMode)
           xlist = modControlSub.GetDirectFillresult(res)
-          If xlist Then
+          xlist1 = modControlSub.GetDirectFillresult(res1)
+          cmbmedicine.Text = GridViewMark("Select Particulars", xlist, xlist1, Panel7, GridView1.Height + cmbmedicine.Height)
+
+        Else
+          If modBasic.$ClinCategoryGrid = "Yes" Then
+            xlist1 = modControlSub.GetDirectFillresult(res)
+            If xlist1 Then
+              xlist = modMedConstant.GetStockIDWithCategory(xlist1)
+              If xlist Then
+                cmbmedicine.Text = GridViewGroup("Select Medicine", xlist, False, Panel7, GridView1.Height + cmbmedicine.Height)
+              Endif
+            Endif
+          Else
+            xlist = modControlSub.GetDirectFillresult(res)
             cmbmedicine.Text = GridViewNew("Select Particulars", xlist, False, Panel7, GridView1.Height + cmbmedicine.Height)
           Endif
+
         Endif
       Endif
 
@@ -441,6 +456,7 @@ Public Sub txtdose_GotFocus()
           cmbmedicine.Text = modMedConstant.ConvertBrandToGeneric(cmbroute.Text, cmbmedicine.Text)
         Endif
         RegimenBoxSetting(True)
+        lbldose.Text = modMedConstant.GetDrugDosingUnit(cmbmedicine.Text)
 
         If modBasic.$MedDoseRecommend = "Yes" Then
           txtdose.Value = modMedDosing.RecommendedDoseDrug($encid, xYear, cmbmedicine.Text)
@@ -881,10 +897,10 @@ Private Sub FillDosingGrid()
           GridView1[res.Index, Column].Text = res[fld.Name]
         Endif
       Else If Column = 9 Then
-        GridView1[res.Index, Column].Picture = Picture["icon:/small/cancel"]
+        GridView1[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
         GridView1[res.Index, Column].Text = ""
       Else If Column = 10 Then
-        GridView1[res.Index, Column].Picture = Picture["icon:/small/print"]
+        GridView1[res.Index, Column].Picture = Picture["icon:/tiny/print"]
         GridView1[res.Index, Column].Text = ""
       Else
         GridView1[res.Index, Column].Text = res[fld.Name]
@@ -1607,10 +1623,10 @@ Private Sub ShowUsedGridViewList()
     For Each fld In res.Fields
       modGeneralMain.GridExplicitDecoration(GridView4, res.Index, Column)
       If Column = 9 Then
-        GridView4[res.Index, Column].Picture = Picture["icon:/small/cancel"]
+        GridView4[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
         GridView4[res.Index, Column].Text = ""
       Else If Column = 10 Then
-        GridView4[res.Index, Column].Picture = Picture["icon:/small/apply"]
+        GridView4[res.Index, Column].Picture = Picture["icon:/tiny/apply"]
         GridView4[res.Index, Column].Text = ""
       Else
         GridView4[res.Index, Column].Text = res[fld.Name]

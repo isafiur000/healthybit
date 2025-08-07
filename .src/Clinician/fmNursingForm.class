@@ -169,7 +169,6 @@ Public Sub TabPanel2_Click()
   If TabPanel2.Index = 0 Then
     cmbsymptom.SetFocus
   Else If TabPanel2.Index = 1 Then
-    txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "General Complaints")
     txtgencomplaint.SetFocus
   Endif
 
@@ -295,7 +294,7 @@ Private Sub GetEncounterValue()
 
 End
 
-Public Sub BasicInfoPatient()
+Private Sub BasicInfoPatient()
 
   If txtencid.Text Then
     modRepository.$RepoDataStatus = False
@@ -306,6 +305,7 @@ Public Sub BasicInfoPatient()
     lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Nursing Diagnosis", Trim(txtencid.Text))
     lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
     ShowSymptomData()
+    txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "General Complaints")
     ShowEssentialExam()
 
     dtmonitor.Value = Now()
@@ -1042,10 +1042,10 @@ Public Sub ShowSymptomData()
       If Column = 8 Then
         grdchiefsymptom[res.Index, Column].Text = modReportVar.GetDateTimeReport(res["fldtime"], gb.GeneralDate)
       Else If Column = 7 Then
-        grdchiefsymptom[res.Index, Column].Picture = Picture["icon:/small/edit"]
+        grdchiefsymptom[res.Index, Column].Picture = Picture["icon:/tiny/edit"]
         grdchiefsymptom[res.Index, Column].Text = ""
       Else If Column = 6 Then
-        grdchiefsymptom[res.Index, Column].Picture = Picture["icon:/small/cancel"]
+        grdchiefsymptom[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
         grdchiefsymptom[res.Index, Column].Text = ""
       Else
         grdchiefsymptom[res.Index, Column].Text = res[fld.Name]
@@ -3301,7 +3301,7 @@ Public Sub FillMoniExamtable()
       Else If Column = 4 Then
         grdmonexam[res.Index, Column].RichText = modClinic.GetExamValueString(Trim(txtencid.Text), res["fldid"], False)
       Else If Column = 5 Then
-        grdmonexam[res.Index, Column].Picture = Picture["icon:/small/cancel"]
+        grdmonexam[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
         grdmonexam[res.Index, Column].Text = ""
       Else If Column = 6 Then
         grdmonexam[res.Index, Column].Text = modReportVar.GetDateTimeReport(res["fldtime"], gb.GeneralDate)

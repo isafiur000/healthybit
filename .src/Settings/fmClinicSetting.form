@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,100,39)
+  MoveScaled(0,0,100,43)
   Text = ("Department Settings")
   Resizable = False
   { Label5 Label
@@ -24,7 +24,7 @@
     Border = Border.Plain
   }
   { IconPanel1 IconPanel
-    MoveScaled(1,5,98,33)
+    MoveScaled(1,5,98,37)
     Enabled = False
     Count = 8
     Index = 0
@@ -493,6 +493,24 @@
       }
       { btnsaveaccess Button
         MoveScaled(59,7,18,3)
+        Text = ("Save")
+        Picture = Picture["icon:/small/apply"]
+      }
+    }
+    { Frame3 Frame
+      MoveScaled(1,28,78,7)
+      Text = ("Diagnostic Targets")
+      Alignment = Align.Left
+      { chklabtarget CheckBox
+        MoveScaled(1,3,24,3)
+        Text = ("Lock Laboratory Target")
+      }
+      { chkradiotarget CheckBox
+        MoveScaled(26,3,24,3)
+        Text = ("Lock Radiology Target")
+      }
+      { btnsavetarget Button
+        MoveScaled(57,3,18,3)
         Text = ("Save")
         Picture = Picture["icon:/small/apply"]
       }

@@ -135,16 +135,22 @@ Public Sub rbmetric_Click()
 
 End
 
-Private Sub ShowPlanningsBoth()
+Private Sub ShowPlanningInitial()
 
   Dim xplanAr As String[]
-  Dim xexptAr As String[]
 
   xplanAr = modPatPatho.ShowSelectedNoteUser(Trim(txtencid.Text), "Initial Planning")
   If xplanAr And If xplanAr.Count Then
     txtplan.RichText = xplanAr[0]
     lblinitialuser.Text = xplanAr[1]
   Endif
+
+End
+
+Private Sub ShowPlanningExpert()
+
+  Dim xexptAr As String[]
+
   xexptAr = modPatPatho.ShowSelectedNoteUser(Trim(txtencid.Text), "Final Planning")
   If xexptAr And If xexptAr.Count Then
     txtplanfinal.RichText = xexptAr[0]
@@ -212,7 +218,6 @@ Public Sub Form_KeyRelease()
     If txtencid.Text Then
       TabPanel2.Index = 0
       cmbsymptom.SetFocus
-
     Endif
 
   Else If Key.Code = Key.F4 Then
@@ -229,7 +234,6 @@ Public Sub Form_KeyRelease()
   Else If Key.Code = Key.F6 Then
     If txtencid.Text Then
       TabPanel1.Index = 0
-      txthistory.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "History of Illness")
       txthistory.SetFocus
     Endif
 
@@ -247,21 +251,18 @@ Public Sub Form_KeyRelease()
   Else If Key.Code = Key.F8 Then
     If txtencid.Text Then
       TabPanel1.Index = 2
-      ShowPlanningsBoth()
       txtplan.SetFocus
     Endif
 
   Else If Key.Code = Key.F8 And If Key.Control Then
     If txtencid.Text Then
       TabPanel1.Index = 2
-      ShowPlanningsBoth()
       txtplanfinal.SetFocus
     Endif
 
   Else If Key.Code = Key.F9 Then
     If txtencid.Text Then
       TabPanel1.Index = 3
-      ShowTelemedSaved()
       txtquery.SetFocus
     Endif
 
@@ -281,15 +282,11 @@ End
 Public Sub TabPanel1_Click()
 
   If TabPanel1.Index = 0 Then
-    txthistory.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "History of Illness")
     txthistory.SetFocus
   Else If TabPanel1.Index = 1 Then
-
   Else If TabPanel1.Index = 2 Then
-    ShowPlanningsBoth()
     txtplan.SetFocus
   Else If TabPanel1.Index = 3 Then
-    ShowTelemedSaved()
     txtquery.SetFocus
   Else If TabPanel1.Index = 4 Then
   Endif
@@ -301,37 +298,7 @@ Public Sub TabPanel2_Click()
   If TabPanel2.Index = 0 Then
     cmbsymptom.SetFocus
   Else If TabPanel2.Index = 1 Then
-    txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "General Complaints")
     txtgencomplaint.SetFocus
-  Endif
-
-End
-
-Public Sub Timer1_Timer()
-
-  Dim xdely As Integer
-
-  If $dateReg Then
-    xdely = DateDiff($dateReg, Now(), gb.Second)
-    LCDLabel1.Text = modDate.GetSecondToTimeForm(xdely)
-  Endif
-
-  If modBasic.$AutoRefreshEnable = "Yes" Then
-    If txtencid.Text Then
-      modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
-      ShowEssentialExam()
-      If TabPanel2.Index = 0 Then
-        ShowSymptomData()
-      Else If TabPanel2.Index = 1 Then
-        txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "General Complaints")
-      Endif
-      FillExamtable()
-      If TabPanel1.Index = 0 Then
-        txthistory.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "History of Illness")
-      Else If TabPanel1.Index = 1 Then
-        ShowPlanningsBoth()
-      Endif
-    Endif
   Endif
 
 End
@@ -501,7 +468,7 @@ Private Sub GetEncounterValue()
 
 End
 
-Public Sub BasicInfoPatient()
+Private Sub BasicInfoPatient()
 
   Dim hPtForm As FmClinHistory
   Dim hDigForm As FmDiagnosticTab
@@ -512,13 +479,18 @@ Public Sub BasicInfoPatient()
     GetDefaultBillingmodes()
     ButtonControl()
     $dateReg = modPatient.GetRecordDate(Trim(txtencid.Text))
-    Timer1.Enabled = True
     GetConsultParam()
-    txthistory.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "History of Illness")
-    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+
     ShowSymptomData()
+    txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "General Complaints")
     ShowEssentialExam()
+    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    txthistory.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "History of Illness")
     FillExamtable()
+    ShowPlanningInitial()
+    ShowPlanningExpert()
+    ShowTelemedSaved()
+
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
     hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
     modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
@@ -1434,7 +1406,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
       GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.RichText, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
     Endif
   Else If Column = 5 Then
-    GridView1.Data.Picture = Picture["icon:/small/cancel"]
+    GridView1.Data.Picture = Picture["icon:/tiny/cancel"]
     GridView1.Data.Text = ""
   Else If Column = 6 Then
     GridView1.Data.Text = modReportVar.GetDateTimeReport($rExamRes[$aExamFields[Column]], gb.GeneralDate)
@@ -1751,10 +1723,10 @@ Public Sub grdchiefsymptom_Data(Row As Integer, Column As Integer)
   Else If Column = 8 Then
     grdchiefsymptom.Data.Text = modReportVar.GetDateTimeReport($rSympRes[$aSympFields[Column]], gb.GeneralDate)
   Else If Column = 7 Then
-    grdchiefsymptom.Data.Picture = Picture["icon:/small/edit"]
+    grdchiefsymptom.Data.Picture = Picture["icon:/tiny/edit"]
     grdchiefsymptom.Data.Text = ""
   Else If Column = 6 Then
-    grdchiefsymptom.Data.Picture = Picture["icon:/small/cancel"]
+    grdchiefsymptom.Data.Picture = Picture["icon:/tiny/cancel"]
     grdchiefsymptom.Data.Text = ""
   Else
     grdchiefsymptom.Data.Text = $rSympRes[$aSympFields[Column]]
@@ -1937,10 +1909,10 @@ Public Sub btnsavevitals_Click()
       Endif
     Endif
 
-    Balloon.Info(("Information saved"), btnsavevitals)
-    Balloon.Delay = modBasic.$BalloonDelay
     Try $NumForm.Close
     pnlquanti.Visible = False
+    Balloon.Info(("Information saved"), btnsavevitals)
+    Balloon.Delay = modBasic.$BalloonDelay
   Endif
 
 End
@@ -3983,8 +3955,21 @@ Public Sub btngetfeed_Click()
 
   If txtfeedback.Text Then
     modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", "Final Planning", txtfeedback.KeyList.Join(";"), txtfeedback.RichText, xboolean)
-    ShowPlanningsBoth()
+    ShowPlanningExpert()
     Balloon.Info(("Information saved"), btngetfeed)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+End
+
+Public Sub btnsaveAll_Click()
+
+  If txtencid.Text Then
+    btngencompln_Click()
+    btnsavevitals_Click()
+    btnhistory_Click()
+    btnplan_Click()
+    Balloon.Info(("Information saved"), btnsaveAll)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
 

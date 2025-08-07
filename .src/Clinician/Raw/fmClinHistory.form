@@ -1,11 +1,11 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,105,76)
+  MoveScaled(0,0,112.5,76)
   Expand = True
   Arrangement = Arrange.Vertical
   { Panel1 Panel
-    MoveScaled(0,1,104,73)
+    MoveScaled(0,1,112,73)
     Expand = True
     Arrangement = Arrange.Horizontal
     { WebContainer2 Panel
@@ -53,9 +53,12 @@
       MoveScaled(22,0,22,71)
       Arrangement = Arrange.Vertical
       Border = Border.Plain
-      { lstencounter ListBox
-        MoveScaled(0,4,20,36)
+      { GridView1 GridView
+        MoveScaled(1,5,19,33)
         Expand = True
+        Mode = Select.Single
+        Header = GridView.Horizontal
+        AutoResize = False
       }
       { txtnewencid TextBox
         MoveScaled(0,40,21,3)
@@ -71,17 +74,17 @@
       }
     }
     { Panel2 Panel
-      MoveScaled(44,0,59,51)
+      MoveScaled(44,0,68,51)
       Expand = True
       Arrangement = Arrange.Vertical
       { Panel4 Panel
-        MoveScaled(0,0,59,4)
+        MoveScaled(0,0,67,4)
         { lbldate Label
-          MoveScaled(0.5,0.5,17,3)
+          MoveScaled(0.5,0.5,27,3)
           Border = Border.Plain
         }
         { Panel9 Panel
-          MoveScaled(23,0.5,21,2.75)
+          MoveScaled(36,0.5,21,2.75)
           Border = Border.Plain
           { rbsi RadioButton
             MoveScaled(0,0,10,2.75)
@@ -92,6 +95,11 @@
             Text = ("Metric")
             Value = True
           }
+        }
+        { btnopenweb ToolButton
+          MoveScaled(62,0.5,3.5,3)
+          Picture = Picture["icon:/small/html"]
+          Border = True
         }
       }
       { WebView1 HtmlView

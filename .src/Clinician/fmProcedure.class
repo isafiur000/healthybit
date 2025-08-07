@@ -299,6 +299,30 @@ Public Sub mnupatlock_Click()
 End
 
 ''================================ Tab Data ===========================================
+Private Sub LoadPatientData()
+
+  If $ProcIndex Then
+    ''index1
+    txtprediscuss.RichText = GetLastValueProc("fldreport", "Pre-Operative Discussion")
+    txtprecomment.RichText = GetLastValueProc("fldreport", "Pre-Operative Note")
+    cmbpreindication.Text = GetLastValueProc("fldreportquali", "Pre-Operative Indication")
+    ''index2
+    txtincision.RichText = GetLastValueProc("fldreport", "Incision")
+    txtfindings.RichText = GetLastValueProc("fldreport", "Findings")
+    txtprocedures.RichText = GetLastValueProc("fldreport", "Proedures")
+    txtclosure.RichText = GetLastValueProc("fldreport", "Closure")
+    txtsummry.RichText = GetLastValueProc("fldreport", "Operation Note")
+    cmbonindication.Text = GetLastValueProc("fldreportquali", "Operative Indication")
+    ''index3
+    txtanesnote.RichText = GetLastValueProc("fldreport", "Anaesthesia Note")
+    cmbtechniq.Text = GetLastValueProc("fldreportquali", "Anaesthesia Technique")
+    ''index4
+    txtpostcomment.RichText = GetLastValueProc("fldreport", "Post-Operative Note")
+    cmbpostindication.Text = GetLastValueProc("fldreportquali", "Post-Operative Indication")
+  Endif
+
+End
+
 Public Sub Form_KeyRelease()
 
   If Key.Code = Key.F2 Then
@@ -311,9 +335,6 @@ Public Sub Form_KeyRelease()
       LoadTabPicture(TabPanel1.Index)
       lstdiscuss.List = modPatPatho.GetDiscusPanels(Trim(txtencid.Text), $ProcIndex)
       lstfinaldiagno.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
-      txtprediscuss.RichText = GetLastValueProc("fldreport", "Pre-Operative Discussion")
-      txtprecomment.RichText = GetLastValueProc("fldreport", "Pre-Operative Note")
-      cmbpreindication.Text = GetLastValueProc("fldreportquali", "Pre-Operative Indication")
       GetExamList("Pre-Operative", grdprelist)
       FillExamtable("Pre-Operative Exam:" & CStr($ProcIndex), grdprexam)
       FillDosingGrid("Current", "Pre-Operative", grdpreitem)
@@ -323,12 +344,6 @@ Public Sub Form_KeyRelease()
     TabPanel1.Index = 2
     If $ProcIndex Then
       LoadTabPicture(TabPanel1.Index)
-      txtincision.RichText = GetLastValueProc("fldreport", "Incision")
-      txtfindings.RichText = GetLastValueProc("fldreport", "Findings")
-      txtprocedures.RichText = GetLastValueProc("fldreport", "Proedures")
-      txtclosure.RichText = GetLastValueProc("fldreport", "Closure")
-      txtsummry.RichText = GetLastValueProc("fldreport", "Operation Note")
-      cmbonindication.Text = GetLastValueProc("fldreportquali", "Operative Indication")
       lstcomponent.List = modPatPatho.GetComponentProcedure(Trim(txtencid.Text), $ProcIndex)
       GetExamList("Operative", grdonlist)
       FillExamtable("Operative Exam:" & CStr($ProcIndex), grdonproc)
@@ -341,8 +356,6 @@ Public Sub Form_KeyRelease()
     TabPanel1.Index = 3
     If $ProcIndex Then
       LoadTabPicture(TabPanel1.Index)
-      txtanesnote.RichText = GetLastValueProc("fldreport", "Anaesthesia Note")
-      cmbtechniq.Text = GetLastValueProc("fldreportquali", "Anaesthesia Technique")
       GetExamList("Anaesthesia", grdaneslist)
       FillExamtable("Anaesthesia:" & CStr($ProcIndex), grdanes)
       FillDosingGrid("Current", "Anaesthesia", grdanesitem)
@@ -352,8 +365,6 @@ Public Sub Form_KeyRelease()
     TabPanel1.Index = 4
     If $ProcIndex Then
       LoadTabPicture(TabPanel1.Index)
-      txtpostcomment.RichText = GetLastValueProc("fldreport", "Post-Operative Note")
-      cmbpostindication.Text = GetLastValueProc("fldreportquali", "Post-Operative Indication")
       GetExamList("Post-Operative", grdpostlist)
       FillExamtable("Post-Operative Exam:" & CStr($ProcIndex), grdpostexam)
       FillDosingGrid("Current", "Post-Operative", grdpostitem)
@@ -379,20 +390,11 @@ Public Sub TabPanel1_Click()
     Else If TabPanel1.Index = 1 Then
       lstdiscuss.List = modPatPatho.GetDiscusPanels(Trim(txtencid.Text), $ProcIndex)
       lstfinaldiagno.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
-      txtprediscuss.RichText = GetLastValueProc("fldreport", "Pre-Operative Discussion")
-      txtprecomment.RichText = GetLastValueProc("fldreport", "Pre-Operative Note")
-      cmbpreindication.Text = GetLastValueProc("fldreportquali", "Pre-Operative Indication")
       GetExamList("Pre-Operative", grdprelist)
       FillExamtable("Pre-Operative Exam:" & CStr($ProcIndex), grdprexam)
       FillDosingGrid("Current", "Pre-Operative", grdpreitem)
 
     Else If TabPanel1.Index = 2 Then
-      txtincision.RichText = GetLastValueProc("fldreport", "Incision")
-      txtfindings.RichText = GetLastValueProc("fldreport", "Findings")
-      txtprocedures.RichText = GetLastValueProc("fldreport", "Proedures")
-      txtclosure.RichText = GetLastValueProc("fldreport", "Closure")
-      txtsummry.RichText = GetLastValueProc("fldreport", "Operation Note")
-      cmbonindication.Text = GetLastValueProc("fldreportquali", "Operative Indication")
       lstcomponent.List = modPatPatho.GetComponentProcedure(Trim(txtencid.Text), $ProcIndex)
       GetExamList("Operative", grdonlist)
       FillExamtable("Operative Exam:" & CStr($ProcIndex), grdonproc)
@@ -401,15 +403,11 @@ Public Sub TabPanel1_Click()
       ShowUsedGridViewList()
 
     Else If TabPanel1.Index = 3 Then
-      txtanesnote.RichText = GetLastValueProc("fldreport", "Anaesthesia Note")
-      cmbtechniq.Text = GetLastValueProc("fldreportquali", "Anaesthesia Technique")
       GetExamList("Anaesthesia", grdaneslist)
       FillExamtable("Anaesthesia:" & CStr($ProcIndex), grdanes)
       FillDosingGrid("Current", "Anaesthesia", grdanesitem)
 
     Else If TabPanel1.Index = 4 Then
-      txtpostcomment.RichText = GetLastValueProc("fldreport", "Post-Operative Note")
-      cmbpostindication.Text = GetLastValueProc("fldreportquali", "Post-Operative Indication")
       GetExamList("Post-Operative", grdpostlist)
       FillExamtable("Post-Operative Exam:" & CStr($ProcIndex), grdpostexam)
       FillDosingGrid("Current", "Post-Operative", grdpostitem)
@@ -875,7 +873,7 @@ Public Sub FillExamtable(xcateg As String, xGridView As GridView)
           xGridView.Rows[$sData1.Index].Height = Max(xGridView.Rows[$sData1.Index].Height, xGridView[$sData1.Index, Column].Font.RichTextHeight(xGridView[$sData1.Index, Column].RichText, xGridView.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (xGridView.Rows.Height - xGridView.Font.Height))
         Endif
       Else If Column = 5 Then
-        xGridView[$sData1.Index, Column].Picture = Picture["icon:/small/cancel"]
+        xGridView[$sData1.Index, Column].Picture = Picture["icon:/tiny/cancel"]
         xGridView[$sData1.Index, Column].Text = ""
       Else If Column = 6 Then
         xGridView[$sData1.Index, Column].Text = modReportVar.GetDateTimeReport($sData1["fldtime"], gb.GeneralDate)
@@ -1053,7 +1051,7 @@ Public Sub ShowAddedProctable()
         TableView1.Rows[res.Index].Height = Max(TableView1.Rows[res.Index].Height, TableView1[res.Index, Column].Font.RichTextHeight(TableView1[res.Index, Column].Text, TableView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (TableView1.Rows.Height - TableView1.Font.Height))
         TableView1[res.Index, Column].WordWrap = True
       Else If Column = 7 Then
-        TableView1[res.Index, Column].Picture = Picture["icon:/small/html"]
+        TableView1[res.Index, Column].Picture = Picture["icon:/tiny/html"]
         TableView1[res.Index, Column].Text = ""
       Else If Column = 8 Then
         TableView1[res.Index, Column].Picture = Picture[CheckBoxPath(res[fld.Name])]
@@ -1124,6 +1122,7 @@ Public Sub TableView1_Click()
         Else
           btnaddperson.Enabled = True
         Endif
+        LoadPatientData()
       Endif
 
       res1 = modDatabase.$myConn.Exec("select fldpayto,fldrefer from tblpatbilling where fldencounterval=&1 and flditemtype=&2 and fldparent=&3", txtencid.Text, "Procedures", res!fldid)
@@ -1186,14 +1185,13 @@ Private Sub SaveProcedureBilling(procIndex As Long)
 
   Dim res As Result
   Dim res1 As Result
-  Dim xauto As String
 
   res = modDatabase.$myConn.Exec("select fldid,fldencounterval,fldnewdate,flditem,fldreportquali,fldtime from tblpatgeneral where fldid=&1 and fldencounterval=&2 and fldreportquali=&3 and fldinput=&4 and fldsave=&5 and fldstatus=&6", procIndex, Trim(txtencid.Text), "Done", "Procedures", False, "Waiting")
   If res.Available = True Then
-    xauto = modBasic.$AutoBillProcedure
-    If xauto = "Yes" Or If xauto = "Full" Then
+    If modBasic.$AutoBillProcedure = "Standard" Then
+    Else If modBasic.$AutoBillProcedure = "Full" Then
       modBillings.GetAutoBillingEntry(res["fldencounterval"], $billModeProcedure, "Procedure", res["flditem"], 1, "Done", procIndex, True, False, btnpayto.Tag, btnrefer.Tag)                         ''
-    Else If xauto = "Partial" Then
+    Else If modBasic.$AutoBillProcedure = "Partial" Then
       modBillings.GetAutoBillingEntry(res["fldencounterval"], $billModeProcedure, "Procedure", res["flditem"], 1, "Punched", procIndex, False, False, btnpayto.Tag, btnrefer.Tag)
     Endif
     res1 = modDatabase.$myConn.Edit("tblpatgeneral", "fldid=&1", procIndex)
@@ -2230,10 +2228,10 @@ Private Sub ShowUsedGridViewList()
       If Column = 1 Then
         GridView4[res.Index, Column].Text = modReportVar.GetDateTimeReport(res["fldstarttime"], gb.GeneralDate)
       Else If Column = 9 Then
-        GridView4[res.Index, Column].Picture = Picture["icon:/small/cancel"]
+        GridView4[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
         GridView4[res.Index, Column].Text = ""
       Else If Column = 10 Then
-        GridView4[res.Index, Column].Picture = Picture["icon:/small/apply"]
+        GridView4[res.Index, Column].Picture = Picture["icon:/tiny/apply"]
         GridView4[res.Index, Column].Text = ""
       Else
         GridView4[res.Index, Column].Text = res[fld.Name]

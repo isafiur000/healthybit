@@ -206,6 +206,9 @@ Public Sub OpenBrowser(sPath As String)
   If modBasic.$ExpoRepoUser = True Then
     If modBasic.$browserFormat = "External" Then                                             ''
       modDevice.DesktopOpenFile(sTarget)
+    Else If modBasic.$browserFormat = "RightPanel" Then
+      modGeneralMain.$RightAdView.Url = sTarget
+      modGeneralMain.$RightAdView.Refresh()
     Else
       If modBasic.$WebViewApp = "webkit" Then
         hFormKit = New FmWebKitView(sTarget, False, "", "")

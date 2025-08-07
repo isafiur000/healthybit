@@ -10,6 +10,9 @@ Public Sub Form_Open()
 
   modGeneralMain.GetFirstValues(ServerSocket1, ServerSocket2)
   modGeneralMain.LoadMainForms(Me, pnltop, pnlleft, Workspace1, pnlright, pnlbottom)
+  modBasic.LoadInvoicingSetting()
+  modBasic.InventorySettings()
+  modBasic.InventoryUserAccessList()
   DiaplayCustMenu()
 
   modBasic.LoadCashierBillingSettings()

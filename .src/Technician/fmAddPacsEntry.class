@@ -146,7 +146,7 @@ Public Sub btncreate_Click()
   For i = 0 To $ImgLst.Count - 1
     asx = Split($ImgLst[i], "|")
     If asx.Count = 2 Then
-      modRadioSub.InsertRadioTestOrder(Trim(txtencid.Text), txttestname.Text, modFixRadio.GetRadioTestType(txttestname.Text), "Regular", 0, "", "", "", "", "", "Orthanc", asx[0], asx[1])                 ''
+      modRadioSub.InsertRadioTestOrderPACS(Trim(txtencid.Text), txttestname.Text, modFixRadio.GetRadioTestType(txttestname.Text), "Regular", 0, "Orthanc", asx[0], asx[1])                 ''
     Endif
   Next
   Balloon.Info(("Information added"), btncreate)

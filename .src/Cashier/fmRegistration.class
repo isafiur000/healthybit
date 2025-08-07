@@ -1385,10 +1385,10 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   Else If Column = 3 Then
     GridView1.Data.Text = modPatient.GetPatientAddressByEnc($rData[$aMyFields[Column]])
   Else If Column = 7 Then
-    GridView1.Data.Picture = Picture["icon:/small/attach"]
+    GridView1.Data.Picture = Picture["icon:/tiny/attach"]
     GridView1.Data.Text = ""
   Else If Column = 8 Then
-    GridView1.Data.Picture = Picture["icon:/small/edit"]
+    GridView1.Data.Picture = Picture["icon:/tiny/edit"]
     GridView1.Data.Text = ""
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]
@@ -1761,7 +1761,7 @@ Public Sub btnshowrefr_Click()
         btnOK.Enabled = True
       Endif
     Endif
-    btnshowrefr.Picture = Picture["icon:/small/down"]
+    btnshowrefr.Picture = Picture["icon:/tiny/down"]
   Endif
 
 End

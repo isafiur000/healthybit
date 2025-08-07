@@ -102,10 +102,10 @@ Private Sub ShowGridData()
       For Each fld In $rData.Fields
         modGeneralMain.GridExplicitDecoration(GridView1, $rData.Index, Column)
         If Column = 4 Then
-          GridView1[$rData.Index, Column].Picture = Picture["icon:/small/edit"]
+          GridView1[$rData.Index, Column].Picture = Picture["icon:/tiny/edit"]
           GridView1[$rData.Index, Column].Text = ""
         Else If Column = 5 Then
-          GridView1[$rData.Index, Column].Picture = Picture["icon:/small/cancel"]
+          GridView1[$rData.Index, Column].Picture = Picture["icon:/tiny/cancel"]
           GridView1[$rData.Index, Column].Text = ""
         Else
           GridView1[$rData.Index, Column].Text = $rData[fld.Name]

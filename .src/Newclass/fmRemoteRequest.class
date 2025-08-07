@@ -266,7 +266,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   Else If Column = 6 Then
     GridView1.Data.Text = modGeneral.GetUserFullName($rData[$aMyFields[Column]])
   Else If Column = 8 Then
-    GridView1.Data.Picture = Picture["icon:/small/apply"]
+    GridView1.Data.Picture = Picture["icon:/tiny/apply"]
     GridView1.Data.Text = ""
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]

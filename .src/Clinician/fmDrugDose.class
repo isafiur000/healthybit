@@ -45,7 +45,7 @@ Private Sub ShowStockGrid()
     For Each fld In $rData.Fields
       modGeneralMain.GridExplicitDecoration(GridView1, $rData.Index, Column)
       If Column = 7 Then
-        GridView1[$rData.Index, Column].Picture = Picture["icon:/small/attach"]
+        GridView1[$rData.Index, Column].Picture = Picture["icon:/tiny/attach"]
         GridView1[$rData.Index, Column].Text = ""
       Else
         GridView1[$rData.Index, Column].Text = $rData[fld.Name]

@@ -219,7 +219,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
     If Column = 1 Then
       GridView1.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.GeneralDate)
     Else If Column = 9 Then
-      GridView1.Data.Picture = Picture["icon:/small/attach"]
+      GridView1.Data.Picture = Picture["icon:/tiny/attach"]
       GridView1.Data.Text = ""
     Else
       GridView1.Data.Text = $rData[$aMyFields[Column]]
@@ -324,7 +324,7 @@ Private Sub ResizeGridView()
       .Columns[2].Text = "Batch"
       .Columns[3].Text = "Expiry"
       .Columns[4].Text = "QTY"
-      .Columns[5].Text = "SellP"
+      .Columns[5].Text = "SP"
       .Columns[6].Text = "Order"
       .Columns[7].Text = "Comp"
 

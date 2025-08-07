@@ -333,7 +333,7 @@ Private Sub FillGridView()
     For Each fld In res.Fields
       modGeneralMain.GridExplicitDecoration(GridView1, res.Index, Column)
       If Column = 5 Then
-        GridView1[res.Index, Column].Picture = Picture["icon:/small/cancel"]
+        GridView1[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
         GridView1[res.Index, Column].Text = ""
       Else If Column = 4 Then
         GridView1[res.Index, Column].Text = modReportVar.GetDateTimeReport(res[fld.Name], gb.MediumTime)
@@ -523,7 +523,7 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
   $rData.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView2, Row)
   If Column = 5 Then
-    GridView2.Data.Picture = Picture["icon:/small/cancel"]
+    GridView2.Data.Picture = Picture["icon:/tiny/cancel"]
     GridView2.Data.Text = ""
   Else If Column = 4 Then
     GridView2.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.MediumTime)

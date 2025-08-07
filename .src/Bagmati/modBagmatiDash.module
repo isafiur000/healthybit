@@ -31,10 +31,10 @@ Public Sub LoadBagmatiDash(xDate As Date, question As Boolean)
   $BagmatiKey = modSettings.ShowSettingFromFIle("BagmatiDashboard/Key")
 
   $ErrorLst = New String[]
-  UploadRegistrationData(xDate, True)
-  UploadWardData(xDate, True)
-  UploadDepartmentData(xDate, True)
-  UploadSSUData(xDate, True)
+  UploadRegistrationData(xDate, question)
+  UploadWardData(xDate, question)
+  UploadDepartmentData(xDate, question)
+  UploadSSUData(xDate, question)
   If $ErrorLst.Count Then
     Message.Warning("Error in Upload: " & $ErrorLst.Join(", "), "OJ")
   Else

@@ -6,9 +6,11 @@ Public Sub Form_Open()
   cmbskipexpiry.List = ["Expired", "ExpireOnUse", "None"]
   cmbserialopen.List = ["Punching", "OnSave", "None"]
   cmbserialclose.List = ["OnSave", "FormClose", "None"]
+
   cmbstockalert.List = ["UnderStock", "StockRequest", "Expired", "Expire(1month)", "Expire(3month)"]
   cmbrequest.List = modBasic.$AllCompPerList
   cmbalertformat.List = ["fldcomp", "fldcomp_disp"]
+  cmbrounding.List = ["Pack Size", "Tens", "None"]
 
   cmbautoup.List = ["Enable", "Disable"]
   cmbsales.List = ["Manual", "FEFO"]
@@ -16,6 +18,7 @@ Public Sub Form_Open()
 
   cmbpurcomplist.List = modMedicine.GetExtraDepartments()
   cmbpurextraparam.List = ["Enable", "Disable"]
+  cmbtendersupply.List = ["Enable", "Disable"]
 
   cmbinvenreport.List = ["Enable", "Disable"]
   cmbinvamount.List = ["Exact", "Average", "Latest", "Fixed"]
@@ -24,6 +27,7 @@ Public Sub Form_Open()
   ShowOutOrder()
   ShowDefProfit()
   ShowInventoryReport()
+  ShowStoreRequest()
 
 End
 
@@ -45,6 +49,7 @@ Private Sub ShowDefProfit()
 
   cmbpurcomplist.Text = modSettings.ShowSettingFromFIle("Purchase/CompWiseList")
   cmbpurextraparam.Text = modSettings.ShowSettingFromFIle("Purchase/ExtraParameters")
+  cmbtendersupply.Text = modSettings.ShowSettingFromFIle("Purchase/LockToTender")
   If modSettings.ShowSettingFromFIle("Purchase/ExpiryDays") Then
     txtlockpurchase.Value = CFloat(modSettings.ShowSettingFromFIle("Purchase/ExpiryDays"))
   Endif
@@ -76,6 +81,15 @@ Public Sub btnpurextraparam_Click()
   modSettings.SaveSettingsToFile("Purchase/ExtraParameters", cmbpurextraparam.Text)
   modBasic.$PurExtraParam = cmbpurextraparam.Text
   Balloon.Info(("Information saved"), btnpurextraparam)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btntendersupply_Click()
+
+  modSettings.SaveSettingsToFile("Purchase/LockToTender", cmbtendersupply.Text)
+  modBasic.$PurLockToTender = cmbtendersupply.Text
+  Balloon.Info(("Information saved"), btntendersupply)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -131,12 +145,6 @@ Private Sub ShowGeneralSettings()
   If modSettings.ShowSettingFromFIle("InventorySetting/ReturnExpiry") Then
     txtlockreturn.Value = CFloat(modSettings.ShowSettingFromFIle("InventorySetting/ReturnExpiry"))
   Endif
-  cmbstockalert.Text = modSettings.ShowSettingFromFIle("InventorySetting/InventoryAlert")
-  cmbrequest.Text = modSettings.ShowSettingFromFIle("InventorySetting/RequestAlertComp")
-  If modSettings.ShowSettingFromFIle("InventorySetting/RequestAlertDays") Then
-    txtrequest.Value = CInt(modSettings.ShowSettingFromFIle("InventorySetting/RequestAlertDays"))
-  Endif
-  cmbalertformat.Text = modSettings.ShowSettingFromFIle("InventorySetting/RequestAlertFormat")
 
   cmbserialopen.Text = modSettings.ShowSettingFromFIle("InventorySetting/ShowStorageLocation")
   cmbserialclose.Text = modSettings.ShowSettingFromFIle("InventorySetting/HideStorageLocation")
@@ -196,26 +204,6 @@ Public Sub btnfixedasset_Click()
 
 End
 
-Public Sub btnstockalert_Click()
-
-  modSettings.SaveSettingsToFile("InventorySetting/InventoryAlert", cmbstockalert.Text)
-  Balloon.Info(("Information saved"), btnstockalert)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btnrequest_Click()
-
-  modSettings.SaveSettingsToFile("InventorySetting/RequestAlertComp", cmbrequest.Text)
-  If txtrequest.Value Then
-    modSettings.SaveSettingsToFile("InventorySetting/RequestAlertDays", CStr(txtrequest.Value))
-  Endif
-  modSettings.SaveSettingsToFile("InventorySetting/RequestAlertFormat", cmbalertformat.Text)
-  Balloon.Info(("Information saved"), btnrequest)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
 ''------------ Report -----------
 Private Sub ShowInventoryReport()
 
@@ -238,6 +226,50 @@ Public Sub btninvamount_Click()
   modSettings.SaveSettingsToFile("InventorySetting/InventoryAmount", cmbinvamount.Text)
   modBasic.$InvReportCost = cmbinvamount.Text
   Balloon.Info(("Information saved"), btninvamount)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''---------------- Store request --------------------
+Private Sub ShowStoreRequest()
+
+  cmbstockalert.Text = modSettings.ShowSettingFromFIle("InventorySetting/InventoryAlert")
+
+  cmbrequest.Text = modSettings.ShowSettingFromFIle("StoreAlert/TargetLocation")
+  cmbalertformat.Text = modSettings.ShowSettingFromFIle("StoreAlert/TargetField")
+
+  If modSettings.ShowSettingFromFIle("StoreAlert/AnalyzeddDays") Then
+    txtanalyze.Value = CInt(modSettings.ShowSettingFromFIle("StoreAlert/AnalyzeddDays"))
+  Endif
+  If modSettings.ShowSettingFromFIle("StoreAlert/RequestedDays") Then
+    txtrequest.Value = CInt(modSettings.ShowSettingFromFIle("StoreAlert/RequestedDays"))
+  Endif
+
+  cmbrounding.Text = modSettings.ShowSettingFromFIle("StoreAlert/QTYRounding")
+
+End
+
+Public Sub btnstockalert_Click()
+
+  modSettings.SaveSettingsToFile("InventorySetting/InventoryAlert", cmbstockalert.Text)
+  Balloon.Info(("Information saved"), btnstockalert)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnrequest_Click()
+
+  modSettings.SaveSettingsToFile("StoreAlert/TargetLocation", cmbrequest.Text)
+  modSettings.SaveSettingsToFile("StoreAlert/TargetField", cmbalertformat.Text)
+  If txtanalyze.Value Then
+    modSettings.SaveSettingsToFile("StoreAlert/AnalyzeddDays", CStr(txtanalyze.Value))
+  Endif
+  If txtrequest.Value Then
+    modSettings.SaveSettingsToFile("StoreAlert/RequestedDays", CStr(txtrequest.Value))
+  Endif
+  modSettings.SaveSettingsToFile("StoreAlert/QTYRounding", cmbrounding.Text)
+
+  Balloon.Info(("Information saved"), btnrequest)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

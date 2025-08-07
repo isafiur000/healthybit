@@ -570,3 +570,42 @@ Public Sub SelectExtraTreeEnter(TreeView1 As TreeView, sItem As String)
   Endif
 
 End
+
+Public Sub ShowStoreRequestAlert()
+
+  Dim xalcomp As String
+  Dim xcheckday As String
+  Dim xreqday As String
+  Dim xcolmname As String
+  Dim xround As String
+
+  Dim hForm1 As FmAutoStore
+  Dim xcheckval As Integer
+  Dim xreqval As Integer
+
+  xalcomp = modSettings.ShowSettingFromFIle("StoreAlert/TargetLocation")
+  xround = modSettings.ShowSettingFromFIle("StoreAlert/QTYRounding")
+
+  xcolmname = modSettings.ShowSettingFromFIle("StoreAlert/TargetField")
+  If Not xcolmname Then
+    xcolmname = "fldcomp"
+  Endif
+  xcheckday = modSettings.ShowSettingFromFIle("StoreAlert/AnalyzeddDays")
+  If xcheckday Then
+    xcheckval = CInt(xcheckday)
+  Else
+    xcheckval = 7
+  Endif
+  xreqday = modSettings.ShowSettingFromFIle("StoreAlert/RequestedDays")
+  If xreqday Then
+    xreqval = CInt(xreqday)
+  Else
+    xreqval = 7
+  Endif
+
+  If xalcomp And If xcolmname And If xcheckval And If xreqval Then
+    hForm1 = New FmAutoStore(xalcomp, xcolmname, xcheckval, xreqval, xround)
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
+  Endif
+
+End

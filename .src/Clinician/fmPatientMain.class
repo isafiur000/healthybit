@@ -1508,10 +1508,10 @@ Public Sub grdchiefsymptom_Data(Row As Integer, Column As Integer)
   Else If Column = 8 Then
     grdchiefsymptom.Data.Text = modReportVar.GetDateTimeReport($rSympRes[$aSympFields[Column]], gb.GeneralDate)
   Else If Column = 7 Then
-    grdchiefsymptom.Data.Picture = Picture["icon:/small/edit"]
+    grdchiefsymptom.Data.Picture = Picture["icon:/tiny/edit"]
     grdchiefsymptom.Data.Text = ""
   Else If Column = 6 Then
-    grdchiefsymptom.Data.Picture = Picture["icon:/small/cancel"]
+    grdchiefsymptom.Data.Picture = Picture["icon:/tiny/cancel"]
     grdchiefsymptom.Data.Text = ""
   Else
     grdchiefsymptom.Data.Text = $rSympRes[$aSympFields[Column]]
@@ -1858,7 +1858,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
       GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.RichText, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
     Endif
   Else If Column = 5 Then
-    GridView1.Data.Picture = Picture["icon:/small/cancel"]
+    GridView1.Data.Picture = Picture["icon:/tiny/cancel"]
     GridView1.Data.Text = ""
   Else If Column = 6 Then
     GridView1.Data.Text = modReportVar.GetDateTimeReport($rExamRes[$aExamFields[Column]], gb.GeneralDate)
@@ -3671,7 +3671,7 @@ Public Sub grdfluid_Click()
 
     Else If grdfluid.Column = 7 Then
       If grdfluid[grdfluid.Row, 6].Text = "Continue" Then
-        If grdfluid[grdfluid.Row, 7].Picture = Picture["icon:/small/next"] Then
+        If grdfluid[grdfluid.Row, 7].Picture = Picture["icon:/tiny/next"] Then
           yval = InputValue(("Enter Rate of Administration in mL/Hour"), grdfluid[grdfluid.Row, 2].Text, 0)
           If yval Then
             modPharmSub.InsertNurDosing(grdfluid[grdfluid.Row, 0].Text, Trim(txtencid.Text), yval, "mL/Hour", Now())
@@ -3825,7 +3825,7 @@ Public Sub grdfluiddata_Click()
   Dim Row As Integer
 
   If grdfluiddata.Column = 6 Then
-    If grdfluiddata[grdfluiddata.Row, 6].Picture = Picture["icon:/small/stop"] Then
+    If grdfluiddata[grdfluiddata.Row, 6].Picture = Picture["icon:/tiny/stop"] Then
       Row = grdfluid.Row
       res = modDatabase.$myConn.Edit("tblnurdosing", "fldid=&1", grdfluiddata[grdfluiddata.Row, 0].Text)
       res["fldtotime"] = Now()

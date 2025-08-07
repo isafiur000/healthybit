@@ -116,7 +116,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   Else If Column = 5 Then
     GridView1.Data.Text = modPatient.ShowDiscountCategEnc($rData[$aMyFields[Column]], $sConn)
   Else If Column = 7 Then
-    GridView1.Data.Picture = Picture["icon:/small/apply"]
+    GridView1.Data.Picture = Picture["icon:/tiny/apply"]
     GridView1.Data.Text = ""
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]

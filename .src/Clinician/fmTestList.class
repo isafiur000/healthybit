@@ -57,8 +57,13 @@ Public Sub Form_Open()
   If modBasic.$ReferralLockEntry = "Yes" Then
     btnrefer.Enabled = False
   Endif
-  cmbtarget.List = modBasic.$AllCompList
-  cmbtarget.Text = modSettings.ShowSettingFromFIle("Laboratory/DefaultTarget")
+
+  If modBasic.$ClinLockLabTargt = "Yes" Then
+    cmbtarget.Enabled = False
+  Else
+    cmbtarget.List = modBasic.$AllCompList
+    cmbtarget.Text = modSettings.ShowSettingFromFIle("Laboratory/DefaultTarget")
+  Endif
   $TestList = New String[]
   modAccount.PasInvoiceSetting(cmbfiscal, False)
   LoadTableNames()
@@ -376,8 +381,6 @@ End
 Public Sub btnselect_Click()
 
   Dim i As Integer
-  Dim xauto As String
-
   Dim xrefer As String
   Dim xpayble As String
 
@@ -393,8 +396,7 @@ Public Sub btnselect_Click()
   Endif
   xpayble = ""
 
-  xauto = modBasic.$AutoBillTest
-  Select xauto
+  Select modBasic.$AutoBillTest
     Case "Partial"
       xList = New String[]
       For j = 0 To GridView1.Rows.Count - 1
@@ -414,7 +416,7 @@ Public Sub btnselect_Click()
     For i = 1 To ListView1.Count
       If ListView1[CStr(i)].Picture = Picture["icons/checked.png"] Then     '
 
-        If xauto = "Yes" Or If xauto = "Full" Or If xauto = "Partial" Then
+        If modBasic.$AutoBillTest = "Standard" Or If modBasic.$AutoBillTest = "Full" Or If modBasic.$AutoBillTest = "Partial" Then
           If modMisc.GetDuplicationAllow(xList, ListView1[CStr(i)].Text, btnselect) = True Then
             modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Test", ListView1[CStr(i)].Text, 1, "Punched", 0, False, False, xpayble, xrefer, cmbtarget.Text)
             acount = acount + 1
@@ -507,14 +509,16 @@ End
 Public Sub btnsave_Click()
 
   Dim res As Result
-  Dim xauto As String
 
-  xauto = modBasic.$AutoBillTest
   Inc Application.Busy
   res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval= &1 and flditemtype=&2 and fldsave=&3 and fldstatus=&4", $encid, "Diagnostic Tests", False, "Punched")                 ''
   For Each res
 
-    If xauto = "Yes" Or If xauto = "Full" Then
+    If modBasic.$AutoBillTest = "Standard" Then
+      If modNonMedical.AllowPreCheckDeposit($encid, res["fldditemamt"]) = True Then
+        SavePartialEntry(res)
+      Endif
+    Else If modBasic.$AutoBillTest = "Full" Then
       If modNonMedical.AllowPreEntryWithDeposit($encid, "Test", res["fldditemamt"], btnsave) = True Then
         SavePartialEntry(res)
       Endif
@@ -534,17 +538,9 @@ Public Sub btnsave_Click()
 
 End
 
-Public Sub btndefault_Click()
+Public Sub cmbtarget_Click()
 
-  Dim xx As String
-
-  xx = InputCombo("Default Target", "Laboratory", modBasic.$AllCompList, cmbtarget.Text, True)
-  If xx Then
-    cmbtarget.Text = xx
-    modSettings.SaveSettingsToFile("Laboratory/DefaultTarget", xx)
-    Balloon.Info(("Information saved"), btndefault)
-    Balloon.Delay = modBasic.$BalloonDelay
-  Endif
+  modSettings.SaveSettingsToFile("Laboratory/DefaultTarget", cmbtarget.Text)
 
 End
 
@@ -824,8 +820,6 @@ End
 
 Public Sub btnselecttree_Click()
 
-  Dim xauto As String
-
   Dim xrefer As String
   Dim xpayble As String
 
@@ -841,8 +835,7 @@ Public Sub btnselecttree_Click()
   Endif
   xpayble = ""
 
-  xauto = modBasic.$AutoBillTest
-  Select xauto
+  Select modBasic.$AutoBillTest
     Case "Partial"
       xList = New String[]
       For j = 0 To GridView4.Rows.Count - 1
@@ -861,7 +854,7 @@ Public Sub btnselecttree_Click()
     Inc Application.Busy
     If TreeView1.Current.Picture = Picture["icons/coll3.png"] Then   '
 
-      If xauto = "Yes" Or If xauto = "Full" Or If xauto = "Partial" Then
+      If modBasic.$AutoBillTest = "Standard" Or If modBasic.$AutoBillTest = "Full" Or If modBasic.$AutoBillTest = "Partial" Then
         If modMisc.GetDuplicationAllow(xList, TreeView1.Current.Text, btnselecttree) = True Then
           modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Test", TreeView1.Current.Text, 1, "Punched", 0, False, False, xpayble, xrefer, cmbtarget.Text)
           acount = acount + 1
@@ -889,14 +882,16 @@ End
 Public Sub btnsavetree_Click()
 
   Dim res As Result
-  Dim xauto As String
 
-  xauto = modBasic.$AutoBillTest
   Inc Application.Busy
   res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval= &1 and flditemtype=&2 and fldsave=&3 and fldstatus=&4", $encid, "Diagnostic Tests", False, "Punched")                 ''
   For Each res
 
-    If xauto = "Yes" Or If xauto = "Full" Then
+    If modBasic.$AutoBillTest = "Standard" Then
+      If modNonMedical.AllowPreCheckDeposit($encid, res["fldditemamt"]) = True Then
+        SavePartialEntry(res)
+      Endif
+    Else If modBasic.$AutoBillTest = "Full" Then
       If modNonMedical.AllowPreEntryWithDeposit($encid, "Test", res["fldditemamt"], btnsave) = True Then
         SavePartialEntry(res)
       Endif
@@ -1011,7 +1006,7 @@ Private Sub SHowSavedGrid()
   With GridView2
     .Columns[0].Width = 1
     .Columns[1].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 300 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 400 * modBasic.$AppWidthRatio
     .Columns[3].Width = 150 * modBasic.$AppWidthRatio
     .Columns[4].Width = 100 * modBasic.$AppWidthRatio
     .Columns[1].Text = "DateTime"
@@ -1077,7 +1072,7 @@ Private Sub ShowSampled()
   With GridView3
     .Columns[0].Width = 1
     .Columns[1].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 250 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 350 * modBasic.$AppWidthRatio
     .Columns[3].Width = 25 * modBasic.$AppWidthRatio
     .Columns[4].Width = 100 * modBasic.$AppWidthRatio
     .Columns[5].Width = 100 * modBasic.$AppWidthRatio

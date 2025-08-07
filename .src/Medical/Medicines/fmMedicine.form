@@ -64,23 +64,26 @@
       Index = 0
       Text = ("Strength and Labeling")
       { Panel7 Panel
-        MoveScaled(1,0,80,49.5)
+        MoveScaled(0,0,81,50)
         { txtcodename ComboBox
           MoveScaled(15,1,62,3)
           Sorted = True
         }
         { cmbmedform ComboBox
-          MoveScaled(15,5,19,3)
+          MoveScaled(15,5,21,3)
           Sorted = True
         }
+        { txtmedminage ValueBox
+          MoveScaled(51,5,8,3)
+        }
         { txtmedstr ValueBox
-          MoveScaled(51,5,12,3)
+          MoveScaled(15,9,10,3)
+        }
+        { cmbdoseunit ComboBox
+          MoveScaled(26,9,10,3)
         }
         { txtmedstrunit TextBox
-          MoveScaled(64,5,13,3)
-        }
-        { txtmedminage ValueBox
-          MoveScaled(15,9,19,3)
+          MoveScaled(51,9,26,3)
         }
         { txtmedref TextBox
           MoveScaled(51,13,26,3)
@@ -148,7 +151,7 @@
           Picture = Picture["icon:/small/add"]
         }
         { Label25 Label
-          MoveScaled(40,5,10,3)
+          MoveScaled(0,9,14,3)
           Border = Border.Plain
           Text = ("Strength")
         }
@@ -158,9 +161,9 @@
           Text = ("Dosage Form")
         }
         { Label24 Label
-          MoveScaled(0,9,14,3)
+          MoveScaled(40,5,10,3)
           Border = Border.Plain
-          Text = ("Min Age (yrs)")
+          Text = ("Min Age")
         }
         { Label3 Label
           MoveScaled(0,13,14,3)
@@ -243,25 +246,27 @@
           Font = Font["-1"]
         }
         { btndrugeditall ToolButton
-          MoveScaled(77,5,3,3)
+          MoveScaled(77,9,3,3)
           Enabled = False
           Picture = Picture["icon:/small/edit"]
         }
         { btncompatdrug Button
-          MoveScaled(15,13,9,3)
+          MoveScaled(15,13,10,3)
           Text = ("Drug")
         }
         { btncompatfluid Button
-          MoveScaled(25,13,9,3)
+          MoveScaled(26,13,10,3)
           Text = ("Fluid")
         }
         { Label6 Label
           MoveScaled(40,9,10,3)
           Border = Border.Plain
-          Text = ("Dose Unit")
+          Text = ("Unit")
         }
-        { cmbdoseunit ComboBox
-          MoveScaled(51,9,21,3)
+        { Label7 Label
+          MoveScaled(61,5,10,3)
+          Border = Border.Plain
+          Text = ("Years")
         }
       }
       { Panel9 Panel

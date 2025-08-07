@@ -675,22 +675,22 @@
           MoveScaled(11,1,8.625,3)
         }
         { txtsystolicbp ValueBox
-          MoveScaled(11,5,8.625,3)
+          MoveScaled(11,4.5,8.625,3)
         }
         { txtdiastolicbp ValueBox
           MoveScaled(11,8,8.625,3)
         }
         { txtresprate ValueBox
-          MoveScaled(11,12,8.625,3)
+          MoveScaled(11,11.5,8.625,3)
         }
         { txtoxysat ValueBox
-          MoveScaled(11,16,8.625,3)
+          MoveScaled(11,15,8.625,3)
         }
         { txttemp ValueBox
-          MoveScaled(11,19,8.625,3)
+          MoveScaled(11,18.5,8.625,3)
         }
         { Label5 Label
-          MoveScaled(1,5,10,3)
+          MoveScaled(1,4.5,10,3)
           Border = Border.Plain
           Text = ("Syst BP")
         }
@@ -700,7 +700,7 @@
           Text = ("Diast BP")
         }
         { Label7 Label
-          MoveScaled(1,19,10,3)
+          MoveScaled(1,18.5,10,3)
           Border = Border.Plain
           Text = ("Temp")
         }
@@ -710,22 +710,22 @@
           Text = ("Pulse Rate")
         }
         { Label3 Label
-          MoveScaled(1,12,10,3)
+          MoveScaled(1,11.5,10,3)
           Border = Border.Plain
           Text = ("Resp Rate")
         }
         { Label11 Label
-          MoveScaled(1,16,10,3)
+          MoveScaled(1,15,10,3)
           Border = Border.Plain
           Text = ("S P O2")
         }
         { btnsavevitals Button
-          MoveScaled(1,23,19,3)
-          Text = ("Save [F5]")
+          MoveScaled(1,22,19,3)
+          Text = ("Vitals [F5]")
           Picture = Picture["icon:/small/apply"]
         }
         { Panel2 Panel
-          MoveScaled(0,29,21,3)
+          MoveScaled(0,25.5,21,3)
           Border = Border.Plain
           { rbsi RadioButton
             MoveScaled(0,0,10,3)
@@ -761,6 +761,11 @@
             MoveScaled(0,0,3,3)
             Picture = Picture["icon:/small/webcam"]
           }
+        }
+        { btnsaveAll Button
+          MoveScaled(1,29,19,3)
+          Text = ("Save All")
+          Picture = Picture["icon:/small/apply"]
         }
       }
       { Panel32 Panel
@@ -989,10 +994,6 @@
             Visible = False
             Background = Color.LightGray
             Ignore = True
-          }
-          { Timer1 #Timer
-            #MoveScaled(45,12)
-            Delay = 10000
           }
         }
       }

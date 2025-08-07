@@ -1,6 +1,5 @@
 ' Gambas class file
 
-Private $sCompId As String
 Private $rData As Result
 Private $aMyFields As String[]
 Private $rData1 As Result
@@ -55,7 +54,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
     GridView1.Data.Picture = Picture["icons/unchecked.png"]
     GridView1.Data.Text = ""
   Else If Column = 4 Then
-    GridView1.Data.Picture = Picture["icon:/small/apply"]
+    GridView1.Data.Picture = Picture["icon:/tiny/apply"]
     GridView1.Data.Text = ""
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]
@@ -121,7 +120,7 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
     GridView2.Data.Picture = Picture["icons/unchecked.png"]
     GridView2.Data.Text = ""
   Else If Column = 4 Then
-    GridView2.Data.Picture = Picture["icon:/small/apply"]
+    GridView2.Data.Picture = Picture["icon:/tiny/apply"]
     GridView2.Data.Text = ""
   Else
     GridView2.Data.Text = $rData1[$aMyFields1[Column]]
@@ -193,7 +192,7 @@ Private Function GetSupplierEmail() As Variant[]
   Dim res As Result
 
   xxx = New Variant[]
-  res = modDatabase.$myConn.Exec("select fldsuppname,fldsuppemail from tblsupplier")
+  res = modDatabase.$myConn.Exec("select fldsuppname,fldsuppemail from tblsupplie where fldactive=&1 GROUP BY fldsuppemail", "Active")
   If res.Available Then
     For Each res
       xxx.Add([res["fldsuppemail"], res["fldsuppname"]])
@@ -204,9 +203,53 @@ Private Function GetSupplierEmail() As Variant[]
 
 End
 
+Private Function GetSelectSupplierEmail() As Variant[]
+
+  Dim xxx As Variant[]
+  Dim res As Result
+
+  Dim itmLst As String[]
+  Dim Row As Integer
+  Dim Row1 As Integer
+  Dim i As Integer
+
+  itmLst = New String[]
+  For Row = 0 To GridView1.Rows.Count - 1
+    If GridView1[Row, 0].Picture = Picture["icons/checked.png"] Then
+      itmLst.Add(GridView1[Row, 1].Text)
+    Endif
+  Next
+  For Row1 = 0 To GridView2.Rows.Count - 1
+    If GridView2[Row1, 0].Picture = Picture["icons/checked.png"] Then
+      itmLst.Add(GridView2[Row1, 1].Text)
+    Endif
+  Next
+
+  If itmLst.Count Then
+    For i = 0 To itmLst.Count - 1
+      itmLst[i] = "'" & itmLst[i] & "'"
+    Next
+
+    xxx = New Variant[]
+    res = modDatabase.$myConn.Exec("select fldsuppname,fldsuppemail from tblsupplier where fldactive=&1 and fldsuppname in(select fldsuppname from tbltenderlist where fldfromdate<=&2 and fldtodate>=&2 and fldstockid in(" & itmLst.Join(",") & ")) GROUP BY fldsuppemail", "Active", Date())
+    If res.Available Then
+      For Each res
+        xxx.Add([res["fldsuppemail"], res["fldsuppname"]])
+      Next
+    Endif
+  Endif
+
+  Return xxx
+
+End
+
 Public Sub txtemail_Click()
 
-  txtemail.Text = MedicalSelectedUser("Select Supplier E-Mail", GetSupplierEmail())
+  If modBasic.$PurLockToTender = "Enable" Then
+    txtemail.Text = MedicalSelectedUser("Select Supplier E-Mail", GetSelectSupplierEmail())
+  Else
+    txtemail.Text = MedicalSelectedUser("Select Supplier E-Mail", GetSupplierEmail())
+  Endif
 
 End
 

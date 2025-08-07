@@ -1049,7 +1049,7 @@ Private Sub NewDeliveryGrid()
       Else If Column = 8 Then
         GridView3[res.Index, Column].Text = modPatient.PatientGenderByPatNo(res[fld.Name])
       Else If Column = 10 Then
-        GridView3[res.Index, Column].Picture = Picture["icon:/small/identity"]
+        GridView3[res.Index, Column].Picture = Picture["icon:/tiny/identity"]
         GridView3[res.Index, Column].Text = ""
       Else
         GridView3[res.Index, Column].Text = res[fld.Name]
@@ -1547,7 +1547,7 @@ Public Sub FillPreDelivery()
       Else If Column = 5 Then
         grdpredel[res.Index, Column].Text = modReportVar.GetDateTimeReport(res[fld.Name], gb.GeneralDate)
       Else If Column = 10 Then
-        grdpredel[res.Index, Column].Picture = Picture["icon:/small/delete"]
+        grdpredel[res.Index, Column].Picture = Picture["icon:/tiny/delete"]
         grdpredel[res.Index, Column].Text = ""
       Else
         grdpredel[res.Index, Column].Text = res[fld.Name]
@@ -1668,7 +1668,7 @@ Public Sub FillonDelivery()
       Else If Column = 5 Then
         grdondel[res.Index, Column].Text = modReportVar.GetDateTimeReport(res[fld.Name], gb.GeneralDate)
       Else If Column = 10 Then
-        grdondel[res.Index, Column].Picture = Picture["icon:/small/delete"]
+        grdondel[res.Index, Column].Picture = Picture["icon:/tiny/delete"]
         grdondel[res.Index, Column].Text = ""
       Else
         grdondel[res.Index, Column].Text = res[fld.Name]
@@ -1789,7 +1789,7 @@ Public Sub FillPostDelivery()
       Else If Column = 5 Then
         grdpostdel[res.Index, Column].Text = modReportVar.GetDateTimeReport(res[fld.Name], gb.GeneralDate)
       Else If Column = 10 Then
-        grdpostdel[res.Index, Column].Picture = Picture["icon:/small/delete"]
+        grdpostdel[res.Index, Column].Picture = Picture["icon:/tiny/delete"]
         grdpostdel[res.Index, Column].Text = ""
       Else
         grdpostdel[res.Index, Column].Text = res[fld.Name]
@@ -1992,7 +1992,7 @@ Public Sub FillBabyExam()
       Else If Column = 5 Then
         grdbabyexam[res.Index, Column].Text = modReportVar.GetDateTimeReport(res[fld.Name], gb.GeneralDate)
       Else If Column = 10 Then
-        grdbabyexam[res.Index, Column].Picture = Picture["icon:/small/delete"]
+        grdbabyexam[res.Index, Column].Picture = Picture["icon:/tiny/delete"]
         grdbabyexam[res.Index, Column].Text = ""
       Else
         grdbabyexam[res.Index, Column].Text = res[fld.Name]
@@ -3278,7 +3278,7 @@ Public Sub grdcompl_Data(Row As Integer, Column As Integer)
   Else If Column = 2 Then
     grdcompl.Data.Text = modReportVar.GetDateTimeReport($rData2[$aMyFields2[Column]], gb.GeneralDate)
   Else If Column = 10 Then
-    grdcompl.Data.Picture = Picture["icon:/small/cancel"]
+    grdcompl.Data.Picture = Picture["icon:/tiny/cancel"]
     grdcompl.Data.Text = ""
   Else
     grdcompl.Data.Text = $rData2[$aMyFields2[Column]]

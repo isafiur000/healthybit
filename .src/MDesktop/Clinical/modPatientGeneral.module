@@ -641,8 +641,8 @@ Public Sub SetPatientFindingTree(encid As String, TreeView1 As TreeView, showAll
   Dim pic3 As Picture
 
   TreeView1.Clear()
-  pic2 = Picture["icons/coll2.png"]
-  pic3 = Picture["icons/coll6.png"]
+  pic2 = Picture["icon:/tiny/view-compact"]   'Picture["icons/coll2.png"]
+  pic3 = Picture["icon:/tiny/added"]    'Picture["icons/coll6.png"]
 
   If showAll = True Then
     orgLst = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select distinct(fldtype) as col from tblpatfindings where fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&1) and fldsave=&2", modPatient.GetPatientNoByEnc(encid), True))

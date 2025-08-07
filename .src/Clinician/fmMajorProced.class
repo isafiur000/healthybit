@@ -128,7 +128,6 @@ End
 
 Public Sub btnsubOK_Click()
 
-  Dim xauto As String
   Dim xrefer As String
 
   If $encid And If cmbprocedure.Text And If cmbstatus.Text Then
@@ -137,13 +136,14 @@ Public Sub btnsubOK_Click()
 
         If chkbill.Value And If cmbstatus.Text = "Planned" Then
           xrefer = modBillings.GetReferralUserSetting("Procedure", $encid)
-          xauto = modBasic.$AutoBillProcedure
-          If xauto Then
-            If xauto = "Yes" Or If xauto = "Full" Then
+
+          If modBasic.$AutoBillProcedure Then
+            If modBasic.$AutoBillProcedure = "Standard" Then
+            Else If modBasic.$AutoBillProcedure = "Full" Then
               modBillings.GetAutoBillingEntry($encid, cmbdisctype.Text, "Procedure", cmbprocedure.Text, 1, "Done", 0, True, False, "", xrefer)                          ''
               SHowSavedGrid()
               TabPanel1.Index = 1
-            Else If xauto = "Partial" Then
+            Else If modBasic.$AutoBillProcedure = "Partial" Then
               modBillings.GetAutoBillingEntry($encid, cmbdisctype.Text, "Procedure", cmbprocedure.Text, 1, "Punched", 0, False, False, "", xrefer)
               SHowUnpaidGrid()
             Endif
@@ -211,7 +211,7 @@ Public Sub FillLabtable()
       If Column = 2 Then
         GridView1[$rData.Index, Column].Text = modReportVar.GetDateTimeReport($rData[fld.Name], gb.GeneralDate)
       Else If Column = 5 Then
-        GridView1[$rData.Index, Column].Picture = Picture["icon:/small/cancel"]
+        GridView1[$rData.Index, Column].Picture = Picture["icon:/tiny/cancel"]
         GridView1[$rData.Index, Column].Text = ""
       Else
         GridView1[$rData.Index, Column].Text = $rData[fld.Name]
@@ -352,7 +352,7 @@ Public Sub GridView4_Data(Row As Integer, Column As Integer)
   If Column = 1 Then
     GridView4.Data.Text = modReportVar.GetDateTimeReport($rData4[$aMyFields4[Column]], gb.GeneralDate)
   Else If Column = 4 Then
-    GridView4.Data.Picture = Picture["icon:/small/cancel"]
+    GridView4.Data.Picture = Picture["icon:/tiny/cancel"]
     GridView4.Data.Text = ""
   Else
     GridView4.Data.Text = $rData4[$aMyFields4[Column]]
