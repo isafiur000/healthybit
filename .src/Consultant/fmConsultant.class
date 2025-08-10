@@ -196,18 +196,8 @@ Public Sub mnuformedicine_Click()
 
   Dim hForm As FmFormulary
 
-  If modSettings.ShowSettingFromFIle("Formulary/Medicine_Source") = "Internet" Then
-    If Desktop.NetworkAvailable = True Then
-      If Not modWeb.$webMedConn Then
-        modWeb.ConnectRemoteMedServer()
-      Endif
-      hForm = New FmFormulary(modWeb.$webMedConn)
-      hForm.ShowModal
-    Endif
-  Else
-    hForm = New FmFormulary(modDatabase.$syConn)
-    hForm.ShowModal
-  Endif
+  hForm = New FmFormulary(modDatabase.$syConn)
+  hForm.ShowModal
 
 End
 
@@ -215,18 +205,8 @@ Public Sub mnuformpatho_Click()
 
   Dim hForm As FmPathoFormulary
 
-  If modSettings.ShowSettingFromFIle("Formulary/Pathology_Source") = "Internet" Then
-    If Desktop.NetworkAvailable = True Then
-      If Not modWeb.$webMedConn Then
-        modWeb.ConnectRemoteMedServer()
-      Endif
-      hForm = New FmPathoFormulary(modWeb.$webMedConn)
-      hForm.ShowModal
-    Endif
-  Else
-    hForm = New FmPathoFormulary(modDatabase.$syConn)
-    hForm.ShowModal
-  Endif
+  hForm = New FmPathoFormulary(modDatabase.$syConn)
+  hForm.ShowModal
 
 End
 
@@ -234,18 +214,8 @@ Public Sub mnuformdiagno_Click()
 
   Dim hForm As FmDiagnoFormulary
 
-  If modSettings.ShowSettingFromFIle("Formulary/Diagnostic_Source") = "Internet" Then
-    If Desktop.NetworkAvailable = True Then
-      If Not modWeb.$webMedConn Then
-        modWeb.ConnectRemoteMedServer()
-      Endif
-      hForm = New FmDiagnoFormulary(modWeb.$webMedConn)
-      hForm.ShowModal
-    Endif
-  Else
-    hForm = New FmDiagnoFormulary(modDatabase.$syConn)
-    hForm.ShowModal
-  Endif
+  hForm = New FmDiagnoFormulary(modDatabase.$syConn)
+  hForm.ShowModal
 
 End
 

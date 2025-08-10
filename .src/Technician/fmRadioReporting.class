@@ -18,6 +18,7 @@ Private $aMyFields2 As String[]
 Private $rData3 As Result
 Private $aMyFields3 As String[]
 Private $PositionList As String[]
+Private $counterLst As String[]
 
 Private $tblpatbilling As String
 
@@ -25,7 +26,6 @@ Public Sub Form_Open()
 
   Dim xoption As String
   Dim xoption1 As String
-  Dim xcountLst As String[]
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Panel5.Width = Panel1.Width - (Panel3.Width + Panel6.Width)
@@ -72,9 +72,9 @@ Public Sub Form_Open()
     btnaddperson.Visible = False
     mnudelsurguser.Visible = False
   Endif
-  xcountLst = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select fldcounter as col from tblradiocounter"))
-  cmbcounter.List = xcountLst
-  cmbrepocounter.List = xcountLst
+  $counterLst = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select fldcounter as col from tblradiocounter"))
+  cmbcounter.List = $counterLst
+  cmbrepocounter.List = $counterLst
 
   modRepository.ReadRemoteRepoConfig()
   If modRepository.$RepoPACSHost Then
@@ -1266,7 +1266,9 @@ Public Sub btnaddcounter_Click()
 
   hform = New FmAddVariableGrid("fldcounter", "tblradiocounter")
   hform.ShowModal
-  cmbrepocounter.List = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select fldcounter as col from tblradiocounter"))
+  $counterLst = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select fldcounter as col from tblradiocounter"))
+  cmbcounter.List = $counterLst
+  cmbrepocounter.List = $counterLst
 
 End
 
@@ -2309,13 +2311,17 @@ Public Sub btnprefix_Click()
 
   If GridView1.Rows.Selection.Count Then
     res = modDatabase.$myConn.Edit("tblpatradiotest", "fldid=&1", GridView1[GridView1.Row, 0].Text)
-    If res["fldsampleid"] Then
+    If res["fldsampleid"] And If $counterLst.Exist(res["fldsampleid"]) = False Then
       Message.Warning("Reference is " & res["fldsampleid"], "OK")
     Else
 
       xrefer = InputBox("Reference For this Examination", "Radiology", modRadioSub.GetRadioAutoIncreasingNo())
       If xrefer Then
-        res["fldsampleid"] = xrefer
+        If res["fldsampleid"] And If $counterLst.Exist(res["fldsampleid"]) = True Then
+          res["fldsampleid"] = xrefer & "@" & res["fldsampleid"]
+        Else
+          res["fldsampleid"] = xrefer
+        Endif
         res.Update
         ShowGridMain()
       Endif

@@ -54,13 +54,21 @@
           ToolTip = ("Category of Billing Items")
         }
         { cmbitem ComboBox
-          MoveScaled(12,0.25,75,3)
+          MoveScaled(12,0.25,69,3)
         }
-        { btnshow2 Button
+        { txtqty ValueBox
+          MoveScaled(82,0.25,7,3)
+          Text = ("1")
+        }
+        { btntransferall Button
           MoveScaled(93,0.25,14,3)
           Text = ("Transfer")
           Picture = Picture["icon:/small/exec"]
         }
+      }
+      { chkselall CheckBox
+        MoveScaled(64,4.5,13,3)
+        Text = ("Select All")
       }
     }
     { GridView2 GridView

@@ -1,0 +1,86 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,60,31)
+  { Panel1 Panel
+    MoveScaled(17,5,41,3)
+    { rbradio RadioButton
+      MoveScaled(22,0,16,3)
+      Text = ("Radiology")
+    }
+    { rblab RadioButton
+      MoveScaled(1,0,16,3)
+      Text = ("Laboratory")
+      Value = True
+    }
+  }
+  { Label1 Label
+    MoveScaled(1,5,14,3)
+    Border = Border.Plain
+    Text = ("Category")
+  }
+  { Label2 Label
+    MoveScaled(1,9,14,3)
+    Border = Border.Plain
+    Text = ("Department")
+  }
+  { cmbdepartment ComboBox
+    MoveScaled(17,9,41,3)
+  }
+  { Label3 Label
+    MoveScaled(1,13,14,3)
+    Border = Border.Plain
+    Text = ("Date Range")
+  }
+  { dtfrom DateBox
+    MoveScaled(17,13,17,3)
+  }
+  { dtend DateBox
+    MoveScaled(40,13,17,3)
+  }
+  { Label4 Label
+    MoveScaled(1,17,14,3)
+    Border = Border.Plain
+    Text = ("Prefix Format")
+  }
+  { Label5 Label
+    MoveScaled(1,21,14,3)
+    Border = Border.Plain
+    Text = ("Code")
+  }
+  { Label6 Label
+    MoveScaled(1,25,14,3)
+    Border = Border.Plain
+    Text = ("Value")
+  }
+  { cmbprefix ComboBox
+    MoveScaled(17,17,17,3)
+  }
+  { txtcode TextBox
+    MoveScaled(17,21,17,3)
+  }
+  { txtvalue ValueBox
+    MoveScaled(17,25,17,3)
+    Text = ("1")
+  }
+  { btnadd Button
+    MoveScaled(40,25,18,3)
+    Text = ("Add")
+    Picture = Picture["icon:/small/add"]
+  }
+  { txtformat TextBox
+    MoveScaled(40,17,17,3)
+  }
+  { Panel2 Panel
+    MoveScaled(1,1,29,3)
+    { rbbsdate RadioButton
+      MoveScaled(16,0,12,3)
+      Text = ("BS Date")
+    }
+    { rbaddate RadioButton
+      MoveScaled(1,0,12,3)
+      Text = ("AD Date")
+      Value = True
+    }
+  }
+}

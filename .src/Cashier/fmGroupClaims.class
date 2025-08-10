@@ -217,7 +217,7 @@ Public Sub GridView2_Click()
 
 End
 
-Public Sub btnshow2_Click()
+Public Sub btntransferall_Click()
 
   Dim Row As Integer
   Dim resx As Result
@@ -269,7 +269,7 @@ Public Sub btnshow2_Click()
         If resx.Available Then
           xqty = modNonMedical.GetPatientItemAllSalesPackage($encid, cmbitem.Text, $sPackage)
           If Not xqty Then
-            modBillings.ServiceBillBlankLedgerPack($encid, resx["fldbilltype"], resx["fldbillingmode"], $sPackage, resx["fldacledger"], cmbtype.Text, cmbitem.Text, 1, "Done", 0, True, False, "", "", "GROUP")
+            modBillings.ServiceBillBlankLedgerPack($encid, resx["fldbilltype"], resx["fldbillingmode"], $sPackage, resx["fldacledger"], cmbtype.Text, cmbitem.Text, txtqty.Value, "Done", 0, True, False, "", "", "GROUP")
           Endif
         Endif
       Endif
@@ -286,5 +286,19 @@ Catch
   modDatabase.$myConn.Rollback
   Dec Application.Busy
   modHelpVariable.CreateErrorReport()
+
+End
+
+Public Sub chkselall_Click()
+
+  Dim Row As Integer
+
+  For Row = 0 To GridView2.Rows.Count - 1
+    If chkselall.Value = True Then
+      GridView2[Row, 1].Picture = Picture["icons/checked.png"]
+    Else
+      GridView2[Row, 1].Picture = Picture["icons/unchecked.png"]
+    Endif
+  Next
 
 End

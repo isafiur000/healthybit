@@ -70,6 +70,8 @@ Public Sub Form_Open()
   cmbregpatno.List = ["Yes", "No"]
   cmbusercategory.List = ["Payable", "Referral", "Consultant", "IP Clinician"]
   cmbuserfaculty.List = modGeneral.GetUsersCategory()
+  cmblabsample.List = ["Fixed", "Section", "Department"]
+  cmbradiosample.List = ["Fixed", "Section", "Department"]
 
   cmbenclock.List = ["Yes", "No"]
   cmbschedule.List = ["Yes", "No"]
@@ -494,6 +496,9 @@ Private Sub GeneralSetting()
   cmbusercategory.Text = modGlobalSetting.ShowSettingFromDBAny("GeneralSettings/LimitUsers_Category", cmbtarget.Text)
   cmbuserfaculty.Text = modGlobalSetting.ShowSettingFromDBAny("GeneralSettings/LimitUsers_Faculty", cmbtarget.Text)
 
+  cmblabsample.Text = modGlobalSetting.ShowSettingFromDBAny("Laboratory/Reference_Source", cmbtarget.Text)
+  cmbradiosample.Text = modGlobalSetting.ShowSettingFromDBAny("Radiology/Reference_Source", cmbtarget.Text)
+
 End
 
 Public Sub btnsampldtlock_Click()
@@ -533,6 +538,15 @@ Public Sub btnuser_Click()
   modGlobalSetting.SaveSettingToDB("GeneralSettings/LimitUsers_Category", cmbusercategory.Text, cmbtarget.Text)
   modGlobalSetting.SaveSettingToDB("GeneralSettings/LimitUsers_Faculty", cmbuserfaculty.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btnuser)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btndiagnosample_Click()
+
+  modGlobalSetting.SaveSettingToDB("Laboratory/Reference_Source", cmblabsample.Text, cmbtarget.Text)
+  modGlobalSetting.SaveSettingToDB("Radiology/Reference_Source", cmbradiosample.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btndiagnosample)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -836,6 +850,8 @@ Public Sub btnsettall_Click()
   xList.Add("GeneralSettings/SMSQue_Disable")
   xList.Add("GeneralSettings/LimitUsers_Category")
   xList.Add("GeneralSettings/LimitUsers_Faculty")
+  xList.Add("Laboratory/Reference_Source")
+  xList.Add("Radiology/Reference_Source")
 
   xList.Add("GeneralSettings/Laboratory_TestAddition")
   xList.Add("GeneralSettings/Radiology_TestAddition")

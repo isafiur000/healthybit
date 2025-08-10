@@ -534,11 +534,11 @@ Public Sub mnuupgrade_Click()
   Dim sPath As String
   Dim scmd As String
 
-  If GridView1.Rows.Selection.Count > 0 Then
-    sPath = modWeb.GetLatestUpdateFile()
-    scmd = "wget " & sPath & " & sudo gdebi -n " & File.Name(sPath)
-    ExecuteSSHCommand(scmd, UnBase64(GridView1[GridView1.Row, 8].Text))
-  Endif
+  ' If GridView1.Rows.Selection.Count > 0 Then
+  '   sPath = modWeb.GetLatestUpdateFile()
+  '   scmd = "wget " & sPath & " & sudo gdebi -n " & File.Name(sPath)
+  '   ExecuteSSHCommand(scmd, UnBase64(GridView1[GridView1.Row, 8].Text))
+  ' Endif
 
 End
 

@@ -1,0 +1,85 @@
+' Gambas class file
+
+Public Sub Form_Open()
+
+  cmbprefix.List = ["Daily", "Monthly", "Yearly"]
+  dtfrom.Value = Now()
+  dtend.Value = Now()
+  rbaddate.Value = True
+  rblab.Value = True
+  rblab_Click()
+
+End
+
+Public Sub rblab_Click()
+
+  cmbdepartment.List = modMedicine.GetPathoCategoryList("Test")
+  cmbdepartment.Text = "Laboratory"
+
+End
+
+Public Sub rbradio_Click()
+
+  cmbdepartment.List = modMedicine.GetPathoCategoryList("Radio")
+  cmbdepartment.Text = "Radiology"
+
+End
+
+Public Sub cmbprefix_Click()
+
+  If cmbprefix.Text = "Daily" Then
+    txtformat.Text = "yymmdd"
+  Else If cmbprefix.Text = "Monthly" Then
+    txtformat.Text = "yymm"
+  Else If cmbprefix.Text = "Yearly" Then
+    txtformat.Text = "yy"
+  Endif
+
+End
+
+Public Sub btnadd_Click()
+
+  Dim dtLst As String[]
+  Dim sType As Integer
+  Dim xform As String
+  Dim rsx As Result
+  Dim res As Result
+  Dim i As Integer
+
+  If rblab.Value = True Then
+    xform = "Lab"
+  Else If rbradio.Value = True Then
+    xform = "Radio"
+  Endif
+  If cmbprefix.Text = "Daily" Then
+    sType = gb.Day
+  Else If cmbprefix.Text = "Monthly" Then
+    sType = gb.Month
+  Else If cmbprefix.Text = "Yearly" Then
+    sType = gb.Year
+  Endif
+  If rbaddate.Value = True Then
+    dtLst = modDate.GetSelectDateArrayBetween(sType, dtfrom.Value, dtend.Value)
+  Else If rbbsdate.Value = True Then
+    dtLst = modDate.GetSelectDateBSArrayBetween(sType, dtfrom.Value, dtend.Value)
+  Endif
+
+  If cmbdepartment.Text Then
+    For i = 0 To dtLst.Count - 2
+      rsx = modDatabase.$myConn.Exec("select fldvalue from tbldiagnoid where fldtype=&1 and fldsection=&2 and fldstart=&3 and fldclose=&4", xform, cmbdepartment.Text, modDate.StartSqlDate(dtLst[i]), modDate.StartSqlDate(dtLst[i + 1]))                         ''
+      If rsx.Available = False Then
+        res = modDatabase.$myConn.Create("tbldiagnoid")
+        res["fldtype"] = xform
+        res["fldsection"] = cmbdepartment.Text
+        res["fldprefix"] = txtformat.Text
+        res["fldstart"] = modDate.StartSqlDate(dtLst[i])
+        res["fldclose"] = modDate.StartSqlDate(dtLst[i + 1])
+        res["fldcode"] = Trim(txtcode.Text)
+        res["fldvalue"] = txtvalue.Value
+        res.Update
+      Endif
+    Next
+    Message.Info("Completed", "OK")
+  Endif
+
+End
