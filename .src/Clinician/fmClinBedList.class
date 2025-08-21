@@ -548,6 +548,7 @@ Public Sub GridView1_Click()
   Dim res As Result
   Dim xList As String[] = ["Active", "Maintenance", "Day Use"]
   Dim xval As String
+  Dim xData As String
 
   If GridView1.Column = 11 Then
     If cmbdept.Text = "%" Then
@@ -567,8 +568,15 @@ Public Sub GridView1_Click()
 
       Endif
     Endif
+
   Else
     SHowPatIndicators(GridView1[GridView1.Row, 4].Text)
+    If modBasic.$ClinDefaultReport Then
+      xData = modMisc.GetDefaultReportClinic(GridView1[GridView1.Row, 4].Text)
+      modGeneralMain.$RightAdView.SetHtml(xData)
+      modGeneralMain.$RightAdView.Refresh()
+    Endif
+
   Endif
 
 End
@@ -2737,7 +2745,7 @@ Private Sub AddMedicineRequest(encid As String, sRoute As String, sStatus As Str
       itemmode = res["fldbillingmode"]
       xtax = modNonMedical.ShowTaxValues(itemtype, res["flditem"])
       xdisc = modNonMedical.DiscPercentForCategoryValue(encid, res["flddisctype"], itemtype, res["flditem"], itemmode)
-      modPharmSub.InsertDosingEntry(encid, res["fldbilltype"], res["fldbillingmode"], res["flddisctype"], res["fldacledger"], res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtydisp"], sStatus, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", "IPD", res["flddirection"], 0, xcurVal)                     '
+      modPharmSub.InsertDosingEntry(encid, res["fldbilltype"], res["fldbillingmode"], res["flddisctype"], res["fldacledger"], res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtydisp"], sStatus, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", "IPD", res["flddirection"], False, xcurVal)                     '
 
     Next
   Endif

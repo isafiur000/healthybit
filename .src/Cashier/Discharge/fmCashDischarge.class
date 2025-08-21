@@ -531,12 +531,14 @@ Public Sub btnshow_Click()
           cmbledgerac.Enabled = False
         Endif
         If $sTatus = "Admitted" Then
+          hPatient.$LockToInvOwn = modBasic.$BillLockInvoiceToOwnIPD
           If modBasic.$BillLockAdmitted = "Yes" Then
             If hPatient Then
               hPatient.Enabled = False
             Endif
           Endif
         Else
+          hPatient.$LockToInvOwn = modBasic.$BillLockInvoiceToOwnOPD
           If hPatient Then
             hPatient.ShowDepositButton()
           Endif
@@ -1250,7 +1252,9 @@ Public Sub mnuchangestate_Click()
 
         hPatient.$PatStatus = $sTatus
         If $sTatus = "Admitted" Then
+          hPatient.$LockToInvOwn = modBasic.$BillLockInvoiceToOwnIPD
         Else
+          hPatient.$LockToInvOwn = modBasic.$BillLockInvoiceToOwnOPD
           If hPatient Then
             hPatient.ShowDepositButton()
           Endif
@@ -1358,7 +1362,7 @@ Public Sub mnupatacc_Click()
 
   If txtencid.Text Then
     If $xFinClear = False Then
-      hForm = New FmPatAccEdit(Trim(txtencid.Text))
+      hForm = New FmPatAccEdit(Trim(txtencid.Text), True)
       hForm.ShowModal
     Endif
   Endif
@@ -3658,9 +3662,9 @@ Public Sub btngroup_Click()
           xtax = modNonMedical.ShowTaxValues(itemtype, res["flditem"])
           discval = modNonMedical.DiscPercentForCategoryValue(Trim(txtencid.Text), cmbdisctype.Text, itemtype, res["flditem"], itemmode)
           If res["fldroute"] = "suture" Or If res["fldroute"] = "msurg" Or If res["fldroute"] = "ortho" Then
-            modPharmSub.InsertNonMedDosingEntry("Surgicals", Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, res["fldroute"], res["flditem"], res["fldqty"], sType, res["fldstart"], xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, res["fldadvice"], 0)
+            modPharmSub.InsertNonMedDosingEntry("Surgicals", Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, res["fldroute"], res["flditem"], res["fldqty"], sType, res["fldstart"], xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, res["fldadvice"], False)
           Else If res["fldroute"] = "extra" Then
-            modPharmSub.InsertNonMedDosingEntry("Extra Items", Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, res["fldroute"], res["flditem"], res["fldqty"], sType, res["fldstart"], xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, res["fldadvice"], 0)
+            modPharmSub.InsertNonMedDosingEntry("Extra Items", Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, res["fldroute"], res["flditem"], res["fldqty"], sType, res["fldstart"], xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, res["fldadvice"], False)
           Else
             xdose = modMedDosing.GetDoseInMg(res["flddose"], res["flddoseunit"], Trim(txtencid.Text))
             If modMedConstant.GetNarcoticType(res["flditem"]) = "Yes" Then
@@ -3673,7 +3677,7 @@ Public Sub btngroup_Click()
               txprescriber = ""
               txpresno = ""
             Endif
-            modPharmSub.InsertDosingEntry(Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, res["fldroute"], res["flditem"], xdose, res["fldfreq"], res["fldday"], res["fldqty"], sType, txprescriber, txpresno, res["fldstart"], xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, res["fldadvice"], 0)
+            modPharmSub.InsertDosingEntry(Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, res["fldroute"], res["flditem"], xdose, res["fldfreq"], res["fldday"], res["fldqty"], sType, txprescriber, txpresno, res["fldstart"], xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, res["fldadvice"], False)
           Endif
 
         Next
@@ -3734,7 +3738,7 @@ Private Sub EnterDosingRecord()
         xtax = modNonMedical.ShowTaxValues(itemtype, cmbmedicine.Text)
         discval = modNonMedical.DiscPercentForCategoryValue(Trim(txtencid.Text), cmbdisctype.Text, itemtype, cmbmedicine.Text, itemmode)
         Inc Application.Busy
-        modPharmSub.InsertNonMedDosingEntry(itemtype, Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, cmbroute.Text, cmbmedicine.Text, txtqtymed.Value, sType, 0, xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, "", 0)
+        modPharmSub.InsertNonMedDosingEntry(itemtype, Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, cmbroute.Text, cmbmedicine.Text, txtqtymed.Value, sType, 0, xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, "", False)
         Dec Application.Busy
 
       Else
@@ -3763,7 +3767,7 @@ Private Sub EnterDosingRecord()
         xtax = modNonMedical.ShowTaxValues(itemtype, cmbmedicine.Text)
         discval = modNonMedical.DiscPercentForCategoryValue(Trim(txtencid.Text), cmbdisctype.Text, itemtype, cmbmedicine.Text, itemmode)
         Inc Application.Busy
-        modPharmSub.InsertDosingEntry(Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqtymed.Value, sType, txprescriber, txpresno, 0, xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, "", 0)                    '
+        modPharmSub.InsertDosingEntry(Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqtymed.Value, sType, txprescriber, txpresno, 0, xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, "", False)                    '
         Dec Application.Busy
       Endif
 
@@ -5000,13 +5004,19 @@ Private Sub DischargeBilledAMT()
   Dim res2 As Result
   Dim xcredit As Float
   Dim xcash As Float
+  Dim xLockInv As String
 
   txtinvoicecredit.Value = 0
   txtinvoicecash.Value = 0
   If txtencid.Text Then
+    If $sTatus = "Admitted" Then
+      xLockInv = modBasic.$BillLockInvoiceToOwnIPD
+    Else
+      xLockInv = modBasic.$BillLockInvoiceToOwnOPD
+    Endif
     xdod = modPatient.GetDischargeDate(Trim(txtencid.Text))
     xcredit = 0
-    If modBasic.$BillLockInvoiceToOwn = "Yes" Or If modBasic.$BillLockInvoiceToOwn = "Partial" Then
+    If xLockInv = "Yes" Or If xLockInv = "Partial" Then
       res1 = modDatabase.$myConn.Exec("select SUM(flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt) as totamt from tblpatbilldetail where fldencounterval=&1 and fldtime>=&2 and fldbilltype=&3 and fldcomp=&4 UNION ALL select SUM(flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt) as totamt from tbltempbilldetail where fldencounterval=&1 and fldtime>=&2 and fldbilltype=&3 and fldcomp=&4", Trim(txtencid.Text), xdod, "Credit", modBasic.$compID)
     Else
       res1 = modDatabase.$myConn.Exec("select SUM(flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt) as totamt from tblpatbilldetail where fldencounterval=&1 and fldtime>=&2 and fldbilltype=&3 UNION ALL select SUM(flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt) as totamt from tbltempbilldetail where fldencounterval=&1 and fldtime>=&2 and fldbilltype=&3", Trim(txtencid.Text), xdod, "Credit")
@@ -5021,7 +5031,7 @@ Private Sub DischargeBilledAMT()
     txtinvoicecredit.Value = xcredit
 
     xcash = 0
-    If modBasic.$BillLockInvoiceToOwn = "Yes" Or If modBasic.$BillLockInvoiceToOwn = "Partial" Then
+    If xLockInv = "Yes" Or If xLockInv = "Partial" Then
       res2 = modDatabase.$myConn.Exec("select SUM(fldreceivedamt) as totamt from tblpatbilldetail where fldencounterval=&1 and fldtime>=&2 and fldcomp=&3 UNION ALL select SUM(fldreceivedamt) as totamt from tbltempbilldetail where fldencounterval=&1 and fldtime>=&2 and fldcomp=&3", Trim(txtencid.Text), xdod, modBasic.$compID)
     Else
       res2 = modDatabase.$myConn.Exec("select SUM(fldreceivedamt) as totamt from tblpatbilldetail where fldencounterval=&1 and fldtime>=&2 UNION ALL select SUM(fldreceivedamt) as totamt from tbltempbilldetail where fldencounterval=&1 and fldtime>=&2", Trim(txtencid.Text), xdod)

@@ -376,6 +376,27 @@ Public Sub cmbroute_Click()
 
 End
 
+Private Function GetPharmTarget(sRoute As String) As String
+
+  Dim xtarg As String
+
+  Select sRoute
+    Case "msurg"
+      xtarg = modBasic.$BillTargetSurgical
+    Case "suture"
+      xtarg = modBasic.$BillTargetSutures
+    Case "ortho"
+      xtarg = modBasic.$BillTargetOrthopedics
+    Case "extra"
+      xtarg = modBasic.$BillTargetExtras
+    Case Else
+      xtarg = modBasic.$BillTargetMedicine
+  End Select
+
+  Return xtarg
+
+End
+
 Public Sub cmbmedicine_GotFocus()
 
   Dim res As Result
@@ -392,7 +413,11 @@ Public Sub cmbmedicine_GotFocus()
       txtdose.Parent.Tag = "Auto"
 
       If cmbroute.Text = "suture" Or If cmbroute.Text = "msurg" Or If cmbroute.Text = "ortho" Or If cmbroute.Text = "extra" Then
-        res = modStock.FillMedicinesPrescribingComboResult(cmbroute.Text, GetBrandGenerricType(), $sBillMode)
+        If modBasic.$ClinLockPharmStock = "Enable" Then
+          res = modStock.FillMedicinesDispensingComboResult(cmbroute.Text, GetBrandGenerricType(), GetPharmTarget(cmbroute.Text), $sBillMode)
+        Else
+          res = modStock.FillMedicinesPrescribingComboResult(cmbroute.Text, GetBrandGenerricType(), $sBillMode)
+        Endif
         xlist = modControlSub.GetDirectFillresult(res)
         If chkout.Value = True Then
           res1 = modStock.ItemListForPurchaseBillMode(cmbroute.Text, GetBrandGenerricType(), $sBillMode)
@@ -403,7 +428,11 @@ Public Sub cmbmedicine_GotFocus()
         Endif
 
       Else
-        res = modStock.FillMedicinesPrescribingComboResult(cmbroute.Text, GetBrandGenerricType(), $sBillMode)
+        If modBasic.$ClinLockPharmStock = "Enable" Then
+          res = modStock.FillMedicinesDispensingComboResult(cmbroute.Text, GetBrandGenerricType(), GetPharmTarget(cmbroute.Text), $sBillMode)
+        Else
+          res = modStock.FillMedicinesPrescribingComboResult(cmbroute.Text, GetBrandGenerricType(), $sBillMode)
+        Endif
         If chkout.Value = True Then
           res1 = modStock.ItemListForPurchaseBillMode(cmbroute.Text, GetBrandGenerricType(), $sBillMode)
           xlist = modControlSub.GetDirectFillresult(res)
@@ -709,7 +738,7 @@ Private Sub EnterDosingRecord()
       itemmode = $sBillMode
       xtax = modNonMedical.ShowTaxValues(itemtype, cmbmedicine.Text)
       xdisc = modNonMedical.DiscPercentForCategoryValue($encid, cmbdisctype.Text, itemtype, cmbmedicine.Text, itemmode)
-      modPharmSub.InsertNonMedDosingEntry(itemtype, $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtqty.Value, $status, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), 0, xcurVal)
+      modPharmSub.InsertNonMedDosingEntry(itemtype, $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtqty.Value, $status, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), False, xcurVal)
 
     Else
       If modMedConstant.GetNarcoticType(cmbmedicine.Text) = "Yes" Then
@@ -737,7 +766,7 @@ Private Sub EnterDosingRecord()
       itemmode = $sBillMode
       xtax = modNonMedical.ShowTaxValues(itemtype, cmbmedicine.Text)
       xdisc = modNonMedical.DiscPercentForCategoryValue($encid, cmbdisctype.Text, itemtype, cmbmedicine.Text, itemmode)
-      modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), 0, xcurVal)                     '
+      modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), False, xcurVal)                     '
     Endif
 
     BlankDosingBox()
@@ -805,9 +834,9 @@ Public Sub btngroup_Click()
           xdisc = modNonMedical.DiscPercentForCategoryValue($encid, cmbdisctype.Text, itemtype, res["flditem"], itemmode)
           Select res["fldroute"]
             Case "suture", "msurg", "ortho"
-              modPharmSub.InsertNonMedDosingEntry("Surgicals", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["fldqty"], $status, res["fldstart"], xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldadvice"], 0, xcurVal)
+              modPharmSub.InsertNonMedDosingEntry("Surgicals", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["fldqty"], $status, res["fldstart"], xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldadvice"], False, xcurVal)
             Case "extra"
-              modPharmSub.InsertNonMedDosingEntry("Extra Items", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["fldqty"], $status, res["fldstart"], xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldadvice"], 0, xcurVal)
+              modPharmSub.InsertNonMedDosingEntry("Extra Items", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["fldqty"], $status, res["fldstart"], xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldadvice"], False, xcurVal)
             Case Else
               xdose = modMedDosing.GetDoseInMg(res["flddose"], res["flddoseunit"], $encid)
               If xdose Then
@@ -821,7 +850,7 @@ Public Sub btngroup_Click()
                   txprescriber = ""
                   txpresno = ""
                 Endif
-                modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], xdose, res["fldfreq"], res["fldday"], res["fldqty"], $status, txprescriber, txpresno, res["fldstart"], xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldadvice"], 0, xcurVal)
+                modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], xdose, res["fldfreq"], res["fldday"], res["fldqty"], $status, txprescriber, txpresno, res["fldstart"], xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldadvice"], False, xcurVal)
               Endif
           End Select
 
@@ -1548,6 +1577,26 @@ Public Sub btnadd_Click()
 
 End
 
+Public Sub btnaddone_Click()
+
+  Dim sType As String
+
+  If GridView3.Rows.Selection.Count Then
+    Panel4.Enabled = False
+    If rbmed.Value = True Then
+      sType = "Medicines"
+    Else If rbsurg.Value = True Then
+      sType = "Surgicals"
+    Else If rbextra.Value = True Then
+      sType = "Extra Items"
+    Endif
+    Panel4.Enabled = True
+    EntryUseOwndata(sType, GridView3[GridView3.Row, 0].Text, 1)
+    ShowUsedGridViewList()
+  Endif
+
+End
+
 Private Sub EntryUseOwndata(sType As String, sItem As String, sQty As Float)
 
   Dim xroute As String
@@ -1578,9 +1627,9 @@ Private Sub EntryUseOwndata(sType As String, sItem As String, sQty As Float)
 
   If sType = "Medicines" Then
     xdose = sQty * modPharmLabel.GetPackVolValue(sItem) * modMedConstant.GetDrugInitialStrength(sItem)
-    modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, xroute, sItem, xdose, "stat", 1, sQty, $status, "", "", 0, xtax, xdisc, xfixname, xfixrate, "UseOwn", $Dept, "", 0)
+    modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, xroute, sItem, xdose, "stat", 1, sQty, $status, "", "", 0, xtax, xdisc, xfixname, xfixrate, "UseOwn", $Dept, "", False)
   Else
-    modPharmSub.InsertNonMedDosingEntry(sType, $encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, xroute, sItem, sQty, $status, 0, xtax, xdisc, xfixname, xfixrate, "UseOwn", $Dept, "", 0)
+    modPharmSub.InsertNonMedDosingEntry(sType, $encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, xroute, sItem, sQty, $status, 0, xtax, xdisc, xfixname, xfixrate, "UseOwn", $Dept, "", False)
   Endif
 
 End

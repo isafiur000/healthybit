@@ -90,6 +90,7 @@ Public Sub Form_Open()
   cmbvouchrepo.List = ["User", "Location", "Branch", "None"]
   cmbinventrepo.List = ["User", "Location", "Branch", "None"]
   cmbassetrepo.List = ["User", "Location", "Branch", "None"]
+  cmbclinicrepo.List = ["User", "Location", "Branch", "None"]
 
   cmbprintpersonal.List = ["Yes", "No"]
   cmbprintbrowser.List = ["Yes", "No"]
@@ -98,7 +99,7 @@ Public Sub Form_Open()
   cmbsavetransfer.List = ["Enable", "Disable"]
   cmbsaveconsume.List = ["Enable", "Disable"]
   cmbsavereturn.List = ["Enable", "Disable"]
-  cmbsaverequest.List = ["Enable", "Disable"]
+  cmbsavepurrequest.List = ["Enable", "Disable"]
   cmbsaveorder.List = ["Enable", "Disable"]
   cmbsaveentry.List = ["Enable", "Disable"]
 
@@ -664,6 +665,7 @@ Private Sub RestrictView()
   cmbvouchrepo.Text = modGlobalSetting.ShowSettingFromDBAny("GeneralSettings/RestrictToOwnVoucher", cmbtarget.Text)
   cmbinventrepo.Text = modGlobalSetting.ShowSettingFromDBAny("GeneralSettings/RestrictToOwnInventory", cmbtarget.Text)
   cmbassetrepo.Text = modGlobalSetting.ShowSettingFromDBAny("GeneralSettings/RestrictToOwnAssets", cmbtarget.Text)
+  cmbclinicrepo.Text = modGlobalSetting.ShowSettingFromDBAny("GeneralSettings/RestrictToOwnClinic", cmbtarget.Text)
 
 End
 
@@ -695,6 +697,14 @@ Public Sub btnassetrepo_Click()
 
   modGlobalSetting.SaveSettingToDB("GeneralSettings/RestrictToOwnAssets", cmbassetrepo.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btnassetrepo)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnclinicrepo_Click()
+
+  modGlobalSetting.SaveSettingToDB("GeneralSettings/RestrictToOwnClinic", cmbclinicrepo.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnclinicrepo)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -737,7 +747,7 @@ Private Sub ShowInventoryUserAccess()
 
   cmbsavetransfer.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/StockTransfer", cmbtarget.Text)
   cmbsaveconsume.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/StockConsume", cmbtarget.Text)
-  cmbsaverequest.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/PurchaseRequest", cmbtarget.Text)
+  cmbsavepurrequest.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/PurchaseRequest", cmbtarget.Text)
   cmbsaveorder.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/PurchaseOrder", cmbtarget.Text)
   cmbsavereturn.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/StockReturn", cmbtarget.Text)
   cmbsaveentry.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/PurchaseEntry", cmbtarget.Text)
@@ -760,10 +770,10 @@ Public Sub btnsaveconsume_Click()
 
 End
 
-Public Sub btnsaverequest_Click()
+Public Sub btnsavePurrequest_Click()
 
-  modGlobalSetting.SaveSettingToDB("InventorySaveAccess/PurchaseRequest", cmbsaverequest.Text, cmbtarget.Text)
-  Balloon.Info(("Information saved"), btnsaverequest)
+  modGlobalSetting.SaveSettingToDB("InventorySaveAccess/PurchaseRequest", cmbsavepurrequest.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnsavePurrequest)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -861,6 +871,7 @@ Public Sub btnsettall_Click()
   xList.Add("GeneralSettings/RestrictToOwnVoucher")
   xList.Add("GeneralSettings/RestrictToOwnInventory")
   xList.Add("GeneralSettings/RestrictToOwnAssets")
+  xList.Add("GeneralSettings/RestrictToOwnClinic")
 
   xList.Add("PrintRestriction/PersonalPage")
   xList.Add("PrintRestriction/Browser")

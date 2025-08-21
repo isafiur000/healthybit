@@ -170,8 +170,12 @@ End
 
 Public Sub mnucasbilling_Click()
 
-  modWorkSpace.Remove(fmCashBilling)
-  modWorkSpace.Add(fmCashBilling)
+  If modHelpVariable.$SysDisableDate = "Yes" And If modHelpVariable.$IRDLevel = "Yes" Then
+    Message.Warning(("Enable DateTime Check for IRD Compliance"), ("OK"))
+  Else
+    modWorkSpace.Remove(fmCashBilling)
+    modWorkSpace.Add(fmCashBilling)
+  Endif
 
 End
 
@@ -228,9 +232,13 @@ End
 
 Public Sub mnudeposit_Click()
 
-  modWorkSpace.Remove(fmDeposit)
-  mnudischargebill.Enabled = False
-  modWorkSpace.Add(fmDeposit)
+  If modHelpVariable.$SysDisableDate = "Yes" And If modHelpVariable.$IRDLevel = "Yes" Then
+    Message.Warning(("Enable DateTime Check for IRD Compliance"), ("OK"))
+  Else
+    modWorkSpace.Remove(fmDeposit)
+    mnudischargebill.Enabled = False
+    modWorkSpace.Add(fmDeposit)
+  Endif
 
 End
 
@@ -345,15 +353,23 @@ End
 
 Public Sub mnucasreturn_Click()
 
-  modWorkSpace.Remove(fmBillReturn)
-  modWorkSpace.Add(fmBillReturn)
+  If modHelpVariable.$SysDisableDate = "Yes" And If modHelpVariable.$IRDLevel = "Yes" Then
+    Message.Warning(("Enable DateTime Check for IRD Compliance"), ("OK"))
+  Else
+    modWorkSpace.Remove(fmBillReturn)
+    modWorkSpace.Add(fmBillReturn)
+  Endif
 
 End
 
 Public Sub mnudueclear_Click()
 
-  modWorkSpace.Remove(fmDueClear)
-  modWorkSpace.Add(fmDueClear)
+  If modHelpVariable.$SysDisableDate = "Yes" And If modHelpVariable.$IRDLevel = "Yes" Then
+    Message.Warning(("Enable DateTime Check for IRD Compliance"), ("OK"))
+  Else
+    modWorkSpace.Remove(fmDueClear)
+    modWorkSpace.Add(fmDueClear)
+  Endif
 
 End
 
@@ -551,9 +567,13 @@ End
 Public Sub mnupataccount_Click()
 
   Dim hForm As FmPatAccEdit
+  Dim xPass As String
 
-  hForm = New FmPatAccEdit("")
-  hForm.ShowModal
+  xPass = InputPassword("Provide Root Password", "Verification", "")
+  If modPassword.GetSuperVerification(modBasic.$lbluser, xPass) = True Then
+    hForm = New FmPatAccEdit("", False)
+    hForm.ShowModal
+  Endif
 
 End
 
@@ -662,16 +682,24 @@ End
 
 Public Sub mnudischargebill_Click()
 
-  modWorkSpace.Remove(fmCashDischarge)
-  mnudeposit.Enabled = False
-  modWorkSpace.Add(fmCashDischarge)
+  If modHelpVariable.$SysDisableDate = "Yes" And If modHelpVariable.$IRDLevel = "Yes" Then
+    Message.Warning(("Enable DateTime Check for IRD Compliance"), ("OK"))
+  Else
+    modWorkSpace.Remove(fmCashDischarge)
+    mnudeposit.Enabled = False
+    modWorkSpace.Add(fmCashDischarge)
+  Endif
 
 End
 
 Public Sub mnupharmretn_Click()
 
-  modWorkSpace.Remove(fmReturn)
-  modWorkSpace.Add(fmReturn)
+  If modHelpVariable.$SysDisableDate = "Yes" And If modHelpVariable.$IRDLevel = "Yes" Then
+    Message.Warning(("Enable DateTime Check for IRD Compliance"), ("OK"))
+  Else
+    modWorkSpace.Remove(fmReturn)
+    modWorkSpace.Add(fmReturn)
+  Endif
 
 End
 

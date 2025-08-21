@@ -556,6 +556,8 @@ End
 
 Public Sub GridView1_Click()
 
+  Dim xData As String
+
   If GridView1.Rows.Selection.Count Then
     If GridView1.Column = 5 Then
       If GridView1[GridView1.Row, 5].Picture = Picture["icons/coll5.png"] Then
@@ -564,8 +566,15 @@ Public Sub GridView1_Click()
         modPatientSub.MarkConsultVisitFlag(GridView1[GridView1.Row, 0].Text, $sTable)
       Endif
       FillBedGrid()
+
     Else
       SHowPatIndicators(GridView1[GridView1.Row, 2].Text)
+      If modBasic.$ClinDefaultReport Then
+        xData = modMisc.GetDefaultReportClinic(GridView1[GridView1.Row, 2].Text)
+        modGeneralMain.$RightAdView.SetHtml(xData)
+        modGeneralMain.$RightAdView.Refresh()
+      Endif
+
     Endif
   Endif
 

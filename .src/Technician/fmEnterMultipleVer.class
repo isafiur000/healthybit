@@ -43,6 +43,8 @@ Private $encid As String
 Private $tblpatlabtest As String
 Private $tblpatlabsubtest As String
 
+Private $hPDF As PdfDocument
+
 ''----------------------------------------- create controls -----------------------------------------
 Public Sub _new(id As Long, frm As String, strExam As String, xData As Variant[], xnote As String, sYear As String)
 
@@ -788,6 +790,11 @@ Private Sub FillExamSubExam()
     If i < 49 Then
       If $xData[i][0] = "Final Impression" Then
         If aHTMLText[i] Then
+          If modBasic.$AutoClearHighlight = "Yes" Then
+            aHTMLText[i].ClearHighLight()
+            Wait
+          Endif
+
           modClinSub.UpdateQualiData($id, aHTMLText[i].RichText, aAbnormCheck[i].Value, aHTMLText[i].KeyList.Join(";"))
         Else If aGenTextArea[i] Then
           modClinSub.UpdateQualiData($id, aGenTextArea[i].Text, aAbnormCheck[i].Value, "")
@@ -943,6 +950,11 @@ Private Sub FillExamSubExam()
           Endif
         Else If $xData[i][3] = "RichText Area" Then
           If aHTMLText[i].Text Then
+            If modBasic.$AutoClearHighlight = "Yes" Then
+              aHTMLText[i].ClearHighLight()
+              Wait
+            Endif
+
             res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
             If res.Available Then
               res["fldreport"] = aHTMLText[i].RichText
@@ -997,6 +1009,11 @@ Private Sub FillLabTestSubTest()
     If i < 49 Then
       If $xData[i][0] = "Final Impression" Then
         If aHTMLText[i] Then
+          If modBasic.$AutoClearHighlight = "Yes" Then
+            aHTMLText[i].ClearHighLight()
+            Wait
+          Endif
+
           modLabSub.UpdateLabTestReportQuali($id, aHTMLText[i].RichText, aAbnormCheck[i].Value, aHTMLText[i].KeyList.Join(";"), $tblpatlabtest)
         Else If aGenTextArea[i] Then
           modLabSub.UpdateLabTestReportQuali($id, aGenTextArea[i].Text, aAbnormCheck[i].Value, "", $tblpatlabtest)
@@ -1152,6 +1169,11 @@ Private Sub FillLabTestSubTest()
           Endif
         Else If $xData[i][3] = "RichText Area" Then
           If aHTMLText[i].Text Then
+            If modBasic.$AutoClearHighlight = "Yes" Then
+              aHTMLText[i].ClearHighLight()
+              Wait
+            Endif
+
             res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
             If res.Available Then
               res["fldreport"] = aHTMLText[i].RichText
@@ -1206,6 +1228,11 @@ Private Sub FillRadioTestSubTest()
     If i < 49 Then
       If $xData[i][0] = "Final Impression" Then
         If aHTMLText[i] Then
+          If modBasic.$AutoClearHighlight = "Yes" Then
+            aHTMLText[i].ClearHighLight()
+            Wait
+          Endif
+
           modRadioSub.UpdateRadioTestReportQuali($id, aHTMLText[i].RichText, aAbnormCheck[i].Value, aHTMLText[i].KeyList.Join(";"))
         Else If aGenTextArea[i] Then
           modRadioSub.UpdateRadioTestReportQuali($id, aGenTextArea[i].Text, aAbnormCheck[i].Value, "")
@@ -1361,6 +1388,11 @@ Private Sub FillRadioTestSubTest()
           Endif
         Else If $xData[i][3] = "RichText Area" Then
           If aHTMLText[i].Text Then
+            If modBasic.$AutoClearHighlight = "Yes" Then
+              aHTMLText[i].ClearHighLight()
+              Wait
+            Endif
+
             res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
             If res.Available Then
               res["fldreport"] = aHTMLText[i].RichText
@@ -2350,5 +2382,70 @@ Private Function GetCustColHeadings(i As Integer) As String[]
   Endif
 
   Return aCoLst
+
+End
+
+''------------------------------ PDF view --------------------------
+Public Sub btnpreview_Click()
+
+  Dim cLabForm As CLabReport
+  Dim cRadioForm As CRadioReport
+  Dim xPath As String
+
+  TabPanel1.Index = 1
+  If $frm = "Test" Then
+    cLabForm = New CLabReport($id, cmbprintform.Text, "", False)
+    xPath = cLabForm.GetReportPDFPath()
+  Else If $frm = "Radio" Then
+    cRadioForm = New CRadioReport($id, cmbprintform.Text, False)
+    xPath = cRadioForm.GetReportPDFPath()
+  Endif
+  If Exist(xPath) Then
+    DisplayPDF(xPath)
+  Endif
+
+End
+
+Private Sub DisplayPDF(sPath As String)
+
+  docviewleft.Visible = True
+  DocumentView1.Visible = True
+  If $hPDF And If $hPDF.Count Then
+    $hPDF.Close()
+  Endif
+
+  $hPDF = New PdfDocument
+  $hPDF.Open(sPath)
+  DocumentView1.Count = $hPDF.Count
+  docviewleft.Count = 0
+  docviewleft.DocHeight = $hPDF[1].Height / 0.72
+  docviewleft.DocWidth = $hPDF[1].Width / 0.72
+  DocumentView1.DocWidth = $hPDF[1].Width / 0.72
+  DocumentView1.DocHeight = $hPDF[1].Height / 0.72
+
+  DocumentView1.Arrangement = 0
+  DocumentView1.Refresh()
+
+End
+
+Public Sub DocumentView1_Layout(Page As Integer)
+
+  Last.Layout.Height = $hPDF[Page + 1].Height / 0.72
+  Last.Layout.Width = $hPDF[Page + 1].Width / 0.72
+
+End
+
+Public Sub DocumentView1_Draw(Page As Integer, Width As Integer, Height As Integer)
+
+  If Page > $hPDF.Count - 1 Then Return
+
+  $hPDF.Zoom = Last.Zoom / 0.72
+  Draw.Image($hPDF[Page + 1].Image, 0, 0)
+
+End
+
+Public Sub DocumentView1_MouseDown()
+
+  Print DocumentView1.Find(Mouse.x, Mouse.y)
 
 End

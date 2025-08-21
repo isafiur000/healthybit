@@ -2181,9 +2181,9 @@ Private Sub EntryUseOwndata(sType As String, sItem As String, sQty As Float)
 
   If sType = "Medicines" Then
     xdose = sQty * modPharmLabel.GetPackVolValue(sItem) * modMedConstant.GetDrugInitialStrength(sItem)
-    modPharmSub.InsertDosingEntry(Trim(txtencid.Text), $xBillType, $PharmMode, $billModePharmacy, $LedgerAC, xroute, sItem, xdose, "stat", 1, sQty, $sTatus, "", "", 0, xtax, xdisc, xfixname, xfixrate, "UseOwn", "Procedure", "", 0)
+    modPharmSub.InsertDosingEntry(Trim(txtencid.Text), $xBillType, $PharmMode, $billModePharmacy, $LedgerAC, xroute, sItem, xdose, "stat", 1, sQty, $sTatus, "", "", 0, xtax, xdisc, xfixname, xfixrate, "UseOwn", "Procedure", "", False)
   Else
-    modPharmSub.InsertNonMedDosingEntry(sType, Trim(txtencid.Text), $xBillType, $PharmMode, $billModePharmacy, $LedgerAC, xroute, sItem, sQty, $sTatus, 0, xtax, xdisc, xfixname, xfixrate, "UseOwn", "Procedure", "", 0)
+    modPharmSub.InsertNonMedDosingEntry(sType, Trim(txtencid.Text), $xBillType, $PharmMode, $billModePharmacy, $LedgerAC, xroute, sItem, sQty, $sTatus, 0, xtax, xdisc, xfixname, xfixrate, "UseOwn", "Procedure", "", False)
   Endif
 
 End

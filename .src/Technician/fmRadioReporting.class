@@ -952,15 +952,13 @@ Private Sub AddSampling(plandate As Date, sFormat As String)
         modDatabase.$myConn.Commit
         Dec Application.Busy
 
+        $encid = GridView4[GridView4.Row, 3].Text
+        BasicInfoPatient()
         If $InvoiceFormat = True Then
-          $encid = GridView4[GridView4.Row, 3].Text
-          BasicInfoPatient()
           txtlabbill.Text = txtencid.Text
           ShowSampledBill($encid, txtlabbill.Text)
           ShowNewInvoiceTests(txtencid.Text)
         Else
-          $encid = GridView4[GridView4.Row, 3].Text
-          BasicInfoPatient()
           txtlabbill.Text = ""
           ShowSampled($encid)
           If rbencounter.Value = True Then
@@ -1307,40 +1305,47 @@ Private Sub FillSamplingEncounters()
     xsample = ""
   Endif
 
-  If rbencounter.Value = True Then
-    sql = "select fldencounterval as fldparent,fldencounterval,fldencounterval,fldencounterval,fldtestid,fldnewdate,fldid,fldnewdate,fldsampletype,fldmethod,fldsampleid from tblpatradiotest where fldstatus=&1 and fldsave_report=&2 and fldcomp_report=&3" & xdate & xcateg & xsample                                        ''
-  Else If rbinvoice.Value = True Then
-    sql = "select fldbillno as fldparent,fldencounterval,fldencounterval,fldencounterval,fldtestid,fldnewdate,fldid,fldnewdate,fldsampletype,fldmethod,fldsampleid from tblpatradiotest where fldstatus=&1 and fldsave_report=&2 and fldcomp_report=&3" & xdate & xcateg & xsample
-  Else If rbindoor.Value = True Then
-    sql = "select fldencounterval as fldparent,fldencounterval,fldencounterval,fldencounterval,fldtestid,fldnewdate,fldid,fldnewdate,fldsampletype,fldmethod,fldsampleid from tblpatradiotest where fldstatus=&1 and fldsave_report=&2 and fldcomp_report=&3" & xdate & xcateg & xsample                                       ''
+  If rbencrepo.Value = True Then
+    sql = "select fldencounterval as fldparent,fldencounterval,fldencounterval,fldencounterval,fldtestid,fldencounterval,fldid,fldnewdate,fldsampletype,fldmethod,fldsampleid,fldnewdate from tblpatradiotest where fldstatus=&1 and fldsave_report=&2 and fldcomp_report=&3" & xdate & xcateg & xsample                                        ''
+  Else If rbinvoicrepo.Value = True Then
+    sql = "select fldbillno as fldparent,fldencounterval,fldencounterval,fldencounterval,fldtestid,fldencounterval,fldid,fldnewdate,fldsampletype,fldmethod,fldsampleid,fldnewdate from tblpatradiotest where fldstatus=&1 and fldsave_report=&2 and fldcomp_report=&3" & xdate & xcateg & xsample
+  Else If rbindoorrepo.Value = True Then
+    sql = "select fldencounterval as fldparent,fldencounterval,fldencounterval,fldencounterval,fldtestid,fldencounterval,fldid,fldnewdate,fldsampletype,fldmethod,fldsampleid,fldnewdate from tblpatradiotest where fldstatus=&1 and fldsave_report=&2 and fldcomp_report=&3" & xdate & xcateg & xsample                                       ''
   Endif
-  $rData2 = modDatabase.$myConn.Exec(sql, "Sampled", False, modBasic.$compID, modDate.StartSqlDate(dtsort.value), modDate.EndSqlDate(DateAdd(dtsort.Value, gb.Day, txtrangerepo.Value)), cmbcategory.Text, cmbrepocounter.Text)
+  If rbpending.Value = True Then
+    $rData2 = modDatabase.$myConn.Exec(sql, "Sampled", False, modBasic.$compID, modDate.StartSqlDate(dtsort.value), modDate.EndSqlDate(DateAdd(dtsort.Value, gb.Day, txtrangerepo.Value)), cmbcategory.Text, cmbrepocounter.Text)
+  Else If rbreported.Value = True Then
+    $rData2 = modDatabase.$myConn.Exec(sql, "Reported", True, modBasic.$compID, modDate.StartSqlDate(dtsort.value), modDate.EndSqlDate(DateAdd(dtsort.Value, gb.Day, txtrangerepo.Value)), cmbcategory.Text, cmbrepocounter.Text)
+  Endif
   $aMyFields2 = New String[]
   modGridView.ReadSmallData(GridView2, $rData2, $aMyFields2)
   With GridView2
     If rbinvoice.Value = True Then
       .Columns[0].Width = 150 * modBasic.$AppWidthRatio
+      .Columns[0].Text = "Invoice"
     Else
       .Columns[0].Width = 125 * modBasic.$AppWidthRatio
+      .Columns[0].Text = "EncID"
     Endif
     .Columns[1].Width = 10 * modBasic.$AppWidthRatio
     .Columns[2].Width = 200 * modBasic.$AppWidthRatio
     .Columns[3].Width = 1
-    .Columns[4].Width = 225
-    .Columns[5].Width = 150
+    .Columns[4].Width = 225 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 100 * modBasic.$AppWidthRatio
     .Columns[6].Width = 1
     .Columns[7].Width = 1
     .Columns[8].Width = 150 * modBasic.$AppWidthRatio
     .Columns[9].Width = 100 * modBasic.$AppWidthRatio
     .Columns[10].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[11].Width = 150
 
-    .Columns[0].Text = "EncID"
     .Columns[2].Text = "Name"
     .Columns[4].Text = "TestName"
-    .Columns[5].Text = "PlanDate"
+    .Columns[5].Text = "Location"
     .Columns[8].Text = "Format"
     .Columns[9].Text = "Method"
     .Columns[10].Text = "Counter"
+    .Columns[11].Text = "PlanDate"
   End With
 
 End
@@ -1355,6 +1360,8 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
   Else If Column = 2 Then
     GridView2.Data.Text = modPatient.GetPatientNameByEnc($rData2[$aMyFields2[Column]])
   Else If Column = 5 Then
+    GridView2.Data.Text = modPatient.GetPatientWardName($rData2[$aMyFields2[Column]])
+  Else If Column = 11 Then
     GridView2.Data.Text = modReportVar.GetDateTimeReport($rData2[$aMyFields2[Column]], gb.GeneralDate)
   Else
     GridView2.Data.Text = $rData2[$aMyFields2[Column]]
@@ -1368,16 +1375,9 @@ Public Sub GridView2_Click()
 
   If GridView2.Rows.Selection.Count > 0 Then
     modRepository.$RepoDataStatus = False
-    btnshow.Enabled = False
     txtencid.Text = GridView2[GridView2.Row, 0].Text
     $encid = GridView2[GridView2.Row, 3].Text
-    $PatientNum = modPatient.GetPatientNoByEnc($encid)
-    txtpatientname.Text = modPatient.GetPatientNameByEnc($encid)
-    txtgender.Text = modPatient.GetPatientAgeString($encid, Now()) & "/" & modPatient.GetPatientSex($encid)
-    txtpatientaddress.Text = modPatient.GetPatientAddressByEnc($encid)
-
-    xstatus = modPatient.CurrentAdmissionStatus($encid)
-    txtlocation.Text = modPatient.GetLocationSetting($encid, xstatus)
+    BasicInfoPatient()
     ShowGridMain()
     GridView1.SetFocus
   Endif
@@ -1412,6 +1412,32 @@ Public Sub GridView2_Menu()
 
 End
 
+Public Sub mnucounter_Click()
+
+  Dim res As Result
+  Dim xlocat As String
+  Dim Row As Integer
+  Dim Column As Integer
+
+  If GridView2.Rows.Selection.Count Then
+    Row = GridView2.Row
+    Column = GridView2.Column
+    xlocat = InputCombo(("Select Counter for ") & GridView2[GridView2.Row, 4].Text, GridView2[GridView2.Row, 0].Text, $counterLst, GridView2[GridView2.Row, 10].Text, True)
+    If xlocat Then
+      res = modDatabase.$myConn.Edit("tblpatradiotest", "fldid=&1 and fldsave_report=&2", GridView2[GridView2.Row, 6].Text, False)
+      If res.Available Then
+        res["fldsampleid"] = xlocat
+        res["xyz"] = False
+        res.Update
+        FillSamplingEncounters()
+      Endif
+    Endif
+    GridView2.Row = Row
+    GridView2.Column = Column
+  Endif
+
+End
+
 Public Sub mnueditdate_Click()
 
   Dim res As Result
@@ -1424,11 +1450,13 @@ Public Sub mnueditdate_Click()
     Column = GridView2.Column
     xdate = GetDateValue(("Select Plan Date for ") & GridView2[GridView2.Row, 4].Text, GridView2[GridView2.Row, 0].Text, GridView2[GridView2.Row, 7].Text)
     If xdate Then
-      res = modDatabase.$myConn.Edit("tblpatradiotest", "fldid=&1", GridView2[GridView2.Row, 6].Text)
-      res["fldnewdate"] = xdate
-      res["xyz"] = False
-      res.Update
-      FillSamplingEncounters()
+      res = modDatabase.$myConn.Edit("tblpatradiotest", "fldid=&1 and fldsave_report=&2", GridView2[GridView2.Row, 6].Text, False)
+      If res.Available Then
+        res["fldnewdate"] = xdate
+        res["xyz"] = False
+        res.Update
+        FillSamplingEncounters()
+      Endif
     Endif
     GridView2.Row = Row
     GridView2.Column = Column
@@ -1457,21 +1485,17 @@ Public Sub btnshow_Click()
       txtlabbill.Text = ""
       $InvoiceFormat = False
       $encid = Trim(txtencid.Text)
-      BasicInfoPatient()
-      ShowSampled($encid)
     Else If rbinvoice.Value = True Then
       txtlabbill.Text = Trim(txtencid.Text)
       $InvoiceFormat = True
       $encid = modNonMedical.GetEncounterFromBillNo(txtencid.Text)
-      BasicInfoPatient()
-      ShowSampledBill($encid, txtlabbill.Text)
     Else If rbindoor.Value = True Then
       txtlabbill.Text = ""
       $InvoiceFormat = False
       $encid = Trim(txtencid.Text)
-      BasicInfoPatient()
-      ShowSampled($encid)
     Endif
+    BasicInfoPatient()
+    ShowGridMain()
   Endif
 
 End
@@ -1523,7 +1547,7 @@ Private Sub ShowSampled(encid As String)
   Dim xcateg As String
 
   If TabPanel1.Index = 0 Then
-    xdept = cmbsourcedept.Text
+    xdept = cmbcategorynew.Text
   Else If TabPanel1.Index = 1 Then
     xdept = cmbcategory.Text
   Endif
@@ -1552,7 +1576,7 @@ Private Sub ShowSampledBill(encid As String, billno As String)
   Dim xcateg As String
 
   If TabPanel1.Index = 0 Then
-    xdept = cmbsourcedept.Text
+    xdept = cmbcategorynew.Text
   Else If TabPanel1.Index = 1 Then
     xdept = cmbcategory.Text
   Endif
@@ -2315,10 +2339,10 @@ Public Sub btnprefix_Click()
       Message.Warning("Reference is " & res["fldsampleid"], "OK")
     Else
 
-      xrefer = InputBox("Reference For this Examination", "Radiology", modRadioSub.GetRadioAutoIncreasingNo())
+      xrefer = InputBox("Reference For this Examination", "Radiology", modRadioSub.GetRadioAutoIncreasingNo(res["fldtestid"]))
       If xrefer Then
         If res["fldsampleid"] And If $counterLst.Exist(res["fldsampleid"]) = True Then
-          res["fldsampleid"] = xrefer & "@" & res["fldsampleid"]
+          res["fldsampleid"] = res["fldsampleid"] & "-" & xrefer
         Else
           res["fldsampleid"] = xrefer
         Endif

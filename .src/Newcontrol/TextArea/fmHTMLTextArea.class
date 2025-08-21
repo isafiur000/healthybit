@@ -37,6 +37,10 @@ End
 
 Public Sub btnok_Click()
 
+  If modBasic.$AutoClearHighlight = "Yes" Then
+    TextHTML1.ClearHighLight()
+    Wait
+  Endif
   $sValue = TextHTML1.RichText
   modGeneralMain.SaveFormArrangement(Me)
   modGeneralMain.SaveFormSizeParam(Me)

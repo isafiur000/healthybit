@@ -988,22 +988,23 @@
       Text = ("Lock Cashier Form to own Items")
     }
     { Label37 Label
-      MoveScaled(1,9,44,3)
+      MoveScaled(1,13,44,3)
       Border = Border.Plain
       Text = ("Disable Billing Panel for Admitted Patients")
     }
     { Label34 Label
-      MoveScaled(1,5,44,3)
+      MoveScaled(1,36,44,3)
+      Visible = False
       Border = Border.Plain
       Text = ("Restrict Invoice to Own Items (All Patients)")
     }
     { Label45 Label
-      MoveScaled(1,13,44,3)
+      MoveScaled(1,17,44,3)
       Border = Border.Plain
       Text = ("Disable Invoice print for admitted patients")
     }
     { Label54 Label
-      MoveScaled(1,17,44,3)
+      MoveScaled(1,21,44,3)
       Border = Border.Plain
       Text = ("Disable Receipt print for admitted patients")
     }
@@ -1012,19 +1013,20 @@
       ToolTip = ("Disable display and saving of items punched from other locations. The setting is enforced in Counter form and discharge forms.")
     }
     { cmbadmitlock ComboBox
-      MoveScaled(46,9,14,3)
+      MoveScaled(46,13,14,3)
       ToolTip = ("Set to Yes to disable Billing Panel for admitted patients")
     }
     { cmbrestown ComboBox
-      MoveScaled(46,5,14,3)
+      MoveScaled(46,36,14,3)
+      Visible = False
       ToolTip = ("Disable Invoice/Receipt generation except those saved from own Location. The setting is enforced in generating invoice/recipts")
     }
     { cmbadmitcash ComboBox
-      MoveScaled(46,13,14,3)
+      MoveScaled(46,17,14,3)
       ToolTip = ("Disable Credit Invoice for admitted patients")
     }
     { cmnadmitrecep ComboBox
-      MoveScaled(46,17,14,3)
+      MoveScaled(46,21,14,3)
       ToolTip = ("Disable Credit Receipts for admitted patients")
     }
     { btnformlock Button
@@ -1032,43 +1034,70 @@
       Picture = Picture["icon:/small/apply"]
     }
     { btnadmitlock Button
-      MoveScaled(61,9,5,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { btnrestown Button
-      MoveScaled(61,5,5,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { btnadmitcash Button
       MoveScaled(61,13,5,3)
       Picture = Picture["icon:/small/apply"]
     }
-    { btnadmitrecep Button
+    { btnrestown Button
+      MoveScaled(61,36,5,3)
+      Visible = False
+      Picture = Picture["icon:/small/apply"]
+    }
+    { btnadmitcash Button
       MoveScaled(61,17,5,3)
       Picture = Picture["icon:/small/apply"]
     }
+    { btnadmitrecep Button
+      MoveScaled(61,21,5,3)
+      Picture = Picture["icon:/small/apply"]
+    }
     { Label79 Label
-      MoveScaled(1,21,44,3)
+      MoveScaled(1,25,44,3)
       Border = Border.Plain
       Text = ("Lock Deposit to Admitted Patients")
     }
     { cmbdepolock ComboBox
-      MoveScaled(46,21,14,3)
+      MoveScaled(46,25,14,3)
     }
     { btndepolock Button
-      MoveScaled(61,21,5,3)
+      MoveScaled(61,25,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label80 Label
-      MoveScaled(1,25,44,3)
+      MoveScaled(1,29,44,3)
       Border = Border.Plain
       Text = ("Lock Origin of Pharmacy Request to")
     }
     { cmbpharmorigin ComboBox
-      MoveScaled(46,25,14,3)
+      MoveScaled(46,29,14,3)
     }
     { btnpharmorigin Button
-      MoveScaled(61,25,5,3)
+      MoveScaled(61,29,5,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label99 Label
+      MoveScaled(1,5,44,3)
+      Border = Border.Plain
+      Text = ("Restrict Invoice to Own Items (Outpatients)")
+    }
+    { cmbownoutdoor ComboBox
+      MoveScaled(46,5,14,3)
+      ToolTip = ("Disable Invoice/Receipt generation except those saved from own Location. The setting is enforced in generating invoice/recipts")
+    }
+    { btnownoutdoor Button
+      MoveScaled(61,5,5,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label100 Label
+      MoveScaled(1,9,44,3)
+      Border = Border.Plain
+      Text = ("Restrict Invoice to Own Items (Inpatients)")
+    }
+    { cmbownindoor ComboBox
+      MoveScaled(46,9,14,3)
+      ToolTip = ("Disable Invoice/Receipt generation except those saved from own Location. The setting is enforced in generating invoice/recipts")
+    }
+    { btnownindoor Button
+      MoveScaled(61,9,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     Index = 7

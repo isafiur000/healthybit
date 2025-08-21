@@ -14,6 +14,7 @@ Public Sub Form_Open()
   cmballergy.List = ["Yes", "No"]
   cmbrandsubst.List = ["Yes", "No"]
   cmbinjsub.List = ["Enable", "Disable"]
+  cmblockstock.List = ["Enable", "Disable"]
 
   cmblabelregimen.List = ["Yes", "No"]
   cmblabelauto.List = ["High Risk", "Low Risk", "All Types"]
@@ -37,6 +38,7 @@ Public Sub Form_Open()
   cmbabnormexam.List = ["Enable", "Disable"]
   cmbslider.List = ["Enable", "Disable"]
   cmbicdformat.List = ["TreeView", "GridView"]
+  cmbclinreport.List = ["CustomReport1", "CustomReport2", "CustomReport3", "CustomReport4", "CustomReport5", "CustomReport6", "CustomReport7", "CustomReport8", "CustomReport9", "CustomReport10"]
 
   cmbbodyformat.List = ["Tabular", "Paragraph"]
   cmbshowday.List = ["Date", "User", "Date+User", "None"]
@@ -219,6 +221,7 @@ Private Sub DisplayGeneral()
 
   cmbrandsubst.Text = modSettings.ShowSettingFromFIle("ClinicForms/AllowBrandSubstitution")
   cmbinjsub.Text = modSettings.ShowSettingFromFIle("ClinicForms/ShowInjectionSubRoutes")
+  cmblockstock.Text = modSettings.ShowSettingFromFIle("ClinicForms/LockPharmacyStock")
 
 End
 
@@ -269,6 +272,15 @@ Public Sub btninjsub_Click()
   modSettings.SaveSettingsToFile("ClinicForms/ShowInjectionSubRoutes", cmbinjsub.Text)
   modBasic.$ClinInjSubRoutes = cmbinjsub.Text
   Balloon.Info(("Information saved"), btninjsub)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnlockstock_Click()
+
+  modSettings.SaveSettingsToFile("ClinicForms/LockPharmacyStock", cmblockstock.Text)
+  modBasic.$ClinLockPharmStock = cmblockstock.Text
+  Balloon.Info(("Information saved"), btnlockstock)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -466,6 +478,7 @@ Private Sub ClinFormsSetting()
   cmbgrpward.Text = modSettings.ShowSettingFromFIle("ClinicForms/GroupStructuredExams")
   cmbslider.Text = modSettings.ShowSettingFromFIle("ClinicForms/EnableSliderValue")
   cmbicdformat.Text = modSettings.ShowSettingFromFIle("ClinicForms/ICDEntryFormat")
+  cmbclinreport.Text = modSettings.ShowSettingFromFIle("ClinicForms/DefaultReport")
 
 End
 
@@ -500,6 +513,15 @@ Public Sub btnicdformat_Click()
   modSettings.SaveSettingsToFile("ClinicForms/ICDEntryFormat", cmbicdformat.Text)
   modBasic.$ClinICDPunchFormat = cmbicdformat.Text
   Balloon.Info(("Information saved"), btnicdformat)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnclinreport_Click()
+
+  modSettings.SaveSettingsToFile("ClinicForms/DefaultReport", cmbclinreport.Text)
+  modBasic.$ClinDefaultReport = cmbclinreport.Text
+  Balloon.Info(("Information saved"), btnclinreport)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

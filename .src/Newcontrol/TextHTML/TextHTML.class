@@ -167,3 +167,13 @@ Private Sub UserList_Write(Value As Variant[])
   Endif
 
 End
+
+Public Sub ClearHighLight()
+
+  If modBasic.$TextWriterControl = "WebKit" Then
+
+  Else
+    $hForm.ClearHighLight()
+  Endif
+
+End

@@ -654,7 +654,7 @@
     { Label50 Label
       MoveScaled(1,28,11,3)
       Border = Border.Plain
-      Text = ("Sample No")
+      Text = ("Source of ID")
     }
     { Label51 Label
       MoveScaled(13,28,12,3)
@@ -679,7 +679,7 @@
     Index = 5
     Text = ("View")
     { Frame10 Frame
-      MoveScaled(1,1,77,11)
+      MoveScaled(1,1,77,15)
       Text = ("Restrict View To Own")
       Alignment = Align.Left
       { Label1 Label
@@ -730,9 +730,21 @@
         MoveScaled(72,7,3,3)
         Picture = Picture["icon:/small/apply"]
       }
+      { Label53 Label
+        MoveScaled(1,11,17,3)
+        Border = Border.Plain
+        Text = ("Clinic")
+      }
+      { cmbclinicrepo ComboBox
+        MoveScaled(19,11,12,3)
+      }
+      { btnclinicrepo ToolButton
+        MoveScaled(31,11,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
     }
     { Frame8 Frame
-      MoveScaled(1,14,77,11)
+      MoveScaled(1,19,77,11)
       Text = ("Restrict Printing")
       Alignment = Align.Left
       { Label29 Label
@@ -812,10 +824,10 @@
         MoveScaled(32,7,3,3)
         Picture = Picture["icon:/small/apply"]
       }
-      { cmbsaverequest ComboBox
+      { cmbsavepurrequest ComboBox
         MoveScaled(60,3,12,3)
       }
-      { btnsaverequest ToolButton
+      { btnsavePurrequest ToolButton
         MoveScaled(73,3,3,3)
         Picture = Picture["icon:/small/apply"]
       }

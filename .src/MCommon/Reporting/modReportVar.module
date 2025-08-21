@@ -2691,10 +2691,14 @@ Public Function GetPortalLinkQRCode($encid As String, sType As String) As String
     Else If xurLink = "Archive:Patient Portal" Then
       xval = modGeneral.GetQRCodeRemoteReport($encid, modBasic.$PatPortalURL, "portal")
     Endif
-    xfinal = xval
+    If xval Then
+      xfinal = xval
+    Else
+      xfinal = modBasic.$BlankImage
+    Endif
 
   Else
-    xfinal = ""
+    xfinal = modBasic.$BlankImage
   Endif
 
   Return xfinal
@@ -2704,6 +2708,7 @@ End
 Public Function GetBarcodeImage($encid As String, Optional sHash As String) As String
 
   Dim barcode As String
+  Dim xval As String
   Dim xpatimg As String
 
   xpatimg = modSettings.ShowSettingFromFIle("ReportFormat/PatientImage")
@@ -2723,7 +2728,13 @@ Public Function GetBarcodeImage($encid As String, Optional sHash As String) As S
     barcode = modDevAll.MakeQRCode($encid)
   Endif
 
-  Return barcode
+  If barcode Then
+    xval = barcode
+  Else
+    xval = modBasic.$BlankImage
+  Endif
+
+  Return xval
 
 End
 

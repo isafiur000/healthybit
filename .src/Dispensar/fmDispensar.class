@@ -61,8 +61,12 @@ End
 
 Public Sub mnudisp_Click()
 
-  modWorkSpace.Remove(fmPatPharmacy)
-  modWorkSpace.Add(fmPatPharmacy)
+  If modHelpVariable.$SysDisableDate = "Yes" And If modHelpVariable.$IRDLevel = "Yes" Then
+    Message.Warning(("Enable DateTime Check for IRD Compliance"), ("OK"))
+  Else
+    modWorkSpace.Remove(fmPatPharmacy)
+    modWorkSpace.Add(fmPatPharmacy)
+  Endif
 
 End
 
@@ -126,15 +130,23 @@ End
 
 Public Sub mnureturn_Click()
 
-  modWorkSpace.Remove(fmReturn)
-  modWorkSpace.Add(fmReturn)
+  If modHelpVariable.$SysDisableDate = "Yes" And If modHelpVariable.$IRDLevel = "Yes" Then
+    Message.Warning(("Enable DateTime Check for IRD Compliance"), ("OK"))
+  Else
+    modWorkSpace.Remove(fmReturn)
+    modWorkSpace.Add(fmReturn)
+  Endif
 
 End
 
 Public Sub mnutransfer_Click()
 
-  modWorkSpace.Remove(fmTransfer)
-  modWorkSpace.Add(fmTransfer)
+  If modHelpVariable.$SysDisableDate = "Yes" And If modHelpVariable.$IRDLevel = "Yes" Then
+    Message.Warning(("Enable DateTime Check for IRD Compliance"), ("OK"))
+  Else
+    modWorkSpace.Remove(fmTransfer)
+    modWorkSpace.Add(fmTransfer)
+  Endif
 
 End
 
@@ -371,8 +383,12 @@ End
 
 Public Sub mnustoconsume_Click()
 
-  modWorkSpace.Remove(fmConsume)
-  modWorkSpace.Add(fmConsume)
+  If modHelpVariable.$SysDisableDate = "Yes" And If modHelpVariable.$IRDLevel = "Yes" Then
+    Message.Warning(("Enable DateTime Check for IRD Compliance"), ("OK"))
+  Else
+    modWorkSpace.Remove(fmConsume)
+    modWorkSpace.Add(fmConsume)
+  Endif
 
 End
 

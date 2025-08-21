@@ -3,10 +3,10 @@
 Public $tblpatientexam As String
 
 Public Function GetSubExamBool(sIndex As Long, Optional encid As String) As Boolean
-  
+
   Dim rs As Result
   Dim xx As Boolean
-  
+
   If encid Then
     rs = modDatabase.$myConn.Exec("select fldid,fldsubtexam from tblpatientsubexam where fldheadid=&1 and fldencounterval=&2", sIndex, encid)
   Else
@@ -14,14 +14,14 @@ Public Function GetSubExamBool(sIndex As Long, Optional encid As String) As Bool
   Endif
   xx = rs.Available
   Return xx
-  
+
 End
 
 Public Function GetExamIndexFromFilePath(sPath As String, encid As String, sExamName As String) As Long
-  
+
   Dim res As Result
   Dim xx As Long
-  
+
   res = modDatabase.$myConn.Exec("select fldid from tblpatientexam where fldfilepath=&1 and fldencounterval=&2 and fldhead=&3", sPath, encid, sExamName)
   If res.Available Then
     If res["fldid"] Then
@@ -33,15 +33,15 @@ Public Function GetExamIndexFromFilePath(sPath As String, encid As String, sExam
     xx = ""
   Endif
   Return xx
-  
+
 End
 
 ''--------------------------------- Value From ID  ------------------------------
 Public Function GetExamNameFromExamID(id As Long, Optional encid As String) As String
-  
+
   Dim res As Result
   Dim xx As String
-  
+
   If encid Then
     res = modDatabase.$myConn.Exec("select fldhead from tblpatientexam where fldid=&1 and fldencounterval=&2", id, encid)
   Else
@@ -57,14 +57,14 @@ Public Function GetExamNameFromExamID(id As Long, Optional encid As String) As S
     xx = ""
   Endif
   Return xx
-  
+
 End
 
 Public Function GetEncidFromExamID(id As Long) As String
-  
+
   Dim res As Result
   Dim xx As String
-  
+
   res = modDatabase.$myConn.Exec("select fldencounterval from tblpatientexam where fldid=&1", id)
   If res.Available Then
     If res["fldencounterval"] Then
@@ -76,14 +76,14 @@ Public Function GetEncidFromExamID(id As Long) As String
     xx = ""
   Endif
   Return xx
-  
+
 End
 
 Public Function GetExamTimeFromExamID(id As Long) As Date
-  
+
   Dim res As Result
   Dim xx As Date
-  
+
   res = modDatabase.$myConn.Exec("select fldtime from tblpatientexam where fldid=&1", id)
   If res.Available Then
     If res["fldtime"] Then
@@ -95,14 +95,14 @@ Public Function GetExamTimeFromExamID(id As Long) As Date
     xx = ""
   Endif
   Return xx
-  
+
 End
 
 Public Function GetExamValueByID(id As Long) As Float
-  
+
   Dim res As Result
   Dim xx As Float
-  
+
   res = modDatabase.$myConn.Exec("select fldrepquanti from tblpatientexam where fldid=&1", id)
   If res.Available Then
     If res["fldrepquanti"] Then
@@ -114,46 +114,27 @@ Public Function GetExamValueByID(id As Long) As Float
     xx = 0
   Endif
   Return xx
-  
+
 End
 
 ''X--------------------------------- GENERAL EXAMINATION ----------------------
 Public Function PaientAllExamNameArray(encid As String) As String[]
-  
+
   Dim res As Result
   Dim xx As String[]
-  
+
   res = modDatabase.$myConn.Exec("select distinct(fldhead) as col from tblpatientexam where fldencounterval=&1 and fldsave=&2", encid, True)
   xx = modControlSub.GetDirectFillresult(res)
-  
-  Return xx
-  
-End
 
-Public Function PaientSelExamNameArray(encid As String, sType As String) As String[]
-  
-  Dim res As Result
-  Dim sql As String
-  Dim xx As String[]
-  
-  If sType = "Non-Vital" Then
-    sql = "select distinct(fldhead) as col from tblpatientexam where fldencounterval=&1 and fldsave=&2 and fldhead not in(select fldexamid from tblcompexam where (fldcomp=&3 or fldcomp=&4) and fldcategory<>&5)" ''all except vital
-    res = modDatabase.$syConn.Exec(sql, encid, True, modBasic.$compID, "%", "Essential Examinations")
-  Else
-    sql = "select distinct(fldhead) as col from tblpatientexam where fldencounterval=&1 and fldsave=&2 and fldinput like &3" '''for specific exam type
-    res = modDatabase.$syConn.Exec(sql, encid, True, sType)
-  Endif
-  xx = modControlSub.GetDirectFillresult(res)
-  
   Return xx
-  
+
 End
 
 Public Function UniExamValueList(encid As String, sExam As String) As String[]
-  
+
   Dim res As Result
   Dim xx As String[]
-  
+
   xx = New String[]
   res = modDatabase.$myConn.Exec("select fldtime,fldrepquali from tblpatientexam where fldencounterval=&1 and fldhead=&2 and fldsave=&3", encid, sExam, True)
   If res.Available Then
@@ -163,26 +144,26 @@ Public Function UniExamValueList(encid As String, sExam As String) As String[]
       Endif
     Next
   Endif
-  
+
   Return xx
-  
+
 End
 
 ''------------------------Reference range ------------------------
 Public Function GetBothQuantiExamVal(txtexam As String, encid As String, Optional sMethod As String) As Float[]
-  
+
   Dim res As Result
   Dim xlow As Float
   Dim xhigh As Float
   Dim sqstr As String
   Dim xlimit As Float[]
-  
+
   If Not sMethod Or If sMethod = "Regular" Then
     sqstr = ""
   Else
     sqstr = " and fldmethod=&6"
   Endif
-  
+
   res = modDatabase.$medConn.Exec("select fldlow,fldhigh from tblexamlimit where fldexamid=&1 and (fldptsex=&2 or fldptsex=&3) and (fldagegroup=&4 or fldagegroup=&5)" & sqstr, txtexam, modPatient.GetPatientSex(encid), "Both Sex", modPatient.GetAgeGroupFIxed(encid, Now()), "All Age", sMethod)                                                               ''
   If res.Available = True Then
     res.MoveFirst
@@ -201,20 +182,20 @@ Public Function GetBothQuantiExamVal(txtexam As String, encid As String, Optiona
     xhigh = 0
   Endif
   xlimit = [xlow, xhigh]
-  
+
   Return xlimit
-  
+
 End
 
 Public Function GetExamLimitSrtings(id As Long, Optional encid As String) As String
-  
+
   Dim xx As String
   Dim res As Result
   Dim xmax As Float
   Dim xmin As Float
   Dim xlimit As Float[]
   Dim xunit As String
-  
+
   If encid Then
     res = modDatabase.$myConn.Exec("select fldencounterval,fldhead,fldtype,fldmethod from tblpatientexam where fldid=&1 and fldencounterval=&2", id, encid)
   Else
@@ -241,24 +222,24 @@ Public Function GetExamLimitSrtings(id As Long, Optional encid As String) As Str
   Else
     xx = modFixClinic.GetExamQualiTextReference(GetExamNameFromExamID(id, res["fldencounterval"]))
   Endif
-  
+
   Return xx
-  
+
 End
 
 ''---------------------------- Normal value ------------------------
 Public Function GetNormalQuantiExamVal(txtexam As String, encid As String, Optional sMethod As String) As Float
-  
+
   Dim res As Result
   Dim xx As Float
   Dim sqstr As String
-  
+
   If Not sMethod Or If sMethod = "Regular" Then
     sqstr = ""
   Else
     sqstr = " and fldmethod=&6"
   Endif
-  
+
   res = modDatabase.$medConn.Exec("select fldnormal from tblexamlimit where fldexamid=&1 and (fldptsex=&2 or fldptsex=&3) and (fldagegroup=&4 or fldagegroup=&5)" & sqstr, txtexam, modPatient.GetPatientSex(encid), "Both Sex", modPatient.GetAgeGroupFIxed(encid, Now()), "All Age", sMethod)                                                               ''
   If res.Available = True Then
     res.MoveFirst
@@ -270,24 +251,24 @@ Public Function GetNormalQuantiExamVal(txtexam As String, encid As String, Optio
   Else
     xx = 0
   Endif
-  
+
   Return xx
-  
+
 End
 
 ''-------------------------- Exam Unit ----------------------
 Public Function GetExamUnit(txtexam As String, encid As String, Optional sMethod As String) As String
-  
+
   Dim res As Result
   Dim xx As String
   Dim sqstr As String
-  
+
   If Not sMethod Or If sMethod = "Regular" Then
     sqstr = ""
   Else
     sqstr = " and fldmethod=&6"
   Endif
-  
+
   res = modDatabase.$medConn.Exec("select fldunit from tblexamlimit where fldexamid=&1 and (fldptsex=&2 or fldptsex=&3) and (fldagegroup=&4 or fldagegroup=&5)" & sqstr, txtexam, modPatient.GetPatientSex(encid), "Both Sex", modPatient.GetAgeGroupFIxed(encid, Now()), "All Age", sMethod)                                                               ''
   If res.Available = True Then
     res.MoveFirst
@@ -299,24 +280,24 @@ Public Function GetExamUnit(txtexam As String, encid As String, Optional sMethod
   Else
     xx = ""
   Endif
-  
+
   Return xx
-  
+
 End
 
 ''--------------------- sensitivity/Specificity ---------------------------
 Public Function ExamQuantiTableValue(sField As String, txtexam As String, encid As String, Optional sMethod As String) As Float
-  
+
   Dim res As Result
   Dim xx As Float
   Dim sqstr As String
-  
+
   If Not sMethod Or If sMethod = "Regular" Then
     sqstr = ""
   Else
     sqstr = " and fldmethod=&6"
   Endif
-  
+
   res = modDatabase.$medConn.Exec(Subst("select &1 as fld from tblexamlimit", sField) & " where fldexamid=&1 and (fldptsex=&2 or fldptsex=&3) and (fldagegroup=&4 or fldagegroup=&5)" & sqstr, txtexam, modPatient.GetPatientSex(encid), "Both Sex", modPatient.GetAgeGroupFIxed(encid, Now()), "All Age", sMethod)                                                               ''
   If res.Available = True Then
     res.MoveFirst
@@ -328,21 +309,21 @@ Public Function ExamQuantiTableValue(sField As String, txtexam As String, encid 
   Else
     xx = 0
   Endif
-  
+
   If xx = 0 Then
     xx = modFixClinic.ExamTableValue(sField, txtexam)
   Endif
-  
+
   Return xx
-  
+
 End
 
 Public Function GetExamSensiSpecArray(id As Long) As Float[]
-  
+
   Dim xxx As Float[]
   Dim res As Result
   Dim sql As String
-  
+
   xxx = New Float[]
   sql = "select fldencounterval,fldhead,fldmethod,fldtype from tblpatientexam where fldid=&1"
   res = modDatabase.$myConn.Exec(sql, id)
@@ -355,25 +336,25 @@ Public Function GetExamSensiSpecArray(id As Long) As Float[]
         xxx.Add(ExamQuantiTableValue("fldsensitivity", res["fldhead"], res["fldencounterval"]))
         xxx.Add(ExamQuantiTableValue("fldspecificity", res["fldhead"], res["fldencounterval"]))
       Endif
-      
+
     Else
       xxx.Add(modFixClinic.ExamTableValue("fldsensitivity", res["fldhead"]))
       xxx.Add(modFixClinic.ExamTableValue("fldspecificity", res["fldhead"]))
-      
+
     Endif
   Endif
-  
+
   Return xxx
-  
+
 End
 
 ''------------------------------------OBSERVATION--------------------------------------
 Public Function GetExamClinValuePosition(encid As String, sExam As String, sType As String) As String[]
-  
+
   Dim res As Result
   Dim sql As String
   Dim xx As String[]
-  
+
   xx = New String[]
   sql = "select fldid,fldtime,flduserid from tblpatientexam where fldencounterval=&1 and fldhead=&2 and fldsave=&3"
   res = modDatabase.$syConn.Exec(sql, encid, sExam, True)
@@ -392,11 +373,11 @@ Public Function GetExamClinValuePosition(encid As String, sExam As String, sType
     xx.Add("")
   Endif
   Return xx
-  
+
 End
 
 Public Function GetExamValueSubString(sIndex As Variant, Optional encid As String) As String
-  
+
   Dim res As Result
   Dim res1 As Result
   Dim sql As String
@@ -404,7 +385,7 @@ Public Function GetExamValueSubString(sIndex As Variant, Optional encid As Strin
   Dim xquali As String[]
   Dim xType As String
   Dim xunit As String
-  
+
   If encid Then
     If MMain.$WebEntry = True Then
       sql = "select fldid,fldencounterval,fldhead,fldrepquali,fldrepquanti,fldtype,fldabnormal,fldoption,fldmethod,fldhospcode from tblpatientexam where fldrepoid=&1 and fldencounterval=&2"
@@ -412,7 +393,7 @@ Public Function GetExamValueSubString(sIndex As Variant, Optional encid As Strin
       sql = "select fldid,fldencounterval,fldhead,fldrepquali,fldrepquanti,fldtype,fldabnormal,fldoption,fldmethod from tblpatientexam where fldid=&1 and fldencounterval=&2"
     Endif
     res = modDatabase.$myConn.Exec(sql, sIndex, encid)
-    
+
   Else
     If MMain.$WebEntry = True Then
       sql = "select fldid,fldencounterval,fldhead,fldrepquali,fldrepquanti,fldtype,fldabnormal,fldoption,fldmethod,fldhospcode from tblpatientexam where fldrepoid=&1"
@@ -421,7 +402,7 @@ Public Function GetExamValueSubString(sIndex As Variant, Optional encid As Strin
     Endif
     res = modDatabase.$myConn.Exec(sql, sIndex)
   Endif
-  
+
   If res.Available = True Then
     If res["fldtype"] = "Quantitative" Then
       If modBasic.$QuantiUnitEnable = "Disable" Then
@@ -434,7 +415,7 @@ Public Function GetExamValueSubString(sIndex As Variant, Optional encid As Strin
         Endif
         xx = CStr(res["fldrepquanti"]) & Space(1) & xunit
       Endif
-      
+
     Else
       xType = res["fldoption"]
       If res["fldrepquali"] Then
@@ -454,7 +435,7 @@ Public Function GetExamValueSubString(sIndex As Variant, Optional encid As Strin
       Else
         xx = ""
       Endif
-      
+
       xquali = New String[]
       If MMain.$WebEntry = True Then ''remoteoptimized
         res1 = modDatabase.$myConn.Exec("select fldsubtexam,fldreport,fldid,fldheadid,fldtanswertype,fldhospcode from tblpatientsubexam where fldheadid=&1 and fldencounterval=&2 and fldhospcode=&3", res["fldid"], res["fldencounterval"], res["fldhospcode"])
@@ -484,7 +465,7 @@ Public Function GetExamValueSubString(sIndex As Variant, Optional encid As Strin
             Endif
           Endif
         Endif
-        
+
       Else
         res1 = modDatabase.$myConn.Exec("select fldsubtexam,fldreport,fldid,fldheadid,fldtanswertype from tblpatientsubexam where fldheadid=&1 and fldencounterval=&2", res["fldid"], res["fldencounterval"])
         If res1.Available = True Then
@@ -513,26 +494,26 @@ Public Function GetExamValueSubString(sIndex As Variant, Optional encid As Strin
             Endif
           Endif
         Endif
-        
+
       Endif
-      
+
     Endif
   Else
     xx = ""
   Endif
-  
+
   Return xx
-  
+
 End
 
 Public Function GetExamValueString(encid As String, id As Long, sReport As Boolean) As String
-  
+
   Dim res As Result
   Dim xx As String
   Dim xType As String
   Dim xval As String
   Dim xunit As String
-  
+
   res = modDatabase.$myConn.Exec("select fldencounterval,fldhead,fldrepquanti,fldrepquali,fldtype,fldoption,fldinput,fldabnormal,fldmethod from tblpatientexam where fldid=&1 and fldencounterval=&2", id, encid)
   If res.Available Then
     If res["fldtype"] = "Quantitative" Then
@@ -548,7 +529,7 @@ Public Function GetExamValueString(encid As String, id As Long, sReport As Boole
       Endif
     Else
       If res["fldrepquali"] Then
-        
+
         xType = res["fldoption"]
         If xType = "Clinical Scale" Then
           If modBasic.$ShowScaleMedFormat = "GroupWise" Then
@@ -575,12 +556,12 @@ Public Function GetExamValueString(encid As String, id As Long, sReport As Boole
         Else
           xval = Trim(res["fldrepquali"])
         Endif
-        
+
       Else
         xval = ""
       Endif
     Endif
-    
+
     If xval And If sReport = True Then
       If res["fldabnormal"] = True And If modBasic.$AbnFormat Then
         xx = modString.GetAbnormalFormattedString(xval)
@@ -590,22 +571,22 @@ Public Function GetExamValueString(encid As String, id As Long, sReport As Boole
     Else
       xx = xval
     Endif
-    
+
   Else
     xx = ""
   Endif
-  
+
   Return xx
-  
+
 End
 
 Public Function GetSubExamQualiList(encid As String, xType As String, pttestid As Long) As String
-  
+
   Dim res As Result
   Dim xx As String[]
   Dim xtable As String
   Dim xquali As String
-  
+
   xx = New String[]
   res = modDatabase.$myConn.Exec("select fldsubtexam,fldreport,fldtanswertype,fldid,fldheadid from tblpatientsubexam where fldheadid=&1 and fldencounterval=&2", pttestid, encid)
   If res.Available = True Then
@@ -627,7 +608,7 @@ Public Function GetSubExamQualiList(encid As String, xType As String, pttestid A
         Endif
       Endif
     Next
-    
+
     If xx.Count Then
       If xType = "Left/Right Components" Then
         xtable = modString.GetLeftRightTableHeader(True) & xx.Join(gb.NewLine)
@@ -637,21 +618,21 @@ Public Function GetSubExamQualiList(encid As String, xType As String, pttestid A
     Else
       xtable = ""
     Endif
-    
+
   Endif
-  
+
   Return xtable
-  
+
 End
 
 ''------------------ Next level table Data ----------------------
 Public Function GetSubExamTableReportString(testid As Long, subtestid As Long, Optional sHospCode As String) As String
-  
+
   Dim res As Result
   Dim xx As String[]
   Dim xstr As String
   Dim xval As String
-  
+
   If sHospCode Then
     res = modDatabase.$myConn.Exec("select fldvariable,fldvalue,fldcolm2,fldcolm3,fldcolm4 from tblpatexamsubtable where fldexamid=&1 and fldsubexamid=&2 and fldhospcode=&3", testid, subtestid, sHospCode)
   Else
@@ -680,16 +661,16 @@ Public Function GetSubExamTableReportString(testid As Long, subtestid As Long, O
     xval = ""
   Endif
   Return xval
-  
+
 End
 
 Public Function GetSubExamDualTableString(testid As Long, subtestid As Long, Optional sHospCode As String) As String
-  
+
   Dim res As Result
   Dim xx As String
   Dim aa As String
   Dim bb As String
-  
+
   If sHospCode Then
     res = modDatabase.$myConn.Exec("select fldvariable,fldvalue,fldcolm2 from tblpatexamsubtable where fldexamid=&1 and fldsubexamid=&2 and fldhospcode=&3", testid, subtestid, sHospCode)
   Else
@@ -724,68 +705,68 @@ Public Function GetSubExamDualTableString(testid As Long, subtestid As Long, Opt
     xx = ""
   Endif
   Return xx
-  
+
 End
 
 ''------------------------------------ EXAM VALUES ALTERATION -------------------------------------------------------------------------
 'NOTE:TWO CON
 Public Function GetExamDrugHypo(labid As Long) As String[]
-  
+
   Dim xxx As String[]
   Dim res As Result
-  
+
   res = modDatabase.$myConn.Exec("select distinct(fldchild) from tblcodebrady where fldparent=&1 and fldchild in(select fldcodename from tbldrug where flddrug in(select flddrug from tblmedbrand where fldbrandid in(select flditem from tblpatdosing where fldencounterval=&2 and fldtime<&3)))", GetExamNameFromExamID(labid), GetEncidFromExamID(labid), GetExamTimeFromExamID(labid))
   xxx = modControlSub.GetDirectFillresult(res)
-  
+
   Return xxx
-  
+
 End
 
 'NOTE:TWO CON
 Public Function GetExamDrugHyper(labid As Long) As String[]
-  
+
   Dim xxx As String[]
   Dim res As Result
-  
+
   res = modDatabase.$myConn.Exec("select distinct(fldchild) from tblcodetachy where fldparent=&1 and fldchild in(select fldcodename from tbldrug where flddrug in(select flddrug from tblmedbrand where fldbrandid in(select flditem from tblpatdosing where fldencounterval=&2 and fldtime<&3)))", GetExamNameFromExamID(labid), GetEncidFromExamID(labid), GetExamTimeFromExamID(labid))                                                         ''
   xxx = modControlSub.GetDirectFillresult(res)
-  
+
   Return xxx
-  
+
 End
 
 'NOTE:TWO CON
 Public Function GetExamDiseaseHypo(labid As Long) As String[]
-  
+
   Dim xxx As String[]
   Dim res As Result
-  
+
   res = modDatabase.$myConn.Exec("select distinct(fldchild) from tblsyndrobrady where fldparent=&1 and fldchild in(select fldcode as col from tblpatfindings where fldencounterval=&2 and (fldtype=&3 or fldtype=&4) and fldsave=&5)", GetExamNameFromExamID(labid), GetEncidFromExamID(labid), "Final Diagnosis", "Provisional Diagnosis", True)                                                         ''
   xxx = modControlSub.GetDirectFillresult(res)
-  
+
   Return xxx
-  
+
 End
 
 'NOTE:TWO CON
 Public Function GetExamDiseaseHyer(labid As Long) As String[]
-  
+
   Dim xxx As String[]
   Dim res As Result
-  
+
   res = modDatabase.$myConn.Exec("select distinct(fldchild) from tblsyndrotachy where fldparent=&1 and fldchild in(select fldcode as col from tblpatfindings where fldencounterval=&2 and (fldtype=&3 or fldtype=&4) and fldsave=&5)", GetExamNameFromExamID(labid), GetEncidFromExamID(labid), "Final Diagnosis", "Provisional Diagnosis", True)                                                         ''
   xxx = modControlSub.GetDirectFillresult(res)
-  
+
   Return xxx
-  
+
 End
 
 Public Function ExamInterpretByExamID(labid As Long) As String
-  
+
   Dim sql As String
   Dim res As Result
   Dim xx As String
-  
+
   sql = "select fldcomment from tblexamcomment where fldexamid=&1 and fldmin<=&2 and fldmax>=&3 and (fldptsex=&4 or fldptsex=&5) and (fldagegroup=&6 or fldagegroup=&7)"
   res = modDatabase.$medConn.Exec(sql, GetExamNameFromExamID(labid), GetExamValueByID(labid), GetExamValueByID(labid), modPatient.GetPatientSex(GetEncidFromExamID(labid)), "Both Sex", modPatient.GetAgeGroupFIxed(GetEncidFromExamID(labid), Now()), "All Age")
   If res.Available = True Then
@@ -797,40 +778,40 @@ Public Function ExamInterpretByExamID(labid As Long) As String
   Else
     xx = ""
   Endif
-  
+
   Return xx
-  
+
 End
 
 Private Function GetStatExamReportEnry(encid As String, sExam As String, sMethod As String, Optional sDiagnosis As String) As String
-  
+
   Dim tstgender As String
   Dim tstdob As Date
   Dim tsdistrict As String
   Dim xdt1 As Integer
   Dim xdt2 As Integer
-  
+
   Dim sql As String
   Dim res As Result
   Dim xxx As String[]
   Dim xpath As String
   Dim xval As String
   Dim arcmd As String[]
-  
+
   Dim xmethod As String
   Dim xpatinfo As String
   Dim xjoin As String
   Dim xdiagno As String
   Dim xdiagnoval As String
-  
+
   xxx = New String[]
-  
+
   If modBasic.$EBMMethod = "Yes" Then
     xmethod = " and tblpatientexam.fldmethod like &4"
   Else
     xmethod = ""
   Endif
-  
+
   If modBasic.$EBMGender = "Yes" Or If modBasic.$EBMDistrict = "Yes" Or If modBasic.$EBMAge = "Yes" Then
     xjoin = " from (tblpatientexam inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval) inner join tblpatientinfo on tblencounter.fldpatientval=tblpatientinfo.fldpatientval"
     xpatinfo = ""
@@ -848,12 +829,12 @@ Private Function GetStatExamReportEnry(encid As String, sExam As String, sMethod
       xdt2 = modBasic.$EBMAgeRange
       xpatinfo = xpatinfo & " and " & modMedReports.GetAgeStringByTable("tblpatientexam", modDatabase.$syConn) & ">= &7 and " & modMedReports.GetAgeStringByTable("tblpatientexam", modDatabase.$syConn) & "<&8"
     Endif
-    
+
   Else
     xjoin = " from tblpatientexam"
     xpatinfo = ""
   Endif
-  
+
   If modBasic.$EBMDiagno = "Yes" Then
     If sDiagnosis Then
       xdiagno = " and tblpatientexam.fldencounterval in(select fldencounterval from tblpatfindings where fldcodenew like &9 and fldsave=&{10} and fldcodenew<>&{11})"
@@ -866,10 +847,10 @@ Private Function GetStatExamReportEnry(encid As String, sExam As String, sMethod
     xdiagno = ""
     xdiagnoval = "%"
   Endif
-  
+
   If modBasic.$EBMEthnic = "Yes" Then
   Endif
-  
+
   sql = "select tblpatientexam.fldrepquanti as fldrepquanti" & xjoin & " where tblpatientexam.fldsave=&1 and tblpatientexam.fldhead=&2 and tblpatientexam.fldtype=&3" & xmethod & xpatinfo & xdiagno
   res = modDatabase.$syConn.Exec(sql, True, sExam, "Quantitative", sMethod, tstgender, tsdistrict, xdt1, xdt2, xdiagnoval, True, "Other")                                      ''
   If res.Available Then
@@ -888,16 +869,16 @@ Private Function GetStatExamReportEnry(encid As String, sExam As String, sMethod
   Else
     xval = ""
   Endif
-  
+
   Return xval
-  
+
 End
 
 Public Function GetStatExamReport(labid As Long, Optional sDiagnosis As String) As String
-  
+
   Dim xval As String
   Dim res1 As Result
-  
+
   res1 = modDatabase.$syConn.Exec("select fldencounterval,fldhead,fldmethod from tblpatientexam where fldid=&1", labid)
   If res1.Available Then
     If res1["fldmethod"] Then
@@ -914,15 +895,15 @@ Public Function GetStatExamReport(labid As Long, Optional sDiagnosis As String) 
       Endif
     Endif
   Endif
-  
+
   Return xval
-  
+
 End
 
 Public Function ExamReportCommentPatient(labid As Long, sType As String) As String
-  
+
   Dim xx As String[]
-  
+
   Dim xrefrange As String
   Dim druglow As String[]
   Dim drughigh As String[]
@@ -930,17 +911,17 @@ Public Function ExamReportCommentPatient(labid As Long, sType As String) As Stri
   Dim syndrohigh As String[]
   Dim xintpret As String
   Dim xsenspec As Float[]
-  
+
   If sType = "Qualitative" Then
     xx = New String[]
-    
+
     If modBasic.$CommRefRange = "Yes" Then
       xrefrange = GetExamLimitSrtings(labid)
       If xrefrange Then
         xx.Add("Ref Range: " & xrefrange)
       Endif
     Endif
-    
+
     If modBasic.$CommSensSpec = "Yes" Then
       xsenspec = GetExamSensiSpecArray(labid)
       If xsenspec And If xsenspec.Count = 2 Then
@@ -950,7 +931,7 @@ Public Function ExamReportCommentPatient(labid As Long, sType As String) As Stri
         Endif
       Endif
     Endif
-    
+
   Else If sType = "Quantitative" Then
     xx = New String[]
     If modBasic.$CommRefRange = "Yes" Then
@@ -959,7 +940,7 @@ Public Function ExamReportCommentPatient(labid As Long, sType As String) As Stri
         xx.Add("Ref Range: " & xrefrange)
       Endif
     Endif
-    
+
     If modBasic.$CommMedEffect = "Yes" Then
       druglow = GetExamDrugHypo(labid)
       If druglow And If druglow.Count Then
@@ -970,7 +951,7 @@ Public Function ExamReportCommentPatient(labid As Long, sType As String) As Stri
         xx.Add("Increased By:" & gb.NewLine & drughigh.Join("; "))
       Endif
     Endif
-    
+
     If modBasic.$CommCauseSyndro = "Yes" Then
       syndrolow = GetExamDiseaseHypo(labid)
       If syndrolow And If syndrolow.Count Then
@@ -981,34 +962,34 @@ Public Function ExamReportCommentPatient(labid As Long, sType As String) As Stri
         xx.Add("Increased In:" & gb.NewLine & syndrohigh.Join("; "))
       Endif
     Endif
-    
+
     If modBasic.$CommInterpret = "Yes" Then
       xintpret = ExamInterpretByExamID(labid)
       If xintpret Then
         xx.Add("RESULT: " & xintpret)
       Endif
     Endif
-    
+
   Endif
-  
+
   Return xx.Join(gb.Tab)
-  
+
 End
 
 Public Function GetALLReportExamSelString(encid As String, exam As String, sDate As Date) As String[]
-  
+
   Dim sql As String
   Dim res As Result
   Dim xx As String
   Dim yy As String
   Dim xList As String[]
-  
+
   xList = New String[]
   sql = "select fldid,fldtime,fldrepquali,fldrepquanti,fldtype,fldoption from tblpatientexam where fldencounterval=&1 and fldhead=&2 and fldsave=&3 and fldinput=&4 and fldtime>=&5 and fldtime<=&6"
   res = modDatabase.$syConn.Exec(sql, encid, exam, True, "Examination", modDate.StartSqlDate(sDate), modDate.EndSqlDate(sDate))
   If res.Available = True Then
     For Each res
-      
+
       xx = ""
       If res["fldtype"] = "Quantitative" Then
         If res["fldrepquanti"] Then
@@ -1016,31 +997,31 @@ Public Function GetALLReportExamSelString(encid As String, exam As String, sDate
         Else
           xx = ""
         Endif
-        
+
       Else
         xx = "[ " & modReportVar.GetDateTimeReport(res["fldtime"], gb.MediumTime) & " ] " & " : " & Trim(res["fldrepquali"])
         yy = modClinic.GetSubExamQualiList(encid, res["fldoption"], res["fldid"])
         If yy Then
           xx = xx & yy
         Endif
-        
+
       Endif
       xList.Add(xx)
-      
+
     Next
   Endif
   Return xList
-  
+
 End
 
 'NOTE: --------------------------- Current Exam Values ---------------------------------------
 Public Function GetBradyExamList(encid As String) As String[]
-  
+
   Dim res As Result
   Dim xx As String[]
   Dim xval As Variant
   Dim xlimit As Float[]
-  
+
   xx = New String[]
   res = modDatabase.$myConn.Exec("select distinct(fldhead) as col from tblpatientexam where fldencounterval=&1 and fldsave=&2 and fldtype=&3", encid, True, "Quantitative")
   For Each res
@@ -1054,16 +1035,16 @@ Public Function GetBradyExamList(encid As String) As String[]
   Next
   xx.Sort(gb.Ascent)
   Return xx
-  
+
 End
 
 Public Function GetTachyExamList(encid As String) As String[]
-  
+
   Dim res As Result
   Dim xx As String[]
   Dim xval As Variant
   Dim xlimit As Float[]
-  
+
   xx = New String[]
   res = modDatabase.$myConn.Exec("select distinct(fldhead) as col from tblpatientexam where fldencounterval=&1 and fldsave=&2 and fldtype=&3", encid, True, "Quantitative")
   For Each res
@@ -1077,15 +1058,15 @@ Public Function GetTachyExamList(encid As String) As String[]
   Next
   xx.Sort(gb.Ascent)
   Return xx
-  
+
 End
 
 Public Function GetCurrExamTimeValueSysConst(encid As String, xSysConst As String, sType As String) As String
-  
+
   Dim xx As String
   Dim res As Result
   Dim xType As String
-  
+
   res = modDatabase.$myConn.Exec("select fldid,fldhead,fldrepquanti,fldrepquali,fldtype from tblpatientexam where fldencounterval=&1 and fldsave=&2 and fldinput=&3 and fldhead in(select fldexamid from tblexam where fldsysconst=&4) and fldrepquali IS NOT &5", encid, True, sType, xSysConst, Null)
   If res.Available Then
     res.MoveLast
@@ -1107,21 +1088,21 @@ Public Function GetCurrExamTimeValueSysConst(encid As String, xSysConst As Strin
         xx = ""
       Endif
     Endif
-    
+
   Else
     xx = ""
   Endif
-  
+
   Return xx
-  
+
 End
 
 Public Function GetCurrExamTimeValueStructured(encid As String, xConstVal As String) As String
-  
+
   Dim xx As String
   Dim res As Result
   Dim xType As String
-  
+
   res = modDatabase.$myConn.Exec("select fldid,fldhead,fldrepquanti,fldrepquali,fldtype from tblpatientexam where fldencounterval=&1 and fldsave=&2 and fldserialval=&3 and fldrepquali IS NOT &4", encid, True, xConstVal, Null)
   If res.Available Then
     res.MoveLast
@@ -1143,29 +1124,29 @@ Public Function GetCurrExamTimeValueStructured(encid As String, xConstVal As Str
         xx = ""
       Endif
     Endif
-    
+
   Else
     xx = ""
   Endif
-  
+
   Return xx
-  
+
 End
 
 Public Function GetCurrLeftRightExamValue(encid As String, xSysConst As String, sType As String) As String
-  
+
   Dim res As Result
   Dim xxx As Variant
   Dim xcoll As JSONCollection
   Dim xval As String
-  
+
   res = modDatabase.$myConn.Exec("select fldrepquali from tblpatientexam where fldencounterval=&1 and fldsave=&2 and fldhead in(select fldexamid from tblexam where fldsysconst=&3 and fldoption=&4) and fldrepquali IS NOT &5", encid, True, xSysConst, "Left and Right", Null)
   If res.Available Then
     res.MoveLast
     If IsNumber(res["fldrepquali"]) Then
       xval = ""
     Else
-      
+
       Try xxx = JSON.Decode(res["fldrepquali"], True)
       If xxx Then
         If xxx Is JSONCollection Then
@@ -1177,22 +1158,22 @@ Public Function GetCurrLeftRightExamValue(encid As String, xSysConst As String, 
       Else
         xval = ""
       Endif
-      
+
     Endif
   Else
     xval = ""
   Endif
   Return xval
-  
+
 End
 
 ''--------------------------------------- Height
 Public Function GetPatientHeightinCm(encid As String) As Float
-  
+
   Dim sql As String
   Dim res As Result
   Dim wt As Float
-  
+
   sql = "select fldrepquanti from tblpatientexam where fldencounterval=&1 and fldhead=&2 and fldtype=&3 and fldsave=&4"
   res = modDatabase.$myConn.Exec(sql, encid, "Body Height", "Quantitative", True)
   If res.Available = True Then
@@ -1205,18 +1186,18 @@ Public Function GetPatientHeightinCm(encid As String) As Float
   Else
     wt = 0
   Endif
-  
+
   Return wt
-  
+
 End
 
 ''XXXXXXXXXXXXXXXXX Body weight
 Public Function GetBodyWeight(encid As String) As Float
-  
+
   Dim sql As String
   Dim res As Result
   Dim wt As Float
-  
+
   sql = "select fldrepquanti from tblpatientexam where fldencounterval=&1 and fldhead=&2 and fldtype=&3 and fldsave=&4"
   res = modDatabase.$myConn.Exec(sql, encid, "Body Weight", "Quantitative", True)
   If res.Available = True Then
@@ -1229,16 +1210,16 @@ Public Function GetBodyWeight(encid As String) As Float
   Else
     wt = 0
   Endif
-  
+
   Return wt
-  
+
 End
 
 Public Function GetHepaticStatus(encid As String) As String
-  
+
   Dim res As Result
   Dim xx As String
-  
+
   res = modDatabase.$myConn.Exec("select fldrepquali from tblpatientexam where fldencounterval=&1 and fldhead=&2 and fldtype=&3 and fldsave=&4", encid, "Hepatic Status", "Qualitative", True)
   If res.Available = True Then
     res.MoveLast
@@ -1250,16 +1231,16 @@ Public Function GetHepaticStatus(encid As String) As String
   Else
     xx = ""
   Endif
-  
+
   Return xx
-  
+
 End
 
 Public Sub GetPregnancyStatus(encid As String) As String
-  
+
   Dim res As Result
   Dim xx As String
-  
+
   res = modDatabase.$myConn.Exec("select fldrepquali from tblpatientexam where fldencounterval=&1 and fldhead=&2 and fldtype=&3 and fldsave=&4", encid, "Pregnancy Status", "Qualitative", True)
   If res.Available = True Then
     res.MoveLast
@@ -1271,30 +1252,30 @@ Public Sub GetPregnancyStatus(encid As String) As String
   Else
     xx = ""
   Endif
-  
+
   Return xx
-  
+
 End
 
 Public Function GetExamSelFieldType(sField As String) As String[]
-  
+
   Dim res As Result
   Dim sql As String
   Dim xx As String[]
-  
+
   sql = Subst("select distinct(&1) as col from tblpatientexam", sField)
   res = modDatabase.$myConn.Exec(sql)
   xx = modControlSub.GetDirectFillresult(res)
-  
+
   Return xx
-  
+
 End
 
 Public Function GetFullVitalList(encid As String) As String[]
-  
+
   Dim xxx As String[]
   Dim xexam As String
-  
+
   xxx = modPatPatho.GetMonitorList(encid, "Exam", "Continue", "%")
   If xxx And If xxx.Count Then
     For Each xexam In modBasic.$ClinEssentialComp
@@ -1306,17 +1287,17 @@ Public Function GetFullVitalList(encid As String) As String[]
     xxx = modBasic.$ClinEssentialComp
   Endif
   Return xxx
-  
+
 End
 
 ''---------------- Position wise value -------------------
 Public Function GetCurrExamValueFromID(sPos As String, encid As String, strExam As String) As Variant
-  
+
   Dim sql As String
   Dim res As Result
   Dim xx As Variant
   Dim xType As String
-  
+
   sql = "select fldhead,fldrepquanti,fldrepquali,fldtype from tblpatientexam where fldencounterval=&1 and fldsave=&2 and fldhead=&3 and fldrepquali IS NOT &4"
   res = modDatabase.$myConn.Exec(sql, encid, True, strExam, Null)
   If res.Available = True Then
@@ -1325,7 +1306,7 @@ Public Function GetCurrExamValueFromID(sPos As String, encid As String, strExam 
     Else
       res.MoveLast
     Endif
-    
+
     If res["fldtype"] = "Quantitative" Then
       If res["fldrepquanti"] Then
         xx = res["fldrepquanti"]
@@ -1344,21 +1325,21 @@ Public Function GetCurrExamValueFromID(sPos As String, encid As String, strExam 
         xx = ""
       Endif
     Endif
-    
+
   Else
     xx = ""
   Endif
   Return xx
-  
+
 End
 
 ''only for last quantitative exam (used in calculation)
 Public Function GetCurrExamValueSysConst(encid As String, xSysConst As String, sPos As String) As String
-  
+
   Dim xx As String
   Dim res As Result
   Dim xType As String
-  
+
   res = modDatabase.$myConn.Exec("select fldid,fldhead,fldrepquanti,fldrepquali,fldtype from tblpatientexam where fldencounterval=&1 and fldsave=&2 and fldhead in(select fldexamid from tblexam where fldsysconst=&3) and fldrepquali IS NOT &4", encid, True, xSysConst, Null)
   If res.Available Then
     If sPos = "First" Then
@@ -1366,7 +1347,7 @@ Public Function GetCurrExamValueSysConst(encid As String, xSysConst As String, s
     Else
       res.MoveLast
     Endif
-    
+
     If res["fldtype"] = "Quantitative" Then
       If res["fldrepquanti"] Then
         xx = CStr(res["fldrepquanti"])
@@ -1385,11 +1366,11 @@ Public Function GetCurrExamValueSysConst(encid As String, xSysConst As String, s
         xx = ""
       Endif
     Endif
-    
+
   Else
     xx = ""
   Endif
-  
+
   Return xx
-  
+
 End

@@ -1049,3 +1049,20 @@ Private Sub BulkPendingUploadDocs(sClaim As String, sAccount As String, encid As
   Endif
 
 End
+
+Public Sub btnupdatediagno_Click()
+
+  Dim hForm As CimisAPIClaim
+  Dim xout As String
+
+  If txtgridnhsi.Text Then
+    Inc Application.Busy
+    hForm = New CimisAPIClaim(txtgridnhsi.Text, txtgridencid.Text, txtgridclaim.Text, False, txtcomment.Text)
+    xout = hForm.UploadClaim()
+    Dec Application.Busy
+    If xout Then
+      Message.Warning(xout, "OK")
+    Endif
+  Endif
+
+End

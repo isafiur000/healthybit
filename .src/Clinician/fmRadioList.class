@@ -359,7 +359,7 @@ Private Sub FillLabCOlumnView(sDepart As String)
       sstr1 = "select distinct(fldgroupname) as col from tblgroupradio where fldgroupname in(select flditemname from tblservicecost where (fldgroup=&1 or fldgroup=&2) and fldstatus=&3) ORDER BY fldgroupname"                                                ''
       res = modDatabase.$myConn.Exec(sstr1, $BillMode, "%", "Active")
     Else
-      sstr1 = "select distinct(fldgroupname) as col from tblgroupradio where fldgroupname in(select flditemname from tblservicecost where (fldgroup=&1 or fldgroup=&2) and fldstatus=&3) and fldtestid in(select fldtestid from tblradio where fldcategory=&4) ORDER BY fldgroupname"                                                ''
+      sstr1 = "select distinct(fldgroupname) as col from tblgroupradio where fldgroupname in(select flditemname from tblservicecost where (fldgroup=&1 or fldgroup=&2) and fldstatus=&3) and fldtestid in(select fldexamid from tblradio where fldcategory=&4) ORDER BY fldgroupname"                                                ''
       res = modDatabase.$myConn.Exec(sstr1, $BillMode, "%", "Active", sDepart)
     Endif
     xxx = modControlSub.GetDirectFillresult(res)
@@ -502,7 +502,7 @@ Public Sub btnselect_Click()
       For j = 0 To GridView1.Rows.Count - 1
         xList.Add(GridView1[j, 2].Text)
       Next
-    Case "Yes", "Full"
+    Case "Standard", "Full"
       xList = New String[]
       For j = 0 To GridView1.Rows.Count - 1
         xList.Add(GridView1[j, 2].Text)
@@ -716,7 +716,7 @@ Private Sub LoadActiveTestsList(sDepart As String)
   If sDepart = "All Sections" Then
     res = modDatabase.$myConn.Exec("select fldgroupname,fldtestid from tblgroupradio where fldgroupname in(select flditemname from tblservicecost where (fldgroup=&1 or fldgroup=&2) and fldstatus=&3) ORDER BY fldtestid", $BillMode, "%", "Active")
   Else
-    res = modDatabase.$myConn.Exec("select fldgroupname,fldtestid from tblgroupradio where fldgroupname in(select flditemname from tblservicecost where (fldgroup=&1 or fldgroup=&2) and fldstatus=&3) and fldtestid in(select fldtestid from tblradio where fldcategory=&4) ORDER BY fldtestid", $BillMode, "%", "Active", sDepart)
+    res = modDatabase.$myConn.Exec("select fldgroupname,fldtestid from tblgroupradio where fldgroupname in(select flditemname from tblservicecost where (fldgroup=&1 or fldgroup=&2) and fldstatus=&3) and fldtestid in(select fldexamid from tblradio where fldcategory=&4) ORDER BY fldtestid", $BillMode, "%", "Active", sDepart)
   Endif
   If res.Available Then
     For Each res
@@ -940,7 +940,7 @@ Public Sub btnselecttree_Click()
       For j = 0 To GridView4.Rows.Count - 1
         xList.Add(GridView4[j, 6].Text)
       Next
-    Case "Yes", "Full"
+    Case "Standard", "Full"
       xList = New String[]
       For j = 0 To GridView4.Rows.Count - 1
         xList.Add(GridView4[j, 6].Text)

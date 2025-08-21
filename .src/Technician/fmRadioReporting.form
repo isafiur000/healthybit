@@ -21,7 +21,10 @@
   }
   { mnuplan Menu
     { mnueditdate Menu
-      Text = ("Edit Date")
+      Text = ("Edit Plan Date")
+    }
+    { mnucounter Menu
+      Text = ("Edit Counter")
     }
   }
   { mnufile Menu
@@ -98,16 +101,12 @@
               Picture = Picture["icon:/small/find"]
             }
             { cmbcategorynew ComboBox
-              MoveScaled(0.625,0.5,23,3)
+              MoveScaled(0.625,0.5,32.5,3)
               Sorted = True
             }
             { btnsearname ToolButton
               MoveScaled(40,0.5,3,3)
               Picture = Picture["icon:/small/find"]
-            }
-            { btnnewrefresh Button
-              MoveScaled(26,0.5,6,3)
-              Picture = Picture["icon:/small/refresh"]
             }
           }
           { Panel18 Panel
@@ -138,12 +137,16 @@
           { Panel21 Panel
             MoveScaled(0,8,44,3.5)
             { cmbsourcedept ComboBox
-              MoveScaled(8,0,34,3)
+              MoveScaled(8,0,26,3)
             }
             { Label9 Label
               MoveScaled(0,0,7,3)
               Border = Border.Plain
               Text = ("Depart")
+            }
+            { btnnewrefresh Button
+              MoveScaled(35,0,7,3)
+              Picture = Picture["icon:/small/refresh"]
             }
           }
           { Panel16 Panel
@@ -263,54 +266,83 @@
       Index = 1
       Text = ("Added Test [F6]")
       { Panel2 Panel
-        MoveScaled(0,0,121,4)
+        MoveScaled(0,0,121,8)
         { btnexpotree ToolButton
-          MoveScaled(117,0.5,3,3)
+          MoveScaled(117,4,3,3)
           Picture = Picture["icon:/small/html"]
         }
         { cmbcategory ComboBox
-          MoveScaled(81,0.5,26,3)
+          MoveScaled(49,0.5,26,3)
           Sorted = True
         }
         { chkdate CheckBox
-          MoveScaled(1,0.5,7,3)
+          MoveScaled(39,4,7,3)
           Text = ("Date")
         }
         { dtsort DateBox
-          MoveScaled(8.5,0.5,15,3)
+          MoveScaled(47,4,17,3)
         }
         { btnepsort ToolButton
-          MoveScaled(24,0.5,3,3)
+          MoveScaled(72,4,3,3)
           Picture = Picture["icon:/small/calendar"]
         }
         { cmbrepocounter ComboBox
-          MoveScaled(47,0.5,17,3)
+          MoveScaled(9,4,18.5,3)
         }
         { Label2 Label
-          MoveScaled(38,0.5,8.5,3)
+          MoveScaled(0.5,4,8.5,3)
           Border = Border.Plain
           Text = ("Counter")
         }
         { Label3 Label
-          MoveScaled(72,0.5,8,3)
+          MoveScaled(40,0.5,8,3)
           Border = Border.Plain
           Text = ("Section")
         }
         { btnrefresh Button
-          MoveScaled(108,0.5,8,3)
+          MoveScaled(85,4,14,3)
+          Text = ("Refresh")
           Picture = Picture["icon:/small/refresh"]
         }
         { btnaddcounter ToolButton
-          MoveScaled(65,0.5,3,3)
+          MoveScaled(28,4,3,3)
           Picture = Picture["icon:/small/add"]
         }
         { txtrangerepo SpinBox
-          MoveScaled(28,0.5,6,3)
+          MoveScaled(65,4,6,3)
           MaxValue = 500
+        }
+        { Panel24 Panel
+          MoveScaled(0.5,0.5,27,3)
+          { rbreported RadioButton
+            MoveScaled(13,0,12,3)
+            Text = ("Reported")
+          }
+          { rbpending RadioButton
+            MoveScaled(0,0,12,3)
+            Text = ("Pending")
+            Value = True
+          }
+        }
+        { Panel25 Panel
+          MoveScaled(85,0.5,35,3)
+          { rbencrepo RadioButton
+            MoveScaled(1,0,9.375,3)
+            Text = ("EncID")
+          }
+          { rbinvoicrepo RadioButton
+            MoveScaled(11,0,10,3)
+            Text = ("Invoice")
+          }
+          { rbindoorrepo RadioButton
+            MoveScaled(23,0,10,3)
+            Text = ("Saved")
+            Value = True
+          }
         }
       }
       { GridView2 GridView
-        MoveScaled(0,4,80,22)
+        MoveScaled(2,9,80,16)
         Expand = True
         Mode = Select.Single
         Header = GridView.Both

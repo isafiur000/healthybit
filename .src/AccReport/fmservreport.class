@@ -1229,6 +1229,15 @@ Public Sub mnucrossform_Click()
 
 End
 
+Public Sub mnutabular_Click()
+
+  Dim hForm As FmServiceTabular
+
+  hForm = New FmServiceTabular(cmblocation.Text, cmbvalue.Text)
+  hForm.ShowModal
+
+End
+
 Public Sub mnuaddcolm_Click()
 
   Dim hForm As FmAddNewColumn

@@ -71,7 +71,11 @@ Public Sub btnadd_Click()
         res = modDatabase.$myConn.Create("tbldiagnoid")
         res["fldtype"] = xform
         res["fldsection"] = cmbdepartment.Text
-        res["fldprefix"] = txtformat.Text
+        If rbaddate.Value = True Then
+          res["fldprefix"] = Format(dtLst[i], txtformat.Text)
+        Else If rbbsdate.Value = True Then
+          res["fldprefix"] = BSDateFormat(dtLst[i], cmbprefix.Text)
+        Endif
         res["fldstart"] = modDate.StartSqlDate(dtLst[i])
         res["fldclose"] = modDate.StartSqlDate(dtLst[i + 1])
         res["fldcode"] = Trim(txtcode.Text)
@@ -81,5 +85,23 @@ Public Sub btnadd_Click()
     Next
     Message.Info("Completed", "OK")
   Endif
+
+End
+
+Private Function BSDateFormat(sDate As Date, sFormat As String) As String
+
+  Dim asx As String[]
+  Dim xval As String
+
+  asx = Split(modDate.ConvertToLocaldate(sDate), "/")
+  If sFormat = "Yearly" Then
+    xval = Right(asx[0], 2)
+  Else If sFormat = "Monthly" Then
+    xval = Right(asx[0], 2) & asx[1]
+  Else
+    xval = Right(asx[0], 2) & asx[1] & asx[2]
+  Endif
+
+  Return xval
 
 End

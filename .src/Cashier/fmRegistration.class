@@ -320,7 +320,7 @@ Private Sub OpenDemographics()
           hForm2.ShowModal
         Endif
       Case "Essential"
-        hForm = New FmPatAccEdit(txtencounter.Text)
+        hForm = New FmPatAccEdit(txtencounter.Text, True)
         hForm.ShowModal
     End Select
   Endif
@@ -1482,7 +1482,7 @@ Public Sub mnupatdemog_Click()
           hForm1 = New FmPatdemograph(GridView1[GridView1.Row, 0].Text, modBasic.$RegistAutoDemograph)
           hForm1.ShowModal
         Case "Essential"
-          hForm = New FmPatAccEdit(GridView1[GridView1.Row, 0].Text)
+          hForm = New FmPatAccEdit(GridView1[GridView1.Row, 0].Text, True)
           hForm.ShowModal
       End Select
     Endif

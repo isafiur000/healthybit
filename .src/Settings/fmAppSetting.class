@@ -35,6 +35,7 @@ Public Sub Form_Open()
   cmbwindowsbar.List = ["Enable", "Disable"]
   cmbcsvdelim.List = ["Comma", "Semicolon", "Tab"]
   cmbanalysis.List = ["PSPP", "ML"]
+  cmbclearhighlight.List = ["Yes", "No"]
 
   ShowDesignSetting()
   ShowPanelAdvertise()
@@ -516,6 +517,7 @@ Private Sub GeneralSetting()
     txtvolmusic.Value = CInt(modSettings.ShowSettingFromFIle("AppSetting/VolumeMusic"))
   Endif
   txtdict.Text = modSettings.ShowSettingFromFIle("AppSetting/Dictionary")
+  txtgrammer.Text = modSettings.ShowSettingFromFIle("AppSetting/SpellChecker")
   txtmediapath.Text = modSettings.ShowSettingFromFIle("AppSetting/MediaPath")
 
   If modSettings.ShowSettingFromFIle("AppSetting/LockTime") Then
@@ -579,6 +581,25 @@ Public Sub btndict_Click()
     modBasic.$dictPathList = modString.GetStringArrayFromFile(txtdict.Text)
   Endif
   Balloon.Info(("Information saved"), btndict)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub txtgrammer_Click()
+
+  Dialog.Filter = ["*.csv;*.txt", "TextData Files"]
+  If Dialog.OpenFile() Then Return
+  txtgrammer.Text = Dialog.Path
+
+End
+
+Public Sub btngrammer_Click()
+
+  modSettings.SaveSettingsToFile("AppSetting/SpellChecker", txtgrammer.Text)
+  If Exist(txtgrammer.Text) Then
+    modBasic.$SpellCheckFile = txtgrammer.Text
+  Endif
+  Balloon.Info(("Information saved"), btngrammer)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -1097,6 +1118,7 @@ Private Sub ShowOptionSettings()
   cmbcsvdelim.Text = modSettings.ShowSettingFromFIle("GeneralSettings/CSVDelimiter")
   cmbanalysis.Text = modSettings.ShowSettingFromFIle("GeneralSettings/DataAnalysis")
   cmbreportpopup.Text = modSettings.ShowSettingFromFIle("GeneralSettings/ReportingOutput")
+  cmbclearhighlight.Text = modSettings.ShowSettingFromFIle("GeneralSettings/AutoClearHighLight")
 
 End
 
@@ -1328,6 +1350,15 @@ Public Sub btnreportpopup_Click()
   modSettings.SaveSettingsToFile("GeneralSettings/ReportingOutput", cmbreportpopup.Text)
   modBasic.$ReportingPopUp = cmbreportpopup.Text
   Balloon.Info(("Information saved"), btnreportpopup)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnclearhighlight_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/AutoClearHighLight", cmbclearhighlight.Text)
+  modBasic.$AutoClearHighlight = cmbclearhighlight.Text
+  Balloon.Info(("Information saved"), btnclearhighlight)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

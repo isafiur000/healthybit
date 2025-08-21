@@ -434,7 +434,11 @@ Public Sub btndetail_Click()
   Dim hForm As FmPurdetail
 
   If $suppName Then
-    hForm = New FmPurdetail($suppName, GetSelCompList())
+    If chkall.Value = True Then
+      hForm = New FmPurdetail("%", GetSelCompList())
+    Else
+      hForm = New FmPurdetail($suppName, GetSelCompList())
+    Endif
     hForm.ShowModal
   Endif
 
@@ -449,7 +453,11 @@ Public Sub btninvoice_Click()
     xx = DoubleDates(("Select Purchase Invoice Dates"), $suppName, [Date(), Date()])
     If xx Then
       Inc Application.Busy
-      xPath = modHTMLStock.ShowSupplierInnvoices($suppName, xx[0], xx[1], GetSelCompList())
+      If chkall.Value = True Then
+        xPath = modHTMLStock.ShowSupplierInnvoices("%", xx[0], xx[1], GetSelCompList())
+      Else
+        xPath = modHTMLStock.ShowSupplierInnvoices($suppName, xx[0], xx[1], GetSelCompList())
+      Endif
       Dec Application.Busy
       modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
     Endif
@@ -466,7 +474,11 @@ Public Sub btnitems_Click()
     xx = DoubleDates(("Select Purchase Invoice Dates"), $suppName, [Date(), Date()])
     If xx Then
       Inc Application.Busy
-      xPath = modHTMLStock.ShowSupplierItemList($suppName, xx[0], xx[1], GetSelCompList())
+      If chkall.Value = True Then
+        xPath = modHTMLStock.ShowSupplierItemList("%", xx[0], xx[1], GetSelCompList())
+      Else
+        xPath = modHTMLStock.ShowSupplierItemList($suppName, xx[0], xx[1], GetSelCompList())
+      Endif
       Dec Application.Busy
       modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
     Endif
@@ -480,7 +492,11 @@ Public Sub btnpayment_Click()
 
   If $suppName Then
     Inc Application.Busy
-    xPath = modHTMLStock.ShowTotalPaymentSupplier($suppName)
+    If chkall.Value = True Then
+      xPath = modHTMLStock.ShowTotalPaymentSupplier("%")
+    Else
+      xPath = modHTMLStock.ShowTotalPaymentSupplier($suppName)
+    Endif
     Dec Application.Busy
     modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
   Endif

@@ -34,6 +34,11 @@ Public Sub btnBrOK_Click()
 
   Dim xx As Variant[]
 
+  If modBasic.$AutoClearHighlight = "Yes" Then
+    TextHTML1.ClearHighLight()
+    Wait
+  Endif
+
   If TextHTML1.Text Then
     xx = New Variant[]
     xx.Add(TextHTML1.RichText)

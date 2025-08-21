@@ -815,6 +815,11 @@ Private Sub FillExamSubExam()
     If i < 49 Then
       If $xData[i][0] = "Final Impression" Then
         If aHTMLText[i] Then
+          If modBasic.$AutoClearHighlight = "Yes" Then
+            aHTMLText[i].ClearHighLight()
+            Wait
+          Endif
+
           modClinSub.UpdateQualiData($id, aHTMLText[i].RichText, aAbnormCheck[i].Value, aHTMLText[i].KeyList.Join(";"))
         Else If aGenTextArea[i] Then
           modClinSub.UpdateQualiData($id, aGenTextArea[i].Text, aAbnormCheck[i].Value, "")
@@ -970,6 +975,11 @@ Private Sub FillExamSubExam()
           Endif
         Else If $xData[i][3] = "RichText Area" Then
           If aHTMLText[i].Text Then
+            If modBasic.$AutoClearHighlight = "Yes" Then
+              aHTMLText[i].ClearHighLight()
+              Wait
+            Endif
+
             res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
             If res.Available Then
               res["fldreport"] = aHTMLText[i].RichText
@@ -1024,6 +1034,11 @@ Private Sub FillLabTestSubTest()
     If i < 49 Then
       If $xData[i][0] = "Final Impression" Then
         If aHTMLText[i] Then
+          If modBasic.$AutoClearHighlight = "Yes" Then
+            aHTMLText[i].ClearHighLight()
+            Wait
+          Endif
+
           modLabSub.UpdateLabTestReportQuali($id, aHTMLText[i].RichText, aAbnormCheck[i].Value, aHTMLText[i].KeyList.Join(";"), $tblpatlabtest)
         Else If aGenTextArea[i] Then
           modLabSub.UpdateLabTestReportQuali($id, aGenTextArea[i].Text, aAbnormCheck[i].Value, "", $tblpatlabtest)
@@ -1179,6 +1194,11 @@ Private Sub FillLabTestSubTest()
           Endif
         Else If $xData[i][3] = "RichText Area" Then
           If aHTMLText[i].Text Then
+            If modBasic.$AutoClearHighlight = "Yes" Then
+              aHTMLText[i].ClearHighLight()
+              Wait
+            Endif
+
             res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
             If res.Available Then
               res["fldreport"] = aHTMLText[i].RichText
@@ -1233,6 +1253,11 @@ Private Sub FillRadioTestSubTest()
     If i < 49 Then
       If $xData[i][0] = "Final Impression" Then
         If aHTMLText[i] Then
+          If modBasic.$AutoClearHighlight = "Yes" Then
+            aHTMLText[i].ClearHighLight()
+            Wait
+          Endif
+
           modRadioSub.UpdateRadioTestReportQuali($id, aHTMLText[i].RichText, aAbnormCheck[i].Value, aHTMLText[i].KeyList.Join(";"))
         Else If aGenTextArea[i] Then
           modRadioSub.UpdateRadioTestReportQuali($id, aGenTextArea[i].Text, aAbnormCheck[i].Value, "")
@@ -1388,6 +1413,11 @@ Private Sub FillRadioTestSubTest()
           Endif
         Else If $xData[i][3] = "RichText Area" Then
           If aHTMLText[i].Text Then
+            If modBasic.$AutoClearHighlight = "Yes" Then
+              aHTMLText[i].ClearHighLight()
+              Wait
+            Endif
+
             res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
             If res.Available Then
               res["fldreport"] = aHTMLText[i].RichText

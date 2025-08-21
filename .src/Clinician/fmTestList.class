@@ -402,7 +402,7 @@ Public Sub btnselect_Click()
       For j = 0 To GridView1.Rows.Count - 1
         xList.Add(GridView1[j, 1].Text)
       Next
-    Case "Yes", "Full"
+    Case "Standard", "Full"
       xList = New String[]
       For j = 0 To GridView1.Rows.Count - 1
         xList.Add(GridView1[j, 1].Text)
@@ -841,7 +841,7 @@ Public Sub btnselecttree_Click()
       For j = 0 To GridView4.Rows.Count - 1
         xList.Add(GridView4[j, 6].Text)
       Next
-    Case "Yes", "Full"
+    Case "Standard", "Full"
       xList = New String[]
       For j = 0 To GridView4.Rows.Count - 1
         xList.Add(GridView4[j, 6].Text)

@@ -617,12 +617,14 @@ Public Sub btnshow_Click()
           cmbledgerac.Enabled = False
         Endif
         If $sTatus = "Admitted" Then
+          hPatient.$LockToInvOwn = modBasic.$BillLockInvoiceToOwnIPD
           If modBasic.$BillLockAdmitted = "Yes" Then
             If hPatient Then
               hPatient.Enabled = False
             Endif
           Endif
         Else
+          hPatient.$LockToInvOwn = modBasic.$BillLockInvoiceToOwnOPD
           If hPatient Then
             hPatient.ShowDepositButton()
           Endif
@@ -3295,7 +3297,9 @@ Public Sub mnuchangestate_Click()
 
         hPatient.$PatStatus = $sTatus
         If $sTatus = "Admitted" Then
+          hPatient.$LockToInvOwn = modBasic.$BillLockInvoiceToOwnIPD
         Else
+          hPatient.$LockToInvOwn = modBasic.$BillLockInvoiceToOwnOPD
           If hPatient Then
             hPatient.ShowDepositButton()
           Endif
@@ -3438,7 +3442,7 @@ Public Sub mnupatacc_Click()
 
   If txtencid.Text Then
     If $xFinClear = False Then
-      hForm = New FmPatAccEdit(Trim(txtencid.Text))
+      hForm = New FmPatAccEdit(Trim(txtencid.Text), True)
       hForm.ShowModal
     Endif
   Endif
@@ -4339,9 +4343,9 @@ Public Sub btngroup_Click()
           xtax = modNonMedical.ShowTaxValues(itemtype, res["flditem"])
           discval = modNonMedical.DiscPercentForCategoryValue(Trim(txtencid.Text), cmbdisctype.Text, itemtype, res["flditem"], itemmode)
           If res["fldroute"] = "suture" Or If res["fldroute"] = "msurg" Or If res["fldroute"] = "ortho" Then
-            modPharmSub.InsertNonMedDosingEntry("Surgicals", Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, res["fldroute"], res["flditem"], res["fldqty"], sType, res["fldstart"], xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, res["fldadvice"], 0)
+            modPharmSub.InsertNonMedDosingEntry("Surgicals", Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, res["fldroute"], res["flditem"], res["fldqty"], sType, res["fldstart"], xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, res["fldadvice"], False)
           Else If res["fldroute"] = "extra" Then
-            modPharmSub.InsertNonMedDosingEntry("Extra Items", Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, res["fldroute"], res["flditem"], res["fldqty"], sType, res["fldstart"], xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, res["fldadvice"], 0)
+            modPharmSub.InsertNonMedDosingEntry("Extra Items", Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, res["fldroute"], res["flditem"], res["fldqty"], sType, res["fldstart"], xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, res["fldadvice"], False)
           Else
             xdose = modMedDosing.GetDoseInMg(res["flddose"], res["flddoseunit"], Trim(txtencid.Text))
             If modMedConstant.GetNarcoticType(res["flditem"]) = "Yes" Then
@@ -4354,7 +4358,7 @@ Public Sub btngroup_Click()
               txprescriber = ""
               txpresno = ""
             Endif
-            modPharmSub.InsertDosingEntry(Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, res["fldroute"], res["flditem"], xdose, res["fldfreq"], res["fldday"], res["fldqty"], sType, txprescriber, txpresno, res["fldstart"], xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, res["fldadvice"], 0)
+            modPharmSub.InsertDosingEntry(Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, res["fldroute"], res["flditem"], xdose, res["fldfreq"], res["fldday"], res["fldqty"], sType, txprescriber, txpresno, res["fldstart"], xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, res["fldadvice"], False)
           Endif
 
         Next
@@ -4415,7 +4419,7 @@ Private Sub EnterDosingRecord()
         xtax = modNonMedical.ShowTaxValues(itemtype, cmbmedicine.Text)
         discval = modNonMedical.DiscPercentForCategoryValue(Trim(txtencid.Text), cmbdisctype.Text, itemtype, cmbmedicine.Text, itemmode)
         Inc Application.Busy
-        modPharmSub.InsertNonMedDosingEntry(itemtype, Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, cmbroute.Text, cmbmedicine.Text, txtqtymed.Value, sType, 0, xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, "", 0)
+        modPharmSub.InsertNonMedDosingEntry(itemtype, Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, cmbroute.Text, cmbmedicine.Text, txtqtymed.Value, sType, 0, xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, "", False)
         Dec Application.Busy
 
       Else
@@ -4444,7 +4448,7 @@ Private Sub EnterDosingRecord()
         xtax = modNonMedical.ShowTaxValues(itemtype, cmbmedicine.Text)
         discval = modNonMedical.DiscPercentForCategoryValue(Trim(txtencid.Text), cmbdisctype.Text, itemtype, cmbmedicine.Text, itemmode)
         Inc Application.Busy
-        modPharmSub.InsertDosingEntry(Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqtymed.Value, sType, txprescriber, txpresno, 0, xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, "", 0)                    '
+        modPharmSub.InsertDosingEntry(Trim(txtencid.Text), hPatient.GetCashCreditMode(), cmbmode.Text, cmbdisctype.Text, cmbledgerac.Text, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqtymed.Value, sType, txprescriber, txpresno, 0, xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, "", False)                    '
         Dec Application.Busy
       Endif
 

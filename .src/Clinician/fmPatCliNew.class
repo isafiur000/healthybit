@@ -27,6 +27,20 @@ Private $billModeEquipment As String
 Private $billModeService As String
 Private $billModeOthers As String
 
+Private $PulseName As String
+Private $DiastBPName As String
+Private $SystBPName As String
+Private $RespRateName As String
+Private $OxySatName As String
+Private $TempeName As String
+
+Private $PulseRangeLimits As Float[]
+Private $DiastBPRangeLimits As Float[]
+Private $SystBPRangeLimits As Float[]
+Private $RespRateRangeLimits As Float[]
+Private $OxySatRangeLimits As Float[]
+Private $TempeRangeLimits As Float[]
+
 Public Sub _new(encid As String, sIndex As Long, sMode As String, Focus As Boolean)
 
   If encid Then
@@ -483,6 +497,7 @@ Private Sub BasicInfoPatient()
 
     ShowSymptomData()
     txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "General Complaints")
+    ShowEssentialExamRange()
     ShowEssentialExam()
     modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
     txthistory.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "History of Illness")
@@ -1808,6 +1823,80 @@ Public Sub grdchiefsymptom_Click()
 End
 
 ''------------------------------ Essential exam -----------------------------
+Private Sub ShowEssentialExamRange()
+
+  $PulseRangeLimits = New Float[]
+  $DiastBPRangeLimits = New Float[]
+  $SystBPRangeLimits = New Float[]
+  $RespRateRangeLimits = New Float[]
+  $OxySatRangeLimits = New Float[]
+  $TempeRangeLimits = New Float[]
+
+  $PulseName = modFixClinic.GetExamIDFromSysConst("Pulse_Rate")
+  If $PulseName Then
+    $PulseRangeLimits = modClinic.GetBothQuantiExamVal($PulseName, Trim(txtencid.Text))
+  Endif
+
+  $SystBPName = modFixClinic.GetExamIDFromSysConst("BloodPressure_Systolic")
+  If $SystBPName Then
+    $SystBPRangeLimits = modClinic.GetBothQuantiExamVal($SystBPName, Trim(txtencid.Text))
+  Endif
+
+  $DiastBPName = modFixClinic.GetExamIDFromSysConst("BloodPressure_Diastolic")
+  If $DiastBPName Then
+    $DiastBPRangeLimits = modClinic.GetBothQuantiExamVal($DiastBPName, Trim(txtencid.Text))
+  Endif
+
+  $RespRateName = modFixClinic.GetExamIDFromSysConst("Respiration_Rate")
+  If $RespRateName Then
+    $RespRateRangeLimits = modClinic.GetBothQuantiExamVal($RespRateName, Trim(txtencid.Text))
+  Endif
+
+  $OxySatName = modFixClinic.GetExamIDFromSysConst("Oxygen_Saturation")
+  If $OxySatName Then
+    $OxySatRangeLimits = modClinic.GetBothQuantiExamVal($OxySatName, Trim(txtencid.Text))
+  Endif
+
+  $TempeName = modFixClinic.GetExamIDFromSysConst("Temperature_System")
+  If $TempeName Then
+    $TempeRangeLimits = modClinic.GetBothQuantiExamVal($TempeName, Trim(txtencid.Text))
+  Endif
+
+End
+
+Private Sub GetMarkAbnorm(valueBox1 As ValueBox, sRange As Float[])
+
+  Dim xmax As Float
+  Dim xmin As Float
+  Dim abn As Boolean
+
+  xmin = sRange[0]
+  xmax = sRange[1]
+
+  abn = False
+  If valueBox1.Value Then
+    If xmin Then
+      If xmin > valueBox1.Value Then
+        abn = True
+      Endif
+    Endif
+    If xmax Then
+      If xmax < valueBox1.Value Then
+        abn = True
+      Endif
+    Endif
+  Endif
+
+  If abn = True Then
+    valueBox1.Font.Bold = True
+    valueBox1.Foreground = Color.Red
+  Else
+    valueBox1.Font.Bold = False
+    valueBox1.Foreground = Color.Default
+  Endif
+
+End
+
 Private Sub ShowEssentialExam()
 
   Dim xsystolic As Variant
@@ -1817,12 +1906,12 @@ Private Sub ShowEssentialExam()
   Dim xresprate As Variant
   Dim xoxysat As Variant
 
-  xsystolic = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), modFixClinic.GetExamIDFromSysConst("BloodPressure_Systolic"))
-  xdiastolic = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), modFixClinic.GetExamIDFromSysConst("BloodPressure_Diastolic"))
-  xpulse = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), modFixClinic.GetExamIDFromSysConst("Pulse_Rate"))
-  xtemp = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), modFixClinic.GetExamIDFromSysConst("Temperature_System"))
-  xresprate = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), modFixClinic.GetExamIDFromSysConst("Respiration_Rate"))
-  xoxysat = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), modFixClinic.GetExamIDFromSysConst("Oxygen_Saturation"))
+  xsystolic = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), $SystBPName)
+  xdiastolic = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), $DiastBPName)
+  xpulse = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), $PulseName)
+  xtemp = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), $TempeName)
+  xresprate = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), $RespRateName)
+  xoxysat = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), $OxySatName)
 
   If xsystolic Then
     txtsystolicbp.Value = xsystolic
@@ -1854,6 +1943,42 @@ Private Sub ShowEssentialExam()
   Else
     txtoxysat.Value = 0
   Endif
+
+End
+
+Public Sub txtpulse_Change()
+
+  GetMarkAbnorm(txtpulse, $PulseRangeLimits)
+
+End
+
+Public Sub txtsystolicbp_Change()
+
+  GetMarkAbnorm(txtsystolicbp, $SystBPRangeLimits)
+
+End
+
+Public Sub txtdiastolicbp_Change()
+
+  GetMarkAbnorm(txtdiastolicbp, $DiastBPRangeLimits)
+
+End
+
+Public Sub txtresprate_Change()
+
+  GetMarkAbnorm(txtresprate, $RespRateRangeLimits)
+
+End
+
+Public Sub txtoxysat_Change()
+
+  GetMarkAbnorm(txtoxysat, $OxySatRangeLimits)
+
+End
+
+Public Sub txttemp_Change()
+
+  GetMarkAbnorm(txttemp, $TempeRangeLimits)
 
 End
 

@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,110,75)
+  MoveScaled(0,0,120,75)
   Tag = "Supplier Info"
   Text = ("Supplier Info")
   { mnuhide Menu
@@ -11,9 +11,9 @@
     }
   }
   { Panel1 Panel
-    MoveScaled(0,0,109,75)
+    MoveScaled(0,0,119,75)
     { TabPanel1 TabPanel
-      MoveScaled(0,1,108,67)
+      MoveScaled(0,1,118,67)
       Expand = True
       Arrangement = Arrange.Vertical
       Count = 2
@@ -158,7 +158,7 @@
       Index = 1
       Text = ("Summary")
       { Panel4 Panel
-        MoveScaled(0,0,108,4)
+        MoveScaled(0,0,117,4)
         { cmbcomp ComboBox
           MoveScaled(0.5,0.5,15,3)
         }
@@ -192,18 +192,22 @@
           Text = ("Return")
           Picture = Picture["icon:/small/file"]
         }
+        { chkall CheckBox
+          MoveScaled(108,0.5,8,3)
+          Text = ("All")
+        }
       }
       { GridView1 GridView
-        MoveScaled(1,5,107,19)
+        MoveScaled(1,5,116,19)
         Expand = True
         Mode = Select.Single
         Header = GridView.Both
         AutoResize = False
       }
       { Panel3 Panel
-        MoveScaled(0,27,108,5)
+        MoveScaled(0,27,117,5)
         { txttotdebit ValueBox
-          MoveScaled(52,1,19,3)
+          MoveScaled(53,1,19,3)
           Text = ("ValueBox1")
           ReadOnly = True
         }
@@ -217,16 +221,16 @@
           ReadOnly = True
         }
         { lblbalance Label
-          MoveScaled(75,1,13,3)
+          MoveScaled(82,1,13,3)
           Border = Border.Plain
           Text = ("PENDING")
         }
         { txtbalance ValueBox
-          MoveScaled(89,1,18,3)
+          MoveScaled(96,1,18,3)
           ReadOnly = True
         }
         { Label9 Label
-          MoveScaled(39,1,12,3)
+          MoveScaled(40,1,12,3)
           Border = Border.Plain
           Text = ("PAYMENTS")
         }

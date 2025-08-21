@@ -95,11 +95,10 @@ Public Function GetQRCodeRemoteReport(encid As String, sHost As String, sMode As
         xstr = sHost & "?user=" & sUser & "&pass=" & xpass & "&type=" & sMode
       Endif
       sPath = modDevAll.MakeQRCode(xstr)
-      Return sPath
-
     Endif
 
   Endif
+  Return sPath
 
 End
 

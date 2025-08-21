@@ -103,6 +103,11 @@ Public Sub btnshow_Click()
 
           hPatient1.$encid = $encid
           hPatient1.$PatStatus = $sTatus
+          If $sTatus = "Admitted" Then
+            hPatient1.$LockToInvOwn = modBasic.$BillLockInvoiceToOwnIPD
+          Else
+            hPatient1.$LockToInvOwn = modBasic.$BillLockInvoiceToOwnOPD
+          Endif
           If ShowBilling() = False Then
             hPatient1.Enabled = False
           Endif

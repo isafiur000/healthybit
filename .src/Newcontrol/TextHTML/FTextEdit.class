@@ -359,6 +359,15 @@ Public Sub btninserttext_Click()
 End
 
 ''====================== Menu ===============================
+Public Sub ClearHighLight()
+
+  TextEdit1.SelectAll()
+  TextEdit1.Format.Font.Underline = False
+  TextEdit1.Format.Color = Color.TextForeground
+  TextEdit1.Unselect()
+
+End
+
 Public Sub btnclear_Click()
 
   TextEdit1.Format.Font.Underline = False

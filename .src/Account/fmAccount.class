@@ -17,8 +17,10 @@ Public Sub Form_Open()
   modBasic.SetAccountRules()
   modBasic.LoadClaimParametes()
   modBasic.LoadSSFClaim()
-
   modBasic.ChartSettingsAll()
+
+  modBasic.InventorySettings()
+  modBasic.InventoryUserAccessList()
 
   If MMain.$SISHAppMode = "HIS" Then
   Else
@@ -396,8 +398,12 @@ End
 
 Public Sub mnureturnform_Click()
 
-  modWorkSpace.Remove(fmBillReturn)
-  modWorkSpace.Add(fmBillReturn)
+  If modHelpVariable.$SysDisableDate = "Yes" And If modHelpVariable.$IRDLevel = "Yes" Then
+    Message.Warning(("Enable DateTime Check for IRD Compliance"), ("OK"))
+  Else
+    modWorkSpace.Remove(fmBillReturn)
+    modWorkSpace.Add(fmBillReturn)
+  Endif
 
 End
 
@@ -619,7 +625,7 @@ Public Sub mnupatacc_Click()
 
   Dim hForm As FmPatAccEdit
 
-  hForm = New FmPatAccEdit("")
+  hForm = New FmPatAccEdit("", False)
   hForm.ShowModal
 
 End
@@ -1049,5 +1055,12 @@ End
 Public Sub mnubugreport_Click()
 
   modGeneralMain.SendBugReport(modBasic.$lbluser)
+
+End
+
+Public Sub mnusetinventory_Click()
+
+  fmInventorySettings.Close
+  fmInventorySettings.ShowModal
 
 End
