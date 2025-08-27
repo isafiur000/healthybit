@@ -101,8 +101,12 @@ Public Sub cmbmedicine_GotFocus()
           Endif
         Endif
         cmbmedicine.Text = GridViewNew("Select Particulars", modControlSub.GetDirectFillresult(res), False, cmbmedicine, GridView1.Height + cmbmedicine.Height)
+
+        If Not cmbmedicine.Text Then
+          txtqty.SetFocus
+        Endif
+
       Endif
-      cmbmedicine.SetFocus
 
     Endif
   Endif

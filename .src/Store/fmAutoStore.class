@@ -26,7 +26,7 @@ Public Sub Form_Open()
 
   ' modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   ' Me.Icon = Picture[modGeneralMain.$strLogo]
-  cmbcomtaget.List = modBasic.$AllCompPerList
+  cmbcomtaget.List = modString.GetRemainingArray(modBasic.$AllCompPerList, [$sCompId])
   $dt2 = modDate.StartSqlDate(Now())
   $dt1 = DateAdd($dt2, gb.Day, 0 - $sCheckDay)
   lblfirst.Text = "Please Wait . . . ."
@@ -171,21 +171,49 @@ End
 Public Sub btnadd_Click()
 
   Dim Row As Integer
+  Dim ref As String
+  Dim idLock As Boolean
 
   If cmbcomtaget.Text Then
-    Inc Application.Busy
-    For Row = 0 To GridView1.Rows.Count - 1
-      If GridView1[Row, 4].Picture = Picture["icons/checked.png"] Then
-        AddRequest(Row, $sCompId, cmbcomtaget.Text)
-        GridView1[Row, 4].Picture = Picture["icons/unchecked.png"]
+    If Not txtrefno.Text Then
+      If Message.Question("APPROVE selected requests from " & $sCompId & " TO " & cmbcomtaget.Text & " ?", ("No"), ("Yes")) = 2 Then
+
+        Inc Application.Busy
+        idLock = modBillLock.LockTableForID("Reference")
+        If idLock = True Then
+          modDatabase.$myConn.Begin
+          ref = modBillLock.ReferenceString("General")
+          If ref Then
+
+            For Row = 0 To GridView1.Rows.Count - 1
+              If GridView1[Row, 4].Picture = Picture["icons/checked.png"] Then
+                AddRequest(Row, $sCompId, cmbcomtaget.Text, ref)
+                GridView1[Row, 4].Picture = Picture["icons/unchecked.png"]
+              Endif
+            Next
+
+          Endif
+          modDatabase.$myConn.Commit
+          txtrefno.Text = ref
+          modBillLock.ReleaseLockTable("Reference")
+        Endif
+        Dec Application.Busy
+
       Endif
-    Next
-    Dec Application.Busy
+    Endif
   Endif
+
+Catch
+  modDatabase.$myConn.Rollback
+  If idLock = True Then
+    modBillLock.ReleaseLockTable("Reference")
+  Endif
+  Dec Application.Busy
+  modHelpVariable.CreateErrorReport()
 
 End
 
-Private Sub AddRequest(Row As Integer, sRequest As String, sTarget As String)
+Private Sub AddRequest(Row As Integer, sRequest As String, sTarget As String, sReference As String)
 
   Dim res As Result
 
@@ -197,7 +225,7 @@ Private Sub AddRequest(Row As Integer, sRequest As String, sTarget As String)
   res["fldfinalqty"] = GridView1[Row, 3].Text
   res["fldurgent"] = "Normal"
   res["fldexpdate"] = DateAdd(Now(), gb.Day, 1)
-  res["fldreference"] = ""
+  res["fldreference"] = sReference
   res["fldremarks"] = ""
 
   res["fldorduserid"] = modBasic.$lbluser
@@ -207,7 +235,7 @@ Private Sub AddRequest(Row As Integer, sRequest As String, sTarget As String)
   res["flduserid"] = ""
   res["fldtime"] = ""
   res["fldcomp"] = sTarget
-  res["fldsave"] = False
+  res["fldsave"] = True
   res.Update
 
 End

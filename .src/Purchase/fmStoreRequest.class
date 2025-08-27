@@ -10,16 +10,16 @@ Public Sub Form_Open()
   cmbstatus.List = ["Requested", "Completed", "Approved", "Cancelled"]
   cmbstatus.Text = "Requested"
   If modHelpVariable.$LogInCategory = "Purchase" Then
-    cmbtarget.List = modBasic.$AllCompPerList
-    cmbtarget.Text = "%"
+    cmbfrom.List = modBasic.$AllCompPerList
+    cmbfrom.Text = "%"
     btntransall.Visible = False
   Else If modHelpVariable.$LogInCategory = "Store" Then
-    cmbtarget.Text = modBasic.$compID
-    cmbtarget.Enabled = False
+    cmbfrom.Text = modBasic.$compID
+    cmbfrom.Enabled = False
     btnverify.Visible = False
   Endif
-  cmbsource.List = modBasic.$AllCompPerList
-  cmbsource.Text = "%"
+  cmbsendto.List = modBasic.$AllCompPerList
+  cmbsendto.Text = "%"
   If modBasic.$AccessPurchaseRequest = "Disable" Then
     btnverify.Enabled = False
   Endif
@@ -54,7 +54,7 @@ End
 ''======================= ORDERED VIEW ===========================
 Public Sub btnrefresh_Click()
 
-  If cmbtarget.Text And If cmbsource.Text And If cmbstatus.Text Then
+  If cmbfrom.Text And If cmbsendto.Text And If cmbstatus.Text Then
     SHowOrderGridView()
   Endif
 
@@ -65,7 +65,7 @@ Private Sub SHowOrderGridView()
   Dim sql As String
 
   sql = "select fldid,fldordtime,fldordcomp,fldstockid,fldcategory,fldfinalqty,fldurgent,fldexpdate,fldstatus,fldid,fldreference,fldtime,flduserid,fldcomp from tblrequest where fldcomp like &1 and fldstatus=&2 and fldordcomp like &3 and fldsave=&4"
-  $rData1 = modDatabase.$myConn.Exec(sql, cmbtarget.Text, cmbstatus.Text, cmbsource.Text, True)
+  $rData1 = modDatabase.$myConn.Exec(sql, cmbfrom.Text, cmbstatus.Text, cmbsendto.Text, True)
   $aMyFields1 = New String[]
   modGridView.ReadSmallData(GridView2, $rData1, $aMyFields1)
 
@@ -86,7 +86,7 @@ Private Sub SHowOrderGridView()
     .Columns[13].Width = 75 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "DateTime"
-    .Columns[2].Text = "Source"
+    .Columns[2].Text = "SendTo"
     .Columns[3].Text = "Particulars"
     .Columns[5].Text = "QTY"
     .Columns[6].Text = "Urgency"
@@ -95,7 +95,7 @@ Private Sub SHowOrderGridView()
     .Columns[10].Text = "Reference"
     .Columns[11].Text = "Approval"
     .Columns[12].Text = "Approver"
-    .Columns[13].Text = "Target"
+    .Columns[13].Text = "Source"
   End With
 
 End
@@ -124,7 +124,7 @@ End
 Public Sub GridView2_Click()
 
   Dim res As Result
-  Dim xbool As Boolean
+  Dim xdone As Float
   Dim xid As Long
   Dim xval As Integer
 
@@ -136,8 +136,8 @@ Public Sub GridView2_Click()
           xid = GridView2[GridView2.Row, 0].Text
           res = modDatabase.$myConn.Edit("tblrequest", "fldid=&1 and fldstatus=&2 and fldsave=&3", xid, "Requested", True)
           If res.Available Then
-            xbool = TransferItem(GridView2[GridView2.Row, 3].Text, CInt(GridView2[GridView2.Row, 5].Text), GridView2[GridView2.Row, 2].Text)
-            If xbool = True Then
+            xdone = TransferCompletedItem(GridView2[GridView2.Row, 3].Text, CInt(GridView2[GridView2.Row, 5].Text), GridView2[GridView2.Row, 2].Text)
+            If xdone Then
               res["fldstatus"] = "Completed"
               res.Update
             Endif
@@ -193,90 +193,107 @@ Public Sub mnudelete_Click()
 
 End
 
-Private Function TransferItem(sItem As String, sQTY As Float, sComp As String) As Boolean
+Private Function TransferCompletedItem(sItem As String, sQTY As Float, sComp As String) As Float
 
   Dim res As Result
   Dim newstno As Long
   Dim xstock As Boolean
   Dim res1 As Result
-  Dim xclear As Boolean
+  Dim xdone As Float
+  Dim qtynew As Float
+  Dim xout As Integer
 
-  xclear = False
-  res1 = modDatabase.$myConn.Exec("select fldstockno,fldstockid,fldcategory,fldbatch,fldexpiry,fldqty,fldstatus,fldcategory,fldsellpr,fldmrp,fldcost from tblentry where fldstockid=&1 and fldstatus=&2 and fldcomp=&3", sItem, 1, modBasic.$compID)                                                   ''
-  If res1.Available Then
-    res1.MoveFirst
-    If sComp <> modBasic.$compID And If sQTY <= res1["fldqty"] Then
+  xdone = 0
+  Inc Application.Busy
+  If sComp <> modBasic.$compID Then
+    xout = 1
 
-      xstock = modStock.NewStock(res1["fldstockid"], res1["fldbatch"], sComp)
+    qtynew = sQTY
+    modDatabase.$myConn.Begin
+    While qtynew > 0
 
-      modDatabase.$myConn.Begin
-      newstno = modStock.GetItemStockNo(res1["fldstockid"], res1["fldbatch"], sComp)
-      If newstno Then
-        If xstock = True Then
-          res = modDatabase.$myConn.Create("tblentry")
+      res1 = modDatabase.$myConn.Exec("select fldstockno,fldstockid,fldcategory,fldbatch,fldexpiry,fldqty,fldstatus,fldcategory,fldsellpr,fldmrp,fldcost from tblentry where fldstockid=&1 and fldstatus>=&2 and fldcomp=&3 and fldqty>&4", sItem, xout, modBasic.$compID, 0)                                                   ''
+      If res1.Available Then
+        res1.MoveFirst
+        xstock = modStock.NewStock(res1["fldstockid"], res1["fldbatch"], sComp)
+        newstno = modStock.GetItemStockNo(res1["fldstockid"], res1["fldbatch"], sComp)
+        If newstno Then
+          If xstock = True Then
+            res = modDatabase.$myConn.Create("tblentry")
+            res["fldstockno"] = newstno
+            res["fldstockid"] = res1["fldstockid"]
+            res["fldbatch"] = res1["fldbatch"]
+            res["fldexpiry"] = res1["fldexpiry"]
+            res["fldqty"] = 0
+            res["fldstatus"] = modStock.ItemSaleStatus(res1["fldstockid"], sComp)
+            If res1["fldcost"] Then
+              res["fldcost"] = res1["fldcost"]
+            Else
+              res["fldcost"] = 0
+            Endif
+            res["fldsellpr"] = res1["fldsellpr"]
+            If res1["fldmrp"] Then
+              res["fldmrp"] = res1["fldmrp"]
+            Else
+              res["fldmrp"] = 0
+            Endif
+            res["fldsav"] = False
+            res["fldcategory"] = res1["fldcategory"]
+            res["fldcomp"] = sComp
+            res["fldcode"] = 0
+            res["xyz"] = True
+            res.Update()
+          Endif                                                              ''
+          res = modDatabase.$myConn.Create("tbltransfer")
           res["fldstockno"] = newstno
+          res["fldoldstockno"] = res1["fldstockno"]
           res["fldstockid"] = res1["fldstockid"]
-          res["fldbatch"] = res1["fldbatch"]
-          res["fldexpiry"] = res1["fldexpiry"]
-          res["fldqty"] = 0
-          res["fldstatus"] = modStock.ItemSaleStatus(res1["fldstockid"], sComp)
+          res["fldcategory"] = res1["fldcategory"]
+          If qtynew <= res1["fldqty"] Then
+            res["fldqty"] = qtynew
+            qtynew = 0
+          Else If qtynew > res1["fldqty"] Then
+            res["fldqty"] = res1["fldqty"]
+            qtynew = qtynew - res1["fldqty"]
+          Endif
           If res1["fldcost"] Then
-            res["fldcost"] = res1["fldcost"]
+            res["fldnetcost"] = res1["fldcost"]
           Else
-            res["fldcost"] = 0
+            res["fldnetcost"] = 0
           Endif
           res["fldsellpr"] = res1["fldsellpr"]
-          If res1["fldmrp"] Then
-            res["fldmrp"] = res1["fldmrp"]
-          Else
-            res["fldmrp"] = 0
-          Endif
           res["fldsav"] = False
-          res["fldcategory"] = res1["fldcategory"]
-          res["fldcomp"] = sComp
-          res["fldcode"] = 0
+          res["fldfromentrytime"] = Now()
+          res["fldfromuser"] = modBasic.$lbluser
+          res["fldfromcomp"] = modBasic.$compID
+          res["fldfromsav"] = False
+          res["fldtoentrytime"] = ""
+          res["fldtouser"] = ""
+          res["fldtocomp"] = sComp
+          res["fldtosav"] = False
+          res["fldreference"] = ""
           res["xyz"] = True
           res.Update()
-        Endif                                                              ''
-        res = modDatabase.$myConn.Create("tbltransfer")
-        res["fldstockno"] = newstno
-        res["fldoldstockno"] = res1["fldstockno"]
-        res["fldstockid"] = res1["fldstockid"]
-        res["fldcategory"] = res1["fldcategory"]
-        res["fldqty"] = sQTY
-        If res1["fldcost"] Then
-          res["fldnetcost"] = res1["fldcost"]
-        Else
-          res["fldnetcost"] = 0
         Endif
-        res["fldsellpr"] = res1["fldsellpr"]
-        res["fldsav"] = False
-        res["fldfromentrytime"] = Now()
-        res["fldfromuser"] = modBasic.$lbluser
-        res["fldfromcomp"] = modBasic.$compID
-        res["fldfromsav"] = False
-        res["fldtoentrytime"] = ""
-        res["fldtouser"] = ""
-        res["fldtocomp"] = sComp
-        res["fldtosav"] = False
-        res["fldreference"] = ""
-        res["xyz"] = True
-        res.Update()
+        xout = xout + 1
+      Else
+        Break
       Endif
-      modDatabase.$myConn.Commit
-      xclear = True
-      Dec Application.Busy
 
-    Endif
+    Wend
+    modDatabase.$myConn.Commit
+
+    xdone = sQTY - qtynew
   Endif
+  Dec Application.Busy
 
-  Return xclear
+  Return xdone
 
 Catch
   modDatabase.$myConn.Rollback
-  xclear = False
+  xdone = 0
   Dec Application.Busy
-  Return xclear
+  Return xdone
   modHelpVariable.CreateErrorReport()
 
 End
@@ -351,15 +368,15 @@ Public Sub btntransall_Click()
 
   Dim Row As Integer
   Dim res As Result
-  Dim xbool As Boolean
+  Dim xdone As Float
 
   If modHelpVariable.$LogInCategory = "Store" Then
     For Row = 0 To GridView2.Rows.Count - 1
 
       res = modDatabase.$myConn.Edit("tblrequest", "fldid=&1 and fldstatus=&2 and fldsave=&3", GridView2[Row, 0].Text, "Requested", True)
       If res.Available Then
-        xbool = TransferItem(GridView2[Row, 3].Text, CInt(GridView2[Row, 5].Text), GridView2[Row, 2].Text)
-        If xbool = True Then
+        xdone = TransferCompletedItem(GridView2[Row, 3].Text, CInt(GridView2[Row, 5].Text), GridView2[Row, 2].Text)
+        If xdone Then
           res["fldstatus"] = "Completed"
           res.Update
         Endif

@@ -1313,9 +1313,9 @@ Private Sub FillSamplingEncounters()
     sql = "select fldencounterval as fldparent,fldencounterval,fldencounterval,fldencounterval,fldtestid,fldencounterval,fldid,fldnewdate,fldsampletype,fldmethod,fldsampleid,fldnewdate from tblpatradiotest where fldstatus=&1 and fldsave_report=&2 and fldcomp_report=&3" & xdate & xcateg & xsample                                       ''
   Endif
   If rbpending.Value = True Then
-    $rData2 = modDatabase.$myConn.Exec(sql, "Sampled", False, modBasic.$compID, modDate.StartSqlDate(dtsort.value), modDate.EndSqlDate(DateAdd(dtsort.Value, gb.Day, txtrangerepo.Value)), cmbcategory.Text, cmbrepocounter.Text)
+    $rData2 = modDatabase.$myConn.Exec(sql, "Sampled", False, modBasic.$compID, modDate.StartSqlDate(dtsort.value), modDate.EndSqlDate(DateAdd(dtsort.Value, gb.Day, txtrangerepo.Value)), cmbcategory.Text, cmbrepocounter.Text & "%")
   Else If rbreported.Value = True Then
-    $rData2 = modDatabase.$myConn.Exec(sql, "Reported", True, modBasic.$compID, modDate.StartSqlDate(dtsort.value), modDate.EndSqlDate(DateAdd(dtsort.Value, gb.Day, txtrangerepo.Value)), cmbcategory.Text, cmbrepocounter.Text)
+    $rData2 = modDatabase.$myConn.Exec(sql, "Reported", True, modBasic.$compID, modDate.StartSqlDate(dtsort.value), modDate.EndSqlDate(DateAdd(dtsort.Value, gb.Day, txtrangerepo.Value)), cmbcategory.Text, cmbrepocounter.Text & "%")
   Endif
   $aMyFields2 = New String[]
   modGridView.ReadSmallData(GridView2, $rData2, $aMyFields2)
@@ -1370,8 +1370,6 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
 End
 
 Public Sub GridView2_Click()
-
-  Dim xstatus As String
 
   If GridView2.Rows.Selection.Count > 0 Then
     modRepository.$RepoDataStatus = False

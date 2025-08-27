@@ -278,29 +278,81 @@ End
 
 Public Sub btnsetregimen_Click()
 
-  Dim sIdx As Long
+  Dim itmList As Long[]
+  Dim idx As Long
+
   Dim res As Result
+  Dim txprescriber As String
+  Dim txpresno As String
+
+  Dim xtax As Float
+  Dim xdisc As Float
+  Dim itemtype As String
+  Dim xfixrate As Float
+  Dim xfixname As String
+  Dim itemmode As String
+  Dim xcurVal As String
+  Dim xnarcotic As String[]
+  Dim CPharmFix As CFixRatePharmacy
+
+  If modBasic.$DispRequestStatus = "Reserve" Then
+    xcurVal = "Reserve"
+  Else
+    xcurVal = "Continue"
+  Endif
 
   If modMisc.AllowDiagnoBilling($encid) = True Then
+    itmList = GetSetRegimen("Personal")
+    If itmList And If itmList.Count Then
 
-    sIdx = GetSetRegimen("Personal")
-    If sIdx Then
-      res = modDatabase.$myConn.Exec("select fldroute,fldbrandid,flddose,fldfreq,fldday,fldqty,fldusage from tblmedregimen where fldid=&1", sIdx)
-      If res.Available Then
-        cmbroute.Text = res["fldroute"]
-        cmbmedicine.Text = res["fldbrandid"]
-        txtdose.Value = res["flddose"]
-        cmbfreq.Text = res["fldfreq"]
-        txtday.Value = res["fldday"]
-        txtqty.Value = res["fldqty"]
-        txtdirection.Text = res["fldusage"]
-        If res["fldbrandid"] Then
-          lbldose.Text = modMedConstant.GetDrugDosingUnit(res["fldbrandid"])
+      For Each idx In itmList
+        res = modDatabase.$myConn.Exec("select fldroute,fldbrandid,flddose,fldfreq,fldday,fldqty,fldusage from tblmedregimen where fldid=&1", idx)
+        If res.Available Then
+          itemtype = modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"])
+          CPharmFix = New CFixRatePharmacy(itemtype, res["fldbrandid"], $sBillMode)
+          xfixrate = CPharmFix.GetFixRate()
+          xfixname = CPharmFix.GetFixItem()
+          If xfixname Then
+            itemmode = $sBillMode
+          Else
+            itemmode = "%"
+          Endif
+          ' xvarfix = modStock.GetSellingPriceFixByStockID(itemtype, res["flditem"], $sBillMode)
+          ' If xvarfix Then
+          '   xfixrate = xvarfix[1]
+          '   xfixname = xvarfix[0]
+          '   itemmode = $sBillMode
+          ' Else
+          '   xfixrate = 0
+          '   xfixname = ""
+          '   itemmode = "%"
+          ' Endif
+          xtax = modNonMedical.ShowTaxValues(itemtype, res["fldbrandid"])
+          xdisc = modNonMedical.DiscPercentForCategoryValue($encid, cmbdisctype.Text, itemtype, res["fldbrandid"], itemmode)
+          Select res["fldroute"]
+            Case "suture", "msurg", "ortho"
+              modPharmSub.InsertNonMedDosingEntry("Surgicals", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["fldbrandid"], res["fldqty"], $status, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldusage"], False, xcurVal)
+            Case "extra"
+              modPharmSub.InsertNonMedDosingEntry("Extra Items", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["fldbrandid"], res["fldqty"], $status, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldusage"], False, xcurVal)
+            Case Else
+              If modMedConstant.GetNarcoticType(res["fldbrandid"]) = "Yes" Then
+                xnarcotic = DualGridValue(("Select Narcotic Prescriber"), $ClinicianLst, False)
+                If xnarcotic Then
+                  txprescriber = xnarcotic[1]
+                  txpresno = xnarcotic[0]
+                Endif
+              Else
+                txprescriber = ""
+                txpresno = ""
+              Endif
+              modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["fldbrandid"], res["flddose"], res["fldfreq"], res["fldday"], res["fldqty"], $status, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldusage"], False, xcurVal)
+          End Select
         Endif
-        txtqty.SetFocus
-      Endif
-    Endif
+      Next
 
+      BlankDosingBox()
+      FillDosingGrid()
+    Endif
   Else
     Message.Warning("Diagnosis not provided", ("OK"))
   Endif
@@ -309,29 +361,81 @@ End
 
 Public Sub btnrepeat_Click()
 
-  Dim sIdx As Long
+  Dim itmList As Long[]
+  Dim idx As Long
+
   Dim res As Result
+  Dim txprescriber As String
+  Dim txpresno As String
+
+  Dim xtax As Float
+  Dim xdisc As Float
+  Dim itemtype As String
+  Dim xfixrate As Float
+  Dim xfixname As String
+  Dim itemmode As String
+  Dim xcurVal As String
+  Dim xnarcotic As String[]
+  Dim CPharmFix As CFixRatePharmacy
+
+  If modBasic.$DispRequestStatus = "Reserve" Then
+    xcurVal = "Reserve"
+  Else
+    xcurVal = "Continue"
+  Endif
 
   If modMisc.AllowDiagnoBilling($encid) = True Then
+    itmList = GetSetRegimen("Used Medicines", $encid)
+    If itmList And If itmList.Count Then
 
-    sIdx = GetSetRegimen($LastEncid, modPatient.GetEncListFromPatNo($PatientNum))
-    If sIdx Then
-      res = modDatabase.$myConn.Exec("select fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,flddirection from tblpatdosing where fldid=&1", sIdx)
-      If res.Available Then
-        cmbroute.Text = res["fldroute"]
-        cmbmedicine.Text = res["flditem"]
-        txtdose.Value = res["flddose"]
-        cmbfreq.Text = res["fldfreq"]
-        txtday.Value = res["flddays"]
-        txtqty.Value = res["fldqtydisp"]
-        txtdirection.Text = res["flddirection"]
-        If res["flditem"] Then
-          lbldose.Text = modMedConstant.GetDrugDosingUnit(res["flditem"])
+      For Each idx In itmList
+        res = modDatabase.$myConn.Exec("select fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,flddirection from tblpatdosing where fldid=&1", idx)
+        If res.Available Then
+          itemtype = modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"])
+          CPharmFix = New CFixRatePharmacy(itemtype, res["flditem"], $sBillMode)
+          xfixrate = CPharmFix.GetFixRate()
+          xfixname = CPharmFix.GetFixItem()
+          If xfixname Then
+            itemmode = $sBillMode
+          Else
+            itemmode = "%"
+          Endif
+          ' xvarfix = modStock.GetSellingPriceFixByStockID(itemtype, res["flditem"], $sBillMode)
+          ' If xvarfix Then
+          '   xfixrate = xvarfix[1]
+          '   xfixname = xvarfix[0]
+          '   itemmode = $sBillMode
+          ' Else
+          '   xfixrate = 0
+          '   xfixname = ""
+          '   itemmode = "%"
+          ' Endif
+          xtax = modNonMedical.ShowTaxValues(itemtype, res["flditem"])
+          xdisc = modNonMedical.DiscPercentForCategoryValue($encid, cmbdisctype.Text, itemtype, res["flditem"], itemmode)
+          Select res["fldroute"]
+            Case "suture", "msurg", "ortho"
+              modPharmSub.InsertNonMedDosingEntry("Surgicals", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["fldqtydisp"], $status, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["flddirection"], False, xcurVal)
+            Case "extra"
+              modPharmSub.InsertNonMedDosingEntry("Extra Items", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["fldqtydisp"], $status, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["flddirection"], False, xcurVal)
+            Case Else
+              If modMedConstant.GetNarcoticType(res["flditem"]) = "Yes" Then
+                xnarcotic = DualGridValue(("Select Narcotic Prescriber"), $ClinicianLst, False)
+                If xnarcotic Then
+                  txprescriber = xnarcotic[1]
+                  txpresno = xnarcotic[0]
+                Endif
+              Else
+                txprescriber = ""
+                txpresno = ""
+              Endif
+              modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtydisp"], $status, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["flddirection"], False, xcurVal)
+          End Select
         Endif
-        txtqty.SetFocus
-      Endif
-    Endif
+      Next
 
+      BlankDosingBox()
+      FillDosingGrid()
+    Endif
   Else
     Message.Warning("Diagnosis not provided", ("OK"))
   Endif
@@ -897,7 +1001,7 @@ Private Sub FillDosingGrid()
     .Columns[7].Width = 50 * modBasic.$AppWidthRatio
     .Columns[8].Width = 1
     .Columns[9].Width = 25 * modBasic.$AppWidthRatio
-    .Columns[10].Width = 25 * modBasic.$AppWidthRatio
+    .Columns[10].Width = 1
     .Columns[11].Width = 1
     .Columns[12].Width = 75 * modBasic.$AppWidthRatio
     .Columns[13].Width = 125 * modBasic.$AppWidthRatio
@@ -928,9 +1032,6 @@ Private Sub FillDosingGrid()
       Else If Column = 9 Then
         GridView1[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
         GridView1[res.Index, Column].Text = ""
-      Else If Column = 10 Then
-        GridView1[res.Index, Column].Picture = Picture["icon:/tiny/print"]
-        GridView1[res.Index, Column].Text = ""
       Else
         GridView1[res.Index, Column].Text = res[fld.Name]
       Endif
@@ -952,7 +1053,6 @@ Public Sub GridView1_Click()
   Dim Row As Integer
   Dim res As Result
   Dim xdate As Date
-  Dim hClabel As CLabelSize
 
   Row = GridView1.Row
   Column = GridView1.Column
@@ -1013,10 +1113,6 @@ Public Sub GridView1_Click()
       FillDosingGrid()
     Endif
 
-  Else If GridView1.Column = 10 Then
-    hClabel = New CLabelSize(GridView1[GridView1.Row, 0].Text, $LabelType)
-    modPrint.PrintPopUp(CStr(GridView1[GridView1.Row, 0].Text), hClabel.LabelPath(), "LabelSize")
-
   Else If GridView1.Column = 13 Then
     If modGeneral.AllowClinicalEdit(GridView1[GridView1.Row, 8].Text) = True Then
       yval = InputBox(GridView1[GridView1.Row, 3].Text, ("Alter Direction"), GridView1[GridView1.Row, 13].Text)
@@ -1046,6 +1142,20 @@ End
 Public Sub GridView1_Menu()
 
   mnuhide.Popup
+
+End
+
+Public Sub mnulabeling_Click()
+
+  Dim Row As Integer
+  Dim hClabel As CLabelSize
+
+  If GridView1.Rows.Selection.Count > 0 Then
+    Row = GridView1.Row
+    hClabel = New CLabelSize(GridView1[GridView1.Row, 0].Text, $LabelType)
+    modPrint.PrintPopUp(CStr(GridView1[GridView1.Row, 0].Text), hClabel.LabelPath(), "LabelSize")
+    GridView1.Row = Row
+  Endif
 
 End
 

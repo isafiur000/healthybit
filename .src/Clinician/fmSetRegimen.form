@@ -1,52 +1,72 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,1,100,51)
+  MoveScaled(0,1,105,66)
   Arrangement = Arrange.Vertical
   Margin = True
   { Panel4 Panel
-    MoveScaled(0,0,90,4)
+    MoveScaled(0,0,104,4)
     { cmbcategory ComboBox
-      MoveScaled(0.5,0.5,26,3)
+      MoveScaled(30,0.5,18,3)
     }
     { btnrefresh Button
-      MoveScaled(27,0.5,7,3)
+      MoveScaled(49,0.5,7,3)
       Picture = Picture["icon:/small/refresh"]
+    }
+    { lbldate Label
+      MoveScaled(57,0.5,46,3)
+      Border = Border.Plain
+    }
+    { Panel5 Panel
+      MoveScaled(0,0.5,30,3)
+      { rbcurrent RadioButton
+        MoveScaled(0.5,0,10,3)
+        Text = ("Curent")
+        Value = True
+      }
+      { rbpast RadioButton
+        MoveScaled(11,0,8,3)
+        Text = ("Last")
+      }
+      { rbselect RadioButton
+        MoveScaled(20,0,10,3)
+        Text = ("Select")
+      }
     }
   }
   { Panel1 Panel
-    MoveScaled(0,4,99,4)
+    MoveScaled(0,4,104,4)
     { chkleftmain CheckBox
       MoveScaled(0,0.5,3,3)
     }
     { txtname ButtonBox
-      MoveScaled(3,0.5,32,3)
+      MoveScaled(3,0.5,27,3)
       ToolTip = ("Write few alphabets of disease name for quick sorting")
       Picture = Picture["icon:/small/cancel"]
     }
-    { Panel2 Panel
-      MoveScaled(36,0.5,35,3)
-      Expand = True
-    }
     { btnok Button
-      MoveScaled(72,0.5,13,3)
+      MoveScaled(77,0.5,13,3)
       Text = ("Save")
       Picture = Picture["icon:/small/save"]
     }
+    { btnclose Button
+      MoveScaled(90,0.5,13,3)
+      Text = ("Close")
+      Picture = Picture["icon:/small/close"]
+    }
   }
   { Panel3 Panel
-    MoveScaled(0,8,99,42)
+    MoveScaled(0,8,104,57)
     Arrangement = Arrange.Horizontal
     { GridView1 GridView
-      MoveScaled(1,1,93,40)
+      MoveScaled(4,1,82,43)
       Expand = True
       Mode = Select.Single
-      Header = GridView.Both
+      Header = GridView.Horizontal
       AutoResize = False
     }
     { lstletter ListBox
-      MoveScaled(95,0,4,41)
-      Visible = False
+      MoveScaled(95,0,4,56)
       Sorted = True
     }
   }

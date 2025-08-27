@@ -393,11 +393,6 @@ Public Sub btnfirstup_Click()
 
 End
 
-Public Sub mnusimilar_Click()
-  ''suggestions
-
-End
-
 Public Sub mnudictword_Click()
 
   If Len(Trim(TextEdit1.Selection.Text)) Then
@@ -410,12 +405,6 @@ End
 Public Sub mnukeywords_Click()
 
   Message.Info("[USERS]" & gb.NewLine & $KeyList.Join(gb.NewLine), ("OK"))
-
-End
-
-Public Sub mnureplace_Click()
-
-  ''find and replace text
 
 End
 
@@ -622,6 +611,17 @@ Public Sub Action_Activate(opcion As String) As String
 
   ' TextEdit1.RichText = Replace(TextEdit1.RichText, TextEdit1.Selection.Text, opcion)
   TextEdit1.RichText = Replace(TextEdit1.RichText, TextEdit1.Selection.Text, opcion)
+
+End
+
+''------------------- AI Query -------------------
+Public Sub mnuAIquery_Click()
+
+  If btnhtml.Value = True Then
+    TextEdit1.RichText = CCluoudAiQuery(modBasic.$CloudAIClinQuery, TextEdit1.RichText)
+  Else If btnhtml.Value = False Then
+    TextEdit1.Text = CCluoudAiQuery(modBasic.$CloudAIClinQuery, TextEdit1.Text)
+  Endif
 
 End
 

@@ -1870,29 +1870,32 @@ Private Sub GetMarkAbnorm(valueBox1 As ValueBox, sRange As Float[])
   Dim xmin As Float
   Dim abn As Boolean
 
-  xmin = sRange[0]
-  xmax = sRange[1]
+  If sRange And If sRange.Count = 2 Then
+    xmin = sRange[0]
+    xmax = sRange[1]
 
-  abn = False
-  If valueBox1.Value Then
-    If xmin Then
-      If xmin > valueBox1.Value Then
-        abn = True
+    abn = False
+    If valueBox1.Value Then
+      If xmin Then
+        If xmin > valueBox1.Value Then
+          abn = True
+        Endif
+      Endif
+      If xmax Then
+        If xmax < valueBox1.Value Then
+          abn = True
+        Endif
       Endif
     Endif
-    If xmax Then
-      If xmax < valueBox1.Value Then
-        abn = True
-      Endif
-    Endif
-  Endif
 
-  If abn = True Then
-    valueBox1.Font.Bold = True
-    valueBox1.Foreground = Color.Red
-  Else
-    valueBox1.Font.Bold = False
-    valueBox1.Foreground = Color.Default
+    If abn = True Then
+      valueBox1.Font.Bold = True
+      valueBox1.Foreground = Color.Red
+    Else
+      valueBox1.Font.Bold = False
+      valueBox1.Foreground = Color.Default
+    Endif
+
   Endif
 
 End

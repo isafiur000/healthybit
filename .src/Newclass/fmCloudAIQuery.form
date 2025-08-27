@@ -1,0 +1,33 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,73,35)
+  Text = ("Cloud AI Query")
+  { cmbquery ComboBox
+    MoveScaled(1,1,70,3)
+  }
+  { chktext CheckBox
+    MoveScaled(1,5,20,3)
+    Text = ("Use  Text in Query")
+  }
+  { Panel1 Panel
+    MoveScaled(22,5,33,3)
+    { rbafter RadioButton
+      MoveScaled(18,0,14,3)
+      Text = ("After Query")
+      Value = True
+    }
+    { rbefore RadioButton
+      MoveScaled(0,0,15,3)
+      Text = ("Before Query")
+    }
+  }
+  { btnquery Button
+    MoveScaled(56,5,15,3)
+    Text = ("Exec")
+    Default = True
+  }
+  { TextArea1 TextArea
+    MoveScaled(1,9,71,25)
+  }
+}

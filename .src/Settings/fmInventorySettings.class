@@ -21,7 +21,7 @@ Public Sub Form_Open()
   cmbtendersupply.List = ["Enable", "Disable"]
 
   cmbinvenreport.List = ["Enable", "Disable"]
-  cmbinvamount.List = ["Exact", "Average", "Latest", "Fixed"]
+  cmbcostcalc.List = ["Exact", "Average", "Latest", "Fixed", "Average+Fixed"]
 
   ShowGeneralSettings()
   ShowOutOrder()
@@ -208,7 +208,7 @@ End
 Private Sub ShowInventoryReport()
 
   cmbinvenreport.Text = modSettings.ShowSettingFromFIle("InventorySetting/QuickInventory")
-  cmbinvamount.Text = modSettings.ShowSettingFromFIle("InventorySetting/InventoryAmount")
+  cmbcostcalc.Text = modSettings.ShowSettingFromFIle("InventorySetting/InventoryAmount")
 
 End
 
@@ -221,11 +221,11 @@ Public Sub btninvenreport_Click()
 
 End
 
-Public Sub btninvamount_Click()
+Public Sub btncostcalc_Click()
 
-  modSettings.SaveSettingsToFile("InventorySetting/InventoryAmount", cmbinvamount.Text)
-  modBasic.$InvReportCost = cmbinvamount.Text
-  Balloon.Info(("Information saved"), btninvamount)
+  modSettings.SaveSettingsToFile("InventorySetting/InventoryAmount", cmbcostcalc.Text)
+  modBasic.$InvReportCost = cmbcostcalc.Text
+  Balloon.Info(("Information saved"), btncostcalc)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

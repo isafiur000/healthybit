@@ -6,9 +6,6 @@
   Text = ("Billing Report")
   { mnufile Menu
     Text = ("File")
-    { mnulocked Menu
-      Text = ("Locked To")
-    }
     { mnurepoformat Menu
       Text = ("Date Mode")
     }
@@ -45,12 +42,6 @@
   }
   { mnufinance Menu
     Text = ("Finance")
-    { mnusaleall Menu
-      Text = ("Sales Data")
-    }
-    { mnuretall Menu
-      Text = ("Return Data")
-    }
     { mnudetail Menu
       Text = ("Invoice Details")
     }
@@ -340,6 +331,34 @@
         }
       }
       Index = 0
+    }
+    { pnlaccextra Panel
+      MoveScaled(2,60,118,4)
+      Visible = False
+      { Panel7 Panel
+        MoveScaled(1,0.5,36,3)
+        { rbsummary RadioButton
+          MoveScaled(0,0,12,3)
+          Text = ("Summary")
+          Value = True
+        }
+        { rbbranch RadioButton
+          MoveScaled(13,0,10,3)
+          Text = ("Branch")
+        }
+        { rbdepart RadioButton
+          MoveScaled(24,0,12,3)
+          Text = ("Location")
+        }
+      }
+      { mnusaleall Button
+        MoveScaled(91,0.5,13,3)
+        Text = ("Sales")
+      }
+      { mnuretall Button
+        MoveScaled(104,0.5,13,3)
+        Text = ("Return")
+      }
     }
     { Panel4 Panel
       MoveScaled(2,65,118,7.5)

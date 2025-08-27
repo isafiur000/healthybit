@@ -767,7 +767,7 @@ Private Function GetCommadLineReport(xsubCmd As String) As String
 
   ''Billing Report
   If xSubName = "InvoiceRangeSummary" Then  ''bill1,bill2
-    xPath = modBillingReport.InvoiceReportBillingRangeSummary("Invoice", modDatabase.$myConn, xargs[1], xargs[2], "", "", "tblpatbilldetail")
+    xPath = modBillingReport.InvoiceReportBillingRangeSummary("Invoice", modDatabase.$myConn, "Summary", xargs[1], xargs[2], "", "", "tblpatbilldetail")
   Else If xSubName = "UserCollectionByLocation" Then  ''bill1,bill2
     xPath = modBillingReport.InvoiceReportBillingRangeUserDetail("Invoice", modDatabase.$myConn, xargs[1], xargs[2], "", "", "tblpatbilldetail")
   Else If xSubName = "UserCollectionByDate" Then  ''bill1,bill2

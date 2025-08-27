@@ -27,18 +27,27 @@
       AutoResize = False
     }
     { Panel3 Panel
-      MoveScaled(0,71,82,4)
+      MoveScaled(0,71,118,4)
       { btnadd Button
-        MoveScaled(49,0.5,19,3)
+        MoveScaled(43,0.5,19,3)
         Text = ("Request")
       }
       { Label1 Label
-        MoveScaled(1,0.5,20,3)
+        MoveScaled(1,0.5,17,3)
         Border = Border.Plain
-        Text = ("Request Transfer From")
+        Text = ("Send Request To")
       }
       { cmbcomtaget ComboBox
-        MoveScaled(22,0.5,23,3)
+        MoveScaled(19,0.5,23,3)
+      }
+      { Label2 Label
+        MoveScaled(71,0.5,11,3)
+        Border = Border.Plain
+        Text = ("Reference")
+      }
+      { txtrefno TextBox
+        MoveScaled(83,0.5,33,3)
+        ReadOnly = True
       }
     }
     { Timer1 #Timer
