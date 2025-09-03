@@ -15,6 +15,10 @@ Public Sub Form_Open()
   Else
     cmbfixdepart.List = modMedicine.GetExtraDepartments()
   Endif
+
+  If modBasic.$AccessStoreRequest = "Disable" Then
+    btnsave.Enabled = False
+  Endif
   cmbroute.Text = ""
   dtexpect.Value = DateAdd(Date(), gb.Date, 7)
   rbgeneric.Value = True

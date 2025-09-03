@@ -208,6 +208,8 @@ Public Sub OpenBrowser(sPath As String)
       modDevice.DesktopOpenFile(sTarget)
     Else If modBasic.$browserFormat = "RightPanel" Then
       modGeneralMain.$RightAdView.Url = sTarget
+      modGeneralMain.$RightPanelPathList.Add(sTarget)
+      modGeneralMain.$RightPanelPointer = 0
       modGeneralMain.$RightAdView.Refresh()
     Else
       If modBasic.$WebViewApp = "webkit" Then

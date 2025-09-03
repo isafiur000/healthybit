@@ -37,6 +37,7 @@ Public Sub btnadd_Click()
       For xval = txtfrom.Value To txtlast.Value
         res = modDatabase.$myConn.Create("tblclaimcode")
         res["fldclaimid"] = CStr(xval)
+        res["fldclaimtype"] = ""
         res["fldencounterval"] = xtype
         res["fldptcode"] = ""
         res["fldstatus"] = ""

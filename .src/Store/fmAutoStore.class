@@ -5,6 +5,7 @@ Private $colmName As String
 Private $sCheckDay As Integer
 Private $sReqDay As Integer
 Private $sRounding As String
+Private $sQuant As String
 
 Private $dt1 As Date
 Private $dt2 As Date
@@ -12,13 +13,14 @@ Private $dt2 As Date
 Private $xVar As Variant[]
 Private sTime As Date
 
-Public Sub _new(sCompID As String, sColumnName As String, sCheckDays As Integer, sRequestDays As Integer, sRounding As String)
+Public Sub _new(sCompID As String, sColumnName As String, sCheckDays As Integer, sRequestDays As Integer, sRounding As String, sQuant As String)
 
   $sCompId = sCompID
   $colmName = sColumnName
   $sCheckDay = sCheckDays
   $sReqDay = sRequestDays
   $sRounding = sRounding
+  $sQuant = sQuant
 
 End
 
@@ -42,7 +44,7 @@ Public Sub Timer1_Timer()
   If DateDiff(sTime, Now(), gb.Second) > 1 Then
     Timer1.Enabled = False
     If $sCompId And If $sReqDay Then
-      ShowStoreRequestMedSurg($sCompId, $dt1, $dt2, $sReqDay, $sRounding)
+      ShowStoreRequestMedSurg($sCompId, $dt1, $dt2, $sReqDay, $sRounding, $sQuant)
     Endif
   Endif
 
@@ -54,7 +56,7 @@ Public Sub Form_Close()
 
 End
 
-Private Sub ShowStoreRequestMedSurg(CompId As String, dt1 As Date, dt2 As Date, orderDays As Integer, sRound As String)
+Private Sub ShowStoreRequestMedSurg(CompId As String, dt1 As Date, dt2 As Date, orderDays As Integer, sRound As String, sQuant As String)
 
   Dim sql As String
   Dim res As Result
@@ -63,9 +65,11 @@ Private Sub ShowStoreRequestMedSurg(CompId As String, dt1 As Date, dt2 As Date, 
 
   Dim xcurr As Float
   Dim xsales As Float
+  Dim xminstock As Float
   Dim xsaleRate As Float
   Dim xpacksize As Float
   Dim xnew As Float
+  Dim anew As Float
 
   xinterval = DateDiff(dt1, dt2, gb.Day)
   sql = "select fldroute,flditem,SUM(fldqtydisp-fldqtyret) as qty from tblpatdosing where fldtime>=&1 and fldtime<=&2 and fldsave_order=&3 and " & $colmName & " like &4 GROUP BY flditem"
@@ -78,6 +82,7 @@ Private Sub ShowStoreRequestMedSurg(CompId As String, dt1 As Date, dt2 As Date, 
     xsaleRate = 0
     xpacksize = 0
     xnew = 0
+    anew = 0
 
     xcurr = modStock.TotalQTYbyBrand(res["flditem"], compid)
     xsales = res["qty"]
@@ -101,12 +106,27 @@ Private Sub ShowStoreRequestMedSurg(CompId As String, dt1 As Date, dt2 As Date, 
       xnew = Ceil((xsaleRate * orderDays) - xcurr)
     Endif
 
+    If sQuant = "Minimum" Then
+      xminstock = modStock.GetMinimumStock(res["flditem"], modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"]))
+      If xminstock Then
+        If xnew < xminstock Then
+          anew = xminstock - xnew
+        Else
+          anew = 0
+        Endif
+      Else
+        anew = xnew
+      Endif
+    Else
+      anew = xnew
+    Endif
+
     If xnew > 0 Then
       aColl = New Collection
       aColl.Add(res["flditem"], CStr(0))
       aColl.Add(xsales, CStr(1))
       aColl.Add(xcurr, CStr(2))
-      aColl.Add(xnew, CStr(3))
+      aColl.Add(anew, CStr(3))
       $xVar.Add(aColl)
     Endif
     modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory).Value = (res.Index + 1) / res.Count
@@ -171,35 +191,57 @@ End
 Public Sub btnadd_Click()
 
   Dim Row As Integer
+
+  If cmbcomtaget.Text Then
+    If modBasic.$AccessStoreRequest = "Disable" Then
+      If Message.Question("SEND selected requests from " & $sCompId & " TO " & cmbcomtaget.Text & " ?", ("No"), ("Yes")) = 2 Then
+        Inc Application.Busy
+        For Row = 0 To GridView1.Rows.Count - 1
+          If GridView1[Row, 4].Picture = Picture["icons/checked.png"] Then
+            AddRequest(Row, $sCompId, cmbcomtaget.Text, "")
+            GridView1[Row, 4].Picture = Picture["icons/unchecked.png"]
+          Endif
+        Next
+        Dec Application.Busy
+      Endif
+
+    Else
+      AddStoreSelectedItems()
+    Endif
+  Endif
+
+End
+
+Private Sub AddStoreSelectedItems()
+
+  Dim Row As Integer
   Dim ref As String
   Dim idLock As Boolean
 
-  If cmbcomtaget.Text Then
-    If Not txtrefno.Text Then
-      If Message.Question("APPROVE selected requests from " & $sCompId & " TO " & cmbcomtaget.Text & " ?", ("No"), ("Yes")) = 2 Then
+  If Not txtrefno.Text Then
+    If Message.Question("APPROVE selected requests from " & $sCompId & " TO " & cmbcomtaget.Text & " ?", ("No"), ("Yes")) = 2 Then
 
-        Inc Application.Busy
-        idLock = modBillLock.LockTableForID("Reference")
-        If idLock = True Then
-          modDatabase.$myConn.Begin
-          ref = modBillLock.ReferenceString("General")
-          If ref Then
+      Inc Application.Busy
+      idLock = modBillLock.LockTableForID("Reference")
+      If idLock = True Then
+        modDatabase.$myConn.Begin
+        ref = modBillLock.ReferenceString("General")
+        If ref Then
 
-            For Row = 0 To GridView1.Rows.Count - 1
-              If GridView1[Row, 4].Picture = Picture["icons/checked.png"] Then
-                AddRequest(Row, $sCompId, cmbcomtaget.Text, ref)
-                GridView1[Row, 4].Picture = Picture["icons/unchecked.png"]
-              Endif
-            Next
+          For Row = 0 To GridView1.Rows.Count - 1
+            If GridView1[Row, 4].Picture = Picture["icons/checked.png"] Then
+              AddRequest(Row, $sCompId, cmbcomtaget.Text, ref)
+              GridView1[Row, 4].Picture = Picture["icons/unchecked.png"]
+            Endif
+          Next
 
-          Endif
-          modDatabase.$myConn.Commit
-          txtrefno.Text = ref
-          modBillLock.ReleaseLockTable("Reference")
         Endif
-        Dec Application.Busy
-
+        modDatabase.$myConn.Commit
+        txtrefno.Text = ref
+        modBillLock.ReleaseLockTable("Reference")
       Endif
+      Dec Application.Busy
+
     Endif
   Endif
 
@@ -225,17 +267,25 @@ Private Sub AddRequest(Row As Integer, sRequest As String, sTarget As String, sR
   res["fldfinalqty"] = GridView1[Row, 3].Text
   res["fldurgent"] = "Normal"
   res["fldexpdate"] = DateAdd(Now(), gb.Day, 1)
-  res["fldreference"] = sReference
+
   res["fldremarks"] = ""
 
   res["fldorduserid"] = modBasic.$lbluser
   res["fldordtime"] = Now()
   res["fldordcomp"] = sRequest
 
+  If sReference Then
+    res["fldreference"] = sReference
+    res["fldsave"] = True
+  Else
+    res["fldreference"] = ""
+    res["fldsave"] = False
+  Endif
+
   res["flduserid"] = ""
   res["fldtime"] = ""
   res["fldcomp"] = sTarget
-  res["fldsave"] = True
+
   res.Update
 
 End

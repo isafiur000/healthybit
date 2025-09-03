@@ -747,7 +747,7 @@ Private Sub ShowInventoryUserAccess()
 
   cmbsavetransfer.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/StockTransfer", cmbtarget.Text)
   cmbsaveconsume.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/StockConsume", cmbtarget.Text)
-  cmbsavepurrequest.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/PurchaseRequest", cmbtarget.Text)
+  cmbsavepurrequest.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/StoreRequest", cmbtarget.Text)
   cmbsaveorder.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/PurchaseOrder", cmbtarget.Text)
   cmbsavereturn.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/StockReturn", cmbtarget.Text)
   cmbsaveentry.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/PurchaseEntry", cmbtarget.Text)
@@ -772,7 +772,7 @@ End
 
 Public Sub btnsavePurrequest_Click()
 
-  modGlobalSetting.SaveSettingToDB("InventorySaveAccess/PurchaseRequest", cmbsavepurrequest.Text, cmbtarget.Text)
+  modGlobalSetting.SaveSettingToDB("InventorySaveAccess/StoreRequest", cmbsavepurrequest.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btnsavePurrequest)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -879,7 +879,7 @@ Public Sub btnsettall_Click()
 
   xList.Add("InventorySaveAccess/StockTransfer")
   xList.Add("InventorySaveAccess/StockConsume")
-  xList.Add("InventorySaveAccess/PurchaseRequest")
+  xList.Add("InventorySaveAccess/StoreRequest")
   xList.Add("InventorySaveAccess/PurchaseOrder")
   xList.Add("InventorySaveAccess/StockReturn")
   xList.Add("InventorySaveAccess/PurchaseEntry")

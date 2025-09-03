@@ -722,6 +722,8 @@ Public Sub HTMLViewDOcument($path As String, encid As String, sType As String)
     modDevice.DesktopOpenFile(aPath)                                          ''
   Else If modBasic.$browserFormat = "RightPanel" Then
     modGeneralMain.$RightAdView.Url = aPath
+    modGeneralMain.$RightPanelPathList.Add(aPath)
+    modGeneralMain.$RightPanelPointer = 0
     modGeneralMain.$RightAdView.Refresh()
   Else
     If modBasic.$WebViewApp = "webkit" Then

@@ -29,7 +29,7 @@ Public Sub Form_Open()
   If modHelpVariable.$LogInCategory = "Cashier" Then
     dtnow.Enabled = True
   Endif
-  $DiscType = modNonMedical.GetAutoIPBillingPack("Service", $encid)
+  $DiscType = modNonMedical.GetAutoIPBillingPack("BedCharge", $encid)
 
 End
 
@@ -266,9 +266,9 @@ End
 Public Sub GridView1_Click()
 
   If GridView1.Rows.Selection.Count > 0 Then
-    If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
 
-      If GridView1.Column = 7 Then
+    If GridView1.Column = 7 Then
+      If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
         If modBasic.$LockToOwnDepart = "Yes" And If modBasic.$FixedDepartment Then
           If lstdepartment.Text = modBasic.$FixedDepartment Then
             SelectBed(GridView1[GridView1.Row, 3].Text)
@@ -276,8 +276,10 @@ Public Sub GridView1_Click()
         Else
           SelectBed(GridView1[GridView1.Row, 3].Text)
         Endif
+      Endif
 
-      Else If GridView1.Column = 8 Then
+    Else If GridView1.Column = 8 Then
+      If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
         If modBasic.$LockToOwnDepart = "Yes" And If modBasic.$FixedDepartment Then
           If lstdepartment.Text = modBasic.$FixedDepartment Then
             ReleaseBed(GridView1[GridView1.Row, 3].Text)
@@ -286,8 +288,8 @@ Public Sub GridView1_Click()
           ReleaseBed(GridView1[GridView1.Row, 3].Text)
         Endif
       Endif
-
     Endif
+
   Endif
 
 End
@@ -305,6 +307,7 @@ Private Sub SelectBed(newbed As String)
   Dim xmsg As String
   Dim xidno As Long
   Dim xcomm As String
+  Dim xTotal As Integer
 
   If $encid Then
     xrefer = modBillings.GetReferralUserSetting("Service", $encid)
@@ -327,20 +330,28 @@ Private Sub SelectBed(newbed As String)
         xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $DiscType, lstdepartment.Text, "Bed", dtnow.Value, xcomm)
       Else
         res.MoveFirst
+
         modDatabase.$myConn.Begin
+        If modBasic.$AutoBedChargeMode = "Daily" Then ''done before update
+          xTotal = modBillings.GetSavedBedChargesTotal($encid)
+        Else
+          xTotal = 0
+        Endif
         xitem = modNonMedical.GetIPDepartChargeRate(res["flditem"], res["flddisctype"], $bedNo)
         modPatientGeneral.UpdatePatientTableSecondTime(res["fldid"], $bedNo, xitem, dtnow.Value)
 
-        unitrate = modNonMedical.GetBillingTargeDept(xitem, "General Services")
-        hr = modPatPatho.GetServiceUseDuration($encid, "General Services", res["flditem"], unitrate, res["fldfirsttime"], dtnow.Value)
-
         If modBasic.$AutoBillBed = "Standard" Or If modBasic.$AutoBillBed = "Full" Or If modBasic.$AutoBillBed = "Partial" Then
           If xitem Then
-            modBillings.EnterBillingForInterval(modBasic.$AutoBillBed, "Service", $encid, res["flddisctype"], xitem, hr, 0, xpayble, xrefer)
+            unitrate = modNonMedical.GetBillingTargeDept(xitem, "General Services")
+            hr = modPatPatho.GetWardBedUseDuration($encid, res["flditem"], unitrate, res["fldfirsttime"], dtnow.Value, xTotal)
+            If hr > 0 Then
+              modBillings.EnterBillingForInterval(modBasic.$AutoBillBed, "Service", $encid, res["flddisctype"], xitem, hr, 0, xpayble, xrefer)
+            Endif
           Else
             xmsg = "Bed Charge not specified."
           Endif
         Endif
+
         xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $DiscType, lstdepartment.Text, "Bed", dtnow.Value, xcomm)
         modDatabase.$myConn.Commit
       Endif
@@ -377,6 +388,7 @@ Private Sub ReleaseBed(curBed As String)
   Dim xrefer As String
   Dim xpayble As String
   Dim xmsg As String
+  Dim xTotal As Integer
 
   If $encid Then
     xrefer = modBillings.GetReferralUserSetting("Service", $encid)
@@ -389,20 +401,28 @@ Private Sub ReleaseBed(curBed As String)
       res = modDatabase.$myConn.Exec("select fldid,flditem,flddisctype,fldfirsttime,fldfirstreport from tblpattiming where fldencounterval=&1 and fldtype=&2 and fldfirstsave=&3 and fldsecondsave=&4 and fldfirstreport=&5", $encid, "General Services", True, False, "Bed")                                                                   ''
       If res.Available Then
         res.MoveFirst
+
         modDatabase.$myConn.Begin
+        If modBasic.$AutoBedChargeMode = "Daily" Then  ''done before update
+          xTotal = modBillings.GetSavedBedChargesTotal($encid)
+        Else
+          xTotal = 0
+        Endif
         xitem = modNonMedical.GetIPDepartChargeRate(res["flditem"], res["flddisctype"], $bedNo)
         modPatientGeneral.UpdatePatientTableSecondTime(res["fldid"], $bedNo, xitem, dtnow.Value)
 
-        unitrate = modNonMedical.GetBillingTargeDept(xitem, "General Services")
-        hr = modPatPatho.GetServiceUseDuration($encid, "General Services", res["flditem"], unitrate, res["fldfirsttime"], dtnow.Value)
-
         If modBasic.$AutoBillBed = "Standard" Or If modBasic.$AutoBillBed = "Full" Or If modBasic.$AutoBillBed = "Partial" Then
           If xitem Then
-            modBillings.EnterBillingForInterval(modBasic.$AutoBillBed, "Service", $encid, res["flddisctype"], xitem, hr, 0, xpayble, xrefer)
+            unitrate = modNonMedical.GetBillingTargeDept(xitem, "General Services")
+            hr = modPatPatho.GetWardBedUseDuration($encid, res["flditem"], unitrate, res["fldfirsttime"], dtnow.Value, xTotal)
+            If hr > 0 Then
+              modBillings.EnterBillingForInterval(modBasic.$AutoBillBed, "Service", $encid, res["flddisctype"], xitem, hr, 0, xpayble, xrefer)
+            Endif
           Else
             xmsg = "Bed Charge not specified."
           Endif
         Endif
+
         modDatabase.$myConn.Commit
       Endif
 

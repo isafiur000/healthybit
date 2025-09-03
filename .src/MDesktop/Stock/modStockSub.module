@@ -578,6 +578,7 @@ Public Sub ShowStoreRequestAlert()
   Dim xreqday As String
   Dim xcolmname As String
   Dim xround As String
+  Dim xquant As String
 
   Dim hForm1 As FmAutoStore
   Dim xcheckval As Integer
@@ -585,6 +586,7 @@ Public Sub ShowStoreRequestAlert()
 
   xalcomp = modSettings.ShowSettingFromFIle("StoreAlert/TargetLocation")
   xround = modSettings.ShowSettingFromFIle("StoreAlert/QTYRounding")
+  xquant = modSettings.ShowSettingFromFIle("StoreAlert/QTYValue")
 
   xcolmname = modSettings.ShowSettingFromFIle("StoreAlert/TargetField")
   If Not xcolmname Then
@@ -604,7 +606,7 @@ Public Sub ShowStoreRequestAlert()
   Endif
 
   If xalcomp And If xcolmname And If xcheckval And If xreqval Then
-    hForm1 = New FmAutoStore(xalcomp, xcolmname, xcheckval, xreqval, xround)
+    hForm1 = New FmAutoStore(xalcomp, xcolmname, xcheckval, xreqval, xround, xquant)
     modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
   Endif
 

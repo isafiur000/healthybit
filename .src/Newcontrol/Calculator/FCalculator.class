@@ -58,7 +58,7 @@ Public Sub BotonIgual_Click()
   If ope = "+" Then result = ope1 + ope2
   If ope = "-" Then result = ope1 - ope2
   If ope = "*" Then result = ope1 * ope2
-  If ope = "/" And ope2 <> 0 Then result = ope1 / ope2
+  If ope = "/" And If ope2 <> 0 Then result = ope1 / ope2
 
   LCD.Text = result
   BotonIgual.Enabled = False
@@ -70,15 +70,6 @@ Public Sub Btndec_Click()
 
   If InStr(LCD.Text, ".") = False Then
     LCD.Text = LCD.Text & "."
-  Endif
-
-End
-
-Public Sub LCD_KeyPress()
-
-  If (Key.Code >= Asc("a") And Key.Code <= Asc("z")) Or (Key.Code >= Asc("A") And Key.Code <= Asc("Z")) Then
-    LCD.Text = Null
-    Stop Event
   Endif
 
 End

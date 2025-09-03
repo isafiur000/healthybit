@@ -240,12 +240,12 @@
       Text = ("Store Request")
       Alignment = Align.Left
       { Label18 Label
-        MoveScaled(36,3,7,3)
+        MoveScaled(36,3,9,3)
         Border = Border.Plain
         Text = ("Field")
       }
       { cmbalertformat ComboBox
-        MoveScaled(44,3,16,3)
+        MoveScaled(46,3,16,3)
       }
       { Label19 Label
         MoveScaled(1,3,14,3)
@@ -257,30 +257,30 @@
         ToolTip = ("Department to monitor")
       }
       { Label20 Label
-        MoveScaled(1,7,14,3)
+        MoveScaled(1,11,14,3)
         Border = Border.Plain
         Text = ("Duration (days)")
       }
       { Label21 Label
-        MoveScaled(36,7,9,3)
+        MoveScaled(36,11,9,3)
         Border = Border.Plain
         Text = ("Request")
       }
       { txtrequest ValueBox
-        MoveScaled(46,7,5,3)
+        MoveScaled(46,11,5,3)
         ToolTip = ("Number of days to consider")
       }
       { txtanalyze ValueBox
-        MoveScaled(27,7,5,3)
+        MoveScaled(27,11,5,3)
         ToolTip = ("Number of days to consider")
       }
       { Label22 Label
-        MoveScaled(1,11,14,3)
+        MoveScaled(1,7,14,3)
         Border = Border.Plain
         Text = ("Rounding")
       }
       { Label24 Label
-        MoveScaled(16,7,10,3)
+        MoveScaled(16,11,10,3)
         Border = Border.Plain
         Text = ("Analyze")
       }
@@ -290,8 +290,16 @@
         Picture = Picture["icon:/small/apply"]
       }
       { cmbrounding ComboBox
-        MoveScaled(16,11,16,3)
+        MoveScaled(16,7,16,3)
         ToolTip = ("Department to monitor")
+      }
+      { Label16 Label
+        MoveScaled(36,7,9,3)
+        Border = Border.Plain
+        Text = ("Value")
+      }
+      { cmbalertvalue ComboBox
+        MoveScaled(46,7,16,3)
       }
     }
     Index = 0

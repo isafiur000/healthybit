@@ -14,6 +14,9 @@ Private $DeskCustWidth As String
 Private $HideFormList As String[]
 Private $advForm As FmAdvertise
 
+Public $RightPanelPathList As New String[]
+Public $RightPanelPointer As Integer
+
 Private $hTimer As Timer
 Private $macCode As Integer
 
@@ -217,6 +220,8 @@ Public Sub LoadMainForms(frm As Form, pnltop As Panel, pnlleft As Panel, wrkoffi
 
   Dim xDeskFact As String
   Dim pnltopright As Panel
+  Dim btnleft As Button
+  Dim btnright As Button
   Dim xbutton As Button
 
   headht = modSettings.ShowUserWiseSettingFromFIle("AppSetting_DeskHeaderHeight")
@@ -378,11 +383,18 @@ Public Sub LoadMainForms(frm As Form, pnltop As Panel, pnlleft As Panel, wrkoffi
     pnltopright.Arrangement = Arrange.Horizontal
     pnltopright.Height = 28
     pnltopright.Spacing = True
+    ''controls
+    btnleft = New Button(pnltopright) As "PreviousButton"
+    btnleft.Width = 35
+    btnleft.Picture = Picture["icon:/tiny/left"]
+    btnright = New Button(pnltopright) As "ForwardtButton"
+    btnright.Width = 35
+    btnright.Picture = Picture["icon:/tiny/right"]
     $xslider = New Slider(pnltopright) As "RightSlider"
     $xslider.Expand = True
     $xslider.MaxValue = 1000
     xbutton = New Button(pnltopright) As "RightButton"
-    xbutton.Expand = True
+    xbutton.Width = 100
     xbutton.Picture = Picture["icon:/small/refresh"]
 
     $RightAdView = New WebView(pnlright)
@@ -423,6 +435,44 @@ Public Sub RightButton_Click()
 
   modBasic.RightPanelLoginSet()
   LoadWebViewRight()
+
+End
+
+Public Sub PreviousButton_Click()
+
+  Dim xTot As Integer
+  Dim xPath As String
+  Dim xItem As Integer
+
+  If modGeneralMain.$RightPanelPathList.Count Then
+    xTot = modGeneralMain.$RightPanelPathList.Count - 1
+    modGeneralMain.$RightPanelPointer = modGeneralMain.$RightPanelPointer + 1
+    xItem = xTot - modGeneralMain.$RightPanelPointer
+    If xItem >= 0 And If xItem <= xTot Then
+      xPath = modGeneralMain.$RightPanelPathList[xItem]
+      modGeneralMain.$RightAdView.Url = xPath
+      modGeneralMain.$RightAdView.Refresh()
+    Endif
+  Endif
+
+End
+
+Public Sub ForwardtButton_Click()
+
+  Dim xTot As Integer
+  Dim xPath As String
+  Dim xItem As Integer
+
+  If modGeneralMain.$RightPanelPathList.Count Then
+    xTot = modGeneralMain.$RightPanelPathList.Count - 1
+    modGeneralMain.$RightPanelPointer = modGeneralMain.$RightPanelPointer - 1
+    xItem = xTot - modGeneralMain.$RightPanelPointer
+    If xItem >= 0 And If xItem <= xTot Then
+      xPath = modGeneralMain.$RightPanelPathList[xItem]
+      modGeneralMain.$RightAdView.Url = xPath
+      modGeneralMain.$RightAdView.Refresh()
+    Endif
+  Endif
 
 End
 

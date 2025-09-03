@@ -11,6 +11,7 @@ Public Sub Form_Open()
   cmbrequest.List = modBasic.$AllCompPerList
   cmbalertformat.List = ["fldcomp", "fldcomp_disp"]
   cmbrounding.List = ["Pack Size", "Tens", "None"]
+  cmbalertvalue.List = ["Minimum", "Calculated"]
 
   cmbautoup.List = ["Enable", "Disable"]
   cmbsales.List = ["Manual", "FEFO"]
@@ -246,6 +247,7 @@ Private Sub ShowStoreRequest()
   Endif
 
   cmbrounding.Text = modSettings.ShowSettingFromFIle("StoreAlert/QTYRounding")
+  cmbalertvalue.Text = modSettings.ShowSettingFromFIle("StoreAlert/QTYValue")
 
 End
 
@@ -268,6 +270,7 @@ Public Sub btnrequest_Click()
     modSettings.SaveSettingsToFile("StoreAlert/RequestedDays", CStr(txtrequest.Value))
   Endif
   modSettings.SaveSettingsToFile("StoreAlert/QTYRounding", cmbrounding.Text)
+  modSettings.SaveSettingsToFile("StoreAlert/QTYValue", cmbalertvalue.Text)
 
   Balloon.Info(("Information saved"), btnrequest)
   Balloon.Delay = modBasic.$BalloonDelay

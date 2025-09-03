@@ -1317,6 +1317,25 @@ Public Function ShowCreditVAlues(DiscType As String) As Float
 
 End
 
+Public Function GetFixedInvType(sPackage As String) As String
+
+  Dim xrefer As String
+  Dim res As Result
+
+  res = modDatabase.$myConn.Exec("select fldbilltype from tbldiscount where fldtype=&1", sPackage)
+  If res.Available Then
+    If res["fldbilltype"] Then
+      xrefer = res["fldbilltype"]
+    Else
+      xrefer = ""
+    Endif
+  Else
+    xrefer = ""
+  Endif
+  Return xrefer
+
+End
+
 Public Function GetFixedDiscount(sPackage As String) As String
 
   Dim xrefer As String
@@ -1606,13 +1625,19 @@ Public Function AllowEntryWithDeposit(encid As String, sType As String) As Boole
 
 End
 
-Public Function AllowPreCheckDeposit(encid As String, sAmt As Float) As Boolean
+Public Function AllowPreCheckDeposit(encid As String, sAmt As Float, sPackage As String) As Boolean
 
   Dim allow As Boolean
   Dim expenseamt As Float
   Dim paidamt As Float
+  Dim sBillType As String
 
-  paidamt = TotalPaidAmountbyPatient(modDatabase.$myConn, encid) + ShowCreditLimitEnc(encid)
+  sBillType = modNonMedical.GetFixedInvType(sPackage)
+  If sBillType = "Credit" Then
+    paidamt = ShowCreditLimitEnc(encid)
+  Else
+    paidamt = TotalPaidAmountbyPatient(modDatabase.$myConn, encid)
+  Endif
   expenseamt = TotalExpenseAmountbyPatient(modDatabase.$myConn, encid) + sAmt
   If expenseamt > paidamt Then
     allow = False
@@ -1624,12 +1649,13 @@ Public Function AllowPreCheckDeposit(encid As String, sAmt As Float) As Boolean
 
 End
 
-Public Function AllowPreEntryWithDeposit(encid As String, sType As String, sAmt As Float, xCtrl As Control) As Boolean
+Public Function AllowPreEntryWithDeposit(encid As String, sType As String, sAmt As Float, sPackage As String, xCtrl As Control) As Boolean
 
   Dim allow As Boolean
   Dim expenseamt As Float
   Dim paidamt As Float
   Dim xauto As String
+  Dim sBillType As String
 
   If sType = "Pharmacy" Then
     xauto = modBasic.$LowDepoPharm
@@ -1648,7 +1674,12 @@ Public Function AllowPreEntryWithDeposit(encid As String, sType As String, sAmt 
   Endif
   If xauto Then
     If xauto = "Warn" Then
-      paidamt = TotalPaidAmountbyPatient(modDatabase.$myConn, encid) + ShowCreditLimitEnc(encid)
+      sBillType = modNonMedical.GetFixedInvType(sPackage)
+      If sBillType = "Credit" Then
+        paidamt = ShowCreditLimitEnc(encid)
+      Else
+        paidamt = TotalPaidAmountbyPatient(modDatabase.$myConn, encid)
+      Endif
       expenseamt = TotalExpenseAmountbyPatient(modDatabase.$myConn, encid) + sAmt
       If expenseamt > paidamt Then
         allow = True
@@ -1663,7 +1694,12 @@ Public Function AllowPreEntryWithDeposit(encid As String, sType As String, sAmt 
       Endif
 
     Else If xauto = "Disable" Then
-      paidamt = TotalPaidAmountbyPatient(modDatabase.$myConn, encid) + ShowCreditLimitEnc(encid)
+      sBillType = modNonMedical.GetFixedInvType(sPackage)
+      If sBillType = "Credit" Then
+        paidamt = ShowCreditLimitEnc(encid)
+      Else
+        paidamt = TotalPaidAmountbyPatient(modDatabase.$myConn, encid)
+      Endif
       expenseamt = TotalExpenseAmountbyPatient(modDatabase.$myConn, encid) + sAmt
       If expenseamt > paidamt Then
         allow = False
@@ -3271,33 +3307,38 @@ End
 ''----------------------------- Patient Expenses/payments -----------------------------------------
 Public Sub CurrentPayStatusMsg(encid As String)
 
-  Dim xx As String
-  Dim xexpense As Float
-  Dim xipexpense As Float
-  Dim xopexpense As Float
-  Dim xpayment As Float
-  Dim xcurdepo As Float
-  Dim xdeposit As Float
+  Dim hForm As FmExpenseSumm
 
-  xexpense = TotalExpenseAmountbyPatient(modDatabase.$myConn, encid)
-  xipexpense = TotalExpenseAdmittedPatient(modDatabase.$myConn, encid)
-  xopexpense = xexpense - xipexpense
-  xdeposit = GetPatientDeposit(modDatabase.$myConn, encid)
-  xpayment = InvoicePaidAmountbyPatient(modDatabase.$myConn, encid)
-  xcurdepo = (xdeposit + xpayment) - xexpense
+  hForm = New FmExpenseSumm(encid)
+  hForm.ShowModal
 
-  xx = ""
-  xx = xx & "<br>" & "OPD EXPENSES :....... ." & "<b>" & modReportVar.GetLocaleNumberFormat(xopexpense, gb.Currency) & "</b>"
-  xx = xx & "<br>" & "IPD EXPENSES :....... ." & "<b>" & modReportVar.GetLocaleNumberFormat(xipexpense, gb.Currency) & "</b>"
-  xx = xx & "<br>" & "TOTAL EXPENSES :......." & "<b>" & modReportVar.GetLocaleNumberFormat(xexpense, gb.Currency) & "</b>"
-  xx = xx & "<br>"
-  xx = xx & "<br>" & "CURRENT DEPOSIT :...." & "<b>" & modReportVar.GetLocaleNumberFormat(xdeposit, gb.Currency) & "</b>"
-  xx = xx & "<br>" & "INVOICE RECEIPTS :....." & "<b>" & modReportVar.GetLocaleNumberFormat(xpayment, gb.Currency) & "</b>"
-  xx = xx & "<br>" & "SURPLUS AMOUNT :....:" & "<b>" & modReportVar.GetLocaleNumberFormat(xcurdepo, gb.Currency) & "</b>"
-  xx = xx & "<br>" & "<br>"
-  xx = xx & "<br>" & "DISCOUNT LIMIT :......." & "<b>" & modReportVar.GetLocaleNumberFormat(GetPatCharityLimit(encid), gb.Currency) & "</b>"
-  xx = xx & "<br>" & "CREDIT LIMIT :............." & "<b>" & modReportVar.GetLocaleNumberFormat(ShowCreditLimitEnc(encid), gb.Currency) & "</b>"
-  Message.Info(xx, ("OK"))
+  ' Dim xx As String
+  ' Dim xexpense As Float
+  ' Dim xipexpense As Float
+  ' Dim xopexpense As Float
+  ' Dim xpayment As Float
+  ' Dim xcurdepo As Float
+  ' Dim xdeposit As Float
+  '
+  ' xexpense = TotalExpenseAmountbyPatient(modDatabase.$myConn, encid)
+  ' xipexpense = TotalExpenseAdmittedPatient(modDatabase.$myConn, encid)
+  ' xopexpense = xexpense - xipexpense
+  ' xdeposit = GetPatientDeposit(modDatabase.$myConn, encid)
+  ' xpayment = InvoicePaidAmountbyPatient(modDatabase.$myConn, encid)
+  ' xcurdepo = (xdeposit + xpayment) - xexpense
+  '
+  ' xx = ""
+  ' xx = xx & "<br>" & "OPD EXPENSES :....... ." & "<b>" & modReportVar.GetLocaleNumberFormat(xopexpense, gb.Currency) & "</b>"
+  ' xx = xx & "<br>" & "IPD EXPENSES :....... ." & "<b>" & modReportVar.GetLocaleNumberFormat(xipexpense, gb.Currency) & "</b>"
+  ' xx = xx & "<br>" & "TOTAL EXPENSES :......." & "<b>" & modReportVar.GetLocaleNumberFormat(xexpense, gb.Currency) & "</b>"
+  ' xx = xx & "<br>"
+  ' xx = xx & "<br>" & "CURRENT DEPOSIT :...." & "<b>" & modReportVar.GetLocaleNumberFormat(xdeposit, gb.Currency) & "</b>"
+  ' xx = xx & "<br>" & "INVOICE RECEIPTS :....." & "<b>" & modReportVar.GetLocaleNumberFormat(xpayment, gb.Currency) & "</b>"
+  ' xx = xx & "<br>" & "SURPLUS AMOUNT :....:" & "<b>" & modReportVar.GetLocaleNumberFormat(xcurdepo, gb.Currency) & "</b>"
+  ' xx = xx & "<br>" & "<br>"
+  ' xx = xx & "<br>" & "DISCOUNT LIMIT :......." & "<b>" & modReportVar.GetLocaleNumberFormat(GetPatCharityLimit(encid), gb.Currency) & "</b>"
+  ' xx = xx & "<br>" & "CREDIT LIMIT :............." & "<b>" & modReportVar.GetLocaleNumberFormat(ShowCreditLimitEnc(encid), gb.Currency) & "</b>"
+  ' Message.Info(xx, ("OK"))
 
 End
 
@@ -4240,6 +4281,27 @@ Public Function AllowRegistSlipWithInvoiceEncid(encid As String) As Boolean
   xgo = modNonMedical.AllowRegistSlipWithInvoice(encid, xdepart, xmode)
 
   Return xgo
+
+End
+
+Public Function GetLastCLaimType(encid As String) As String
+
+  Dim res As Result
+  Dim xx As String
+
+  res = modDatabase.$myConn.Exec("select fldclaimtype from tblclaimcode where fldencounterval=&1 and fldclaimtype like &2", encid, "%")
+  If res.Available Then
+    res.MoveLast
+    If res["fldclaimtype"] Then
+      xx = res["fldclaimtype"]
+    Else
+      xx = ""
+    Endif
+  Else
+    xx = ""
+  Endif
+
+  Return xx
 
 End
 

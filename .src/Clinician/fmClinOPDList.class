@@ -81,9 +81,11 @@ Public Sub Form_Open()
     If $sTable = "tblconsult" Then
       cmbdept.List = modGeneral.GetDepartForConsultOnly()
       pnlconsult.Visible = True
+      chkshowdepart.Value = True
     Else If $sTable = "tblopvisit" Then
       cmbdept.List = modGeneral.GetDepartForOPVisitOnly()
       pnlconsult.Visible = False
+      chkshowdepart.Value = False
     Endif
     cmbdept.Add("%")
     cmbdept.Text = modSettings.ShowSettingFromFIle("Clinic/DefaultOPD")
@@ -95,7 +97,6 @@ Public Sub Form_Open()
     yPanelEntry.Visible = True
   Endif
   dtsort.Value = Now()
-  chkshowdepart.Value = True
 
   $ExamLst = modMedicine.FillClinicalSubClass("Physician Examinations")
   FillCustomMenu()
@@ -243,9 +244,9 @@ Private Function GetFieldsList()
 
   xhospfld = modDataRepo.HospitalField()
   If $sTable = "tblconsult" Then
-    $SSQLFields = ["fldid", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldflag", "fldencounterval", "flduserid", "fldconsultname", "fldconsulttime", "fldbillingmode"]
+    $SSQLFields = ["fldid", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldflag", "fldencounterval", "flduserid", "fldconsultname", "fldconsulttime", "fldbillingmode", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval"]
   Else If $sTable = "tblopvisit" Then
-    $SSQLFields = ["fldid", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldflag", "fldencounterval", "fldencounterval", "fldconsultname", "fldconsulttime", "fldbillingmode"]
+    $SSQLFields = ["fldid", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldflag", "fldencounterval", "fldencounterval", "fldconsultname", "fldconsulttime", "fldbillingmode", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval"]
   Endif
   If xhospfld Then
     $SSQLFields.Add(xhospfld)
@@ -384,14 +385,14 @@ Private Function ExecuteQuery(xFldList As String[]) As Result
   If chkdate.Value = True Then
     If modBasic.$FixedDepartment Then
       sql = Subst("select &1 from " & xpreun & "&2", xFldList.Join(","), $sTable) & xunion & "  where " & $sTable & "." & "fldconsulttime>=&1 and " & $sTable & "." & "fldconsulttime<=&2 and " & $sTable & "." & "fldstatus=&3 and " & $sTable & "." & "fldconsultname=&4" & xencid & xconsult & xpaid & xcolor & $RepoStr & xorder                                           ''
-      res = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(dtsort.Value), modDate.EndSqlDate(dtsort.Value), "Planned", modBasic.$FixedDepartment)
+      res = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(dtsort.Value), modDate.EndSqlDate(DateAdd(dtsort.Value, gb.Day, txtrange.Value)), "Planned", modBasic.$FixedDepartment)
     Else
       If cmbdept.Text = "%" Then
         sql = Subst("select &1 from " & xpreun & "&2", xFldList.Join(","), $sTable) & xunion & " where " & $sTable & "." & "fldconsulttime>=&1 and " & $sTable & "." & "fldconsulttime<=&2 and " & $sTable & "." & "fldstatus=&3" & xencid & xconsult & xpaid & xcolor & $RepoStr & xorder                                             ''
       Else
         sql = Subst("select &1 from " & xpreun & "&2", xFldList.Join(","), $sTable) & xunion & " where " & $sTable & "." & "fldconsulttime>=&1 and " & $sTable & "." & "fldconsulttime<=&2 and " & $sTable & "." & "fldstatus=&3 and " & $sTable & "." & "fldconsultname=&4" & xencid & xconsult & xpaid & xcolor & $RepoStr & xorder
       Endif
-      res = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(dtsort.Value), modDate.EndSqlDate(dtsort.Value), "Planned", cmbdept.Text)
+      res = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(dtsort.Value), modDate.EndSqlDate(DateAdd(dtsort.Value, gb.Day, txtrange.Value)), "Planned", cmbdept.Text)
     Endif
 
   Else
@@ -434,8 +435,6 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
     If chkshowdepart.Value = True Then
       If $sTable = "tblconsult" Then
         xxx = modGeneral.GetUserFullName(xVariable)
-      Else If $sTable = "tblopvisit" Then
-        xxx = modGeneral.GetUserFullName(modPatient.GetAttendingConsultant(xVariable))
       Endif
     Else
       xxx = ""
@@ -450,6 +449,44 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
     Else
       xxx = ""
     Endif
+
+  Else If Column = 11 Then
+    If chkshowstatus.Value = True Then
+      xxx = GetClinStatusIcon(modClinSub.GetMedicineClinStaus(xVariable))
+    Else
+      xxx = ""
+    Endif
+  Else If Column = 12 Then
+    If chkshowstatus.Value = True Then
+      xxx = GetClinStatusIcon(modClinSub.GetLabClinStaus(xVariable))
+    Else
+      xxx = ""
+    Endif
+  Else If Column = 13 Then
+    If chkshowstatus.Value = True Then
+      xxx = GetClinStatusIcon(modClinSub.GetRadioClinStaus(xVariable))
+    Else
+      xxx = ""
+    Endif
+  Else If Column = 14 Then
+    If chkshowstatus.Value = True Then
+      xxx = GetClinStatusIcon(modClinSub.GetDeviceClinStaus(xVariable))
+    Else
+      xxx = ""
+    Endif
+  Else If Column = 15 Then
+    If chkshowstatus.Value = True Then
+      xxx = GetClinStatusIcon(modClinSub.GetFluidsClinStaus(xVariable))
+    Else
+      xxx = ""
+    Endif
+  Else If Column = 16 Then
+    If chkshowstatus.Value = True Then
+      xxx = GetClinStatusIcon(modClinSub.GetEquipClinStaus(xVariable))
+    Else
+      xxx = ""
+    Endif
+
   Else
     xxx = xVariable
   Endif
@@ -488,9 +525,21 @@ Private Sub ResizeGrid()
     .Columns[5].Width = 30 * modBasic.$AppWidthRatio
     .Columns[6].Width = 175 * modBasic.$AppWidthRatio
     If chkshowdepart.Value = True Then
-      .Columns[7].Width = 150 * modBasic.$AppWidthRatio
-      .Columns[8].Width = 125 * modBasic.$AppWidthRatio
-      .Columns[9].Width = 125 * modBasic.$AppWidthRatio
+      If $sTable = "tblconsult" Then
+        .Columns[7].Width = 150 * modBasic.$AppWidthRatio
+      Else If $sTable = "tblopvisit" Then
+        .Columns[7].Width = 1
+      Endif
+      If cmbdept.Text = "%" Then
+        .Columns[8].Width = 125 * modBasic.$AppWidthRatio
+      Else
+        .Columns[8].Width = 1
+      Endif
+      If chkdate.Value = True Then
+        .Columns[9].Width = 1
+      Else
+        .Columns[9].Width = 125 * modBasic.$AppWidthRatio
+      Endif
     Else
       .Columns[7].Width = 1
       .Columns[8].Width = 1
@@ -498,14 +547,45 @@ Private Sub ResizeGrid()
     Endif
     .Columns[10].Width = 1
 
+    If chkshowstatus.Value = True Then
+      .Columns[11].Width = 40 * modBasic.$AppWidthRatio
+      .Columns[12].Width = 40 * modBasic.$AppWidthRatio
+      .Columns[13].Width = 40 * modBasic.$AppWidthRatio
+      .Columns[14].Width = 40 * modBasic.$AppWidthRatio
+      .Columns[15].Width = 40 * modBasic.$AppWidthRatio
+      .Columns[16].Width = 40 * modBasic.$AppWidthRatio
+    Else
+      .Columns[11].Width = 1
+      .Columns[12].Width = 1
+      .Columns[13].Width = 1
+      .Columns[14].Width = 1
+      .Columns[15].Width = 1
+      .Columns[16].Width = 1
+    Endif
+
     .Columns[2].Text = "EncID"
     .Columns[3].Text = "Name"
     .Columns[4].Text = "Age/Sex"
     .Columns[6].Text = "Diagnosis"
     If chkshowdepart.Value = True Then
-      .Columns[7].Text = "Consult"
-      .Columns[8].Text = "Depart"
-      .Columns[9].Text = "DateTime"
+      If $sTable = "tblconsult" Then
+        .Columns[7].Text = "Consult"
+      Endif
+      If cmbdept.Text = "%" Then
+        .Columns[8].Text = "Depart"
+      Endif
+      If chkdate.Value = False Then
+        .Columns[9].Text = "DateTime"
+      Endif
+    Endif
+
+    If chkshowstatus.Value = True Then
+      .Columns[11].Text = "Drugs"
+      .Columns[12].Text = "Labs"
+      .Columns[13].Text = "Radio"
+      .Columns[14].Text = "Device"
+      .Columns[15].Text = "Fluid"
+      .Columns[16].Text = "Equip"
     Endif
 
     If $newColumn.Count Then
@@ -542,6 +622,31 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
     GridView1.Data.RichText = GetGridViewValue(Column, $rData[$aMyFields[Column]])
   Else If Column = 5 Then
     GridView1.Data.Picture = Picture[GetGridViewValue(Column, $rData[$aMyFields[Column]])]
+  Else If Column = 11 Then
+    If chkshowstatus.Value = True Then
+      GridView1.Data.Picture = Picture[GetGridViewValue(Column, $rData[$aMyFields[Column]])]
+    Endif
+  Else If Column = 12 Then
+    If chkshowstatus.Value = True Then
+      GridView1.Data.Picture = Picture[GetGridViewValue(Column, $rData[$aMyFields[Column]])]
+    Endif
+  Else If Column = 13 Then
+    If chkshowstatus.Value = True Then
+      GridView1.Data.Picture = Picture[GetGridViewValue(Column, $rData[$aMyFields[Column]])]
+    Endif
+  Else If Column = 14 Then
+    If chkshowstatus.Value = True Then
+      GridView1.Data.Picture = Picture[GetGridViewValue(Column, $rData[$aMyFields[Column]])]
+    Endif
+  Else If Column = 15 Then
+    If chkshowstatus.Value = True Then
+      GridView1.Data.Picture = Picture[GetGridViewValue(Column, $rData[$aMyFields[Column]])]
+    Endif
+  Else If Column = 16 Then
+    If chkshowstatus.Value = True Then
+      GridView1.Data.Picture = Picture[GetGridViewValue(Column, $rData[$aMyFields[Column]])]
+    Endif
+
   Else
     If Column > $SSQLFields.Count - 1 Then
       GridView1.Data.RichText = modString.TextToHTML(GetGridViewValue(Column, $rData[$aMyFields[Column]]))
@@ -551,6 +656,24 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   Endif
   GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.RichText, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
   GridView1.Data.WordWrap = True
+
+End
+
+Private Function GetClinStatusIcon(sVal As Integer) As String
+
+  Dim xicon As String
+
+  If sVal = 0 Then
+    xicon = "icons/null.svg"
+  Else If sVal = 1 Then
+    xicon = "icons/coll5.png"
+  Else If sVal = 2 Then
+    xicon = "icons/coll6.png"
+  Else If sVal = 3 Then
+    xicon = "icons/coll4.png"
+  Endif
+
+  Return xicon
 
 End
 

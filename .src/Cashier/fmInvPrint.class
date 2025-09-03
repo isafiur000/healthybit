@@ -220,7 +220,7 @@ Private Sub SHowInvoiceData(Row As Integer)
   hPatient1.$ACLedger = GridView2[Row, 13].Text
   xrefmode = modNonMedical.GetFixedReferenceScheme(GridView2[Row, 12].Text)
   If xrefmode = "Claim Code" Then
-    hPatient1.$ACReference = modClaim.GetClaimCidePatient($encid)
+    hPatient1.$ACReference = modClaim.GetClaimCidePatient($encid, modNonMedical.GetLastCLaimType($encid))
   Else If xrefmode = "Accident SSF" Then
     hPatient1.$ACReference = modSSF.GetSSFClaimCodePatient($encid, "Accident SSF")
   Else If xrefmode = "Critical SSF" Then

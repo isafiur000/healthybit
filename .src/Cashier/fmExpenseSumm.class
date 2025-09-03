@@ -1,0 +1,39 @@
+' Gambas class file
+
+Private $encid As String
+
+Public Sub _new(encid As String)
+
+  $encid = encid
+  ShowAccParams()
+
+End
+
+Private Sub ShowAccParams()
+
+  Dim xexpense As Float
+  Dim xipexpense As Float
+  Dim xopexpense As Float
+  Dim xpayment As Float
+  Dim xcurdepo As Float
+  Dim xdeposit As Float
+
+  xexpense = modNonMedical.TotalExpenseAmountbyPatient(modDatabase.$myConn, $encid)
+  xipexpense = modNonMedical.TotalExpenseAdmittedPatient(modDatabase.$myConn, $encid)
+  xopexpense = xexpense - xipexpense
+  xdeposit = modNonMedical.GetPatientDeposit(modDatabase.$myConn, $encid)
+  xpayment = modNonMedical.InvoicePaidAmountbyPatient(modDatabase.$myConn, $encid)
+  xcurdepo = (xdeposit + xpayment) - xexpense
+
+  txtopdexpense.Value = xopexpense
+  txtipdexpense.Value = xipexpense
+  txttotalexpense.Value = xexpense
+
+  txtcurrdeposit.Value = xdeposit
+  txtinvreceipt.Value = xpayment
+  txtsurplusamt.Value = xcurdepo
+
+  txtcharitylimit.Value = modNonMedical.GetPatCharityLimit($encid)
+  txtcreditlimit.Value = modNonMedical.ShowCreditLimitEnc($encid)
+
+End

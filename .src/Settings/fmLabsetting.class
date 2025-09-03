@@ -55,6 +55,7 @@ Public Sub Form_Open()
   lstfooter.List = modLabSub.ListFooterNoteList()
 
   cmbwsheet.List = ["Continuous", "Categorical"]
+  cmbprofilesheet.List = ["Minimum", "Detail"]
   cmbhidden.List = modMedicine.GetPathoCategoryList("Test")
   cmbhidden.Add("All Departments")
   cmblockspec.List = ["Yes", "No"]
@@ -637,10 +638,12 @@ End
 ''------------------------ Sampling -----------------------
 Private Sub SHowSamplingData()
 
+  cmbwsheet.Text = modSettings.ShowSettingFromFIle("LabWorksheet/PrintMode")
+  cmbprofilesheet.Text = modSettings.ShowSettingFromFIle("LabWorksheet/Profile")
+
   cmbautospecimen.Text = modSettings.ShowSettingFromFIle("TestAddition/AutoSpecimen")
   cmbautosampleid.Text = modSettings.ShowSettingFromFIle("TestAddition/AutoSampleID")
   cmbspecsuffix.Text = modSettings.ShowSettingFromFIle("TestAddition/AutoSampleSuffix")
-  cmbwsheet.Text = modSettings.ShowSettingFromFIle("LabWorksheet/PrintMode")
   cmbhidden.Text = modSettings.ShowSettingFromFIle("TestAddition/HiddenMode")
   cmblockspec.Text = modSettings.ShowSettingFromFIle("TestAddition/LockSpecimen")
   cmbspecencid.Text = modSettings.ShowSettingFromFIle("TestAddition/AutoEncounterF1")
@@ -682,6 +685,15 @@ Public Sub btnwsheet_Click()
   modSettings.SaveSettingsToFile("LabWorksheet/PrintMode", cmbwsheet.Text)
   modBasic.$LabWorkSheet = cmbwsheet.Text
   Balloon.Info(("Information saved"), btnwsheet)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnprofilesheet_Click()
+
+  modSettings.SaveSettingsToFile("LabWorksheet/Profile", cmbprofilesheet.Text)
+  modBasic.$LabSheetProfile = cmbprofilesheet.Text
+  Balloon.Info(("Information saved"), btnprofilesheet)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

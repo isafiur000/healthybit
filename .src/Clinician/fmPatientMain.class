@@ -5012,7 +5012,19 @@ End
 
 Public Sub btnnursing_Click()
 
-  mnunurcheck_Click()
+  Dim sPath As String
+  Dim xxx As String[]
+  Dim xval As String
+
+  If txtencid.Text Then
+    xxx = CustomDraw()
+    If xxx Then
+      sPath = xxx[0]
+      If sPath Then
+        xval = modImage.SaveClinicScreenDraw(Trim(txtencid.Text), xxx[1], sPath)
+      Endif
+    Endif
+  Endif
 
 End
 

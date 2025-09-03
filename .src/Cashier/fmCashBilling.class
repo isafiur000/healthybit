@@ -525,7 +525,7 @@ Public Sub btnshow_Click()
               txtreference.ReadOnly = False
             Else
               If resx["fldreference"] = "Claim Code" Then
-                txtreference.Text = modClaim.GetClaimCidePatient(Trim(txtencid.Text))
+                txtreference.Text = modClaim.GetClaimCidePatient(Trim(txtencid.Text), modNonMedical.GetLastCLaimType(Trim(txtencid.Text)))
                 If txtreference.Text Then
                   txtreference.Tag = modClaim.GetHIClaimState(txtreference.Text)
                   If txtreference.Tag = "Consultation" Or If txtreference.Tag = "Patient Ward" Then
@@ -717,7 +717,7 @@ Private Sub ShowBillingParam(sPack As String)
           txtreference.ReadOnly = False
         Else
           If resx["fldreference"] = "Claim Code" Then
-            txtreference.Text = modClaim.GetClaimCidePatient(Trim(txtencid.Text))
+            txtreference.Text = modClaim.GetClaimCidePatient(Trim(txtencid.Text), modNonMedical.GetLastCLaimType(Trim(txtencid.Text)))
             If txtreference.Text Then
               txtreference.Tag = modClaim.GetHIClaimState(txtreference.Text)
               If txtreference.Tag = "Consultation" Or If txtreference.Tag = "Patient Ward" Then

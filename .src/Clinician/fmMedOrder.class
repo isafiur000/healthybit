@@ -9,6 +9,11 @@ Private $xFinClear As Boolean
 Private $PatientNum As String
 Private $xNHISCode As String
 
+Private $PatAge As Float
+Private $PatSex As String
+Private $PatWeight As Float
+Private $PatHeight As Float
+
 Private $rData As Result
 Private $aMyFields As String[]
 Private $rData1 As Result
@@ -41,6 +46,7 @@ End
 Public Sub Form_Open()
 
   Dim mfglist As String
+  Dim xbirthDate As Date
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
 
@@ -68,12 +74,18 @@ Public Sub Form_Open()
   Endif
 
   txtpatientname.Text = modPatient.GetPatientNameByEnc($encid)
-  txtgender.Text = modPatient.GetPatientSex($encid)
-  $doa = modPatient.GetRecordDate($encid)
   txtpatientaddress.Text = modPatient.GetPatientAddressByEnc($encid)
-  xYear = DateDiff(modPatient.GetPatientBirthDay($encid), Now(), gb.Year)
+  $PatSex = modPatient.GetPatientSex($encid)
+  xbirthDate = modPatient.GetPatientBirthDay($encid)
+  txtgender.Text = modDate.GetAgeString(xbirthDate, Now()) & "/" & $PatSex
+  xYear = DateDiff(xbirthDate, Now(), gb.Year)
+  $doa = modPatient.GetRecordDate($encid)
   $PatientNum = modPatient.GetPatientNoByEnc($encid)
   $xNHISCode = modPatient.GetPatientExtCOdebyEnc($encid)
+
+  $PatAge = xYear
+  $PatHeight = modClinic.GetPatientHeightinCm($encid)
+  $PatWeight = modClinic.GetBodyWeight($encid)
 
   ShowBillingParam($DiscPackage)
   If $status = "Admitted" Then
@@ -93,11 +105,6 @@ Public Sub Form_Open()
   If modPharmacy.DisableEncounterForReview($encid) = True Then
     $ShowReview = "No"
   Endif
-  If $ShowReview = "No" Then
-  Else
-    modSysCons.ClearPatParameterCalc()
-    modSysCons.SetPatParametersCalc($encid)
-  Endif
 
   ButtonControl()
   $AlphaList = New String[]
@@ -113,6 +120,8 @@ Public Sub Form_Open()
     chksave.Enabled = False
     GridView3.Enabled = False
   Endif
+  modSysCons.ClearPatParameterCalc()
+  ShowBasicParamStatus()
 
 End
 
@@ -129,6 +138,37 @@ Private Sub ButtonControl()
   xx = modPatient.EnableClinicForm($Status)
   GridView3.Enabled = xx
   GridView4.Enabled = xx
+
+End
+
+Private Sub ShowBasicParamStatus()
+
+  Dim xmsg As String
+
+  If $ShowReview = "No" Then
+  Else
+
+    xmsg = ""
+    If Not $PatHeight Then
+      $PatHeight = modSysCons.GetPatientEmptyHeight($PatAge, $PatSex)
+      If $PatHeight Then
+        xmsg = "Patient's height not set. Using " & $PatHeight & " cm for now" & gb.NewLine
+      Endif
+    Endif
+    If Not $PatWeight Then
+      If $PatHeight Then
+        $PatWeight = modSysCons.GetPatientEmptyWeight($PatHeight, $PatSex)
+        If $PatWeight Then
+          xmsg = xmsg & "Patient's weight not set. Using " & $PatWeight & " Kg for now"
+        Endif
+      Endif
+    Endif
+
+    If xmsg Then
+      Message.Warning(xmsg, ("OK"))
+    Endif
+
+  Endif
 
 End
 

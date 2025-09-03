@@ -428,7 +428,7 @@ Public Sub btnshow_Click()
               txtreference.ReadOnly = False
             Else
               If resx["fldreference"] = "Claim Code" Then
-                txtreference.Text = modClaim.GetClaimCidePatient(Trim(txtencid.Text))
+                txtreference.Text = modClaim.GetClaimCidePatient(Trim(txtencid.Text), modNonMedical.GetLastCLaimType(Trim(txtencid.Text)))
                 If txtreference.Text Then
                   txtreference.Tag = modClaim.GetHIClaimState(txtreference.Text)
                   If txtreference.Tag = "Consultation" Or If txtreference.Tag = "Patient Ward" Then
@@ -657,7 +657,7 @@ Private Sub ShowBillingParam(sPack As String)
           txtreference.ReadOnly = False
         Else
           If resx["fldreference"] = "Claim Code" Then
-            txtreference.Text = modClaim.GetClaimCidePatient(Trim(txtencid.Text))
+            txtreference.Text = modClaim.GetClaimCidePatient(Trim(txtencid.Text), modNonMedical.GetLastCLaimType(Trim(txtencid.Text)))
             If txtreference.Text Then
               txtreference.Tag = modClaim.GetHIClaimState(txtreference.Text)
               If txtreference.Tag = "Consultation" Or If txtreference.Tag = "Patient Ward" Then
@@ -5309,7 +5309,7 @@ Private Sub PrintAllInvoices()
       If resx.Available Then
         If resx["fldreference"] Then
           If resx["fldreference"] = "Claim Code" Then
-            hPatient.$ACReference = modClaim.GetClaimCidePatient(Trim(txtencid.Text))
+            hPatient.$ACReference = modClaim.GetClaimCidePatient(Trim(txtencid.Text), modNonMedical.GetLastCLaimType(Trim(txtencid.Text)))
           Else If resx["fldreference"] = "Accident SSF" Then
             hPatient.$ACReference = modSSF.GetSSFClaimCodePatient(Trim(txtencid.Text), "Accident SSF")
           Else If resx["fldreference"] = "Critical SSF" Then
