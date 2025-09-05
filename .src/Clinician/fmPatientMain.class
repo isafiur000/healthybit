@@ -26,9 +26,6 @@ Private $billModeService As String
 Private $billModeOthers As String
 Private $billReference As String
 
-Private $tblpatlabtest As String
-Private $tblpatlabsubtest As String
-
 Public Sub _new(encid As String, Focus As Boolean)
 
   txtencid.Text = encid
@@ -55,6 +52,10 @@ Public Sub Form_Open()
   Else
     cmbsymptom.List = modBasic.$ClinComplaintComp
   Endif
+  If modBasic.$ItemListFormat = "GridView" Then
+  Else
+    cmbfinding.List = modBasic.$ClinFindingComp
+  Endif
   $ExamLst = modMedicine.FillClinicalSubClass("InPatient")
   $UserRestrict = modBasic.$ClinicDisableCompo
 
@@ -68,8 +69,6 @@ Public Sub Form_Open()
   SetHtmlTextOption(txtobject)
   SetHtmlTextOption(txtmanage)
   SetHtmlTextOption(txtplan)
-  modAccount.PasInvoiceSetting(cmbfiscal, False)
-  LoadTableNames()
 
   If txtencid.Text Then
     GetEncounterValue()
@@ -114,43 +113,6 @@ Private Sub SetHtmlTextOption(TextHTML1 As TextHTML)
 
   TextHTML1.DictionaryPath = modBasic.$dictPathList
   TextHTML1.UserList = modBasic.$IPConsultUserList
-
-End
-
-Private Sub LoadTableNames()
-
-  Dim res As Result
-
-  If cmbfiscal.Text = "Current" Then
-    $tblpatlabtest = "tblpatlabtest"
-    $tblpatlabsubtest = "tblpatlabsubtest"
-  Else
-    res = modDatabase.$syConn.Exec("select fldpatlabtest,fldpatlabsubtest from tblfisclosing where fldindex=&1 and (fldstate=&2 or fldstate IS NULL)", cmbfiscal.Text, "Active")
-    If res.Available Then
-      If res["fldpatlabtest"] Then
-        $tblpatlabtest = res["fldpatlabtest"]
-      Else
-        $tblpatlabtest = "tblpatlabtest"
-      Endif
-      If res["fldpatlabsubtest"] Then
-        $tblpatlabsubtest = res["fldpatlabsubtest"]
-      Else
-        $tblpatlabsubtest = "tblpatlabsubtest"
-      Endif
-    Else
-      $tblpatlabtest = "tblpatlabtest"
-      $tblpatlabsubtest = "tblpatlabsubtest"
-    Endif
-  Endif
-
-End
-
-Public Sub cmbfiscal_Click()
-
-  LoadTableNames()
-  If txtencid.Text Then
-    lstfinding.List = modLabTest.PaientAllTestNameArray(Trim(txtencid.Text), $tblpatlabtest)
-  Endif
 
 End
 
@@ -248,7 +210,6 @@ Private Sub GetEncounterValue()
               $focus = False
               $EBMDiagnosis = ""
               $NotesList = New String[]
-              txtadmitcause.SetFocus
             Else
               Me.Enabled = False
             Endif
@@ -557,6 +518,7 @@ Private Function GetHistoryList() As String[]
   Dim xfinal As String[]
 
   xList = New String[]
+  xList.Add("Cause of Admission")
   xList.Add("General Complaints")
   xList.Add("History of Illness")
   If modBasic.$ClinHistoryDischarge = "Selected" Then
@@ -597,12 +559,13 @@ End
 
 Private Sub BasicInfoPatient()
 
+  Dim hDigForm As FmDiagnosticTab
   Dim hPtForm As FmClinHistory
   ' Dim hDigForm As FmDiagnosticTab
 
   If txtencid.Text Then
     GetDefaultBillingmodes()
-    txthistorylabel.List = GetHistoryList()
+    lsthistorylabel.List = GetHistoryList()
     cmbnote.List = NoteTakingTypeList()
     If $sTatus = "Admitted" Then
       cmbnotetype.List = ["All Types", "Progress Note", "Clinicians Note", "Nurses Note", "Transfer Note", "Patient Note"]
@@ -614,9 +577,12 @@ Private Sub BasicInfoPatient()
     lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
     lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
     lstsyndrome.List = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", Trim(txtencid.Text))
+    dtfind.Value = Now()
+    lbldtfind.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), Now())
     ShowChiefSymptomData()
-    txtadmitcause.Text = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "Cause of Admission")
+    FillExamtable()
     ButtonControl()
+    hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
     hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
     TabStrip1.Index = 0
   Endif
@@ -662,8 +628,6 @@ Private Sub ButtonControl()
   btnsympadd.Enabled = xx
   btnaddsymplist.Enabled = xx
   grdchiefsymptom.Enabled = xx
-  ''cause of admission
-  btnadmitcause.Enabled = xx
   ''patient history
   tlbtnhistory.Enabled = xx
   ''clinical findings
@@ -673,9 +637,6 @@ Private Sub ButtonControl()
   btnaddexamlistmainall.Enabled = xx
   btnaddscales.Enabled = xx
   btntriage.Enabled = xx
-  ''body wt
-  btnaddwt.Enabled = xx
-  grdwt.Enabled = xx
   ''input/output
   btnaddinput.Enabled = xx
   btaddoutput.Enabled = xx
@@ -732,11 +693,11 @@ Private Sub ButtonControl()
   ''demographic
   mnudemograph.Enabled = xx
   ''images
-  mnuscreendraw.Enabled = xx
+  btnscreendraw.Enabled = xx
   ''equipment
   mnuequipment.Enabled = xx
   ''minor procedure
-  mnuminiproc.Enabled = xx
+  btnminor.Enabled = xx
   ''gen service
   mnugenservice.Enabled = xx
   ''extra procedure
@@ -1082,15 +1043,10 @@ Public Sub TabStrip1_Click()
 
   If txtencid.Text Then
     If TabStrip1.Index = 0 Then
-    Else If TabStrip1.Index = 1 Then
-      dtfind.Value = Now()
-      lbldtfind.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), Now())
-      If modBasic.$ItemListFormat = "GridView" Then
-      Else
-        cmbfinding.List = modBasic.$ClinFindingComp
-      Endif
+      ShowChiefSymptomData()
       FillExamtable()
-      WeightGrid()
+    Else If TabStrip1.Index = 1 Then
+
     Else If TabStrip1.Index = 2 Then
       dtfluid.Value = Now()
       lbldtfluid.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), Now())
@@ -1099,7 +1055,7 @@ Public Sub TabStrip1_Click()
       ShowIntakeFoodGrid()
       SHowOutputFluid()
     Else If TabStrip1.Index = 3 Then
-      lstfinding.List = modLabTest.PaientAllTestNameArray(Trim(txtencid.Text), $tblpatlabtest)
+
     Else If TabStrip1.Index = 4 Then
       dtnote.Value = Now()
       lbldtnote.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), Now())
@@ -1143,7 +1099,6 @@ Public Sub Form_KeyRelease()
     dtfluid.SetFocus
   Else If Key.Code = Key.F4 Then
     TabStrip1.Index = 3
-    lstfinding.SetFocus
   Else If Key.Code = Key.F5 Then
     TabStrip1.Index = 4
     cmbnote.SetFocus
@@ -1174,164 +1129,6 @@ Public Sub Form_KeyRelease()
 
 End
 
-'''-------------------------------- Findings----------------------------------------------------------------------
-Public Sub mnuchartlab_Click()
-
-  Dim hForm As FmClinChart
-
-  hForm = New FmClinChart("Test", lstfinding.Text, Trim(txtencid.Text), modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
-  modWorkSpace.Add(hForm)
-
-End
-
-Public Sub lstfinding_Menu()
-
-  mnuhiddenlab.Popup
-
-End
-
-Public Sub lstfinding_Click()
-
-  ShowLabtable(Trim(txtencid.Text), lstfinding.Text)
-
-End
-
-Public Sub lstfinding_Select()
-
-  ShowLabtable(Trim(txtencid.Text), lstfinding.Text)
-
-End
-
-Private Sub ShowLabtable(encid As String, sTest As String)
-
-  Dim sql As String
-
-  sql = "select fldid,fldsampletype,fldtestid,fldstatus,fldsave_report,fldabnormal,fldid,fldtime_sample,fldtime_report,fldtest_type from " & $tblpatlabtest & " where fldencounterval=&1 and fldtestid like &2 and (fldstatus=&3 or fldstatus=&4) and flvisible=&5"
-  $rData = modDatabase.$myConn.Exec(sql, encid, sTest, "Reported", "Verified", "Visible")
-  $aMyFields = New String[]
-  modGridView.ReadSmallData(grdfinding, $rData, $aMyFields)
-  With grdfinding
-    .Columns[0].Width = 1
-    .Columns[1].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 200 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 1
-    .Columns[5].Width = 25 * modBasic.$AppWidthRatio
-    .Columns[6].Width = 250 * modBasic.$AppWidthRatio
-    .Columns[7].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[8].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[9].Width = 1
-
-    .Columns[1].Text = "Specimen"
-    .Columns[2].Text = "Test Name"
-    .Columns[3].Text = "Status"
-    .Columns[6].Text = "Observation"
-    .Columns[7].Text = "Sample Time"
-    .Columns[8].Text = "Report Time"
-
-  End With
-
-End
-
-Public Sub grdfinding_Data(Row As Integer, Column As Integer)
-
-  $rData.MoveTo(Row)
-  modGeneralMain.GridViewDecoration(grdfinding, Row)
-  If Column = 5 Then
-    grdfinding.Data.Picture = Picture[modMisc.GetGridIcon($rData[$aMyFields[Column]])]
-    grdfinding.Data.Text = ""
-  Else If Column = 6 Then
-    grdfinding.Data.RichText = modLabTest.GetLabTestValueSubString($rData["fldid"], LabUnitForm(), True, $tblpatlabtest, $tblpatlabsubtest)
-    If modBasic.$RichtextResizeRow = "Yes" Then
-      grdfinding.Rows[Row].Height = Max(grdfinding.Rows[Row].Height, grdfinding.Data.Font.RichTextHeight(grdfinding.Data.RichText, grdfinding.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (grdfinding.Rows.Height - grdfinding.Font.Height))
-    Endif
-  Else If Column = 7 Then
-    grdfinding.Data.Text = modReportVar.GetDateTimeReport($rData["fldtime_sample"], gb.GeneralDate)
-  Else If Column = 8 Then
-    grdfinding.Data.Text = modReportVar.GetDateTimeReport($rData["fldtime_report"], gb.GeneralDate)
-  Else
-    grdfinding.Data.Text = $rData[$aMyFields[Column]]
-  Endif
-  grdfinding.Data.WordWrap = True
-
-End
-
-Public Sub grdfinding_Click()
-
-  Dim xx As String
-
-  If grdfinding.Column = 6 Then
-    ' If rbqualifinding.Value = True Then
-    xx = GetRichTextArea(grdfinding[grdfinding.Row, 2].RichText, grdfinding[grdfinding.Row, 6].RichText)
-    ' Endif
-  Endif
-
-End
-
-Public Sub grdfinding_Menu()
-
-  mnuhidetest.Popup
-
-End
-
-Public Sub mnuaddtestrepo_Click()
-
-  If grdfinding.Rows.Selection.Count Then
-    If modBasic.$SHowDayDiagnosticReport = "Yes" Then
-      $NotesList.Add("[" & grdfinding[grdfinding.Row, 7].Text & "] " & grdfinding[grdfinding.Row, 2].Text & " : " & grdfinding[grdfinding.Row, 6].RichText)
-    Else
-      $NotesList.Add(grdfinding[grdfinding.Row, 2].Text & " : " & grdfinding[grdfinding.Row, 6].RichText)
-    Endif
-  Endif
-
-End
-
-Public Sub mnutestimage_Click()
-
-  Dim xPath As String
-
-  If grdfinding.Rows.Selection.Count > 0 Then
-    Inc Application.Busy
-    xPath = modCHTMLPatient.ShowPatientLaboratoryImage(grdfinding[grdfinding.Row, 0].Text, Trim(txtencid.Text))
-    Dec Application.Busy
-    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
-  Endif
-
-End
-
-Public Sub mnuevidence_Click()
-
-  Dim xx As String
-
-  If grdfinding.Rows.Selection.Count > 0 Then
-    If modBasic.$EBMDiagno = "Yes" Then
-      If Not $EBMDiagnosis Then
-        If Message.Question(("No Diagnosis selected. Do you want to proceed?"), ("No"), ("Yes")) = 2 Then
-          Inc Application.Busy
-          xx = modLabTest.GetStatLabReport(grdfinding[grdfinding.Row, 0].Text, LabUnitForm(), "")
-          Dec Application.Busy
-        Else
-          xx = ""
-        Endif
-      Else
-        Inc Application.Busy
-        xx = modLabTest.GetStatLabReport(grdfinding[grdfinding.Row, 0].Text, LabUnitForm(), $EBMDiagnosis)
-        Dec Application.Busy
-      Endif
-    Else
-      Inc Application.Busy
-      xx = modLabTest.GetStatLabReport(grdfinding[grdfinding.Row, 0].Text, LabUnitForm(), "")
-      Dec Application.Busy
-    Endif
-
-    If xx Then
-      Message.Title = "Evidence"
-      Message.Info("[" & grdfinding[grdfinding.Row, 2].Text & "]" & gb.NewLine & xx, ("OK"))
-    Endif
-  Endif
-
-End
-
 ''------------------------------------- chief symptom ------------------------------------------------------
 Public Sub btnaddsymplist_Click()
 
@@ -1343,7 +1140,7 @@ Public Sub btnaddsymplist_Click()
   If modBasic.$SelectMultiSymptoms = "Yes" Then
     xlist = modBasic.$ClinComplaintComp
     If xlist.Count Then
-      aList = GridListView("Select Presenting Complaints", xlist, Panel9, grdchiefsymptom.Height + cmbsymptom.Height + Label29.Height + txtadmitcause.Height)
+      aList = GridListView("Select Presenting Complaints", xlist, Panel9, grdchiefsymptom.Height + cmbsymptom.Height)
       If aList And If aList.Count Then
         For Each xitem In aList
           modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", xitem, "", 0, "")
@@ -2047,47 +1844,10 @@ Public Sub GridView1_Click()
 End
 
 ''----------------------------------------------- history -------------------------------------------------------
-Public Sub btnadmitcause_Click()
-
-  Dim xboolean As Boolean
-
-  If modBasic.$ClinHistoryInput = "Single" Then
-    xboolean = True
-  Else
-    xboolean = False
-  Endif
-
-  If txtencid.Text Then
-    If txtadmitcause.Text Then
-      modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "History", "Cause of Admission", "", txtadmitcause.Text, xboolean)
-      Balloon.Info(("Information saved"), btnadmitcause)
-      Balloon.Delay = modBasic.$BalloonDelay
-    Endif
-  Endif
-
-End
-
-Public Sub dcthelpcause_Click()
-
-  Dim xx As String
-
-  xx = GetTextArea("Cause of Admission", txtadmitcause.Text)
-  If xx Then
-    txtadmitcause.Text = xx
-  Endif
-
-End
-
-Public Sub btntemplpcause_Click()
-
-  txtadmitcause.Text = txtadmitcause.Text & DictionaryVIew(modBasic.$dictadvPath)
-
-End
-
 Public Sub btnhistorydef_Click()
 
-  If txthistorylabel.Text Then
-    txthistory.RichText = AddHistory("History", txthistorylabel.Text)
+  If lsthistorylabel.Text Then
+    txthistory.RichText = AddHistory("History", lsthistorylabel.Text)
   Endif
 
 End
@@ -2102,13 +1862,14 @@ Public Sub tlbtnhistory_Click()
     xboolean = False
   Endif
 
-  If txthistorylabel.Text Then
+  If lsthistorylabel.Text Then
     If txthistory.Text Then
-      If txthistorylabel.Text = "Initial Planning" Or If txthistorylabel.Text = "Final Planning" Then
-        modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", txthistorylabel.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
+      If lsthistorylabel.Text = "Initial Planning" Or If lsthistorylabel.Text = "Final Planning" Then
+        modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", lsthistorylabel.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
       Else
-        modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "History", txthistorylabel.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
+        modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "History", lsthistorylabel.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
       Endif
+      tlbtnhistory.Enabled = False
       Balloon.Info(("Information saved"), tlbtnhistory)
       Balloon.Delay = modBasic.$BalloonDelay
     Endif
@@ -2116,13 +1877,23 @@ Public Sub tlbtnhistory_Click()
 
 End
 
-Public Sub txthistorylabel_Click()
+Public Sub lsthistorylabel_Click()
 
-  If txthistorylabel.Text Then
-    If txthistorylabel.Text = "Initial Planning" Or If txthistorylabel.Text = "Final Planning" Then
-      txthistory.RichText = modPatPatho.ShowSelectedNotes(Trim(txtencid.Text), txthistorylabel.Text)
+  Dim xVar As String[]
+
+  If lsthistorylabel.Text Then
+    tlbtnhistory.Enabled = True
+    If lsthistorylabel.Text = "Initial Planning" Or If lsthistorylabel.Text = "Final Planning" Then
+      xVar = modPatPatho.ShowSelectedNoteUser(Trim(txtencid.Text), lsthistorylabel.Text)
     Else
-      txthistory.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), txthistorylabel.Text)
+      xVar = modPatPatho.ShowSelectedHistoryUser(Trim(txtencid.Text), lsthistorylabel.Text)
+    Endif
+    If xVar And If xVar.Count Then
+      txthistory.RichText = xVar[0]
+      lblhistoryuser.Text = xVar[1]
+    Else
+      txthistory.RichText = ""
+      lblhistoryuser.Text = ""
     Endif
   Endif
 
@@ -2165,75 +1936,6 @@ Public Sub tlbtpregnancy_Click()
     Balloon.Info(("Information saved"), tlbtpregnancy)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
-
-End
-
-''''''weight
-Public Sub btnaddwt_Click()
-
-  Dim xquantival As Variant[]
-
-  If txtencid.Text Then
-    xquantival = GetQuantiValues("Exam", Trim(txtencid.Text), "Body Weight", 0, 0, 0)
-    If xquantival Then
-      modClinSub.AddGeneralParametersQuanti(Trim(txtencid.Text), "Body Weight", xquantival[0])
-      Balloon.Info(("Information saved"), btnaddwt)
-      Balloon.Delay = modBasic.$BalloonDelay
-    Endif
-    WeightGrid()
-  Endif
-
-End
-
-Public Sub grdwt_Click()
-
-  Dim xquantival As Variant[]
-
-  If grdwt.Column = 2 Then
-    xquantival = GetQuantiValues("Exam", Trim(txtencid.Text), "Body Weight", 0, 0, grdwt[grdwt.Row, 2].Text)
-    If xquantival Then
-      modClinSub.UpdateQuantiData(grdwt[grdwt.Row, 0].Text, xquantival[0], False)
-    Endif
-  Endif
-
-End
-
-Public Sub WeightGrid()
-
-  Dim sql As String
-  Dim Column As Integer
-  Dim fld As ResultField
-  Dim res As Result
-
-  sql = "select fldid,fldtime,fldrepquanti from tblpatientexam where fldencounterval=&1 and fldhead=&2 and fldtype=&3 and fldsave=&4 ORDER BY fldid DESC"
-  res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Body Weight", "Quantitative", True)
-
-  grdwt.Clear
-  grdwt.Columns.Count = res.Fields.Count
-  grdwt.Rows.Count = res.Count
-
-  For Each res
-    Column = 0
-    For Each fld In res.Fields
-      modGeneralMain.GridExplicitDecoration(grdwt, res.Index, Column)
-      If Column = 1 Then
-        grdwt[res.Index, Column].Text = modPatient.GetDayTimeFromAdmission(Trim(txtencid.Text), res["fldtime"])
-      Else
-        grdwt[res.Index, Column].Text = res[fld.Name]
-      Endif
-      Column = Column + 1
-    Next
-  Next
-  grdwt.Row = 0
-
-  With grdwt
-    .Rows.Height = modBasic.$AppGridRowHeight
-    .Columns[0].Width = 1
-    .Columns[1].Width = 125 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 50 * modBasic.$AppWidthRatio
-    .Columns[1].Text = "DateTime"
-    .Columns[2].Text = "Weigt"
-  End With
 
 End
 
@@ -3876,17 +3578,6 @@ Private Function GetFluidAdminStatusCode(dosno As Long) As String
 End
 
 ''--------------------------General calculation -------------------------------------------------------
-Public Sub grpwt_Click()
-
-  Dim hForm As FmClinChart
-
-  If txtencid.Text Then
-    hForm = New FmClinChart("SetA", "Wt", Trim(txtencid.Text), "")
-    modWorkSpace.Add(hForm)
-  Endif
-
-End
-
 Public Sub tlbibw_Click()
 
   If txtencid.Text Then
@@ -4103,7 +3794,7 @@ Public Sub mnumajor_Click()
 
 End
 
-Public Sub mnuminiproc_Click()
+Public Sub btnminor_Click()
 
   Dim hForm As FmMiniProcedure
 
@@ -4153,10 +3844,10 @@ End
 
 Public Sub mnumedproduct_Click()
 
-  Dim hForm As FmMedItemList
+  Dim hForm As FmBloodReq
 
   If txtencid.Text Then
-    hForm = New FmMedItemList(Trim(txtencid.Text), "Blood")
+    hForm = New FmBloodReq(Trim(txtencid.Text))
     hForm.ShowModal
   Endif
 
@@ -4206,7 +3897,7 @@ Public Sub mnudemograph_Click()
 
 End
 
-Public Sub btnimage_Click()
+Public Sub mnuimage_Click()
 
   Dim hForm As FmPatImage
 
@@ -4217,9 +3908,14 @@ Public Sub btnimage_Click()
 
 End
 
-Public Sub mnuimagepat_Click()
+Public Sub mnuvideo_Click()
 
-  btnimage_Click()
+  Dim hForm8 As FmPatVideo
+
+  If txtencid.Text Then
+    hForm8 = New FmPatVideo("VIDEO", Trim(txtencid.Text), "")
+    hForm8.ShowModal
+  Endif
 
 End
 
@@ -4231,12 +3927,6 @@ Public Sub mnudicomimage_Click()
     hForm = New FmPatImage("DICOM", Trim(txtencid.Text), "")
     hForm.ShowModal
   Endif
-
-End
-
-Public Sub mnupacsimage_Click()
-
-  btnpacs_Click()
 
 End
 
@@ -4258,35 +3948,6 @@ Public Sub btnpacs_Click()
   If txtencid.Text Then
     hForm = New FmPacsFind(Trim(txtencid.Text), "Visit")
     hForm.ShowModal
-  Endif
-
-End
-
-Public Sub mnuvideodata_Click()
-
-  Dim hForm8 As FmPatVideo
-
-  If txtencid.Text Then
-    hForm8 = New FmPatVideo("VIDEO", Trim(txtencid.Text), "")
-    hForm8.ShowModal
-  Endif
-
-End
-
-Public Sub mnuscreendraw_Click()
-
-  Dim sPath As String
-  Dim xxx As String[]
-  Dim xval As String
-
-  If txtencid.Text Then
-    xxx = CustomDraw()
-    If xxx Then
-      sPath = xxx[0]
-      If sPath Then
-        xval = modImage.SaveClinicScreenDraw(Trim(txtencid.Text), xxx[1], sPath)
-      Endif
-    Endif
   Endif
 
 End
@@ -5010,7 +4671,7 @@ Public Sub mnunurcheck_Click()
 
 End
 
-Public Sub btnnursing_Click()
+Public Sub btnscreendraw_Click()
 
   Dim sPath As String
   Dim xxx As String[]
@@ -6023,9 +5684,6 @@ Private Sub RestrictUserAccess()
   If $UserRestrict.Exist("General Complaints") Then
     ''
   Endif
-  If $UserRestrict.Exist("Cause of Admission") Then
-    btnadmitcause.Enabled = False
-  Endif
   If $UserRestrict.Exist("Patient History") Then
     tlbtnhistory.Enabled = False
   Endif
@@ -6039,8 +5697,6 @@ Private Sub RestrictUserAccess()
   Endif
   If $UserRestrict.Exist("Body Weight") Then
     tlbtnadwt.Enabled = False
-    btnaddwt.Enabled = False
-    grdwt.Enabled = False
   Endif
   If $UserRestrict.Exist("Body Height") Then
     btnaddheit.Enabled = False
@@ -6137,24 +5793,23 @@ Private Sub RestrictUserAccess()
     mnudemograph.Enabled = False
   Endif
   If $UserRestrict.Exist("General Images") Then
-    mnuscreendraw.Enabled = False
-    mnuimagepat.Enabled = False
-    btnimage.Enabled = False
+    btnscreendraw.Enabled = False
+    mnuimage.Enabled = False
   Endif
   If $UserRestrict.Exist("Video Data") Then
-    mnuvideodata.Enabled = False
+    mnuvideo.Enabled = False
   Endif
   If $UserRestrict.Exist("DICOM Images") Then
     mnudicomimage.Enabled = False
   Endif
   If $UserRestrict.Exist("PACS Images") Then
-    mnupacsimage.Enabled = False
+    btnpacs.Enabled = False
   Endif
   If $UserRestrict.Exist("Equipments Used") Then
     mnuequipment.Enabled = False
   Endif
   If $UserRestrict.Exist("Minor Procedure") Then
-    mnuminiproc.Enabled = False
+    btnminor.Enabled = False
   Endif
   If $UserRestrict.Exist("General Services") Then
     mnugenservice.Enabled = False
@@ -6196,12 +5851,6 @@ End
 Public Sub btnhelpnote_Click()
 
   txtnote.RichText = txtnote.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtnote.Text)
-
-End
-
-Public Sub btnhelpcause_Click()
-
-  txtadmitcause.Text = txtadmitcause.Text & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtadmitcause.Text)
 
 End
 

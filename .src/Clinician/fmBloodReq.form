@@ -1,58 +1,71 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,75,60)
+  MoveScaled(0,0,91,66)
   Tag = "Med Product Request"
   Text = ("Med Product Request")
   Resizable = False
   { Panel1 Panel
-    MoveScaled(0,0,75,60)
+    MoveScaled(0,0,90,65.5)
     { TabPanel1 TabPanel
-      MoveScaled(1,9,73,50)
+      MoveScaled(1,9,88,56)
       Count = 2
       Index = 0
       Text = ("Requested")
-      { cmbcategory ComboBox
-        MoveScaled(1,1,14,3)
-        Sorted = True
-      }
       { cmbitem ComboBox
-        MoveScaled(16,1,49,3)
+        MoveScaled(12,1,42,3)
         Sorted = True
       }
       { txtqty ValueBox
-        MoveScaled(66,1,6,3)
+        MoveScaled(12,5,10,3)
       }
       { btnsubOK Button
-        MoveScaled(16,4.6667,15,3)
+        MoveScaled(71,5,15,3)
         Text = ("Save")
         Picture = Picture["icon:/small/add"]
       }
       { TextArea1 TextArea
-        MoveScaled(1,8,71,10)
+        MoveScaled(1,9,85,8)
         Tag = "Auto"
         Wrap = True
         ScrollBar = Scroll.Vertical
       }
       { GridView1 GridView
-        MoveScaled(1,19,71,26)
+        MoveScaled(1,18,86,33)
         Mode = Select.Single
         Header = GridView.Both
         AutoResize = False
       }
       { Label8 Label
-        MoveScaled(1,4.6667,14,3)
-        Text = ("Comment")
+        MoveScaled(1,5,10,3)
         Border = Border.Plain
+        Text = ("Quantity")
       }
       { pnlquanti Panel
-        MoveScaled(57,5,15,16)
+        MoveScaled(10,9,15,16)
         Visible = False
+      }
+      { cmbgroup ComboBox
+        MoveScaled(55,1,25,3)
+      }
+      { Label1 Label
+        MoveScaled(1,1,10,3)
+        Border = Border.Plain
+        Text = ("Category")
+      }
+      { lblcode Label
+        MoveScaled(23,5,47,3)
+        Visible = False
+        Border = Border.Plain
+      }
+      { btnshow Button
+        MoveScaled(81,1,5,3)
+        Picture = Picture["icon:/small/refresh"]
       }
       Index = 1
       Text = ("Completed")
       { GridView2 GridView
-        MoveScaled(1,1,71,44)
+        MoveScaled(1,1,86,50)
         Mode = Select.Single
         Header = GridView.Both
         AutoResize = False
@@ -61,13 +74,13 @@
     }
     { Label2 Label
       MoveScaled(1,1,9,3)
-      Text = ("Name")
       Border = Border.Plain
+      Text = ("Name")
     }
     { Label3 Label
       MoveScaled(1,5,9,3)
-      Text = ("Address")
       Border = Border.Plain
+      Text = ("Group")
     }
     { txtpatientname TextBox
       MoveScaled(11,1,34,3)
@@ -79,21 +92,21 @@
       ReadOnly = True
     }
     { Label4 Label
-      MoveScaled(51,1,8,3)
-      Text = ("Gender")
+      MoveScaled(67,1,8,3)
       Border = Border.Plain
+      Text = ("Gender")
     }
     { txtgender TextBox
-      MoveScaled(60,1,12,3)
+      MoveScaled(76,1,12,3)
       ReadOnly = True
     }
     { Label7 Label
-      MoveScaled(51,5,8,3)
-      Text = ("Bed No")
+      MoveScaled(67,5,8,3)
       Border = Border.Plain
+      Text = ("Bed No")
     }
     { txtlocation TextBox
-      MoveScaled(60,5,12,3)
+      MoveScaled(76,5,12,3)
       ReadOnly = True
     }
   }

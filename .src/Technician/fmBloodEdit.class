@@ -14,7 +14,7 @@ Public Sub Form_Open()
   modGeneralMain.ArrangeFormCentre(Me)
   Me.Title = $sType & " Product Entry"
   If $sType = "Blood" Then
-    cmbitem.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(flditem) as col from tblblood"))
+    cmbitem.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select flditemcode as col from tblbloodstore"))
   Endif
   RefreshValue(txtcode.Text)
   txtcode.SetFocus

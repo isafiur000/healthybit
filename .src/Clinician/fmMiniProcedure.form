@@ -1,67 +1,86 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,90,63)
+  MoveScaled(0,0,99,71)
   Text = ("Minor Procedures")
   Resizable = False
   { Panel1 Panel
-    MoveScaled(0,0,90,63)
+    MoveScaled(0,0,98,70)
     { TabPanel1 TabPanel
-      MoveScaled(1,9,88,53)
+      MoveScaled(1,9,96,60)
       Count = 2
       Index = 0
       Text = ("Current")
       { cmbprocedure ComboBox
-        MoveScaled(19,1,54,3.25)
+        MoveScaled(12,4.5,59,3)
         Sorted = True
       }
       { btnrefer ButtonBox
-        MoveScaled(19,5,32,3.25)
+        MoveScaled(71,0.5,24,3)
         Picture = Picture["icon:/small/people"]
         ReadOnly = True
       }
       { btnsubOK Button
-        MoveScaled(67,5,6,3.25)
+        MoveScaled(72,4.5,10,3)
+        Text = ("Add")
         Picture = Picture["icon:/small/add"]
       }
       { btnsave Button
-        MoveScaled(75,5,12,3.25)
+        MoveScaled(83,4.5,12,3.25)
         Text = ("Save")
         Picture = Picture["icon:/small/apply"]
       }
       { Label6 Label
-        MoveScaled(1,5,17,3.25)
+        MoveScaled(62,0.5,9,3)
         Border = Border.Plain
-        Text = ("Referred From")
+        Text = ("Referred")
       }
       { GridView1 GridView
-        MoveScaled(1,28,86,20)
+        MoveScaled(1,32,94,23)
         Mode = Select.Single
         Header = GridView.Both
         AutoResize = False
       }
       { txtsummary TextHTML
-        MoveScaled(1,9,86,18)
+        MoveScaled(0,8.5,95,23)
       }
       { btnsummary ToolButton
-        MoveScaled(56,5,3,3)
+        MoveScaled(49,0.5,3,3)
         Picture = Picture["icon:/small/exec"]
       }
       { dctsummary ToolButton
-        MoveScaled(52,5,3,3)
+        MoveScaled(41,0.5,3,3)
         Picture = Picture["icon:/small/edit"]
       }
       { btntemplsumm ToolButton
-        MoveScaled(60,5,3,3)
+        MoveScaled(45,0.5,3,3)
         Picture = Picture["icon:/small/attach"]
       }
-      { cmbtype ComboBox
-        MoveScaled(1,1,17,3.25)
+      { Panel2 Panel
+        MoveScaled(0.5,0.5,30,3)
+        { rbminor RadioButton
+          MoveScaled(0,0,9,3)
+          Text = ("Minor")
+        }
+        { rbinter RadioButton
+          MoveScaled(9,0,9,3)
+          Text = ("Inter")
+        }
+        { rbplaster RadioButton
+          MoveScaled(19,0,10,3)
+          Text = ("Plaster")
+          Value = True
+        }
+      }
+      { Label1 Label
+        MoveScaled(0,4.5,11,3)
+        Border = Border.Plain
+        Text = ("Procedure")
       }
       Index = 1
       Text = ("Completed")
       { GridView2 GridView
-        MoveScaled(1,1,86,47)
+        MoveScaled(1,1,94,54)
         Mode = Select.Single
         Header = GridView.Both
         AutoResize = False
@@ -84,21 +103,21 @@
       ReadOnly = True
     }
     { Label4 Label
-      MoveScaled(67,1,8,3)
+      MoveScaled(75,1,8,3)
       Border = Border.Plain
       Text = ("Gender")
     }
     { txtgender TextBox
-      MoveScaled(76,1,12,3)
+      MoveScaled(84,1,12,3)
       ReadOnly = True
     }
     { Label7 Label
-      MoveScaled(67,5,8,3)
+      MoveScaled(75,5,8,3)
       Border = Border.Plain
       Text = ("Bed No")
     }
     { txtlocation TextBox
-      MoveScaled(76,5,12,3)
+      MoveScaled(84,5,12,3)
       ReadOnly = True
     }
     { cmbdisctype ComboBox

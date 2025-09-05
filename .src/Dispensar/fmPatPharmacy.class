@@ -322,7 +322,7 @@ Public Sub mnussfBooking_Click()
   res = modDatabase.$myConn.Exec("select fldbillno,flduserid,flditemamt from tblpatbilldetail where fldencounterval=&1 and fldbankname in(select fldacledger from tbldiscount where (fldreference=&2 or fldreference=&3 or fldreference=&4 or fldreference=&5)) and fldbillno not in(select fldbillno from tblpatbillbooking) UNION ALL select fldbillno,flduserid,flditemamt from tbltempbilldetail where fldencounterval=&1 and fldbankname in(select fldacledger from tbldiscount where (fldreference=&2 or fldreference=&3 or fldreference=&4 or fldreference=&5)) and fldbillno not in(select fldbillno from tblpatbillbooking)", Trim(txtencid.Text), "Accident SSF", "Medical SSF", "MedExtra SSF", "Critical SSF")
   If res.Available Then
     For Each res
-      xdata.Add(res["fldbillno"] & "@" & res["flduserid"] & "@" & CStr(res["flditemamt"]))
+      xdata.Add(res["fldbillno"] & "|" & res["flduserid"] & "|" & CStr(res["flditemamt"]))
     Next
   Endif
   xinvlst = GridTriColumn("SSF Booking", xdata)

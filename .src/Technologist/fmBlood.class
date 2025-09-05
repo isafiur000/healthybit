@@ -43,9 +43,11 @@ Public Sub btnadd_Click()
 
   Dim res As Result
 
-  If cmbcategory.Text Then
+  If cmbcategory.Text And If txtgroup.Text Then
     res = modDatabase.$myConn.Create("tblbloodstore")
+    res["flditemcode"] = cmbcategory.Text & "- " & Trim(txtgroup.Text)
     res["flditem"] = cmbcategory.Text
+    res["fldgroup"] = Trim(txtgroup.Text)
     res["fldtemp"] = txtstore.Text
     res["fldshelf"] = txtshelf.Value
     res.Update
@@ -75,7 +77,7 @@ Private Sub SHowBloodGrid()
   Dim Column As Integer
   Dim fld As ResultField
 
-  sql = "select fldid,flditem,fldtemp,fldshelf from tblbloodstore"
+  sql = "select flditemcode,flditem,fldgroup,fldshelf,fldtemp from tblbloodstore"
   $rData = modDatabase.$myConn.Exec(sql)
 
   GridView1.Clear
@@ -95,13 +97,15 @@ Private Sub SHowBloodGrid()
   With GridView1
     .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
-    .Columns[1].Width = 225 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 250 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 125 * modBasic.$AppWidthRatio
     .Columns[3].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 100 * modBasic.$AppWidthRatio
 
-    .Columns[1].Text = "ItemName"
-    .Columns[2].Text = "Storage"
-    .Columns[3].Text = "ShelfLife"
+    .Columns[1].Text = "Category"
+    .Columns[2].Text = "Group"
+    .Columns[3].Text = "Expiry"
+    .Columns[4].Text = "Storage"
   End With
 
 End

@@ -40,7 +40,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
 
   Dim sLip As String[]
 
-  sLip = Split($sList[Row], "@")
+  sLip = Split($sList[Row], "|")
   modGeneralMain.GridViewDecoration(GridView1, Row)
   If Column = 0 Then
     GridView1.Data.Text = sLip[0]

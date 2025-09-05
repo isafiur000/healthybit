@@ -13,11 +13,12 @@ Public Sub Form_Open()
   modGeneralMain.ArrangeFormCentre(Me)
   Me.Title = $sType & " Product Entry"
   If $sType = "Blood" Then
-    cmbitem.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(flditem) as col from tblblood"))
+    cmbitem.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(flditem) as col from tblbloodstore"))
+    cmbgroup.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldgroup) as col from tblbloodstore"))
   Endif
   dtcollection.Value = Now()
   dtexpiry.Value = Now()
-  cmbitem.SetFocus
+  txtencid.SetFocus
 
 End
 
@@ -39,6 +40,65 @@ Public Sub Form_KeyRelease()
     txtencid.Text = GetEncid()
   Else
     modGeneralmain.GoToNextControlTab()
+  Endif
+
+End
+
+Public Sub cmbitem_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbitem)
+  modFillContainer.RestrictComboToContent(cmbitem)
+
+End
+
+Public Sub cmbgroup_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbgroup)
+  modFillContainer.RestrictComboToContent(cmbgroup)
+
+End
+
+Public Sub txtcode_KeyPress()
+
+  modGeneralMain.InputTextKeyOnly()
+
+End
+
+Public Sub txtencid_KeyPress()
+
+  If Key.Code = Key.Down Then
+    If modBasic.$AutoEncSuffix = "Yes" Then
+      txtencid.Text = txtencid.Text & modBasic.$HospCode
+    Endif
+  Else
+    modGeneralMain.InputUpCaseOnly()
+  Endif
+
+End
+
+Public Sub btnrefresh_Click()
+
+  txtencname.Text = modPatient.GetPatientNameByEnc(Trim(txtencid.Text))
+  If txtencname.Text Then
+    txtencname.ReadOnly = True
+  Endif
+
+End
+
+Public Sub btnshowblood_Click()
+
+  Dim res As Result
+
+  If cmbitem.Text And If cmbgroup.Text Then
+    res = modDatabase.$myConn.Exec("select flditemcode from tblbloodstore where flditem=&1 and fldgroup=&2", cmbitem.Text, cmbgroup.Text)
+    If res.Available Then
+      txtbloodcode.Text = res["flditemcode"]
+      If txtbloodcode.Text Then
+        Panel1.Enabled = True
+      Endif
+    Else
+      Message.Warning("Item not coded", "OK")
+    Endif
   Endif
 
 End
@@ -65,12 +125,12 @@ Public Sub dtnepexp_Click()
 
 End
 
-Public Sub dtcollection_Click()
+Public Sub btnexpcalc_Click()
 
   Dim xshelf As Integer
 
-  If cmbitem.Text Then
-    xshelf = modMedConstant.GetBloodShelfLife(cmbitem.Text)
+  If txtbloodcode.Text Then
+    xshelf = modMedConstant.GetBloodShelfLife(txtbloodcode.Text)
     If xshelf Then
       dtexpiry.Value = DateAdd(dtcollection.Value, gb.Day, xshelf)
     Endif
@@ -80,64 +140,36 @@ End
 
 Public Sub btnadd_Click()
 
+  Dim rex As Result
   Dim res As Result
   Dim i As Integer
 
   If cmbitem.Text And If txtqty.Value And If txtcode.Text Then
-    For i = 1 To txtqty.Value
-      res = modDatabase.$myConn.Create("tblmedinventory")
-      res["fldcategory"] = $sType
-      res["fldcode"] = txtcode.Text & "-" & CStr(i)
-      res["flditem"] = cmbitem.Text
-      res["fldencounterval"] = txtencid.Text
-      res["fldencname"] = txtencname.Text
-      res["fldcollect"] = dtcollection.Value
-      res["fldexpiry"] = dtexpiry.Value
-      res["fldstatus"] = "Active"
-      res["fldsave"] = True
-      res["flduserid"] = modBasic.$lbluser
-      res["fldtime"] = Now()
-      res["fldcomp"] = modBasic.$compID
-      res["fldcomment"] = txtcomment.Text
-      res["xyz"] = False
-      res.Update
-    Next
-    Balloon.Info(("Information saved"), btnadd)
-    Balloon.Delay = modBasic.$BalloonDelay
-  Endif
-
-End
-
-Public Sub cmbitem_KeyRelease()
-
-  modFillContainer.AutoFillComboBox(cmbitem)
-  modFillContainer.RestrictComboToContent(cmbitem)
-
-End
-
-Public Sub btnrefresh_Click()
-
-  txtencname.Text = modPatient.GetPatientNameByEnc(Trim(txtencid.Text))
-  If txtencname.Text Then
-    txtencname.ReadOnly = True
-  Endif
-
-End
-
-Public Sub txtcode_KeyPress()
-
-  modGeneralMain.InputTextKeyOnly()
-
-End
-
-Public Sub txtencid_KeyPress()
-
-  If Key.Code = Key.Down Then
-    If modBasic.$AutoEncSuffix = "Yes" Then
-      txtencid.Text = txtencid.Text & modBasic.$HospCode
+    rex = modDatabase.$myConn.Exec("select fldid from tblmedinventory where lower(fldcode) like &1", LCase(Trim(txtcode.Text) & "-") & "%")
+    If rex.Available Then
+      Message.Warning("Code Already Used", "OK")
+    Else
+      For i = 1 To txtqty.Value
+        res = modDatabase.$myConn.Create("tblmedinventory")
+        res["fldcategory"] = $sType
+        res["fldcode"] = Trim(txtcode.Text) & "-" & CStr(i)
+        res["flditem"] = txtbloodcode.Text
+        res["fldencounterval"] = txtencid.Text
+        res["fldencname"] = txtencname.Text
+        res["fldcollect"] = dtcollection.Value
+        res["fldexpiry"] = dtexpiry.Value
+        res["fldstatus"] = "Active"
+        res["fldsave"] = True
+        res["flduserid"] = modBasic.$lbluser
+        res["fldtime"] = Now()
+        res["fldcomp"] = modBasic.$compID
+        res["fldcomment"] = txtcomment.Text
+        res["xyz"] = False
+        res.Update
+      Next
+      Balloon.Info(("Information saved"), btnadd)
+      Balloon.Delay = modBasic.$BalloonDelay
     Endif
-  Else
-    modGeneralMain.InputUpCaseOnly()
   Endif
 
 End

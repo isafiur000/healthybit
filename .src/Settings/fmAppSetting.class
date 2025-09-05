@@ -44,6 +44,7 @@ Public Sub Form_Open()
   ShowScripting()
   ShowAllUserSetting()
   ShowOptionSettings()
+  ShowExternalParams()
   DisplayCacheTypes()
 
 End
@@ -528,15 +529,11 @@ Private Sub GeneralSetting()
     txtsplash.Value = CFloat(modSettings.ShowSettingFromFIle("AppSetting/ImageSplash"))
   Endif
 
-  cmbspread.Text = modSettings.ShowSettingFromFIle("AppSetting/Spreadsheet")
-  modSettings.ShowCheckBox(chkexport, "AppSetting/SpreadsheetView")
   cmbmedview.Text = modSettings.ShowSettingFromFIle("AppSetting/ItemView")
   modSettings.ShowCheckBox(chkgridpos, "AppSetting/ItemViewCentre")
-  cmbrowser.Text = modSettings.ShowSettingFromFIle("AppSetting/ReportBrowser")
   cmbmultimed.Text = modSettings.ShowSettingFromFIle("AppSetting/MediaPlayerFormat")
   cmbwriter.Text = modSettings.ShowSettingFromFIle("AppSetting/TextWriter")
   cmbjavascript.Text = modSettings.ShowSettingFromFIle("AppSetting/EnableJS")
-  cmbreportview.Text = modSettings.ShowSettingFromFIle("AppSetting/WebViewerApp")
   cmbcompon.Text = modSettings.ShowSettingFromFIle("AppSetting/ComponentForms")
 
 End
@@ -659,27 +656,6 @@ Public Sub btnsplash_Click()
   modSettings.SaveSettingsToFile("AppSetting/ImageSplash", CStr(txtsplash.Value))
   modBasic.$PatientImageSplash = txtsplash.Value
   Balloon.Info(("Information saved"), btnsplash)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-'export options
-Public Sub btnspread_Click()
-
-  modSettings.SaveSettingsToFile("AppSetting/Spreadsheet", cmbspread.Text)
-  modSettings.EnterCheckSetting(chkexport, "AppSetting/SpreadsheetView")
-  Balloon.Info(("Information saved"), btnspread)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btnbrowser_Click()
-
-  modSettings.SaveSettingsToFile("AppSetting/WebViewerApp", cmbreportview.Text)
-  modBasic.$WebViewApp = cmbreportview.Text
-  modSettings.SaveSettingsToFile("AppSetting/ReportBrowser", cmbrowser.Text)
-  modBasic.$browserFormat = cmbrowser.Text
-  Balloon.Info(("Information saved"), btnbrowser)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -1084,9 +1060,7 @@ Private Sub ShowOptionSettings()
 
   Dim xuser As String
 
-  cmbemailclient.Text = modSettings.ShowSettingFromFIle("GeneralSettings/EMailClient")
   cmbwebfunc.Text = modSettings.ShowSettingFromFIle("GeneralSettings/WebViewFunction")
-
   cmbbothside.Text = modSettings.ShowSettingFromFIle("GeneralSettings/GridViewSearch")
   cmbrowheight.Text = modSettings.ShowSettingFromFIle("GeneralSettings/ResizeRowheight")
   If modSettings.ShowSettingFromFIle("GeneralSettings/WebView_Zoom") Then
@@ -1103,7 +1077,6 @@ Private Sub ShowOptionSettings()
     chkglobal.Value = True
   Endif
 
-  modSettings.ShowCheckBox(chkqcachedump, "GeneralSettings/LocalDataCaching_Dump")
   If modSettings.ShowSettingFromFIle("GeneralSettings/HighLightColor") Then
     txthighcolor.Value = CInt(modSettings.ShowSettingFromFIle("GeneralSettings/HighLightColor"))
   Endif
@@ -1113,10 +1086,8 @@ Private Sub ShowOptionSettings()
 
   ''--- general
   cmblocalrepo.Text = modSettings.ShowSettingFromFIle("GeneralSettings/LocalRepoUpload")
-  cmbftpupload.Text = modSettings.ShowSettingFromFIle("GeneralSettings/FTPUploader")
   cmbcurlcacert.Text = modSettings.ShowSettingFromFIle("GeneralSettings/cURLCACertificate")
   cmbcsvdelim.Text = modSettings.ShowSettingFromFIle("GeneralSettings/CSVDelimiter")
-  cmbanalysis.Text = modSettings.ShowSettingFromFIle("GeneralSettings/DataAnalysis")
   cmbreportpopup.Text = modSettings.ShowSettingFromFIle("GeneralSettings/ReportingOutput")
   cmbclearhighlight.Text = modSettings.ShowSettingFromFIle("GeneralSettings/AutoClearHighLight")
 
@@ -1143,19 +1114,6 @@ Public Sub btnhighcolor_Click()
   modSettings.SaveSettingsToFile("GeneralSettings/HighLightColor", txthighcolor.Value)
   modBasic.$HighLightColor = txthighcolor.Value
   Balloon.Info(("Information saved"), btnhighcolor)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btnqucachedump_Click()
-
-  modSettings.EnterCheckSetting(chkqcachedump, "GeneralSettings/LocalDataCaching_Dump")
-  If chkqcachedump.Value = True Then
-    modBasic.$DumpCache = "Yes"
-  Else If chkqcachedump.Value = False Then
-    modBasic.$DumpCache = "No"
-  Endif
-  Balloon.Info(("Information saved"), btnqucachedump)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -1291,29 +1249,12 @@ Public Sub btnwebfunc_Click()
 
 End
 
-Public Sub btnemailclient_Click()
-
-  modSettings.SaveSettingsToFile("GeneralSettings/EMailClient", cmbemailclient.Text)
-  Balloon.Info(("Information saved"), btnemailclient)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
 ''----------- general
 Public Sub btnlocalrepo_Click()
 
   modSettings.SaveSettingsToFile("GeneralSettings/LocalRepoUpload", cmblocalrepo.Text)
   modBasic.$UploadLocalrepo = cmblocalrepo.Text
   Balloon.Info(("Information saved"), btnlocalrepo)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btnftpupload_Click()
-
-  modSettings.SaveSettingsToFile("GeneralSettings/FTPUploader", cmbftpupload.Text)
-  modBasic.$FtpUploader = cmbftpupload.Text
-  Balloon.Info(("Information saved"), btnftpupload)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -1336,15 +1277,6 @@ Public Sub btncsvdelimit_Click()
 
 End
 
-Public Sub btnanalysis_Click()
-
-  modSettings.SaveSettingsToFile("GeneralSettings/DataAnalysis", cmbanalysis.Text)
-  modBasic.$DataAnalysis = cmbanalysis.Text
-  Balloon.Info(("Information saved"), btnanalysis)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
 Public Sub btnreportpopup_Click()
 
   modSettings.SaveSettingsToFile("GeneralSettings/ReportingOutput", cmbreportpopup.Text)
@@ -1359,6 +1291,67 @@ Public Sub btnclearhighlight_Click()
   modSettings.SaveSettingsToFile("GeneralSettings/AutoClearHighLight", cmbclearhighlight.Text)
   modBasic.$AutoClearHighlight = cmbclearhighlight.Text
   Balloon.Info(("Information saved"), btnclearhighlight)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''========================== Parameters ========================
+Private Sub ShowExternalParams()
+
+  cmbreportview.Text = modSettings.ShowSettingFromFIle("AppSetting/WebViewerApp")
+  cmbrowser.Text = modSettings.ShowSettingFromFIle("AppSetting/ReportBrowser")
+  cmbspread.Text = modSettings.ShowSettingFromFIle("AppSetting/Spreadsheet")
+  modSettings.ShowCheckBox(chkexport, "AppSetting/SpreadsheetView")
+
+  cmbanalysis.Text = modSettings.ShowSettingFromFIle("GeneralSettings/DataAnalysis")
+  cmbemailclient.Text = modSettings.ShowSettingFromFIle("GeneralSettings/EMailClient")
+  cmbftpupload.Text = modSettings.ShowSettingFromFIle("GeneralSettings/FTPUploader")
+
+End
+
+Public Sub btnbrowser_Click()
+
+  modSettings.SaveSettingsToFile("AppSetting/WebViewerApp", cmbreportview.Text)
+  modBasic.$WebViewApp = cmbreportview.Text
+  modSettings.SaveSettingsToFile("AppSetting/ReportBrowser", cmbrowser.Text)
+  modBasic.$browserFormat = cmbrowser.Text
+  Balloon.Info(("Information saved"), btnbrowser)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+'export options
+Public Sub btnspread_Click()
+
+  modSettings.SaveSettingsToFile("AppSetting/Spreadsheet", cmbspread.Text)
+  modSettings.EnterCheckSetting(chkexport, "AppSetting/SpreadsheetView")
+  Balloon.Info(("Information saved"), btnspread)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnanalysis_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/DataAnalysis", cmbanalysis.Text)
+  modBasic.$DataAnalysis = cmbanalysis.Text
+  Balloon.Info(("Information saved"), btnanalysis)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnemailclient_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/EMailClient", cmbemailclient.Text)
+  Balloon.Info(("Information saved"), btnemailclient)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnftpupload_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/FTPUploader", cmbftpupload.Text)
+  modBasic.$FtpUploader = cmbftpupload.Text
+  Balloon.Info(("Information saved"), btnftpupload)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

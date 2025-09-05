@@ -79,7 +79,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
 
   Dim sLip As String[]
 
-  sLip = Split($GridWorkList[Row], "@")
+  sLip = Split($GridWorkList[Row], "|")
   modGeneralMain.GridViewDecoration(GridView1, Row)
   If Column = 0 Then
     GridView1.Data.Picture = Picture["icons/unchecked.png"]
@@ -130,19 +130,19 @@ Private Sub SortSelectedRows()
   xfinal = New String[]
   If $GridDataList Then
     For Each xx In $GridDataList
-      asx = Split(xx, "@")
+      asx = Split(xx, "|")
       If txtcode.Text Then
         If LCase(asx[1]) Like LCase(txtcode.Text) & "*" Then
-          xfinal.Add(asx[0] & "@" & asx[1] & "@" & asx[2])
+          xfinal.Add(asx[0] & "|" & asx[1] & "|" & asx[2])
         Endif
       Else If txtname.Text Then
         If chkleftmain.Value Then
           If LCase(asx[0]) Like "*" & LCase(txtname.Text) & "*" Then
-            xfinal.Add(asx[0] & "@" & asx[1] & "@" & asx[2])
+            xfinal.Add(asx[0] & "|" & asx[1] & "|" & asx[2])
           Endif
         Else
           If LCase(asx[0]) Like LCase(txtname.Text) & "*" Then
-            xfinal.Add(asx[0] & "@" & asx[1] & "@" & asx[2])
+            xfinal.Add(asx[0] & "|" & asx[1] & "|" & asx[2])
           Endif
         Endif
       Endif

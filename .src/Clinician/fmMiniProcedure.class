@@ -40,7 +40,6 @@ Public Sub Form_Open()
   xstatus = modPatient.CurrentAdmissionStatus($encid)
   txtlocation.Text = modPatient.GetLocationSetting($encid, xstatus)
   $xFinClear = modNonMedical.GetFinanceClearance($encid)
-  cmbtype.List = ["Minor", "Intermediate", "Plaster"]
 
   btnrefer.Tag = modBillings.GetReferralUserSetting("Procedure", $encid)
   If btnrefer.Tag Then
@@ -54,7 +53,7 @@ Public Sub Form_Open()
   If $xFinClear = True Then
     btnsave.Enabled = False
   Endif
-  cmbprocedure.SetFocus
+  btnrefer.SetFocus
 
 End
 
@@ -74,7 +73,6 @@ Public Sub cmbdisctype_Click()
       $BillMode = modpatient.GetPatBillingMode($encid)
     Endif
     cmbprocedure.Clear()
-    cmbtype.Text = ""
   Endif
 
 End
@@ -86,11 +84,43 @@ Public Sub cmbdisctype_KeyRelease()
 
 End
 
-Public Sub cmbtype_Click()
+Private Sub FillComboList()
 
-  If cmbtype.Text Then
-    cmbprocedure.List = modNonMedical.NonStockBillActiveItemArray("Procedures", $BillMode, cmbtype.Text)
+  cmbprocedure.List = modNonMedical.NonStockBillActiveItemArray("Procedures", $BillMode, GetProcedType())
+
+End
+
+Private Function GetProcedType() As String
+
+  Dim xtype As String
+
+  If rbminor.Value = True Then
+    xtype = "Minor"
+  Else If rbinter.Value = True Then
+    xtype = "Intermediate"
+  Else If rbplaster.Value = True
+    xtype = "Plaster"
   Endif
+
+  Return xtype
+
+End
+
+Public Sub rbminor_Click()
+
+  FillComboList()
+
+End
+
+Public Sub rbinter_Click()
+
+  FillComboList()
+
+End
+
+Public Sub rbplaster_Click()
+
+  FillComboList()
 
 End
 
@@ -98,10 +128,10 @@ Public Sub cmbprocedure_GotFocus()
 
   Dim xLst As String[]
 
-  If cmbtype.Text Then
+  If GetProcedType() Then
     If Not cmbprocedure.Text Then
       If modBasic.$ItemListFormat = "GridView" Then
-        xLst = modNonMedical.NonStockBillActiveItemArray("Procedures", $BillMode, cmbtype.Text)
+        xLst = modNonMedical.NonStockBillActiveItemArray("Procedures", $BillMode, GetProcedType())
         If xLst.Count Then
           cmbprocedure.Text = GridViewNew("Select Particulars", xLst, False, cmbprocedure)
         Endif
@@ -189,7 +219,7 @@ Public Sub FillLabtable()
     .Columns[0].Width = 1
     .Columns[1].Width = 175 * modBasic.$AppWidthRatio
     .Columns[2].Width = 1
-    .Columns[3].Width = 300 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 350 * modBasic.$AppWidthRatio
     .Columns[4].Width = 100 * modBasic.$AppWidthRatio
     .Columns[5].Width = 25 * modBasic.$AppWidthRatio
 
@@ -293,7 +323,7 @@ Private Sub CompleteGrid()
     .Columns[0].Width = 1
     .Columns[1].Width = 180 * modBasic.$AppWidthRatio
     .Columns[2].Width = 1
-    .Columns[3].Width = 320 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 375 * modBasic.$AppWidthRatio
     .Columns[4].Width = 100 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "Time"

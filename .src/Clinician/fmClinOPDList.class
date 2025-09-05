@@ -424,10 +424,14 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
   Else If Column = 4 Then
     xxx = modPatient.GetPatientAgeString(xVariable, Now()) & "/" & modPatient.GetPatientSex(xVariable, modDatabase.$syConn)    ''
   Else If Column = 5 Then
-    If xVariable = True Then
-      xxx = "icons/coll5.png"
+    If IsNull(xVariable) Then
+      xxx = "icons/unchecked.png"
     Else
-      xxx = "icons/checked.png"
+      If xVariable = True Then
+        xxx = "icons/checked.png"
+      Else If xVariable = False Then
+        xxx = "icons/coll5.png"
+      Endif
     Endif
   Else If Column = 6 Then
     xxx = modPatient.PatientDiagnoCurrentList(xVariable).Join(gb.NewLine)
@@ -684,9 +688,11 @@ Public Sub GridView1_Click()
   If GridView1.Rows.Selection.Count Then
     If GridView1.Column = 5 Then
       If GridView1[GridView1.Row, 5].Picture = Picture["icons/coll5.png"] Then
-        modPatientSub.UnMarkConsultVisitFlag(GridView1[GridView1.Row, 0].Text, $sTable)
-      Else If GridView1[GridView1.Row, 5].Picture = Picture["icons/checked.png"] Then
         modPatientSub.MarkConsultVisitFlag(GridView1[GridView1.Row, 0].Text, $sTable)
+      Else If GridView1[GridView1.Row, 5].Picture = Picture["icons/unchecked.png"] Then
+        modPatientSub.MarkConsultVisitFlag(GridView1[GridView1.Row, 0].Text, $sTable)
+      Else If GridView1[GridView1.Row, 5].Picture = Picture["icons/checked.png"] Then
+        modPatientSub.UnMarkConsultVisitFlag(GridView1[GridView1.Row, 0].Text, $sTable)
       Endif
       FillBedGrid()
 
@@ -1102,10 +1108,10 @@ End
 
 Public Sub btnmobprogress_Click()
 
-  Dim hForm As FmMedItemList
+  Dim hForm As FmBloodReq
 
   If GridView1.Rows.Selection.Count Then
-    hForm = New FmMedItemList(GridView1[GridView1.Row, 2].Text, "Blood")
+    hForm = New FmBloodReq(GridView1[GridView1.Row, 2].Text)
     hForm.ShowModal
   Endif
 

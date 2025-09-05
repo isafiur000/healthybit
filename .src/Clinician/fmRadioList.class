@@ -880,7 +880,7 @@ Private Sub ShowGridTree()
   Dim Column As Integer
   Dim fld As ResultField
 
-  sql = "select tblpatbilling.fldid,tblgroupradio.fldtestid,tblpatbilling.fldstatus,tblpatbilling.fldreason,tblpatbilling.fldordtime,tblpatbilling.fldtarget,tblpatbilling.flditemname from tblpatbilling inner join tblgroupradio on tblpatbilling.flditemname=tblgroupradio.fldgroupname where tblpatbilling.fldencounterval=&1 and tblpatbilling.flditemtype=&2 and tblpatbilling.fldsave=&3"
+  sql = "select fldid,flditemname,fldstatus,fldreason,fldordtime,fldtarget from tblpatbilling where fldencounterval=&1 and flditemtype=&2 and fldsave=&3"
   res = modDatabase.$myConn.Exec(sql, $encid, "Radio Diagnostics", False)
   GridView4.Clear
   GridView4.Columns.Count = res.Fields.Count
@@ -908,11 +908,10 @@ Private Sub ShowGridTree()
     .Columns[3].Width = 1
     .Columns[4].Width = 150 * modBasic.$AppWidthRatio
     .Columns[5].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[6].Width = 1
 
     .Columns[1].Text = "Test Name"
     .Columns[2].Text = "Status"
-    .Columns[4].Text = "DateTime"
+    .Columns[4].Text = "Date Time"
     .Columns[5].Text = "Target"
   End With
 

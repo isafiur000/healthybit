@@ -2102,7 +2102,7 @@ Private Sub OpenOptionR(j As Integer)
 
         Else If res1["fldanswertype"] = "Clinical Scale" Then
           For Each res
-            xoption.Add(res["fldanswer"] & "@" & res["fldscale"] & "@" & res["fldscalegroup"])
+            xoption.Add(res["fldanswer"] & "|" & res["fldscale"] & "|" & res["fldscalegroup"])
           Next
           sVal = SubChoose(xoption, "Clinical Scale", $xData[j][0])
           If sVal Then
@@ -2224,7 +2224,7 @@ Private Sub OpenOptionL(j As Integer)
 
         Else If res1["fldanswertype"] = "Clinical Scale" Then
           For Each res
-            xoption.Add(res["fldanswer"] & "@" & res["fldscale"] & "@" & res["fldscalegroup"])
+            xoption.Add(res["fldanswer"] & "|" & res["fldscale"] & "|" & res["fldscalegroup"])
           Next
           sVal = SubChoose(xoption, "Clinical Scale", $xData[j][0])
           If sVal Then

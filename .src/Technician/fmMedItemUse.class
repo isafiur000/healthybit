@@ -48,8 +48,8 @@ Private Sub ShowStockGrid()
     .Columns[2].Width = 250 * modBasic.$AppWidthRatio
     .Columns[3].Width = 150 * modBasic.$AppWidthRatio
 
-    .Columns[1].Text = "ItemCode"
-    .Columns[2].Text = "ItemName"
+    .Columns[1].Text = "Code"
+    .Columns[2].Text = "Particulars"
     .Columns[3].Text = "Expiry"
   End With
 
@@ -78,7 +78,7 @@ Private Sub SHowRequestGrid(encid As String)
   Dim fld As ResultField
   Dim $rData As Result
 
-  sql = "select fldid,fldtime_order,fldcategory,flditem,fldcomment from tblpatmeditem where fldencounterval=&1 and fldorder=&2"                                             ''
+  sql = "select fldid,fldtime_order,fldcategory,flditem,fldpatinfo from tblpatmeditem where fldencounterval=&1 and fldorder=&2"                                             ''
   $rData = modDatabase.$myConn.Exec(sql, encid, "Requested")
 
   GridView2.Clear
@@ -103,13 +103,13 @@ Private Sub SHowRequestGrid(encid As String)
     .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
     .Columns[1].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 250 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 1
+    .Columns[2].Width = 1
+    .Columns[3].Width = 300 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 150 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "DateTime"
-    .Columns[2].Text = "Category"
     .Columns[3].Text = "Particulars"
+    .Columns[4].Text = "Detail"
   End With
 
 End

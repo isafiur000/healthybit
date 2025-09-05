@@ -96,7 +96,7 @@ Private Sub ShowConsumeGrid()
   Dim fld As ResultField
   Dim $rData As Result
 
-  sql = "select fldid,fldtime,fldcategory,flditem,fldcomment from tblpatmeditem where fldencounterval=&1 and fldorder=&2"                                             ''
+  sql = "select fldid,fldtime,fldcategory,flditem,fldpatinfo from tblpatmeditem where fldencounterval=&1 and fldorder=&2"                                             ''
   $rData = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Done")
 
   GridView2.Clear
@@ -121,13 +121,13 @@ Private Sub ShowConsumeGrid()
     .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
     .Columns[1].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 250 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 1
+    .Columns[2].Width = 1
+    .Columns[3].Width = 300 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 150 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "DateTime"
-    .Columns[2].Text = "Category"
     .Columns[3].Text = "Particulars"
+    .Columns[4].Text = "Detail"
   End With
 
 End

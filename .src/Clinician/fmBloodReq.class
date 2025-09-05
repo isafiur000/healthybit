@@ -1,15 +1,13 @@
 ' Gambas class file
 
 Private $encid As String
-Private $sType As String
 
 Private $rData2 As Result
 Private $aMyFields2 As String[]
 
-Public Sub _new(encid As String, sType As String)
+Public Sub _new(encid As String)
 
   $encid = encid
-  $sType = sType
 
 End
 
@@ -25,23 +23,14 @@ Public Sub Form_Open()
 
   txtpatientname.Text = modPatient.GetPatientNameByEnc($encid)
   txtgender.Text = modPatient.GetPatientSex($encid)
-  txtpatientaddress.Text = modPatient.GetPatientAddressByEnc($encid)
-
+  txtpatientaddress.Text = ""
   xstatus = modPatient.CurrentAdmissionStatus($encid)
   txtlocation.Text = modPatient.GetLocationSetting($encid, xstatus)
-  If $sType Then
-    cmbcategory.Text = $sType
-  Else
-    cmbcategory.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldcategory) as col from tblmedinventory"))
-  Endif
 
-  If $sType = "Blood" Then
-    cmbcategory.Enabled = False
-    cmbitem.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select flditem as col from tblbloodstore"))
-  Endif
+  cmbitem.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(flditem) as col from tblbloodstore"))
+  cmbgroup.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldgroup) as col from tblbloodstore"))
   FillRequestGrid()
   CompleteGrid()
-  cmbcategory.SetFocus
 
 End
 
@@ -55,17 +44,32 @@ Public Sub Form_KeyRelease()
 
 End
 
-Public Sub cmbcategory_KeyRelease()
+Public Sub cmbitem_KeyRelease()
 
-  modFillContainer.AutoFillComboBox(cmbcategory)
-  modFillContainer.RestrictComboToContent(cmbcategory)
+  modFillContainer.AutoFillComboBox(cmbitem)
+  modFillContainer.RestrictComboToContent(cmbitem)
 
 End
 
-Public Sub cmbcategory_LostFocus()
+Public Sub cmbgroup_KeyRelease()
 
-  cmbitem.Clear()
-  cmbitem.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(flditem) as col from tblmedinventory where fldcategory=&1", cmbcategory.Text))                                                                         ''
+  modFillContainer.AutoFillComboBox(cmbgroup)
+  modFillContainer.RestrictComboToContent(cmbgroup)
+
+End
+
+Public Sub btnshow_Click()
+
+  Dim res As Result
+
+  If cmbitem.Text And If cmbgroup.Text Then
+    res = modDatabase.$myConn.Exec("select flditemcode from tblbloodstore where flditem=&1 and fldgroup=&2", cmbitem.Text, cmbgroup.Text)
+    If res.Available Then
+      lblcode.Text = res["flditemcode"]
+    Else
+      Message.Warning("Item not coded", "OK")
+    Endif
+  Endif
 
 End
 
@@ -73,14 +77,17 @@ Public Sub btnsubOK_Click()
 
   Dim i As Integer
 
-  pnlquanti.Visible = False
-  For i = 1 To txtqty.Value
-    modPatientGeneral.PatMedicalItemRequest(cmbcategory.Text, $encid, cmbitem.Text, TextArea1.Text)
-  Next
-  FillRequestGrid()
-  cmbitem.Text = ""
-  txtqty.Value = 0
-  cmbcategory.SetFocus
+  If lblcode.Text And If txtqty.Value Then
+    pnlquanti.Visible = False
+    For i = 1 To txtqty.Value
+      modPatientGeneral.PatMedicalItemRequest("Blood", $encid, lblcode.Text, TextArea1.Text)
+    Next
+    FillRequestGrid()
+    lblcode.Text = ""
+    cmbitem.Text = ""
+    cmbgroup.Text = ""
+    txtqty.Value = 0
+  Endif
 
 End
 
@@ -91,7 +98,7 @@ Public Sub FillRequestGrid()
   Dim fld As ResultField
   Dim res As Result
 
-  sql = "select fldid,fldtime_order,fldcategory,flditem,fldcomment,fldid from tblpatmeditem where fldencounterval=&1 and fldorder=&2"                                             ''
+  sql = "select fldid,fldtime_order,fldcategory,flditem,fldpatinfo,fldid from tblpatmeditem where fldencounterval=&1 and fldorder=&2"                                             ''
   res = modDatabase.$myConn.Exec(sql, $encid, "Requested")
 
   GridView1.Clear
@@ -119,14 +126,14 @@ Public Sub FillRequestGrid()
     .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
     .Columns[1].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 225 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 1
+    .Columns[2].Width = 1
+    .Columns[3].Width = 300 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 150 * modBasic.$AppWidthRatio
     .Columns[5].Width = 25 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "DateTime"
-    .Columns[2].Text = "Category"
     .Columns[3].Text = "Particulars"
+    .Columns[4].Text = "Details"
   End With
 
 End
@@ -157,19 +164,6 @@ Public Sub cmbitem_GotFocus()
       cmbitem.Popup
     Endif
   Endif
-
-End
-
-Public Sub cmbitem_KeyRelease()
-
-  modFillContainer.AutoFillComboBox(cmbitem)
-  modFillContainer.RestrictComboToContent(cmbitem)
-
-End
-
-Public Sub cmbcategory_Click()
-
-  cmbitem.Clear()
 
 End
 

@@ -320,7 +320,7 @@ Public Sub btnaddnew_Click()
     If res.Available Then
       xdata = New String[]
       For Each res
-        xdata.Add(res["fldbillno"] & "@" & res["fldbankname"] & "@" & CStr(res["chrgeamt"]))
+        xdata.Add(res["fldbillno"] & "|" & res["fldbankname"] & "|" & CStr(res["chrgeamt"]))
       Next
       xList = GridTriColumn("Due Clearance", xdata)
       If xList Then

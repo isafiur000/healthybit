@@ -17,7 +17,7 @@ Public Sub Form_Open()
   Me.Title = $sType & " Inventory"
   lbldate.Value = Date()
   If $sType = "Blood" Then
-    cmbitem.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(flditem) as col from tblblood"))
+    cmbitem.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select flditemcode as col from tblbloodstore"))
   Endif
   cmbitem.Text = "%"
   cmbstatus.List = ["Active", "Used", "Rejected", "Expired"]
@@ -87,9 +87,9 @@ Private Sub ResizeGrid()
   With GridView1
     .Columns[0].Width = 25 * modBasic.$AppWidthRatio
     .Columns[1].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 225 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 300 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 175 * modBasic.$AppWidthRatio
     .Columns[5].Width = 150 * modBasic.$AppWidthRatio
     .Columns[6].Width = 150 * modBasic.$AppWidthRatio
     .Columns[7].Width = 100 * modBasic.$AppWidthRatio
