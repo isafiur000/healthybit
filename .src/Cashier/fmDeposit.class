@@ -257,7 +257,7 @@ Public Sub btnshow_Click()
         If $xFinClear = False Then
           DepoPopUpPatientForm(Trim(txtencid.Text), Me.Tag)
         Endif
-        txtencid.ReadOnly = False
+        txtencid.ReadOnly = True
         ShowAllEncounters()
         If $xFinClear = True Then
           Balloon.Info(("Account Locked"), btnshow)

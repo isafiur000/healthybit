@@ -260,6 +260,7 @@ Public Sub btnshow_Click()
         modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
         ShowSavedGrid()
         ShowNewEntry()
+        txtencid.ReadOnly = True
       Endif
     Endif
   Endif

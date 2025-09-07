@@ -300,9 +300,10 @@
           Text = ("Section")
         }
         { btnrefresh Button
-          MoveScaled(85,4,14,3)
+          MoveScaled(104,4,12,3)
           Text = ("Refresh")
           Picture = Picture["icon:/small/refresh"]
+          Default = True
         }
         { btnaddcounter ToolButton
           MoveScaled(28,4,3,3)
@@ -339,6 +340,9 @@
             Text = ("Saved")
             Value = True
           }
+        }
+        { txtsearch TextBox
+          MoveScaled(85,4,17,3)
         }
       }
       { GridView2 GridView
@@ -383,7 +387,6 @@
             MoveScaled(59,1,11,3)
             Text = ("Show")
             Picture = Picture["icon:/small/play"]
-            Default = True
           }
           { Label4 Label
             MoveScaled(0,4.5,12,3)
@@ -402,7 +405,7 @@
           }
           { txtgender TextBox
             MoveScaled(69,4.5,14,3)
-            Enabled = False
+            ReadOnly = True
           }
           { btnrepo Button
             MoveScaled(14,11.5,11,3)
@@ -416,7 +419,7 @@
           }
           { txtpatientaddress TextBox
             MoveScaled(13,8,42,3)
-            Enabled = False
+            ReadOnly = True
           }
           { Label8 Label
             MoveScaled(59,8,9,3)
@@ -425,7 +428,7 @@
           }
           { txtlocation TextBox
             MoveScaled(69,8,14,3)
-            Enabled = False
+            ReadOnly = True
           }
           { btnfullrep Button
             MoveScaled(73,11.5,10,3)

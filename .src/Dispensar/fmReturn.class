@@ -337,6 +337,7 @@ Public Sub btnshow_Click()
       Panel2.Enabled = False
       ShowReturnGrid()
       ShowReturnDoneGrid()
+      txtbill.ReadOnly = True
       If $xFinClear = True Then
         Balloon.Info(("Account Locked"), btnshow)
         Balloon.Delay = modBasic.$BalloonDelay
