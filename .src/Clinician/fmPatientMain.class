@@ -10,8 +10,8 @@ Private $PatientNum As String
 Private $xFinClear As Boolean
 Private $NotesList As String[]
 
-Private $rData As Result
-Private $aMyFields As String[]
+' Private $rData As Result
+' Private $aMyFields As String[]
 Private $rSympRes As Result
 Private $aSympFields As String[]
 Private $rExamRes As Result
@@ -1869,9 +1869,9 @@ Public Sub tlbtnhistory_Click()
       Else
         modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "History", lsthistorylabel.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
       Endif
-      tlbtnhistory.Enabled = False
       Balloon.Info(("Information saved"), tlbtnhistory)
       Balloon.Delay = modBasic.$BalloonDelay
+      tlbtnhistory.Enabled = False
     Endif
   Endif
 

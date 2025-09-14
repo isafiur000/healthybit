@@ -1972,9 +1972,12 @@ Private Function GetDataViewColumns() As String[]
   For Each xcol In $varList
     xFldList.Add("fldencounterval")
   Next
-  For Each ycol In $warList
-    xFldList.Add("fldencounterval")
-  Next
+
+  If modBasic.$StatClinValues = "First-LastVal" Then
+    For Each ycol In $warList
+      xFldList.Add("fldencounterval")
+    Next
+  Endif
 
   modCustPatient.FillNewCOlumnCollection(Me.Tag)
   $newColumn = modCustPatient.CustomNewColumnsTitle(Me.Tag)
@@ -2022,15 +2025,22 @@ Private Sub FillDataViewGrid()
       .Columns[Column + 4].Text = $varList[Column]
     Next
 
-    For Column = 0 To $warList.Count - 1
-      .Columns[Column + 4 + $varList.Count].Width = 150 * modBasic.$AppWidthRatio
-      .Columns[Column + 4 + $varList.Count].Text = $warList[Column] & "(LAST)"
-    Next
+    If modBasic.$StatClinValues = "First-LastVal" Then
+      For Column = 0 To $warList.Count - 1
+        .Columns[Column + 4 + $varList.Count].Width = 150 * modBasic.$AppWidthRatio
+        .Columns[Column + 4 + $varList.Count].Text = $warList[Column] & "(LAST)"
+      Next
+    Endif
 
     If $newColumn.Count Then
       For i = 0 To $newColumn.Count - 1
-        .Columns[i + 4 + $varList.Count + $warList.Count].Text = $newColumn[i]
-        .Columns[i + 4 + $varList.Count + $warList.Count].Width = 150 * modBasic.$AppWidthRatio
+        If modBasic.$StatClinValues = "First-LastVal" Then
+          .Columns[i + 4 + $varList.Count + $warList.Count].Text = $newColumn[i]
+          .Columns[i + 4 + $varList.Count + $warList.Count].Width = 150 * modBasic.$AppWidthRatio
+        Else
+          .Columns[i + 4 + $varList.Count].Text = $newColumn[i]
+          .Columns[i + 4 + $varList.Count].Width = 150 * modBasic.$AppWidthRatio
+        Endif
       Next
     Endif
   End With
@@ -2056,12 +2066,23 @@ Private Function GetDataViewValue(Column As Integer, xVariable As Variant) As Va
   Dim aColl As Collection
   Dim bColl As Collection
 
-  If $dataVar.Exist(xVariable) = False Then
-    $dataVar.Add(GetLabCollection(xVariable), xVariable)
+  If modBasic.$StatClinValues = "First-LastVal" Then
+    If $dataVar.Exist(xVariable) = False Then
+      $dataVar.Add(GetLabCollection(xVariable), xVariable)
+    Endif
+    If $cataVar.Exist(xVariable) = False Then
+      $cataVar.Add(GetLastLabCollection(xVariable), xVariable)
+    Endif
+  Else If modBasic.$StatClinValues = "FitsrVal" Then
+    If $dataVar.Exist(xVariable) = False Then
+      $dataVar.Add(GetLabCollection(xVariable), xVariable)
+    Endif
+  Else
+    If $dataVar.Exist(xVariable) = False Then
+      $dataVar.Add(GetLastLabCollection(xVariable), xVariable)
+    Endif
   Endif
-  If $cataVar.Exist(xVariable) = False Then
-    $cataVar.Add(GetLastLabCollection(xVariable), xVariable)
-  Endif
+
   If Column = 0 Then
     xxx = xVariable
   Else If Column = 1 Then
@@ -2071,21 +2092,34 @@ Private Function GetDataViewValue(Column As Integer, xVariable As Variant) As Va
   Else If Column = 3 Then
     xxx = modPatient.GetPatientSex(xVariable, modDatabase.$syConn)
   Else
-    If Column < $varList.Count + 4 Then
-      aColl = $dataVar[xVariable]
-      If $varList[Column - 4] And If aColl.Exist($varList[Column - 4]) Then
-        xxx = aColl[$varList[Column - 4]]
-      Else
-        xxx = ""
+
+    If modBasic.$StatClinValues = "First-LastVal" Then
+      If Column < $varList.Count + 4 Then
+        aColl = $dataVar[xVariable]
+        If $varList[Column - 4] And If aColl.Exist($varList[Column - 4]) Then
+          xxx = aColl[$varList[Column - 4]]
+        Else
+          xxx = ""
+        Endif
+      Else If Column < $warList.Count + $varList.Count + 4 Then
+        bColl = $cataVar[xVariable]
+        If $warList[Column - 4 - $varList.Count] And If bColl.Exist($warList[Column - 4 - $varList.Count]) Then
+          xxx = bColl[$warList[Column - 4 - $varList.Count]]
+        Else
+          xxx = ""
+        Endif
       Endif
-    Else If Column < $warList.Count + $varList.Count + 4 Then
-      bColl = $cataVar[xVariable]
-      If $warList[Column - 4 - $varList.Count] And If bColl.Exist($warList[Column - 4 - $varList.Count]) Then
-        xxx = bColl[$warList[Column - 4 - $varList.Count]]
-      Else
-        xxx = ""
+    Else
+      If Column < $varList.Count + 4 Then
+        aColl = $dataVar[xVariable]
+        If $varList[Column - 4] And If aColl.Exist($varList[Column - 4]) Then
+          xxx = aColl[$varList[Column - 4]]
+        Else
+          xxx = ""
+        Endif
       Endif
     Endif
+
   Endif
 
   If $newColumn.Count Then

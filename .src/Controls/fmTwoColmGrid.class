@@ -1,0 +1,115 @@
+' Gambas class file
+
+Private $sPath As String
+Private $sData As Variant[]
+
+Public Sub _new(sPath As String)
+
+  $sPath = sPath
+
+End
+
+Public Sub Form_Open()
+
+  $sData = New Variant[]
+  If Exist($sPath) Then
+    LoadFileToGrid($sPath)
+  Endif
+  ShowGridValue()
+
+End
+
+Private Sub ShowGridValue()
+
+  GridView1.Rows.Count = $sData.Count
+  GridView1.Columns.Count = 2
+
+  With GridView1
+    .Columns[0].Width = 300
+    .Columns[1].Width = 300
+
+    .Columns[0].Text = "Current"
+    .Columns[1].Text = "Translated"
+
+  End With
+
+End
+
+Private Sub LoadFileToGrid(sPath As String)
+
+  Dim hFile As File
+  Dim sLine As String
+  Dim sWord As String[]
+
+  hFile = Open sPath
+  modBasic.DebugString("Open File " & sPath)
+  For Each sLine In hFile.Lines
+    If Len(Trim(sLine)) Then
+      sWord = Split(sLine, ";")
+      $sData.Add([sWord[0], sWord[1]])
+    Endif
+  Next
+  hFile.Close()
+
+End
+
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  GridView1.Data.Text = $sData[Row][Column]
+
+End
+
+Public Sub GridView1_Click()
+
+  TextBox1.Text = GridView1[GridView1.Row, 0].Text
+  TextBox2.Text = GridView1[GridView1.Row, 1].Text
+
+End
+
+Public Sub btnadd_Click()
+
+  If Trim(TextBox1.Text) And If Trim(TextBox2.Text) Then
+    $sData.Add([Trim(TextBox1.Text), Trim(TextBox2.Text)])
+    ShowGridValue()
+    TextBox1.Text = ""
+    TextBox2.Text = ""
+  Endif
+
+End
+
+Public Sub btndelete_Click()
+
+  Dim sIndex As Integer
+  Dim Row As Integer
+  Dim asx As String[]
+
+  Row = 0
+  For Each asx In $sData
+    If asx[0] = GridView1[GridView1.Row, 0].Text Then
+      sIndex = Row
+      Break
+    Endif
+    Row = Row + 1
+  Next
+  $sData.Remove(sIndex)
+  ShowGridValue()
+
+End
+
+Public Sub btnsave_Click()
+
+  Dim asx As String[]
+  Dim sFile As String[]
+
+  If Exist($sPath) Then
+    Try Kill $sPath
+  Endif
+
+  sFile = New String[]
+  For Each asx In $sData
+    sFile.Add(asx.Join(";"))
+  Next
+  File.Save($sPath, sFile.Join(gb.NewLine))
+  Me.Close()
+
+End

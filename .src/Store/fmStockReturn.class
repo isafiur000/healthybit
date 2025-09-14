@@ -12,7 +12,11 @@ Public Sub Form_Open()
   BlankAllBox()
   DisplayDefaultStockReturnMode()
   If modBasic.$AccessStockReturn = "Disable" Then
-    mnusave.Enabled = False
+    If modGlobalSetting.GetDBTableList("InventorySaveAccess/StockReturn").Exist(modBasic.$lbluser) = True Then
+      mnusave.Enabled = True
+    Else
+      mnusave.Enabled = False
+    Endif
   Endif
   ShowTransferGrid()
 

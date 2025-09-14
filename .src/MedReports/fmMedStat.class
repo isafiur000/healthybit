@@ -760,7 +760,11 @@ Private Sub FillEncGrid()
   If chklaball.Value = True Then
     $varList = $LabList
     $warList = $LabList
-    GridView1.Columns.Count = $exColCount + $varList.Count + $warList.Count
+    If modBasic.$StatClinValues = "First-LastVal" Then
+      GridView1.Columns.Count = $exColCount + $varList.Count + $warList.Count
+    Else
+      GridView1.Columns.Count = $exColCount + $varList.Count
+    Endif
   Else
     GridView1.Columns.Count = $exColCount
   Endif
@@ -800,10 +804,12 @@ Private Sub FillEncGrid()
         .Columns[Column + $exColCount].Text = $varList[Column]
       Next
 
-      For Column = 0 To $warList.Count - 1
-        .Columns[Column + $exColCount + $varList.Count].Width = 150 * modBasic.$AppWidthRatio
-        .Columns[Column + $exColCount + $varList.Count].Text = $warList[Column] & "(LAST)"
-      Next
+      If modBasic.$StatClinValues = "First-LastVal" Then
+        For Column = 0 To $warList.Count - 1
+          .Columns[Column + $exColCount + $varList.Count].Width = 150 * modBasic.$AppWidthRatio
+          .Columns[Column + $exColCount + $varList.Count].Text = $warList[Column] & "(LAST)"
+        Next
+      Endif
     Endif
 
   End With
@@ -819,12 +825,24 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
 
   If chklaball.Value = True Then
     If $varList And If $varList.Count Then
-      If $dataVar.Exist(xVariable) = False Then
-        $dataVar.Add(GetLabCollection(xVariable), xVariable)
+
+      If modBasic.$StatClinValues = "First-LastVal" Then
+        If $dataVar.Exist(xVariable) = False Then
+          $dataVar.Add(GetLabCollection(xVariable), xVariable)
+        Endif
+        If $cataVar.Exist(xVariable) = False Then
+          $cataVar.Add(GetLastLabCollection(xVariable), xVariable)
+        Endif
+      Else If modBasic.$StatClinValues = "FitsrVal" Then
+        If $dataVar.Exist(xVariable) = False Then
+          $dataVar.Add(GetLabCollection(xVariable), xVariable)
+        Endif
+      Else
+        If $dataVar.Exist(xVariable) = False Then
+          $dataVar.Add(GetLastLabCollection(xVariable), xVariable)
+        Endif
       Endif
-      If $cataVar.Exist(xVariable) = False Then
-        $cataVar.Add(GetLastLabCollection(xVariable), xVariable)
-      Endif
+
     Endif
   Endif
 
@@ -856,21 +874,34 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
     ''laboratory columns
     If chklaball.Value = True Then
       If $varList And If $varList.Count Then
-        If Column >= $exColCount And If Column < $varList.Count + $exColCount Then
-          aColl = $dataVar[xVariable]
-          If $varList[Column - $exColCount] And If aColl.Exist($varList[Column - $exColCount]) Then
-            xxx = aColl[$varList[Column - $exColCount]]
-          Else
-            xxx = ""
+
+        If modBasic.$StatClinValues = "First-LastVal" Then
+          If Column >= $exColCount And If Column < $varList.Count + $exColCount Then
+            aColl = $dataVar[xVariable]
+            If $varList[Column - $exColCount] And If aColl.Exist($varList[Column - $exColCount]) Then
+              xxx = aColl[$varList[Column - $exColCount]]
+            Else
+              xxx = ""
+            Endif
+          Else If Column >= $exColCount And If Column < $warList.Count + $varList.Count + $exColCount Then
+            bColl = $cataVar[xVariable]
+            If $warList[Column - $exColCount - $varList.Count] And If bColl.Exist($warList[Column - $exColCount - $varList.Count]) Then
+              xxx = bColl[$warList[Column - $exColCount - $varList.Count]]
+            Else
+              xxx = ""
+            Endif
           Endif
-        Else If Column >= $exColCount And If Column < $warList.Count + $varList.Count + $exColCount Then
-          bColl = $cataVar[xVariable]
-          If $warList[Column - $exColCount - $varList.Count] And If bColl.Exist($warList[Column - $exColCount - $varList.Count]) Then
-            xxx = bColl[$warList[Column - $exColCount - $varList.Count]]
-          Else
-            xxx = ""
+        Else
+          If Column >= $exColCount And If Column < $varList.Count + $exColCount Then
+            aColl = $dataVar[xVariable]
+            If $varList[Column - $exColCount] And If aColl.Exist($varList[Column - $exColCount]) Then
+              xxx = aColl[$varList[Column - $exColCount]]
+            Else
+              xxx = ""
+            Endif
           Endif
         Endif
+
       Endif
     Endif
 

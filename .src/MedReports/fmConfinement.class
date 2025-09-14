@@ -1413,3 +1413,56 @@ Public Sub mnuexpocolumn_Click()
   hForm.ShowModal
 
 End
+
+Public Sub mnumachine_Click()
+
+  Dim CForm As CMultivariate
+  Dim sArry As String[]
+  Dim Row As Integer
+  Dim Column As Integer
+  Dim sPath As String
+  Dim xHeader As String[]
+  Dim hPython As FmPythonTerminal
+
+  If MMain.$IsGUIApp = True Then
+    $ProgressBar1 = modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory)
+    $ProgressBar1.Visible = True
+    $ProgressBar1.Value = 0
+  Endif
+
+  If GridView1.Rows.Count Then
+    xHeader = New String[]
+    For Column = 0 To GridView1.Columns.Count - 1
+      xHeader.Add(GridView1.Columns[Column].Text)
+    Next
+
+    Inc Application.Busy
+    CForm = New CMultivariate
+    For Row = 0 To GridView1.Rows.Count - 1
+      sArry = New String[]
+      For Column = 0 To xHeader.Count - 1
+        If Column < $SSQLFields.Count Then
+          sArry.Add(Quote(GridView1[Row, Column].Text))
+        Else
+          sArry.Add(Quote(modString.ConvertRichTextToPlain(GridView1[Row, Column].RichText)))
+        Endif
+      Next
+      CForm.Add(sArry)
+      If MMain.$IsGUIApp = True Then
+        $ProgressBar1.Value = (Row + 1) / GridView1.Rows.Count
+        Wait
+      Endif
+    Next
+    sPath = CForm.GetCSVFile()
+    Dec Application.Busy
+    If MMain.$IsGUIApp = True Then
+      $ProgressBar1.Visible = False
+    Endif
+
+    If Exist(sPath) Then
+      hPython = New FmPythonTerminal("Multivariate", xHeader, sPath)
+      modWorkSpace.Add(hPython)
+    Endif
+  Endif
+
+End

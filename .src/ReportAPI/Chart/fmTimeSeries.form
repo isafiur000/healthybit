@@ -1,11 +1,11 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,75,45)
+  MoveScaled(0,0,75,51)
   Text = ("Time Series")
   Resizable = False
   { TabPanel6 TabPanel
-    MoveScaled(0,0,75,45)
+    MoveScaled(0,0,75,50)
     Count = 2
     Index = 0
     Text = ("Pre Values")
@@ -18,19 +18,19 @@
       MoveScaled(13,0.625,17,3)
     }
     { Label171 Label
-      MoveScaled(2,37,11,3)
+      MoveScaled(2,38,11,3)
       Border = Border.Plain
       Text = ("Script")
     }
     { txttimeindepscript ButtonBox
-      MoveScaled(23,37,41,3)
+      MoveScaled(14,38,55,3)
       Picture = Picture["icon:/small/file"]
     }
     { txttimeindepshell TextBox
-      MoveScaled(65,37,7,3)
+      MoveScaled(14,41.5,31,3)
     }
     { TabPanel7 TabPanel
-      MoveScaled(1,4,73,32)
+      MoveScaled(1,4,73,33)
       Count = 2
       Index = 0
       Text = ("GridView Data")
@@ -50,11 +50,11 @@
         ToolTip = ("First option for Custom SQL Query from selected column of Gridview")
       }
       { txttimegridsecoptrow TextBox
-        MoveScaled(13,21,31,3)
+        MoveScaled(13,21.5,31,3)
         ToolTip = ("Second Option for Cutom SQL Query")
       }
       { txttimegridthirdoptrow TextBox
-        MoveScaled(13,24,31,3)
+        MoveScaled(13,25,31,3)
         ToolTip = ("Third Option for Cutom SQL Query")
       }
       { Label172 Label
@@ -68,12 +68,12 @@
         Text = ("Option1")
       }
       { Label174 Label
-        MoveScaled(1,21,11,3)
+        MoveScaled(1,21.5,11,3)
         Border = Border.Plain
         Text = ("Option2")
       }
       { Label175 Label
-        MoveScaled(1,24,11,3)
+        MoveScaled(1,25,11,3)
         Border = Border.Plain
         Text = ("Option3")
       }
@@ -110,11 +110,11 @@
         ToolTip = ("First Option for Cutom SQL Query")
       }
       { txttimeencsecoptrow TextBox
-        MoveScaled(10,21,31,3)
+        MoveScaled(10,21.5,31,3)
         ToolTip = ("Second Option for Cutom SQL Query")
       }
       { txttimeencthirdoptrow TextBox
-        MoveScaled(10,24,31,3)
+        MoveScaled(10,25,31,3)
         ToolTip = ("Third Option for Cutom SQL Query")
       }
       { Label179 Label
@@ -137,12 +137,12 @@
         Text = ("Option1")
       }
       { Label182 Label
-        MoveScaled(1,24,8,3)
+        MoveScaled(1,25,8,3)
         Border = Border.Plain
         Text = ("Option3")
       }
       { Label183 Label
-        MoveScaled(1,21,8,3)
+        MoveScaled(1,21.5,8,3)
         Border = Border.Plain
         Text = ("Option2")
       }
@@ -178,8 +178,12 @@
       Picture = Picture["icon:/small/clear"]
     }
     { chktimeindeptrans CheckBox
-      MoveScaled(14,37,9,3)
-      Text = ("Trans")
+      MoveScaled(2,41.5,11,3)
+      Text = ("Convert")
+    }
+    { btnsetlistindep ToolButton
+      MoveScaled(70,38,3,3)
+      Picture = Picture["icon:/small/table"]
     }
     Index = 1
     Text = ("Post Values")
@@ -197,7 +201,7 @@
       Picture = Picture["icon:/small/apply"]
     }
     { TabPanel8 TabPanel
-      MoveScaled(1,4,73,32)
+      MoveScaled(1,4,73,33)
       Count = 2
       Index = 0
       Text = ("GridView Data")
@@ -217,11 +221,11 @@
         ToolTip = ("First option for Custom SQL Query from selected column of Gridview")
       }
       { txttimegridsecoptcol TextBox
-        MoveScaled(13,21,31,3)
+        MoveScaled(13,21.5,31,3)
         ToolTip = ("Second Option for Cutom SQL Query")
       }
       { txttimegridthirdoptcol TextBox
-        MoveScaled(13,24,31,3)
+        MoveScaled(13,25,31,3)
         ToolTip = ("Third Option for Cutom SQL Query")
       }
       { Label187 Label
@@ -230,12 +234,12 @@
         Text = ("Option1")
       }
       { Label188 Label
-        MoveScaled(1,21,11,3)
+        MoveScaled(1,21.5,11,3)
         Border = Border.Plain
         Text = ("Option2")
       }
       { Label189 Label
-        MoveScaled(1,24,11,3)
+        MoveScaled(1,25,11,3)
         Border = Border.Plain
         Text = ("Option3")
       }
@@ -277,11 +281,11 @@
         ToolTip = ("First Option for Cutom SQL Query")
       }
       { txttimeencsecoptcol TextBox
-        MoveScaled(10,21,31,3)
+        MoveScaled(10,21.5,31,3)
         ToolTip = ("Second Option for Cutom SQL Query")
       }
       { txttimeencthirdoptcol TextBox
-        MoveScaled(10,24,31,3)
+        MoveScaled(10,25,31,3)
         ToolTip = ("Third Option for Cutom SQL Query")
       }
       { Label193 Label
@@ -304,28 +308,28 @@
         Text = ("Option1")
       }
       { Label196 Label
-        MoveScaled(1,24,8,3)
+        MoveScaled(1,25,8,3)
         Border = Border.Plain
         Text = ("Option3")
       }
       { Label197 Label
-        MoveScaled(1,21,8,3)
+        MoveScaled(1,21.5,8,3)
         Border = Border.Plain
         Text = ("Option2")
       }
       Index = 0
     }
     { Label198 Label
-      MoveScaled(2,37,11,3)
+      MoveScaled(2,38,11,3)
       Border = Border.Plain
       Text = ("Script")
     }
     { txttimedepscript ButtonBox
-      MoveScaled(23,37,41,3)
+      MoveScaled(14,38,55,3)
       Picture = Picture["icon:/small/file"]
     }
     { txttimedepshell TextBox
-      MoveScaled(65,37,7,3)
+      MoveScaled(14,41.5,31,3)
     }
     { pnldep Panel
       MoveScaled(32,0.625,23,3)
@@ -352,8 +356,12 @@
       Picture = Picture["icon:/small/clear"]
     }
     { chktimedeptrans CheckBox
-      MoveScaled(14,37,9,3)
-      Text = ("Trans")
+      MoveScaled(2,41.5,11,3)
+      Text = ("Convert")
+    }
+    { btnsetlistdepend ToolButton
+      MoveScaled(70,38,3,3)
+      Picture = Picture["icon:/small/table"]
     }
     Index = 0
   }

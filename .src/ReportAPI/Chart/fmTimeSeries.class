@@ -247,3 +247,42 @@ Private Sub ShowTimeCustColumn()
   Endif
 
 End
+
+Private Function GetListFile(sLink As String, sType As String) As String
+
+  Dim sPath As String
+  Dim hForm As FmTwoColmGrid
+
+  If sLink And If Exist(sLink) Then
+    sPath = sLink
+  Else
+    sPath = Desktop.CacheDir &/ modHelpVariable.AppName &/ sType & "_" & modString.GetDateString(Now()) & ".txt"
+  Endif
+  hForm = New FmTwoColmGrid(sPath)
+  hForm.ShowModal()
+
+  Return sPath
+
+End
+
+Public Sub btnsetlistindep_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txttimeindepscript.Text, "TimeSeries_independent")
+  If Exist(sPath) Then
+    txttimeindepscript.Text = sPath
+  Endif
+
+End
+
+Public Sub btnsetlistdepend_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txttimedepscript.Text, "TimeSeries_dependent")
+  If Exist(sPath) Then
+    txttimedepscript.Text = sPath
+  Endif
+
+End

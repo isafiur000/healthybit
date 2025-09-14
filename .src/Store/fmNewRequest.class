@@ -17,7 +17,11 @@ Public Sub Form_Open()
   Endif
 
   If modBasic.$AccessStoreRequest = "Disable" Then
-    btnsave.Enabled = False
+    If modGlobalSetting.GetDBTableList("InventorySaveAccess/StoreRequest").Exist(modBasic.$lbluser) = True Then
+      btnsave.Enabled = True
+    Else
+      btnsave.Enabled = False
+    Endif
   Endif
   cmbroute.Text = ""
   dtexpect.Value = DateAdd(Date(), gb.Date, 7)

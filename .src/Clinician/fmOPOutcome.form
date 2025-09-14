@@ -1,49 +1,55 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,64,36)
+  MoveScaled(0,0,78,31)
   Text = ("Out Patient Outcome")
   Resizable = False
-  Arrangement = Arrange.Vertical
   Margin = True
-  { Panel1 Panel
-    MoveScaled(0,0,63,4)
+  { lblmessage Label
+    MoveScaled(14,0.5,63,4)
     Border = Border.Plain
-    { rbadmission RadioButton
-      MoveScaled(1,0.5,12.75,3)
-      Text = ("Admission")
-    }
-    { rbfollowup RadioButton
-      MoveScaled(14,0.5,12,3)
-      Text = ("Follow Up")
-    }
-    { rbreferred RadioButton
-      MoveScaled(27,0.5,12,3)
-      Text = ("Referred")
-    }
-    { rbdeath RadioButton
-      MoveScaled(40,0.5,10,3)
-      Text = ("Death")
-    }
+  }
+  { Panel4 Panel
+    MoveScaled(0,0,14,26)
     { rbimproved RadioButton
-      MoveScaled(50,0.5,12,3)
+      MoveScaled(1,1,12,3)
       Text = ("Improved")
       Value = True
     }
+    { rbadmission RadioButton
+      MoveScaled(1,5,12.75,3)
+      Text = ("Admission")
+    }
+    { rbfollowup RadioButton
+      MoveScaled(1,9,12,3)
+      Text = ("Follow Up")
+    }
+    { rbreferred RadioButton
+      MoveScaled(1,13,12,3)
+      Text = ("Referred")
+    }
+    { rblama RadioButton
+      MoveScaled(1,17,12,3)
+      Text = ("LAMA")
+    }
+    { rbdeath RadioButton
+      MoveScaled(1,21,10,3)
+      Text = ("Death")
+    }
   }
   { txtcomment TextArea
-    MoveScaled(0,4,63,23)
+    MoveScaled(14,5,63,21)
     Wrap = True
   }
   { Panel2 Panel
-    MoveScaled(0,27,63,4)
+    MoveScaled(0,26,77,4)
     { btnsave Button
-      MoveScaled(35,0.625,13,3)
+      MoveScaled(43,0.5,13,3)
       Text = ("Save")
       Picture = Picture["icon:/small/apply"]
     }
     { btnclose Button
-      MoveScaled(49,0.625,13,3)
+      MoveScaled(57,0.5,13,3)
       Text = ("Close")
       Picture = Picture["icon:/small/close"]
     }
@@ -60,16 +66,8 @@
       MoveScaled(27,0.625,4,3)
       Picture = Picture["icon:/medium/added"]
     }
-  }
-  { Panel3 Panel
-    MoveScaled(0,31,63,4)
-    { lblmessage Label
-      MoveScaled(0.25,0.5,34,3)
-      Border = Border.Plain
-    }
     { btnreport Button
-      MoveScaled(37,0.5,23,3)
-      Text = ("Report")
+      MoveScaled(71,0.5,5,3)
       Picture = Picture["icon:/small/html"]
     }
   }

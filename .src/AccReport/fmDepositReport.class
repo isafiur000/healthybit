@@ -20,7 +20,7 @@ Public Sub Form_Open()
   Else
     mnuforms.Visible = False
   Endif
-  cmbstatus.List = ["Recorded", "Registered", "Follow Up", "Refer(OPD)", "Death(OPD)", "Admitted", "Discharged", "LAMA", "Refer", "Death", "Absconder"]
+  cmbstatus.List = ["Recorded", "Registered", "Follow Up", "Refer(OPD)", "LAMA(OPD)", "Death(OPD)", "Admitted", "Discharged", "LAMA", "Refer", "Death", "Absconder"]
   cmbstatus.Text = "Admitted"
   cmblocation.List = modGeneral.GetDepartmentWithBedList()
   cmblocation.Add("%")

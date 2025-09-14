@@ -354,11 +354,8 @@
       }
       Index = 0
     }
-    { txtcolor Label
-      MoveScaled(0,33,121,2)
-    }
     { Panel8 Panel
-      MoveScaled(0,36,122,41)
+      MoveScaled(0,35,122,41)
       Expand = True
       Arrangement = Arrange.Horizontal
       { Panel13 Panel
@@ -535,11 +532,31 @@
       { Panel20 Panel
         MoveScaled(86,1,36,39)
         Arrangement = Arrange.Vertical
+        { Panel27 Panel
+          MoveScaled(0,0,36,3)
+          { Panel26 Panel
+            MoveScaled(15,0,20,3)
+            Border = Border.Plain
+            { rbdate RadioButton
+              MoveScaled(0,0,8.5,3)
+              Text = ("Date")
+              Value = True
+            }
+            { rbtriage RadioButton
+              MoveScaled(10,0,9.5,2.75)
+              Text = ("Triage")
+            }
+          }
+          { txtcolor Label
+            MoveScaled(0,0,14,3)
+            Border = Border.Plain
+          }
+        }
         { lsticdisease ListBox
-          MoveScaled(0,1,35,9)
+          MoveScaled(1,6,35,9)
         }
         { Panel23 Panel
-          MoveScaled(0,12,35,9)
+          MoveScaled(0,17,35,9)
           { cmbpertype ComboBox
             MoveScaled(6.5,1,12,3)
             Sorted = True
@@ -566,7 +583,7 @@
           }
         }
         { grdperson GridView
-          MoveScaled(0,22,30,8)
+          MoveScaled(0,28,30,8)
           Expand = True
           Mode = Select.Single
           Header = GridView.Both

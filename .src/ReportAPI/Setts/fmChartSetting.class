@@ -46,6 +46,8 @@ Public Sub Form_Open()
   cmbtotal.List = ["Yes", "No"]
   cmbrowdate.List = ["Enable", "Disable"]
 
+  cmbMLvar.List = ["FitsrVal", "LastVal", "First-LastVal"]
+
   cmbhmisproc.List = ["Billing", "Service"]
   cmbhmisradio.List = ["Billing", "Service"]
   cmbhmisincentive.List = ["Billing", "Service"]
@@ -595,6 +597,7 @@ Private Sub StatSetting()
   If modSettings.ShowSettingFromFIle("StatisticsSetting/ConfidenceInterval") Then
     txtconfinterval.Value = modSettings.ShowSettingFromFIle("StatisticsSetting/ConfidenceInterval")
   Endif
+  cmbMLvar.Text = modSettings.ShowSettingFromFIle("StatisticsSetting/ClinicalValues")
 
 End
 
@@ -603,6 +606,15 @@ Public Sub btnconfinterval_Click()
   modSettings.SaveSettingsToFile("StatisticsSetting/ConfidenceInterval", CStr(txtconfinterval.Value))
   modBasic.$StatConfInterval = txtconfinterval.Value
   Balloon.Info(("Information saved"), btnconfinterval)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnMLvar_Click()
+
+  modSettings.SaveSettingsToFile("StatisticsSetting/ClinicalValues", cmbMLvar.Text)
+  modBasic.$StatClinValues = cmbMLvar.Text
+  Balloon.Info(("Information saved"), btnMLvar)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

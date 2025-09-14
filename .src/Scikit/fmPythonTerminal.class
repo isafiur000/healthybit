@@ -176,9 +176,17 @@ Public Sub btndataload_Click()
       dateLst[j] = "'" & dateLst[j] & "'"
     Next
     cmdLst.Add("datecolm = " & "[" & dateLst.Join(", ") & "]")
-    cmdLst.Add("orig_data = pandas.read_csv(\"" & $sPath & "\", sep = '" & "\\" & "t" & "', names = columns, parse_dates = datecolm)")
+    If $sType = "CSV" Then
+      cmdLst.Add("orig_data = pandas.read_csv(\"" & $sPath & "\", sep = '" & "\\" & "t" & "', names = columns, header = 0, parse_dates = datecolm)")
+    Else
+      cmdLst.Add("orig_data = pandas.read_csv(\"" & $sPath & "\", sep = '" & "\\" & "t" & "', names = columns, parse_dates = datecolm)")
+    Endif
   Else
-    cmdLst.Add("orig_data = pandas.read_csv(\"" & $sPath & "\", sep = '" & "\\" & "t" & "', names = columns)")
+    If $sType = "CSV" Then
+      cmdLst.Add("orig_data = pandas.read_csv(\"" & $sPath & "\", sep = '" & "\\" & "t" & "', names = columns, header = 0)")
+    Else
+      cmdLst.Add("orig_data = pandas.read_csv(\"" & $sPath & "\", sep = '" & "\\" & "t" & "', names = columns)")
+    Endif
   Endif
   TerminalInputList(cmdLst)
 

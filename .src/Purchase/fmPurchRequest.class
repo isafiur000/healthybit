@@ -26,7 +26,11 @@ Public Sub Form_Open()
   rbgeneric.Value = True
   rbnew.Value = True
   If modBasic.$AccessPurchaseOrder = "Disable" Then
-    btnverify.Enabled = False
+    If modGlobalSetting.GetDBTableList("InventorySaveAccess/PurchaseOrder").Exist(modBasic.$lbluser) = True Then
+      btnverify.Enabled = True
+    Else
+      btnverify.Enabled = False
+    Endif
   Endif
 
 End

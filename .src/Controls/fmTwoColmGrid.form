@@ -1,0 +1,35 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,90,56)
+  { Panel1 Panel
+    MoveScaled(0,0,89,5)
+    { TextBox1 TextBox
+      MoveScaled(1,1,29,3)
+    }
+    { TextBox2 TextBox
+      MoveScaled(33,1,29,3)
+    }
+    { btnadd Button
+      MoveScaled(69,1,10,3)
+      Text = ("Add")
+    }
+    { btndelete Button
+      MoveScaled(82,1,5,3)
+      Picture = Picture["icon:/small/delete"]
+    }
+  }
+  { GridView1 GridView
+    MoveScaled(1,5,88,46)
+    Mode = Select.Single
+    Header = GridView.Horizontal
+    AutoResize = False
+  }
+  { Panel2 Panel
+    MoveScaled(1,51,88,4)
+    { btnsave Button
+      MoveScaled(61,0.5,20,3)
+      Text = ("Save Data")
+    }
+  }
+}

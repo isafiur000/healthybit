@@ -1,11 +1,11 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,82,56)
+  MoveScaled(0,0,82,59)
   Text = ("Add Columns")
   Resizable = False
   { TabPanel1 IconPanel
-    MoveScaled(1,1,80,53)
+    MoveScaled(1,1,80,57)
     Count = 10
     Index = 0
     Text = ("NewColumn1")
@@ -37,14 +37,14 @@
       ToolTip = ("Third option for Custom SQL Query\nUse {EncounterID} for Encounter ID of patient")
     }
     { txtscript1 ButtonBox
-      MoveScaled(21,44,33,3)
+      MoveScaled(13,44,44,3)
       Picture = Picture["icon:/small/file"]
     }
     { txtshell1 TextBox
-      MoveScaled(55,44,7,3)
+      MoveScaled(13,48,21.5,3)
     }
     { btnsave1 Button
-      MoveScaled(45,48,10,3)
+      MoveScaled(45,52,10,3)
       Text = ("Save")
       Picture = Picture["icon:/small/apply"]
     }
@@ -74,7 +74,7 @@
       Text = ("Variable")
     }
     { chkarry1 CheckBox
-      MoveScaled(13,48,19,3)
+      MoveScaled(13,52,19,3)
       ToolTip = ("Output Custom SQL Query as Array")
       Text = ("Array Output")
     }
@@ -108,9 +108,13 @@
       MoveScaled(13,40,21.5,3)
     }
     { chktrans1 CheckBox
-      MoveScaled(13,44,8,3)
+      MoveScaled(1,48,11,3)
       ToolTip = ("For Translation embed a file with following format:\n*<old_name>*;<new_name>\n<old_name>*;<new_name>\n<old_name>;<new_name>\n\nThe last box can have default value if the translation doesn't return any value")
-      Text = ("Trans")
+      Text = ("Convert")
+    }
+    { btnsetlist1 ToolButton
+      MoveScaled(58,44,3,3)
+      Picture = Picture["icon:/small/table"]
     }
     Index = 1
     Text = ("NewColumn2")
@@ -137,7 +141,7 @@
       MoveScaled(13,36,21,3)
     }
     { btnsave2 Button
-      MoveScaled(45,48,10,3)
+      MoveScaled(45,52,10,3)
       Text = ("Save")
       Picture = Picture["icon:/small/apply"]
     }
@@ -167,7 +171,7 @@
       Text = ("Variable")
     }
     { chkarry2 CheckBox
-      MoveScaled(13,48,19,3)
+      MoveScaled(13,52,19,3)
       Text = ("Array Output")
     }
     { btnclear2 Button
@@ -200,15 +204,19 @@
       MoveScaled(13,40,21.5,3)
     }
     { chktrans2 CheckBox
-      MoveScaled(13,44,8,3)
-      Text = ("Trans")
+      MoveScaled(1,48,11,3)
+      Text = ("Convert")
     }
     { txtscript2 ButtonBox
-      MoveScaled(21,44,33,3)
+      MoveScaled(13,44,44,3)
       Picture = Picture["icon:/small/file"]
     }
     { txtshell2 TextBox
-      MoveScaled(55,44,7,3)
+      MoveScaled(13,48,21.5,3)
+    }
+    { btnsetlist2 ToolButton
+      MoveScaled(58,44,3,3)
+      Picture = Picture["icon:/small/table"]
     }
     Index = 2
     Text = ("NewColumn3")
@@ -240,7 +248,7 @@
       ToolTip = ("Third option for Custom SQL Query\nUse {EncounterID} for Encounter ID of patient")
     }
     { btnsave3 Button
-      MoveScaled(45,48,10,3)
+      MoveScaled(45,52,10,3)
       Text = ("Save")
       Picture = Picture["icon:/small/apply"]
     }
@@ -270,7 +278,7 @@
       Text = ("Variable")
     }
     { chkarry3 CheckBox
-      MoveScaled(13,48,19,3)
+      MoveScaled(13,52,19,3)
       ToolTip = ("Output Custom SQL Query as Array")
       Text = ("Array Output")
     }
@@ -304,15 +312,19 @@
       MoveScaled(13,40,21.5,3)
     }
     { chktrans3 CheckBox
-      MoveScaled(13,44,8,3)
-      Text = ("Trans")
+      MoveScaled(1,48,11,3)
+      Text = ("Convert")
     }
     { txtscript3 ButtonBox
-      MoveScaled(21,44,33,3)
+      MoveScaled(13,44,44,3)
       Picture = Picture["icon:/small/file"]
     }
     { txtshell3 TextBox
-      MoveScaled(55,44,7,3)
+      MoveScaled(13,48,21.5,3)
+    }
+    { btnsetlist3 ToolButton
+      MoveScaled(58,44,3,3)
+      Picture = Picture["icon:/small/table"]
     }
     Index = 3
     Text = ("NewColumn4")
@@ -344,7 +356,7 @@
       ToolTip = ("Third option for Custom SQL Query\nUse {EncounterID} for Encounter ID of patient")
     }
     { btnsave4 Button
-      MoveScaled(45,48,10,3)
+      MoveScaled(45,52,10,3)
       Text = ("Save")
       Picture = Picture["icon:/small/apply"]
     }
@@ -374,7 +386,7 @@
       Text = ("Variable")
     }
     { chkarry4 CheckBox
-      MoveScaled(13,48,19,3)
+      MoveScaled(13,52,19,3)
       ToolTip = ("Output Custom SQL Query as Array")
       Text = ("Array Output")
     }
@@ -408,15 +420,19 @@
       MoveScaled(13,40,21.5,3)
     }
     { chktrans4 CheckBox
-      MoveScaled(13,44,8,3)
-      Text = ("Trans")
+      MoveScaled(1,48,11,3)
+      Text = ("Convert")
     }
     { txtscript4 ButtonBox
-      MoveScaled(21,44,33,3)
+      MoveScaled(13,44,44,3)
       Picture = Picture["icon:/small/file"]
     }
     { txtshell4 TextBox
-      MoveScaled(55,44,7,3)
+      MoveScaled(13,48,21.5,3)
+    }
+    { btnsetlist4 ToolButton
+      MoveScaled(58,44,3,3)
+      Picture = Picture["icon:/small/table"]
     }
     Index = 4
     Text = ("NewColumn5")
@@ -448,7 +464,7 @@
       ToolTip = ("Third option for Custom SQL Query\nUse {EncounterID} for Encounter ID of patient")
     }
     { btnsave5 Button
-      MoveScaled(45,48,10,3)
+      MoveScaled(45,52,10,3)
       Text = ("Save")
       Picture = Picture["icon:/small/apply"]
     }
@@ -478,7 +494,7 @@
       Text = ("Variable")
     }
     { chkarry5 CheckBox
-      MoveScaled(13,48,19,3)
+      MoveScaled(13,52,19,3)
       ToolTip = ("Output Custom SQL Query as Array")
       Text = ("Array Output")
     }
@@ -512,15 +528,19 @@
       MoveScaled(13,40,21.5,3)
     }
     { chktrans5 CheckBox
-      MoveScaled(13,44,8,3)
-      Text = ("Trans")
+      MoveScaled(1,48,11,3)
+      Text = ("Convert")
     }
     { txtscript5 ButtonBox
-      MoveScaled(21,44,33,3)
+      MoveScaled(13,44,44,3)
       Picture = Picture["icon:/small/file"]
     }
     { txtshell5 TextBox
-      MoveScaled(55,44,7,3)
+      MoveScaled(13,48,21.5,3)
+    }
+    { btnsetlist5 ToolButton
+      MoveScaled(58,44,3,3)
+      Picture = Picture["icon:/small/table"]
     }
     Index = 5
     Text = ("NewColumn6")
@@ -594,12 +614,12 @@
       Text = ("Script")
     }
     { chkarry6 CheckBox
-      MoveScaled(13,48,19,3)
+      MoveScaled(13,52,19,3)
       ToolTip = ("Output Custom SQL Query as Array")
       Text = ("Array Output")
     }
     { btnsave6 Button
-      MoveScaled(45,48,10,3)
+      MoveScaled(45,52,10,3)
       Text = ("Save")
       Picture = Picture["icon:/small/apply"]
     }
@@ -616,15 +636,19 @@
       MoveScaled(13,40,21.5,3)
     }
     { chktrans6 CheckBox
-      MoveScaled(13,44,8,3)
-      Text = ("Trans")
+      MoveScaled(1,48,11,3)
+      Text = ("Convert")
     }
     { txtscript6 ButtonBox
-      MoveScaled(21,44,33,3)
+      MoveScaled(13,44,44,3)
       Picture = Picture["icon:/small/file"]
     }
     { txtshell6 TextBox
-      MoveScaled(55,44,7,3)
+      MoveScaled(13,48,21.5,3)
+    }
+    { btnsetlist6 ToolButton
+      MoveScaled(58,44,3,3)
+      Picture = Picture["icon:/small/table"]
     }
     Index = 6
     Text = ("NewColumn7")
@@ -698,12 +722,12 @@
       Text = ("Script")
     }
     { chkarry7 CheckBox
-      MoveScaled(13,48,19,3)
+      MoveScaled(13,52,19,3)
       ToolTip = ("Output Custom SQL Query as Array")
       Text = ("Array Output")
     }
     { btnsave7 Button
-      MoveScaled(45,48,10,3)
+      MoveScaled(45,52,10,3)
       Text = ("Save")
       Picture = Picture["icon:/small/apply"]
     }
@@ -720,15 +744,19 @@
       MoveScaled(13,40,21.5,3)
     }
     { chktrans7 CheckBox
-      MoveScaled(13,44,8,3)
-      Text = ("Trans")
+      MoveScaled(1,48,11,3)
+      Text = ("Convert")
     }
     { txtscript7 ButtonBox
-      MoveScaled(21,44,33,3)
+      MoveScaled(13,44,44,3)
       Picture = Picture["icon:/small/file"]
     }
     { txtshell7 TextBox
-      MoveScaled(55,44,7,3)
+      MoveScaled(13,48,21.5,3)
+    }
+    { btnsetlist7 ToolButton
+      MoveScaled(58,44,3,3)
+      Picture = Picture["icon:/small/table"]
     }
     Index = 7
     Text = ("NewColumn8")
@@ -802,12 +830,12 @@
       Text = ("Script")
     }
     { chkarry8 CheckBox
-      MoveScaled(13,48,19,3)
+      MoveScaled(13,52,19,3)
       ToolTip = ("Output Custom SQL Query as Array")
       Text = ("Array Output")
     }
     { btnsave8 Button
-      MoveScaled(45,48,10,3)
+      MoveScaled(45,52,10,3)
       Text = ("Save")
       Picture = Picture["icon:/small/apply"]
     }
@@ -824,15 +852,19 @@
       MoveScaled(13,40,21.5,3)
     }
     { chktrans8 CheckBox
-      MoveScaled(13,44,8,3)
-      Text = ("Trans")
+      MoveScaled(1,48,11,3)
+      Text = ("Convert")
     }
     { txtscript8 ButtonBox
-      MoveScaled(21,44,33,3)
+      MoveScaled(13,44,44,3)
       Picture = Picture["icon:/small/file"]
     }
     { txtshell8 TextBox
-      MoveScaled(55,44,7,3)
+      MoveScaled(13,48,21.5,3)
+    }
+    { btnsetlist8 ToolButton
+      MoveScaled(58,44,3,3)
+      Picture = Picture["icon:/small/table"]
     }
     Index = 8
     Text = ("NewColumn9")
@@ -906,12 +938,12 @@
       Text = ("Script")
     }
     { chkarry9 CheckBox
-      MoveScaled(13,48,19,3)
+      MoveScaled(13,52,19,3)
       ToolTip = ("Output Custom SQL Query as Array")
       Text = ("Array Output")
     }
     { btnsave9 Button
-      MoveScaled(45,48,10,3)
+      MoveScaled(45,52,10,3)
       Text = ("Save")
       Picture = Picture["icon:/small/apply"]
     }
@@ -928,15 +960,19 @@
       MoveScaled(13,40,21.5,3)
     }
     { chktrans9 CheckBox
-      MoveScaled(13,44,8,3)
-      Text = ("Trans")
+      MoveScaled(1,48,11,3)
+      Text = ("Convert")
     }
     { txtscript9 ButtonBox
-      MoveScaled(21,44,33,3)
+      MoveScaled(13,44,44,3)
       Picture = Picture["icon:/small/file"]
     }
     { txtshell9 TextBox
-      MoveScaled(55,44,7,3)
+      MoveScaled(13,48,21.5,3)
+    }
+    { btnsetlist9 ToolButton
+      MoveScaled(58,44,3,3)
+      Picture = Picture["icon:/small/table"]
     }
     Index = 9
     Text = ("NewColumn10")
@@ -1010,12 +1046,12 @@
       Text = ("Script")
     }
     { chkarry10 CheckBox
-      MoveScaled(13,48,19,3)
+      MoveScaled(13,52,19,3)
       ToolTip = ("Output Custom SQL Query as Array")
       Text = ("Array Output")
     }
     { btnsave10 Button
-      MoveScaled(45,48,10,3)
+      MoveScaled(45,52,10,3)
       Text = ("Save")
       Picture = Picture["icon:/small/apply"]
     }
@@ -1032,15 +1068,19 @@
       MoveScaled(13,40,21.5,3)
     }
     { chktrans10 CheckBox
-      MoveScaled(13,44,8,3)
-      Text = ("Trans")
+      MoveScaled(1,48,11,3)
+      Text = ("Convert")
     }
     { txtscript10 ButtonBox
-      MoveScaled(21,44,33,3)
+      MoveScaled(13,44,44,3)
       Picture = Picture["icon:/small/file"]
     }
     { txtshell10 TextBox
-      MoveScaled(55,44,7,3)
+      MoveScaled(13,48,21.5,3)
+    }
+    { btnsetlist10 ToolButton
+      MoveScaled(58,44,3,3)
+      Picture = Picture["icon:/small/table"]
     }
     Index = 0
   }

@@ -99,9 +99,9 @@ Public Sub Form_Open()
   cmbsavetransfer.List = ["Enable", "Disable"]
   cmbsaveconsume.List = ["Enable", "Disable"]
   cmbsavereturn.List = ["Enable", "Disable"]
-  cmbsavepurrequest.List = ["Enable", "Disable"]
-  cmbsaveorder.List = ["Enable", "Disable"]
-  cmbsaveentry.List = ["Enable", "Disable"]
+  cmbsavestorereq.List = ["Enable", "Disable"]
+  cmbsavepurorder.List = ["Enable", "Disable"]
+  cmbsavepurentry.List = ["Enable", "Disable"]
 
 End
 
@@ -747,10 +747,10 @@ Private Sub ShowInventoryUserAccess()
 
   cmbsavetransfer.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/StockTransfer", cmbtarget.Text)
   cmbsaveconsume.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/StockConsume", cmbtarget.Text)
-  cmbsavepurrequest.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/StoreRequest", cmbtarget.Text)
-  cmbsaveorder.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/PurchaseOrder", cmbtarget.Text)
+  cmbsavestorereq.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/StoreRequest", cmbtarget.Text)
+  cmbsavepurorder.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/PurchaseOrder", cmbtarget.Text)
   cmbsavereturn.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/StockReturn", cmbtarget.Text)
-  cmbsaveentry.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/PurchaseEntry", cmbtarget.Text)
+  cmbsavepurentry.Text = modGlobalSetting.ShowSettingFromDBAny("InventorySaveAccess/PurchaseEntry", cmbtarget.Text)
 
 End
 
@@ -770,17 +770,17 @@ Public Sub btnsaveconsume_Click()
 
 End
 
-Public Sub btnsavePurrequest_Click()
+Public Sub btnstorereq_Click()
 
-  modGlobalSetting.SaveSettingToDB("InventorySaveAccess/StoreRequest", cmbsavepurrequest.Text, cmbtarget.Text)
-  Balloon.Info(("Information saved"), btnsavePurrequest)
+  modGlobalSetting.SaveSettingToDB("InventorySaveAccess/StoreRequest", cmbsavestorereq.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnstorereq)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
 
 Public Sub btnsaveorder_Click()
 
-  modGlobalSetting.SaveSettingToDB("InventorySaveAccess/PurchaseOrder", cmbsaveorder.Text, cmbtarget.Text)
+  modGlobalSetting.SaveSettingToDB("InventorySaveAccess/PurchaseOrder", cmbsavepurorder.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btnsaveorder)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -796,9 +796,75 @@ End
 
 Public Sub btnsaveentry_Click()
 
-  modGlobalSetting.SaveSettingToDB("InventorySaveAccess/PurchaseEntry", cmbsaveentry.Text, cmbtarget.Text)
+  modGlobalSetting.SaveSettingToDB("InventorySaveAccess/PurchaseEntry", cmbsavepurentry.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btnsaveentry)
   Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnexcptransfer_Click()
+
+  Dim xType As String
+  Dim hForm As FmSettingList
+
+  xType = ""
+  hForm = New FmSettingList("Inventory Management Users", "User List", xType, cmbtarget.Text)
+  hForm.ShowModal
+
+End
+
+Public Sub btnexcpconsume_Click()
+
+  Dim xType As String
+  Dim hForm As FmSettingList
+
+  xType = "InventorySaveAccess/StockConsume"
+  hForm = New FmSettingList("Inventory Management Users", "User List", xType, cmbtarget.Text)
+  hForm.ShowModal
+
+End
+
+Public Sub btnexcpreturn_Click()
+
+  Dim xType As String
+  Dim hForm As FmSettingList
+
+  xType = "InventorySaveAccess/StockReturn"
+  hForm = New FmSettingList("Inventory Management Users", "User List", xType, cmbtarget.Text)
+  hForm.ShowModal
+
+End
+
+Public Sub btnexcpStore_Click()
+
+  Dim xType As String
+  Dim hForm As FmSettingList
+
+  xType = "InventorySaveAccess/StoreRequest"
+  hForm = New FmSettingList("Inventory Management Users", "User List", xType, cmbtarget.Text)
+  hForm.ShowModal
+
+End
+
+Public Sub btnexcppurorder_Click()
+
+  Dim xType As String
+  Dim hForm As FmSettingList
+
+  xType = "InventorySaveAccess/PurchaseOrder"
+  hForm = New FmSettingList("Inventory Management Users", "User List", xType, cmbtarget.Text)
+  hForm.ShowModal
+
+End
+
+Public Sub btnexcppurentry_Click()
+
+  Dim xType As String
+  Dim hForm As FmSettingList
+
+  xType = "InventorySaveAccess/PurchaseEntry"
+  hForm = New FmSettingList("Inventory Management Users", "User List", xType, cmbtarget.Text)
+  hForm.ShowModal
 
 End
 

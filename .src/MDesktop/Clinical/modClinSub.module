@@ -449,6 +449,48 @@ Public Function FillQuantiExamChart(sImgHt As Integer, encid As String, strHead 
 
 End
 
+Public Function FillQuantiExamChartHistory(sImgHt As Integer, encid As String, patNo As String, strHead As String, Optional sHour As Integer) As String
+
+  Dim maxval As Float
+  Dim minval As Float
+  Dim normval As Float
+  Dim sql As String
+  Dim rData As Result
+  Dim xpath As String
+  Dim xlimit As Float[]
+  Dim firDate As Date
+
+  Dim pointsArr_x As Date[]
+  Dim pointsArr_y As Float[]
+
+  pointsArr_x = New Date[]
+  pointsArr_y = New Float[]
+
+  If sHour Then
+    firDate = DateAdd(Now(), gb.Hour, 0 - sHour)
+    sql = "select fldrepquanti,fldtime from tblpatientexam where fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&1) and fldhead=&2 and fldtype=&3 and fldsave=&4 and fldtime>=&5 ORDER BY fldtime"
+    rData = modDatabase.$myConn.Exec(sql, patNo, strHead, "Quantitative", True, firDate)
+  Else
+    sql = "select fldrepquanti,fldtime from tblpatientexam where fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&1) and fldhead=&2 and fldtype=&3 and fldsave=&4 ORDER BY fldtime"
+    rData = modDatabase.$myConn.Exec(sql, patNo, strHead, "Quantitative", True)
+  Endif
+  If rData.Available Then
+    xlimit = modClinic.GetBothQuantiExamVal(strHead, encid)
+    minval = xlimit[0]
+    maxval = xlimit[1]
+    normval = modClinic.GetNormalQuantiExamVal(strHead, encid)
+
+    For Each rData
+      pointsArr_x.Add(rData["fldtime"])
+      pointsArr_y.Add(rData["fldrepquanti"])
+    Next
+    xpath = modChart.ClinicalChart(sImgHt, encid, pointsArr_x, pointsArr_y, maxval, minval, normval)
+  Endif
+
+  Return xpath
+
+End
+
 ''-----------------------------------------------------------------------------------------------------------
 Public Sub DrawClinicalCharts_SetA(drw As PictureBox, encid As String, strItem As String)
 

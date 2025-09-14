@@ -140,3 +140,31 @@ Private Sub UnivariateSetting()
   Endif
 
 End
+
+Private Function GetListFile(sLink As String, sType As String) As String
+
+  Dim sPath As String
+  Dim hForm As FmTwoColmGrid
+
+  If sLink And If Exist(sLink) Then
+    sPath = sLink
+  Else
+    sPath = Desktop.CacheDir &/ modHelpVariable.AppName &/ sType & "_" & modString.GetDateString(Now()) & ".txt"
+  Endif
+  hForm = New FmTwoColmGrid(sPath)
+  hForm.ShowModal()
+
+  Return sPath
+
+End
+
+Public Sub btnsetlist_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txtuniscript.Text, "Univariate")
+  If Exist(sPath) Then
+    txtuniscript.Text = sPath
+  Endif
+
+End

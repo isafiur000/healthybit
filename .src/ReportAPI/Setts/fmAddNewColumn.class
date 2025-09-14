@@ -589,3 +589,131 @@ Public Sub btnaddTable10_Click()
   cmbvariable10.Text = ColumnTableValue()
 
 End
+
+''-------------- List -------------
+Private Function GetListFile(sLink As String) As String
+
+  Dim sPath As String
+  Dim hForm As FmTwoColmGrid
+
+  If sLink And If Exist(sLink) Then
+    sPath = sLink
+  Else
+    sPath = Desktop.CacheDir &/ modHelpVariable.AppName &/ modString.GetDateString(Now()) & ".txt"
+  Endif
+  hForm = New FmTwoColmGrid(sPath)
+  hForm.ShowModal()
+
+  Return sPath
+
+End
+
+Public Sub btnsetlist1_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txtscript1.Text)
+  If Exist(sPath) Then
+    txtscript1.Text = sPath
+  Endif
+
+End
+
+Public Sub btnsetlist2_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txtscript2.Text)
+  If Exist(sPath) Then
+    txtscript2.Text = sPath
+  Endif
+
+End
+
+Public Sub btnsetlist3_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txtscript3.Text)
+  If Exist(sPath) Then
+    txtscript3.Text = sPath
+  Endif
+
+End
+
+Public Sub btnsetlist4_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txtscript4.Text)
+  If Exist(sPath) Then
+    txtscript4.Text = sPath
+  Endif
+
+End
+
+Public Sub btnsetlist5_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txtscript5.Text)
+  If Exist(sPath) Then
+    txtscript5.Text = sPath
+  Endif
+
+End
+
+Public Sub btnsetlist6_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txtscript6.Text)
+  If Exist(sPath) Then
+    txtscript6.Text = sPath
+  Endif
+
+End
+
+Public Sub btnsetlist7_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txtscript7.Text)
+  If Exist(sPath) Then
+    txtscript7.Text = sPath
+  Endif
+
+End
+
+Public Sub btnsetlist8_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txtscript8.Text)
+  If Exist(sPath) Then
+    txtscript8.Text = sPath
+  Endif
+
+End
+
+Public Sub btnsetlist9_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txtscript9.Text)
+  If Exist(sPath) Then
+    txtscript9.Text = sPath
+  Endif
+
+End
+
+Public Sub btnsetlist10_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txtscript10.Text)
+  If Exist(sPath) Then
+    txtscript10.Text = sPath
+  Endif
+
+End

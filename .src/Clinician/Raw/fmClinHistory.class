@@ -31,6 +31,7 @@ Public Sub Form_Open()
     $xFinList = modMedicine.GetCustReportVariables(chkselect.Value)
   Endif
   AddListBiewContent($xFinList)
+  WebView1.Zoom = modBasic.$WebZoomValue
   modGeneralMain.$RightAdView.SetHtml("")
   rbmetric.Value = True
 

@@ -1,0 +1,42 @@
+' Gambas class file
+
+Public Sub Form_Open()
+
+  Me.Center
+
+End
+
+Public Sub txtimport_Click()
+
+  If Dialog.OpenFile() Then Return
+  txtimport.Text = Dialog.Path
+
+End
+
+Public Sub btnimport_Click()
+
+  Dim hCSV As CsvFile
+  Dim xdelim As String
+  Dim sPath As String
+  Dim xfile As String
+  Dim xHeadList As String[]
+  Dim hPython As FmPythonTerminal
+
+  If Trim(txtdelim.Text) Then
+    xdelim = Trim(txtdelim.Text)
+  Else
+    xdelim = ";"
+  Endif
+
+  hCSV = New CsvFile(txtimport.Text, xdelim)
+  xHeadList = hCSV.Fields
+
+  sPath = Temp() & ".csv"
+  xfile = File.Load(txtimport.Text)
+  xfile = Replace(xfile, xdelim, gb.Tab)
+  File.Save(sPath, xfile)
+
+  hPython = New FmPythonTerminal("CSV", xHeadList, sPath)
+  modWorkSpace.Add(hPython)
+
+End

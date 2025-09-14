@@ -1,0 +1,30 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,64,9)
+  Text = ("Load CSV File")
+  Resizable = False
+  { Label6 Label
+    MoveScaled(1,1,9,3)
+    Border = Border.Plain
+    Text = ("CSV File")
+  }
+  { txtimport ButtonBox
+    MoveScaled(11,1,49,3)
+    ToolTip = ("The CSV file should contain semicolon( ; ) separated fields. The first row should contain field names from tblservicecost.\nEssential Fields are flditemname and flditemtype.")
+    Picture = Picture["icon:/small/file"]
+  }
+  { txtdelim TextBox
+    MoveScaled(11,5,7,3)
+  }
+  { Label1 Label
+    MoveScaled(1,5,9,3)
+    Border = Border.Plain
+    Text = ("Delimiter")
+  }
+  { btnimport Button
+    MoveScaled(48,5,12,3)
+    Text = ("Import")
+    Picture = Picture["icon:/small/exec"]
+  }
+}

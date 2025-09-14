@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,120,74)
+  MoveScaled(0,0,120,77)
   Tag = "Bed Occupancy"
   Text = ("Bed Occupancy")
   { mnufile Menu
@@ -384,6 +384,21 @@
       }
     }
   }
+  { mnureport Menu
+    Text = ("Report")
+    { mnunutrition Menu
+      Text = ("Nutrition")
+    }
+    { mnuprogress Menu
+      Text = ("Progress")
+    }
+    { mnunoteall Menu
+      Text = ("Notes")
+    }
+    { mnuvitalall Menu
+      Text = ("Vitals")
+    }
+  }
   { Panel1 Panel
     MoveScaled(0,0,119,73)
     { Panel2 Panel
@@ -402,7 +417,7 @@
         Picture = Picture["icon:/small/file"]
       }
       { ProgressBar1 ProgressBar
-        MoveScaled(60,0.375,46,3)
+        MoveScaled(60,0.375,26,3)
       }
       { Label2 Label
         MoveScaled(1,0.375,7,3)
@@ -419,6 +434,19 @@
         MoveScaled(32,0.375,5,3)
         Background = Color.White
         Border = True
+      }
+      { Panel5 Panel
+        MoveScaled(88,0.5,21,2.75)
+        Border = Border.Plain
+        { rbsi RadioButton
+          MoveScaled(0,0,10,2.75)
+          Text = ("SI Unit")
+        }
+        { rbmetric RadioButton
+          MoveScaled(11,0,10,2.75)
+          Text = ("Metric")
+          Value = True
+        }
       }
     }
     { pnlhospital Panel
@@ -634,51 +662,43 @@
     }
     { Panel3 Panel
       MoveScaled(1,67,118,4)
-      { btnnutrition Button
-        MoveScaled(0,0.5,12,3)
-        Text = ("Nutrition")
-      }
-      { btnprogress Button
-        MoveScaled(12,0.5,12,3)
-        Text = ("Progress")
-      }
       { btnautobill Button
-        MoveScaled(87,0.5,16.375,3)
+        MoveScaled(92,0.5,12,3)
         Visible = False
         Enabled = False
         Text = ("Bed Charge")
       }
       { btnautoround Button
-        MoveScaled(70,0.5,16.375,3)
+        MoveScaled(76,0.5,16,3)
         Visible = False
         Enabled = False
         Text = ("Consult Charge")
-      }
-      { btnnoteall Button
-        MoveScaled(24,0.5,10,3)
-        Text = ("Notes")
-      }
-      { btnvitalall Button
-        MoveScaled(34,0.5,10,3)
-        Text = ("Vitals")
-      }
-      { Panel5 Panel
-        MoveScaled(46,0.5,21,2.75)
-        Border = Border.Plain
-        { rbsi RadioButton
-          MoveScaled(0,0,10,2.75)
-          Text = ("SI Unit")
-        }
-        { rbmetric RadioButton
-          MoveScaled(11,0,10,2.75)
-          Text = ("Metric")
-          Value = True
-        }
       }
       { btnautopharm Button
         MoveScaled(104,0.5,13,3)
         Visible = False
         Text = ("Pharmacy")
+      }
+      { chkshowdepart CheckBox
+        MoveScaled(1,0.5,11,3)
+        Text = ("Params")
+      }
+      { chkshowstatus CheckBox
+        MoveScaled(13,0.5,11,3)
+        Text = ("Status")
+      }
+      { Panel8 Panel
+        MoveScaled(33,0.5,23,3)
+        Border = Border.Plain
+        { rblocat RadioButton
+          MoveScaled(0,0,11,3)
+          Text = ("Location")
+          Value = True
+        }
+        { rbtriage RadioButton
+          MoveScaled(12,0,9.5,2.75)
+          Text = ("Triage")
+        }
       }
     }
   }

@@ -33,10 +33,13 @@ Public Sub Form_Open()
       btnconsult.Enabled = False
     Endif
     $showList = modBasic.$ClinConsultationList
+    dtsort.Value = Now()
   Else If $sTable = "tblopvisit" Then
     Me.Title = "OPD Visit List"
     Me.Tag = "OPD Visit List"
     $showList = modBasic.$ClinOPVisitList
+    dtsort.Value = DateAdd(Now(), gb.Day, -1)
+    txtrange.Value = 1
   Endif
 
   If MMain.$WebReport = "Multiple" Then
@@ -96,14 +99,13 @@ Public Sub Form_Open()
     xPanelentry.Visible = True
     yPanelEntry.Visible = True
   Endif
-  dtsort.Value = Now()
 
   $ExamLst = modMedicine.FillClinicalSubClass("Physician Examinations")
   FillCustomMenu()
   FillCustomFormMenu()
   FillExamMenu()
   modSettings.ShowCheckBox(chkdate, "OPDPatientList/SelectDate")
-  rbconsult.Value = True
+  rbdate.Value = True
   If cmbdept.Text Then
     btnrefresh_Click()
   Endif
@@ -349,8 +351,10 @@ Private Function ExecuteQuery(xFldList As String[]) As Result
   Else
     If rbname.Value = True Then
       xcolor = db.Subst(" and tblencounter.fldheight=&1", CStr(ToolButton1.Background))
-    Else If rbconsult.Value = True Then
+    Else If rbdate.Value = True Then
       xcolor = " and " & $sTable & "." & "fldencounterval in(select fldencounterval from tblencounter where " & db.Subst("fldheight=&1)", CStr(ToolButton1.Background))
+    Else If rbtriage.Value = True Then
+      xcolor = db.Subst(" and tblencounter.fldheight=&1", CStr(ToolButton1.Background))
     Endif
   Endif
 
@@ -376,10 +380,14 @@ Private Function ExecuteQuery(xFldList As String[]) As Result
     xpreun = "("
     xunion = " inner join tblencounter on " & $sTable & "." & "fldencounterval=tblencounter.fldencounterval) inner join tblpatientinfo on tblencounter.fldpatientval=tblpatientinfo.fldpatientval"
     xorder = " ORDER BY tblpatientinfo.fldptnamefir"
-  Else If rbconsult.Value = True Then
+  Else If rbdate.Value = True Then
     xpreun = ""
     xunion = ""
     xorder = " ORDER BY " & $sTable & "." & "fldconsulttime"
+  Else If rbtriage.Value = True Then
+    xpreun = ""
+    xunion = " inner join tblencounter on " & $sTable & "." & "fldencounterval=tblencounter.fldencounterval"
+    xorder = " ORDER BY FIELD(tblencounter.fldheight, '0', '65280', '16776960', '16711680') DESC"
   Endif
   $RepoStr = modDataRepo.GetWhereStringRepo(cmblocation.Text, cmbvalue.Text, $sTable)
   If chkdate.Value = True Then
@@ -573,10 +581,10 @@ Private Sub ResizeGrid()
     .Columns[6].Text = "Diagnosis"
     If chkshowdepart.Value = True Then
       If $sTable = "tblconsult" Then
-        .Columns[7].Text = "Consult"
+        .Columns[7].Text = "Consultant"
       Endif
       If cmbdept.Text = "%" Then
-        .Columns[8].Text = "Depart"
+        .Columns[8].Text = "Department"
       Endif
       If chkdate.Value = False Then
         .Columns[9].Text = "DateTime"

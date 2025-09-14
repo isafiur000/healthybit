@@ -1,0 +1,144 @@
+' Gambas class file
+
+Private $sType As String
+Private $sItem As String
+Private $sComp As String
+
+Public Sub _new(sTitle As String, xType As String, xItem As String, xComp As String)
+
+  Me.Title = sTitle
+  $sType = xType
+  $sItem = xItem
+  $sComp = xComp
+
+End
+
+Public Sub Form_Open()
+
+  modGeneralMain.ArrangeFormCentre(Me, "False")
+  ShowSettingParams()
+  GetRemainingParam()
+
+End
+
+Private Sub GetRemainingParam()
+
+  Dim xList As String[]
+
+  If $sType = "User List" Then
+    xList = modGeneral.GetActiveUserIDAll()
+  Endif
+  FillGridViewSelected(xList)
+
+End
+
+Private Sub ShowSettingParams()
+
+  Dim res As Result
+
+  If $sType = "User List" Then
+    res = modDatabase.$myConn.Exec("select fldvalue as col from tbltabsettings where fldcategory=&1 and fldcomp=&2", $sItem, $sComp)
+  Endif
+  modFillContainer.FillListBox(lstsecond, res, False)
+
+End
+
+Private Sub FillGridViewSelected(sList As String[])
+
+  Dim pic1 As Picture
+  Dim i As Integer
+  Dim xval As String
+
+  pic1 = Picture["icons/unchecked.png"]
+  lstfirst.Clear
+  i = 1
+  If sList And If sList.Count Then
+    For Each xval In sList
+      If Len(xval) Then
+        If lstsecond.List.Exist(xval) Then
+        Else
+          lstfirst.Add(CStr(i), xval, pic1)
+          i = i + 1
+        Endif
+      Endif
+    Next
+  Endif
+
+End
+
+Public Sub lstfirst_Click()
+
+  modFillContainer.ShowCheckedListView(lstfirst)
+
+End
+
+Public Sub lstfirst_KeyRelease()
+
+  If Key.Code = Key.Space Then
+    modFillContainer.ShowCheckedListView(lstfirst)
+  Endif
+
+End
+
+Public Sub btnsave_Click()
+
+  Dim res As Result
+  Dim i As Integer
+
+  For i = 1 To lstfirst.Count
+    If lstfirst[CStr(i)].Picture = Picture["icons/checked.png"] Then
+      If lstsecond.List.Exist(lstfirst[CStr(i)].Text) = False Then
+
+        If $sType = "User List" Then
+          res = modDatabase.$myConn.Create("tbltabsettings")
+          res["fldcomp"] = $sComp
+          res["fldcategory"] = $sItem
+          res["fldvalue"] = lstfirst[CStr(i)].Text
+          res["fldtime"] = Now()
+          res["flduserid"] = modBasic.$lbluser
+          res.Update
+        Endif
+
+      Endif
+    Endif
+  Next
+
+  ShowSettingParams()
+  GetRemainingParam()
+
+End
+
+Public Sub chkall_Click()
+
+  Dim i As Integer
+  Dim xpic As Picture
+
+  If chkall.Value = True Then
+    xpic = Picture["icons/checked.png"]
+  Else
+    xpic = Picture["icons/unchecked.png"]
+  Endif
+
+  For i = 1 To lstfirst.Count
+    lstfirst[CStr(i)].Picture = xpic
+  Next
+
+End
+
+Public Sub lstsecond_Menu()
+
+  mnuhide.Popup()
+
+End
+
+Public Sub mnudelete_Click()
+
+  If lstsecond.Text Then
+    If $sType = "User List" Then
+      modDatabase.$myConn.Delete("tbltabsettings", "fldcategory=&1 and fldcomp=&2 and fldvalue=&3", $sItem, $sComp, lstsecond.Text)
+    Endif
+    ShowSettingParams()
+    GetRemainingParam()
+  Endif
+
+End

@@ -3,81 +3,84 @@
 { Form Form
   MoveScaled(0,0,120,76)
   Text = ("Clinical Chart")
-  { mnufile Menu
-    Text = ("Chart")
-    { mnuexpo Menu
-      Text = ("HTML Export")
-    }
-  }
   { Panel1 Panel
-    MoveScaled(0,0,119.4,72)
+    MoveScaled(0,0,119.375,72)
     Expand = True
     { Panel4 Panel
       MoveScaled(0,1,119,4)
       { Label2 Label
-        MoveScaled(0,0.6667,9,3)
-        Text = ("Name")
+        MoveScaled(0,0.625,9,3)
         Border = Border.Plain
+        Text = ("Name")
       }
       { txtpatientname TextBox
-        MoveScaled(10,0.6667,34,3)
+        MoveScaled(10,0.625,34,3)
         Font = Font["Bold"]
         ReadOnly = True
       }
       { Label4 Label
-        MoveScaled(54,0.6667,8,3)
-        Text = ("Gender")
+        MoveScaled(54,0.625,8,3)
         Border = Border.Plain
+        Text = ("Gender")
       }
       { txtgender TextBox
-        MoveScaled(63,0.6667,12,3)
+        MoveScaled(63,0.625,12,3)
         ReadOnly = True
       }
       { Label7 Label
-        MoveScaled(87,0.6667,8,3)
-        Text = ("Bed No")
+        MoveScaled(87,0.625,8,3)
         Border = Border.Plain
+        Text = ("Bed No")
       }
       { txtlocation TextBox
-        MoveScaled(96,0.6667,12,3)
+        MoveScaled(96,0.625,12,3)
         ReadOnly = True
+      }
+      { mnuexpo ToolButton
+        MoveScaled(112,0.5,3,3)
+        Picture = Picture["icon:/small/export"]
       }
     }
     { Panel2 Panel
-      MoveScaled(0,8,118,4.3333)
+      MoveScaled(0,8,118,4.375)
       { btnrefresh Button
-        MoveScaled(101,0.6667,16,3)
+        MoveScaled(102,0.375,15,3)
         Text = ("Refresh")
         Picture = Picture["icon:/small/refresh"]
         Default = True
       }
       { Slider1 Slider
-        MoveScaled(75,0.3333,24,3)
+        MoveScaled(75,0.375,24,3)
         MinValue = 5
         MaxValue = 50
         Value = 10
       }
       { Panel3 Panel
-        MoveScaled(0,0,67,3.3333)
+        MoveScaled(0,0.375,74,3)
         { rboneday RadioButton
-          MoveScaled(1,0,12,3)
+          MoveScaled(1,0,11,3)
           Text = ("24 Hours")
+          Value = True
         }
         { rbtwoday RadioButton
-          MoveScaled(14,0,12,3)
+          MoveScaled(12.5,0,12,3)
           Text = ("48 Hours")
         }
         { rbthreeday RadioButton
-          MoveScaled(27,0,12,3)
+          MoveScaled(25,0,12,3)
           Text = ("72 Hours")
         }
         { rballday RadioButton
-          MoveScaled(53,0,12,3)
+          MoveScaled(50,0,11,3)
           Text = ("All Days")
         }
         { rbweek RadioButton
-          MoveScaled(40,0,12,3)
+          MoveScaled(37.5,0,12,3)
           Text = ("1 Week")
+        }
+        { rballvisit RadioButton
+          MoveScaled(61.5,0,11,3)
+          Text = ("All Visits")
         }
       }
     }

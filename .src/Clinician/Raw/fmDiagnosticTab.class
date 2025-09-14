@@ -1,7 +1,6 @@
 ' Gambas class file
 
 Private $encid As String
-Private $sColl As Collection
 
 Private xFinal As Variant[]
 Private $ExamList As String[]
@@ -17,6 +16,7 @@ Public Sub Form_Open()
   rbmetric.Value = True
   rblabs.Value = True
   rbdaterepo.Value = True
+  WebView1.Zoom = modBasic.$WebZoomValue
 
 End
 
@@ -142,5 +142,12 @@ Private Function GetExamValueByDate(encid As String, xexam As String, xDate As D
     xx = ""
   Endif
   Return xx
+
+End
+
+Public Sub btnopenweb_Click()
+
+  modGeneralMain.$RightAdView.SetHtml(WebView1.Html)
+  modGeneralMain.$RightAdView.Refresh()
 
 End

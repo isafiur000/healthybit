@@ -23,6 +23,7 @@ Private $examarr As String[]
 Private $unt As String
 Private AppFactor As Float
 Private $UserRestrict As String[]
+Private $PatientNum As String
 
 Private $examColl As Collection
 Private $labColl As Collection
@@ -44,6 +45,7 @@ Public Sub Form_Open()
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
   txtpatientname.Text = modPatient.GetPatientNameByEnc($encid)
+  $PatientNum = modPatient.GetPatientNoByEnc($encid)
   txtgender.Text = modPatient.GetPatientSex($encid)
   txtlocation.Text = modPatient.GetPatientLocation($encid)
   xstatus = modPatient.CurrentAdmissionStatus($encid)
@@ -193,6 +195,7 @@ Private Sub FillCHartItems(sHt As Integer)
             .Tag = i
           End With
           With aObj[i]
+            .Background = Color.White
             .Expand = True
             .AutoResize = True
             .Height = (sHt - 20) * AppFactor
@@ -201,7 +204,11 @@ Private Sub FillCHartItems(sHt As Integer)
             .Tag = i
           End With
           sPath = ""
-          sPath = modClinSub.FillQuantiExamChart(aObj[i].Height, $encid, $examarr[i], ChartHourVal())
+          If rballvisit.Value = True Then
+            sPath = modClinSub.FillQuantiExamChartHistory(aObj[i].Height, $encid, $PatientNum, $examarr[i], ChartHourVal())
+          Else
+            sPath = modClinSub.FillQuantiExamChart(aObj[i].Height, $encid, $examarr[i], ChartHourVal())
+          Endif
           If sPath Then
             aObj[i].Picture = Picture.Load(sPath)
             $examColl.Add(sPath, $examarr[i])
@@ -274,7 +281,11 @@ Private Sub FillCHartItems(sHt As Integer)
             .Tag = j
           End With
           sPath = ""
-          sPath = modLabSub.FillQuantiTestChart(bObj[j].Height, $encid, $labarr[j], $unt, ChartHourVal())
+          If rballvisit.Value = True Then
+            sPath = modLabSub.FillQuantiTestChartHistory(bObj[j].Height, $encid, $PatientNum, $labarr[j], $unt, ChartHourVal())
+          Else
+            sPath = modLabSub.FillQuantiTestChart(bObj[j].Height, $encid, $labarr[j], $unt, ChartHourVal())
+          Endif
           If sPath Then
             bObj[i].Picture = Picture.Load(sPath)
             $labColl.Add(sPath, $labarr[j])
