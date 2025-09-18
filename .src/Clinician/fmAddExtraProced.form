@@ -26,15 +26,6 @@
     }
     Index = 1
     Text = ("Request")
-    { txtsearch ButtonBox
-      MoveScaled(3,0.625,28,3)
-      Picture = Picture["icon:/small/cancel"]
-    }
-    { btnselect ToolButton
-      MoveScaled(36,19,7,8)
-      Tag = "Auto"
-      Picture = Picture["icon:/huge/right"]
-    }
     { btnsave Button
       MoveScaled(86,1,12,3)
       Text = Shortcut(("Save"), "S")
@@ -48,19 +39,36 @@
       Resizable = False
     }
     { ListView1 ListView
-      MoveScaled(1,4,30,46)
+      MoveScaled(0,4,38,46)
       Sorted = True
     }
     { lstletter ListBox
-      MoveScaled(32,4,4,46)
+      MoveScaled(38,4,4,46)
       Sorted = True
     }
-    { chkaddcompo CheckBox
-      MoveScaled(43,1,21,3)
-      Text = ("Add Components")
+    { Panel1 Panel
+      MoveScaled(1,0,41,4)
+      { chkleftmain CheckBox
+        MoveScaled(0,0.5,3,3)
+      }
+      { txtsearch ButtonBox
+        MoveScaled(3,0.5,15,3)
+        Picture = Picture["icon:/small/cancel"]
+      }
+      { btnselect Button
+        MoveScaled(29,0.5,11,3)
+        Tag = "Auto"
+        Picture = Picture["icon:/medium/right"]
+      }
     }
-    { chkleftmain CheckBox
-      MoveScaled(1,0.625,1.625,3)
+    { dtplan DateBox
+      MoveScaled(49,1,21,3)
+      Mode = DateChooser.DateTime
+    }
+    { Label2 Label
+      MoveScaled(43,1,5.25,3)
+      Border = Border.Plain
+      Text = ("Date")
     }
     Index = 2
     Text = ("Status")
@@ -83,7 +91,7 @@
     Index = 0
   }
   { btnrefer ButtonBox
-    MoveScaled(79,1,21,3)
+    MoveScaled(70,1,30,3)
     Picture = Picture["icon:/small/people"]
     ReadOnly = True
   }
@@ -107,17 +115,22 @@
     ReadOnly = True
   }
   { Label6 Label
-    MoveScaled(68,1,10,3)
+    MoveScaled(59,1,10,3)
     Border = Border.Plain
     Text = ("Refer By:")
   }
-  { Label2 Label
-    MoveScaled(68,5,10,3)
+  { Label7 Label
+    MoveScaled(59,5,10,3)
     Border = Border.Plain
-    Text = ("Plan Date")
+    Text = ("Scheme")
   }
-  { dtplan DateBox
-    MoveScaled(79,5,21,3)
-    Mode = DateChooser.DateTime
+  { cmbdisctype ComboBox
+    MoveScaled(70,5,30,3)
+  }
+  { txtlastsaledate TextBox
+    MoveScaled(33,5,16,3)
+    Font = Font["Bold"]
+    ReadOnly = True
+    Placeholder = ("Last Sales")
   }
 }

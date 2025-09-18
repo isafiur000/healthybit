@@ -178,12 +178,6 @@ Private Sub SHowSelectOption()
 
 End
 
-Public Sub txtencid_Change()
-
-  FillBedGrid()
-
-End
-
 Public Sub btnrefresh_Click()
 
   If cmbdept.Text Then
@@ -281,8 +275,8 @@ Private Function ExecuteQuery(xFldList As String[]) As Result
     xcolor = " and tbldepartmentbed.fldencounterval in(select fldencounterval from tblencounter where " & db.Subst("fldheight=&1)", CStr(ToolButton1.Background))
   Endif
 
-  If Len(txtencid.Text) Then
-    xencid = db.Subst(" and lower(tbldepartmentbed.fldencounterval) like &1", LCase(Trim(txtencid.Text)))
+  If Len(txtbed.Text) Then
+    xencid = db.Subst(" and lower(tbldepartmentbed.fldbed) like &1", LCase(Trim(txtbed.Text)))
   Else
     xencid = ""
   Endif
@@ -1357,8 +1351,10 @@ Public Sub btnmobilediagno_Click()
 
   Dim sName As String[]
   Dim xGroup As String
+  Dim Row As Integer
 
   If GridView1.Rows.Selection.Count Then
+    Row = GridView1.Row
     If MMain.$Ayurveda = "Yes" Then
       sName = AyurvedicDiagnosis(modAMISRep.$AyurvedicDiagnosis)
     Else
@@ -1375,6 +1371,7 @@ Public Sub btnmobilediagno_Click()
         FillBedGrid()
       Endif
     Endif
+    GridView1.Row = Row
   Endif
 
 End
@@ -1383,14 +1380,16 @@ Public Sub btnobsdiagno_Click()
 
   Dim xsex As String
   Dim sName As String[]
+  Dim Row As Integer
 
   If GridView1.Rows.Selection.Count Then
+    Row = GridView1.Row
     xsex = modPatient.GetPatientSex(GridView1[GridView1.Row, 4].Text, modDatabase.$myConn)
     If xsex = "Female" Then
       sName = DiagnoObstetrics(GridView1[GridView1.Row, 4].Text, True)
       FillBedGrid()
     Endif
-
+    GridView1.Row = Row
   Endif
 
 End
@@ -1663,13 +1662,16 @@ End
 Public Sub btntriage_Click()
 
   Dim xcol As String
+  Dim Row As Integer
 
   If GridView1.Rows.Selection.Count Then
+    Row = GridView1.Row
     xcol = InputColor("Triage", GridView1[GridView1.Row, 0].Background)
     If xcol Then
       modPatient.SetPatientColor(GridView1[GridView1.Row, 4].Text, xcol)
       GridView1[GridView1.Row, 0].Background = xcol
     Endif
+    GridView1.Row = Row
   Endif
 
 End

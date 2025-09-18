@@ -3,6 +3,11 @@
 Private $encid As String
 Private $BillMode As String
 Private $sPackage As String
+Private $bedLocation As String
+Private $xFinClear As Boolean
+Private $PatientNum As String
+Private $xNHISCode As String
+
 Private $rData As Result
 Private $aMyFields As String[]
 Private $ProcList As String[]
@@ -18,16 +23,22 @@ Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
 
+  cmbdisctype.List = modBasic.$BillDiscountCash
+  If cmbdisctype.List.Count = 0 Then
+    cmbdisctype.Add($sPackage)
+  Endif
+  cmbdisctype.Text = $sPackage
   txtpatientname.Text = modPatient.GetPatientNameByEnc($encid)
   txtgender.Text = modPatient.GetPatientSex($encid)
+  $PatientNum = modPatient.GetPatientNoByEnc($encid)
+  $xNHISCode = modPatient.GetPatientExtCOdebyEnc($encid)
   $BillMode = modNonMedical.GetDiscBindBillMode($sPackage)
   If Not $BillMode Then
     $BillMode = modpatient.GetPatBillingMode($encid)
   Endif
 
-  $ProcList = New String[]
-  dtplan.Value = Now()
-
+  $bedLocation = modPatient.GetPatientLocation($encid)
+  $xFinClear = modNonMedical.GetFinanceClearance($encid)
   btnrefer.Tag = modBillings.GetReferralUserSetting("Procedure", $encid)
   If btnrefer.Tag Then
     btnrefer.Text = modGeneral.GetUserFullName(btnrefer.Tag)
@@ -35,6 +46,9 @@ Public Sub Form_Open()
   If modBasic.$ReferralLockEntry = "Yes" Then
     btnrefer.Enabled = False
   Endif
+
+  $ProcList = New String[]
+  dtplan.Value = Now()
   SHowSavedGrid()
   txtsearch.SetFocus
 
@@ -90,6 +104,28 @@ Public Sub btnrefer_Change()
 
 End
 
+Public Sub cmbdisctype_Click()
+
+  If cmbdisctype.Text Then
+    $BillMode = modNonMedical.GetDiscBindBillMode(cmbdisctype.Text)
+    If Not $BillMode Then
+      $BillMode = modpatient.GetPatBillingMode($encid)
+    Endif
+    If $ProcList And If $ProcList.Count Then
+      $ProcList.Clear()
+    Endif
+    TabPanel1.Index = 0
+  Endif
+
+End
+
+Public Sub cmbdisctype_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbdisctype)
+  modFillContainer.RestrictComboToContent(cmbdisctype)
+
+End
+
 ''------------------------------------- Listview -----------------------------------
 Public Sub txtsearch_KeyRelease()
 
@@ -124,8 +160,8 @@ Private Sub FillLabCOlumnView()
   Dim xxx As String[]
 
   If Not $ProcList.Count Then
-    sstr1 = "select distinct(fldgroupname) as col from tblgroupproc where fldgroupname in(select flditemname from tblservicecost where (fldgroup=&1 or fldgroup=&2) and fldstatus=&3)"                                                   ''
-    res = modDatabase.$myConn.Exec(sstr1, $BillMode, "%", "Active")
+    sstr1 = "select flditemname as col from tblservicecost where fldtarget=&1 and fldgroup=&2 and fldstatus=&3"                                                   ''
+    res = modDatabase.$myConn.Exec(sstr1, "Extra", $BillMode, "Active")
     xxx = modControlSub.GetDirectFillresult(res)
     If xxx Then
       $ProcList = xxx
@@ -136,7 +172,23 @@ End
 
 Public Sub ListView1_Click()
 
+  Dim xdate As Date
+
   modFillContainer.ShowCheckedListView(ListView1)
+  If ListView1.Current.Text Then
+    xdate = modBillings.CheckLastSalesItemDate(ListView1.Current.Text, $PatientNum, $xNHISCode, cmbdisctype.Text)
+    If xdate Then
+      txtlastsaledate.Text = modReportVar.GetDateTimeReport(xdate, gb.MediumDate)
+      If DateDiff(xdate, Now(), gb.Month) <= 3 Then
+        txtlastsaledate.Foreground = Color.Red
+      Else
+        txtlastsaledate.Foreground = Color.Default
+      Endif
+    Else
+      txtlastsaledate.Text = ""
+      txtlastsaledate.Foreground = Color.Default
+    Endif
+  Endif
 
 End
 
@@ -169,18 +221,20 @@ Public Sub btnselect_Click()
   Endif
   xpayble = modBillings.GetPayableUserSetting("Procedure", $encid)
 
-  If modBasic.$AutoBillProcedure = "Standard" Or If modBasic.$AutoBillProcedure = "Full" Or If modBasic.$AutoBillProcedure = "Partial" Then
-    Inc Application.Busy
-    For i = 1 To ListView1.Count
-      If ListView1[CStr(i)].Picture = Picture["icons/checked.png"] Then     '
-        modBillings.GetAutoBillingEntry($encid, $sPackage, "Procedure", ListView1[CStr(i)].Text, 1, "Punched", 0, False, False, xpayble, xrefer, "Extra")
-        ListView1[CStr(i)].Picture = Picture["icons/unchecked.png"]
-      Endif
-    Next
-    Dec Application.Busy
-    ShowGrid()
-    txtsearch.Text = ""
-    txtsearch.SetFocus
+  If modMisc.AllowDiagnoBilling($encid) = True Then
+    If modBasic.$AutoBillProcedure = "Standard" Or If modBasic.$AutoBillProcedure = "Full" Or If modBasic.$AutoBillProcedure = "Partial" Then
+      Inc Application.Busy
+      For i = 1 To ListView1.Count
+        If ListView1[CStr(i)].Picture = Picture["icons/checked.png"] Then     '
+          modBillings.GetAutoBillingEntry($encid, $sPackage, "Procedure", ListView1[CStr(i)].Text, 1, "Punched", 0, False, False, xpayble, xrefer, "Extra")
+          ListView1[CStr(i)].Picture = Picture["icons/unchecked.png"]
+        Endif
+      Next
+      Dec Application.Busy
+      ShowGrid()
+      txtsearch.Text = ""
+      txtsearch.SetFocus
+    Endif
   Endif
 
 End
@@ -232,32 +286,52 @@ Public Sub btnsave_Click()
 
   Dim res As Result
 
+  Inc Application.Busy
+  res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval=&1 and flditemtype=&2 and fldtarget=&3 and fldsave=&4 and fldstatus=&5", $encid, "Procedures", "Extra", False, "Punched")                 ''
+  For Each res
+
+    If modBasic.$AutoBillProcedure = "Standard" Then
+      If modNonMedical.AllowPreCheckDeposit($encid, res["fldditemamt"], cmbdisctype.Text) = True Then
+        SavePartialEntry(res)
+      Endif
+    Else If modBasic.$AutoBillProcedure = "Full" Then
+      If modNonMedical.AllowPreEntryWithDeposit($encid, "Procedure", res["fldditemamt"], cmbdisctype.Text, btnsave) = True Then
+        SavePartialEntry(res)
+      Endif
+    Else
+      If modBasic.$AutoBillSaveZero = "Yes" And If res["flditemrate"] = 0 Then
+        SavePartialEntry(res)
+      Else If modBasic.$AutoBillSaveZero = "Yes" And If res["flddiscper"] = 100 Then
+        SavePartialEntry(res)
+      Else If modBasic.$AutoBillSaveFullCredit = "Yes" And If res["fldbilltype"] = "Credit" And If res["fldcashincredit"] = 0 Then
+        SavePartialEntry(res)
+      Endif
+    Endif
+
+  Next
+  Dec Application.Busy
+  ShowGrid()
+
+End
+
+Private Sub SavePartialEntry(res As Result)
+
   Dim xdat As Date
   Dim xx As String
   Dim xList As String[]
   Dim i As Integer
 
-  If modBasic.$AutoBillProcedure = "Standard" Or If modBasic.$AutoBillProcedure = "Full" Then
-    res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval=&1 and flditemtype=&2 and fldtarget=&3 and fldsave=&4 and fldstatus=&5", $encid, "Procedures", "Extra", False, "Punched")                 ''
-    Inc Application.Busy
-    modDatabase.$myConn.Begin
-    For Each res
+  xdat = dtplan.Value
+  If xdat Then
+    xList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldprocname as col from tblgroupproc where fldgroupname=&1", res["flditemname"]))
+    If xList And If xList.Count Then
+      For Each xx In xList
+        For i = 1 To (res["flditemqty"] - res["fldretqty"])
+          modPatientGeneral.AddProcedureData(res["fldencounterval"], res["fldid"], "Extra Procedures", xx, "Planned", res["fldbillingmode"], xdat, "Cleared", "")
+        Next
+      Next
 
-      If chkaddcompo.Value = True Then
-        If res!fldsample = "Waiting" Then
-          xdat = dtplan.Value
-          If xdat Then
-            xList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldprocname as col from tblgroupproc where fldgroupname=&1", res!flditemname))
-            For Each xx In xList
-              For i = 1 To (res!flditemqty - res!fldretqty)
-                modPatientGeneral.AddProcedureData(res!fldencounterval, res["fldid"], "Extra Procedures", xx, "Planned", res!fldbillingmode, xdat, "Cleared", "")
-              Next
-            Next
-            res["fldsample"] = "Sampled"
-          Endif
-        Endif
-      Endif
-
+      res["fldsample"] = "Sampled"
       res["fldstatus"] = "Done"
       res["fldsave"] = True
       res["flduserid"] = modBasic.$lbluser
@@ -265,16 +339,8 @@ Public Sub btnsave_Click()
       res["fldcomp"] = modBasic.$compID
       res["xyz"] = False
       res.Update()
-    Next
-    modDatabase.$myConn.Commit
-    Dec Application.Busy
-    ShowGrid()
+    Endif
   Endif
-
-Catch
-  modDatabase.$myConn.Rollback
-  Dec Application.Busy
-  modHelpVariable.CreateErrorReport()
 
 End
 
@@ -324,7 +390,7 @@ Private Sub SHowSavedGrid()
   With GridView2
     .Columns[0].Width = 1
     .Columns[1].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 300 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 350 * modBasic.$AppWidthRatio
     .Columns[3].Width = 150 * modBasic.$AppWidthRatio
     .Columns[4].Width = 1
     .Columns[1].Text = "DateTime"

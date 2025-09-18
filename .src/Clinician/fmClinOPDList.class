@@ -692,8 +692,10 @@ End
 Public Sub GridView1_Click()
 
   Dim xData As String
+  Dim Row As Integer
 
   If GridView1.Rows.Selection.Count Then
+    Row = GridView1.Row
     If GridView1.Column = 5 Then
       If GridView1[GridView1.Row, 5].Picture = Picture["icons/coll5.png"] Then
         modPatientSub.MarkConsultVisitFlag(GridView1[GridView1.Row, 0].Text, $sTable)
@@ -713,6 +715,7 @@ Public Sub GridView1_Click()
       Endif
 
     Endif
+    GridView1.Row = Row
   Endif
 
 End
@@ -889,8 +892,10 @@ End
 Public Sub btnmobilediagno_Click()
 
   Dim sName As String[]
+  Dim Row As Integer
 
   If GridView1.Rows.Selection.Count Then
+    Row = GridView1.Row
     If MMain.$Ayurveda = "Yes" Then
       sName = AyurvedicDiagnosis(modAMISRep.$AyurvedicDiagnosis)
     Else
@@ -902,6 +907,7 @@ Public Sub btnmobilediagno_Click()
         FillBedGrid()
       Endif
     Endif
+    GridView1.Row = Row
   Endif
 
 End
@@ -910,14 +916,16 @@ Public Sub btnobsdiagno_Click()
 
   Dim xsex As String
   Dim sName As String[]
+  Dim Row As Integer
 
   If GridView1.Rows.Selection.Count Then
+    Row = GridView1.Row
     xsex = modPatient.GetPatientSex(GridView1[GridView1.Row, 2].Text, modDatabase.$myConn)
     If xsex = "Female" Then
       sName = DiagnoObstetrics(GridView1[GridView1.Row, 2].Text, True)
       FillBedGrid()
     Endif
-
+    GridView1.Row = Row
   Endif
 
 End
@@ -1231,13 +1239,16 @@ End
 Public Sub btntriage_Click()
 
   Dim xcol As String
+  Dim Row As Integer
 
   If GridView1.Rows.Selection.Count Then
+    Row = GridView1.Row
     xcol = InputColor("Triage", GridView1[GridView1.Row, 0].Background)
     If xcol Then
       modPatient.SetPatientColor(GridView1[GridView1.Row, 2].Text, xcol)
       GridView1[GridView1.Row, 0].Background = xcol
     Endif
+    GridView1.Row = Row
   Endif
 
 End
@@ -2146,8 +2157,10 @@ Public Sub mnuconsultant_Click()
 
   Dim xMedUser As String[]
   Dim xuser As String
+  Dim Row As Integer
 
   If GridView1.Rows.Selection.Count Then
+    Row = GridView1.Row
     xMedUser = MedicalSelectedValue(("Select Consultant"), modBasic.$OPConsulUserList)
     If xMedUser And If xMedUser.Count Then
       xuser = xMedUser[0]
@@ -2164,7 +2177,7 @@ Public Sub mnuconsultant_Click()
         Endif
       Endif
     Endif
-
+    GridView1.Row = Row
   Endif
 
 End

@@ -223,8 +223,13 @@ Public Sub btnupdate_Click()
       res = modDatabase.$myConn.Edit("tblentry", "fldstockno=&1", txtstockno.Value)
       res["fldbatch"] = Trim(txtbatch.Text)
       res["fldexpiry"] = dtexpiry.Value
-      If modHelpVariable.$LogInCategory = "Account" Or If modHelpVariable.$LogInCategory = "Pharmacist" Then
+      If modHelpVariable.$LogInCategory = "Account" Then
         res["fldsellpr"] = txtrate.Value
+        res["fldcost"] = txtnetcost.Value
+        res["fldmrp"] = txtmrp.Value
+        res["fldselltime"] = Now()
+        res["fldselluserid"] = modBasic.$lbluser
+      Else If modHelpVariable.$LogInCategory = "Pharmacist" Then
         res["fldcost"] = txtnetcost.Value
         res["fldmrp"] = txtmrp.Value
       Endif

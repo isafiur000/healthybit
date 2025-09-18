@@ -4,6 +4,8 @@ Private hPatient As FmPatientProfile
 Private $sTatus As String
 Private $ProcIndex As Long
 Private $UserRestrict As String[]
+Private $rSympRes As Result
+Private $aSympFields As String[]
 
 Private $billModeTest As String
 Private $billModeRadio As String
@@ -72,10 +74,9 @@ Public Sub BasicInfoPatient()
     $sTatus = modPatient.CurrentAdmissionStatus(Trim(txtencid.Text))
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
     GetDefaultBillingmodes()
-    lstsyndrome.List = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", Trim(txtencid.Text))
     ButtonControl()
     modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
-
+    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
     ShowAddedProctable()
     ShowSymptomData()
     TableView1.SetFocus
@@ -106,6 +107,24 @@ Private Sub GetDefaultBillingmodes()
       $billModeService = xpackage
       $billModeOthers = xpackage
   End Select
+
+End
+
+Public Sub TabPanel1_Click()
+
+  If TabPanel1.Index = 1 Then
+
+  Else If TabPanel1.Index = 2 Then
+    If TableView1.Rows.Selection.Count Then
+      FillExamtable("Pre:" & TableView1[TableView1.Row, 1].Text & ":" & CStr($ProcIndex), grdpreexam)
+      grdprelist.SetFocus
+    Endif
+  Else If TabPanel1.Index = 3 Then
+    If TableView1.Rows.Selection.Count Then
+      FillExamtable("Post:" & TableView1[TableView1.Row, 1].Text & ":" & CStr($ProcIndex), grdpostexam)
+      grdpostlist.SetFocus
+    Endif
+  Endif
 
 End
 
@@ -172,17 +191,17 @@ Public Sub ShowAddedProctable()
 
   If chkall.Value = True Then
     If modBasic.$LockToOwnProcedure = "Yes" Then
-      sql = "select fldid,flditem,fldreportquali,fldnewdate,fldstatus,flddetail from tblpatgeneral where fldencounterval=&1 and fldinput=&2 and (fldreportquali like &3 or fldreportquali like &4) and fldcomp like &5 ORDER BY fldid DESC"
+      sql = "select fldid,flditem,fldnewdate,fldreportquali,fldstatus,flddetail from tblpatgeneral where fldencounterval=&1 and fldinput=&2 and (fldreportquali like &3 or fldreportquali like &4) and fldcomp like &5 ORDER BY fldid DESC"
     Else
-      sql = "select fldid,flditem,fldreportquali,fldnewdate,fldstatus,flddetail from tblpatgeneral where fldencounterval=&1 and fldinput=&2 and (fldreportquali like &3 or fldreportquali like &4) ORDER BY fldid DESC"
+      sql = "select fldid,flditem,fldnewdate,fldreportquali,fldstatus,flddetail from tblpatgeneral where fldencounterval=&1 and fldinput=&2 and (fldreportquali like &3 or fldreportquali like &4) ORDER BY fldid DESC"
     Endif
     $rData = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Extra Procedures", "Planned", "Done", modBasic.$compID)
 
   Else
     If modBasic.$LockToOwnProcedure = "Yes" Then
-      sql = "select fldid,flditem,fldreportquali,fldnewdate,fldstatus,flddetail from tblpatgeneral where fldencounterval=&1 and fldinput=&2 and fldnewdate>=&3 and fldnewdate<=&4 and (fldreportquali like &5 or fldreportquali like &6) and fldcomp like &7 ORDER BY fldid DESC"
+      sql = "select fldid,flditem,fldnewdate,fldreportquali,fldstatus,flddetail from tblpatgeneral where fldencounterval=&1 and fldinput=&2 and fldnewdate>=&3 and fldnewdate<=&4 and (fldreportquali like &5 or fldreportquali like &6) and fldcomp like &7 ORDER BY fldid DESC"
     Else
-      sql = "select fldid,flditem,fldreportquali,fldnewdate,fldstatus,flddetail from tblpatgeneral where fldencounterval=&1 and fldinput=&2 and fldnewdate>=&3 and fldnewdate<=&4 and (fldreportquali like &5 or fldreportquali like &6) ORDER BY fldid DESC"
+      sql = "select fldid,flditem,fldnewdate,fldreportquali,fldstatus,flddetail from tblpatgeneral where fldencounterval=&1 and fldinput=&2 and fldnewdate>=&3 and fldnewdate<=&4 and (fldreportquali like &5 or fldreportquali like &6) ORDER BY fldid DESC"
     Endif
     $rData = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Extra Procedures", modDate.StartSqlDate(dtnow.Value), modDate.EndSqlDate(dtnow.Value), "Planned", "Done", modBasic.$compID)
 
@@ -196,7 +215,7 @@ Public Sub ShowAddedProctable()
     Column = 0
     For Each fld In $rData.Fields
       modGeneralMain.GridExplicitDecoration(TableView1, $rData.Index, Column)
-      If Column = 3 Then
+      If Column = 2 Then
         TableView1[$rData.Index, Column].Text = modReportVar.GetDateTimeReport($rData["fldnewdate"], gb.GeneralDate)
       Else If Column = 4 Then
         TableView1[$rData.Index, Column].Picture = Picture[CheckBoxPath($rData[fld.Name])]
@@ -213,14 +232,14 @@ Public Sub ShowAddedProctable()
     .Rows.Height = 1.5 * modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
     .Columns[1].Width = 200 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 75 * modBasic.$AppWidthRatio
     .Columns[4].Width = 25
     .Columns[5].Width = 1
 
     .Columns[1].Text = "Procedure"
-    .Columns[2].Text = "Status"
-    .Columns[3].Text = "Date"
+    .Columns[2].Text = "Date"
+    .Columns[3].Text = "Status"
   End With
 
 End
@@ -534,22 +553,6 @@ Private Sub GetGridViewClk(lstpredel As GridView, grdpredel As GridView)
 
 End
 
-Public Sub TabPanel1_Click()
-
-  If TabPanel1.Index = 1 Then
-    If TableView1.Rows.Selection.Count Then
-      FillExamtable("Pre:" & TableView1[TableView1.Row, 1].Text & ":" & CStr($ProcIndex), grdpreexam)
-      grdprelist.SetFocus
-    Endif
-  Else If TabPanel1.Index = 2 Then
-    If TableView1.Rows.Selection.Count Then
-      FillExamtable("Post:" & TableView1[TableView1.Row, 1].Text & ":" & CStr($ProcIndex), grdpostexam)
-      grdpostlist.SetFocus
-    Endif
-  Endif
-
-End
-
 Public Sub grdprelist_Click()
 
   AddExamSelectionProc(Trim(txtencid.Text), grdprelist[grdprelist.Row, 0].Text, grdprelist[grdprelist.Row, 2].Text, grdprelist[grdprelist.Row, 1].Text, grdprelist[grdprelist.Row, 4].Text, "Pre:" & TableView1[TableView1.Row, 1].Text & ":" & CStr($ProcIndex))        '''
@@ -645,6 +648,33 @@ Public Sub btnnewsummry_Click()
 End
 
 ''------------------------------------- chief symptom ------------------------------------------------------
+Public Sub btnaddsymplist_Click()
+
+  Dim xlist As String[]
+  Dim aList As String[]
+  Dim xitem As String
+  Dim hForm As FmMultiComplaints
+
+  If modBasic.$SelectMultiSymptoms = "Yes" Then
+    xlist = modBasic.$ClinComplaintComp
+    If xlist.Count Then
+      aList = GridListView("Select Presenting Complaints", xlist, Panel10, Panel18.Height)
+      If aList And If aList.Count Then
+        For Each xitem In aList
+          modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", xitem, "", 0, "")
+        Next
+        ShowSymptomData()
+      Endif
+    Endif
+
+  Else
+    hForm = New FmMultiComplaints(Trim(txtencid.Text))
+    hForm.ShowModal()
+    ShowSymptomData()
+  Endif
+
+End
+
 Public Sub cmbsymptom_GotFocus()
 
   Dim xlist As String[]
@@ -655,13 +685,13 @@ Public Sub cmbsymptom_GotFocus()
     If modBasic.$ClinCategoryGrid = "Yes" Then
       xlist = modBasic.$ClinComplaintCompGrouped
       If xlist.Count Then
-        cmbsymptom.Text = GridViewGroup("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), Panel20, grdchiefsymptom.Height + cmbsymptom.Height)
+        cmbsymptom.Text = GridViewGroup("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), Panel10, Panel18.Height)
         txtsympval.SetFocus
       Endif
     Else
       xlist = modBasic.$ClinComplaintComp
       If xlist.Count Then
-        cmbsymptom.Text = GridViewNew("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), Panel20, grdchiefsymptom.Height + cmbsymptom.Height)
+        cmbsymptom.Text = GridViewNew("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), Panel10, Panel18.Height)
         txtsympval.SetFocus
       Endif
     Endif
@@ -689,7 +719,7 @@ End
 Public Sub cmbsymdura_KeyRelease()
 
   modFillContainer.AutoFillComboBox(cmbsymdura)
-  modFillContainer.RestrictComboToContent(cmbsymdura)
+  ' modFillContainer.RestrictComboToContent(cmbsymdura)
 
 End
 
@@ -728,6 +758,8 @@ End
 Public Sub btnsympadd_Click()
 
   If txtencid.Text Then
+    pnlquantisyn.Visible = False
+
     If cmbsymptom.Text Then
       modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", cmbsymptom.Text, cmbsymdura.Text, txtsympval.Value, cmbsympunit.Text)
       ShowSymptomData()
@@ -737,6 +769,7 @@ Public Sub btnsympadd_Click()
       txtsympval.Value = 0
       txtsympval.Tag = ""
     Endif
+
   Endif
 
 End
@@ -753,48 +786,24 @@ End
 Public Sub ShowSymptomData()
 
   Dim sql As String
-  Dim Column As Integer
-  Dim fld As ResultField
-  Dim res As Result
 
-  sql = "select fldid,fldencounterval,fldtype,flditem,fldreportquanti,fldreportquali,fldid,fldid,fldtime,flddetail from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and fldsave=&3"
-  res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Presenting Symptoms", True)
-  grdchiefsymptom.Clear
-  grdchiefsymptom.Columns.Count = res.Fields.Count
-  grdchiefsymptom.Rows.Count = res.Count
-
-  For Each res
-    Column = 0
-    For Each fld In res.Fields
-      modGeneralMain.GridExplicitDecoration(grdchiefsymptom, res.Index, Column)
-      If Column = 8 Then
-        grdchiefsymptom[res.Index, Column].Text = modReportVar.GetDateTimeReport(res["fldtime"], gb.GeneralDate)
-      Else If Column = 7 Then
-        grdchiefsymptom[res.Index, Column].Picture = Picture["icon:/tiny/edit"]
-        grdchiefsymptom[res.Index, Column].Text = ""
-      Else If Column = 6 Then
-        grdchiefsymptom[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
-        grdchiefsymptom[res.Index, Column].Text = ""
-      Else
-        grdchiefsymptom[res.Index, Column].Text = res[fld.Name]
-      Endif
-      Column = Column + 1
-    Next
-  Next
-  grdchiefsymptom.Row = 0
+  sql = "select fldid,fldencounterval,fldtype,flditem,fldreportquanti,fldreportquali,fldid,fldid,fldtime,flddetail,fldreportquanti from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and fldsave=&3"
+  $rSympRes = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Presenting Symptoms", True)
+  $aSympFields = New String[]
+  modGridView.ReadSmallData(grdchiefsymptom, $rSympRes, $aSympFields)
 
   With grdchiefsymptom
-    .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
     .Columns[1].Width = 1
     .Columns[2].Width = 1
-    .Columns[3].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 350 * modBasic.$AppWidthRatio
     .Columns[4].Width = 50 * modBasic.$AppWidthRatio
     .Columns[5].Width = 75 * modBasic.$AppWidthRatio
     .Columns[6].Width = 25 * modBasic.$AppWidthRatio
     .Columns[7].Width = 25 * modBasic.$AppWidthRatio
     .Columns[8].Width = 150 * modBasic.$AppWidthRatio
     .Columns[9].Width = 250 * modBasic.$AppWidthRatio
+    .Columns[10].Width = 1
 
     .Columns[3].Text = "Symptom"
     .Columns[4].Text = "Dura"
@@ -802,6 +811,28 @@ Public Sub ShowSymptomData()
     .Columns[8].Text = "DateTime"
     .Columns[9].Text = "Description"
   End With
+
+End
+
+Public Sub grdchiefsymptom_Data(Row As Integer, Column As Integer)
+
+  $rSympRes.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(grdchiefsymptom, Row)
+  If Column = 3 Then
+    grdchiefsymptom.Data.Text = $rSympRes[$aSympFields[Column]]
+    grdchiefsymptom.Rows[Row].Height = Max(grdchiefsymptom.Rows[Row].Height, grdchiefsymptom.Data.Font.RichTextHeight(grdchiefsymptom.Data.Text, grdchiefsymptom.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (grdchiefsymptom.Rows.Height - grdchiefsymptom.Font.Height))
+    grdchiefsymptom.Data.WordWrap = True
+  Else If Column = 8 Then
+    grdchiefsymptom.Data.Text = modReportVar.GetDateTimeReport($rSympRes[$aSympFields[Column]], gb.GeneralDate)
+  Else If Column = 7 Then
+    grdchiefsymptom.Data.Picture = Picture["icon:/tiny/edit"]
+    grdchiefsymptom.Data.Text = ""
+  Else If Column = 6 Then
+    grdchiefsymptom.Data.Picture = Picture["icon:/tiny/cancel"]
+    grdchiefsymptom.Data.Text = ""
+  Else
+    grdchiefsymptom.Data.Text = $rSympRes[$aSympFields[Column]]
+  Endif
 
 End
 
@@ -1010,6 +1041,88 @@ Private Sub UserAccessRestrict()
   Endif
   If $UserRestrict.Exist("General Services") Then
     mnugenservice.Enabled = False
+  Endif
+
+End
+
+''--------------------- Diagnosis ----------------
+Public Sub tlbtndeldises_Click()
+
+  Dim res As Result
+
+  If txtencid.Text Then
+    If lsticdisease.Current.Text Then
+      If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
+        res = modDatabase.$myConn.Edit("tblpatfindings", "fldcode=&1 and fldencounterval=&2 and fldtype=&3 and fldsave=&4", lsticdisease.Current.Text, Trim(txtencid.Text), "Provisional Diagnosis", True)
+        If res.Available Then
+          res["fldsave"] = False
+          res["xyz"] = False
+          res.Update
+          Balloon.Delete(("Information deleted"), tlbtndeldises)
+          Balloon.Delay = modBasic.$BalloonDelay
+          modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        Endif
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub btndismanual_Click()
+
+  Dim xx As String
+
+  If txtencid.Text Then
+    xx = InputBox(("Enter custom Provisional Diagnosis"), ("Provisional Diagnosis"), "")
+    If xx Then
+      modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
+      modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    Endif
+  Endif
+
+End
+
+Public Sub tbnsyndro_Click()
+
+  Dim sName As String[]
+
+  If txtencid.Text Then
+    If modBasic.$ProvDiagnosisRule = "Obstetrics" Then
+      sName = DiagnoObstetrics(Trim(txtencid.Text), True)
+    Else
+      sName = GetSyndromes()
+    Endif
+
+    If sName Then
+      If sName[1] And If sName[0] Then
+        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1])
+        modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub tbndisease_Click()
+
+  Dim sName As String[]
+
+  If txtencid.Text Then
+    If MMain.$Ayurveda = "Yes" Then
+      sName = AyurvedicDiagnosis(modAMISRep.$AyurvedicDiagnosis)
+    Else
+      If modBasic.$ClinICDPunchFormat = "GridView" Then
+        sName = ICDGridView("Select Diseases")
+      Else
+        sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, modBasic.$FixDiagnoGroupOPD, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
+      Endif
+    Endif
+    If sName Then
+      If sName[1] And If sName[0] Then
+        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
+        modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+      Endif
+    Endif
   Endif
 
 End

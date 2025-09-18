@@ -64,11 +64,8 @@
         MoveScaled(0,0,35,59)
         Expand = True
         Arrangement = Arrange.Vertical
-        { GridView1 GridView
-          MoveScaled(0,0,35,17)
-        }
         { Panel3 Panel
-          MoveScaled(0,17,35,5)
+          MoveScaled(0,0,35,5)
           { dtnow DateBox
             MoveScaled(0,1,17,3)
           }
@@ -86,7 +83,7 @@
           }
         }
         { TableView1 GridView
-          MoveScaled(1,23,32,21)
+          MoveScaled(1,7,32,21)
           Expand = True
           Mode = Select.Single
         }
@@ -105,7 +102,7 @@
           Tracking = True
           Expand = True
           Arrangement = Arrange.Horizontal
-          Count = 3
+          Count = 4
           Index = 0
           Text = ("Description [F1]")
           { Panel18 Panel
@@ -113,96 +110,136 @@
             Expand = True
             Arrangement = Arrange.Vertical
             { Panel19 Panel
-              MoveScaled(0,1,82,25)
-              { Panel20 Panel
-                MoveScaled(0,0,52,4)
-                { cmbsymptom ComboBox
-                  MoveScaled(0,0.375,24,3)
-                  ToolTip = ("Symptom Name\nWrite few alphabets and press Down key to populate this combobox")
-                  Sorted = True
-                }
-                { txtsympval ValueBox
-                  MoveScaled(24,0.375,6,3)
-                  ToolTip = ("Duration of the symptom")
-                }
-                { cmbsympunit ComboBox
-                  MoveScaled(30,0.375,7,3)
-                  ToolTip = ("Unit of the duration")
-                }
-                { cmbsymdura ComboBox
-                  MoveScaled(37,0.375,10,3)
-                }
-                { btnsympadd Button
-                  MoveScaled(47,0.375,4.5,3)
-                  Tag = "Auto"
-                  Picture = Picture["icon:/small/add"]
-                }
-              }
+              MoveScaled(0,1,82,30)
               { grdchiefsymptom GridView
-                MoveScaled(0,4,52,20)
+                MoveScaled(0,4,81,25)
                 Mode = Select.Single
                 Header = GridView.Both
                 AutoResize = False
               }
               { pnlquantisyn Frame
-                MoveScaled(20,7,15,16)
+                MoveScaled(42,3,15,16)
                 Visible = False
                 Background = Color.LightGray
                 Ignore = True
               }
-              { Label12 Label
-                MoveScaled(53,0.375,14,3)
-                Border = Border.Plain
-                Text = ("Prov Diagnosis")
-              }
-              { lstsyndrome ListBox
-                MoveScaled(53,4,29,20)
-                ScrollBar = Scroll.Both
-                Sorted = True
-              }
-              { txtencid TextBox
-                MoveScaled(68,1,9,2)
-                Visible = False
+              { Panel10 Panel
+                MoveScaled(0,0,81,3)
+                Arrangement = Arrange.Horizontal
+                { btnaddsymplist ToolButton
+                  MoveScaled(0,0,3,3)
+                  Picture = Picture["icon:/small/bookmark"]
+                }
+                { cmbsymptom ComboBox
+                  MoveScaled(3,0,40,3)
+                  ToolTip = ("Symptom Name\nWrite few alphabets and press Down key to populate this combobox")
+                  Expand = True
+                  Sorted = True
+                }
+                { txtsympval ValueBox
+                  MoveScaled(43,0,5.625,3)
+                  ToolTip = ("Duration of the symptom")
+                }
+                { cmbsympunit ComboBox
+                  MoveScaled(49,0,9,3)
+                  ToolTip = ("Unit of the duration")
+                }
+                { cmbsymdura ComboBox
+                  MoveScaled(58,0,14,3)
+                }
+                { btnsympadd Button
+                  MoveScaled(72,0,8,3)
+                  Tag = "Auto"
+                  Picture = Picture["icon:/small/add"]
+                }
               }
             }
-            { Panel16 Panel
-              MoveScaled(0,26,82,22)
+            { Panel11 Panel
+              MoveScaled(1,33,81,16)
               Expand = True
               Arrangement = Arrange.Vertical
-              { Panel17 Panel
-                MoveScaled(1,2,80,5)
-                { Label1 Label
-                  MoveScaled(0,1,13,3)
+              { Panel33 Panel
+                MoveScaled(0,0,80,3)
+                Border = Border.Plain
+                { tlbtndeldises ToolButton
+                  MoveScaled(64,0,3,3)
+                  ToolTip = ("Delete Selected Diagnosis")
+                  Picture = Picture["icon:/small/cancel"]
+                }
+                { btndismanual ToolButton
+                  MoveScaled(68,0,3,3)
+                  ToolTip = ("Write Provisional Diagnosis")
+                  Picture = Picture["icon:/small/add"]
+                }
+                { tbnsyndro ToolButton
+                  MoveScaled(72,0,3,3)
+                  ToolTip = ("Select Provisional Diagnosis")
+                  Picture = Picture["icon:/small/add"]
+                }
+                { tbndisease ToolButton
+                  MoveScaled(76,0,3,3)
+                  ToolTip = ("Select Provisional Diagnosis from List")
+                  Picture = Picture["icon:/small/add"]
+                }
+                { Label13 Label
+                  MoveScaled(0,0,11,3)
                   Border = Border.Plain
-                  Text = ("Comment")
+                  Text = ("Diagnosis")
                 }
-                { dctnewsummry ToolButton
-                  MoveScaled(14,1,3,3)
-                  Picture = Picture["icon:/small/edit"]
-                }
-                { btnnewsummry ToolButton
-                  MoveScaled(18,1,3,3)
-                  Picture = Picture["icon:/small/exec"]
-                }
-                { btncomment ToolButton
-                  MoveScaled(75,1,3,3)
-                  Picture = Picture["icon:/small/apply"]
-                }
-                { btntemplsumm ToolButton
-                  MoveScaled(22,1,3,3)
-                  Picture = Picture["icon:/small/attach"]
+                { chkalldiagno CheckBox
+                  MoveScaled(36,0,18,3)
+                  Text = ("All Diagnosis")
                 }
               }
-              { txtcomment TextHTML
-                MoveScaled(1,8,71,10)
+              { lsticdisease TreeView
+                MoveScaled(2,4,37,7)
                 Expand = True
               }
             }
           }
           Index = 1
-          Text = ("Pre-Procedure [F2]")
+          Text = ("Description[F2]")
+          { Panel16 Panel
+            MoveScaled(0,0,82,22)
+            Expand = True
+            Arrangement = Arrange.Vertical
+            { Panel17 Panel
+              MoveScaled(1,2,80,4)
+              { Label1 Label
+                MoveScaled(0,0.5,13,3)
+                Border = Border.Plain
+                Text = ("Comment")
+              }
+              { dctnewsummry ToolButton
+                MoveScaled(35,0.5,3,3)
+                Picture = Picture["icon:/small/edit"]
+              }
+              { btnnewsummry ToolButton
+                MoveScaled(39,0.5,3,3)
+                Picture = Picture["icon:/small/exec"]
+              }
+              { btncomment ToolButton
+                MoveScaled(75,0.5,3,3)
+                Picture = Picture["icon:/small/apply"]
+              }
+              { btntemplsumm ToolButton
+                MoveScaled(43,0.5,3,3)
+                Picture = Picture["icon:/small/attach"]
+              }
+              { txtencid TextBox
+                MoveScaled(61,0.5,6,3)
+                Visible = False
+              }
+            }
+            { txtcomment TextHTML
+              MoveScaled(1,8,71,10)
+              Expand = True
+            }
+          }
+          Index = 2
+          Text = ("Pre-Procedure [F3]")
           { Panel8 Panel
-            MoveScaled(1,1,29,27)
+            MoveScaled(2,1,29,27)
             Arrangement = Arrange.Vertical
             { grdprelist GridView
               MoveScaled(0,0,28,26)
@@ -212,11 +249,11 @@
             }
           }
           { Panel7 Panel
-            MoveScaled(30,1,1,14)
+            MoveScaled(31,1,1,14)
             Arrangement = Arrange.Vertical
           }
           { Panel9 Panel
-            MoveScaled(32,1,44,27)
+            MoveScaled(33,1,44,27)
             Expand = True
             Arrangement = Arrange.Vertical
             { grdpreexam GridView
@@ -226,8 +263,8 @@
               Header = GridView.Both
             }
           }
-          Index = 2
-          Text = ("Post-Procedure [F3]")
+          Index = 3
+          Text = ("Post-Procedure [F4]")
           { Panel13 Panel
             MoveScaled(1,1,29,27)
             Arrangement = Arrange.Vertical

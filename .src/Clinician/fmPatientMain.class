@@ -358,12 +358,17 @@ End
 
 Public Sub btnwebcam_Click()
 
+  Dim xbarcode As String
+
   If txtencid.Text Then
     GetEncounterValue()
   Else
-    txtencid.Text = modDevice.ChooseBarCodeSource()
-    txtencid.SetFocus
-    txtencid.Pos = Len(txtencid.Text)
+    xbarcode = modDevice.ChooseBarCodeSource()
+    If xbarcode Then
+      txtencid.Text = modGeneral.GetEncounterFromBed(xbarcode)
+      txtencid.SetFocus
+      txtencid.Pos = Len(txtencid.Text)
+    Endif
   Endif
 
 End
