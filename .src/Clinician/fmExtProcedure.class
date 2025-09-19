@@ -656,7 +656,7 @@ Public Sub btnaddsymplist_Click()
   Dim hForm As FmMultiComplaints
 
   If modBasic.$SelectMultiSymptoms = "Yes" Then
-    xlist = modBasic.$ClinComplaintComp
+    xlist = modString.GetListFromVariant(modFixPatho.$SymptomCompVar, "fldsymptom", True)
     If xlist.Count Then
       aList = GridListView("Select Presenting Complaints", xlist, Panel10, Panel18.Height)
       If aList And If aList.Count Then
@@ -683,13 +683,13 @@ Public Sub cmbsymptom_GotFocus()
   txtsympval.Tag = ""
   If modBasic.$ItemListFormat = "GridView" Then
     If modBasic.$ClinCategoryGrid = "Yes" Then
-      xlist = modBasic.$ClinComplaintCompGrouped
+      xlist = modString.GetDualListFromVariant(modFixPatho.$SymptomCompVar, "fldtype", "fldsymptom", True)
       If xlist.Count Then
         cmbsymptom.Text = GridViewGroup("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), Panel10, Panel18.Height)
         txtsympval.SetFocus
       Endif
     Else
-      xlist = modBasic.$ClinComplaintComp
+      xlist = modString.GetListFromVariant(modFixPatho.$SymptomCompVar, "fldsymptom", True)
       If xlist.Count Then
         cmbsymptom.Text = GridViewNew("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), Panel10, Panel18.Height)
         txtsympval.SetFocus

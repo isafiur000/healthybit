@@ -21,8 +21,23 @@ End
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
-  $ItemList = modBasic.$ClinComplaintCompGrouped
-  $ItemListFlag = modBasic.$ClinComplaintCompFlag
+  rbfixed_Click()
+
+End
+
+Public Sub rbfixed_Click()
+
+  $ItemList = modString.GetDualListFromVariant(modFixPatho.$SymptomMasterVar, "fldcategory", "fldsymptom", True)
+  $ItemListFlag = New String[]
+  GetItemListData()
+  ListBox1.List = $sCategoryList
+
+End
+
+Public Sub rbgroup_Click()
+
+  $ItemList = modString.GetDualListFromVariant(modFixPatho.$SymptomCompVar, "fldtype", "fldsymptom", True)
+  $ItemListFlag = modFixPatho.GetFlaggedSymptomGroup()
   GetItemListData()
   ListBox1.List = $sCategoryList
 

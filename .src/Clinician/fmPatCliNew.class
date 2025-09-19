@@ -81,8 +81,8 @@ Public Sub Form_Open()
   cmburgency.List = ["Urgent", "Normal"]
   If modBasic.$ItemListFormat = "GridView" Then
   Else
-    cmbfinding.List = modBasic.$ClinFindingComp
-    cmbsymptom.List = modBasic.$ClinComplaintComp
+    cmbfinding.List = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Physician Examinations", True)
+    cmbsymptom.List = modString.GetListFromVariant(modFixPatho.$SymptomCompVar, "fldsymptom", True)
   Endif
   $UserRestrict = modBasic.$ClinicDisableCompo
 
@@ -208,6 +208,9 @@ Public Sub Form_KeyRelease()
   Else If Key.Code = Key["F"] And If Key.Control Then
     txtencid.Text = GetEncid()
 
+  Else If Key.Code = Key["I"] And If Key.Control Then
+    btnprofile_Click()
+
   Else If Key.Code = Key.F1 Then
     If Not txtencid.Text Or If txtencid.Text = modBasic.$EncIdPrefix Then
       If modBasic.$regF1Clinic = "Yes" Or If modBasic.$regF1Clinic = "Partial" Then
@@ -231,7 +234,6 @@ Public Sub Form_KeyRelease()
   Else If Key.Code = Key.F3 Then
     If txtencid.Text Then
       TabPanel2.Index = 0
-      cmbsymptom.SetFocus
     Endif
 
   Else If Key.Code = Key.F4 Then
@@ -310,7 +312,6 @@ End
 Public Sub TabPanel2_Click()
 
   If TabPanel2.Index = 0 Then
-    cmbsymptom.SetFocus
   Else If TabPanel2.Index = 1 Then
     txtgencomplaint.SetFocus
   Endif
@@ -1175,7 +1176,7 @@ Public Sub cmbfinding_GotFocus()
         txtfinding.SetFocus
       Endif
     Else
-      xlist = modBasic.$ClinFindingComp
+      xlist = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Physician Examinations", True)
       If xlist.Count Then
         cmbfinding.Text = GridViewNew("Select Clinical Findings", xlist, modMisc.LockBoolean(modBasic.$LockExamList), Panel5, GridView1.Height + cmbfinding.Height)
         txtfinding.SetFocus
@@ -1569,7 +1570,7 @@ Public Sub btnaddsymplist_Click()
   Dim hForm As FmMultiComplaints
 
   If modBasic.$SelectMultiSymptoms = "Yes" Then
-    xlist = modBasic.$ClinComplaintComp
+    xlist = modString.GetListFromVariant(modFixPatho.$SymptomCompVar, "fldsymptom", True)
     If xlist.Count Then
       aList = GridListView("Select Presenting Complaints", xlist, Panel13, grdchiefsymptom.Height + cmbsymptom.Height + Label4.Height + cmbfinding.Height + GridView1.Height)
       If aList And If aList.Count Then
@@ -1596,13 +1597,13 @@ Public Sub cmbsymptom_GotFocus()
   txtsympval.Tag = ""
   If modBasic.$ItemListFormat = "GridView" Then
     If modBasic.$ClinCategoryGrid = "Yes" Then
-      xlist = modBasic.$ClinComplaintCompGrouped
+      xlist = modString.GetDualListFromVariant(modFixPatho.$SymptomCompVar, "fldtype", "fldsymptom", True)
       If xlist.Count Then
         cmbsymptom.Text = GridViewGroup("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), Panel13, grdchiefsymptom.Height + cmbsymptom.Height)
         txtsympval.SetFocus
       Endif
     Else
-      xlist = modBasic.$ClinComplaintComp
+      xlist = modString.GetListFromVariant(modFixPatho.$SymptomCompVar, "fldsymptom", True)
       If xlist.Count Then
         cmbsymptom.Text = GridViewNew("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), Panel13, grdchiefsymptom.Height + cmbsymptom.Height)
         txtsympval.SetFocus
@@ -2870,8 +2871,10 @@ End
 Public Sub mnucompexam_Click()
 
   Dim hForm As FmTPR
+  Dim xList As String[]
 
-  hForm = New FmTPR(Trim(txtencid.Text), modBasic.$ClinEssentialComp)
+  xList = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
+  hForm = New FmTPR(Trim(txtencid.Text), xList)
   hForm.ShowModal()
 
 End

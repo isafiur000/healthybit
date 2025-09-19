@@ -1,61 +1,84 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,71,25)
+  MoveScaled(0,0,80,37)
   Resizable = False
   { pictbarcode PictureBox
-    MoveScaled(1,1,27,23)
+    MoveScaled(1,5,34,31)
     Border = Border.Plain
   }
-  { Label1 Label
-    MoveScaled(29,1,11,3)
-    Text = ("Patient No")
-    Border = Border.Plain
-  }
-  { txtpatno TextBox
-    MoveScaled(41,1,29,3)
+  { txtpatname TextBox
+    MoveScaled(1,1,78,3)
+    Font = Font["Bold"]
     ReadOnly = True
   }
   { Label2 Label
-    MoveScaled(29,5,11,3)
-    Text = ("File No")
+    MoveScaled(38,17,11,3)
     Border = Border.Plain
+    Text = ("File No")
   }
   { txtfileno TextBox
-    MoveScaled(41,5,29,3)
+    MoveScaled(50,17,29,3)
     ReadOnly = True
   }
   { Label3 Label
-    MoveScaled(29,9,11,3)
-    Text = ("Contact")
+    MoveScaled(38,21,11,3)
     Border = Border.Plain
+    Text = ("Contact")
   }
   { Label4 Label
-    MoveScaled(29,13,11,3)
-    Text = ("E-Mail")
+    MoveScaled(38,25,11,3)
     Border = Border.Plain
+    Text = ("E-Mail")
   }
   { txtcontact TextBox
-    MoveScaled(41,9,29,3)
+    MoveScaled(50,21,29,3)
     ReadOnly = True
   }
   { txtemail TextBox
-    MoveScaled(41,13,29,3)
+    MoveScaled(50,25,29,3)
     ReadOnly = True
   }
   { Label5 Label
-    MoveScaled(29,17,11,3)
-    Text = ("Guardian")
+    MoveScaled(38,29,11,3)
     Border = Border.Plain
+    Text = ("Guardian")
   }
   { txtguard TextBox
-    MoveScaled(41,17,29,3)
+    MoveScaled(50,29,29,3)
     ReadOnly = True
   }
   { btnclose Button
-    MoveScaled(56,21,14,3)
+    MoveScaled(65,33,14,3)
     Text = ("Close")
     Picture = Picture["icon:/small/close"]
     Cancel = True
+  }
+  { Label6 Label
+    MoveScaled(38,13,11,3)
+    Border = Border.Plain
+    Text = ("Encounter")
+  }
+  { txtencid TextBox
+    MoveScaled(50,13,29,3)
+    ReadOnly = True
+  }
+  { txtpatno TextBox
+    MoveScaled(50,9,29,3)
+    ReadOnly = True
+  }
+  { Label1 Label
+    MoveScaled(38,9,11,3)
+    Border = Border.Plain
+    Text = ("Patient No")
+  }
+  { Label7 Label
+    MoveScaled(38,5,11,3)
+    Border = Border.Plain
+    Text = ("Age/Sex")
+  }
+  { txtagesex TextBox
+    MoveScaled(50,5,29,3)
+    ReadOnly = True
   }
 }

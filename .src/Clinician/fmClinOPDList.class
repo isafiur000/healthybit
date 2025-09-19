@@ -1786,11 +1786,9 @@ End
 
 Public Sub mnuvitalexam_Click()
 
-  ' Dim hForm As FmTPR
   Dim hForm As FmVitalTable
 
   If GridView1.Rows.Selection.Count Then
-    ' hForm = New FmTPR(GridView1[GridView1.Row, 2].Text, modBasic.$ClinEssentialComp)
     hForm = New FmVitalTable(GridView1[GridView1.Row, 2].Text)
     hForm.ShowModal()
   Endif

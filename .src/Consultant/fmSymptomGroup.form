@@ -1,0 +1,44 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,95,54)
+  Tag = "Symptom Grouping"
+  Text = ("Symptom Grouping")
+  Resizable = False
+  { mnucomplaint Menu
+    Visible = False
+    { mnudelcomplain Menu
+      Text = ("Delete")
+    }
+  }
+  { Panel1 Panel
+    MoveScaled(0,0,92,4)
+    { lblcomp Label
+      MoveScaled(20,0.5,26,3)
+      Border = Border.Plain
+    }
+    { cmbtarget ComboBox
+      MoveScaled(1,0.5,19,3)
+      ToolTip = ("Select target Department ID")
+      Sorted = True
+    }
+    { btnaddsymp Button
+      MoveScaled(80,0.5,11,3)
+      Tag = "Auto"
+      Picture = Picture["icon:/small/add"]
+    }
+  }
+  { cmbcategory ListBox
+    MoveScaled(1,8,24,45)
+  }
+  { grdsymp GridView
+    MoveScaled(26,4,67,49)
+    Mode = Select.Single
+    Header = GridView.Both
+    AutoResize = False
+  }
+  { btnaddcategory Button
+    MoveScaled(1,4.5,24,3)
+    Text = ("Add Category")
+  }
+}

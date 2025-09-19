@@ -29,9 +29,9 @@ Public Sub Form_Open()
   txtcolor.Background = xcolor
   txtcolorfin.Background = xcolor
   If $sType = "Triage Examinations" Then
-    $ItemList = modBasic.$ClinTriageComp
+    $ItemList = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Triage Examinations", True)
   Else If $sType = "Discharge Examinations" Then
-    $ItemList = modBasic.$ClinDischargeComp
+    $ItemList = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Discharge Examinations", True)
     Panel1.Visible = False
   Endif
   ShowExamGrid()

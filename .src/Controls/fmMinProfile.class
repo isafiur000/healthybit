@@ -11,6 +11,9 @@ End
 Public Sub Form_Open()
 
   Me.Center
+  txtencid.Text = $encid
+  txtpatname.Text = modPatient.GetPatientNameByEnc($encid)
+  txtagesex.Text = modPatient.GetPatientAgeString($encid, Now()) & "/" & modPatient.GetPatientSex($encid)
   txtpatno.Text = modPatient.GetPatientNoByEnc($encid)
   txtfileno.Text = modPatient.GetPatientFileByEnc($encid)
   txtcontact.Text = modPatient.GetPatientContactByEnc($encid)
