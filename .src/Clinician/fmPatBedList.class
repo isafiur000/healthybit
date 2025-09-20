@@ -1,28 +1,119 @@
 ' Gambas class file
 
-Private $encList As String[]
-Private $encBed As String[]
-Private $sColor As String
+Private $sTable As String
 Private $sDept As String
+Private $HtFactor As Float
+Private $wdFactor As Float
 
-Public Sub _new(sDept As String, sOrder As String)
+Private $SQLFields As String[]
+Private $Headers As String[]
+Private $GridVar1 As Variant[]
+Private $GridVar2 As Variant[]
 
+Public Sub _new(sTable As String, sDept As String)
+
+  $sTable = sTable
   $sDept = sDept
-  $sColor = sOrder
 
 End
 
 Public Sub Form_Open()
 
+  Dim xdef As String
+  Dim xwid As String
+  Dim xht As String
+
   Me.FullScreen = True
+  lbldepart.Text = $sDept
+  If $sTable = "tbldepartmentbed" Then
+    rbdate.Text = "Bed"
+    lbldate.Visible = False
+    txtrange.Visible = False
+  Else
+    rbdate.Text = "Date"
+    lbldate.Visible = True
+    txtrange.Visible = True
+    If $sTable = "tblopvisit" Then
+      txtrange.Value = 1
+    Endif
+  Endif
+  modSettings.ShowCheckBox(chkshowstatus, "PatientDashBoard/ShowStatusIcons")
+  xdef = modSettings.ShowSettingFromFIle("PatientDashBoard/Sorting")
+  If xdef And If xdef = "Triage" Then
+    rbtriage.Value = True
+  Else
+    rbdate.Value = True
+  Endif
+
+  xwid = modSettings.ShowSettingFromFIle("PatientDashBoard/WidthFactor")
+  If xwid Then
+    $wdFactor = CFloat(xwid)
+  Else
+    $wdFactor = 1
+  Endif
+  xht = modSettings.ShowSettingFromFIle("PatientDashBoard/HeightFactor")
+  If xht Then
+    $HtFactor = CFloat(xht)
+  Else
+    $HtFactor = 1
+  Endif
+  modGeneralMain.DesignTextLabel(Me)
+
   FillBedGrid()
 
 End
 
-Public Sub Form_Resize()
+Public Sub Timer1_Timer()
 
-  ResizeGrid()
-  GetColorSelectionGrid()
+  If Second(Now()) = 10 Then
+    FillBedGrid()
+  Endif
+
+End
+
+Public Sub btnrefresh_Click()
+
+  FillBedGrid()
+
+End
+
+Public Sub chkshowstatus_Click()
+
+  modSettings.EnterCheckSetting(chkshowstatus, "PatientDashBoard/ShowStatusIcons")
+
+End
+
+Public Sub rbdate_Click()
+
+  modSettings.SaveSettingsToFile("PatientDashBoard/Sorting", "Date")
+
+End
+
+Public Sub rbtriage_Click()
+
+  modSettings.SaveSettingsToFile("PatientDashBoard/Sorting", "Triage")
+
+End
+
+Private Function GetFieldsList() As String[]
+
+  Dim xFieldLst As String[]
+  Dim j As Integer
+
+  If $sTable = "tblconsult" Then
+    xFieldLst = ["fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldflag", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval"]
+  Else If $sTable = "tblopvisit" Then
+    xFieldLst = ["fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldflag", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval"]
+  Else If $sTable = "tbldepartmentbed" Then
+    xFieldLst = ["fldencounterval", "fldbed", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval"]
+  Endif
+
+  For j = 0 To xFieldLst.Count - 1
+    xFieldLst[j] = $sTable & "." & xFieldLst[j]
+  Next
+  $SQLFields = xFieldLst.Copy()
+
+  Return xFieldLst
 
 End
 
@@ -30,142 +121,339 @@ Private Sub FillBedGrid()
 
   Dim sql As String
   Dim res As Result
-  Dim xbedlist As String[]
-  Dim xenclist As String[]
+  Dim xFldList As String[]
 
-  xenclist = New String[]
-  xbedlist = New String[]
-  If $sDept = "%" Then
-    sql = "select fldencounterval,fldcurrlocat from tblencounter where fldadmission=&1 ORDER BY fldcurrlocat ASC"                       ''
-    res = modDatabase.$myConn.Exec(sql, "Admitted")
-    For Each res
-      xbedlist.Add(res["fldencounterval"] & "@" & res["fldcurrlocat"])
-      xenclist.Add(res["fldencounterval"])
-    Next
-  Else
-    sql = "select fldencounterval,fldbed from tbldepartmentbed where fldencounterval like &1 and flddept=&2 ORDER BY fldbed ASC"                       ''
-    res = modDatabase.$myConn.Exec(sql, "%", $sDept)
-    For Each res
-      xbedlist.Add(res["fldencounterval"] & "@" & res["fldbed"])
-      xenclist.Add(res["fldencounterval"])
-    Next
-  Endif
+  Dim Row As Integer
+  Dim Column As Integer
+  Dim xGridVar1 As Variant[]
+  Dim xGridVar2 As Variant[]
+  Dim sColl As Collection
+  Dim ref As ResultField
 
-  $encList = xenclist
-  $encBed = xbedlist
+  Dim xorder As String
+  Dim xunion As String
 
-End
-
-Private Sub GetColorSelectionGrid()
-
-  Dim i As Integer
-  Dim xcoList As Integer[]
-  Dim xcolor As Integer
-  Dim xbedlist As String[]
-  Dim xenclist As String[]
-
-  If $sColor = "All" Then
-    GridView1.Rows.Height = 50 * modBasic.$AppWidthRatio
-  Else If $sColor = "Order" Then
-    xbedlist = New String[]
-    xenclist = New String[]
-    xcoList = [Color.Red, Color.Yellow, Color.Green, Color.Blue, Color.Black, Color.Transparent]
-    For Each xcolor In xcoList
-      For i = 0 To GridView1.Rows.Count - 1
-        If xcolor = GridView1[i, 0].Background Then
-          xenclist.Add(GridView1[i, 2].Text)
-          xbedlist.Add(GridView1[i, 2].Text & "@" & GridView1[i, 1].Text)
-        Endif
-      Next
-    Next
-    Wait
-    $encList = xenclist
-    $encBed = xbedlist
-    ResizeGrid()
-    GridView1.Rows.Height = 50 * modBasic.$AppWidthRatio
-  Else
-    For i = 0 To GridView1.Rows.Count - 1
-      If modMisc.GetColorCode($sColor) = GridView1[i, 0].Background Then
-        GridView1.Rows[i].Height = 50 * modBasic.$AppWidthRatio
-      Else
-        GridView1.Rows[i].Height = 1
+  xFldList = GetFieldsList()
+  Select $sTable
+    Case "tblconsult", "tblopvisit"
+      $Headers = ["TRG", "ENCID", "NAME", "AGE/SEX", "ATTEND", "DRUGS", "LABS", "RADIO", "DEVICE", "FLUID", "EQUIP"]
+      If rbdate.Value = True Then
+        xunion = ""
+        xorder = " ORDER BY " & $sTable & "." & "fldconsulttime"
+      Else If rbtriage.Value = True Then
+        xunion = " inner join tblencounter on " & $sTable & "." & "fldencounterval=tblencounter.fldencounterval"
+        xorder = " ORDER BY FIELD(tblencounter.fldheight, '0', '65280', '16776960', '16711680') DESC"
       Endif
+      sql = Subst("select &1 from &2", xFldList.Join(","), $sTable) & xunion & " where " & $sTable & "." & "fldconsulttime>=&1 and " & $sTable & "." & "fldconsulttime<=&2 and " & $sTable & "." & "fldstatus=&3 and " & $sTable & "." & "fldconsultname=&4" & xorder   ''
+      res = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(DateAdd(Now(), gb.Day, 0 - txtrange.Value)), modDate.EndSqlDate(Now()), "Planned", $sDept)
+
+    Case "tbldepartmentbed"
+      $Headers = ["TRG", "BEDNO", "ENCID", "NAME", "AGE/SEX", "DRUGS", "LABS", "RADIO", "DEVICE", "FLUID", "EQUIP"]
+      If rbdate.Value = True Then
+        xunion = ""
+        xorder = " ORDER BY fldbed ASC"
+      Else If rbtriage.Value = True Then
+        xunion = " inner join tblencounter on tbldepartmentbed.fldencounterval=tblencounter.fldencounterval"
+        xorder = " ORDER BY FIELD(tblencounter.fldheight, '0', '65280', '16776960', '16711680') DESC"
+      Endif
+      sql = "select " & xFldList.Join(",") & " from tbldepartmentbed" & xunion & " where tbldepartmentbed.fldencounterval like &1 and tbldepartmentbed.flddept=&2" & xorder
+      res = modDatabase.$myConn.Exec(sql, "%", $sDept)
+  End Select
+
+  xGridVar1 = New Variant[]
+  xGridVar2 = New Variant[]
+  Row = 0
+  For Each res
+    sColl = New Collection
+    Column = 0
+    For Each ref In res.Fields
+      sColl.Add(res[ref.Name], $Headers[Column])
+      Column = Column + 1
     Next
-  Endif
+
+    If Row < 20 Then
+      xGridVar1.Add(sColl)
+    Else
+      xGridVar2.Add(sColl)
+    Endif
+    Row = Row + 1
+  Next
+
+  GetGridViewOne(xGridVar1)
+  GetGridViewTwo(xGridVar2)
 
 End
 
-Private Sub ResizeGrid()
+Private Sub GetGridViewOne(xGridVar As Variant[])
 
-  GridView1.Clear()
-  GridView1.Columns.Count = 8
-  GridView1.Rows.Count = $encBed.Count
-  With GridView1
-    .Rows.Height = 50 * modBasic.$AppWidthRatio
-    .Columns[0].Width = 25
-    .Columns[1].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 125 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 175 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[5].Width = 25 * modBasic.$AppWidthRatio
-    .Columns[6].Width = 225 * modBasic.$AppWidthRatio
-    .Columns[7].Width = 125 * modBasic.$AppWidthRatio
+  $GridVar1 = xGridVar
+  GridView1.Rows.Count = $GridVar1.Count
+  GridView1.Columns.Count = $SQLFields.Count
+  ResizeGrid(GridView1)
 
-    .Columns[1].Text = "Bed"
-    .Columns[2].Text = "EncID"
-    .Columns[3].Text = "Name"
-    .Columns[4].Text = "Age/Sex"
-    .Columns[6].Text = "Diagnosis"
-    .Columns[7].Text = "Consult"
+End
+
+Private Sub GetGridViewTwo(xGridVar As Variant[])
+
+  $GridVar2 = xGridVar
+  GridView2.Rows.Count = $GridVar2.Count
+  GridView2.Columns.Count = $Headers.Count
+  ResizeGrid(GridView2)
+
+End
+
+Private Sub ResizeGrid(xGridView As GridView)
+
+  Dim Column As Integer
+
+  With xGridView
+    .Rows.Height = 50 * $HtFactor
+    .Columns[0].Width = 35 * $wdFactor
+    Select $sTable
+      Case "tblconsult", "tblopvisit"
+        .Columns[1].Width = 125 * $wdFactor
+        .Columns[2].Width = 175 * $wdFactor
+        .Columns[3].Width = 100 * $wdFactor
+        .Columns[4].Width = 50 * $wdFactor
+      Case "tbldepartmentbed"
+        .Columns[1].Width = 125 * $wdFactor
+        .Columns[2].Width = 125 * $wdFactor
+        .Columns[3].Width = 175 * $wdFactor
+        .Columns[4].Width = 100 * $wdFactor
+    End Select
+
+    .Columns[1].Text = $Headers[1]
+    .Columns[2].Text = $Headers[2]
+    .Columns[3].Text = $Headers[3]
+    .Columns[4].Text = $Headers[4]
+
+    If chkshowstatus.Value = True Then
+      .Columns[5].Width = 50 * $wdFactor
+      .Columns[6].Width = 50 * $wdFactor
+      .Columns[7].Width = 50 * $wdFactor
+      .Columns[8].Width = 50 * $wdFactor
+      .Columns[9].Width = 50 * $wdFactor
+      .Columns[10].Width = 50 * $wdFactor
+
+      .Columns[5].Text = $Headers[5]
+      .Columns[6].Text = $Headers[6]
+      .Columns[7].Text = $Headers[7]
+      .Columns[8].Text = $Headers[8]
+      .Columns[9].Text = $Headers[9]
+      .Columns[10].Text = $Headers[10]
+    Else
+      .Columns[5].Width = 1
+      .Columns[6].Width = 1
+      .Columns[7].Width = 1
+      .Columns[8].Width = 1
+      .Columns[9].Width = 1
+      .Columns[10].Width = 1
+    Endif
+
   End With
+
+End
+
+Private Function GetIconPath(xVariable As Variant) As String
+
+  Dim xxx As String
+
+  If IsNull(xVariable) Then
+    xxx = "icons/unchecked.png"
+  Else
+    If xVariable = True Then
+      xxx = "icons/checked.png"
+    Else If xVariable = False Then
+      xxx = "icons/coll5.png"
+    Endif
+  Endif
+
+  Return xxx
+
+End
+
+Private Function GetClinStatusIcon(sVal As Integer) As String
+
+  Dim xicon As String
+
+  If sVal = 0 Then
+    xicon = "icons/null.svg"
+  Else If sVal = 1 Then
+    xicon = "icons/coll5.png"
+  Else If sVal = 2 Then
+    xicon = "icons/coll6.png"
+  Else If sVal = 3 Then
+    xicon = "icons/coll4.png"
+  Endif
+
+  Return xicon
 
 End
 
 Public Sub GridView1_Data(Row As Integer, Column As Integer)
 
-  Dim asx As String[]
-
-  asx = Split($encBed[Row], "@")
   modGeneralMain.GridViewDecoration(GridView1, Row)
   If Column = 0 Then
     GridView1.Data.Text = ""
-    GridView1.Data.Background = modPatient.GetPatientColor(asx[0])
+    GridView1.Data.Background = modPatient.GetPatientColor($GridVar1[Row][$Headers[Column]])
   Else If Column = 1 Then
-    GridView1.Data.Text = asx[1]
+    GridView1.Data.Text = $GridVar1[Row][$Headers[Column]]
+  Else If Column = 2 Then
+    If $sTable = "tbldepartmentbed" Then
+      GridView1.Data.Text = $GridVar1[Row][$Headers[Column]]
+    Else
+      GridView1.Data.RichText = "<b>" & modPatient.GetPatientNameByEnc($GridVar1[Row][$Headers[Column]], modDatabase.$syConn) & "</b><br>" & "<small>" & modPatient.ShowDiscountCategEnc($GridVar1[Row][$Headers[Column]]) & "</small>"
+    Endif
   Else If Column = 3 Then
-    GridView1.Data.Text = modPatient.GetPatientNameByEnc(asx[0], modDatabase.$syConn)
-    GridView1.Data.WordWrap = True
+    If $sTable = "tbldepartmentbed" Then
+      GridView1.Data.RichText = "<b>" & modPatient.GetPatientNameByEnc($GridVar1[Row][$Headers[Column]], modDatabase.$syConn) & "</b><br>" & "<small>" & modPatient.ShowDiscountCategEnc($GridVar1[Row][$Headers[Column]]) & "</small>"
+    Else
+      GridView1.Data.RichText = modPatient.GetPatientAgeString($GridVar1[Row][$Headers[Column]], Now()) & "<br>" & modPatient.GetPatientSex($GridVar1[Row][$Headers[Column]], modDatabase.$syConn)
+    Endif
   Else If Column = 4 Then
-    GridView1.Data.RichText = modPatient.GetPatientAgeString(asx[0], Now()) & "/" & modPatient.GetPatientSex(asx[0], modDatabase.$syConn) & "<br>" & "<small>" & modReportVar.GetDateTimeReport(modPatient.GetAdmissionDate(asx[0]), gb.MediumDate) & "</small>"                           ''
+    If $sTable = "tbldepartmentbed" Then
+      GridView1.Data.RichText = modPatient.GetPatientAgeString($GridVar1[Row][$Headers[Column]], Now()) & "<br>" & modPatient.GetPatientSex($GridVar1[Row][$Headers[Column]], modDatabase.$syConn)
+    Else
+      GridView1.Data.Picture = Picture[GetIconPath($GridVar1[Row][$Headers[Column]])]
+      GridView1.Data.Alignment = Align.Center
+    Endif
+
   Else If Column = 5 Then
-    GridView1.Data.Picture = Picture["icon:/tiny/access"]
-    GridView1.Data.Text = ""
+    If chkshowstatus.Value = True Then
+      GridView1.Data.Picture = Picture[GetClinStatusIcon(modClinSub.GetMedicineClinStaus($GridVar1[Row][$Headers[Column]]))]
+      GridView1.Data.Alignment = Align.Center
+    Else
+      GridView1.Data.Text = ""
+    Endif
+
   Else If Column = 6 Then
-    GridView1.Data.Font.Grade = -1
-    GridView1.Data.Text = modPatient.PatientDiagnoCurrentList(asx[0]).Join(gb.NewLine)
-    GridView1.Data.WordWrap = True
+    If chkshowstatus.Value = True Then
+      GridView1.Data.Picture = Picture[GetClinStatusIcon(modClinSub.GetLabClinStaus($GridVar1[Row][$Headers[Column]]))]
+      GridView1.Data.Alignment = Align.Center
+    Else
+      GridView1.Data.Text = ""
+    Endif
+
   Else If Column = 7 Then
-    GridView1.Data.Text = modGeneral.GetUserFullName(modPatient.GetAttendingConsultant(asx[0]))
-    GridView1.Data.WordWrap = True
-  Else
-    GridView1.Data.Text = asx[0]
+    If chkshowstatus.Value = True Then
+      GridView1.Data.Picture = Picture[GetClinStatusIcon(modClinSub.GetRadioClinStaus($GridVar1[Row][$Headers[Column]]))]
+      GridView1.Data.Alignment = Align.Center
+    Else
+      GridView1.Data.Text = ""
+    Endif
+
+  Else If Column = 8 Then
+    If chkshowstatus.Value = True Then
+      GridView1.Data.Picture = Picture[GetClinStatusIcon(modClinSub.GetDeviceClinStaus($GridVar1[Row][$Headers[Column]]))]
+      GridView1.Data.Alignment = Align.Center
+    Else
+      GridView1.Data.Text = ""
+    Endif
+
+  Else If Column = 9 Then
+    If chkshowstatus.Value = True Then
+      GridView1.Data.Picture = Picture[GetClinStatusIcon(modClinSub.GetFluidsClinStaus($GridVar1[Row][$Headers[Column]]))]
+      GridView1.Data.Alignment = Align.Center
+    Else
+      GridView1.Data.Text = ""
+    Endif
+
+  Else If Column = 10 Then
+    If chkshowstatus.Value = True Then
+      GridView1.Data.Picture = Picture[GetClinStatusIcon(modClinSub.GetEquipClinStaus($GridVar1[Row][$Headers[Column]]))]
+      GridView1.Data.Alignment = Align.Center
+    Else
+      GridView1.Data.Text = ""
+    Endif
+
   Endif
-  GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
+  GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.Text, GridView1.Columns[Column].Width - 5 * $wdFactor) + (GridView1.Rows.Height - GridView1.Font.Height))
   GridView1.Data.WordWrap = True
 
 End
 
-Public Sub Timer1_Timer()
+Public Sub GridView2_Data(Row As Integer, Column As Integer)
 
-  Dim Row As Integer
-  Dim Column As Integer
+  modGeneralMain.GridViewDecoration(GridView2, Row)
+  If Column = 0 Then
+    GridView2.Data.Text = ""
+    GridView2.Data.Background = modPatient.GetPatientColor($GridVar2[Row][$Headers[Column]])
 
-  If Second(Now()) = 10 Then
-    Row = GridView1.Row
-    Column = GridView1.Column
-    FillBedGrid()
-    GridView1.Row = Row
-    GridView1.Column = Column
+  Else If Column = 1 Then
+    GridView2.Data.Text = $GridVar2[Row][$Headers[Column]]
+
+  Else If Column = 2 Then
+    If $sTable = "tbldepartmentbed" Then
+      GridView2.Data.Text = $GridVar2[Row][$Headers[Column]]
+    Else
+      GridView2.Data.RichText = "<b>" & modPatient.GetPatientNameByEnc($GridVar2[Row][$Headers[Column]], modDatabase.$syConn) & "</b><br>" & "<small>" & modPatient.ShowDiscountCategEnc($GridVar2[Row][$Headers[Column]]) & "</small>"
+    Endif
+
+  Else If Column = 3 Then
+    If $sTable = "tbldepartmentbed" Then
+      GridView2.Data.RichText = "<b>" & modPatient.GetPatientNameByEnc($GridVar2[Row][$Headers[Column]], modDatabase.$syConn) & "</b><br>" & "<small>" & modPatient.ShowDiscountCategEnc($GridVar2[Row][$Headers[Column]]) & "</small>"
+    Else
+      GridView2.Data.RichText = modPatient.GetPatientAgeString($GridVar2[Row][$Headers[Column]], Now()) & "<br>" & modPatient.GetPatientSex($GridVar2[Row][$Headers[Column]], modDatabase.$syConn)
+    Endif
+
+  Else If Column = 4 Then
+    If $sTable = "tbldepartmentbed" Then
+      GridView2.Data.RichText = modPatient.GetPatientAgeString($GridVar2[Row][$Headers[Column]], Now()) & "<br>" & modPatient.GetPatientSex($GridVar2[Row][$Headers[Column]], modDatabase.$syConn)
+    Else
+      GridView2.Data.Picture = Picture[GetIconPath($GridVar2[Row][$Headers[Column]])]
+      GridView2.Data.Alignment = Align.Center
+    Endif
+
+  Else If Column = 5 Then
+    If chkshowstatus.Value = True Then
+      GridView2.Data.Picture = Picture[GetClinStatusIcon(modClinSub.GetMedicineClinStaus($GridVar2[Row][$Headers[Column]]))]
+      GridView2.Data.Alignment = Align.Center
+    Else
+      GridView2.Data.Text = ""
+    Endif
+
+  Else If Column = 6 Then
+    If chkshowstatus.Value = True Then
+      GridView2.Data.Picture = Picture[GetClinStatusIcon(modClinSub.GetLabClinStaus($GridVar2[Row][$Headers[Column]]))]
+      GridView2.Data.Alignment = Align.Center
+    Else
+      GridView2.Data.Text = ""
+    Endif
+
+  Else If Column = 7 Then
+    If chkshowstatus.Value = True Then
+      GridView2.Data.Picture = Picture[GetClinStatusIcon(modClinSub.GetRadioClinStaus($GridVar2[Row][$Headers[Column]]))]
+      GridView2.Data.Alignment = Align.Center
+    Else
+      GridView2.Data.Text = ""
+    Endif
+
+  Else If Column = 8 Then
+    If chkshowstatus.Value = True Then
+      GridView2.Data.Picture = Picture[GetClinStatusIcon(modClinSub.GetDeviceClinStaus($GridVar2[Row][$Headers[Column]]))]
+      GridView2.Data.Alignment = Align.Center
+    Else
+      GridView2.Data.Text = ""
+    Endif
+
+  Else If Column = 9 Then
+    If chkshowstatus.Value = True Then
+      GridView2.Data.Picture = Picture[GetClinStatusIcon(modClinSub.GetFluidsClinStaus($GridVar2[Row][$Headers[Column]]))]
+      GridView2.Data.Alignment = Align.Center
+    Else
+      GridView2.Data.Text = ""
+    Endif
+
+  Else If Column = 10 Then
+    If chkshowstatus.Value = True Then
+      GridView2.Data.Picture = Picture[GetClinStatusIcon(modClinSub.GetEquipClinStaus($GridVar2[Row][$Headers[Column]]))]
+      GridView2.Data.Alignment = Align.Center
+    Else
+      GridView2.Data.Text = ""
+    Endif
+
   Endif
+  GridView2.Rows[Row].Height = Max(GridView2.Rows[Row].Height, GridView2.Data.Font.RichTextHeight(GridView2.Data.Text, GridView2.Columns[Column].Width - 5 * $wdFactor) + (GridView2.Rows.Height - GridView2.Font.Height))
+  GridView2.Data.WordWrap = True
 
 End

@@ -830,30 +830,59 @@ Public Sub SetPatientDevice(encid As String, sType As String, sDevice As String)
 End
 
 ''======================== Patient List =======================
-Public Function GetAdmittedPatientList(sDept As String, sColor As String)
+Public Function GetConsultationPatientList(sDept As String)
 
   Dim hForm As FmPatBedList
-  Dim xdept As String
-  Dim xcolor As String
 
   If sDept Then
-    xdept = UnQuote(sDept)
+    modHelpVariable.ConnectionMain()
+    modHelpVariable.CalenderConnection()
+
+    If modDatabase.$myConn.Opened = True Then
+      modBasic.LoadGeneralVariables()
+      hForm = New FmPatBedList("tblconsult", sDept)
+      hForm.Show
+    Endif
   Else
-    xdept = "%"
+    Print "Department Name not provided"
   Endif
-  If sColor Then
-    xcolor = sColor
+
+End
+
+Public Function GetOPVisitPatientList(sDept As String)
+
+  Dim hForm As FmPatBedList
+
+  If sDept Then
+    modHelpVariable.ConnectionMain()
+    modHelpVariable.CalenderConnection()
+
+    If modDatabase.$myConn.Opened = True Then
+      modBasic.LoadGeneralVariables()
+      hForm = New FmPatBedList("tblopvisit", sDept)
+      hForm.Show
+    Endif
   Else
-    xcolor = "All"
+    Print "Department Name not provided"
   Endif
-  modHelpVariable.ConnectionMain()
-  modHelpVariable.CalenderConnection()
-  modHelpVariable.ICDTablesConnection()
-  If modDatabase.$myConn.Opened = True Then
-    modGeneralMain.EnableCollectionCache()
-    modBasic.LoadGeneralVariables()
-    hForm = New FmPatBedList(xdept, xcolor)
-    hForm.Show
+
+End
+
+Public Function GetAdmittedPatientList(sDept As String)
+
+  Dim hForm As FmPatBedList
+
+  If sDept Then
+    modHelpVariable.ConnectionMain()
+    modHelpVariable.CalenderConnection()
+
+    If modDatabase.$myConn.Opened = True Then
+      modBasic.LoadGeneralVariables()
+      hForm = New FmPatBedList("tbldepartmentbed", sDept)
+      hForm.Show
+    Endif
+  Else
+    Print "Department Name not provided"
   Endif
 
 End

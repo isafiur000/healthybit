@@ -190,9 +190,13 @@ Public Sub DoCommandLineSub()
       Print " "
       Print "--schedule-query       Execute schedule query"
       Print " "
-      Print "--patientlist          Display Admitted Patient List. First Argument is the Department Name"
-      Print "                       in quotes. Second argument is Triage Color [Red, Yellow, Green, Blue,"
-      Print "                       Black, Order]. Order means Red->Yellow->Green->Blue"
+
+      Print "--consultations-list   Display Consultation List. The Department Name in quotes is required Argument"
+      Print " "
+      Print "--opvisit-list         Display OP Visit List. The Department Name in quotes is required Argument"
+      Print " "
+      Print "--bed-occupancy        Display Bed Occupancy List. The Ward Name in quotes  is required Argument"
+      Print " "
 
       Print " "
       Print " "
@@ -413,9 +417,17 @@ Public Sub DoCommandLineSub()
       modHelpVariable.ConnectionMain()
       modInterface.SyncInterfacingDataDaily($isdebug)
 
-    Case "--patientlist"
+    Case "--consultations-list"
       InitialProcedures()
-      modPatientSub.GetAdmittedPatientList(Application.Args[2], Application.Args[3])
+      modPatientSub.GetConsultationPatientList(UnQuote(Application.Args[2]))
+
+    Case "--opvisit-list"
+      InitialProcedures()
+      modPatientSub.GetOPVisitPatientList(UnQuote(Application.Args[2]))
+
+    Case "--bed-occupancy"
+      InitialProcedures()
+      modPatientSub.GetAdmittedPatientList(UnQuote(Application.Args[2]))
 
       ''Database related
     Case "--check-db", "--status-db", "--report-db", "--extended-status-db", "--ping-db", "--processlist-db", "--variables-db", "--version-db", "--tuner-db"

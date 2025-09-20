@@ -5,13 +5,68 @@
   Tag = "In Patient List"
   Expand = True
   Text = ("In Patient List")
-  Arrangement = Arrange.Fill
-  { GridView1 GridView
-    MoveScaled(1,1,59,70)
-    Expand = True
-    Mode = Select.Single
-    Header = GridView.Both
+  Arrangement = Arrange.Vertical
+  { Panel1 Panel
+    MoveScaled(0,0,118,4)
+    { Timer1 #Timer
+      #MoveScaled(96,0.5)
+      Enabled = True
+    }
+    { Panel7 Panel
+      MoveScaled(60,0.5,19,3)
+      Border = Border.Plain
+      { rbdate RadioButton
+        MoveScaled(0,0,8.5,3)
+        Text = ("Date")
+        Value = True
+      }
+      { rbtriage RadioButton
+        MoveScaled(9,0,9.5,2.75)
+        Text = ("Triage")
+      }
+    }
+    { txtrange SpinBox
+      MoveScaled(42,0.5,11,3)
+      MaxValue = 365
+      Value = 1
+    }
+    { lbldepart Label
+      MoveScaled(0.5,0.5,29,3)
+      Font = Font["Bold"]
+      Border = Border.Plain
+    }
+    { btnrefresh Button
+      MoveScaled(103,0.5,14,3)
+      Text = ("Refresh")
+      Default = True
+    }
+    { chkshowstatus CheckBox
+      MoveScaled(84,0.5,11,3)
+      Text = ("Status")
+    }
+    { lbldate Label
+      MoveScaled(36,0.5,6,3)
+      Border = Border.Plain
+      Text = ("Past")
+    }
   }
-  { Timer1 #Timer
+  { Panel2 Panel
+    MoveScaled(0,5,99,53)
+    Expand = True
+    Arrangement = Arrange.Horizontal
+    { GridView1 GridView
+      MoveScaled(1,3,42,38)
+      Expand = True
+      Mode = Select.Single
+      Header = GridView.Both
+      AutoResize = False
+    }
+    { GridView2 GridView
+      MoveScaled(45,3,42,38)
+      Expand = True
+      Mode = Select.Single
+      Header = GridView.Both
+      AutoResize = False
+    }
   }
 }

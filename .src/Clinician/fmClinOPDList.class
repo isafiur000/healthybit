@@ -430,7 +430,7 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
   Else If Column = 3 Then
     xxx = modPatient.GetPatientNameByEnc(xVariable, modDatabase.$syConn) & "<br>" & "<small>" & modPatient.ShowDiscountCategEnc(xVariable) & "</small>"
   Else If Column = 4 Then
-    xxx = modPatient.GetPatientAgeString(xVariable, Now()) & "/" & modPatient.GetPatientSex(xVariable, modDatabase.$syConn)    ''
+    xxx = modPatient.GetPatientAgeString(xVariable, Now()) & "<br>" & modPatient.GetPatientSex(xVariable, modDatabase.$syConn)    ''
   Else If Column = 5 Then
     If IsNull(xVariable) Then
       xxx = "icons/unchecked.png"
@@ -634,29 +634,36 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
     GridView1.Data.RichText = GetGridViewValue(Column, $rData[$aMyFields[Column]])
   Else If Column = 5 Then
     GridView1.Data.Picture = Picture[GetGridViewValue(Column, $rData[$aMyFields[Column]])]
+    GridView1.Data.Alignment = Align.Center
   Else If Column = 11 Then
     If chkshowstatus.Value = True Then
       GridView1.Data.Picture = Picture[GetGridViewValue(Column, $rData[$aMyFields[Column]])]
+      GridView1.Data.Alignment = Align.Center
     Endif
   Else If Column = 12 Then
     If chkshowstatus.Value = True Then
       GridView1.Data.Picture = Picture[GetGridViewValue(Column, $rData[$aMyFields[Column]])]
+      GridView1.Data.Alignment = Align.Center
     Endif
   Else If Column = 13 Then
     If chkshowstatus.Value = True Then
       GridView1.Data.Picture = Picture[GetGridViewValue(Column, $rData[$aMyFields[Column]])]
+      GridView1.Data.Alignment = Align.Center
     Endif
   Else If Column = 14 Then
     If chkshowstatus.Value = True Then
       GridView1.Data.Picture = Picture[GetGridViewValue(Column, $rData[$aMyFields[Column]])]
+      GridView1.Data.Alignment = Align.Center
     Endif
   Else If Column = 15 Then
     If chkshowstatus.Value = True Then
       GridView1.Data.Picture = Picture[GetGridViewValue(Column, $rData[$aMyFields[Column]])]
+      GridView1.Data.Alignment = Align.Center
     Endif
   Else If Column = 16 Then
     If chkshowstatus.Value = True Then
       GridView1.Data.Picture = Picture[GetGridViewValue(Column, $rData[$aMyFields[Column]])]
+      GridView1.Data.Alignment = Align.Center
     Endif
 
   Else
