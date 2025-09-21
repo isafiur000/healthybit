@@ -853,34 +853,35 @@
         MoveScaled(0,0,55,39)
         Arrangement = Arrange.Vertical
         { Panel9 Panel
-          MoveScaled(0,0,55,4)
+          MoveScaled(0,0,55,3.5)
           Arrangement = Arrange.Horizontal
-          Margin = True
-          Padding = 4
-          { btnaddsymplist ToolButton
-            MoveScaled(0.5,0.5,4,3)
-            Picture = Picture["icon:/small/bookmark"]
+          Padding = 2
+          { lbldtfind3 Label
+            MoveScaled(0,0,14,3)
+            Font = Font["Bold"]
+            Border = Border.Plain
+            Text = ("COMPLAINTS")
           }
           { cmbsymptom ComboBox
-            MoveScaled(5,0.5,40,3)
+            MoveScaled(14,0,36,3)
             ToolTip = ("Symptom Name\nWrite few alphabets and press Down key to populate this combobox")
             Sorted = True
           }
-          { Panel17 Panel
-            MoveScaled(45,0.5,9,3)
+          { btnaddsymplist ToolButton
+            MoveScaled(50,0,4,3)
+            Picture = Picture["icon:/small/bookmark"]
           }
         }
         { Panel76 Panel
-          MoveScaled(0,5,55,4)
+          MoveScaled(0,5,55,3.5)
           Arrangement = Arrange.Horizontal
-          Margin = True
-          Padding = 4
+          Padding = 2
           { txtsympval ValueBox
-            MoveScaled(0.5,0.5,8,3)
+            MoveScaled(0.5,0,8,3)
             ToolTip = ("Duration of the symptom")
           }
           { cmbsympunit ComboBox
-            MoveScaled(9,0.5,11,3)
+            MoveScaled(9,0,11,3)
             ToolTip = ("Unit of the duration")
           }
           { cmbsymdura ComboBox
@@ -888,7 +889,7 @@
             Expand = True
           }
           { btnsympadd Button
-            MoveScaled(45,0.5,9,3)
+            MoveScaled(45,0,9,3)
             Tag = "Auto"
             Text = ("Add")
             Picture = Picture["icon:/small/add"]
@@ -917,10 +918,10 @@
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel10 Panel
-          MoveScaled(0,0,59,4)
+          MoveScaled(0,0,59,3.75)
           { btnaddexamlistmainall ToolButton
             MoveScaled(13,0.5,4,3)
-            Picture = Picture["icon:/small/bookmark"]
+            Picture = Picture["icon:/small/component"]
           }
           { btnaddexamlistmain ToolButton
             MoveScaled(17,0.5,4,3)
@@ -928,7 +929,7 @@
           }
           { btnaddscales ToolButton
             MoveScaled(21,0.5,4,3)
-            Picture = Picture["icon:/small/bookmark"]
+            Picture = Picture["icon:/small/calculator"]
           }
           { dtfind DateBox
             MoveScaled(28,0.5,15,3)
@@ -949,33 +950,33 @@
           }
         }
         { Panel78 Panel
-          MoveScaled(0,4,59,4)
+          MoveScaled(0,4,59,3.5)
           Arrangement = Arrange.Horizontal
-          Padding = 4
+          Padding = 2
           { cmbfinding ComboBox
-            MoveScaled(0.5,0.5,53,3)
+            MoveScaled(0.5,0,53,3)
             ToolTip = ("Examination Name\nWrite few alphabets and press Down key to populate this combobox")
             Sorted = True
           }
           { Panel19 Panel
-            MoveScaled(54,0.5,4,3)
+            MoveScaled(54,0,4,3)
           }
         }
         { Panel77 Panel
-          MoveScaled(0,8,59,4)
+          MoveScaled(0,8,59,3.5)
           Arrangement = Arrange.Horizontal
-          Padding = 4
+          Padding = 2
           { txtfinding ComboBox
-            MoveScaled(0.5,0.5,32,3)
+            MoveScaled(0.5,0,32,3)
             ToolTip = ("Observation in words")
             Expand = True
           }
           { txtfinval ValueBox
-            MoveScaled(34,0.5,10,3)
+            MoveScaled(34,0,10,3)
             ToolTip = ("Observation in number")
           }
           { btnfinadd Button
-            MoveScaled(45,0.5,12,3)
+            MoveScaled(45,0,12,3)
             Tag = "Auto"
             Text = ("Add")
             Picture = Picture["icon:/small/add"]
@@ -1000,7 +1001,7 @@
       { Panel20 Panel
         MoveScaled(0,0,25,39)
         Arrangement = Arrange.Vertical
-        { lsthistorylabel ListBox
+        { cmbinpathistory ListBox
           MoveScaled(1,2,23,27)
           Expand = True
         }

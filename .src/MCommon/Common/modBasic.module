@@ -193,6 +193,9 @@ Public $ClinVitalInterval As Float
 Public $ClinDoseToTime As String
 Public $ClinOPDExamination As String
 Public $ClinIPDExamination As String
+Public $ClinIPDHistoryFormat As String
+Public $ClinIPDDischargeFormat As String
+
 Public $ClinConsultationList As String
 Public $ClinOPVisitList As String
 Public $ClinPatientForms As String
@@ -418,6 +421,8 @@ Public $AutoBillSaveZero As String
 Public $AutoBillSaveFullCredit As String
 Public $AutoBedChargeMode As String
 Public $AutoBillUseOwn As String
+Public $AutoBillAdvReceipt As String
+
 Public $PayableLockEntry As String
 Public $ReferralLockEntry As String
 
@@ -1736,6 +1741,8 @@ Public Sub LoadAutoBillingOptions()
   $AutoBillSaveFullCredit = modGlobalSetting.ShowSettingFromDB("AutoIPBilling/AutoSaveFullCredit")
   $AutoBedChargeMode = modGlobalSetting.ShowSettingFromDB("AutoIPBilling/BedChargeMode")
   $AutoBillUseOwn = modGlobalSetting.ShowSettingFromDB("AutoIPBilling/UseOwnBilling")
+  $AutoBillAdvReceipt = modGlobalSetting.ShowSettingFromDB("AutoIPBilling/AdvancedReceipt")
+
   $PayableLockEntry = modGlobalSetting.ShowSettingFromDB("FixPayableUser/LockEntry")
   $ReferralLockEntry = modGlobalSetting.ShowSettingFromDB("FixReferralUser/LockEntry")
 
@@ -2115,6 +2122,8 @@ Public Sub SetClinicalProcedures()
 
   $ClinOPDExamination = modGlobalSetting.ShowSettingFromDB("ClinicForms/OPDExaminations")
   $ClinIPDExamination = modGlobalSetting.ShowSettingFromDB("ClinicForms/IPDExaminations")
+  $ClinIPDHistoryFormat = modGlobalSetting.ShowSettingFromDB("ClinicForms/HistoryFormat")
+  $ClinIPDDischargeFormat = modGlobalSetting.ShowSettingFromDB("ClinicForms/DischargeFormat")
 
   $ClinConsultationList = modGlobalSetting.ShowSettingFromDB("ClinicForms/ConsultationList")
   $ClinOPVisitList = modGlobalSetting.ShowSettingFromDB("ClinicForms/OPVisitList")

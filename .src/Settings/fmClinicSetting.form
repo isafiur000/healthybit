@@ -4,29 +4,15 @@
   MoveScaled(0,0,100,43)
   Text = ("Department Settings")
   Resizable = False
-  { Label5 Label
-    MoveScaled(1,1,8,3)
-    Border = Border.Plain
-    Text = ("Target:")
-  }
-  { cmbtarget ComboBox
-    MoveScaled(10,1,18,3)
-    ToolTip = ("Select location for which you want to add/edit settings")
-    Sorted = True
-  }
-  { btnshowsetting Button
-    MoveScaled(29,1,11,3)
-    Text = ("Show")
-    Picture = Picture["icon:/small/play"]
-  }
-  { lblcomp Label
-    MoveScaled(41,1,44,3)
-    Border = Border.Plain
+  { btnsettall Button
+    MoveScaled(86,1,12,3)
+    Text = ("Settings")
+    Picture = Picture["icon:/small/edit"]
   }
   { IconPanel1 IconPanel
     MoveScaled(1,5,98,37)
     Enabled = False
-    Count = 8
+    Count = 9
     Index = 0
     Text = ("General")
     { Label7 Label
@@ -66,27 +52,15 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label18 Label
-      MoveScaled(1,33,22,3)
+      MoveScaled(1,21,22,3)
       Border = Border.Plain
       Text = ("Symptom Caussation")
     }
     { cmbsympscale ComboBox
-      MoveScaled(24,33,32,3)
+      MoveScaled(24,21,32,3)
       Sorted = True
     }
     { btnsympscale ToolButton
-      MoveScaled(57,33,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label43 Label
-      MoveScaled(1,21,34,3)
-      Border = Border.Plain
-      Text = ("Release Bed without  outcome")
-    }
-    { cmbbedrelease ComboBox
-      MoveScaled(36,21,20,3)
-    }
-    { btnbedrelease ToolButton
       MoveScaled(57,21,3,3)
       Picture = Picture["icon:/small/apply"]
     }
@@ -112,30 +86,6 @@
     }
     { btndoctorlock ToolButton
       MoveScaled(57,9,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label49 Label
-      MoveScaled(1,25,34,3)
-      Border = Border.Plain
-      Text = ("Hold Bed after Discharge (Hour)")
-    }
-    { txtholdbed ValueBox
-      MoveScaled(36,25,20,3)
-    }
-    { btnholdbed ToolButton
-      MoveScaled(57,25,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label55 Label
-      MoveScaled(1,29,34,3)
-      Border = Border.Plain
-      Text = ("Release Bed on")
-    }
-    { cmbbedfreeon ComboBox
-      MoveScaled(36,29,20,3)
-    }
-    { btnbedfreeon ToolButton
-      MoveScaled(57,29,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     Index = 1
@@ -337,40 +287,28 @@
       MoveScaled(56,17,3,3)
       Picture = Picture["icon:/small/apply"]
     }
-    { Label52 Label
+    { Label56 Label
       MoveScaled(1,21,25,3)
       Border = Border.Plain
-      Text = ("Consultation List for")
+      Text = ("Default History Format")
     }
-    { cmbconsultlist ComboBox
-      MoveScaled(27,21,16,3)
+    { cmbdefhistory ComboBox
+      MoveScaled(27,21,27,3)
     }
-    { btnconsultlist ToolButton
-      MoveScaled(44,21,3,3)
+    { btndefhistory ToolButton
+      MoveScaled(56,21,3,3)
       Picture = Picture["icon:/small/apply"]
     }
-    { Label53 Label
+    { Label57 Label
       MoveScaled(1,25,25,3)
       Border = Border.Plain
-      Text = ("OP Visit List for")
+      Text = ("Default Discharge Format")
     }
-    { cmbopvisitlist ComboBox
-      MoveScaled(27,25,16,3)
+    { cmbdefdisch ComboBox
+      MoveScaled(27,25,27,3)
     }
-    { btnopvisitlist ToolButton
-      MoveScaled(44,25,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label54 Label
-      MoveScaled(1,29,25,3)
-      Border = Border.Plain
-      Text = ("Enable Clinic Forms for")
-    }
-    { cmbclinforms ComboBox
-      MoveScaled(27,29,16,3)
-    }
-    { btnclinforms ToolButton
-      MoveScaled(44,29,3,3)
+    { btndefdisch ToolButton
+      MoveScaled(56,25,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     Index = 3
@@ -424,6 +362,80 @@
       Picture = Picture["icon:/small/apply"]
     }
     Index = 4
+    Text = ("Manage")
+    { Label43 Label
+      MoveScaled(1,1,34,3)
+      Border = Border.Plain
+      Text = ("Release Bed without  outcome")
+    }
+    { cmbbedrelease ComboBox
+      MoveScaled(36,1,20,3)
+    }
+    { btnbedrelease ToolButton
+      MoveScaled(57,1,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label49 Label
+      MoveScaled(1,5,34,3)
+      Border = Border.Plain
+      Text = ("Hold Bed after Discharge (Hour)")
+    }
+    { txtholdbed ValueBox
+      MoveScaled(36,5,20,3)
+    }
+    { btnholdbed ToolButton
+      MoveScaled(57,5,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label55 Label
+      MoveScaled(1,9,34,3)
+      Border = Border.Plain
+      Text = ("Release Bed on")
+    }
+    { cmbbedfreeon ComboBox
+      MoveScaled(36,9,20,3)
+    }
+    { btnbedfreeon ToolButton
+      MoveScaled(57,9,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label52 Label
+      MoveScaled(1,13,34,3)
+      Border = Border.Plain
+      Text = ("Enable Consultation List for")
+    }
+    { cmbconsultlist ComboBox
+      MoveScaled(36,13,20,3)
+    }
+    { btnconsultlist ToolButton
+      MoveScaled(57,13,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label53 Label
+      MoveScaled(1,17,34,3)
+      Border = Border.Plain
+      Text = ("Enable OP Visit List for")
+    }
+    { cmbopvisitlist ComboBox
+      MoveScaled(36,17,20,3)
+    }
+    { btnopvisitlist ToolButton
+      MoveScaled(57,17,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label54 Label
+      MoveScaled(1,21,34,3)
+      Border = Border.Plain
+      Text = ("Enable Clinic Forms for")
+    }
+    { cmbclinforms ComboBox
+      MoveScaled(36,21,20,3)
+    }
+    { btnclinforms ToolButton
+      MoveScaled(57,21,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    Index = 5
     Text = ("Telemed")
     { Label31 Label
       MoveScaled(1,1,34,3)
@@ -473,10 +485,10 @@
       MoveScaled(57,13,3,3)
       Picture = Picture["icon:/small/apply"]
     }
-    Index = 5
+    Index = 6
     Text = ("User Access")
     { Frame2 Frame
-      MoveScaled(1,1,79,11)
+      MoveScaled(0,1,79,11)
       Text = ("Restricted Forms")
       Alignment = Align.Left
       { chkaccessclinical CheckBox
@@ -510,7 +522,7 @@
       }
     }
     { Frame3 Frame
-      MoveScaled(1,28,78,7)
+      MoveScaled(0,16,78,7)
       Text = ("Diagnostic Targets")
       Alignment = Align.Left
       { chklabtarget CheckBox
@@ -527,7 +539,7 @@
         Picture = Picture["icon:/small/apply"]
       }
     }
-    Index = 6
+    Index = 7
     Text = ("Sync Server")
     { Label4 Label
       MoveScaled(1,5,12,3)
@@ -616,7 +628,7 @@
     { txtport ValueBox
       MoveScaled(14,25,7,3)
     }
-    Index = 7
+    Index = 8
     Text = ("Data Sync")
     { Label26 Label
       MoveScaled(1,1,20,3)
@@ -764,9 +776,23 @@
     }
     Index = 0
   }
-  { btnsettall Button
-    MoveScaled(86,1,12,3)
-    Text = ("Settings")
-    Picture = Picture["icon:/small/edit"]
+  { lblcomp Label
+    MoveScaled(41,1,44,3)
+    Border = Border.Plain
+  }
+  { btnshowsetting Button
+    MoveScaled(29,1,11,3)
+    Text = ("Show")
+    Picture = Picture["icon:/small/play"]
+  }
+  { cmbtarget ComboBox
+    MoveScaled(10,1,18,3)
+    ToolTip = ("Select location for which you want to add/edit settings")
+    Sorted = True
+  }
+  { Label5 Label
+    MoveScaled(1,1,8,3)
+    Border = Border.Plain
+    Text = ("Target:")
   }
 }
