@@ -131,6 +131,9 @@ Public Sub btnsave_Click()
             res["fldcategory"] = $typ
             res["fldexamid"] = lstfirst[CStr(i)].Text
             res["fldsysconst"] = modFixClinic.GetExamSysName(lstfirst[CStr(i)].Text)
+            res["fldtanswertype"] = modFixClinic.GetExamtOptionType(lstfirst[CStr(i)].Text)
+            res["fldgroupname"] = modFixClinic.GetExaminationCategory(lstfirst[CStr(i)].Text)
+            res["fldexamorder"] = 0
             res["fldflag"] = False
             res["fldcomp"] = txtitemname.Text
         End Select

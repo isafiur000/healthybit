@@ -308,17 +308,24 @@ Private Sub SelectBed(newbed As String)
   Dim xidno As Long
   Dim xcomm As String
   Dim xTotal As Integer
+  Dim xdepart As String
 
   If $encid Then
     xrefer = modBillings.GetReferralUserSetting("Service", $encid)
     xpayble = modBillings.GetPayableUserSetting("Service", $encid)
-    If $depart = lstdepartment.Text Then
+    xdepart = modGeneral.GetDepartmentNameFromBed(newbed)
+
+    If $depart = xdepart Then
       xcomm = "Intra Transfer"
     Else
       xcomm = newbed
     Endif
 
-    res1 = modDatabase.$myConn.Exec("select fldencounterval from tbldepartmentbed where flddept=&1 and fldbed=&2", lstdepartment.Text, newbed)
+    If modBasic.$ClinDepartFormat = "Service" Then
+      res1 = modDatabase.$myConn.Exec("select fldencounterval from tbldepartmentbed where (fldservice=&1 or fldaddservice=&1) and fldbed=&2", lstdepartment.Text, newbed)
+    Else
+      res1 = modDatabase.$myConn.Exec("select fldencounterval from tbldepartmentbed where flddept=&1 and fldbed=&2", lstdepartment.Text, newbed)
+    Endif
     If res1.Available And If res1["fldencounterval"] Then
       Message.Warning(("Bed not free"), ("OK"))
     Else
@@ -326,8 +333,8 @@ Private Sub SelectBed(newbed As String)
       Inc Application.Busy
       res = modDatabase.$myConn.Exec("select fldid,flditem,flddisctype,fldfirsttime,fldfirstreport from tblpattiming where fldencounterval=&1 and fldtype=&2 and fldfirstsave=&3 and fldsecondsave=&4 and fldfirstreport=&5", $encid, "General Services", True, False, "Bed")                                                                   ''
       If res.Available = False Then
-        modPatientSub.UpdateAdmissionWard($encid, lstdepartment.Text, newbed)
-        xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $DiscType, lstdepartment.Text, "Bed", dtnow.Value, xcomm)
+        modPatientSub.UpdateAdmissionWard($encid, xdepart, newbed)
+        xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $DiscType, xdepart, "Bed", dtnow.Value, xcomm)
       Else
         res.MoveFirst
 
@@ -352,13 +359,13 @@ Private Sub SelectBed(newbed As String)
           Endif
         Endif
 
-        xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $DiscType, lstdepartment.Text, "Bed", dtnow.Value, xcomm)
+        xidno = modPatientGeneral.AddPatientTableFirstTime($encid, "General Services", $DiscType, xdepart, "Bed", dtnow.Value, xcomm)
         modDatabase.$myConn.Commit
       Endif
 
       modPatientSub.UpdatePatLocation($encid, newbed, dtnow.Value)
       $bedNo = newbed
-      $depart = lstdepartment.Text
+      $depart = xdepart
       $txtbed.Text = newbed
       Dec Application.Busy
       FillBedGrid()
@@ -394,7 +401,11 @@ Private Sub ReleaseBed(curBed As String)
     xrefer = modBillings.GetReferralUserSetting("Service", $encid)
     xpayble = modBillings.GetPayableUserSetting("Service", $encid)
 
-    res1 = modDatabase.$myConn.Exec("select fldencounterval from tbldepartmentbed where flddept=&1 and fldbed=&2", lstdepartment.Text, curBed)
+    If modBasic.$ClinDepartFormat = "Service" Then
+      res1 = modDatabase.$myConn.Exec("select fldencounterval from tbldepartmentbed where (fldservice=&1 or fldaddservice=&1) and fldbed=&2", lstdepartment.Text, curBed)
+    Else
+      res1 = modDatabase.$myConn.Exec("select fldencounterval from tbldepartmentbed where flddept=&1 and fldbed=&2", lstdepartment.Text, curBed)
+    Endif
     If res1.Available And If res1["fldencounterval"] Then
 
       Inc Application.Busy

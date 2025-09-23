@@ -1,0 +1,128 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,113,80)
+  Tag = "Symptom List"
+  Text = ("Symptom List")
+  Resizable = False
+  { Panel1 Panel
+    MoveScaled(0,0,113,79)
+    { Panel2 Panel
+      MoveScaled(0,0,52,75)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { txtsearch TextBox
+        MoveScaled(0,0.5,51,3)
+      }
+      { GridView1 GridView
+        MoveScaled(0,3.375,51,59)
+        Expand = True
+        Mode = Select.Single
+        AutoResize = False
+      }
+    }
+    { Panel5 Panel
+      MoveScaled(52,0,58,75)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { Panel4 Panel
+        MoveScaled(0,0,57,39)
+        { txtsymptom TextBox
+          MoveScaled(10,1,46,3)
+        }
+        { Label5 Label
+          MoveScaled(1,5,8,3)
+          Border = Border.Plain
+          Text = ("Section")
+        }
+        { cmbcategory ComboBox
+          MoveScaled(10,5,32,3)
+        }
+        { Label6 Label
+          MoveScaled(1,9,8,3)
+          Border = Border.Plain
+          Text = ("Code")
+        }
+        { txtcode TextBox
+          MoveScaled(10,9,36,3)
+        }
+        { Label2 Label
+          MoveScaled(1,13,8,3)
+          Border = Border.Plain
+          Text = ("Detail")
+        }
+        { txtdetail TextArea
+          MoveScaled(1,16,55,14)
+          Wrap = True
+          ScrollBar = Scroll.Vertical
+        }
+        { btnBrOK Button
+          MoveScaled(1,31,13,3)
+          Text = Shortcut(("Add"), "A")
+          Picture = Picture["icon:/small/add"]
+        }
+        { btnBrChange Button
+          MoveScaled(15,31,12,3)
+          Text = Shortcut(("Edit"), "E")
+          Picture = Picture["icon:/small/edit"]
+        }
+        { btnBrCancel Button
+          MoveScaled(44,31,12,3)
+          Text = Shortcut(("Delete"), "D")
+          Picture = Picture["icon:/small/cancel"]
+        }
+        { Label1 Label
+          MoveScaled(1,1,8,3)
+          Border = Border.Plain
+          Text = ("Name")
+        }
+        { tlbtnadd ToolButton
+          MoveScaled(43,5,3,3)
+          Picture = Picture["icon:/small/add"]
+        }
+      }
+      { Panel3 Panel
+        MoveScaled(0,43,57,5)
+        { txtsubtype TextBox
+          MoveScaled(10,1,36,3)
+        }
+        { btnsubtype ToolButton
+          MoveScaled(47,1,3,3)
+          Picture = Picture["icon:/small/add"]
+        }
+        { btndelsubsymp ToolButton
+          MoveScaled(53,1,3,3)
+          Picture = Picture["icon:/small/cancel"]
+        }
+        { Label3 Label
+          MoveScaled(1,1,8,3)
+          Border = Border.Plain
+          Text = ("Options")
+        }
+      }
+      { lstsubsympt ListBox
+        MoveScaled(1,49,56,18)
+        Expand = True
+      }
+      { Panel6 Panel
+        MoveScaled(1,68,52,5)
+        { txtdelim TextBox
+          MoveScaled(42,1,3,3)
+        }
+        { btnupload Button
+          MoveScaled(46,1,5,3)
+          Picture = Picture["icon:/small/copy"]
+        }
+        { Label4 Label
+          MoveScaled(1,1,8,3)
+          Border = Border.Plain
+          Text = ("CSV File")
+        }
+        { txtimport ButtonBox
+          MoveScaled(10,1,31,3)
+          Picture = Picture["icon:/small/file"]
+        }
+      }
+    }
+  }
+}

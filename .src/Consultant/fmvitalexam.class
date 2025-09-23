@@ -11,6 +11,9 @@ Public Sub Form_Open()
     cmbtarget.Enabled = True
   Endif
   cmbcategory.List = ["Triage Examinations", "Essential Examinations", "Physician Examinations", "Nursing Examinations", "Discharge Examinations"]                         ''
+  cmbtype.List = ["Qualitative", "Quantitative"]
+  cmbconstant.List = modSysCons.GetAllSysConstantsList()
+  cmboption.List = modMedicine.FillClinDirectOptionCombo()
 
 End
 
@@ -59,7 +62,14 @@ Private Function GetFlagValue(sBool As Boolean) As String
 
 End
 
-''======================= Examination ==============================
+Public Sub btnrefresh_Click()
+
+  If cmbcategory.Text And If cmbtarget.Text Then
+    FillFindingGrid(cmbcategory.Text)
+  Endif
+
+End
+
 Public Sub btnaddall_Click()
 
   Dim hForm As FmSelectList
@@ -72,14 +82,63 @@ Public Sub btnaddall_Click()
 
 End
 
-Public Sub btnrefresh_Click()
+Private Sub MakeBlank()
 
-  If cmbcategory.Text And If cmbtarget.Text Then
-    FillFindingGrid(cmbcategory.Text)
+  txtexamname.Text = ""
+  cmbtype.Text = ""
+  cmbconstant.Text = ""
+  cmboption.Text = ""
+
+End
+
+Public Sub btnBrOK_Click()
+
+  Dim res As Result
+
+  If cmbcategory.Text And If txtexamname.Text And If cmbtype.Text And If cmbtarget.Text Then
+    If txtgroupname.Text And If cmbtype.Text Then
+      res = modDatabase.$myConn.Create("tblcompexam")
+      res["fldcategory"] = cmbcategory.Text
+      res["fldexamid"] = txtexamname.Text
+      res["fldtype"] = cmbtype.Text
+      res["fldsysconst"] = cmbconstant.Text
+      res["fldtanswertype"] = cmboption.Text
+      res["fldgroupname"] = Trim(txtgroupname.Text)
+      res["fldexamorder"] = 0
+      res["fldflag"] = False
+      res["fldcomp"] = cmbtarget.Text
+      res.Update
+      FillFindingGrid(cmbcategory.Text)
+      Balloon.Delete(("Information saved"), btnBrOK)
+      Balloon.Delay = modBasic.$BalloonDelay
+      MakeBlank()
+    Endif
   Endif
 
 End
 
+Public Sub btnedit_Click()
+
+  Dim res As Result
+
+  If cmbcategory.Text And If txtexamname.Text And If cmbtype.Text And If cmbtarget.Text Then
+    If txtgroupname.Text And If cmbtype.Text Then
+      res = modDatabase.$myConn.Edit("tblcompexam", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+      res["fldexamid"] = txtexamname.Text
+      res["fldtype"] = cmbtype.Text
+      res["fldsysconst"] = cmbconstant.Text
+      res["fldtanswertype"] = cmboption.Text
+      res["fldgroupname"] = Trim(txtgroupname.Text)
+      res.Update
+      FillFindingGrid(cmbcategory.Text)
+      Balloon.Delete(("Information updated"), btnedit)
+      Balloon.Delay = modBasic.$BalloonDelay
+    Endif
+  Endif
+
+End
+
+''======================= Examination ==============================
 Private Sub FillFindingGrid(sType As String)
 
   Dim sql As String
@@ -88,7 +147,7 @@ Private Sub FillFindingGrid(sType As String)
   Dim $rData As Result
 
   If cmbtarget.Text Then
-    sql = "select fldid,fldtype,fldflag,fldexamid,fldflag from tblcompexam where fldcomp=&1 and fldcategory=&2"
+    sql = "select fldid,fldgroupname,fldflag,fldexamid,fldflag,fldtanswertype,fldsysconst,fldtype from tblcompexam where fldcomp=&1 and fldcategory=&2"
     $rData = modDatabase.$myConn.Exec(sql, cmbtarget.Text, sType)
 
     GridView1.Clear
@@ -117,9 +176,15 @@ Private Sub FillFindingGrid(sType As String)
       .Columns[2].Width = 25 * modBasic.$AppWidthRatio
       .Columns[3].Width = 325 * modBasic.$AppWidthRatio
       .Columns[4].Width = 1
+      .Columns[5].Width = 125 * modBasic.$AppWidthRatio
+      .Columns[6].Width = 125 * modBasic.$AppWidthRatio
+      .Columns[7].Width = 125 * modBasic.$AppWidthRatio
 
-      .Columns[1].Text = "Type"
+      .Columns[1].Text = "Group Name"
       .Columns[3].Text = "Exam Name"
+      .Columns[5].Text = "Option"
+      .Columns[6].Text = "Constant"
+      .Columns[7].Text = "Data Type"
     End With
   Endif
 
@@ -145,6 +210,14 @@ Public Sub GridView1_Click()
       FillFindingGrid(cmbcategory.Text)
     Endif
     GridView1.Row = Row
+
+  Else
+    txtexamname.Text = GridView1[GridView1.Row, 3].Text
+    txtgroupname.Text = GridView1[GridView1.Row, 1].Text
+    cmbconstant.Text = GridView1[GridView1.Row, 6].Text
+    cmboption.Text = GridView1[GridView1.Row, 5].Text
+    cmbtype.Text = GridView1[GridView1.Row, 7].Text
+
   Endif
 
 End

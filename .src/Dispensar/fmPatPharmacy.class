@@ -136,13 +136,15 @@ Public Sub mnusaveprint_Click()
 
   Dim CPayForm As GetQRSCanPay
   Dim xtraceid As String
+  Dim xsavAmt As Float
 
   If txtencid.Text Then
     xtraceid = ""
     If $AdvPayment = "Advance" Then
       If $F12Lock = False Then
         $F12Lock = True
-        CPayForm = New GetQRSCanPay(Trim(txtencid.Text), hPatient1.$billtype, cmbledgerac.Text, Trim(txtreference.Text), $sTatus, hPatient1.$LockToComp)
+        xsavAmt = hPatient1.GetCurrentToReceiveAmt()
+        CPayForm = New GetQRSCanPay(Trim(txtencid.Text), hPatient1.$billtype, cmbledgerac.Text, Trim(txtreference.Text), $sTatus, hPatient1.$LockToComp, xsavAmt)
         xtraceid = CPayForm.GetTransactionDone()
         If xtraceid Then
           hPatient1.$AdvTraceID = xtraceid
@@ -164,6 +166,7 @@ Public Sub Form_KeyRelease()
 
   Dim CPayForm As GetQRSCanPay
   Dim xtraceid As String
+  Dim xsavAmt As Float
 
   If Key.Code = Key.F12 Then
     If txtencid.Text Then
@@ -172,7 +175,8 @@ Public Sub Form_KeyRelease()
       If $AdvPayment = "Advance" Then
         If $F12Lock = False Then
           $F12Lock = True
-          CPayForm = New GetQRSCanPay(Trim(txtencid.Text), hPatient1.$billtype, cmbledgerac.Text, Trim(txtreference.Text), $sTatus, hPatient1.$LockToComp)
+          xsavAmt = hPatient1.GetCurrentToReceiveAmt()
+          CPayForm = New GetQRSCanPay(Trim(txtencid.Text), hPatient1.$billtype, cmbledgerac.Text, Trim(txtreference.Text), $sTatus, hPatient1.$LockToComp, xsavAmt)
           xtraceid = CPayForm.GetTransactionDone()
           If xtraceid Then
             hPatient1.$AdvTraceID = xtraceid

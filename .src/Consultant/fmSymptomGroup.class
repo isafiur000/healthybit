@@ -10,8 +10,6 @@ Public Sub Form_Open()
     cmbtarget.List = modBasic.$AllCompPerList
     cmbtarget.Enabled = True
   Endif
-  cmbcategory.List = modMedicine.GetPathoCategoryList("Symptom")
-  cmbcategory.Add("Null")
 
 End
 
@@ -39,14 +37,12 @@ Public Sub cmbtarget_KeyRelease()
 
 End
 
-Public Sub btnaddcategory_Click()
+Public Sub btnshowlist_Click()
 
-  Dim hForm As FmAddVariable1
-
-  hForm = New FmAddVariable1("flclass", "fldcategory", "Symptom", "tblpathocategory")
-  hForm.ShowModal
-  cmbcategory.List = modMedicine.GetPathoCategoryList("Symptom")
-  cmbcategory.Add("Null")
+  If cmbtarget.Text Then
+    lstcategory.List = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select distinct(fldtype) as col from tblcomplaints where fldcomp=&1", cmbtarget.Text))
+    lstcategory.Add("Null")
+  Endif
 
 End
 
@@ -67,18 +63,20 @@ Public Sub btnaddsymp_Click()
 
   Dim hForm As FmSelectList
 
-  If cmbtarget.Text And If cmbcategory.Text Then
-    hForm = New FmSelectList(("Select Complaints for the selected department"), "Complaints List", cmbtarget.Text & "|" & cmbcategory.Text)
+  If cmbtarget.Text And If txtcategory.Text Then
+    hForm = New FmSelectList(("Select Complaints for the selected department"), "Complaints List", cmbtarget.Text & "|" & txtcategory.Text)
     hForm.ShowModal
-    FillComplaintGrid(cmbcategory.Text, cmbtarget.Text)
+    btnshowlist_Click()
+    FillComplaintGrid(txtcategory.Text, cmbtarget.Text)
   Endif
 
 End
 
-Public Sub cmbcategory_Click()
+Public Sub lstcategory_Click()
 
-  If cmbtarget.Text And If cmbcategory.Text Then
-    FillComplaintGrid(cmbcategory.Text, cmbtarget.Text)
+  txtcategory.Text = lstcategory.Text
+  If cmbtarget.Text And If txtcategory.Text Then
+    FillComplaintGrid(txtcategory.Text, cmbtarget.Text)
   Endif
 
 End
@@ -148,8 +146,8 @@ Public Sub grdsymp_Click()
         res["fldflag"] = False
       Endif
       res.Update
-      If cmbtarget.Text And If cmbcategory.Text Then
-        FillComplaintGrid(cmbcategory.Text, cmbtarget.Text)
+      If cmbtarget.Text And If txtcategory.Text Then
+        FillComplaintGrid(txtcategory.Text, cmbtarget.Text)
       Endif
     Endif
     grdsymp.Row = Row
@@ -167,8 +165,8 @@ Public Sub mnudelcomplain_Click()
 
   If grdsymp.Rows.Selection.Count > 0 Then
     modDatabase.$myConn.Delete("tblcomplaints", "fldid=&1", grdsymp[grdsymp.Row, 0].Text)
-    If cmbtarget.Text And If cmbcategory.Text Then
-      FillComplaintGrid(cmbcategory.Text, cmbtarget.Text)
+    If cmbtarget.Text And If txtcategory.Text Then
+      FillComplaintGrid(txtcategory.Text, cmbtarget.Text)
     Endif
     Balloon.Delete(("Information deleted"), grdsymp)
     Balloon.Delay = modBasic.$BalloonDelay

@@ -3,7 +3,7 @@
 Private $encid As String
 Private $ItemList As String[]
 Private $ItemListFlag As String[]
-Private $sCategoryList As String[]
+Private $FlagLst As String[]
 Private $sValueList As String[]
 
 Private aMarkCheck As New Object[100]
@@ -21,54 +21,59 @@ End
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
-  rbfixed_Click()
+  $FlagLst = modFixPatho.GetFlaggedSymptomGroup()
+  rbgroup.Value = True
+  rbgroup_Click()
 
 End
 
 Public Sub rbfixed_Click()
 
+  $ItemList = New String[]
   $ItemList = modString.GetDualListFromVariant(modFixPatho.$SymptomMasterVar, "fldcategory", "fldsymptom", True)
   $ItemListFlag = New String[]
   GetItemListData()
-  ListBox1.List = $sCategoryList
 
 End
 
 Public Sub rbgroup_Click()
 
+  $ItemList = New String[]
   $ItemList = modString.GetDualListFromVariant(modFixPatho.$SymptomCompVar, "fldtype", "fldsymptom", True)
-  $ItemListFlag = modFixPatho.GetFlaggedSymptomGroup()
+  $ItemListFlag = $FlagLst
   GetItemListData()
-  ListBox1.List = $sCategoryList
 
 End
 
 Private Sub GetItemListData()
 
+  Dim categLst As String[]
   Dim xx As String
   Dim asx As String[]
   Dim xval As String[]
 
-  $sCategoryList = New String[]
-  $sCategoryList.Add("Flagged")
+  categLst = New String[]
+  If rbgroup.Value = True Then
+    categLst.Add("Flagged")
+  Endif
   xval = New String[]
   For Each xx In $ItemList
     If xx Then
       asx = Split(xx, "|")
 
       If asx[0] Then
-        If $sCategoryList.Count = 0 Then
-          $sCategoryList.Add(asx[0])
+        If categLst.Count = 0 Then
+          categLst.Add(asx[0])
         Else
-          If $sCategoryList.Exist(asx[0]) = False Then
-            $sCategoryList.Add(asx[0])
+          If categLst.Exist(asx[0]) = False Then
+            categLst.Add(asx[0])
           Endif
         Endif
       Endif
 
     Endif
   Next
-  ListBox1.List = $sCategoryList
+  ListBox1.List = categLst
 
 End
 
@@ -181,7 +186,7 @@ Private Sub LoadControls()
         .Y = (i * 40 + 15) * modBasic.$AppScaleFactor
         .Width = 150 * modBasic.$AppScaleFactor
         .Height = 25 * modBasic.$AppScaleFactor
-        .List = ["Both Side", "Left Side", "Right Side", "On/Off"]
+        .List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldsubsymptom as col from tblsubsymptoms where fldsymptom=&1", $sValueList[i]))
         .Tag = i
         .Enabled = False
       End With

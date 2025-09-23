@@ -42,7 +42,6 @@ Public Sub Form_Open()
     Endif
   Endif
   chkselall.Value = True
-  ShowTransferGrid()
 
 End
 
@@ -81,6 +80,14 @@ Public Sub mnublank_Click()
 
 End
 
+Public Sub btnshow_Click()
+
+  If cmbcompsent.Text Then
+    ShowTransferGrid()
+  Endif
+
+End
+
 Private Sub AdjustGrid(GridView1x As GridView)
 
   With GridView1x
@@ -114,14 +121,6 @@ Private Sub AdjustGrid(GridView1x As GridView)
     .Columns[14].Text = "Request"
     .Columns[15].Text = "Comment"
   End With
-
-End
-
-Public Sub mnurequest_Click()
-
-  modWorkSpace.Remove(fmStoreRequest)
-  modWorkSpace.Add(fmStoreRequest)
-  ShowTransferGrid()
 
 End
 
@@ -585,7 +584,9 @@ Public Sub mnusorting_Click()
     mnusorting.Checked = True
   Endif
   If TabPanel1.Index = 0 Then
-    ShowTransferGrid()
+    If cmbcompsent.Text Then
+      ShowTransferGrid()
+    Endif
   Else If TabPanel1.Index = 1 Then
     ShowPendingGrid(cmbcomppend.Text)
   Else If TabPanel1.Index = 2 Then
@@ -603,7 +604,7 @@ Private Sub ShowTransferGrid()
   Else
     xorder = " ORDER BY fldid DESC"
   Endif
-  $rData = modDatabase.$myConn.Exec("select fldid,fldstockno,fldoldstockno,fldfromentrytime,fldstockid,fldstockno,fldstockno,fldcategory,fldqty,fldnetcost,fldtocomp,fldfromuser,fldreference,fldlockcomp,fldrequest,fldcomment from tbltransfer where fldfromcomp=&1 and fldsav=&2" & xorder, modBasic.$compID, False)
+  $rData = modDatabase.$myConn.Exec("select fldid,fldstockno,fldoldstockno,fldfromentrytime,fldstockid,fldstockno,fldstockno,fldcategory,fldqty,fldnetcost,fldtocomp,fldfromuser,fldreference,fldlockcomp,fldrequest,fldcomment from tbltransfer where fldfromcomp=&1 and fldsav=&2 and fldtocomp=&3" & xorder, modBasic.$compID, False, cmbcompsent.Text)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
 
@@ -647,7 +648,9 @@ Public Sub GridView1_Click()
       res = modDatabase.$myConn.Edit("tbltransfer", "fldid=&1 and fldsav=&2", GridView1[GridView1.Row, 0].Text, False)
       res["fldqty"] = xval
       res.Update
-      ShowTransferGrid()
+      If cmbcompsent.Text Then
+        ShowTransferGrid()
+      Endif
     Endif
   Endif
 
@@ -663,7 +666,9 @@ Public Sub mnudel_Click()
 
   If GridView1.Rows.Selection.Count > 0 Then
     modDatabase.$myConn.Delete("tbltransfer", "fldid=&1 and fldsav=&2", GridView1[GridView1.Row, 0].Text, False)
-    ShowTransferGrid()
+    If cmbcompsent.Text Then
+      ShowTransferGrid()
+    Endif
   Endif
 
 End
@@ -714,7 +719,9 @@ Private Sub FirstSaveItems()
       Endif
     Next
     Dec Application.Busy
-    ShowTransferGrid()
+    If cmbcompsent.Text Then
+      ShowTransferGrid()
+    Endif
   Endif
 
 Catch

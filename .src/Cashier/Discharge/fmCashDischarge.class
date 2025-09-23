@@ -216,6 +216,7 @@ Public Sub Form_KeyRelease()
 
   Dim CPayForm As GetQRSCanPay
   Dim xtraceid As String
+  Dim xsavAmt As Float
 
   If Key.Code = Key["O"] And If Key.Control Then
     btnwebcam_Click()
@@ -241,7 +242,8 @@ Public Sub Form_KeyRelease()
         If $AdvPayment = "Advance" Then
           If $F12Lock = False Then
             $F12Lock = True
-            CPayForm = New GetQRSCanPay(Trim(txtencid.Text), hPatient.$billtype, cmbledgerac.Text, Trim(txtreference.Text), $sTatus, hPatient.$LockToComp)
+            xsavAmt = hPatient.GetCurrentToReceiveAmt()
+            CPayForm = New GetQRSCanPay(Trim(txtencid.Text), hPatient.$billtype, cmbledgerac.Text, Trim(txtreference.Text), $sTatus, hPatient.$LockToComp, xsavAmt)
             xtraceid = CPayForm.GetTransactionDone()
             If xtraceid Then
               hPatient.$AdvTraceID = xtraceid

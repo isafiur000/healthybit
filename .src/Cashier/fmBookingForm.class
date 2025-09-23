@@ -29,6 +29,7 @@ Public Sub Form_Open()
 
   dtconsultdate.Value = Now()
   dtconsultime.Value = Time()
+  txtnepcal.Text = modDate.ConvertToLocaldate(dtconsultdate.Value)
   btnyear.Text = "Year"
   btnmon.Text = "Mon"
 
@@ -594,14 +595,15 @@ Public Sub btnhospcode_Click()
 End
 
 ''------------------------------------------- Reports------------------------------------
-Public Sub dtnepcal_Click()
+Public Sub txtnepcal_Change()
 
-  Dim xx As String
+  dtconsultdate.Value = modDate.ConvertToEnglishdate(txtnepcal.Text)
 
-  xx = BSDateFormat(("Enter BS Date in yyyy/mm/dd format"), ("Date Converter"), modDate.ConvertToLocaldate(dtconsultdate.Value))
-  If xx Then
-    dtconsultdate.Value = modDate.ConvertToEnglishdate(xx)
-  Endif
+End
+
+Public Sub dtconsultdate_Click()
+
+  txtnepcal.Text = modDate.ConvertToLocaldate(dtconsultdate.Value)
 
 End
 
@@ -866,6 +868,7 @@ Public Sub btnshowrefr_Click()
         btnOK.Enabled = False
       Else
         Panel2.Enabled = True
+        txtpatno.SetFocus
       Endif
     Endif
     btnshowrefr.Picture = Picture["icon:/small/down"]
@@ -1001,6 +1004,17 @@ End
 Public Sub txtmonths_GotFocus()
 
   txtmonths.SelectAll
+
+End
+
+Public Sub btnfindfile_Click()
+
+  Dim xval As String
+
+  xval = InputBox(("Enter Patient's File Number"), "File Number", "")
+  If xval Then
+    txtpatno.Text = modPatient.GetPatientNoByFileNo(xval)
+  Endif
 
 End
 
