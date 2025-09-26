@@ -23,6 +23,7 @@ Public Sub ExportToExternalOption(sText As String, sSize As String)
       xdir = Dialog.Path
       Copy stOutput To xdir &/ modString.GetNowString() & ".txt"
     Endif
+
   Else If xx = "LibreOffice Writer" Then
     If System.Exist("lowriter") Then
       Inc Application.Busy
@@ -42,7 +43,8 @@ Public Sub ExportToExternalOption(sText As String, sSize As String)
     Else
       modApplSub.InstallSelectedApplication(["libreoffice-writer", "libreoffice-java-common", "default-jre-headless"])
     Endif
-  Else
+
+  Else If xx = "LibreOffice Calc" Then
     If System.Exist("localc") Then
       Inc Application.Busy
       stOutput = Temp()
@@ -61,6 +63,21 @@ Public Sub ExportToExternalOption(sText As String, sSize As String)
     Else
       modApplSub.InstallSelectedApplication(["libreoffice-calc", "libreoffice-java-common", "default-jre-headless"])
     Endif
+
+  Else
+    If xview = "Yes" Then
+      xdir = User.Home &/ modString.GetNowString() & ".ods"
+      Copy sText To xdir
+      Wait
+      If Exist(xdir) Then
+        modDevice.DesktopOpenFile(xdir)
+      Endif
+    Else
+      If Dialog.SelectDirectory() Then Return
+      xdir = Dialog.Path
+      Copy sText To xdir &/ modString.GetNowString() & ".html"
+    Endif
+
   Endif
 
 Catch

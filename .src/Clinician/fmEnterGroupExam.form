@@ -1,69 +1,84 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,111,65)
+  MoveScaled(0,0,113,65)
   Tag = "Group Examination"
   Text = ("Group Examination")
-  Resizable = False
-  { Label2 Label
-    MoveScaled(1,1,7,3)
-    Border = Border.Plain
-    Text = ("Name:")
-  }
-  { lblitem Label
-    MoveScaled(9,1,51,3)
-    Border = Border.Plain
-  }
-  { btnBrOK Button
-    MoveScaled(84,61,12,3.5)
-    ToolTip = ("[Ctrl+S] to save")
-    Text = Shortcut(("Save"), "S")
-    Picture = Picture["icon:/small/apply"]
-  }
-  { btnBrChange Button
-    MoveScaled(97,61,12,3.5)
-    Text = ("Close")
-    Picture = Picture["icon:/small/close"]
-    Cancel = True
-  }
-  { ScrollView1 ScrollView
-    MoveScaled(20,5,90,55)
-    { Frame1 Panel
-      MoveScaled(0,0,89,54)
-      Expand = True
+  Arrangement = Arrange.Vertical
+  Margin = True
+  { Panel1 Panel
+    MoveScaled(0,0,112,4)
+    { chkautoption CheckBox
+      MoveScaled(62,0.5,17,3)
+      Text = ("Display Options")
+    }
+    { Slider1 SliderBox
+      MoveScaled(82,0.5,22,3)
+      MinValue = 1
+      MaxValue = 15
+      Value = 2
+    }
+    { btnrefresh ToolButton
+      MoveScaled(105,0.5,3,3)
+      Picture = Picture["icon:/small/refresh"]
+    }
+    { lblitem Label
+      MoveScaled(7,0.5,51,3)
+      Border = Border.Plain
+    }
+    { Label2 Label
+      MoveScaled(0.5,0.5,6,3)
+      Border = Border.Plain
+      Text = ("Name")
     }
   }
-  { btnrefresh ToolButton
-    MoveScaled(105,1,3,3)
-    Picture = Picture["icon:/small/refresh"]
+  { Panel2 Panel
+    MoveScaled(0,5,112,56)
+    Expand = True
+    Arrangement = Arrange.Horizontal
+    { cmbcategory ListBox
+      MoveScaled(0,0,18,55)
+    }
+    { ScrollView1 ScrollView
+      MoveScaled(19,0,90,55)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { Frame1 Panel
+        MoveScaled(0,0,89,54)
+        Arrangement = Arrange.Vertical
+        AutoResize = True
+      }
+    }
   }
-  { chkautoption CheckBox
-    MoveScaled(62,1,17,3)
-    Text = ("Display Options")
-  }
-  { btnexectext ToolButton
-    MoveScaled(57,61,3,3)
-    Picture = Picture["icon:/small/exec"]
-  }
-  { dctexectext ToolButton
-    MoveScaled(53,61,3,3)
-    Picture = Picture["icon:/small/edit"]
-  }
-  { btntemplsumm ToolButton
-    MoveScaled(61,61,3,3)
-    Picture = Picture["icon:/small/attach"]
-  }
-  { cmbcategory ListBox
-    MoveScaled(1,5,18,59)
-  }
-  { btnfill Button
-    MoveScaled(20,61,12,3)
-    Text = ("Default")
-  }
-  { Slider1 SliderBox
-    MoveScaled(82,1,22,3)
-    MinValue = 1
-    MaxValue = 15
-    Value = 2
+  { Panel3 Panel
+    MoveScaled(-1,61,112,4.5)
+    { btnexectext ToolButton
+      MoveScaled(56,0.5,3,3)
+      Picture = Picture["icon:/small/exec"]
+    }
+    { btntemplsumm ToolButton
+      MoveScaled(60,0.5,3,3)
+      Picture = Picture["icon:/small/attach"]
+    }
+    { btnBrOK Button
+      MoveScaled(83,0.5,12,3.5)
+      ToolTip = ("[Ctrl+S] to save")
+      Text = Shortcut(("Save"), "S")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { btnBrChange Button
+      MoveScaled(96,0.5,12,3.5)
+      Text = ("Close")
+      Picture = Picture["icon:/small/close"]
+      Cancel = True
+    }
+    { btnfill Button
+      MoveScaled(19,0.5,12,3)
+      Text = ("Default")
+    }
+    { dctexectext ToolButton
+      MoveScaled(52,0.5,3,3)
+      Picture = Picture["icon:/small/edit"]
+    }
   }
 }
