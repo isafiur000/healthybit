@@ -73,7 +73,8 @@ Public Sub btnmarkdisp_Click()
     modPatientGeneral.PatMedicalItemDirectUse(txtcategory.Text, Trim(txtencid.Text), txtitemname.Text, "", txtcode.Text, txtcomment.Text)
 
     res2 = modDatabase.$myConn.Edit("tblmedinventory", "fldid=&1", $SIndex)
-    res2["fldstatus"] = "Used"
+    res2["fldreceiver"] = Trim(txtencid.Text)
+    res2["fldstatus"] = "Transferred"
     res2["fldsave"] = False
     res2["xyz"] = False
     res2.Update

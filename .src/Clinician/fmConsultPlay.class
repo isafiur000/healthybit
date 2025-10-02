@@ -4,11 +4,14 @@ Private $rData2 As Result
 Private $aMyFields2 As String[]
 Private $encid As String
 Private $sDeprt As String
+Private $sValue As String
 
-Public Sub _new(encid As String, sDeprt As String)
+Public Sub Run(encid As String, sDeprt As String) As String
 
   $encid = encid
   $sDeprt = sDeprt
+
+  If Me.ShowModal() Then Return $sValue
 
 End
 
@@ -82,16 +85,13 @@ End
 
 Public Sub GridView2_Click()
 
-  Dim hForm As FmOPOutcome
-
-  If GridView2.Column = 5 Then
+  If GridView2.Rows.Selection.Count
     If GridView2[GridView2.Row, 6].Text = "tblconsult" Then
-      hForm = New FmOPOutcome("Consultation", GridView2[GridView2.Row, 2].Text, GridView2[GridView2.Row, 0].Text)
+      $sValue = CStr(GridView2[GridView2.Row, 0].Text) & "|" & "Consultation"
     Else If GridView2[GridView2.Row, 6].Text = "tblopvisit" Then
-      hForm = New FmOPOutcome("OP Visit", GridView2[GridView2.Row, 2].Text, GridView2[GridView2.Row, 0].Text)
+      $sValue = CStr(GridView2[GridView2.Row, 0].Text) & "|" & "OP Visit"
     Endif
-    hForm.ShowModal
-    CompleteGrid()
+    Me.Close(True)
   Endif
 
 End

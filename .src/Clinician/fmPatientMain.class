@@ -47,7 +47,6 @@ Public Sub Form_Open()
 
   cmbpatheightunit.List = ["cm", "inch", "foot"]
   cmbsympunit.List = ["Hours", "Days", "Weeks", "Months", "Years", "Episodes"]
-  cmbsymdura.List = ["Both Side", "Left Side", "Right Side", "On/Off"]
   If modBasic.$ItemListFormat = "GridView" Then
   Else
     cmbsymptom.List = modString.GetListFromVariant(modFixPatho.$SymptomCompVar, "fldsymptom", True)
@@ -113,6 +112,11 @@ Private Sub SetHtmlTextOption(TextHTML1 As TextHTML)
 
   TextHTML1.DictionaryPath = modBasic.$dictPathList
   TextHTML1.UserList = modBasic.$IPConsultUserList
+  If modBasic.$AutoRichTextMode = "Yes" Then
+    TextHTML1.RichMode = True
+  Else
+    TextHTML1.RichMode = False
+  Endif
 
 End
 
@@ -1218,6 +1222,9 @@ End
 
 Public Sub cmbsymdura_GotFocus()
 
+  If cmbsymptom.Text Then
+    cmbsymdura.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldsubsymptom as col from tblsubsymptoms where fldsymptom=&1", cmbsymptom.Text))
+  Endif
   If modBasic.$TabletModeEnable = "Yes" Then
     If Not cmbsymdura.Text Then
       cmbsymdura.Popup
@@ -1853,7 +1860,7 @@ Public Sub tlbtnhistory_Click()
 
   If cmbinpathistory.Text Then
     If txthistory.Text Then
-      If cmbinpathistory.Text = "Initial Planning" Or If cmbinpathistory.Text = "Final Planning" Then
+      If cmbinpathistory.Text = "Initial Planning" Or If cmbinpathistory.Text = "Expert Planning" Then
         modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
       Else
         modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "History", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
@@ -1872,7 +1879,7 @@ Public Sub cmbinpathistory_Click()
 
   If cmbinpathistory.Text Then
     tlbtnhistory.Enabled = True
-    If cmbinpathistory.Text = "Initial Planning" Or If cmbinpathistory.Text = "Final Planning" Then
+    If cmbinpathistory.Text = "Initial Planning" Or If cmbinpathistory.Text = "Expert Planning" Then
       xVar = modPatPatho.ShowSelectedNoteUser(Trim(txtencid.Text), cmbinpathistory.Text)
     Else
       xVar = modPatPatho.ShowSelectedHistoryUser(Trim(txtencid.Text), cmbinpathistory.Text)
@@ -4253,6 +4260,7 @@ Public Sub mnuabsconder_Click()
         Inc Application.Busy
         modDatabase.$myConn.Begin
         xmsg = modBillings.ExitPatientWithBillingOfBed(Trim(txtencid.Text))
+        modPatientSub.SetAbsconderProfile($PatientNum, "Absconder", "Active")
         modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "Absconder", "")
         modDatabase.$myConn.Commit
         Dec Application.Busy
@@ -5312,7 +5320,7 @@ Public Sub mnuessenexam_Click()
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = modClinic.GetFullVitalList(Trim(txtencid.Text))
+    xx = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
     hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
   Endif

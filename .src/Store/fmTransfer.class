@@ -34,6 +34,7 @@ Public Sub Form_Open()
   cmbcomppend.Text = "%"
   modStockSub.DisplayDefaultTransferMode(rbrand, rbgeneric)
   IniateCategoryPharmArray()
+  modSettings.ShowCheckBox(chklockstock, "StockTransfer/Locker")
   If modBasic.$AccessStockTransfer = "Disable" Then
     If modGlobalSetting.GetDBTableList("InventorySaveAccess/StockTransfer").Exist(modBasic.$lbluser) = True Then
       btnsavefrom.Enabled = True
@@ -149,6 +150,12 @@ End
 Public Sub rbrand_Click()
 
   modSettings.SaveSettingsToFile("BrandOrGeneric/Transfer", "Brand")
+
+End
+
+Public Sub chklockstock_Click()
+
+  modSettings.EnterCheckSetting(chklockstock, "StockTransfer/Locker")
 
 End
 
@@ -273,9 +280,9 @@ Public Sub cmbmedicine_GotFocus()
       cmbbatch.Tag = "Auto"
       If modBasic.$AppCacheGridViewData = "No" Then
         res = modStock.FillMedicinesTransferComboResult(cmbroute.Text, brandOrGeneric, modBasic.$compID)
-        cmbmedicine.Text = GridViewNew("Select Particulars", modControlSub.GetDirectFillresult(res), False, cmbmedicine, Panel4.Height + GridView1.Height - cmbmedicine.Top)
+        cmbmedicine.Text = GridViewNew("Select Particulars", modControlSub.GetDirectFillresult(res), False, cmbmedicine, GridView1.Height)
       Else
-        cmbmedicine.Text = GridViewNew("Select Particulars", GetCategoryArray(cmbroute.Text, brandOrGeneric), False, cmbmedicine, Panel4.Height + GridView1.Height - cmbmedicine.Top)
+        cmbmedicine.Text = GridViewNew("Select Particulars", GetCategoryArray(cmbroute.Text, brandOrGeneric), False, cmbmedicine, GridView1.Height)
       Endif
       cmbbatch.SetFocus
 

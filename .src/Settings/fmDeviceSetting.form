@@ -8,7 +8,7 @@
     MoveScaled(1,1,93,49)
     Count = 12
     Index = 0
-    Text = ("Barcode Print")
+    Text = ("Barcode")
     { Label176 Label
       MoveScaled(1,1,17,3)
       Border = Border.Plain
@@ -285,22 +285,9 @@
       }
     }
     Index = 2
-    Text = ("Miscellaneous")
-    { Label13 Label
-      MoveScaled(1,1,16,3)
-      Border = Border.Plain
-      Text = ("SSH Port")
-    }
-    { btnsshport Button
-      MoveScaled(60,1,12,3)
-      Text = ("Set")
-      Picture = Picture["icon:/small/apply"]
-    }
-    { txtsshport TextBox
-      MoveScaled(18,1,11,3)
-    }
+    Text = ("General")
     { Frame7 Frame
-      MoveScaled(1,24,71,7)
+      MoveScaled(1,2,71,7)
       Text = ("Serial Port")
       Alignment = Align.Left
       { cmbserialdevice ComboBox
@@ -326,21 +313,8 @@
         Text = ("Device")
       }
     }
-    { Label26 Label
-      MoveScaled(1,5,16,3)
-      Border = Border.Plain
-      Text = ("espeak cmd")
-    }
-    { txtexpeak TextBox
-      MoveScaled(18,5,41,3)
-    }
-    { btnespeak Button
-      MoveScaled(60,5,12,3)
-      Text = ("Set")
-      Picture = Picture["icon:/small/apply"]
-    }
     { pnlTelegram Frame
-      MoveScaled(1,32,71,11)
+      MoveScaled(1,36,71,11)
       Text = ("Telegram")
       Alignment = Align.Left
       { Label43 Label
@@ -370,30 +344,26 @@
         Picture = Picture["icon:/small/apply"]
       }
     }
-    { Label76 Label
-      MoveScaled(1,9,16,3)
-      Border = Border.Plain
-      Text = ("camus URL")
-    }
-    { txtcamus TextBox
-      MoveScaled(18,9,41,3)
-    }
-    { btncamus Button
-      MoveScaled(60,9,12,3)
-      Text = ("Set")
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label53 Label
-      MoveScaled(1,13,23,3)
-      Border = Border.Plain
-      Text = ("Download cacert.pem")
-    }
-    { btncertdown ToolButton
-      MoveScaled(24,13,3,3)
-      Picture = Picture["icon:/small/save"]
+    { Frame20 Frame
+      MoveScaled(1,13,73,8)
+      Text = ("Audio Recording")
+      Alignment = Align.Left
+      { Label13 Label
+        MoveScaled(1,3,8,3)
+        Border = Border.Plain
+        Text = ("Format")
+      }
+      { txtaudioformat TextBox
+        MoveScaled(10,3,16,3)
+      }
+      { btnaudioformat Button
+        MoveScaled(59,3,11,3)
+        Text = ("Set")
+        Picture = Picture["icon:/small/apply"]
+      }
     }
     Index = 3
-    Text = ("SMS Function")
+    Text = ("Messaging")
     { Frame3 Frame
       MoveScaled(1,28,70,15)
       Text = ("GSM Modem")
@@ -648,7 +618,7 @@
       }
     }
     { Frame13 Frame
-      MoveScaled(1,32,71,11)
+      MoveScaled(1,36,71,11)
       Text = ("Right Panel LogIn")
       Alignment = Align.Left
       { Label56 Label
@@ -1420,7 +1390,7 @@
       Picture = Picture["icon:/small/apply"]
     }
     Index = 8
-    Text = ("Claim Pages")
+    Text = ("Claim URL")
     { Frame15 Frame
       MoveScaled(1,1,71,11)
       Text = ("HI imis")
@@ -1775,83 +1745,107 @@
     { Label104 Label
       MoveScaled(1,1,13,3)
       Border = Border.Plain
-      Text = ("API URL")
+      Text = ("Generation")
     }
     { Label105 Label
-      MoveScaled(1,9,13,3)
+      MoveScaled(1,13,13,3)
       Border = Border.Plain
-      Text = ("Modality")
+      Text = ("Gen Model")
     }
     { Label106 Label
-      MoveScaled(1,5,13,3)
+      MoveScaled(1,9,13,3)
       Border = Border.Plain
       Text = ("API Key")
     }
-    { cmbAIurl ComboBox
+    { cmbAIgenurl ComboBox
       MoveScaled(15,1,50,3)
     }
-    { cmbAImodel ComboBox
-      MoveScaled(15,9,28,3)
+    { cmbAIgenmodel ComboBox
+      MoveScaled(15,13,28,3)
     }
     { txtAIkey TextBox
-      MoveScaled(15,5,50,3)
+      MoveScaled(15,9,50,3)
     }
-    { btnAIurl ToolButton
+    { btnAIgenurl ToolButton
       MoveScaled(66,1,3,3)
       Picture = Picture["icon:/small/apply"]
     }
-    { btnAImodel ToolButton
-      MoveScaled(66,9,3,3)
+    { btnAIgenmodel ToolButton
+      MoveScaled(66,13,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { btnAIkey ToolButton
-      MoveScaled(66,5,3,3)
+      MoveScaled(66,9,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { btnfillAImodel ToolButton
-      MoveScaled(44,9,3,3)
+      MoveScaled(44,13,3,3)
       Picture = Picture["icon:/small/text-list"]
     }
     { btnAIregister ToolButton
-      MoveScaled(50,9,15,3)
+      MoveScaled(50,13,15,3)
       Font = Font["Underline"]
       Foreground = Color.Royal
       Mouse = Cursor.Pointing
       Text = ("Register")
     }
     { Label107 Label
-      MoveScaled(1,13,13,3)
+      MoveScaled(1,37,13,3)
       Border = Border.Plain
       Text = ("Clinic Query")
     }
     { txtAIqueryclin ButtonBox
-      MoveScaled(15,13,50,3)
+      MoveScaled(15,37,50,3)
       Picture = Picture["icon:/small/file"]
     }
     { btnAIqueryclin ToolButton
-      MoveScaled(66,13,3,3)
+      MoveScaled(66,37,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label108 Label
-      MoveScaled(1,17,13,3)
+      MoveScaled(1,41,13,3)
       Border = Border.Plain
       Text = ("Drug Query")
     }
     { txtAIquerydrug ButtonBox
-      MoveScaled(15,17,50,3)
+      MoveScaled(15,41,50,3)
       Picture = Picture["icon:/small/file"]
     }
     { btnAIquerydrug ToolButton
-      MoveScaled(66,17,3,3)
+      MoveScaled(66,41,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { btnaddAIqueryclin ToolButton
-      MoveScaled(70,13,3,3)
+      MoveScaled(70,37,3,3)
       Picture = Picture["icon:/small/add"]
     }
     { btnaddAIquerydrug ToolButton
-      MoveScaled(70,17,3,3)
+      MoveScaled(70,41,3,3)
       Picture = Picture["icon:/small/add"]
+    }
+    { Label26 Label
+      MoveScaled(1,5,13,3)
+      Border = Border.Plain
+      Text = ("Transcription")
+    }
+    { cmbAItranscurl ComboBox
+      MoveScaled(15,5,50,3)
+    }
+    { btnAItranscurl ToolButton
+      MoveScaled(66,5,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label53 Label
+      MoveScaled(1,17,13,3)
+      Border = Border.Plain
+      Text = ("Transc Model")
+    }
+    { cmbAItransmodel ComboBox
+      MoveScaled(15,17,28,3)
+    }
+    { btnAItransmodel ToolButton
+      MoveScaled(66,17,3,3)
+      Picture = Picture["icon:/small/apply"]
     }
     Index = 0
   }

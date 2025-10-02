@@ -491,9 +491,9 @@ Public Sub btntemplprint_Click()
   For i = 0 To GridView1.Rows.Count - 1
     If GridView1[i, 0].Picture = Picture["icons/checked.png"] Then
       modPatientSub.PrintRegistExtraReport(GridView1[i, 4].Text)
-      If chkmarkdone.Value = True Then
-        modPatientSub.UpdateConsultData(GridView1[i, 8].Text, "Done", "", "")
-      Endif
+      ' If chkmarkdone.Value = True Then
+      '   modPatientSub.UpdateConsultData(GridView1[i, 8].Text, GridView1[i, 4].Text, "Done", "", "")
+      ' Endif
     Endif
   Next
   FillPatDateGrid()

@@ -1,8 +1,8 @@
 ' Gambas class file
 
 Private $encid As String
-Private $examList As String[]
 Private AppFactor As Float
+Private $sVitalsVar As Variant[]
 
 Private aWebFrame As New Object[50]
 Private aIndexLabel As New Object[50]
@@ -17,11 +17,6 @@ Private aDichoValue As New Object[50]
 Private aBlankBox As New Object[50]
 Private aHelpButton As New Object[50]
 
-Private $xOption As String[]
-Private $xOpList As String[]
-Private $xSysCons As String[]
-Private $xType As String[]
-
 Public Sub _new(encid As String)
 
   $encid = encid
@@ -31,200 +26,156 @@ End
 Public Sub Form_Open()
 
   txtname.Text = modPatient.GetPatientNameByEnc($encid)
-  $examList = modClinic.GetFullVitalList($encid)
+  $sVitalsVar = modPathoSub.GetAllEssentialExams($encid)
   AppFactor = modBasic.$AppScaleFactor
-  LoadControlsWeb()
+  ' Frame1.Height = ($sVitalsVar.Count * 40 + 50) * AppFactor
+  GetControlParams()
 
 End
 
-Private Sub LoadControlsWeb()
+Private Sub GetControlParams()
 
   Dim i As Integer
-  Dim res As Result
-  Dim xopList As String[]
   Dim xlimit As Float[]
 
-  $xOption = New String[]
-  $xOpList = New String[]
-  $xSysCons = New String[]
-  $xType = New String[]
+  For i = 0 To $sVitalsVar.Count - 1
+    aWebFrame[i] = New HBox(Frame1)
+    aIndexLabel[i] = New Label(aWebFrame[i])
+    aNameLabel[i] = New Label(aWebFrame[i])
+    aCheckAbn[i] = New CheckBox(aWebFrame[i])
+    If $sVitalsVar[i]["DataType"] = "Quantitative" Then
+      aQuantiBox[i] = New ValueBox(aWebFrame[i]) As "QuantiGroup"
+      aMinBox[i] = New ValueBox(aWebFrame[i])
+      aMaxBox[i] = New ValueBox(aWebFrame[i])
+    Else
+      Select $sVitalsVar[i]["OptionType"]
+        Case "Single Selection"
+          aComboBox[i] = New ComboBox(aWebFrame[i])
+        Case "Dichotomous"
+          aDichoValue[i] = New DichotomousValue(aWebFrame[i])
+        Case "Clinical Scale"
+          aQualiBox[i] = New TextBox(aWebFrame[i])
+          aQuantiBox[i] = New ValueBox(aWebFrame[i])
+          aHelpButton[i] = New Button(aWebFrame[i]) As "ButtonBoxgroup"
+        Case Else
+          aQualiBox[i] = New TextBox(aWebFrame[i])
+      End Select
+    Endif
+    aBlankBox[i] = New Label(aWebFrame[i])
 
-  Frame1.Height = ($examList.Count * 35 + 30) * AppFactor
+    ''create controls
+    With aWebFrame[i]
+      .Height = 30 * AppFactor
+      .Width = Frame1.Width - 5
+    End With
 
-  For i = 0 To $examList.Count - 1
-    If i < 49 Then
+    ''create index label
+    With aIndexLabel[i]
+      .Width = 25 * AppFactor
+      .Height = 30 * AppFactor
+      .Text = i + 1
+      .Visible = False
+      .Tag = $sVitalsVar[i]["SysConstant"]
+    End With
+    ''create Name Label
+    With aNameLabel[i]
+      .Width = 225 * AppFactor
+      .Height = 30 * AppFactor
+      .Text = $sVitalsVar[i]["ExamName"]
+      .Tag = i
+    End With
 
-      res = modDatabase.$myConn.Exec("select fldexamid,fldtype,fldoption,fldsysconst,fldcritical from tblexam where fldexamid=&1", $examList[i])
-      If res.Available Then
-        If res["fldoption"] = "Clinical Scale" Then
-          xopList = modAllExam.GetCLinicalScaleOptions("Exam", $examList[i])
-        Else
-          xopList = modAllExam.SelectExamOptionList("Exam", $examList[i])
+    ''Value entry
+    If $sVitalsVar[i]["DataType"] = "Quantitative" Then
+      xlimit = modClinic.GetBothQuantiExamVal($sVitalsVar[i]["ExamName"], $encid)
+      With aCheckAbn[i]
+        .Width = 75 * AppFactor
+        .Height = 30 * AppFactor
+        .Text = "Abn"
+        .Enabled = False
+        .Tag = i
+      End With
+      With aQuantiBox[i]
+        .Expand = True
+        .Height = 30 * AppFactor
+        .Tag = i
+      End With
+      With aMinBox[i]
+        .Width = 75 * AppFactor
+        .Height = 30 * AppFactor
+        If xlimit Then
+          .Value = xlimit[0]
         Endif
-
-        If res["fldoption"] Then
-          $xOption.Add(res["fldoption"])
-        Else
-          $xOption.Add("__")
+        .Enabled = False
+        .Tag = i
+      End With
+      With aMaxBox[i]
+        .Width = 75 * AppFactor
+        .Height = 30 * AppFactor
+        If xlimit Then
+          .Value = xlimit[1]
         Endif
-        If xopList And If xopList.Count Then
-          $xOpList.Add(xopList.Join(";"))
-        Else
-          $xOpList.Add("__")
-        Endif
-        If res["fldsysconst"] Then
-          $xSysCons.Add(res["fldsysconst"])
-        Else
-          $xSysCons.Add("__")
-        Endif
-        If res["fldtype"] Then
-          $xType.Add(res["fldtype"])
-        Else
-          $xType.Add("__")
-        Endif
+        .Enabled = False
+        .Tag = i
+      End With
 
-        aWebFrame[i] = New HBox(Frame1)
-        aIndexLabel[i] = New Label(aWebFrame[i])
-        aNameLabel[i] = New Label(aWebFrame[i])
-        aCheckAbn[i] = New CheckBox(aWebFrame[i])
-        If res["fldtype"] = "Quantitative" Then
-          aQuantiBox[i] = New ValueBox(aWebFrame[i]) As "QuantiGroup"
-          aMinBox[i] = New ValueBox(aWebFrame[i])
-          aMaxBox[i] = New ValueBox(aWebFrame[i])
-        Else
-          Select res["fldoption"]
-            Case "Single Selection"
-              aComboBox[i] = New ComboBox(aWebFrame[i])
-            Case "Dichotomous"
-              aDichoValue[i] = New DichotomousValue(aWebFrame[i])
-            Case "Clinical Scale"
-              aQualiBox[i] = New TextBox(aWebFrame[i])
-              aQuantiBox[i] = New ValueBox(aWebFrame[i])
-              aHelpButton[i] = New Button(aWebFrame[i]) As "ButtonBoxgroup"
-            Case Else
-              aQualiBox[i] = New TextBox(aWebFrame[i])
-          End Select
-        Endif
-        aBlankBox[i] = New Label(aWebFrame[i])
+    Else
+      With aCheckAbn[i]
+        .Width = 50 * AppFactor
+        .Height = 30 * AppFactor
+        .Tag = i
+      End With
 
-        With aWebFrame[i]
-          .Height = 30 * AppFactor
-        End With
-
-        ''create index label
-        With aIndexLabel[i]
-          .Width = 25 * AppFactor
-          .Height = 30 * AppFactor
-          .Text = i + 1
-          .Visible = False
-          .Tag = res["fldsysconst"]
-        End With
-        ''create Name Label
-        With aNameLabel[i]
-          .Width = 225 * AppFactor
-          .Height = 30 * AppFactor
-          .Text = $examList[i]
-          .Tag = i
-        End With
-
-        ''Value entry
-        If res["fldtype"] = "Quantitative" Then
-          xlimit = modClinic.GetBothQuantiExamVal($examList[i], $encid)
-          With aCheckAbn[i]
-            .Width = 75 * AppFactor
+      Select $sVitalsVar[i]["OptionType"]
+        Case "Single Selection"
+          With aComboBox[i]
+            .Expand = True
             .Height = 30 * AppFactor
-            .Text = "Abn"
-            .Enabled = False
+            .ReadOnly = False
+            .List = Split($sVitalsVar[i]["OptionList"], ";")
             .Tag = i
           End With
-          With aQuantiBox[i]
+
+        Case "Dichotomous"
+          With aDichoValue[i]
+            .Expand = True
+            .Height = 30 * AppFactor
+            .List = Split($sVitalsVar[i]["OptionList"], ";")
+            .Tag = i
+          End With
+
+        Case "Clinical Scale"
+          With aQualiBox[i]
             .Expand = True
             .Height = 30 * AppFactor
             .Tag = i
           End With
-          With aMinBox[i]
-            .Width = 75 * AppFactor
+          With aQuantiBox[i]
+            .Width = 45 * AppFactor
             .Height = 30 * AppFactor
-            If xlimit Then
-              .Value = xlimit[0]
-            Endif
-            .Enabled = False
             .Tag = i
           End With
-          With aMaxBox[i]
-            .Width = 75 * AppFactor
+          With aHelpButton[i]
+            .Width = 30 * AppFactor
             .Height = 30 * AppFactor
-            If xlimit Then
-              .Value = xlimit[1]
-            Endif
-            .Enabled = False
             .Tag = i
+            .Text = ""
+            .Picture = Picture["icon:/small/info"]
           End With
 
-        Else
-          With aCheckAbn[i]
-            .Width = 50 * AppFactor
+        Case Else
+          With aQualiBox[i]
+            .Expand = True
             .Height = 30 * AppFactor
             .Tag = i
           End With
 
-          Select res["fldoption"]
-
-            Case "Single Selection"
-              With aComboBox[i]
-                .Expand = True
-                .Height = 30 * AppFactor
-                .ReadOnly = False
-                .List = xopList
-                .Tag = i
-              End With
-
-            Case "Dichotomous"
-              With aDichoValue[i]
-                .Expand = True
-                .Height = 30 * AppFactor
-                .List = xopList
-                .Tag = i
-              End With
-
-            Case "Clinical Scale"
-              With aQualiBox[i]
-                .Expand = True
-                .Height = 30 * AppFactor
-                .Tag = i
-              End With
-              With aQuantiBox[i]
-                .Width = 45 * AppFactor
-                .Height = 30 * AppFactor
-                .Tag = i
-              End With
-              With aHelpButton[i]
-                .Width = 30 * AppFactor
-                .Height = 30 * AppFactor
-                .Tag = i
-                .Text = ""
-                .Picture = Picture["icon:/small/info"]
-              End With
-
-            Case Else
-              With aQualiBox[i]
-                .Expand = True
-                .Height = 30 * AppFactor
-                .Tag = i
-              End With
-
-          End Select
-        Endif
-        With aBlankBox[i]
-          .Width = 25 * AppFactor
-          .Height = 30 * AppFactor
-        End With
-
-      Else
-        Message.Info("Couldn't set controls for " & $examList[i])
-      Endif
-
+      End Select
     Endif
+    With aBlankBox[i]
+      .Width = 25 * AppFactor
+      .Height = 30 * AppFactor
+    End With
   Next
 
 End
@@ -236,10 +187,10 @@ Public Sub ButtonBoxgroup_Click()
   Dim xopt As String[]
 
   i = Last.Tag
-  If $xOpList[i] Then
-    xopt = Split($xOpList[i], ";")
-    If $xOption[i] = "Clinical Scale" Then
-      sVal = SubChoose(xopt, "Clinical Scale", $examList[i])
+  If $sVitalsVar[i]["OptionList"] Then
+    xopt = Split($sVitalsVar[i]["OptionList"], ";")
+    If $sVitalsVar[i]["OptionType"] = "Clinical Scale" Then
+      sVal = SubChoose(xopt, "Clinical Scale", $sVitalsVar[i]["ExamName"])
       If sVal Then
         aQuantiBox[i].Value = sVal[0]
         aQualiBox[i].Text = sVal[1]
@@ -282,35 +233,35 @@ Public Sub btnsaveall_Click()
 
   Dim i As Integer
 
-  For i = 0 To $examList.Count - 1
+  For i = 0 To $sVitalsVar.Count - 1
     If i < 49 Then
-      If $xType[i] = "Quantitative" Then
+      If $sVitalsVar[i]["DataType"] = "Quantitative" Then
         If aQuantiBox[i].Value Then
-          modClinSub.AddQuantiData($encid, "", $examList[i], $xOption[i], aQuantiBox[i].Value, aCheckAbn[i].Value, "Essential Examinations", aIndexLabel[i].Tag)
+          modClinSub.AddQuantiData($encid, "", $sVitalsVar[i]["ExamName"], $sVitalsVar[i]["OptionType"], aQuantiBox[i].Value, aCheckAbn[i].Value, "Essential Examinations", $sVitalsVar[i]["SysConstant"])
           aQuantiBox[i].Value = 0
           aQuantiBox[i].ReadOnly = True
         Endif
 
       Else
-        If $xOption[i] = "Single Selection" Then
+        If $sVitalsVar[i]["OptionType"] = "Single Selection" Then
           If aComboBox[i].Text Then
-            modClinSub.AddQualiData($encid, "", $examList[i], $xOption[i], aComboBox[i].Text, aCheckAbn[i].Value, "Essential Examinations", aIndexLabel[i].Tag)
+            modClinSub.AddQualiData($encid, "", $sVitalsVar[i]["ExamName"], $sVitalsVar[i]["OptionType"], aComboBox[i].Text, aCheckAbn[i].Value, "Essential Examinations", $sVitalsVar[i]["SysConstant"])
             aComboBox[i].Text = ""
           Endif
-        Else If $xOption[i] = "Dichotomous" Then
+        Else If $sVitalsVar[i]["OptionType"] = "Dichotomous" Then
           If aDichoValue[i].Value Then
-            modClinSub.AddQualiData($encid, "", $examList[i], $xOption[i], aDichoValue[i].Value, aCheckAbn[i].Value, "Essential Examinations", aIndexLabel[i].Tag)
+            modClinSub.AddQualiData($encid, "", $sVitalsVar[i]["ExamName"], $sVitalsVar[i]["OptionType"], aDichoValue[i].Value, aCheckAbn[i].Value, "Essential Examinations", $sVitalsVar[i]["SysConstant"])
           Endif
-        Else If $xOption[i] = "Clinical Scale" Then
+        Else If $sVitalsVar[i]["OptionType"] = "Clinical Scale" Then
           If aQualiBox[i].Text Then
-            modClinSub.AddClinicExam($encid, "", $examList[i], $xOption[i], aQualiBox[i].Text, aQuantiBox[i].Value, aCheckAbn[i].Value, "Essential Examinations", aIndexLabel[i].Tag, "Regular")     ''
+            modClinSub.AddClinicExam($encid, "", $sVitalsVar[i]["ExamName"], $sVitalsVar[i]["OptionType"], aQualiBox[i].Text, aQuantiBox[i].Value, aCheckAbn[i].Value, "Essential Examinations", $sVitalsVar[i]["SysConstant"], "Regular")     ''
             aQualiBox[i].Text = ""
             aQuantiBox[i].Value = 0
             aQuantiBox[i].ReadOnly = True
           Endif
         Else
           If aQualiBox[i].Text Then
-            modClinSub.AddQualiData($encid, "", $examList[i], $xOption[i], aQualiBox[i].Text, aCheckAbn[i].Value, "Essential Examinations", aIndexLabel[i].Tag)
+            modClinSub.AddQualiData($encid, "", $sVitalsVar[i]["ExamName"], $sVitalsVar[i]["OptionType"], aQualiBox[i].Text, aCheckAbn[i].Value, "Essential Examinations", $sVitalsVar[i]["SysConstant"])
             aQualiBox[i].Text = ""
             aQualiBox[i].ReadOnly = True
           Endif

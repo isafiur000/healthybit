@@ -33,6 +33,39 @@
     MoveScaled(0,0,121,69)
     { Panel3 Panel
       MoveScaled(1,0,119,13)
+      { Panel5 Panel
+        MoveScaled(0,8,119,5)
+        { cmbcomroute ComboBox
+          MoveScaled(4,1,12,3)
+        }
+        { cmbcommedicine ComboBox
+          MoveScaled(17,1,55,3)
+          Sorted = True
+        }
+        { cmbcombatch ComboBox
+          MoveScaled(73,1,11,3)
+          Sorted = True
+        }
+        { txtcomstatus ValueBox
+          MoveScaled(85,1,3,3)
+          Enabled = False
+        }
+        { lblcomdate DateBox
+          MoveScaled(88,1,14,3)
+          Enabled = False
+        }
+        { txtcommax ValueBox
+          MoveScaled(103,1,7,3)
+          Enabled = False
+        }
+        { txtcomqty ValueBox
+          MoveScaled(111,1,7,3)
+        }
+        { chkcomsave CheckBox
+          MoveScaled(1,1,2.625,2.5)
+          Tag = "Auto"
+        }
+      }
       { cmbcomtaget ComboBox
         MoveScaled(13,1,21,3)
         Sorted = True
@@ -49,24 +82,6 @@
       }
       { txtcomment TextBox
         MoveScaled(48,5,62,3)
-      }
-      { cmbcomroute ComboBox
-        MoveScaled(4,9,12,3)
-      }
-      { cmbcommedicine ComboBox
-        MoveScaled(17,9,55,3)
-        Sorted = True
-      }
-      { cmbcombatch ComboBox
-        MoveScaled(73,9,11,3)
-        Sorted = True
-      }
-      { txtcomqty ValueBox
-        MoveScaled(111,9,7,3)
-      }
-      { chkcomsave CheckBox
-        MoveScaled(1,9,2.625,2.5)
-        Tag = "Auto"
       }
       { Label4 Label
         MoveScaled(1,1,8,3)
@@ -89,18 +104,6 @@
           MoveScaled(11,0,10,3)
           Text = ("Brand")
         }
-      }
-      { txtcomstatus ValueBox
-        MoveScaled(84.5,9,3,3)
-        Enabled = False
-      }
-      { lblcomdate DateBox
-        MoveScaled(88,9,14,3)
-        Enabled = False
-      }
-      { txtcommax ValueBox
-        MoveScaled(103,9,7,3)
-        Enabled = False
       }
       { btntarg ToolButton
         MoveScaled(9,1,3,3)

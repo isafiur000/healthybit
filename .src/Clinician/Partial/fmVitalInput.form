@@ -1,0 +1,84 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,105,47)
+  Expand = True
+  Arrangement = Arrange.Vertical
+  { mnufile Menu
+    Visible = False
+    { mnudel Menu
+      Text = ("Delete")
+    }
+  }
+  { Panel4 Panel
+    MoveScaled(0,0,103,42)
+    Expand = True
+    Arrangement = Arrange.Horizontal
+    { Panel1 Panel
+      MoveScaled(1,0,28,33)
+      Arrangement = Arrange.Vertical
+      { ListBox1 ListBox
+        MoveScaled(0,1,27,21)
+        Expand = True
+        ScrollBar = Scroll.Both
+      }
+      { Panel6 Panel
+        MoveScaled(0,22,27,4)
+        Visible = False
+        { txtmin ValueBox
+          MoveScaled(0,0,3,3)
+          Visible = False
+        }
+        { txtmax ValueBox
+          MoveScaled(3,0,3,3)
+          Visible = False
+        }
+        { chkabnormal CheckBox
+          MoveScaled(6,0,3,3)
+          Visible = False
+        }
+      }
+    }
+    { Panel5 Panel
+      MoveScaled(29,1,72,31)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { Panel2 Panel
+        MoveScaled(0,0,72,4)
+        { txtquali ComboBox
+          MoveScaled(40,0,20,3.5)
+        }
+        { txtexamval ValueBox
+          MoveScaled(40,0,11,3.5)
+          Text = ("ValueBox1")
+        }
+        { lblunit Label
+          MoveScaled(51,0,9,3.5)
+          Border = Border.Plain
+        }
+        { btnsave Button
+          MoveScaled(61,0,10,3.5)
+          Tag = "Auto"
+          Text = Shortcut(("Save"), "S")
+          Picture = Picture["icon:/small/add"]
+        }
+        { lblexamname Label
+          MoveScaled(0,0.25,39,3.5)
+          Border = Border.Plain
+        }
+      }
+      { GridView1 GridView
+        MoveScaled(0,5,71,11)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Both
+        ScrollBar = Scroll.Vertical
+        AutoResize = False
+      }
+      { pnlquanti Panel
+        MoveScaled(40,5,15,15)
+        Visible = False
+      }
+    }
+  }
+}

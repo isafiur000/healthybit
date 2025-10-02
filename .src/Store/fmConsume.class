@@ -231,9 +231,9 @@ Public Sub cmbcommedicine_GotFocus()
 
       If modBasic.$AppCacheGridViewData = "No" Then
         res = modStock.FillMedicinesTransferComboResult(cmbcomroute.Text, brandOrGeneric, modBasic.$compID)
-        cmbcommedicine.Text = GridViewNew("Select Particulars", modControlSub.GetDirectFillresult(res), False, cmbcommedicine, Panel3.Height + GridView1.Height - cmbcommedicine.Top)
+        cmbcommedicine.Text = GridViewNew("Select Particulars", modControlSub.GetDirectFillresult(res), False, cmbcommedicine, GridView1.Height)
       Else
-        cmbcommedicine.Text = GridViewNew("Select Particulars", GetCategoryArray(cmbcomroute.Text, brandOrGeneric), False, cmbcommedicine, Panel3.Height + GridView1.Height - cmbcommedicine.Top)
+        cmbcommedicine.Text = GridViewNew("Select Particulars", GetCategoryArray(cmbcomroute.Text, brandOrGeneric), False, cmbcommedicine, GridView1.Height)
       Endif
 
       cmbcombatch.SetFocus

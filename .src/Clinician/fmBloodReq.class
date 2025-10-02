@@ -29,8 +29,8 @@ Public Sub Form_Open()
 
   cmbitem.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(flditem) as col from tblbloodstore"))
   cmbgroup.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldgroup) as col from tblbloodstore"))
-  FillRequestGrid()
   CompleteGrid()
+  FillRequestGrid()
 
 End
 
@@ -66,6 +66,7 @@ Public Sub btnshow_Click()
     res = modDatabase.$myConn.Exec("select flditemcode from tblbloodstore where flditem=&1 and fldgroup=&2", cmbitem.Text, cmbgroup.Text)
     If res.Available Then
       lblcode.Text = res["flditemcode"]
+      txtqty.ReadOnly = False
     Else
       Message.Warning("Item not coded", "OK")
     Endif
@@ -179,21 +180,26 @@ Private Sub CompleteGrid()
 
   Dim sql As String
 
-  sql = "select fldid,fldtime,flditem,fldcode from tblpatmeditem where fldencounterval=&1 and fldcategory=&2 and fldorder=&3 and fldsave=&4"
-  $rData2 = modDatabase.$myConn.Exec(sql, $encid, "Blood", "Done", True)
+  sql = "select fldid,fldcode,flditem,fldid,fldfirsttime,fldsecondtime,fldcomment,fldexpiry from tblmedinventory where fldreceiver=&1 and fldcategory=&2 and (fldstatus=&3 or fldstatus=&4)"            '
+  $rData2 = modDatabase.$myConn.Exec(sql, $encid, "Blood", "Transferred", "Administered")
   $aMyFields2 = New String[]
   modGridView.ReadSmallData(GridView2, $rData2, $aMyFields2)
 
   With GridView2
     .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
-    .Columns[1].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 100 * modBasic.$AppWidthRatio
     .Columns[2].Width = 275 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 35 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 1
+    .Columns[5].Width = 1
+    .Columns[6].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[7].Width = 150 * modBasic.$AppWidthRatio
 
-    .Columns[1].Text = "DateTime"
+    .Columns[1].Text = "Bag No"
     .Columns[2].Text = "Particulars"
-    .Columns[3].Text = "Code"
+    .Columns[6].Text = "Comment"
+    .Columns[7].Text = "Expiry"
   End With
 
 End
@@ -202,10 +208,81 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
 
   $rData2.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView2, Row)
-  If Column = 1 Then
+  If Column = 3 Then
+    GridView2.Data.Picture = Picture[GetStateIcon($rData2[$aMyFields2[Column]])]
+    GridView2.Data.Alignment = Align.Center
+    GridView2.Data.Text = ""
+  Else If Column = 7 Then
     GridView2.Data.Text = modReportVar.GetDateTimeReport($rData2[$aMyFields2[Column]], gb.GeneralDate)
   Else
     GridView2.Data.Text = $rData2[$aMyFields2[Column]]
+  Endif
+
+End
+
+Private Function GetStateIcon(sIdx As Long) As String
+
+  Dim res As Result
+  Dim xicon As String
+
+  res = modDatabase.$myConn.Exec("select fldfirsttime,fldsecondtime from tblmedinventory where fldid=&1", sIdx)
+  If res.Available Then
+    If res["fldfirsttime"] And If res["fldsecondtime"] Then
+      xicon = "icon:/tiny/lock"
+    Else If Not res["fldfirsttime"] And If Not res["fldsecondtime"] Then
+      xicon = "icon:/tiny/play"
+    Else
+      xicon = "icon:/tiny/stop"
+    Endif
+  Else
+    xicon = ""
+  Endif
+
+  Return xicon
+
+End
+
+Public Sub GridView2_Click()
+
+  Dim res As Result
+
+  If GridView2.Column = 3 Then
+    res = modDatabase.$myConn.Edit("tblmedinventory", "fldid=&1", GridView2[GridView2.Row, 0].Text)
+    If res.Available Then
+      If GridView2[GridView2.Row, 3].Picture = Picture["icon:/tiny/play"] Then
+        res["fldfirsttime"] = Now()
+        res["fldstatus"] = "Administered"
+        res["flduserid_start"] = modBasic.$lbluser
+        res["fldcomp_start"] = modBasic.$compID
+        res["xyz"] = False
+        res.Update
+        GridView2[GridView2.Row, 3].Picture = Picture["icon:/tiny/stop"]
+      Else If GridView2[GridView2.Row, 3].Picture = Picture["icon:/tiny/stop"] Then
+        res["fldsecondtime"] = Now()
+        res["xyz"] = False
+        GridView2[GridView2.Row, 3].Picture = Picture["icon:/tiny/lock"]
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub GridView2_Menu()
+
+  mnuhide.Popup
+
+End
+
+Public Sub mnuchange_Click()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Edit("tblmedinventory", "fldid=&1 and flduserid_start IS NULL", GridView2[GridView2.Row, 0].Text)
+  If res.Available Then
+    res["fldstatus"] = "Returned"
+    res["xyz"] = False
+    res.Update
+    CompleteGrid()
   Endif
 
 End

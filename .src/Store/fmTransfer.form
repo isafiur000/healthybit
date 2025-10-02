@@ -64,23 +64,6 @@
         { txtcomment TextBox
           MoveScaled(58,5,52,3)
         }
-        { cmbroute ComboBox
-          MoveScaled(4,9,10.5,3)
-        }
-        { cmbmedicine ComboBox
-          MoveScaled(15,9,57,3)
-          Sorted = True
-        }
-        { cmbbatch ComboBox
-          MoveScaled(72.5,9,13,3)
-        }
-        { txtqty ValueBox
-          MoveScaled(111,9,7,3)
-        }
-        { chksave CheckBox
-          MoveScaled(1,9,2.625,2.5)
-          Tag = "Auto"
-        }
         { lblcomp Label
           MoveScaled(48,1,19,3)
           Border = Border.Plain
@@ -89,18 +72,6 @@
           MoveScaled(1,1,11,3)
           Border = Border.Plain
           Text = ("Send To")
-        }
-        { txtstatus ValueBox
-          MoveScaled(85.75,9,3,3)
-          Enabled = False
-        }
-        { lbldate DateBox
-          MoveScaled(89,9,14,3)
-          Enabled = False
-        }
-        { txtmax ValueBox
-          MoveScaled(103.5,9,7,3)
-          Enabled = False
         }
         { lblcode Label
           MoveScaled(111,5,7,3)
@@ -123,7 +94,38 @@
         { btnshow Button
           MoveScaled(35,1,12,3)
           Text = ("Show")
-          Default = True
+        }
+        { Panel10 Panel
+          MoveScaled(0,8,118,4.5)
+          { cmbroute ComboBox
+            MoveScaled(4,1,10.5,3)
+          }
+          { cmbmedicine ComboBox
+            MoveScaled(15,1,57,3)
+            Sorted = True
+          }
+          { cmbbatch ComboBox
+            MoveScaled(72.5,1,13,3)
+          }
+          { txtstatus ValueBox
+            MoveScaled(86,1,3,3)
+            Enabled = False
+          }
+          { lbldate DateBox
+            MoveScaled(89,1,14,3)
+            Enabled = False
+          }
+          { txtmax ValueBox
+            MoveScaled(103,1,7,3)
+            Enabled = False
+          }
+          { txtqty ValueBox
+            MoveScaled(110,1,7,3)
+          }
+          { chksave CheckBox
+            MoveScaled(1,1,2.625,2.5)
+            Tag = "Auto"
+          }
         }
       }
       { GridView1 GridView

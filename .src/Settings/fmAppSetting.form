@@ -42,7 +42,7 @@
   }
   { IconPanel1 IconPanel
     MoveScaled(1,5,89,53)
-    Count = 8
+    Count = 9
     Index = 0
     Text = ("Desk & Form")
     { Label1 Label
@@ -682,24 +682,6 @@
       MoveScaled(68,5,3,3)
       Picture = Picture["icon:/small/apply"]
     }
-    { Label33 Label
-      MoveScaled(1,33,15,3)
-      Border = Border.Plain
-      Text = ("GnuPG Key")
-    }
-    { cmbgnupg ComboBox
-      MoveScaled(17,33,40,3)
-      ToolTip = ("GnuPG Key to digitally sign PDF documents.")
-    }
-    { btngnupg ToolButton
-      MoveScaled(68,33,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { chkgpg CheckBox
-      MoveScaled(58,33,9,3)
-      ToolTip = ("Enable GnuPG Key signing")
-      Text = ("Enable")
-    }
     { Label38 Label
       MoveScaled(1,25,15,3)
       Border = Border.Plain
@@ -766,74 +748,48 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label19 Label
-      MoveScaled(1,37,15,3)
+      MoveScaled(1,29,15,3)
       Border = Border.Plain
       Text = ("Virt Keyboard")
     }
     { txtkeyboard TextBox
-      MoveScaled(17,37,40,3)
+      MoveScaled(17,29,40,3)
     }
     { txtshellkey TextBox
-      MoveScaled(58,37,9,3)
+      MoveScaled(58,29,9,3)
       ToolTip = ("Shell to run the script")
     }
     { btnkeyboard ToolButton
-      MoveScaled(68,37,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label83 Label
-      MoveScaled(1,29,15,3)
-      Border = Border.Plain
-      Text = ("Browser URL")
-    }
-    { txtbrowserurl TextBox
-      MoveScaled(17,29,50,3)
-    }
-    { btnbrowserurl ToolButton
       MoveScaled(68,29,3,3)
       Picture = Picture["icon:/small/apply"]
     }
-    { Label84 Label
-      MoveScaled(1,21,15,3)
-      Border = Border.Plain
-      Text = ("CA Certificate")
-    }
-    { btncurlcert ToolButton
-      MoveScaled(68,21,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { txtcurlcert ButtonBox
-      MoveScaled(17,21,50,3)
-      ToolTip = ("Path required for Curl Certificate\nDefault: /etc/cacert.pem")
-      Picture = Picture["icon:/small/select"]
-    }
-    { Label90 Label
-      MoveScaled(1,41,15,3)
-      Border = Border.Plain
-      Text = ("Pat Portal URL")
-    }
-    { txtpatportal TextBox
-      MoveScaled(17,41,50,3)
-    }
-    { btnpatportal ToolButton
-      MoveScaled(68,41,3.375,3)
-      Picture = Picture["icon:/small/apply"]
-    }
     { Label95 Label
-      MoveScaled(1,45,15,3)
+      MoveScaled(1,21,15,3)
       Border = Border.Plain
       Text = ("Custom Viewer")
     }
     { btndefaultview ToolButton
-      MoveScaled(68,45,3.375,3)
+      MoveScaled(68,21,3.375,3)
       Picture = Picture["icon:/small/apply"]
     }
     { txtdefviewshell TextBox
-      MoveScaled(58,45,9,3)
+      MoveScaled(58,21,9,3)
       ToolTip = ("Shell to run the script")
     }
     { txtdefviewpath TextBox
-      MoveScaled(17,45,40,3)
+      MoveScaled(17,21,40,3)
+    }
+    { Label102 Label
+      MoveScaled(1,33,15,3)
+      Border = Border.Plain
+      Text = ("espeak cmd")
+    }
+    { txtexpeak TextBox
+      MoveScaled(17,33,50,3)
+    }
+    { btnespeak ToolButton
+      MoveScaled(68,33,3,3)
+      Picture = Picture["icon:/small/apply"]
     }
     Index = 4
     Text = ("Options")
@@ -987,11 +943,10 @@
     { Label78 Label
       MoveScaled(1,37,14,3)
       Border = Border.Plain
-      Text = ("Wrap RichText")
+      Text = ("Wrap Grid Text")
     }
     { cmbrowheight ComboBox
       MoveScaled(16,37,13,3)
-      ToolTip = ("Select if auto increasing integer is generated on double click of sample ID textbox")
     }
     { btnrwheight ToolButton
       MoveScaled(30,37,3,3)
@@ -1000,7 +955,7 @@
     { Label80 Label
       MoveScaled(1,29,14,3)
       Border = Border.Plain
-      Text = ("Auto Refresh")
+      Text = ("Auto RichText")
     }
     { chkautorefresh CheckBox
       MoveScaled(16,29,10,3)
@@ -1346,95 +1301,203 @@
       MoveScaled(60,5,3,3)
       Picture = Picture["icon:/small/apply"]
     }
+    { Label105 Label
+      MoveScaled(1,21,21,3)
+      Border = Border.Plain
+      Text = ("AI Support")
+    }
+    { cmbAisupport ComboBox
+      MoveScaled(23,21,20,3)
+    }
+    { btnAIsupport ToolButton
+      MoveScaled(44,21,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
     Index = 7
+    Text = ("URL")
+    { Label83 Label
+      MoveScaled(1,1,15,3)
+      Border = Border.Plain
+      Text = ("Browser URL")
+    }
+    { txtbrowserurl TextBox
+      MoveScaled(17,1,50,3)
+    }
+    { btnbrowserurl ToolButton
+      MoveScaled(68,1,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label90 Label
+      MoveScaled(1,5,15,3)
+      Border = Border.Plain
+      Text = ("Pat Portal URL")
+    }
+    { txtpatportal TextBox
+      MoveScaled(17,5,50,3)
+    }
+    { btnpatportal ToolButton
+      MoveScaled(68,5,3.375,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label104 Label
+      MoveScaled(1,9,15,3)
+      Border = Border.Plain
+      Text = ("camus URL")
+    }
+    { txtcamus TextBox
+      MoveScaled(17,9,50,3)
+    }
+    { btncamus ToolButton
+      MoveScaled(68,9,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Frame3 Frame
+      MoveScaled(1,36,71,15)
+      Text = ("Security")
+      Alignment = Align.Left
+      { btncurlcert ToolButton
+        MoveScaled(66,7,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { Label84 Label
+        MoveScaled(1,7,15,3)
+        Border = Border.Plain
+        Text = ("CA Certificate")
+      }
+      { txtcurlcert ButtonBox
+        MoveScaled(16,7,49,3)
+        ToolTip = ("Path required for Curl Certificate\nDefault: /etc/cacert.pem")
+        Picture = Picture["icon:/small/select"]
+      }
+      { Label103 Label
+        MoveScaled(45,11,20,3)
+        Border = Border.Plain
+        Text = ("Download cacert.pem")
+      }
+      { btncertdown ToolButton
+        MoveScaled(66,11,3,3)
+        Picture = Picture["icon:/small/save"]
+      }
+      { Label33 Label
+        MoveScaled(1,3,15,3)
+        Border = Border.Plain
+        Text = ("GnuPG Key")
+      }
+      { cmbgnupg ComboBox
+        MoveScaled(16,3,38,3)
+        ToolTip = ("GnuPG Key to digitally sign PDF documents.")
+      }
+      { chkgpg CheckBox
+        MoveScaled(56,3,9,3)
+        ToolTip = ("Enable GnuPG Key signing")
+        Text = ("Enable")
+      }
+      { btngnupg ToolButton
+        MoveScaled(66,3,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { Label53 Label
+        MoveScaled(1,11,15,3)
+        Border = Border.Plain
+        Text = ("SSH Port")
+      }
+      { txtsshport TextBox
+        MoveScaled(16,11,11,3)
+      }
+      { btnsshport ToolButton
+        MoveScaled(28,11,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+    }
+    Index = 8
     Text = ("App Cache")
     { chkpatdemoghraphic CheckBox
-      MoveScaled(36,17,29,3)
+      MoveScaled(35,16,29,3)
       Text = ("Patient Demographics")
     }
     { chkpatvisit CheckBox
-      MoveScaled(36,20,29,3)
+      MoveScaled(35,19,29,3)
       Text = ("Patient Visits")
     }
     { chklabnconst CheckBox
-      MoveScaled(2,2,29,3)
+      MoveScaled(1,1,29,3)
       Text = ("Laboratory Constants")
     }
     { chktestmodify CheckBox
-      MoveScaled(36,5,29,3)
+      MoveScaled(35,4,29,3)
       Text = ("Test value modifiers")
     }
     { chkexamconst CheckBox
-      MoveScaled(2,5,29,3)
+      MoveScaled(1,4,29,3)
       Text = ("Examination Constants")
     }
     { chkexammodify CheckBox
-      MoveScaled(36,8,29,3)
+      MoveScaled(35,7,29,3)
       Text = ("Exam value modifiers")
     }
     { chkradioconst CheckBox
-      MoveScaled(2,8,29,3)
+      MoveScaled(1,7,29,3)
       Text = ("Radiology constants")
     }
     { chkpattest CheckBox
-      MoveScaled(36,11,29,3)
+      MoveScaled(35,10,29,3)
       Text = ("Patient Lab Values")
     }
     { chkpathconst CheckBox
-      MoveScaled(2,11,29,3)
+      MoveScaled(1,10,29,3)
       Text = ("Pathology Constants")
     }
     { chkbillconst CheckBox
-      MoveScaled(2,29,29,3)
+      MoveScaled(1,28,29,3)
       Text = ("Billing Constants")
     }
     { chkmedconst CheckBox
-      MoveScaled(2,14,29,3)
+      MoveScaled(1,13,29,3)
       Text = ("Medicine Constants")
     }
     { chkinventparam CheckBox
-      MoveScaled(36,2,29,3)
+      MoveScaled(35,1,29,3)
       Text = ("Inventory parameters")
     }
     { chkdrugprobl CheckBox
-      MoveScaled(2,17,29,3)
+      MoveScaled(1,16,29,3)
       Text = ("Drug related Problems")
     }
     { chkdatarepo CheckBox
-      MoveScaled(2,23,29,3)
+      MoveScaled(1,22,29,3)
       Text = ("Data repository")
     }
     { chkdateconv CheckBox
-      MoveScaled(2,20,29,3)
+      MoveScaled(1,19,29,3)
       Text = ("Date Conversion")
     }
     { chkscriptout CheckBox
-      MoveScaled(2,26,29,3)
+      MoveScaled(1,25,29,3)
       Text = ("Script Outputs")
     }
     { chkall CheckBox
-      MoveScaled(36,34,18,3)
+      MoveScaled(35,33,18,3)
       Text = ("Check All")
     }
     { btnmedreport Button
-      MoveScaled(37,38,18,3)
+      MoveScaled(36,37,18,3)
       Text = ("Set")
       Picture = Picture["icon:/small/apply"]
     }
     { chkgriddata CheckBox
-      MoveScaled(36,23,29,3)
+      MoveScaled(35,22,29,3)
       Text = ("GridView Data")
     }
     { chkgeneralparam CheckBox
-      MoveScaled(36,14,29,3)
+      MoveScaled(35,13,29,3)
       Text = ("General Parameters")
     }
     { chkusershare CheckBox
-      MoveScaled(36,26,29,3)
+      MoveScaled(35,25,29,3)
       Text = ("User Sharing Parameters")
     }
     { chkappsettings CheckBox
-      MoveScaled(36,29,29,3)
+      MoveScaled(35,28,29,3)
       Text = ("Application Settings")
     }
     Index = 0

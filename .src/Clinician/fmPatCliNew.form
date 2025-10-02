@@ -227,23 +227,6 @@
       }
     }
   }
-  { mnuoutcome Menu
-    Text = ("Outcome")
-    { mnuadmit Menu
-      Text = ("Admission")
-    }
-    { mnufollow Menu
-      Text = ("Follow Up")
-      Shortcut = "Ctrl+U"
-    }
-    { mnurefer Menu
-      Text = ("Refer To")
-    }
-    { mnucomplete Menu
-      Text = ("Outcome")
-      Shortcut = "Ctrl+O"
-    }
-  }
   { mnuhistmain Menu
     Text = ("Clinical")
     { mnuopd Menu
@@ -525,7 +508,7 @@
       { Label25 Label
         MoveScaled(59,3,8,3)
         Border = Border.Plain
-        Text = ("Consult")
+        Text = ("Doctor")
       }
       { btnconsult ButtonBox
         MoveScaled(68,3,17,3)
@@ -621,10 +604,6 @@
               MoveScaled(39,0,3,3)
               Picture = Picture["icon:/small/attach"]
             }
-            { btngencompln ToolButton
-              MoveScaled(56,0,3,3)
-              Picture = Picture["icon:/small/apply"]
-            }
             { btnshowgencomp ToolButton
               MoveScaled(43,0,3,3)
               Picture = Picture["icon:/small/refresh"]
@@ -633,6 +612,11 @@
               MoveScaled(0,0,19,3)
               Border = Border.Plain
               Text = ("General Complaints")
+            }
+            { btngencompln Button
+              MoveScaled(51,0,9,3)
+              Text = ("Add")
+              Picture = Picture["icon:/small/apply"]
             }
           }
           { txtgencomplaint TextHTML
@@ -749,10 +733,6 @@
             ToolTip = ("Touch Screen Drawing")
             Picture = Picture["icon:/small/pen"]
           }
-          { btnopreport ToolButton
-            MoveScaled(12,0,3,3)
-            Picture = Picture["icon:/small/html"]
-          }
           { btnshowvital ToolButton
             MoveScaled(16,0,3,3)
             Picture = Picture["icon:/small/refresh"]
@@ -866,7 +846,7 @@
       Enabled = False
       Expand = True
       Arrangement = Arrange.Horizontal
-      Count = 5
+      Count = 6
       Index = 0
       Text = ("History & Findings [F6]")
       { Panel3 Panel
@@ -880,33 +860,34 @@
           { Panel11 Panel
             MoveScaled(0,0,60,4)
             { dcthelphistory ToolButton
-              MoveScaled(33,0.625,3,3)
+              MoveScaled(30,0.5,3,3)
               Picture = Picture["icon:/small/edit"]
             }
             { btnhelphistory ToolButton
-              MoveScaled(37,0.625,3,3)
+              MoveScaled(34,0.5,3,3)
               Picture = Picture["icon:/small/exec"]
             }
-            { btnhistory ToolButton
-              MoveScaled(53,0.625,3,3)
-              Picture = Picture["icon:/small/apply"]
-            }
             { btntemplphistory ToolButton
-              MoveScaled(41,0.625,3,3)
+              MoveScaled(38,0.5,3,3)
               Picture = Picture["icon:/small/attach"]
             }
             { btnshowhistory ToolButton
-              MoveScaled(45,0.625,3,3)
+              MoveScaled(42,0.5,3,3)
               Picture = Picture["icon:/small/refresh"]
             }
             { btnhistorydef ToolButton
-              MoveScaled(29,0.625,3,3)
+              MoveScaled(26,0.5,3,3)
               Picture = Picture["icon:/small/database"]
             }
             { Label4 Label
-              MoveScaled(0,0.625,20,3)
+              MoveScaled(0,0.5,17,3)
               Border = Border.Plain
               Text = ("History of Illness")
+            }
+            { btnhistory Button
+              MoveScaled(50,0.5,9,3)
+              Text = ("Add")
+              Picture = Picture["icon:/small/apply"]
             }
           }
           { txthistory TextHTML
@@ -1017,33 +998,34 @@
           { Panel12 Panel
             MoveScaled(0,0,59,4)
             { dcthelpplan ToolButton
-              MoveScaled(33,0.625,3,3)
+              MoveScaled(28,0.5,3,3)
               Picture = Picture["icon:/small/edit"]
             }
             { Label10 Label
-              MoveScaled(0,0.625,23.375,2.75)
+              MoveScaled(0,0.5,17,2.75)
               Border = Border.Plain
-              Text = ("Initial Advice")
+              Text = ("Clinician Advice")
             }
             { btnhelpplan ToolButton
-              MoveScaled(37,0.625,3,3)
+              MoveScaled(32,0.5,3,3)
               Picture = Picture["icon:/small/exec"]
             }
-            { btnplan ToolButton
-              MoveScaled(54,0.625,3,3)
-              Picture = Picture["icon:/small/apply"]
-            }
             { btntemplpplan ToolButton
-              MoveScaled(41,0.625,3,3)
+              MoveScaled(36,0.5,3,3)
               Picture = Picture["icon:/small/attach"]
             }
             { btnshowplan ToolButton
-              MoveScaled(45,0.625,3,3)
+              MoveScaled(40,0.5,3,3)
               Picture = Picture["icon:/small/refresh"]
             }
             { btnplandef ToolButton
-              MoveScaled(29,0.625,3,3)
+              MoveScaled(24,0.5,3,3)
               Picture = Picture["icon:/small/database"]
+            }
+            { btnplan Button
+              MoveScaled(49,0.5,9,3)
+              Text = ("Add")
+              Picture = Picture["icon:/small/apply"]
             }
           }
           { txtplan TextHTML
@@ -1067,33 +1049,34 @@
           { Panel19 Panel
             MoveScaled(0,0,59,4)
             { dcthelpplanfinal ToolButton
-              MoveScaled(33,0.625,3,3)
+              MoveScaled(28,0.5,3,3)
               Picture = Picture["icon:/small/edit"]
             }
             { Label2 Label
-              MoveScaled(0,0.625,23.375,2.75)
+              MoveScaled(0,0.5,17,2.75)
               Border = Border.Plain
               Text = ("Expert Advice")
             }
             { btnhelpplanfinal ToolButton
-              MoveScaled(37,0.625,3,3)
+              MoveScaled(32,0.5,3,3)
               Picture = Picture["icon:/small/exec"]
             }
-            { btnplanfinal ToolButton
-              MoveScaled(55,0.625,3,3)
-              Picture = Picture["icon:/small/apply"]
-            }
             { btntemplpplanfinal ToolButton
-              MoveScaled(41,0.625,3,3)
+              MoveScaled(36,0.5,3,3)
               Picture = Picture["icon:/small/attach"]
             }
             { btnshowplanfinal ToolButton
-              MoveScaled(45,0.625,3,3)
+              MoveScaled(40,0.5,3,3)
               Picture = Picture["icon:/small/refresh"]
             }
             { btnplandefinal ToolButton
-              MoveScaled(29,0.625,3,3)
+              MoveScaled(24,0.5,3,3)
               Picture = Picture["icon:/small/database"]
+            }
+            { btnplanfinal Button
+              MoveScaled(49,0.5,9,3)
+              Text = ("Add")
+              Picture = Picture["icon:/small/apply"]
             }
           }
           { txtplanfinal TextHTML
@@ -1239,6 +1222,103 @@
         MoveScaled(1,1,83,26)
         Expand = True
         Arrangement = Arrange.Vertical
+      }
+      Index = 5
+      Text = ("Outcome")
+      { Panel34 Panel
+        MoveScaled(0,0,14,39)
+        { rbimproved RadioButton
+          MoveScaled(0.5,1,12,3)
+          Text = ("Discharge")
+          Value = True
+        }
+        { rbadmission RadioButton
+          MoveScaled(0.5,9,12.75,3)
+          Text = ("Admission")
+        }
+        { rbfollowup RadioButton
+          MoveScaled(0.5,5,12,3)
+          Text = ("Follow Up")
+        }
+        { rbreferred RadioButton
+          MoveScaled(0.5,13,12,3)
+          Text = ("Referred")
+        }
+        { rblama RadioButton
+          MoveScaled(0.5,17,12,3)
+          Text = ("LAMA")
+        }
+        { rbdeath RadioButton
+          MoveScaled(0.5,21,10,3)
+          Text = ("Death")
+        }
+      }
+      { Panel35 Panel
+        MoveScaled(14,0,102,39)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        { pnlclinpara Panel
+          MoveScaled(0,1,101,4)
+          { lbloutcome2 Label
+            MoveScaled(0,0.5,9,3)
+            Border = Border.Plain
+            Text = ("Index No")
+          }
+          { txtclinIndex ValueBox
+            MoveScaled(10,0.5,15,3)
+            ReadOnly = True
+          }
+          { lbloutcome3 Label
+            MoveScaled(31,0.5,12,3)
+            Border = Border.Plain
+            Text = ("Department")
+          }
+          { txtclindepart TextBox
+            MoveScaled(44,0.5,28,3)
+            ReadOnly = True
+          }
+          { btnselect Button
+            MoveScaled(87,0.5,13,3)
+            Text = ("Select")
+            Picture = Picture["icon:/small/select"]
+          }
+          { txtclinmode TextBox
+            MoveScaled(74,0,10,3)
+            Visible = False
+          }
+        }
+        { pnloutcome Panel
+          MoveScaled(0,7,101,5)
+          Enabled = False
+          { cmbrefer ComboBox
+            MoveScaled(18,1,26,3)
+            Visible = False
+          }
+          { dtfollowup DateBox
+            MoveScaled(18,1,26,3)
+            Visible = False
+            Mode = DateChooser.DateTime
+          }
+          { lbloutcome Label
+            MoveScaled(1,1,16,3)
+            Border = Border.Plain
+            Text = ("Follow Up Date")
+          }
+          { btnoutcome Button
+            MoveScaled(69,1,13,3)
+            Text = ("Save")
+            Picture = Picture["icon:/small/apply"]
+          }
+          { btnopreport Button
+            MoveScaled(84,1,16,3)
+            Text = ("Report")
+            Picture = Picture["icon:/small/html"]
+          }
+        }
+        { txtcomment TextHTML
+          MoveScaled(13,14,46,19)
+          Expand = True
+        }
       }
       Index = 0
     }

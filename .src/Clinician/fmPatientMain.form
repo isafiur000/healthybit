@@ -623,7 +623,7 @@
       { Label26 Label
         MoveScaled(58,3,8,3)
         Border = Border.Plain
-        Text = ("Consult")
+        Text = ("Doctor")
       }
       { btnconsult ButtonBox
         MoveScaled(67,3,19,3)
@@ -856,20 +856,15 @@
           MoveScaled(0,0,55,3.5)
           Arrangement = Arrange.Horizontal
           Padding = 2
-          { lbldtfind3 Label
-            MoveScaled(0,0,14,3)
-            Font = Font["Bold"]
-            Border = Border.Plain
-            Text = ("COMPLAINTS")
+          { btnaddsymplist ToolButton
+            MoveScaled(0,0,8,3)
+            Text = ("List")
+            Picture = Picture["icon:/small/bookmark"]
           }
           { cmbsymptom ComboBox
-            MoveScaled(14,0,36,3)
+            MoveScaled(9,0,45,3)
             ToolTip = ("Symptom Name\nWrite few alphabets and press Down key to populate this combobox")
             Sorted = True
-          }
-          { btnaddsymplist ToolButton
-            MoveScaled(50,0,4,3)
-            Picture = Picture["icon:/small/bookmark"]
           }
         }
         { Panel76 Panel

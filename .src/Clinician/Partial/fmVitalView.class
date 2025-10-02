@@ -1,7 +1,7 @@
 ' Gambas class file
 
 Private $encid As String
-Private $ExamList As String[]
+Private $sVitalsVar As Variant[]
 
 Public Sub _new(encid As String)
 
@@ -11,13 +11,11 @@ End
 
 Public Sub Form_Open()
 
-  modGeneralMain.ArrangeFormCentre(Me, "False")
-  $ExamList = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
+  $sVitalsVar = modPathoSub.GetAllEssentialExams($encid)
   FillDailyGrid()
 
 End
 
-''==================== table =======================
 Private Sub FillDailyGrid()
 
   Dim xfir As Date
@@ -30,15 +28,15 @@ Private Sub FillDailyGrid()
   xlast = modDate.StartSqlHour(DateAdd(Now(), gb.Hour, 1))
 
   GridView2.Clear()
-  GridView2.Rows.Count = $ExamList.Count
+  GridView2.Rows.Count = $sVitalsVar.Count
   GridView2.Columns.Count = DateDiff(xfir, xlast, gb.Hour) + 1
 
-  For i = 0 To $ExamList.Count - 1
+  For i = 0 To $sVitalsVar.Count - 1
     For j = 0 To GridView2.Columns.Count - 1
       If j = 0 Then
-        GridView2[i, j].Text = $ExamList[i]
+        GridView2[i, j].Text = $sVitalsVar[i]["ExamName"]
       Else
-        GridView2[i, j].Text = GetExamValueByDate($encid, $ExamList[i], DateAdd(xfir, gb.Hour, j))
+        GridView2[i, j].Text = GetExamValueByDate($encid, $sVitalsVar[i]["ExamName"], DateAdd(xfir, gb.Hour, j))
       Endif
     Next
   Next

@@ -63,7 +63,6 @@ Public Sub Form_Open()
 
   cmbpatheightunit.List = ["cm", "inch", "foot"]
   cmbsympunit.List = ["Hours", "Days", "Weeks", "Months", "Years", "Episodes"]
-  cmbsymdura.List = ["Both Side", "Left Side", "Right Side", "On/Off"]
   $UserRestrict = modBasic.$ClinicDisableCompo
   xlocat = modSettings.ShowSettingFromFIle("ClinicForms/ImpressionList")
   If xlocat Then
@@ -116,6 +115,11 @@ Private Sub SetHtmlTextOption(TextHTML1 As TextHTML)
 
   TextHTML1.DictionaryPath = modBasic.$dictPathList
   TextHTML1.UserList = modBasic.$IPConsultUserList
+  If modBasic.$AutoRichTextMode = "Yes" Then
+    TextHTML1.RichMode = True
+  Else
+    TextHTML1.RichMode = False
+  Endif
 
 End
 
@@ -313,6 +317,9 @@ End
 
 Private Sub BasicInfoPatient()
 
+  Dim hForm1 As FmVitalView
+  Dim hForm2 As FmVitalInput
+
   If txtencid.Text Then
     modRepository.$RepoDataStatus = False
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
@@ -325,6 +332,9 @@ Private Sub BasicInfoPatient()
     txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "General Complaints")
     ShowEssentialExamRange()
     ShowEssentialExam()
+
+    hForm1 = New FmVitalView(Trim(txtencid.Text), Panel14)
+    hForm2 = New FmVitalInput(Trim(txtencid.Text), Panel12)
 
     dtmonitor.Value = Now()
     lbldtmonitor.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), dtmonitor.Value)
@@ -1004,6 +1014,9 @@ End
 
 Public Sub cmbsymdura_GotFocus()
 
+  If cmbsymptom.Text Then
+    cmbsymdura.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldsubsymptom as col from tblsubsymptoms where fldsymptom=&1", cmbsymptom.Text))
+  Endif
   If modBasic.$TabletModeEnable = "Yes" Then
     If Not cmbsymdura.Text Then
       cmbsymdura.Popup
@@ -2479,7 +2492,7 @@ Public Sub mnuessenexam_Click()
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = modClinic.GetFullVitalList(Trim(txtencid.Text))
+    xx = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
     hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
   Endif
@@ -3031,7 +3044,7 @@ End
 Public Sub grdmonitor_Click()
 
   txtmonvalue.Value = 0
-  TabPanel1.Enabled = True
+  TabPanel3.Enabled = True
   txtmonvalue.Value = grdmonitor[grdmonitor.Row, 0].Text
   txtmonimpression.Text = grdmonitor[grdmonitor.Row, 3].Text
   txtmonproblem.RichText = grdmonitor[grdmonitor.Row, 4].Text

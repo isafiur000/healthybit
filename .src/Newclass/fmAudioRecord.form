@@ -1,0 +1,58 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,83,52)
+  Margin = True
+  { Panel1 Panel
+    MoveScaled(0,0,82,6)
+    { btnrecord Button
+      MoveScaled(1,1,16,4)
+      Text = ("START")
+      Default = True
+    }
+    { btnclose Button
+      MoveScaled(65,1,16,4)
+      Text = ("Save")
+      Cancel = True
+    }
+    { Timer1 #Timer
+      #MoveScaled(52,-1)
+    }
+    { LCDLabel1 LCDLabel
+      MoveScaled(29,1,20,4)
+      Text = ("00: 00: 00")
+      Border = True
+    }
+  }
+  { Label2 Label
+    MoveScaled(56,7,9,3)
+    Border = Border.Plain
+    Text = ("Size (KB)")
+  }
+  { txtsize ValueBox
+    MoveScaled(66,7,15,3)
+  }
+  { TextArea1 TextArea
+    MoveScaled(1,16,81,35)
+    Wrap = True
+  }
+  { Panel2 Panel
+    MoveScaled(0,6,38,9)
+    { Label1 Label
+      MoveScaled(1,5,10,3)
+      Border = Border.Plain
+      Text = ("Language")
+    }
+    { cmblanguage ComboBox
+      MoveScaled(12,5,25,3)
+    }
+    { cmbmodel ComboBox
+      MoveScaled(12,1,25,3)
+    }
+    { Label3 Label
+      MoveScaled(1,1,10,3)
+      Border = Border.Plain
+      Text = ("Model")
+    }
+  }
+}

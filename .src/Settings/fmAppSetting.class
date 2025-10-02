@@ -30,6 +30,8 @@ Public Sub Form_Open()
   cmblocalrepo.List = ["Enable", "Disable"]
   cmbreportpopup.List = ["Standard", "CSV File"]
   cmbftpupload.List = ["wput", "curl"]
+  cmbAisupport.List = ["Speech-To-Text", "Text Generation"]
+
   cmbcurlcacert.List = ["Enable", "Disable"]
   cmbencprefix.List = ["Select", "Write"]
   cmbwindowsbar.List = ["Enable", "Disable"]
@@ -45,6 +47,7 @@ Public Sub Form_Open()
   ShowAllUserSetting()
   ShowOptionSettings()
   ShowExternalParams()
+  ShowURLLinks()
   DisplayCacheTypes()
 
 End
@@ -714,21 +717,16 @@ Private Sub ShowScripting()
   txttexthelpscr.Text = modSettings.ShowSettingFromFIle("GeneralSettings/TextHelpScript")
   txtexectexthelp.Text = modSettings.ShowSettingFromFIle("GeneralSettings/TextHelpShell")
 
-  cmbgnupg.Text = modSettings.ShowSettingFromFIle("GeneralSettings/GnuPG_KeyID")
-  modSettings.ShowCheckBox(chkgpg, "GeneralSettings/GnuPG_Enable")
-
   txtextapp.Text = modSettings.ShowSettingFromFIle("GeneralSettings/ExtApp_Path")
   txtextshell.Text = modSettings.ShowSettingFromFIle("GeneralSettings/ExtApp_Shell")
+
+  txtdefviewpath.Text = modSettings.ShowSettingFromFIle("GeneralSettings/DefaultView_Path")
+  txtdefviewshell.Text = modSettings.ShowSettingFromFIle("GeneralSettings/DefaultView_Shell")
 
   txtkeyboard.Text = modSettings.ShowSettingFromFIle("GeneralSettings/KeyBoard_Path")
   txtshellkey.Text = modSettings.ShowSettingFromFIle("GeneralSettings/KeyBoard_Shell")
 
-  txtcurlcert.Text = modSettings.ShowSettingFromFIle("GeneralSettings/CurlCertificate")
-  txtbrowserurl.Text = modSettings.ShowSettingFromFIle("GeneralSettings/Browser_URL")
-  txtpatportal.Text = modSettings.ShowSettingFromFIle("GeneralSettings/PatientPortalURL")
-
-  txtdefviewpath.Text = modSettings.ShowSettingFromFIle("GeneralSettings/DefaultView_Path")
-  txtdefviewshell.Text = modSettings.ShowSettingFromFIle("GeneralSettings/DefaultView_Shell")
+  txtexpeak.Text = modSettings.ShowSettingFromFIle("TextToSpeech/CustomCommand")
 
 End
 
@@ -821,20 +819,22 @@ Public Sub btntexthelpscr_Click()
 
 End
 
-Public Sub btngnupg_Click()
-
-  modSettings.SaveSettingsToFile("GeneralSettings/GnuPG_KeyID", cmbgnupg.Text)
-  modSettings.EnterCheckSetting(chkgpg, "GeneralSettings/GnuPG_Enable")
-  Balloon.Info(("Information saved"), btngnupg)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
 Public Sub btnexternalapp_Click()
 
   modSettings.SaveSettingsToFile("GeneralSettings/ExtApp_Path", txtextapp.Text)
   modSettings.SaveSettingsToFile("GeneralSettings/ExtApp_Shell", txtextshell.Text)
   Balloon.Info(("Information saved"), btnexternalapp)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btndefaultview_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/DefaultView_Path", txtdefviewpath.Text)
+  modSettings.SaveSettingsToFile("GeneralSettings/DefaultView_Shell", txtdefviewshell.Text)
+  modBasic.$DefaultViewPath = txtdefviewpath.Text
+  modBasic.$DefaultViewShell = txtdefviewshell.Text
+  Balloon.Info(("Information saved"), btndefaultview)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -848,38 +848,11 @@ Public Sub btnkeyboard_Click()
 
 End
 
-Public Sub btncurlcert_Click()
+''speak text
+Public Sub btnespeak_Click()
 
-  modSettings.SaveSettingsToFile("GeneralSettings/CurlCertificate", txtcurlcert.Text)
-  Balloon.Info(("Information saved"), btncurlcert)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btnbrowserurl_Click()
-
-  modSettings.SaveSettingsToFile("GeneralSettings/Browser_URL", txtbrowserurl.Text)
-  Balloon.Info(("Information saved"), btnbrowserurl)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btnpatportal_Click()
-
-  modSettings.SaveSettingsToFile("GeneralSettings/PatientPortalURL", txtpatportal.Text)
-  modBasic.$PatPortalURL = txtpatportal.Text
-  Balloon.Info(("Information saved"), btnpatportal)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btndefaultview_Click()
-
-  modSettings.SaveSettingsToFile("GeneralSettings/DefaultView_Path", txtdefviewpath.Text)
-  modSettings.SaveSettingsToFile("GeneralSettings/DefaultView_Shell", txtdefviewshell.Text)
-  modBasic.$DefaultViewPath = txtdefviewpath.Text
-  modBasic.$DefaultViewShell = txtdefviewshell.Text
-  Balloon.Info(("Information saved"), btndefaultview)
+  modSettings.SaveSettingsToFile("TextToSpeech/CustomCommand", txtexpeak.Text)
+  Balloon.Info(("Information saved"), btnespeak)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -1068,7 +1041,7 @@ Private Sub ShowOptionSettings()
   Endif
   cmbencprefix.Text = modSettings.ShowSettingFromFIle("GeneralSettings/AutoEncounterPrefix")
   modSettings.ShowCheckBox(cmbtablet, "GeneralSettings/EnableTabletMode")
-  modSettings.ShowCheckBox(chkautorefresh, "GeneralSettings/EnableAutoRefresh")
+  modSettings.ShowCheckBox(chkautorefresh, "GeneralSettings/EnableAutoRichText")
   modSettings.ShowCheckBox(chktooltip, "GeneralSettings/DisableToolTip")
   modSettings.ShowCheckBox(cmbencsuffix, "GeneralSettings/AutoEncounterSuffix")
   modSettings.ShowCheckBox(chkreadnotice, "GeneralSettings/ReadNotification")
@@ -1201,11 +1174,11 @@ End
 
 Public Sub btnautorefresh_Click()
 
-  modSettings.EnterCheckSetting(chkautorefresh, "GeneralSettings/EnableAutoRefresh")
+  modSettings.EnterCheckSetting(chkautorefresh, "GeneralSettings/EnableAutoRichText")
   If chkautorefresh.Value = True Then
-    modBasic.$AutoRefreshEnable = "Yes"
+    modBasic.$AutoRichTextMode = "Yes"
   Else If chkautorefresh.Value = False Then
-    modBasic.$AutoRefreshEnable = "No"
+    modBasic.$AutoRichTextMode = "No"
   Endif
   Balloon.Info(("Information saved"), btnautorefresh)
   Balloon.Delay = modBasic.$BalloonDelay
@@ -1306,6 +1279,7 @@ Private Sub ShowExternalParams()
   cmbanalysis.Text = modSettings.ShowSettingFromFIle("GeneralSettings/DataAnalysis")
   cmbemailclient.Text = modSettings.ShowSettingFromFIle("GeneralSettings/EMailClient")
   cmbftpupload.Text = modSettings.ShowSettingFromFIle("GeneralSettings/FTPUploader")
+  cmbAisupport.Text = modSettings.ShowSettingFromFIle("GeneralSettings/AITextSupport")
 
 End
 
@@ -1356,13 +1330,101 @@ Public Sub btnftpupload_Click()
 
 End
 
+Public Sub btnAIsupport_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/AITextSupport", cmbAisupport.Text)
+  modBasic.$AITextSupport = cmbAisupport.Text
+  Balloon.Info(("Information saved"), btnAIsupport)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''===================== URL ==================================
+Private Sub ShowURLLinks()
+
+  txtbrowserurl.Text = modSettings.ShowSettingFromFIle("GeneralSettings/Browser_URL")
+  txtpatportal.Text = modSettings.ShowSettingFromFIle("GeneralSettings/PatientPortalURL")
+  txtcamus.Text = modSettings.ShowSettingFromFIle("CamusChat/URL")
+
+End
+
+Public Sub btnbrowserurl_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/Browser_URL", txtbrowserurl.Text)
+  Balloon.Info(("Information saved"), btnbrowserurl)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnpatportal_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/PatientPortalURL", txtpatportal.Text)
+  modBasic.$PatPortalURL = txtpatportal.Text
+  Balloon.Info(("Information saved"), btnpatportal)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''camus
+Public Sub btncamus_Click()
+
+  modSettings.SaveSettingsToFile("CamusChat/URL", txtcamus.Text)
+  Balloon.Info(("Information saved"), btncamus)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''============================== Security =================================
+Private Sub GetSecuritySettings()
+
+  cmbgnupg.Text = modSettings.ShowSettingFromFIle("GeneralSettings/GnuPG_KeyID")
+  modSettings.ShowCheckBox(chkgpg, "GeneralSettings/GnuPG_Enable")
+
+  txtcurlcert.Text = modSettings.ShowSettingFromFIle("GeneralSettings/CurlCertificate")
+  txtsshport.Text = modSettings.ShowSettingFromFIle("SSHAuthentication/Port")
+
+End
+
+Public Sub btngnupg_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/GnuPG_KeyID", cmbgnupg.Text)
+  modSettings.EnterCheckSetting(chkgpg, "GeneralSettings/GnuPG_Enable")
+  Balloon.Info(("Information saved"), btngnupg)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btncurlcert_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/CurlCertificate", txtcurlcert.Text)
+  Balloon.Info(("Information saved"), btncurlcert)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''ssh port
+Public Sub btnsshport_Click()
+
+  modSettings.SaveSettingsToFile("SSHAuthentication/Port", txtsshport.Text)
+  Balloon.Info(("Information saved"), btnsshport)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btncertdown_Click()
+
+  Exec ["wget", "http://curl.haxx.se/ca/cacert.pem"] Wait
+  Message.Info("Copy " & User.Home &/ "cacert.pem" & " To " & modHelpVariable.$appetcFolder, ("OK"))
+
+End
+
 ''============================= APP CACHE ===============================
 Public Sub chkall_Click()
 
   Dim xobj As Control
   Dim xchk As CheckBox
 
-  For Each xobj In IconPanel1[7].Children
+  For Each xobj In IconPanel1[8].Children
     If xobj Is CheckBox Then
       xchk = xobj
       If chkall.Value = True Then

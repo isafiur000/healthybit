@@ -2,8 +2,6 @@
 
 Public $PatientComp As String
 
-Private $sClinIndex As Long
-Private $sClinMode As String
 Private $rSympRes As Result
 Private $aSympFields As String[]
 Private $rExamRes As Result
@@ -45,8 +43,8 @@ Public Sub _new(encid As String, sIndex As Long, sMode As String, Focus As Boole
 
   If encid Then
     txtencid.Text = encid
-    $sClinIndex = sIndex
-    $sClinMode = sMode
+    txtclinIndex.Value = sIndex
+    txtclinmode.Text = sMode
   Endif
   $focus = Focus
 
@@ -77,7 +75,6 @@ Public Sub Form_Open()
 
   cmbpatheightunit.List = ["cm", "inch", "foot"]
   cmbsympunit.List = ["Hours", "Days", "Weeks", "Months", "Years", "Episodes"]
-  cmbsymdura.List = ["Both Side", "Left Side", "Right Side", "On/Off"]
   cmburgency.List = ["Urgent", "Normal"]
   If modBasic.$ItemListFormat = "GridView" Then
   Else
@@ -98,6 +95,9 @@ Public Sub Form_Open()
   SetHtmlTextOption(txthistory)
   SetHtmlTextOption(txtplan)
   SetHtmlTextOption(txtplanfinal)
+  SetHtmlTextOption(txtcomment)
+  rbimproved.Value = True
+  rbimproved_Click()
   If txtencid.Text Then
     GetEncounterValue()
   Else
@@ -134,6 +134,11 @@ Private Sub SetHtmlTextOption(TextHTML1 As TextHTML)
 
   TextHTML1.DictionaryPath = modBasic.$dictPathList
   TextHTML1.UserList = modBasic.$IPConsultUserList
+  If modBasic.$AutoRichTextMode = "Yes" Then
+    TextHTML1.RichMode = True
+  Else
+    TextHTML1.RichMode = False
+  Endif
 
 End
 
@@ -165,7 +170,7 @@ Private Sub ShowPlanningExpert()
 
   Dim xexptAr As String[]
 
-  xexptAr = modPatPatho.ShowSelectedNoteUser(Trim(txtencid.Text), "Final Planning")
+  xexptAr = modPatPatho.ShowSelectedNoteUser(Trim(txtencid.Text), "Expert Planning")
   If xexptAr And If xexptAr.Count Then
     txtplanfinal.RichText = xexptAr[0]
     lblfinaluser.Text = xexptAr[1]
@@ -305,6 +310,7 @@ Public Sub TabPanel1_Click()
   Else If TabPanel1.Index = 3 Then
     txtquery.SetFocus
   Else If TabPanel1.Index = 4 Then
+  Else If TabPanel1.Index = 5 Then
   Endif
 
 End
@@ -369,7 +375,7 @@ Public Sub btnshowplanfinal_Click()
   Dim xexptAr As String[]
 
   If txtencid.Text Then
-    xexptAr = modPatPatho.ShowSelectedNoteUser(Trim(txtencid.Text), "Final Planning")
+    xexptAr = modPatPatho.ShowSelectedNoteUser(Trim(txtencid.Text), "Expert Planning")
     If xexptAr And If xexptAr.Count Then
       txtplanfinal.RichText = xexptAr[0]
       lblfinaluser.Text = xexptAr[1]
@@ -410,6 +416,11 @@ Private Sub GetEncounterValue()
       If txtencid.Text = modBasic.$EncIdPrefix Then
       Else
         modSettings.SaveValuesToLog("LastValue/Encounter", Trim(txtencid.Text))
+      Endif
+      If txtclinIndex.Value And If txtclinmode.Text Then
+        pnloutcome.Enabled = True
+        pnlclinpara.Enabled = False
+        txtclindepart.Text = GetConsultDepartment(txtclinmode.Text, txtclinIndex.Value, Trim(txtencid.Text))
       Endif
       res = modDatabase.$myConn.Exec("select fldpatientval,flduserid from tblencounter where fldencounterval=&1", Trim(txtencid.Text))
       If res.Available = False Then
@@ -494,7 +505,7 @@ Private Sub BasicInfoPatient()
     GetDefaultBillingmodes()
     ButtonControl()
     $dateReg = modPatient.GetRecordDate(Trim(txtencid.Text))
-    GetConsultParam()
+    ' GetConsultParam()
 
     ShowSymptomData()
     txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "General Complaints")
@@ -506,6 +517,7 @@ Private Sub BasicInfoPatient()
     ShowPlanningInitial()
     ShowPlanningExpert()
     ShowTelemedSaved()
+    GetPatientOutComeVal()
 
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
     hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
@@ -546,39 +558,34 @@ Private Sub GetDefaultBillingmodes()
 
 End
 
-Private Sub GetConsultParam()
+Private Sub GetPatientOutComeVal()
 
-  Dim res1 As Result
-  Dim res2 As Result
-  Dim aIndex As Long[]
-  Dim aType As String[]
+  Dim res As Result
 
-  If $sClinIndex And If $sClinMode Then
-  Else
-    aIndex = New Long[]
-    aType = New String[]
-    res1 = modDatabase.$myConn.Exec("select fldid from tblconsult where fldencounterval=&1", Trim(txtencid.Text))
-    If res1.Available Then
-      For Each res1
-        aIndex.Add(res1["fldid"])
-        aType.Add("Consultation")
-      Next
-    Endif
-
-    res2 = modDatabase.$myConn.Exec("select fldid from tblopvisit where fldencounterval=&1", Trim(txtencid.Text))
-    If res2.Available Then
-      For Each res2
-        aIndex.Add(res2["fldid"])
-        aType.Add("OP Visit")
-      Next
-    Endif
-
-    If aIndex.Count = 1 Then
-      $sClinIndex = aIndex[0]
-      $sClinMode = aType[0]
-    Endif
-
+  res = modDatabase.$myConn.Exec("select fldfollowdate,fldreferto from tblencounter where fldencounterval=&1", Trim(txtencid.Text))
+  If res.Available Then
+    cmbrefer.Text = res["fldreferto"]
+    dtfollowup.Value = res["fldfollowdate"]
   Endif
+
+End
+
+Private Function GetConsultDepartment(sMode As String, sIndex As Long, encid As String) As String
+
+  Dim res As Result
+  Dim xval As String
+
+  If sMode = "Consultation" Then
+    res = modDatabase.$myConn.Exec("select fldconsultname from tblconsult where fldid=&1 and fldencounterval=&2", sIndex, encid)
+  Else If sMode = "OP Visit" Then
+    res = modDatabase.$myConn.Exec("select fldconsultname from tblopvisit where fldid=&1 and fldencounterval=&2", sIndex, encid)
+  Endif
+  If res.Available Then
+    xval = res["fldconsultname"]
+  Else
+    xval = ""
+  Endif
+  Return xval
 
 End
 
@@ -843,7 +850,10 @@ Private Sub ButtonControl()
   Dim xx As Boolean
   Dim xval As String
 
-  xx = modPatient.EnableClinicForm($sTatus)
+  xx = modPatient.EnableClinicOPDForm(Trim(txtencid.Text))
+  If xx = True Then
+    xx = modPatient.EnableClinicForm($sTatus)
+  Endif
   ''complaints
   btnsympadd.Enabled = xx
   btnaddsymplist.Enabled = xx
@@ -915,7 +925,7 @@ Private Sub ButtonControl()
   ''monitoring
   mnumonitor.Enabled = xx
   ''outcome
-  mnuoutcome.Enabled = xx
+  btnoutcome.Enabled = xx
   ''telemedicine
   btnquery.Enabled = xx
   btnrepoupload.Enabled = xx
@@ -1661,6 +1671,9 @@ End
 
 Public Sub cmbsymdura_GotFocus()
 
+  If cmbsymptom.Text Then
+    cmbsymdura.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldsubsymptom as col from tblsubsymptoms where fldsymptom=&1", cmbsymptom.Text))
+  Endif
   If modBasic.$TabletModeEnable = "Yes" Then
     If Not cmbsymdura.Text Then
       cmbsymdura.Popup
@@ -2220,7 +2233,7 @@ End
 
 Public Sub btnplandefinal_Click()
 
-  txtplanfinal.RichText = AddHistory("Discharge", "Final Planning")
+  txtplanfinal.RichText = AddHistory("Discharge", "Expert Planning")
 
 End
 
@@ -2241,7 +2254,7 @@ Public Sub btnplanfinal_Click()
   Endif
 
   If txtplanfinal.Text Then
-    modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", "Final Planning", txtplanfinal.KeyList.Join(";"), txtplanfinal.RichText, xboolean)
+    modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", "Expert Planning", txtplanfinal.KeyList.Join(";"), txtplanfinal.RichText, xboolean)
     Balloon.Info(("Information saved"), btnplanfinal)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
@@ -2364,12 +2377,6 @@ Public Sub mnuscreendraw_Click()
 
 End
 
-Public Sub btnopreport_Click()
-
-  mnuopd_Click()
-
-End
-
 Public Sub btnaddchart_Click()
 
   mnuscreendraw_Click()
@@ -2404,74 +2411,6 @@ Public Sub btnaddcibf_Click()
     If sPath And If Exist(sPath) Then
       xval = modImage.SaveClinicScreenDraw(Trim(txtencid.Text), sTitle, sPath)
     Endif
-  Endif
-
-End
-
-Public Sub mnufollow_Click()
-
-  Dim res As Result
-  Dim dt As Date
-
-  If txtencid.Text Then
-    dt = CTimeConsult("Follow Up", modPatient.GetFollowUpDate(Trim(txtencid.Text)))
-    If dt Then
-      res = modDatabase.$myConn.Edit("tblencounter", "fldencounterval=&1", Trim(txtencid.Text))
-      res["fldfollowdate"] = dt
-      res["xyz"] = False
-      res.Update
-    Endif
-  Endif
-
-End
-
-Public Sub mnurefer_Click()
-
-  Dim res As Result
-  Dim xList As String[]
-  Dim xrefer As String
-
-  If txtencid.Text Then
-    xList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldlocation from tblreferlist"))
-    xrefer = InputCombo("Select Refer Location from List", "Refer To", xList, "", False)
-    If xrefer Then
-      res = modDatabase.$myConn.Edit("tblencounter", "fldencounterval=&1", Trim(txtencid.Text))
-      res["fldreferto"] = xrefer
-      res["xyz"] = False
-      res.Update
-    Endif
-
-    If Message.Question("Upload Data to Repository now?", ("No"), ("Yes")) = 2 Then
-      Inc Application.Busy
-      modDataRepo.GetRepoUploadEncounterData(Trim(txtencid.Text))
-      Dec Application.Busy
-    Endif
-  Endif
-
-End
-
-Public Sub mnucomplete_Click()
-
-  Dim hForm As FmOPOutcome
-  Dim hForm1 As FmConsultPlay
-  Dim xdept As String
-
-  If modPathoSub.AllowOPOutcomeDiagno(Trim(txtencid.Text)) = True Then
-    If $sClinIndex And If $sClinMode Then
-      hForm = New FmOPOutcome($sClinMode, Trim(txtencid.Text), $sClinIndex)
-      hForm.ShowModal
-
-    Else
-      If modBasic.$FixedDepartment Then
-        xdept = modBasic.$FixedDepartment
-      Else
-        xdept = ""
-      Endif
-      hForm1 = New FmConsultPlay(Trim(txtencid.Text), xdept)
-      hForm1.ShowModal
-
-    Endif
-    mnublank_Click()
   Endif
 
 End
@@ -2717,11 +2656,11 @@ Public Sub mnuopd_Click()
       If modPatientSub.GetClearanceForExit(Trim(txtencid.Text)) = True Then
 
         If modSettings.ShowSettingFromFIle("OPD Sheet/Name") Then
-          If $sClinIndex And If $sClinMode Then
-            If $sClinMode = "Consultation" Then
-              hCls = New CReportCustom(Trim(txtencid.Text), "OPD Sheet", "ReportSize", LabUnitForm(), "Consultation|" & CStr($sClinIndex))
-            Else If $sClinMode = "OP Visit" Then
-              hCls = New CReportCustom(Trim(txtencid.Text), "OPD Sheet", "ReportSize", LabUnitForm(), "OPVisit|" & CStr($sClinIndex))
+          If txtclinIndex.Value And If txtclinmode.Text Then
+            If txtclinmode.Text = "Consultation" Then
+              hCls = New CReportCustom(Trim(txtencid.Text), "OPD Sheet", "ReportSize", LabUnitForm(), "Consultation|" & CStr(txtclinIndex.Value))
+            Else If txtclinmode.Text = "OP Visit" Then
+              hCls = New CReportCustom(Trim(txtencid.Text), "OPD Sheet", "ReportSize", LabUnitForm(), "OPVisit|" & CStr(txtclinIndex.Value))
             Endif
           Else
             hCls = New CReportCustom(Trim(txtencid.Text), "OPD Sheet", "ReportSize", LabUnitForm())
@@ -3211,13 +3150,31 @@ Private Sub FillCustomFormMenu()
 
 End
 
-''''------------------------------- custom report menu ---------------------------------------------------
+''''------------------------------- custom report menu ----------------------------
+Private Function GetReportIndex() As String
+
+  Dim xIndex As String
+
+  If txtclinIndex.Value And If txtclinmode.Text Then
+    If txtclinmode.Text = "Consultation" Then
+      xIndex = "Consultation|" & CStr(txtclinIndex.Value)
+    Else If txtclinmode.Text = "OP Visit" Then
+      xIndex = "OPVisit|" & CStr(txtclinIndex.Value)
+    Endif
+  Else
+    xIndex = ""
+  Endif
+
+  Return xIndex
+
+End
+
 Public Sub mnucust1_Click()
 
   Dim hCls As CReportCustom
 
   If txtencid.Text Then
-    hCls = New CReportCustom(Trim(txtencid.Text), mnucust1.Tag, "ReportSize", MMain.$defUnit)
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust1.Tag, "ReportSize", MMain.$defUnit, GetReportIndex())
     hCls.Preview()
   Endif
 
@@ -3228,7 +3185,7 @@ Public Sub mnucust2_Click()
   Dim hCls As CReportCustom
 
   If txtencid.Text Then
-    hCls = New CReportCustom(Trim(txtencid.Text), mnucust2.Tag, "ReportSize", MMain.$defUnit)
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust2.Tag, "ReportSize", MMain.$defUnit, GetReportIndex())
     hCls.Preview()
   Endif
 
@@ -3239,7 +3196,7 @@ Public Sub mnucust3_Click()
   Dim hCls As CReportCustom
 
   If txtencid.Text Then
-    hCls = New CReportCustom(Trim(txtencid.Text), mnucust3.Tag, "ReportSize", MMain.$defUnit)
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust3.Tag, "ReportSize", MMain.$defUnit, GetReportIndex())
     hCls.Preview()
   Endif
 
@@ -3250,7 +3207,7 @@ Public Sub mnucust4_Click()
   Dim hCls As CReportCustom
 
   If txtencid.Text Then
-    hCls = New CReportCustom(Trim(txtencid.Text), mnucust4.Tag, "ReportSize", MMain.$defUnit)
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust4.Tag, "ReportSize", MMain.$defUnit, GetReportIndex())
     hCls.Preview()
   Endif
 
@@ -3261,7 +3218,7 @@ Public Sub mnucust5_Click()
   Dim hCls As CReportCustom
 
   If txtencid.Text Then
-    hCls = New CReportCustom(Trim(txtencid.Text), mnucust5.Tag, "ReportSize", MMain.$defUnit)
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust5.Tag, "ReportSize", MMain.$defUnit, GetReportIndex())
     hCls.Preview()
   Endif
 
@@ -3272,7 +3229,7 @@ Public Sub mnucust6_Click()
   Dim hCls As CReportCustom
 
   If txtencid.Text Then
-    hCls = New CReportCustom(Trim(txtencid.Text), mnucust6.Tag, "ReportSize", MMain.$defUnit)
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust6.Tag, "ReportSize", MMain.$defUnit, GetReportIndex())
     hCls.Preview()
   Endif
 
@@ -3283,7 +3240,7 @@ Public Sub mnucust7_Click()
   Dim hCls As CReportCustom
 
   If txtencid.Text Then
-    hCls = New CReportCustom(Trim(txtencid.Text), mnucust7.Tag, "ReportSize", MMain.$defUnit)
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust7.Tag, "ReportSize", MMain.$defUnit, GetReportIndex())
     hCls.Preview()
   Endif
 
@@ -3294,7 +3251,7 @@ Public Sub mnucust8_Click()
   Dim hCls As CReportCustom
 
   If txtencid.Text Then
-    hCls = New CReportCustom(Trim(txtencid.Text), mnucust8.Tag, "ReportSize", MMain.$defUnit)
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust8.Tag, "ReportSize", MMain.$defUnit, GetReportIndex())
     hCls.Preview()
   Endif
 
@@ -3305,7 +3262,7 @@ Public Sub mnucust9_Click()
   Dim hCls As CReportCustom
 
   If txtencid.Text Then
-    hCls = New CReportCustom(Trim(txtencid.Text), mnucust9.Tag, "ReportSize", MMain.$defUnit)
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust9.Tag, "ReportSize", MMain.$defUnit, GetReportIndex())
     hCls.Preview()
   Endif
 
@@ -3316,7 +3273,7 @@ Public Sub mnucust10_Click()
   Dim hCls As CReportCustom
 
   If txtencid.Text Then
-    hCls = New CReportCustom(Trim(txtencid.Text), mnucust10.Tag, "ReportSize", MMain.$defUnit)
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust10.Tag, "ReportSize", MMain.$defUnit, GetReportIndex())
     hCls.Preview()
   Endif
 
@@ -3329,7 +3286,7 @@ Public Sub mnuessenexam_Click()
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = modClinic.GetFullVitalList(Trim(txtencid.Text))
+    xx = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
     hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
   Endif
@@ -3719,7 +3676,7 @@ Private Sub RestrictUserAccess()
   If $UserRestrict.Exist("Initial Planning") Then
     btnplan.Enabled = False
   Endif
-  If $UserRestrict.Exist("Final Planning") Then
+  If $UserRestrict.Exist("Expert Planning") Then
     btnplanfinal.Enabled = False
   Endif
 
@@ -4085,7 +4042,7 @@ Public Sub btngetfeed_Click()
   Endif
 
   If txtfeedback.Text Then
-    modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", "Final Planning", txtfeedback.KeyList.Join(";"), txtfeedback.RichText, xboolean)
+    modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", "Expert Planning", txtfeedback.KeyList.Join(";"), txtfeedback.RichText, xboolean)
     ShowPlanningExpert()
     Balloon.Info(("Information saved"), btngetfeed)
     Balloon.Delay = modBasic.$BalloonDelay
@@ -4103,5 +4060,137 @@ Public Sub btnsaveAll_Click()
     Balloon.Info(("Information saved"), btnsaveAll)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
+
+End
+
+''---------------------- Outcome ---------------------------
+Public Sub btnselect_Click()
+
+  Dim xdept As String
+  Dim xval As String
+  Dim asx As String[]
+
+  If modBasic.$FixedDepartment Then
+    xdept = modBasic.$FixedDepartment
+  Else
+    xdept = ""
+  Endif
+  xval = CConsultIndex(Trim(txtencid.Text), xdept)
+  If xval Then
+    asx = Split(xval, "|")
+    txtclinIndex.Value = CLong(asx[0])
+    txtclinmode.Text = asx[1]
+    If txtclinIndex.Value And If txtclinmode.Text Then
+      pnloutcome.Enabled = True
+      txtclindepart.Text = GetConsultDepartment(txtclinmode.Text, txtclinIndex.Value, Trim(txtencid.Text))
+    Endif
+  Endif
+
+End
+
+Public Sub rbimproved_Click()
+
+  lbloutcome.Visible = False
+  cmbrefer.Visible = False
+  dtfollowup.Visible = False
+
+End
+
+Public Sub rblama_Click()
+
+  lbloutcome.Visible = False
+  cmbrefer.Visible = False
+  dtfollowup.Visible = False
+
+End
+
+Public Sub rbadmission_Click()
+
+  lbloutcome.Visible = True
+  lbloutcome.Text = "Admission To"
+  cmbrefer.Visible = True
+  dtfollowup.Visible = False
+  cmbrefer.List = modGeneral.GetDepartmentAllList("Patient Ward")
+
+End
+
+Public Sub rbreferred_Click()
+
+  lbloutcome.Visible = True
+  lbloutcome.Text = "Referred To"
+  cmbrefer.Visible = True
+  dtfollowup.Visible = False
+  cmbrefer.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldlocation from tblreferlist"))
+
+End
+
+Public Sub rbfollowup_Click()
+
+  lbloutcome.Visible = True
+  lbloutcome.Text = "Follow-up Date"
+  cmbrefer.Visible = False
+  dtfollowup.Visible = True
+
+End
+
+Public Sub rbdeath_Click()
+
+  lbloutcome.Visible = True
+  lbloutcome.Text = "Death Date Time"
+  cmbrefer.Visible = False
+  dtfollowup.Visible = True
+
+End
+
+Public Sub btnoutcome_Click()
+
+  Dim xmode As String
+
+  If txtclinIndex.Value And If txtclinmode.Text Then
+    Inc Application.Busy
+    modDatabase.$myConn.Begin
+    If rbadmission.Value = True Then
+      xmode = "Admission"
+    Else If rbfollowup.Value = True Then
+      xmode = "Follow Up"
+      modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "Follow Up", dtfollowup.Value)
+    Else If rbreferred.Value = True Then
+      xmode = "Referred"
+      modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "Refer(OPD)", cmbrefer.Text)
+    Else If rblama.Value = True Then
+      xmode = "LAMA"
+      modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "LAMA(OPD)", "")
+    Else If rbdeath.Value = True Then
+      xmode = "Death"
+      modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "Death(OPD)", "", dtfollowup.Value)
+    Else If rbimproved.Value = True Then
+      xmode = "Improved"
+    Endif
+
+    If xmode Then
+      If txtclinmode.Text = "Consultation" Then
+        modPatientSub.UpdateConsultData(txtclinIndex.Value, Trim(txtencid.Text), "Done", txtcomment.RichText, xmode)                       ''
+      Else If txtclinmode.Text = "OP Visit" Then
+        modPatientSub.UpdateOPVisitData(txtclinIndex.Value, Trim(txtencid.Text), "Done", txtcomment.RichText, xmode)
+      Endif
+    Endif
+    modDatabase.$myConn.Commit
+    Dec Application.Busy
+
+    ButtonControl()
+    Balloon.Info(("Information saved"), btnoutcome)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+Catch
+  modDatabase.$myConn.Rollback
+  Dec Application.Busy
+  modHelpVariable.CreateErrorReport()
+
+End
+
+Public Sub btnopreport_Click()
+
+  mnuopd_Click()
 
 End

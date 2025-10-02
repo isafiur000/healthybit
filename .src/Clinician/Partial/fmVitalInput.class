@@ -1,9 +1,9 @@
 ' Gambas class file
 
-Private $rData As Result
-Private $aMyFields As String[]
 Private $encid As String
 Private $sVitalsVar As Variant[]
+Private $rData As Result
+Private $aMyFields As String[]
 
 Private $sType As String
 Private $sSysCons As String
@@ -17,38 +17,8 @@ End
 
 Public Sub Form_Open()
 
-  Dim hForm As FmQuantiEntry
-
-  modGeneralMain.ArrangeFormCentre(Me, "False")
-  hForm = New FmQuantiEntry(txtexamval, pnlquanti)
-  modBasic.LoadClinicalChartSetting()
-  txtpatientname.Text = modPatient.GetPatientNameByEnc($encid)
-  txtcolor.Background = modPatient.GetPatientColorStatic($encid)
   $sVitalsVar = modPathoSub.GetAllEssentialExams($encid)
   ListBox1.List = modString.GetListFromVariant($sVitalsVar, "ExamName", True)
-
-End
-
-Public Sub Form_KeyRelease()
-
-  If Key.Code = Key.Esc Then
-    Me.Close
-  Else If Key.Code = Key.Up Then
-    ListBox1.SetFocus
-  Else If Key.Code = Key.Down Then
-    ListBox1.SetFocus
-  Else
-    modGeneralmain.GoToNextControlTab()
-  Endif
-
-End
-
-Public Sub TabPanel1_Click()
-
-  If TabPanel1.Index = 0 Then
-  Else If TabPanel1.Index = 1 Then
-    FillDailyGrid()
-  Endif
 
 End
 
@@ -94,7 +64,6 @@ Public Sub ListBox1_Click()
         txtmin.Value = xlimit[0]
         txtmax.Value = xlimit[1]
         lblunit.Text = modClinic.GetExamUnit(sColl["ExamName"], $encid)
-        FillVitalExamChart(PictureBox1, $encid, sColl["ExamName"])
       Else If sColl["DataType"] = "Qualitative" Then
         txtexamval.Enabled = False
         txtexamval.Visible = False
@@ -125,7 +94,6 @@ Public Sub btnsave_Click()
         Endif
       Endif
       modClinSub.AddQuantiData($encid, "", lblexamname.Text, $sOption, txtexamval.Value, chkabnormal.Value, "Essential Examinations", $sSysCons)
-      FillVitalExamChart(PictureBox1, $encid, lblexamname.Text)
 
     Else If $sType = "Qualitative" Then
       If txtquali Then
@@ -133,7 +101,6 @@ Public Sub btnsave_Click()
       Endif
     Endif
     ShowExamGrid(ListBox1.Text)
-    FillDailyGrid()
     txtquali.Clear()
     txtquali.Text = ""
     txtexamval.Value = 0
@@ -173,11 +140,11 @@ Private Sub ShowExamGrid(sExam As String)
   With GridView1
     .Columns[0].Width = 1
     .Columns[1].Width = 25
-    .Columns[2].Width = 120 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 150 * modBasic.$AppWidthRatio
     .Columns[3].Width = 1
-    .Columns[4].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 300 * modBasic.$AppWidthRatio
     .Columns[5].Width = 25 * modBasic.$AppWidthRatio
-    .Columns[6].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[6].Width = 200 * modBasic.$AppWidthRatio
     .Columns[7].Width = 1
 
     .Columns[2].Text = "DateTime"
@@ -191,55 +158,18 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
 
   $rData.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView1, Row)
-  If Column = 5 Then
+  If Column = 1 Then
+    GridView1.Data.Background = modPathoSub.GetPatientColorByTriage($rData[$aMyFields[Column]])
+    GridView1.Data.Text = ""
+  Else If Column = 2 Then
+    GridView1.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.GeneralDate)
+  Else If Column = 5 Then
     GridView1.Data.Picture = Picture[modMisc.GetGridIcon($rData[$aMyFields[Column]])]
     GridView1.Data.Text = ""
   Else If Column = 6 Then
     GridView1.Data.RichText = modClinic.GetExamValueString($encid, $rData[$aMyFields[Column]], False)
-  Else If Column = 2 Then
-    GridView1.Data.Text = modPatient.GetDayTimeFromAdmission($encid, $rData[$aMyFields[Column]])
-  Else If Column = 1 Then
-    GridView1.Data.Background = modPathoSub.GetPatientColorByTriage($rData[$aMyFields[Column]])
-    GridView1.Data.Text = ""
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]
-  Endif
-
-End
-
-Private Sub FillVitalExamChart(drw As DrawingArea, encid As String, strHead As String)
-
-  Dim maxval As Float
-  Dim minval As Float
-  Dim normval As Float
-  Dim sql As String
-  Dim rData As Result
-  Dim dat As Date
-  Dim xlimit As Float[]
-
-  Dim pointsArr_x As Float[]
-  Dim pointsArr_y As Float[]
-
-  drw.Clear
-  dat = DateAdd(Now(), gb.day, 0 - CInt(SpinBox1.Value))
-  pointsArr_x = New Float[]
-  pointsArr_y = New Float[]
-  sql = "select fldrepquanti,fldtime from tblpatientexam where fldencounterval=&1 and fldhead=&2 and fldtype=&3 and fldsave=&4 and fldtime>&5"
-  rData = modDatabase.$myConn.Exec(sql, encid, strHead, "Quantitative", True, modDate.StartSqlDate(dat))
-  If rData.Available Then
-    xlimit = modClinic.GetBothQuantiExamVal(strHead, encid)
-    minval = xlimit[0]
-    maxval = xlimit[1]
-    normval = modClinic.GetNormalQuantiExamVal(strHead, encid)
-    For Each rData
-      pointsArr_x.Add(rData!fldtime)
-      pointsArr_y.Add(rData!fldrepquanti)
-    Next
-
-    If pointsArr_x.Count Then
-      modChart.DrawClinicalChart(drw, encid, pointsArr_x, pointsArr_y, maxval, minval, normval)
-    Endif
-
   Endif
 
 End
@@ -261,7 +191,6 @@ Public Sub GridView1_Click()
       xquantival = GetQuantiValues("Exam", $encid, GridView1[GridView1.Row, 4].Text, xlimit[0], xlimit[1], modClinic.GetExamValueByID(GridView1[GridView1.Row, 0].Text))                                       '
       If xquantival Then
         modClinSub.UpdateQuantiData(GridView1[GridView1.Row, 0].Text, xquantival[0], xquantival[1])
-        FillVitalExamChart(PictureBox1, $encid, lblexamname.Text)
       Endif
     Else If $sType = "Qualitative" Then
       If $sOption = "Clinical Scale" Then
@@ -292,12 +221,6 @@ Public Sub GridView1_Click()
 
   Endif
   GridView1.Row = Row
-
-End
-
-Public Sub btnrefresh_Click()
-
-  FillVitalExamChart(PictureBox1, $encid, ListBox1.Text)
 
 End
 
@@ -359,79 +282,5 @@ Public Sub mnudel_Click()
       Endif
     Endif
   Endif
-
-End
-
-Public Sub btncolor_Click()
-
-  Dim xcol As String
-
-  xcol = InputColor("Triage", txtcolor.Background)
-  If xcol Then
-    txtcolor.Background = CInt(xcol)
-    modPatient.SetPatientColor($encid, xcol)
-  Endif
-
-End
-
-''==================== table =======================
-Private Sub FillDailyGrid()
-
-  Dim xfir As Date
-  Dim xlast As Date
-
-  Dim i As Integer
-  Dim j As Integer
-
-  xfir = modDate.StartSqlHour(DateAdd(Now(), gb.Hour, -18))
-  xlast = modDate.StartSqlHour(DateAdd(Now(), gb.Hour, 1))
-
-  GridView2.Clear()
-  GridView2.Rows.Count = $sVitalsVar.Count
-  GridView2.Columns.Count = DateDiff(xfir, xlast, gb.Hour) + 1
-
-  For i = 0 To ListBox1.List.Count - 1
-    For j = 0 To GridView2.Columns.Count - 1
-      If j = 0 Then
-        GridView2[i, j].Text = $sVitalsVar[i]["ExamName"]
-      Else
-        GridView2[i, j].Text = GetExamValueByDate($encid, $sVitalsVar[i]["ExamName"], DateAdd(xfir, gb.Hour, j))
-      Endif
-    Next
-  Next
-
-  With GridView2
-    .Rows.Height = modBasic.$AppGridRowHeight
-    For j = 0 To GridView2.Columns.Count - 1
-      If j = 0 Then
-        .Columns[j].Width = 150 * modBasic.$AppWidthRatio
-        .Columns[j].Text = "Examination"
-      Else
-        .Columns[j].Width = 50 * modBasic.$AppWidthRatio
-        .Columns[j].Text = modReportVar.GetDateTimeReport(DateAdd(xfir, gb.Hour, j), gb.ShortTime)
-      Endif
-    Next
-  End With
-  GridView2.Scroll(GridView2.X + GridView2.Width, GridView2.Y)
-
-End
-
-Private Function GetExamValueByDate(encid As String, xexam As String, xDate As Date) As String
-
-  Dim res As Result
-  Dim xx As String
-
-  res = modDatabase.$myConn.Exec("select fldrepquanti from tblpatientexam where fldencounterval=&1 and fldsave=&2 and fldhead=&3 and fldtime>=&4 and fldtime<=&5", encid, True, xexam, modDate.StartSqlHour(xDate), modDate.EndSqlHour(xDate))
-  If res.Available Then
-    res.MoveFirst
-    If res["fldrepquanti"] Then
-      xx = CStr(res["fldrepquanti"])
-    Else
-      xx = ""
-    Endif
-  Else
-    xx = ""
-  Endif
-  Return xx
 
 End

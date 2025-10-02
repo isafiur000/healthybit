@@ -1,0 +1,143 @@
+' Gambas class file
+
+Private $hProc As Process
+Private $sPath As String
+Private $start As Date
+
+Private $sValue As String
+
+Public Sub Run() As String
+
+  If Me.ShowModal() Then Return $sValue
+
+End
+
+Public Sub Form_Open()
+
+  modGeneralMain.ArrangeFormCentre(Me, "False")
+  If modBasic.$CloudAIURL_Trans And If modBasic.$CloudAIModel_Trans Then
+    cmbmodel.Text = modBasic.$CloudAIModel_Trans
+    Panel2.Enabled = False
+  Else
+    Panel2.Enabled = True
+    cmblanguage.List = ["English"]
+    cmblanguage.Text = "English"
+    cmbmodel.List = modCloudAI.$WhisperModels
+    cmbmodel.Text = modSettings.ShowSettingFromFIle("SpeechToText/ModelName")
+  Endif
+
+End
+
+Public Sub cmbmodel_Click()
+
+  If cmbmodel.Text Then
+    modSettings.SaveSettingsToFile("SpeechToText/ModelName", cmbmodel.Text)
+  Endif
+
+End
+
+Public Sub btnrecord_Click()
+
+  Dim xval As String
+
+  If btnrecord.Text = "START" Then
+    btnrecord.Text = "STOP"
+    btnrecord.Foreground = Color.Red
+    Wait
+    StartRecording()
+
+  Else If btnrecord.Text = "STOP" Then
+    btnrecord.Text = "START"
+    btnrecord.Foreground = Color.Default
+    Wait
+    StopRecording()
+    If Exist($sPath) Then
+      txtsize.Value = Round(Stat($sPath).Size / 1024, -3)
+      xval = GetVoiceTextConversion($sPath)
+      If xval Then
+        TextArea1.Text = xval
+        $sValue = xval
+      Endif
+    Endif
+
+  Endif
+
+End
+
+Public Sub btnclose_Click()
+
+  If $sValue Then
+    Me.Close(True)
+  Else
+    Me.Close()
+  Endif
+
+End
+
+Public Sub Timer1_Timer()
+
+  Dim aa As Date
+
+  aa = Date(0, 0, 0, 0, 0, 0)
+  LCDLabel1.Text = Format(DateAdd(aa, gb.Second, DateDiff($start, Now(), gb.Second)), "hh: nn: ss")
+
+End
+
+''--------------- Procedures -----------------
+Private Sub StartRecording()
+
+  Dim arcmd As String[]
+
+  If System.Exist("arecord") Then
+    $start = Now()
+    Timer1.Enabled = True
+    $sPath = Temp() & ".wav"
+    arcmd = New String[]
+    arcmd.Add("arecord")
+    If modBasic.$AudioRecFormat Then
+      arcmd.Add("-f")
+      arcmd.Add(modBasic.$AudioRecFormat)
+    Endif
+    arcmd.Add($sPath)
+    modBasic.DebugAPIString("Execute " & arcmd.Join(Space(1)))
+    $hProc = Exec arcmd
+  Else
+    modApplSub.InstallSelectedApplication(["alsa-utils"])
+  Endif
+
+End
+
+Private Sub StopRecording()
+
+  $hProc.Kill()
+  Timer1.Enabled = False
+  Wait
+
+End
+
+Private Function GetVoiceTextConversion(sPath As String) As String
+
+  Dim xx As String
+  Dim xnew As String
+  Dim hForm As CGroqTrans
+
+  If cmbmodel.Text Then
+    Inc Application.Busy
+    If modBasic.$CloudAIURL_Trans And If modBasic.$CloudAIModel_Trans Then
+      hForm = New CGroqTrans(modBasic.$CloudAIModel_Trans, sPath)
+      xx = hForm.GetAPIAnswer()
+    Else
+      If cmblanguage.Text Then
+        xnew = File.Dir(sPath) &/ File.BaseName(sPath) & ".txt"
+        modCloudAI.GetTextToSpeech(cmbmodel.Text, sPath, cmblanguage.Text, "txt", File.Dir(sPath))
+        If Exist(xnew) Then
+          xx = File.Load(xnew)
+        Endif
+      Endif
+    Endif
+    Dec Application.Busy
+  Endif
+
+  Return xx
+
+End

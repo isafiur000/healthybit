@@ -1178,5 +1178,13 @@ ALTER TABLE tblcompexam ADD fldexamorder INT( 11 ) NULL
 
 ALTER TABLE tbldeptexam ADD fldexamorder INT( 11 ) NULL
 
+ALTER TABLE tblmedinventory ADD fldreceiver VARCHAR( 150 ) NULL
+ALTER TABLE tblmedinventory ADD fldfirsttime DATETIME NULL
+ALTER TABLE tblmedinventory ADD fldsecondtime DATETIME NULL
+ALTER TABLE tblmedinventory ADD flduserid_start VARCHAR( 25 ) NULL
+ALTER TABLE tblmedinventory ADD fldcomp_start VARCHAR( 50 ) NULL
+
+ALTER TABLE tblconsult ADD COLUMN fldsummary TEXT NULL
+ALTER TABLE tblopvisit ADD COLUMN fldsummary TEXT NULL
 
 

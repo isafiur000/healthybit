@@ -60,7 +60,7 @@ Public Sub Form_Open()
   cmbdept.Add("Unallocated")
   cmbdept.Add("Waiting")
   cmbdept.Add("Free Beds")
-  cmbdept.Add("%")
+  cmbdept.Add("All")
   If modHelpVariable.$LogInCategory = "Clinician" Then
     GetComboItemList()
     xPanelentry.Visible = True
@@ -196,7 +196,11 @@ Private Sub ShowOccupancy()
 
   Dim bedcount As Integer
 
-  bedcount = modGeneral.GetWardBedCount(cmbdept.Text)
+  If modBasic.$ClinDepartFormat = "Service" Then
+    bedcount = modGeneral.GetWardBedServiceCount(cmbdept.Text)
+  Else
+    bedcount = modGeneral.GetWardBedCount(cmbdept.Text)
+  Endif
   If bedcount Then
     ProgressBar1.Value = $rData.Count / bedcount
   Else
@@ -248,7 +252,7 @@ Private Function GetSQLColumns() As String[]
   Endif
 
   Select cmbdept.Text
-    Case "Unallocated", "Waiting", "Free Beds", "%"
+    Case "Unallocated", "Waiting", "Free Beds", "All"
     Case Else
       For j = 0 To xFldList.Count - 1
         xFldList[j] = "tbldepartmentbed." & xFldList[j]
@@ -282,7 +286,7 @@ Private Function ExecuteQuery(xFldList As String[]) As Result
   Endif
 
   $RepoStr = modDataRepo.GetWhereStringRepo(cmblocation.Text, cmbvalue.Text, "tbldepartmentbed")
-  If cmbdept.Text = "%" Then
+  If cmbdept.Text = "All" Then
     sql = "select " & xFldList.Join(",") & " from tbldepartmentbed where fldencounterval like &1" & xencid & xcolor & $RepoStr & " ORDER BY fldbed ASC"                       ''
     res = modDatabase.$myConn.Exec(sql, "%")
   Else If cmbdept.Text = "Unallocated" Then
@@ -331,7 +335,7 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
     If cmbdept.Text = "Free Beds" Then
       xxx = xVariable
     Else
-      xxx = modPatient.GetPatientAgeString(xVariable, Now()) & "<br>" & modPatient.GetPatientSex(xVariable, modDatabase.$syConn) & "<br>" & "<small>" & modReportVar.GetDateTimeReport(modPatient.GetAdmissionDate(xVariable), gb.GeneralDate) & "</small>"                           ''
+      xxx = modPatient.GetPatientAgeString(xVariable, Now()) & modString.HTMLBlankSpace(1) & modPatient.GetPatientSex(xVariable, modDatabase.$syConn) & "<br>" & "<small>" & modReportVar.GetDateTimeReport(modPatient.GetAdmissionDate(xVariable), gb.GeneralDate) & "</small>"                           ''
     Endif
   Else If Column = 8 Then
     xxx = modPatient.PatientDiagnoCurrentList(xVariable).Join(gb.NewLine)
@@ -454,7 +458,7 @@ Public Sub mnusearchconsult_Click()
 
   xname = InputBox(("Search Consultant UserID"), "Search", "")
   If xname Then
-    cmbdept.Text = "%"
+    cmbdept.Text = "All"
     xFldList = GetSQLColumns()
     sql = "select " & xFldList.Join(",") & " from tbldepartmentbed where fldencounterval in(select fldencounterval from tblencounter where flduserid=&1)"
     $rData = modDatabase.$myConn.Exec(sql, xname)
@@ -471,7 +475,7 @@ Public Sub mnusearchname_Click()
 
   xname = InputDoubleText(("Search Patient Name"), ["First Name", "SurName"], ["%", "%"], modBasic.$SurNameList)
   If xname Then
-    cmbdept.Text = "%"
+    cmbdept.Text = "All"
     xFldList = GetSQLColumns()
     sql = "select " & xFldList.Join(",") & " from tbldepartmentbed where fldencounterval in(select fldencounterval from tblencounter where fldpatientval in(select fldpatientval from tblpatientinfo where lower(fldptnamefir) like &1 and lower(fldptnamelast) like &2))"
     $rData = modDatabase.$myConn.Exec(sql, LCase(xname[0]), LCase(xname[1]))
@@ -708,7 +712,7 @@ Public Sub GridView1_Click()
   Dim xData As String
 
   If GridView1.Column = 11 Then
-    If cmbdept.Text = "%" Then
+    If cmbdept.Text = "All" Then
     Else If cmbdept.Text = "Unallocated" Then
     Else If cmbdept.Text = "Free Beds" Then
     Else
@@ -848,7 +852,7 @@ Public Sub mnudashboard_Click()
     xdate = DoubleDates("Select Dates", "IP Summary", [Now(), Now()])
     If xdate Then
       Inc Application.Busy
-      If cmbdept.Text = "%" Then
+      If cmbdept.Text = "All" Then
         xList = modBasic.$IPDDepartmentsAll
       Else
         xList = [cmbdept.Text]
@@ -868,7 +872,7 @@ Public Sub mnutoday_Click()
 
   If cmbdept.Text Then
     Inc Application.Busy
-    If cmbdept.Text = "%" Then
+    If cmbdept.Text = "All" Then
       xList = modBasic.$IPDDepartmentsAll
     Else
       xList = [cmbdept.Text]
@@ -1194,7 +1198,7 @@ Private Function GetOxygenIcon(sBedVal As String) As String
   Dim sPath As String
   Dim res As Result
 
-  If cmbdept.Text = "%" Then
+  If cmbdept.Text = "All" Then
     res = modDatabase.$myConn.Exec("select fldoxyport from tbldepartmentbed where fldbed=&1", sBedVal)
     If res.Available Then
       sVal = res["fldoxyport"]
@@ -1220,7 +1224,7 @@ Private Function GetVentilatorIcon(sBedVal As String) As String
   Dim sPath As String
   Dim res As Result
 
-  If cmbdept.Text = "%" Then
+  If cmbdept.Text = "All" Then
     res = modDatabase.$myConn.Exec("select fldventilator from tbldepartmentbed where fldbed=&1", sBedVal)
     If res.Available Then
       sVal = res["fldventilator"]
@@ -1975,7 +1979,7 @@ Public Sub mnuessenexam_Click()
   Dim hForm As FmMultiChart
 
   If GridView1.Rows.Selection.Count Then
-    xx = modClinic.GetFullVitalList(GridView1[GridView1.Row, 4].Text)
+    xx = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
     hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, xx, yy, LabUnitForm())
     modWorkSpace.Add(hForm)
   Endif

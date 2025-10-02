@@ -56,13 +56,14 @@ End
 
 Public Sub SetHTMLRichText(sText As String)
 
-  If modString.GetRichTextMode(sText) = True Then
-    TextEdit1.RichText = sText
-    btnhtml.Value = True
-  Else
-    ' ' TextEdit1.RichText = Replace(sText, gb.NewLine, "<br>") ''Why??
-    TextEdit1.Text = sText
-    btnhtml.Value = False
+  If sText Then
+    If modString.GetRichTextMode(sText) = True Then
+      TextEdit1.RichText = sText
+      btnhtml.Value = True
+    Else
+      TextEdit1.Text = sText
+      btnhtml.Value = False
+    Endif
   Endif
 
 End

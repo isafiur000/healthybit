@@ -55,7 +55,9 @@ Public Sub Form_Open()
   cmbhtmltopdf.List = ["wkhtmltopdf", "chrome"]
   cmbnumtotext.List = ["number", "num2words"]
 
-  cmbAIurl.List = ["https://api.groq.com/openai/v1/chat/completions"]
+  cmbAIgenurl.List = ["https://api.groq.com/openai/v1/chat/completions"]
+  cmbAItranscurl.List = ["https://api.groq.com/openai/v1/audio/transcriptions"]
+  cmbAItransmodel.List = ["whisper-large-v3-turbo", "whisper-large-v3"]
 
   BarCodeReader()
   ShowWebImage()
@@ -198,42 +200,13 @@ End
 ''--------------------------------- Miscellaneous -------------------------------------------------------------
 Private Sub ShowMiscSetting()
 
-  txtsshport.Text = modSettings.ShowSettingFromFIle("SSHAuthentication/Port")
-  txtexpeak.Text = modSettings.ShowSettingFromFIle("TextToSpeech/CustomCommand")
-  txtcamus.Text = modSettings.ShowSettingFromFIle("CamusChat/URL")
-
   cmbserialdevice.Text = modSettings.ShowSettingFromFIle("SerialPort/Device")
   txtserialclear.Text = modSettings.ShowSettingFromFIle("SerialPort/ClearString")
 
   txttelegramapi.Text = modSettings.ShowSettingFromFIle("Telegram/API")
   txttelegramlink.Text = modSettings.ShowSettingFromFIle("Telegram/Link")
 
-End
-
-''ssh port
-Public Sub btnsshport_Click()
-
-  modSettings.SaveSettingsToFile("SSHAuthentication/Port", txtsshport.Text)
-  Balloon.Info(("Information saved"), btnsshport)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-''speak text
-Public Sub btnespeak_Click()
-
-  modSettings.SaveSettingsToFile("TextToSpeech/CustomCommand", txtexpeak.Text)
-  Balloon.Info(("Information saved"), btnespeak)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-''camus
-Public Sub btncamus_Click()
-
-  modSettings.SaveSettingsToFile("CamusChat/URL", txtcamus.Text)
-  Balloon.Info(("Information saved"), btncamus)
-  Balloon.Delay = modBasic.$BalloonDelay
+  txtaudioformat.Text = modSettings.ShowSettingFromFIle("AudioRecording/Format")
 
 End
 
@@ -265,10 +238,12 @@ Public Sub btntelegramlink_Click()
 
 End
 
-Public Sub btncertdown_Click()
+Public Sub btnaudioformat_Click()
 
-  Exec ["wget", "http://curl.haxx.se/ca/cacert.pem"] Wait
-  Message.Info("Copy " & User.Home &/ "cacert.pem" & " To " & modHelpVariable.$appetcFolder, ("OK"))
+  modSettings.SaveSettingsToFile("AudioRecording/Format", txtaudioformat.Text)
+  modBasic.$AudioRecFormat = txtaudioformat.Text
+  Balloon.Info(("Information saved"), btnaudioformat)
+  Balloon.Delay = modBasic.$BalloonDelay
 
 End
 
@@ -1780,8 +1755,12 @@ End
 ''------------------------- Cloud AI -------------------
 Private Sub DisplayCloudAI()
 
-  cmbAIurl.Text = modSettings.ShowSettingFromFIle("CloudAI/API_URL")
-  cmbAImodel.Text = modSettings.ShowSettingFromFIle("CloudAI/Modality")
+  cmbAIgenurl.Text = modSettings.ShowSettingFromFIle("CloudAI/GenerativeAPI_URL")
+  cmbAItranscurl.Text = modSettings.ShowSettingFromFIle("CloudAI/TranscriptionAPI_URL")
+
+  cmbAIgenmodel.Text = modSettings.ShowSettingFromFIle("CloudAI/GenerativeModel")
+  cmbAItransmodel.Text = modSettings.ShowSettingFromFIle("CloudAI/TranscriptionModel")
+
   txtAIkey.Text = modSettings.ShowSettingFromFIle("CloudAI/API_Key")
   txtAIqueryclin.Text = modSettings.ShowSettingFromFIle("CloudAI/Clinic_QueryList")
   txtAIquerydrug.Text = modSettings.ShowSettingFromFIle("CloudAI/Medicine_QueryList")
@@ -1790,12 +1769,12 @@ End
 
 Public Sub btnfillAImodel_Click()
 
-  cmbAImodel.Clear()
-  If cmbAIurl.Text = "https://api.groq.com/openai/v1/chat/completions" Then
+  cmbAIgenmodel.Clear()
+  If cmbAIgenurl.Text = "https://api.groq.com/openai/v1/chat/completions" Then
     If txtAIkey.Text Then
-      cmbAImodel.List = modCloudAI.GetGroqModelList(txtAIkey.Text)
+      cmbAIgenmodel.List = modCloudAI.GetGroqModelList(txtAIkey.Text)
     Else
-      cmbAImodel.List = modCloudAI.$GroqCloudModels
+      cmbAIgenmodel.List = modCloudAI.$GroqCloudModels
     Endif
   Endif
 
@@ -1803,7 +1782,7 @@ End
 
 Public Sub btnAIregister_Click()
 
-  If cmbAIurl.Text = "https://api.groq.com/openai/v1/chat/completions" Then
+  If cmbAIgenurl.Text = "https://api.groq.com/openai/v1/chat/completions" Then
     modDevice.DesktopOpenFile("https://console.groq.com/keys")
   Endif
 
@@ -1823,20 +1802,38 @@ Public Sub txtAIquerydrug_Click()
 
 End
 
-Public Sub btnAIurl_Click()
+Public Sub btnAIgenurl_Click()
 
-  modSettings.SaveSettingsToFile("CloudAI/API_URL", cmbAIurl.Text)
-  modBasic.$CloudAIURL = cmbAIurl.Text
-  Balloon.Info(("Information saved"), btnAIurl)
+  modSettings.SaveSettingsToFile("CloudAI/GenerativeAPI_URL", cmbAIgenurl.Text)
+  modBasic.$CloudAIURL_Gen = cmbAIgenurl.Text
+  Balloon.Info(("Information saved"), btnAIgenurl)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
 
-Public Sub btnAImodel_Click()
+Public Sub btnAItranscurl_Click()
 
-  modSettings.SaveSettingsToFile("CloudAI/Modality", cmbAImodel.Text)
-  modBasic.$CloudAIModel = cmbAImodel.Text
-  Balloon.Info(("Information saved"), btnAImodel)
+  modSettings.SaveSettingsToFile("CloudAI/TranscriptionAPI_URL", cmbAItranscurl.Text)
+  modBasic.$CloudAIURL_Trans = cmbAItranscurl.Text
+  Balloon.Info(("Information saved"), btnAItranscurl)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnAIgenmodel_Click()
+
+  modSettings.SaveSettingsToFile("CloudAI/GenerativeModel", cmbAIgenmodel.Text)
+  modBasic.$CloudAIModel_Gen = cmbAIgenmodel.Text
+  Balloon.Info(("Information saved"), btnAIgenmodel)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnAItransmodel_Click()
+
+  modSettings.SaveSettingsToFile("CloudAI/TranscriptionModel", cmbAItransmodel.Text)
+  modBasic.$CloudAIModel_Trans = cmbAItransmodel.Text
+  Balloon.Info(("Information saved"), btnAItransmodel)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

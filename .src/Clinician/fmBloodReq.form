@@ -5,19 +5,33 @@
   Tag = "Med Product Request"
   Text = ("Med Product Request")
   Resizable = False
+  { mnuhide Menu
+    Visible = False
+    { mnuchange Menu
+      Text = ("Return")
+    }
+  }
   { Panel1 Panel
     MoveScaled(0,0,90,65.5)
     { TabPanel1 TabPanel
       MoveScaled(1,9,88,56)
       Count = 2
       Index = 0
-      Text = ("Requested")
+      Text = ("Received")
+      { GridView2 GridView
+        MoveScaled(1,1,86,49)
+        Mode = Select.Single
+        Header = GridView.Both
+      }
+      Index = 1
+      Text = ("New Request")
       { cmbitem ComboBox
         MoveScaled(12,1,42,3)
         Sorted = True
       }
       { txtqty ValueBox
         MoveScaled(12,5,10,3)
+        ReadOnly = True
       }
       { btnsubOK Button
         MoveScaled(71,5,15,3)
@@ -61,14 +75,6 @@
       { btnshow Button
         MoveScaled(81,1,5,3)
         Picture = Picture["icon:/small/refresh"]
-      }
-      Index = 1
-      Text = ("Completed")
-      { GridView2 GridView
-        MoveScaled(1,1,86,50)
-        Mode = Select.Single
-        Header = GridView.Both
-        AutoResize = False
       }
       Index = 0
     }
