@@ -41,6 +41,17 @@ Private Function GetDefTable() As String
 
 End
 
+Private Sub LoadFormats()
+
+  Dim sTable As String
+
+  sTable = GetDefTable()
+  If sTable Then
+    cmbformat.List = GetFormatList(sTable)
+  Endif
+
+End
+
 Private Function GetFormatList(sTable As String) As String[]
 
   Dim res As Result
@@ -69,17 +80,6 @@ End
 Public Sub rbdischarge_Click()
 
   LoadFormats()
-
-End
-
-Private Sub LoadFormats()
-
-  Dim sTable As String
-
-  sTable = GetDefTable()
-  If sTable Then
-    cmbformat.List = GetFormatList(sTable)
-  Endif
 
 End
 

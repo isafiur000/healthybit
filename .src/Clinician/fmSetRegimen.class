@@ -1,24 +1,27 @@
 ' Gambas class file
 
-Private $sType As String
 Private $encid As String
-Private $sValue As Long[]
+Private $sValue As Collection
+
+Private $ItemList As String[]
+Private sIndexLst As Long[]
 
 Private $rData As Result
 Private $aMyFields As String[]
-Private $ItemList As String[]
-Private sIndexLst As Long[]
+Private $rData1 As Result
+Private $aMyFields1 As String[]
 
 Private $PatientNum As String
 Private $curEncid As String
 Private $lstEncid As String
 
-Public Sub Run(sType As String, Optional encid As String) As Long[]
+Public Sub Run(Optional encid As String) As Collection
 
-  $sType = sType
   If encid Then
     $encid = encid
   Endif
+
+  $sValue = New Collection
   If Me.ShowModal() Then Return $sValue
 
 End
@@ -26,31 +29,202 @@ End
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
-  If $sType = "Personal" Then
-    Me.Title = "Medicine Regimen"
-    lstletter.Visible = True
-    Panel4.Visible = False
-  Else If $sType = "Used Medicines" Then
-    Me.Title = "Medication History"
+  If $encid Then
     $curEncid = $encid
     $PatientNum = modPatient.GetPatientNoByEnc($encid)
     $lstEncid = modPatient.GetSecondLastEncidPatient($encid)
     cmbcategory.List = modPatient.GetEncListFromPatNo($PatientNum)
   Endif
+
+  rballroute.Value = True
+  rbcurrent.Value = True
+  sIndexLst = New Long[]
+
+  SetCategoryList()
+
+End
+
+Private Function GetRoute() As String
+
+  Dim xx As String
+
+  If rboral.Value = True Then
+    xx = "oral"
+  Else If rbliquid.Value = True Then
+    xx = "liquid"
+  Else If rbinject.Value = True Then
+    xx = "injection"
+  Else If rbfluid.Value = True Then
+    xx = "fluid"
+  Else If rbtopical.Value = True Then
+    xx = "topical"
+  Else If rbresp.Value = True Then
+    xx = "resp"
+  Else If rbeyear.Value = True Then
+    xx = "eye/ear"
+  Else If rbanalvag.Value = True Then
+    xx = "anal/vaginal"
+  Else
+    xx = "%"
+  Endif
+
+  Return xx
+
+End
+
+Public Sub TabPanel1_Click()
+
   $ItemList = New String[]
-  SHowGrid()
-  lstletter.List = modString.GetFirstLetterArray($ItemList)
+  If TabPanel1.Index = 0 Then
+    ShowNewRegimen()
+    lstletter2.List = modString.GetFirstLetterArray($ItemList)
+  Else If TabPanel1.Index = 1 Then
+    SHowPastGrid()
+    lstletter.List = modString.GetFirstLetterArray($ItemList)
+  Endif
   sIndexLst = New Long[]
 
 End
 
+Private Sub ShowTabGrid()
+
+  If TabPanel1.Index = 0 Then
+    ShowNewRegimen()
+  Else If TabPanel1.Index = 1 Then
+    SHowPastGrid()
+  Endif
+
+End
+
+Public Sub txtname_Change()
+
+  ShowTabGrid()
+
+End
+
+Public Sub rboral_Click()
+
+  ShowTabGrid()
+
+End
+
+Public Sub rbliquid_Click()
+
+  ShowTabGrid()
+
+End
+
+Public Sub rbinject_Click()
+
+  ShowTabGrid()
+
+End
+
+Public Sub rbfluid_Click()
+
+  ShowTabGrid()
+
+End
+
+Public Sub rbresp_Click()
+
+  ShowTabGrid()
+
+End
+
+Public Sub rbtopical_Click()
+
+  ShowTabGrid()
+
+End
+
+Public Sub rbeyear_Click()
+
+  ShowTabGrid()
+
+End
+
+Public Sub rbanalvag_Click()
+
+  ShowTabGrid()
+
+End
+
+Public Sub rballroute_Click()
+
+  ShowTabGrid()
+
+End
+
+Public Sub Form_KeyRelease()
+
+  If Key.Code = Key.Esc Then
+    Me.Close
+  Endif
+
+End
+
+Public Sub txtname_Click()
+
+  txtname.Text = ""
+
+End
+
+Public Sub btnok_Click()
+
+  Dim Row As Integer
+
+  If TabPanel1.Index = 0 Then
+    If GridView2.Rows.Selection.Count Then
+      For Row = 0 To GridView2.Rows.Count - 1
+        If GridView2[Row, 1].Picture = Picture["icons/checked.png"] Then
+          If sIndexLst.Exist(GridView2[Row, 0].Text) = False Then
+            sIndexLst.Add(GridView2[Row, 0].Text)
+            GridView2[Row, 1].Picture = Picture["icons/coll4.png"]
+          Endif
+        Endif
+      Next
+    Endif
+
+  Else If TabPanel1.Index = 1 Then
+    If GridView1.Rows.Selection.Count Then
+      For Row = 0 To GridView1.Rows.Count - 1
+        If GridView1[Row, 1].Picture = Picture["icons/checked.png"] Then
+          If sIndexLst.Exist(GridView1[Row, 0].Text) = False Then
+            sIndexLst.Add(GridView1[Row, 0].Text)
+            GridView1[Row, 1].Picture = Picture["icons/coll4.png"]
+          Endif
+        Endif
+      Next
+    Endif
+
+  Endif
+
+End
+
+Public Sub btnclose_Click()
+
+  If sIndexLst.Count Then
+    If TabPanel1.Index = 0 Then
+      $sValue.Add(sIndexLst, "New Regimen")
+    Else If TabPanel1.Index = 1 Then
+      $sValue.Add(sIndexLst, "Past Regimen")
+    Endif
+    Me.Close(True)
+  Else
+    Me.Close
+  Endif
+
+End
+
+''-------------------------- Past Regimens -------------------------
 Public Sub rbcurrent_Click()
 
   Dim xdate As Date
 
   $curEncid = $encid
   $ItemList = New String[]
-  SHowGrid()
+  SHowPastGrid()
   lstletter.List = modString.GetFirstLetterArray($ItemList)
   xdate = modPatient.GetRecordDate($curEncid)
   lbldate.Text = "DATE: " & Format(xdate, gb.ShortDate) & Space(1) & "(" & modDate.ConvertToLocaldate(xdate) & ")"
@@ -63,7 +237,7 @@ Public Sub rbpast_Click()
 
   $curEncid = $lstEncid
   $ItemList = New String[]
-  SHowGrid()
+  SHowPastGrid()
   lstletter.List = modString.GetFirstLetterArray($ItemList)
   xdate = modPatient.GetRecordDate($curEncid)
   lbldate.Text = "DATE: " & Format(xdate, gb.ShortDate) & Space(1) & "(" & modDate.ConvertToLocaldate(xdate) & ")"
@@ -78,7 +252,7 @@ Public Sub btnrefresh_Click()
     If cmbcategory.Text Then
       $curEncid = cmbcategory.Text
       $ItemList = New String[]
-      SHowGrid()
+      SHowPastGrid()
       lstletter.List = modString.GetFirstLetterArray($ItemList)
       xdate = modPatient.GetRecordDate($curEncid)
       lbldate.Text = "DATE: " & Format(xdate, gb.ShortDate) & Space(1) & "(" & modDate.ConvertToLocaldate(xdate) & ")"
@@ -87,60 +261,36 @@ Public Sub btnrefresh_Click()
 
 End
 
-Public Sub txtname_Change()
-
-  SHowGrid()
-
-End
-
-Private Sub SHowGrid()
+Private Sub SHowPastGrid()
 
   Dim sql As String
 
-  If $sType = "Personal" Then
-    sql = "select fldid,fldid,fldroute,fldbrandid,flddose,fldfreq,fldday,fldqty,fldusage from tblmedregimen where (flduserid=&1 or flduserid=&2) and lower(fldbrandid) like &3 ORDER BY fldbrandid"
-    If chkleftmain.Value = True Then
-      $rData = modDatabase.$myConn.Exec(sql, modBasic.$lbluser, "%", "%" & LCase(Trim(txtname.Text)) & "%")
-    Else
-      $rData = modDatabase.$myConn.Exec(sql, modBasic.$lbluser, "%", LCase(Trim(txtname.Text)) & "%")
-    Endif
-  Else If $sType = "Used Medicines" Then
-    sql = "select fldid,fldid,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,flddirection from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and fldcurval=&4 and flddose>&5 and lower(flditem) like &6 ORDER BY flditem"   ''and fldid IN (SELECT MAX(fldid) FROM tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and fldcurval=&4 GROUP BY flditem)
-    If chkleftmain.Value = True Then
-      $rData = modDatabase.$myConn.Exec(sql, $curEncid, True, "Medicines", "Continue", 0, "%" & LCase(Trim(txtname.Text)) & "%")
-    Else
-      $rData = modDatabase.$myConn.Exec(sql, $curEncid, True, "Medicines", "Continue", 0, LCase(Trim(txtname.Text)) & "%")
-    Endif
+  sql = "select fldid,fldid,flditem,CONCAT(fldroute, '|', flditem, '|', flddose, '|', fldfreq, '|', flddays) as fldregimen,fldroute,fldqtydisp,flddirection from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and fldcurval=&4 and flddose>&5 and lower(flditem) like &6 and fldroute like &7 ORDER BY flditem"   ''and fldid IN (SELECT MAX(fldid) FROM tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and fldcurval=&4 GROUP BY flditem)
+  If chkleftmain.Value = True Then
+    $rData = modDatabase.$myConn.Exec(sql, $curEncid, True, "Medicines", "Continue", 0, "%" & LCase(Trim(txtname.Text)) & "%", GetRoute())
+  Else
+    $rData = modDatabase.$myConn.Exec(sql, $curEncid, True, "Medicines", "Continue", 0, LCase(Trim(txtname.Text)) & "%", GetRoute())
   Endif
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
 
   For Each $rData
-    If $sType = "Personal" Then
-      $ItemList.Add($rData["fldbrandid"])
-    Else If $sType = "Used Medicines" Then
-      $ItemList.Add($rData["flditem"])
-    Endif
+    $ItemList.Add($rData["flditem"])
   Next
 
   With GridView1
     .Columns[0].Width = 1
     .Columns[1].Width = 25 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 1
     .Columns[3].Width = 375 * modBasic.$AppWidthRatio
     .Columns[4].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[5].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[6].Width = 50 * modBasic.$AppWidthRatio
-    .Columns[7].Width = 50 * modBasic.$AppWidthRatio
-    .Columns[8].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 50 * modBasic.$AppWidthRatio
+    .Columns[6].Width = 250 * modBasic.$AppWidthRatio
 
-    .Columns[2].Text = "Route"
     .Columns[3].Text = "Medicine"
-    .Columns[4].Text = "Dose"
-    .Columns[5].Text = "Freq"
-    .Columns[6].Text = "Days"
-    .Columns[7].Text = "QTY"
-    .Columns[8].Text = "Direction"
+    .Columns[4].Text = "Route"
+    .Columns[5].Text = "QTY"
+    .Columns[6].Text = "Direction"
   End With
 
 End
@@ -152,8 +302,8 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   If Column = 1 Then
     GridView1.Data.Picture = Picture["icons/unchecked.png"]
   Else If Column = 3 Then
-    GridView1.Data.Text = $rData[$aMyFields[Column]]
-    GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
+    GridView1.Data.RichText = GetRegimenString($rData[$aMyFields[Column]])
+    GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.RichText, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]
   Endif
@@ -161,11 +311,21 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
 
 End
 
-Public Sub Form_KeyRelease()
+Private Function GetRegimenString(sInput As String) As String
 
-  If Key.Code = Key.Esc Then
-    Me.Close
+  Dim asx As String[]
+  Dim xval As String
+
+  If sInput Then
+    asx = Split(sInput, "|")
+    If asx.Count = 5 Then
+      xval = asx[1] & "<br><b>" & modMedConstant.GetMedicineRegimenInFormat(asx[0], asx[1], CFloat(asx[2]), asx[3], CFloat(asx[4])) & "</b>"
+    Else
+      xval = asx[1]
+    Endif
   Endif
+
+  Return xval
 
 End
 
@@ -183,36 +343,94 @@ Public Sub lstletter_Click()
 
 End
 
-Public Sub txtname_Click()
+''======================= New Regimen ==========================
+Private Sub SetCategoryList()
 
-  txtname.Text = ""
+  Dim xList As String[]
+  Dim res As Result
 
-End
-
-Public Sub btnok_Click()
-
-  Dim Row As Integer
-
-  If GridView1.Rows.Selection.Count Then
-    For Row = 0 To GridView1.Rows.Count - 1
-      If GridView1[Row, 1].Picture = Picture["icons/checked.png"] Then
-        If sIndexLst.Exist(GridView1[Row, 0].Text) = False Then
-          sIndexLst.Add(GridView1[Row, 0].Text)
-          GridView1[Row, 1].Picture = Picture["icons/coll4.png"]
-        Endif
-      Endif
-    Next
+  xList = New String[]
+  xList.Add("All Categories")
+  res = modDatabase.$myConn.Exec("select distinct(fldcategory) as col from tblcode where fldcodename in(select fldcodename from tbldrug where flddrug in(select flddrug from tblmedbrand where fldbrandid in(select fldbrandid from tblmedregimen where (flduserid=&1 or flduserid=&2) and fldroute like &3)))", modBasic.$lbluser, "%", GetRoute())
+  If res.Available Then
+    xList.Insert(modControlSub.GetDirectFillresult(res))
   Endif
+  lstcategory.List = xList
 
 End
 
-Public Sub btnclose_Click()
+Public Sub lstcategory_Click()
 
-  If sIndexLst.Count Then
-    $sValue = sIndexLst
-    Me.Close(True)
+  $ItemList = New String[]
+  ShowNewRegimen()
+  lstletter2.List = modString.GetFirstLetterArray($ItemList)
+
+End
+
+Private Sub ShowNewRegimen()
+
+  Dim sql As String
+
+  If lstcategory.Text = "All Categories" Then
+    sql = "select fldid,fldid,fldbrandid,CONCAT(fldroute, '|', fldbrandid, '|', flddose, '|', fldfreq, '|', fldday) as fldregimen,fldroute,fldqty,fldusage from tblmedregimen where (flduserid=&1 or flduserid=&2) and lower(fldbrandid) like &3 and fldroute like &4 ORDER BY fldbrandid"
   Else
-    Me.Close
+    sql = "select fldid,fldid,fldbrandid,CONCAT(fldroute, '|', fldbrandid, '|', flddose, '|', fldfreq, '|', fldday) as fldregimen,fldroute,fldqty,fldusage from tblmedregimen where (flduserid=&1 or flduserid=&2) and lower(fldbrandid) like &3 and fldroute like &4 and fldbrandid in(select fldbrandid from tblmedbrand where flddrug in(select flddrug from tbldrug where fldcodename in(select fldcodename from tblcode where fldcategory=&5))) ORDER BY fldbrandid"
   Endif
+  If chkleftmain.Value = True Then
+    $rData1 = modDatabase.$myConn.Exec(sql, modBasic.$lbluser, "%", "%" & LCase(Trim(txtname.Text)) & "%", GetRoute(), lstcategory.Text)
+  Else
+    $rData1 = modDatabase.$myConn.Exec(sql, modBasic.$lbluser, "%", LCase(Trim(txtname.Text)) & "%", GetRoute(), lstcategory.Text)
+  Endif
+  $aMyFields1 = New String[]
+  modGridView.ReadSmallData(GridView2, $rData1, $aMyFields1)
+
+  For Each $rData1
+    $ItemList.Add($rData1["fldbrandid"])
+  Next
+
+  With GridView2
+    .Columns[0].Width = 1
+    .Columns[1].Width = 25 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 1
+    .Columns[3].Width = 350 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 50 * modBasic.$AppWidthRatio
+    .Columns[6].Width = 200 * modBasic.$AppWidthRatio
+
+    .Columns[3].Text = "Medicine"
+    .Columns[4].Text = "Route"
+    .Columns[5].Text = "QTY"
+    .Columns[6].Text = "Direction"
+  End With
+
+End
+
+Public Sub GridView2_Data(Row As Integer, Column As Integer)
+
+  $rData1.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView2, Row)
+  If Column = 1 Then
+    GridView2.Data.Picture = Picture["icons/unchecked.png"]
+  Else If Column = 3 Then
+    GridView2.Data.RichText = GetRegimenString($rData1[$aMyFields1[Column]])
+    GridView2.Rows[Row].Height = Max(GridView2.Rows[Row].Height, GridView2.Data.Font.RichTextHeight(GridView2.Data.RichText, GridView2.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView2.Rows.Height - GridView2.Font.Height))
+  Else
+    GridView2.Data.Text = $rData1[$aMyFields1[Column]]
+  Endif
+  GridView2.Data.WordWrap = True
+
+End
+
+Public Sub GridView2_Click()
+
+  If GridView2.Column = 1 Then
+    modGridView.CheckUncheckGridNoDB(GridView2, 1)
+  Endif
+
+End
+
+Public Sub lstletter2_Click()
+
+  txtname.Text = lstletter2.Text
 
 End

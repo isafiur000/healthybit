@@ -130,7 +130,7 @@ Public Sub btnexpcalc_Click()
   Dim xshelf As Integer
 
   If txtbloodcode.Text Then
-    xshelf = modMedConstant.GetBloodShelfLife(txtbloodcode.Text)
+    xshelf = modFixLab.GetBloodShelfLife(txtbloodcode.Text)
     If xshelf Then
       dtexpiry.Value = DateAdd(dtcollection.Value, gb.Day, xshelf)
     Endif

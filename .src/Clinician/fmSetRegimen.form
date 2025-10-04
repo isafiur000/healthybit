@@ -4,45 +4,15 @@
   MoveScaled(0,1,105,66)
   Arrangement = Arrange.Vertical
   Margin = True
-  { Panel4 Panel
-    MoveScaled(0,0,104,4)
-    { cmbcategory ComboBox
-      MoveScaled(30,0.5,18,3)
-    }
-    { btnrefresh Button
-      MoveScaled(49,0.5,7,3)
-      Picture = Picture["icon:/small/refresh"]
-    }
-    { lbldate Label
-      MoveScaled(57,0.5,46,3)
-      Border = Border.Plain
-    }
-    { Panel5 Panel
-      MoveScaled(0,0.5,30,3)
-      { rbcurrent RadioButton
-        MoveScaled(0.5,0,10,3)
-        Text = ("Curent")
-        Value = True
-      }
-      { rbpast RadioButton
-        MoveScaled(11,0,8,3)
-        Text = ("Last")
-      }
-      { rbselect RadioButton
-        MoveScaled(20,0,10,3)
-        Text = ("Select")
-      }
-    }
-  }
   { Panel1 Panel
-    MoveScaled(0,4,104,4)
+    MoveScaled(0,1,104,4)
     { chkleftmain CheckBox
       MoveScaled(0,0.5,3,3)
     }
     { txtname ButtonBox
       MoveScaled(3,0.5,27,3)
       ToolTip = ("Write few alphabets of disease name for quick sorting")
-      Picture = Picture["icon:/small/cancel"]
+      Picture = Picture["icon:/small/clear"]
     }
     { btnok Button
       MoveScaled(77,0.5,13,3)
@@ -56,18 +26,119 @@
     }
   }
   { Panel3 Panel
-    MoveScaled(0,8,104,57)
-    Arrangement = Arrange.Horizontal
-    { GridView1 GridView
-      MoveScaled(4,1,82,43)
+    MoveScaled(0,5,104,4)
+    { rboral RadioButton
+      MoveScaled(1,0.5,8,3)
+      Text = ("Oral")
+    }
+    { rbliquid RadioButton
+      MoveScaled(10,0.5,10,3)
+      Text = ("Liquid")
+    }
+    { rbinject RadioButton
+      MoveScaled(21,0.5,12,3)
+      Text = ("Injection")
+    }
+    { rbfluid RadioButton
+      MoveScaled(34,0.5,9,3)
+      Text = ("Fluid")
+    }
+    { rbresp RadioButton
+      MoveScaled(44,0.5,9,3)
+      Text = ("Resp")
+    }
+    { rbtopical RadioButton
+      MoveScaled(54,0.5,10,3)
+      Text = ("Topical")
+    }
+    { rbeyear RadioButton
+      MoveScaled(65,0.5,11,3)
+      Text = ("Eye/Ear")
+    }
+    { rbanalvag RadioButton
+      MoveScaled(77,0.5,12,3)
+      Text = ("Anal/Vag")
+    }
+    { rballroute RadioButton
+      MoveScaled(90,0.5,13,3)
+      Text = ("All Routes")
+      Value = True
+    }
+  }
+  { TabPanel1 TabPanel
+    MoveScaled(0,9,103,55)
+    Expand = True
+    Arrangement = Arrange.Vertical
+    Count = 2
+    Index = 0
+    Text = ("New Regimen")
+    { Panel6 Panel
+      MoveScaled(0,1,100,30)
       Expand = True
-      Mode = Select.Single
-      Header = GridView.Horizontal
-      AutoResize = False
+      Arrangement = Arrange.Horizontal
+      { lstcategory ListBox
+        MoveScaled(1,1,21,28)
+      }
+      { GridView2 GridView
+        MoveScaled(22,1,54,17)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Horizontal
+        AutoResize = False
+      }
+      { lstletter2 ListBox
+        MoveScaled(76,1,4,17)
+        Sorted = True
+      }
     }
-    { lstletter ListBox
-      MoveScaled(95,0,4,56)
-      Sorted = True
+    Index = 1
+    Text = ("Past Regimens")
+    { Panel4 Panel
+      MoveScaled(0,0,96,4)
+      { cmbcategory ComboBox
+        MoveScaled(30,0.5,18,3)
+      }
+      { btnrefresh Button
+        MoveScaled(49,0.5,7,3)
+        Picture = Picture["icon:/small/refresh"]
+      }
+      { lbldate Label
+        MoveScaled(57,0.5,35,3)
+        Border = Border.Plain
+      }
+      { Panel5 Panel
+        MoveScaled(0,0.5,30,3)
+        { rbcurrent RadioButton
+          MoveScaled(0.5,0,10,3)
+          Text = ("Curent")
+          Value = True
+        }
+        { rbpast RadioButton
+          MoveScaled(11,0,8,3)
+          Text = ("Last")
+        }
+        { rbselect RadioButton
+          MoveScaled(20,0,10,3)
+          Text = ("Select")
+        }
+      }
     }
+    { Panel2 Panel
+      MoveScaled(2,5,89,18)
+      Expand = True
+      Arrangement = Arrange.Horizontal
+      { GridView1 GridView
+        MoveScaled(0,0,54,17)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Horizontal
+        AutoResize = False
+      }
+      { lstletter ListBox
+        MoveScaled(54,0,4,17)
+        Sorted = True
+      }
+    }
+    Index = 0
   }
 }
