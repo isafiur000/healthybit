@@ -46,9 +46,6 @@ Public Sub Form_Open()
       mnucustforms.Enabled = True
       mnuformatexam.Enabled = True
   End Select
-  If MMain.$CustomFormat = "Patan" Then
-    btnautopharm.Visible = True
-  Endif
 
   $UserRestrict = modBasic.$ClinicDisableCompo
   $ClinicianLst = modGeneral.GetClinicianCodeList()
@@ -711,7 +708,7 @@ Public Sub GridView1_Click()
   Dim xval As String
   Dim xData As String
 
-  If GridView1.Column = 11 Then
+  If GridView1.Column = 17 Then
     If cmbdept.Text = "All" Then
     Else If cmbdept.Text = "Unallocated" Then
     Else If cmbdept.Text = "Free Beds" Then
@@ -2783,28 +2780,29 @@ End
 Public Sub btnautopharm_Click()
 
   Dim Row As Integer
-  Dim xroute As String
-  Dim xList As String[]
+  Dim xcopy As Integer
+  Dim xcont As Integer
 
-  xList = GridListView("Select Route of Administration", modMedicine.ClinicalRoute())
-  If xList And If xList.Count Then
-    Inc Application.Busy
-    For Row = 0 To GridView1.Rows.Count - 1
-      For Each xroute In xList
-        AddMedicineRequest(GridView1[Row, 4].Text, xroute, "Admitted")
-      Next
-    Next
-    Dec Application.Busy
-    btnautopharm.Enabled = False
-    Message.Info("Medicine Request copied", "OK")
-  Endif
+  Inc Application.Busy
+  xcont = 0
+  For Row = 0 To GridView1.Rows.Count - 1
+    xcopy = AddMedicineRequest(GridView1[Row, 4].Text, "Admitted")
+    If xcopy Then
+      xcont = xcont + 1
+    Endif
+  Next
+  Dec Application.Busy
+  btnautopharm.Enabled = False
+  Message.Info("Medicine Request copied for " & CStr(xcont) & " Patients", "OK")
 
 End
 
-Private Sub AddMedicineRequest(encid As String, sRoute As String, sStatus As String)
+Private Function AddMedicineRequest(encid As String, sStatus As String) As Integer
 
   Dim sql As String
   Dim res As Result
+  Dim rex As Result
+  Dim xcount As Integer
 
   Dim txprescriber As String
   Dim txpresno As String
@@ -2817,6 +2815,7 @@ Private Sub AddMedicineRequest(encid As String, sRoute As String, sStatus As Str
   Dim itemmode As String
   Dim xcurVal As String
   Dim xnarcotic As String[]
+  Dim xyest As Date
   Dim CPharmFix As CFixRatePharmacy
 
   If modBasic.$DispRequestStatus = "Reserve" Then
@@ -2824,32 +2823,48 @@ Private Sub AddMedicineRequest(encid As String, sRoute As String, sStatus As Str
   Else
     xcurVal = "Continue"
   Endif
+  xyest = DateAdd(Now(), gb.Day, -1)
+  xcount = 0
 
-  sql = "select flditemtype,fldroute,flditem,flddose,fldfreq,flddays,flddirection,fldqtydisp,fldbillingmode,flddisctype,fldacledger,fldbilltype from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval=&6 and flddays=&7 and fldroute=&8"
-  res = modDatabase.$myConn.Exec(sql, encid, True, modDate.StartSqlDate(Now()), modDate.StartSqlDate(Now()), "Medicines", "Continue", 1, sRoute)
+  ' sql = "select flditemtype,fldroute,flditem,flddose,fldfreq,flddays,flddirection,fldqtydisp,fldbillingmode,flddisctype,fldacledger,fldbilltype from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval=&6 and flddays=&7 and fldroute=&8"
+  ' res = modDatabase.$myConn.Exec(sql, encid, True, modDate.StartSqlDate(Now()), modDate.StartSqlDate(Now()), "Medicines", "Continue", 1, sRoute)
+  sql = "select flditemtype,fldroute,flditem,flddose,fldfreq,flddays,flddirection,fldqtydisp,fldprescriber,fldregno,fldbillingmode,flddisctype,fldacledger,fldbilltype from tblpatdosing where fldencounterval=&1 and fldstarttime>=&2 and fldstarttime<=&3 and flditemtype=&4 and fldcurval=&5 and flddays=&6"
+  res = modDatabase.$myConn.Exec(sql, encid, modDate.StartSqlDate(xyest), modDate.EndSqlDate(xyest), "Medicines", "Continue", 0)
   If res.Available Then
     For Each res
 
-      If modMedConstant.GetNarcoticType(res["flditem"]) = "Yes" Then
-        xnarcotic = DualGridValue(("Select Narcotic Prescriber"), $ClinicianLst, False)
-        If xnarcotic Then
-          txprescriber = xnarcotic[1]
-          txpresno = xnarcotic[0]
+      rex = modDatabase.$myConn.Exec("select fldid from tblpatdosing where fldencounterval=&1 and fldstarttime>=&2 and fldstarttime<=&3 and flditemtype=&4 and fldcurval=&5 and flddays=&6", encid, modDate.StartSqlDate(Now()), modDate.EndSqlDate(Now()), "Medicines", "Continue", 0)
+      If rex.Available = False Then
+
+        If modMedConstant.GetNarcoticType(res["flditem"]) = "Yes" Then
+          If res["fldprescriber"] And If res["fldregno"] Then
+            txprescriber = res["fldprescriber"]
+            txpresno = res["fldregno"]
+          Else
+            xnarcotic = DualGridValue(("Select Narcotic Prescriber"), $ClinicianLst, False)
+            If xnarcotic Then
+              txprescriber = xnarcotic[1]
+              txpresno = xnarcotic[0]
+            Endif
+          Endif
+        Else
+          txprescriber = ""
+          txpresno = ""
         Endif
-      Else
-        txprescriber = ""
-        txpresno = ""
+        itemtype = modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"])
+        CPharmFix = New CFixRatePharmacy(itemtype, res["flditem"], res["fldbillingmode"])
+        xfixrate = CPharmFix.GetFixRate()
+        xfixname = CPharmFix.GetFixItem()
+        itemmode = res["fldbillingmode"]
+        xtax = modNonMedical.ShowTaxValues(itemtype, res["flditem"])
+        xdisc = modNonMedical.DiscPercentForCategoryValue(encid, res["flddisctype"], itemtype, res["flditem"], itemmode)
+        modPharmSub.InsertDosingEntry(encid, res["fldbilltype"], res["fldbillingmode"], res["flddisctype"], res["fldacledger"], res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtydisp"], sStatus, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", "IPD", res["flddirection"], False, xcurVal)                     '
+        xcount = xcount + 1
       Endif
-      itemtype = modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"])
-      CPharmFix = New CFixRatePharmacy(itemtype, res["flditem"], res["fldbillingmode"])
-      xfixrate = CPharmFix.GetFixRate()
-      xfixname = CPharmFix.GetFixItem()
-      itemmode = res["fldbillingmode"]
-      xtax = modNonMedical.ShowTaxValues(itemtype, res["flditem"])
-      xdisc = modNonMedical.DiscPercentForCategoryValue(encid, res["flddisctype"], itemtype, res["flditem"], itemmode)
-      modPharmSub.InsertDosingEntry(encid, res["fldbilltype"], res["fldbillingmode"], res["flddisctype"], res["fldacledger"], res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtydisp"], sStatus, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", "IPD", res["flddirection"], False, xcurVal)                     '
 
     Next
   Endif
+
+  Return xcount
 
 End

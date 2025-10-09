@@ -91,11 +91,14 @@ Private Sub ShowParameters()
   xxx = New String[]
   If cmbformat.Text Then
     If rbhistory.Value Then
-      xxx.Add("History of Illness")
       xList = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select flditem as col from tblhistory where fldformat like &1", cmbformat.Text))
+      If xList.Exist("History of Illness") = False Then
+        xxx.Add("History of Illness")
+      Endif
     Else If rbdischarge.Value Then
       xList = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select flditem as col from tbldischarge where fldformat like &1", cmbformat.Text))
     Endif
+
     xxx.Insert(xList)
     ListBox1.List = xxx
   Endif
@@ -137,6 +140,14 @@ Public Sub ListBox1_Click()
 End
 
 ''------------------ Show Option Grid ----------------------
+Public Sub btnhtml_Click()
+
+  Dim xx As String
+
+  xx = GetTextArea("HTML View", txtdetail.RichText)
+
+End
+
 Private Sub ShowItemOptions()
 
   Dim res As Result
@@ -163,7 +174,7 @@ End
 Private Sub SetOptionGrid()
 
   GridView1.Clear()
-  GridView1.Columns.Count = 2
+  GridView1.Columns.Count = 4
   If $OptionList.Count Then
     GridView1.Rows.Count = $OptionList.Count
     LoadVariableToGrid($OptionList, GridView1)
@@ -173,11 +184,14 @@ Private Sub SetOptionGrid()
 
   With GridView1
     .Rows.Height = modBasic.$AppGridRowHeight
-    .Columns[0].Width = 200 * modBasic.$AppWidthRatio
-    .Columns[1].Width = 300 * modBasic.$AppWidthRatio
+    .Columns[0].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 250 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 1
 
     .Columns[0].Text = "Variable"
-    .Columns[1].Text = "Values"
+    .Columns[1].Text = "Value"
+    .Columns[2].Text = "Options"
   End With
 
 End
@@ -190,10 +204,20 @@ Private Sub LoadVariableToGrid(xFinal As Variant[], xGridView As GridView)
 
   For Row = 0 To xFinal.Count - 1
     xRowVal = xFinal[Row]
-    For Column = 0 To xGridView.Columns.Count - 1
-      xGridView[Row, Column].Text = xRowVal[CStr(Column)]
-    Next
+    xGridView[Row, 0].Text = xRowVal["Variable"]
+    xGridView[Row, 1].Text = xRowVal["Value"]
+    xGridView[Row, 2].Text = xRowVal["Option"]
+    xGridView[Row, 3].Text = xRowVal["Select"]
   Next
+
+End
+
+Public Sub GridView1_Click()
+
+  txtvariable.Text = GridView1[GridView1.Row, 0].Text
+  txtvalues.Text = GridView1[GridView1.Row, 1].Text
+  txtoptions.Text = GridView1[GridView1.Row, 2].Text
+  txtselect.Text = GridView1[GridView1.Row, 3].Text
 
 End
 
@@ -202,13 +226,17 @@ Public Sub btnaddoption_Click()
   Dim sColl As Collection
 
   sColl = New Collection
-  If txtvariable.Text Then
-    sColl.Add(Trim(txtvariable.Text), CStr(0))
-    sColl.Add(Trim(txtoptions.Text), CStr(1))
+  If txtvalues.Text Then
+    sColl.Add(Trim(txtvariable.Text), "Variable")
+    sColl.Add(Trim(txtvalues.Text), "Value")
+    sColl.Add(Trim(txtoptions.Text), "Option")
+    sColl.Add(Trim(txtselect.Text), "Select")
     $OptionList.Add(sColl)
     Balloon.Info(("Information saved"), btnaddoption)
     Balloon.Delay = modBasic.$BalloonDelay
     SetOptionGrid()
+    txtvalues.Text = ""
+    txtoptions.Text = ""
   Endif
 
 End

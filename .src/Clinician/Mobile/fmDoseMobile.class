@@ -83,14 +83,19 @@ Private Sub LoadControlsWeb()
         With aRegmLabel[i]
           .Expand = True
           .Height = 30 * AppFactor
-          .Text = $rData["fldroute"] & Space(2) & $rData["flddose"] & " " & modMedConstant.GetMedicineDoseUnit($rData["flditem"]) & " X " & $rData["fldfreq"] & " X " & $rData["flddays"] & " day(s)"
+          .Text = $rData["fldroute"] & Space(2) & modMedConstant.GetMedicineRegimenInFormat($rData["fldroute"], $rData["flditem"], $rData["flddose"], $rData["fldfreq"], $rData["flddays"])
           .Tag = $rData["fldfreq"]
         End With
         With aUnitLabel[i]
-          .Width = 50 * AppFactor
+          .Width = 75 * AppFactor
           .Height = 30 * AppFactor
           .Border = Border.Plain
-          .Text = Round($rData["flddose"] / modMedConstant.GetDrugInitialStrength($rData["flditem"]), -2)
+          .Text = modMedConstant.GetMedicineDoseFormat($rData["fldroute"], $rData["flditem"], $rData["flddose"], modBasic.$MedicineDoseFormat)  '''Round($rData["flddose"] / modMedConstant.GetDrugInitialStrength($rData["flditem"]), -2)
+          .Tag = i
+        End With
+        With aQuantiBox[i]
+          .Width = 75 * AppFactor
+          .Height = 30 * AppFactor
           .Tag = i
         End With
         With aDoseLabel[i]
@@ -98,11 +103,6 @@ Private Sub LoadControlsWeb()
           .Height = 30 * AppFactor
           .Border = Border.Plain
           .Text = xunit
-          .Tag = i
-        End With
-        With aQuantiBox[i]
-          .Width = 75 * AppFactor
-          .Height = 30 * AppFactor
           .Tag = i
         End With
         With aCountBox[i]

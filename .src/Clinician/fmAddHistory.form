@@ -1,38 +1,12 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,102,71)
+  MoveScaled(0,0,108,73)
   Text = ("History and Notes")
   Resizable = False
-  { ScrollView1 ScrollView
-    MoveScaled(1,5,100,27)
-    { Frame1 Panel
-      MoveScaled(1,1,98,25)
-      Expand = True
-      Arrangement = Arrange.Vertical
-      Spacing = True
-    }
-  }
-  { Panel2 Panel
-    MoveScaled(1,32,100,4)
-    { btnsave Button
-      MoveScaled(83,0.5,13,3)
-      Text = ("Save")
-    }
-    { btnselection Button
-      MoveScaled(21,0.5,20,3)
-      Text = ("Select All")
-    }
-    { btndefault Button
-      MoveScaled(1,0.5,20,3)
-      Text = ("Add Template")
-    }
-  }
-  { txthistory TextHTML
-    MoveScaled(1,36,100,34)
-  }
+  Margin = True
   { Panel1 Panel
-    MoveScaled(1,0.5,100,4)
+    MoveScaled(1,0.5,106,4)
     { cmbformat ComboBox
       MoveScaled(1,0.5,33,3)
     }
@@ -40,5 +14,28 @@
       MoveScaled(35,0.5,13,3)
       Text = ("Show")
     }
+    { btnsave Button
+      MoveScaled(89,0.5,15,3)
+      Text = ("Save")
+    }
+  }
+  { Panel3 Panel
+    MoveScaled(1,5,106,28)
+    Arrangement = Arrange.Horizontal
+    { lstvariable ListBox
+      MoveScaled(0,0,20,27)
+    }
+    { ScrollView1 ScrollView
+      MoveScaled(20,0,86,27)
+      Arrangement = Arrange.Vertical
+      { Frame1 Panel
+        MoveScaled(1,1,84,25)
+        Arrangement = Arrange.Vertical
+        Spacing = True
+      }
+    }
+  }
+  { txthistory TextHTML
+    MoveScaled(1,34,106,37)
   }
 }

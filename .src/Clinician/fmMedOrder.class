@@ -61,7 +61,8 @@ Public Sub Form_Open()
     cmbroute.List = modMedicine.InpatientRoute(False)
   Endif
   cmbfreq.List = modMedicine.FrequencyCombo()
-  cmbstatus.List = ["Continue", "Completed", "Discontinue", "Hold", "Change", "ReWrite", "Cancelled", "Wasted"]
+  cmbcurrent.List = ["Continue", "On Hold", "Removed", "All Types"]
+  cmbstatus.List = ["Continue", "Completed", "Discontinue", "On Hold", "Change", "ReWrite", "Cancelled", "Wasted"]
   $ClinicianLst = modGeneral.GetClinicianCodeList()
   modStockSub.DisplayDefaultDispensingMode(rbrand, rbgeneric)
   modSettings.ShowCheckBox(chkout, "OutOfStock/Dispensing")
@@ -74,7 +75,6 @@ Public Sub Form_Open()
   Endif
 
   txtpatientname.Text = modPatient.GetPatientNameByEnc($encid)
-  txtpatientaddress.Text = modPatient.GetPatientAddressByEnc($encid)
   $PatSex = modPatient.GetPatientSex($encid)
   xbirthDate = modPatient.GetPatientBirthDay($encid)
   txtgender.Text = modDate.GetAgeString(xbirthDate, Now()) & "/" & $PatSex
@@ -112,7 +112,9 @@ Public Sub Form_Open()
   GetDoseFormatType()
   rbsurg.Value = True
   rbcurrent.Value = True
-  ShowRunningMedicine()
+  cmbcurrent.Text = "Continue"
+  ShowRunningMedicine(cmbcurrent.Text)
+
   If $xFinClear = True Then
     btngroup.Enabled = False
     btnrepeat.Enabled = False
@@ -177,7 +179,7 @@ Public Sub Form_KeyRelease()
     Me.Close
   Else If Key.Code = Key.F1 Then
     TabPanel1.Index = 0
-    ShowRunningMedicine()
+    ShowRunningMedicine(cmbcurrent.Text)
   Else If Key.Code = Key.F2 Then
     TabPanel1.Index = 1
     modSettings.ShowCheckBox(chkout, "OutOfStock/Dispensing")
@@ -204,7 +206,7 @@ End
 Public Sub TabPanel1_Click()
 
   If TabPanel1.Index = 0 Then
-    ShowRunningMedicine()
+    ShowRunningMedicine(cmbcurrent.Text)
   Else If TabPanel1.Index = 1 Then
     FillDosingGrid()
     BlankDosingBox()
@@ -272,17 +274,6 @@ Private Sub ShowBillingParam(sDisctype As String)
 End
 
 ''------------------------------ Request ---------------------------------
-Public Sub btnmedicine_Click()
-
-  Dim hForm As FmMedPrescribe
-
-  If cmbdisctype.Text Then
-    hForm = New FmMedPrescribe($encid, cmbdisctype.Text, $status, $ClinicianLst)
-    hForm.ShowModal
-    FillDosingGrid()
-  Endif
-
-End
 
 Public Sub chkout_Click()
 
@@ -385,9 +376,9 @@ Private Sub AddNewRegimen(itmList As Long[])
           xdisc = modNonMedical.DiscPercentForCategoryValue($encid, cmbdisctype.Text, itemtype, res["fldbrandid"], itemmode)
           Select res["fldroute"]
             Case "suture", "msurg", "ortho"
-              modPharmSub.InsertNonMedDosingEntry("Surgicals", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["fldbrandid"], res["fldqty"], $status, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldusage"], False, xcurVal)
+              modPharmSub.InsertNonMedDosingEntry("Surgicals", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["fldbrandid"], res["fldqty"], $status, txtstart.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldusage"], False, xcurVal)
             Case "extra"
-              modPharmSub.InsertNonMedDosingEntry("Extra Items", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["fldbrandid"], res["fldqty"], $status, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldusage"], False, xcurVal)
+              modPharmSub.InsertNonMedDosingEntry("Extra Items", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["fldbrandid"], res["fldqty"], $status, txtstart.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldusage"], False, xcurVal)
             Case Else
               If modMedConstant.GetNarcoticType(res["fldbrandid"]) = "Yes" Then
                 xnarcotic = DualGridValue(("Select Narcotic Prescriber"), $ClinicianLst, False)
@@ -399,7 +390,7 @@ Private Sub AddNewRegimen(itmList As Long[])
                 txprescriber = ""
                 txpresno = ""
               Endif
-              modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["fldbrandid"], res["flddose"], res["fldfreq"], res["fldday"], res["fldqty"], $status, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldusage"], False, xcurVal)
+              modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["fldbrandid"], res["flddose"], res["fldfreq"], res["fldday"], res["fldqty"], $status, txprescriber, txpresno, txtstart.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldusage"], False, xcurVal)
           End Select
         Endif
       Next
@@ -465,9 +456,9 @@ Private Sub AddPastRegimens(itmList As Long[])
           xdisc = modNonMedical.DiscPercentForCategoryValue($encid, cmbdisctype.Text, itemtype, res["flditem"], itemmode)
           Select res["fldroute"]
             Case "suture", "msurg", "ortho"
-              modPharmSub.InsertNonMedDosingEntry("Surgicals", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["fldqtydisp"], $status, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["flddirection"], False, xcurVal)
+              modPharmSub.InsertNonMedDosingEntry("Surgicals", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["fldqtydisp"], $status, txtstart.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["flddirection"], False, xcurVal)
             Case "extra"
-              modPharmSub.InsertNonMedDosingEntry("Extra Items", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["fldqtydisp"], $status, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["flddirection"], False, xcurVal)
+              modPharmSub.InsertNonMedDosingEntry("Extra Items", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["fldqtydisp"], $status, txtstart.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["flddirection"], False, xcurVal)
             Case Else
               If modMedConstant.GetNarcoticType(res["flditem"]) = "Yes" Then
                 xnarcotic = DualGridValue(("Select Narcotic Prescriber"), $ClinicianLst, False)
@@ -479,7 +470,7 @@ Private Sub AddPastRegimens(itmList As Long[])
                 txprescriber = ""
                 txpresno = ""
               Endif
-              modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtydisp"], $status, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["flddirection"], False, xcurVal)
+              modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtydisp"], $status, txprescriber, txpresno, txtstart.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["flddirection"], False, xcurVal)
           End Select
         Endif
       Next
@@ -807,6 +798,8 @@ End
 
 Public Sub txtqty_GotFocus()
 
+  Dim xday As Integer
+
   ClearNumPad()
   ShowKeyPad()
   If modBasic.$TabletModeEnable = "Yes" Then
@@ -814,10 +807,18 @@ Public Sub txtqty_GotFocus()
   Endif
 
   If txtdose.Value And If cmbfreq.Text Then
-    If Not txtday.Value Then
+    If txtday.Value Then
+      xday = txtday.Value
+    Else
+      If modBasic.$ClinIPDVarDays = "Enable" And If $status = "Admitted" Then
+        xday = 1
+      Endif
+    Endif
+
+    If Not xday Then
       txtday.SetFocus
     Else
-      txtqty.Value = Ceil(modMedConstant.GetQuantityDosing(cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value))
+      txtqty.Value = Ceil(modMedConstant.GetQuantityDosing(cmbmedicine.Text, txtdose.Value, cmbfreq.Text, xday))
     Endif
   Endif
   txtqty.SelectAll
@@ -893,7 +894,7 @@ Private Sub EnterDosingRecord()
       itemmode = $sBillMode
       xtax = modNonMedical.ShowTaxValues(itemtype, cmbmedicine.Text)
       xdisc = modNonMedical.DiscPercentForCategoryValue($encid, cmbdisctype.Text, itemtype, cmbmedicine.Text, itemmode)
-      modPharmSub.InsertNonMedDosingEntry(itemtype, $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtqty.Value, $status, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), False, xcurVal)
+      modPharmSub.InsertNonMedDosingEntry(itemtype, $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtqty.Value, $status, txtstart.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), False, xcurVal)
 
     Else
       If modMedConstant.GetNarcoticType(cmbmedicine.Text) = "Yes" Then
@@ -921,7 +922,7 @@ Private Sub EnterDosingRecord()
       itemmode = $sBillMode
       xtax = modNonMedical.ShowTaxValues(itemtype, cmbmedicine.Text)
       xdisc = modNonMedical.DiscPercentForCategoryValue($encid, cmbdisctype.Text, itemtype, cmbmedicine.Text, itemmode)
-      modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), False, xcurVal)                     '
+      modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, txprescriber, txpresno, txtstart.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), False, xcurVal)                     '
     Endif
 
     BlankDosingBox()
@@ -1137,9 +1138,14 @@ Public Sub GridView1_Click()
   Else If GridView1.Column = 6 Then
     If modGeneral.AllowClinicalEdit(GridView1[GridView1.Row, 8].Text) = True Then
       xval = InputValue(GridView1[GridView1.Row, 3].Text, ("Alter Duration"), GridView1[GridView1.Row, 6].Text)
-      If xval Then
+      If modBasic.$ClinIPDVarDays = "Enable" And If $status = "Admitted" Then
         modPharmSub.UpdateDaysBefDispensing(GridView1[GridView1.Row, 0].Text, xval)
         FillDosingGrid()
+      Else
+        If xval Then
+          modPharmSub.UpdateDaysBefDispensing(GridView1[GridView1.Row, 0].Text, xval)
+          FillDosingGrid()
+        Endif
       Endif
     Endif
 
@@ -1398,7 +1404,11 @@ Public Sub rbvalue_Click()
 
   modSettings.SaveSettingsToFile("DoseFormat/Dispensing", "Value")
   If TabPanel1.Index = 0 Then
-    ShowRunningMedicine()
+    If rballdates.Value = True Then
+      ShowAllMedicines()
+    Else If rbcurrent.Value = True Then
+      ShowRunningMedicine(cmbcurrent.Text)
+    Endif
   Else If TabPanel1.Index = 1 Then
     FillDosingGrid()
   Endif
@@ -1409,7 +1419,11 @@ Public Sub rblabel_Click()
 
   modSettings.SaveSettingsToFile("DoseFormat/Dispensing", "Label")
   If TabPanel1.Index = 0 Then
-    ShowRunningMedicine()
+    If rballdates.Value = True Then
+      ShowAllMedicines()
+    Else If rbcurrent.Value = True Then
+      ShowRunningMedicine(cmbcurrent.Text)
+    Endif
   Else If TabPanel1.Index = 1 Then
     FillDosingGrid()
   Endif
@@ -1418,39 +1432,87 @@ End
 
 Public Sub btncurrefresh_Click()
 
-  ShowRunningMedicine()
+  If rballdates.Value = True Then
+    ShowAllMedicines()
+  Else If rbcurrent.Value = True Then
+    ShowRunningMedicine(cmbcurrent.Text)
+  Endif
 
 End
 
-Private Sub ShowRunningMedicine()
+Private Sub ShowAllMedicines()
+
+  Dim sql1 As String
+  Dim sql2 As String
+
+  If rblabel.Value = True Then
+    sql1 = "select fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and flddays>&4"
+    sql2 = "select fldstarttime,fldroute,flditem,fldid,fldfreq,COUNT(fldid),fldcurval from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and flddays=&4 GROUP BY flditem,flddose,fldfreq"
+  Else
+    sql1 = "select fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and flddays>&4"                    ''
+    sql2 = "select fldstarttime,fldroute,flditem,flddose,fldfreq,COUNT(fldid),fldcurval from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and flddays=&4 GROUP BY flditem,flddose,fldfreq"
+  Endif
+  $rData2 = modDatabase.$myConn.Exec(sql1 & " UNION ALL " & sql2, $encid, True, "Medicines", 0)
+
+  $aMyFields2 = New String[]
+  modGridView.ReadSmallData(grdmedicine, $rData2, $aMyFields2)
+
+  With grdmedicine
+    .Columns[0].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 275 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 50 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 50 * modBasic.$AppWidthRatio
+    .Columns[6].Width = 100 * modBasic.$AppWidthRatio
+
+    .Columns[0].Text = "StartDate"
+    .Columns[1].Text = "Route"
+    .Columns[2].Text = "Medicine"
+    .Columns[3].Text = "Dose"
+    .Columns[4].Text = "Freq"
+    .Columns[5].Text = "Days"
+    .Columns[6].Text = "Status"
+  End With
+
+End
+
+Private Sub ShowRunningMedicine(xCurrent As String)
 
   Dim sql As String
+  Dim asx As String[] = ["Completed", "Discontinue", "Change", "ReWrite", "Cancelled", "Wasted"]
+  Dim i As Integer
 
-  If rbcurrent.Value = True Then
-    If rblabel.Value = True Then
-      sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval=&6 ORDER BY fldid DESC"
-    Else
-      sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval=&6 ORDER BY fldid DESC"                    ''
-    Endif
-    $rData2 = modDatabase.$myConn.Exec(sql, $encid, True, Now(), DateAdd(Now(), gb.Hour, -3), "Medicines", "Continue")
+  For i = 0 To asx.Count - 1
+    asx[i] = "'" & asx[i] & "'"
+  Next
 
-  Else If rballmeds.Value = True Then
-    If rblabel.Value = True Then
-      sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 ORDER BY fldid DESC"
-    Else
-      sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 ORDER BY fldid DESC"                    ''
-    Endif
-    $rData2 = modDatabase.$myConn.Exec(sql, $encid, True, modDate.EndSqlDate(Now()), modDate.StartSqlDate(Now()), "Medicines")
+  Select xCurrent
+    Case "Continue", "On Hold"
+      If rblabel.Value = True Then
+        sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval=&6 ORDER BY fldid DESC"
+      Else
+        sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval=&6 ORDER BY fldid DESC"                    ''
+      Endif
+      $rData2 = modDatabase.$myConn.Exec(sql, $encid, True, Now(), DateAdd(Now(), gb.Hour, -3), "Medicines", xCurrent)
 
-  Else If rballdates.Value = True Then
-    If rblabel.Value = True Then
-      sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 ORDER BY fldid DESC"
-    Else
-      sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 ORDER BY fldid DESC"                    ''
-    Endif
-    $rData2 = modDatabase.$myConn.Exec(sql, $encid, True, "Medicines")
+    Case "Removed"
+      If rblabel.Value = True Then
+        sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval in(" & asx.Join(",") & ") ORDER BY fldid DESC"
+      Else
+        sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval in(" & asx.Join(",") & ") ORDER BY fldid DESC"                    ''
+      Endif
+      $rData2 = modDatabase.$myConn.Exec(sql, $encid, True, Now(), DateAdd(Now(), gb.Hour, -3), "Medicines", xCurrent)
 
-  Endif
+    Case "All Types"
+      If rblabel.Value = True Then
+        sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 ORDER BY fldid DESC"
+      Else
+        sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 ORDER BY fldid DESC"                    ''
+      Endif
+      $rData2 = modDatabase.$myConn.Exec(sql, $encid, True, Now(), DateAdd(Now(), gb.Hour, -3), "Medicines")
+
+  End Select
   $aMyFields2 = New String[]
   modGridView.ReadSmallData(grdmedicine, $rData2, $aMyFields2)
 
@@ -1485,20 +1547,36 @@ Public Sub grdmedicine_Data(Row As Integer, Column As Integer)
 
   $rData2.MoveTo(Row)
   modGeneralMain.GridViewDecoration(grdmedicine, Row)
-  If Column = 1 Then
-    grdmedicine.Data.Text = modReportVar.GetDateTimeReport($rData2["fldstarttime"], gb.GeneralDate)
-  Else If Column = 4 Then
-    If rblabel.Value = True Then
-      grdmedicine.Data.Text = modPharmacy.GetMedicineDoseInFormat($rData2["fldid"], "Label")
+  If rballdates.Value = True Then
+    If Column = 0 Then
+      grdmedicine.Data.Text = modReportVar.GetDateTimeReport($rData2["fldstarttime"], gb.GeneralDate)
+    Else If Column = 3 Then
+      If rblabel.Value = True Then
+        grdmedicine.Data.Text = modPharmacy.GetMedicineDoseInFormat($rData2["fldid"], "Label")
+      Else
+        grdmedicine.Data.Text = $rData2[$aMyFields2[Column]]
+      Endif
     Else
       grdmedicine.Data.Text = $rData2[$aMyFields2[Column]]
     Endif
-  Else If Column = 8 Then
-    grdmedicine.Data.Text = modPharmacy.TotalDoseCount($rData2["fldid"])
-  Else If Column = 11 Then
-    grdmedicine.Data.Text = modGeneral.GetUserFullName($rData2[$aMyFields2[Column]])
-  Else
-    grdmedicine.Data.Text = $rData2[$aMyFields2[Column]]
+
+  Else If rbcurrent.Value = True Then
+    If Column = 1 Then
+      grdmedicine.Data.Text = modReportVar.GetDateTimeReport($rData2["fldstarttime"], gb.GeneralDate)
+    Else If Column = 4 Then
+      If rblabel.Value = True Then
+        grdmedicine.Data.Text = modPharmacy.GetMedicineDoseInFormat($rData2["fldid"], "Label")
+      Else
+        grdmedicine.Data.Text = $rData2[$aMyFields2[Column]]
+      Endif
+    Else If Column = 8 Then
+      grdmedicine.Data.Text = modPharmacy.TotalDoseCount($rData2["fldid"])
+    Else If Column = 11 Then
+      grdmedicine.Data.Text = modGeneral.GetUserFullName($rData2[$aMyFields2[Column]])
+    Else
+      grdmedicine.Data.Text = $rData2[$aMyFields2[Column]]
+    Endif
+
   Endif
   grdmedicine.Rows[Row].Height = Max(grdmedicine.Rows[Row].Height, grdmedicine.Data.Font.RichTextHeight(grdmedicine.Data.Text, grdmedicine.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (grdmedicine.Rows.Height - grdmedicine.Font.Height))
   grdmedicine.Data.WordWrap = True
@@ -1510,15 +1588,21 @@ Public Sub btnstatus_Click()
   Dim res As Result
 
   If grdmedicine.Rows.Selection.Count Then
-    If cmbstatus.Text Then
-      res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", grdmedicine[grdmedicine.Row, 0].Text)
-      res["fldcurval"] = cmbstatus.Text
-      res["xyz"] = False
-      res.Update()
-      ShowRunningMedicine()
-      cmbstatus.Text = ""
-      Balloon.Info(("Information saved"), btnstatus)
-      Balloon.Delay = modBasic.$BalloonDelay
+    If rbcurrent.Value = True Then
+      If cmbcurrent.Text = "Continue" Or If cmbcurrent.Text = "On Hold" Then
+
+        If cmbstatus.Text Then
+          res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1 and fldcurval=&2", grdmedicine[grdmedicine.Row, 0].Text, cmbcurrent.Text)
+          res["fldcurval"] = cmbstatus.Text
+          res["xyz"] = False
+          res.Update()
+          ShowRunningMedicine(cmbcurrent.Text)
+          cmbstatus.Text = ""
+          Balloon.Info(("Information saved"), btnstatus)
+          Balloon.Delay = modBasic.$BalloonDelay
+        Endif
+
+      Endif
     Endif
   Endif
 
@@ -2100,3 +2184,16 @@ Private Sub ShowOldEntry()
   End With
 
 End
+
+''------------- New format -------------
+' Public Sub btnmedicine_Click()
+'
+'   Dim hForm As FmMedPrescribe
+'
+'   If cmbdisctype.Text Then
+'     hForm = New FmMedPrescribe($encid, cmbdisctype.Text, $status, $ClinicianLst)
+'     hForm.ShowModal
+'     FillDosingGrid()
+'   Endif
+'
+' End

@@ -39,6 +39,7 @@ Public Sub Form_Open()
   cmbslider.List = ["Enable", "Disable"]
   cmbicdformat.List = ["TreeView", "GridView"]
   cmbclinreport.List = ["CustomReport1", "CustomReport2", "CustomReport3", "CustomReport4", "CustomReport5", "CustomReport6", "CustomReport7", "CustomReport8", "CustomReport9", "CustomReport10"]
+  cmbvardays.List = ["Enable", "Disable"]
 
   cmbbodyformat.List = ["Tabular", "Paragraph"]
   cmbshowday.List = ["Date", "User", "Date+User", "None"]
@@ -479,6 +480,7 @@ Private Sub ClinFormsSetting()
   cmbslider.Text = modSettings.ShowSettingFromFIle("ClinicForms/EnableSliderValue")
   cmbicdformat.Text = modSettings.ShowSettingFromFIle("ClinicForms/ICDEntryFormat")
   cmbclinreport.Text = modSettings.ShowSettingFromFIle("ClinicForms/DefaultReport")
+  cmbvardays.Text = modSettings.ShowSettingFromFIle("ClinicForms/IPDVariableDays")
 
 End
 
@@ -522,6 +524,15 @@ Public Sub btnclinreport_Click()
   modSettings.SaveSettingsToFile("ClinicForms/DefaultReport", cmbclinreport.Text)
   modBasic.$ClinDefaultReport = cmbclinreport.Text
   Balloon.Info(("Information saved"), btnclinreport)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnvardays_Click()
+
+  modSettings.SaveSettingsToFile("ClinicForms/IPDVariableDays", cmbvardays.Text)
+  modBasic.$ClinIPDVarDays = cmbvardays.Text
+  Balloon.Info(("Information saved"), btnvardays)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

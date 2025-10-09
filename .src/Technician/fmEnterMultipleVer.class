@@ -488,7 +488,7 @@ Private Sub DIsplayTextForm()
       Else If $xData[i][3] = "RichText Area" Then
         With aHTMLText[i]
           .Expand = True
-          .Height = 25 * Slider1.Value * AppFactor
+          .Height = ((25 * Slider1.Value) + 40) * AppFactor
           .RichText = $xData[i][1]
           .DictionaryPath = modBasic.$dictPathList
           .Tag = i

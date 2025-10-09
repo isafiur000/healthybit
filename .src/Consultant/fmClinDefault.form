@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,89,69)
+  MoveScaled(0,0,96,76)
   Text = ("History and Notes")
   { Label1 Label
     MoveScaled(1,8.5,13,3)
@@ -9,17 +9,14 @@
     Text = ("Component")
   }
   { btnBrOK Button
-    MoveScaled(56,65,15,3)
+    MoveScaled(66,72,15,3)
     Text = ("Update")
     Picture = Picture["icon:/small/add"]
   }
   { btnBrCancel Button
-    MoveScaled(72,65,12,3)
+    MoveScaled(82,72,12,3)
     Text = Shortcut(("Delete"), "D")
     Picture = Picture["icon:/small/cancel"]
-  }
-  { txtdetail TextHTML
-    MoveScaled(25,44,62,20)
   }
   { Label3 Label
     MoveScaled(1,0.625,13,3)
@@ -27,43 +24,63 @@
     Text = ("Category")
   }
   { Frame1 Frame
-    MoveScaled(25,13,63,30)
+    MoveScaled(25,36,70,35)
     Enabled = False
     Text = ("Selections")
     Alignment = Align.Left
     { Label4 Label
+      MoveScaled(1,11,9,3)
+      Border = Border.Plain
+      Text = ("Value")
+    }
+    { Label5 Label
+      MoveScaled(1,15,9,3)
+      Border = Border.Plain
+      Text = ("Options")
+    }
+    { txtvalues TextBox
+      MoveScaled(11,11,58,3)
+    }
+    { txtoptions TextBox
+      MoveScaled(11,15,42,3)
+      ToolTip = ("Options separated by semicolon [ Option1;Option2]")
+    }
+    { btnaddoption Button
+      MoveScaled(54,15,7,3)
+      Text = ("Add")
+    }
+    { btndeloption Button
+      MoveScaled(62,15,7,3)
+      Text = ("Del")
+    }
+    { GridView1 GridView
+      MoveScaled(1,19,68,15)
+      Mode = Select.Single
+      Header = GridView.Both
+    }
+    { Label2 Label
       MoveScaled(1,3,9,3)
       Border = Border.Plain
       Text = ("Variable")
     }
-    { Label5 Label
-      MoveScaled(1,6.625,9,3)
-      Border = Border.Plain
-      Text = ("Values")
-    }
     { txtvariable TextBox
-      MoveScaled(11,3,51,3)
+      MoveScaled(11,3,23,3)
     }
-    { txtoptions TextBox
-      MoveScaled(11,6.625,36,3)
-      ToolTip = ("Options separated by semicolon [ Option1;Option2]")
+    { txtselect TextBox
+      MoveScaled(11,7,58,3)
     }
-    { btnaddoption Button
-      MoveScaled(47,6.625,7,3)
-      Text = ("Add")
+    { Label7 Label
+      MoveScaled(1,7,9,3)
+      Border = Border.Plain
+      Text = ("Selection")
     }
-    { btndeloption Button
-      MoveScaled(55,6.625,7,3)
-      Text = ("Del")
-    }
-    { GridView1 GridView
-      MoveScaled(1,10.375,61,19)
-      Mode = Select.Single
-      Header = GridView.Both
+    { btnhtml Button
+      MoveScaled(64,3,5,3)
+      Picture = Picture["icon:/small/html"]
     }
   }
   { btndefaultformats Button
-    MoveScaled(12,65,10,3)
+    MoveScaled(12,72,10,3)
     Text = ("Default")
   }
   { Label6 Label
@@ -72,25 +89,25 @@
     Text = ("Format")
   }
   { btnshow Button
-    MoveScaled(56,4.5,12,3)
+    MoveScaled(46,5,12,3)
     Text = ("Show")
   }
   { cmbformat ComboBox
-    MoveScaled(15,4.5,40,3)
+    MoveScaled(15,4.5,30,3)
   }
   { btnclaim Button
-    MoveScaled(1,65,10,3)
+    MoveScaled(1,72,10,3)
     Text = ("HI Claim")
   }
   { ListBox1 ListBox
-    MoveScaled(1,13,23,51)
+    MoveScaled(1,13,23,58)
   }
   { btnaddtest Button
-    MoveScaled(56,8.5,7,3)
+    MoveScaled(46,9,7,3)
     Text = ("Add")
   }
   { txtsubtest TextBox
-    MoveScaled(15,8.5,40,3)
+    MoveScaled(15,8.5,30,3)
   }
   { Panel4 Panel
     MoveScaled(15,1,30,3)
@@ -104,5 +121,9 @@
       MoveScaled(15,0,12.75,3)
       Text = ("Discharge")
     }
+  }
+  { txtdetail TextHTML
+    MoveScaled(25,13,70,23)
+    ToolTip = ("<Variable> will be replaced by one of the values defined below")
   }
 }

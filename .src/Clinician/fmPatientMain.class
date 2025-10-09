@@ -1610,9 +1610,9 @@ End
 Public Sub FillExamtable()
 
   If btnallexam.Value = False Then
-    $rExamRes = modDatabase.$myConn.Exec("select fldid,fldtype,fldhead,fldabnormal,fldid,fldid,fldtime,fldencounterval,flduserid,fldcomp from tblpatientexam where fldencounterval=&1 and fldinput=&2 and fldsave=&3 and fldtime>=&4 and fldtime<=&5", Trim(txtencid.Text), "Physician Examinations", True, modDate.StartSqlDate(dtfind.Value), modDate.EndSqlDate(dtfind.Value))
+    $rExamRes = modDatabase.$myConn.Exec("select fldid,fldtype,fldhead,fldabnormal,fldid,fldid,fldtime,fldencounterval,flduserid,fldcomp,fldsysconst,fldoption from tblpatientexam where fldencounterval=&1 and fldinput=&2 and fldsave=&3 and fldtime>=&4 and fldtime<=&5", Trim(txtencid.Text), "Physician Examinations", True, modDate.StartSqlDate(dtfind.Value), modDate.EndSqlDate(dtfind.Value))
   Else
-    $rExamRes = modDatabase.$myConn.Exec("select fldid,fldtype,fldhead,fldabnormal,fldid,fldid,fldtime,fldencounterval,flduserid,fldcomp from tblpatientexam where fldencounterval=&1 and fldinput=&2 and fldsave=&3", Trim(txtencid.Text), "Physician Examinations", True)
+    $rExamRes = modDatabase.$myConn.Exec("select fldid,fldtype,fldhead,fldabnormal,fldid,fldid,fldtime,fldencounterval,flduserid,fldcomp,fldsysconst,fldoption from tblpatientexam where fldencounterval=&1 and fldinput=&2 and fldsave=&3", Trim(txtencid.Text), "Physician Examinations", True)
   Endif
   $aExamFields = New String[]
   modGridView.ReadSmallData(GridView1, $rExamRes, $aExamFields)
@@ -1628,6 +1628,8 @@ Public Sub FillExamtable()
     .Columns[7].Width = 1
     .Columns[8].Width = 100 * modBasic.$AppWidthRatio
     .Columns[9].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[10].Width = 1  ''fldsysconst
+    .Columns[11].Width = 1  ''fldoption
 
     .Columns[2].Text = "Examination"
     .Columns[4].Text = "Observation"
@@ -1723,6 +1725,7 @@ Public Sub GridView1_Click()
   Dim xData As Variant[]
   Dim Row As Integer
   Dim yyy As String[]
+  Dim xexam As String
   Dim xx As String
 
   Dim xquantival As Variant[]
@@ -1735,10 +1738,15 @@ Public Sub GridView1_Click()
   Row = GridView1.Row
   If GridView1.Column = 4 Then
     If GridView1[GridView1.Row, 1].Text = "Qualitative" Then
-      xType = modFixClinic.GetExamtOptionType(GridView1[GridView1.Row, 2].Text)
+      xType = GridView1[GridView1.Row, 11].Text
       If modClinic.GetSubExamBool(GridView1[GridView1.Row, 0].Text, Trim(txtencid.Text)) = False Then
         If xType = "Fixed Components" Or If xType = "Left/Right Components" Then
-          yyy = modFixClinic.GetSubExamArray(GridView1[GridView1.Row, 2].Text)    'modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldsubexam as col from tblexamquali where fldexamid=&1", GridView1[GridView1.Row, 2].Text))
+          If GridView1[GridView1.Row, 10].Text Then
+            xexam = modFixClinic.GetExamIDFromSysConst(GridView1[GridView1.Row, 10].Text)
+          Else
+            xexam = GridView1[GridView1.Row, 2].Text
+          Endif
+          yyy = modFixClinic.GetSubExamArray(xexam)
           If yyy.Count Then
             modClinSub.InsertExamSubExam(GridView1[GridView1.Row, 7].Text, GridView1[GridView1.Row, 0].Text, GridView1[GridView1.Row, 2].Text, yyy)
           Endif
@@ -1789,7 +1797,7 @@ Public Sub GridView1_Click()
         For Each res
           xData.Add([res["fldsubtexam"], res["fldreport"], res["fldid"], res["fldtanswertype"], res["fldabnormal"], res["fldindex"]])
         Next
-        xData.Add(["Final Impression", GridView1[GridView1.Row, 4].RichText, 0, "RichText Area", False, ""])
+        ' xData.Add(["Final Impression", GridView1[GridView1.Row, 4].RichText, 0, "RichText Area", False, ""])
         If xType = "Left/Right Components" Then
           hFormTwo = New FmEnterMultipleTwo(GridView1[GridView1.Row, 0].Text, "Exam", GridView1[GridView1.Row, 2].Text, xData, "", "Current")
           hFormTwo.ShowModal
@@ -2920,7 +2928,7 @@ End
 
 Public Sub grdmedprn_Click()
 
-  Dim xx As String[] = ["Continue", "Completed", "Discontinue", "Hold", "Change", "ReWrite", "Cancelled", "Wasted"]
+  Dim xx As String[] = ["Continue", "Completed", "Discontinue", "On Hold", "Change", "ReWrite", "Cancelled", "Wasted"]
   Dim res As Result
   Dim xval As String
   Dim yval As Integer
@@ -3154,7 +3162,7 @@ End
 
 Public Sub grdmedicine_Click()
 
-  Dim xx As String[] = ["Continue", "Completed", "Discontinue", "Hold", "Change", "ReWrite", "Cancelled", "Wasted"]
+  Dim xx As String[] = ["Continue", "Completed", "Discontinue", "On Hold", "Change", "ReWrite", "Cancelled", "Wasted"]
   Dim res As Result
   Dim xval As String
   Dim yval As Integer
@@ -3329,7 +3337,7 @@ End
 
 Public Sub grdfluid_Click()
 
-  Dim xx As String[] = ["Continue", "Completed", "Discontinue", "Hold", "Change", "ReWrite", "Cancelled", "Wasted"]
+  Dim xx As String[] = ["Continue", "Completed", "Discontinue", "On Hold", "Change", "ReWrite", "Cancelled", "Wasted"]
   Dim res As Result
   Dim xval As String
   Dim yval As Integer

@@ -28,6 +28,7 @@ Public Sub Form_Open()
   cmbroute.List = modMedicine.ComboRoute()
   xCompLst = modMisc.CompListExcept(modBasic.$AllCompList)
   cmbcompsent.List = xCompLst
+  cmbcompsent.Add("Locker")
   cmbcomprecv.List = xCompLst
   cmbcomprecv.Text = "%"
   cmbcomppend.List = modBasic.$AllCompList
@@ -345,13 +346,16 @@ Public Sub chksave_Click()
 
   If chksave.Value Then
     If cmbcompsent.Text And If cmbmedicine.Text And If cmbbatch.Text And If txtqty.Value Then
-      If chklockstock.Value = True Then
-        SaveEntry("Locker", cmbcompsent.Text)
+      If cmbcompsent.Text = "Locker" Then
       Else
-        SaveEntry(cmbcompsent.Text)
+        If chklockstock.Value = True Then
+          SaveEntry("Locker", cmbcompsent.Text)
+        Else
+          SaveEntry(cmbcompsent.Text)
+        Endif
+        ShowTransferGrid()
+        cmbroute.SetFocus
       Endif
-      ShowTransferGrid()
-      cmbroute.SetFocus
     Endif
   Endif
 
@@ -611,7 +615,7 @@ Private Sub ShowTransferGrid()
   Else
     xorder = " ORDER BY fldid DESC"
   Endif
-  $rData = modDatabase.$myConn.Exec("select fldid,fldstockno,fldoldstockno,fldfromentrytime,fldstockid,fldstockno,fldstockno,fldcategory,fldqty,fldnetcost,fldtocomp,fldfromuser,fldreference,fldlockcomp,fldrequest,fldcomment from tbltransfer where fldfromcomp=&1 and fldsav=&2 and fldtocomp=&3" & xorder, modBasic.$compID, False, cmbcompsent.Text)
+  $rData = modDatabase.$myConn.Exec("select fldid,fldstockno,fldoldstockno,fldfromentrytime,fldstockid,fldstockno,fldstockno,fldcategory,fldqty,fldnetcost,fldtocomp,fldfromuser,fldreference,fldlockcomp,fldrequest,fldcomment from tbltransfer where fldfromcomp=&1 and fldsav=&2 and (fldtocomp=&3 or fldlockcomp=&3)" & xorder, modBasic.$compID, False, cmbcompsent.Text)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
 

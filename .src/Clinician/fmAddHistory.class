@@ -6,7 +6,7 @@ Private $sVariable As String
 Private $sTable As String
 
 Private AppFactor As Float
-Private $defValue As String
+Private $SelAll As Variant[]
 Private $SelVar As Variant[]
 
 Private aHorzPanel As New Object[50]
@@ -40,19 +40,9 @@ End
 
 Public Sub btnfill_Click()
 
-  Dim xht As Integer
-
-  If Frame1.Children.Count Then
-    Frame1.Children.Clear()
-  Endif
   If cmbformat.Text Then
-    $SelVar = New Variant[]
+    $SelAll = New Variant[]
     ShowControls()
-
-    xht = ($SelVar.Count * 35 + 30) * AppFactor
-    If Frame1.Height < xht Then
-      Frame1.Height = xht
-    Endif
   Endif
 
 End
@@ -61,69 +51,112 @@ Private Sub ShowControls()
 
   Dim res As Result
   Dim xVar As Variant[]
-  Dim i As Integer
+  Dim aColl As Collection
+  Dim aList As String[]
 
-  AppFactor = modBasic.$AppScaleFactor
   res = modDatabase.$myConn.Exec(Subst("select fldid,flddetail,fldoptions from &1", $sTable) & " where flditem=&1 and fldformat like &2", $sVariable, cmbformat.Text)     ''
   If res.Available Then
     res.MoveFirst
-    $defValue = res["flddetail"]
+    txthistory.RichText = res["flddetail"]
     If res["fldoptions"] Then
       Try xVar = JSON.Decode(res["fldoptions"])
       If xVar Then
-        $SelVar = xVar
+        $SelAll = xVar
 
-        For i = 0 To $SelVar.Count - 1
-          If i < 49 Then
-            aHorzPanel[i] = New Panel(Frame1)
-            aNameLabel[i] = New TextLabel(aHorzPanel[i])
-            aOptionBox[i] = New ComboBox(aHorzPanel[i])
-            aComboBox[i] = New ComboBox(aHorzPanel[i])
-            aButonBox[i] = New Button(aHorzPanel[i]) As "ButtonGroup"
-            aSpaceBox[i] = New Label(aHorzPanel[i])
-
-            With aHorzPanel[i]
-              .Arrangement = Arrange.Horizontal
-              .Height = 25 * AppFactor
-              .Border = Border.Plain
-            End With
-
-            With aNameLabel[i]
-              .Expand = True
-              .Text = $SelVar[i]["0"]
-              .Tag = i
-              .Wrap = True
-            End With
-
-            With aOptionBox[i]
-              .Width = 75 * AppFactor
-              .List = ["=", ":", "is"]
-              .ReadOnly = False
-              .Tag = i
-            End With
-
-            With aComboBox[i]
-              .Width = 200 * AppFactor
-              .List = Split($SelVar[i]["1"], ";")
-              .Tag = i
-            End With
-
-            With aButonBox[i]
-              .Width = 24 * AppFactor
-              .Picture = Picture["icon:/small/download"]
-              .Tag = i
-            End With
-
-            With aSpaceBox[i]
-              .Width = 25 * AppFactor
-            End With
-
-          Endif
+        aList = New String[]
+        For Each aColl In $SelAll
+          aList.Add(aColl["Variable"])
         Next
+        If aList.Count Then
+          lstvariable.List = modString.GetDistinctStringArray(aList)
+        Else
+          lstvariable.Clear()
+        Endif
 
       Endif
     Endif
   Endif
+
+End
+
+Public Sub lstvariable_Click()
+
+  Dim aColl As Collection
+  Dim xht As Integer
+
+  If Frame1.Children.Count Then
+    Frame1.Children.Clear()
+  Endif
+
+  $SelVar = New Variant[]
+  For Each aColl In $SelAll
+    If aColl["Variable"] = lstvariable.Text Then
+      $SelVar.Add(aColl)
+    Endif
+  Next
+
+  xht = ($SelVar.Count * 35 + 30) * AppFactor
+  If Frame1.Height < xht Then
+    Frame1.Height = xht
+  Endif
+
+  LoadControls()
+
+End
+
+Private Sub LoadControls()
+
+  Dim i As Integer
+
+  AppFactor = modBasic.$AppScaleFactor
+  For i = 0 To $SelVar.Count - 1
+    If i < 49 Then
+      aHorzPanel[i] = New Panel(Frame1)
+      aNameLabel[i] = New TextLabel(aHorzPanel[i])
+      aOptionBox[i] = New ComboBox(aHorzPanel[i])
+      aComboBox[i] = New ComboBox(aHorzPanel[i])
+      aButonBox[i] = New Button(aHorzPanel[i]) As "ButtonGroup"
+      aSpaceBox[i] = New Label(aHorzPanel[i])
+
+      With aHorzPanel[i]
+        .Arrangement = Arrange.Horizontal
+        .Height = 30 * AppFactor
+        .Border = Border.Plain
+      End With
+
+      With aNameLabel[i]
+        .Expand = True
+        .Text = $SelVar[i]["Value"]
+        .Tag = i
+        .Wrap = True
+      End With
+
+      With aOptionBox[i]
+        .Width = 50 * AppFactor
+        .List = ["=", ":", "is"]
+        .ReadOnly = False
+        .Tag = i
+      End With
+
+      With aComboBox[i]
+        .Width = 150 * AppFactor
+        .List = Split($SelVar[i]["Option"], ";")
+        .Tag = i
+      End With
+
+      With aButonBox[i]
+        .Width = 24 * AppFactor
+        .Picture = Picture["icon:/small/apply"]
+        .Tag = i
+      End With
+
+      With aSpaceBox[i]
+        .Width = 25 * AppFactor
+        .Tag = $SelVar[i]["Select"]
+      End With
+
+    Endif
+  Next
 
 End
 
@@ -140,53 +173,13 @@ Public Sub ButtonGroup_Click()
   Endif
 
   If txthistory.Text Then
-    txthistory.RichText = txthistory.RichText & xstr
+    If aSpaceBox[i].Tag Then
+      txthistory.RichText = Replace(txthistory.RichText, aSpaceBox[i].Tag, xstr)
+    Else
+      txthistory.RichText = Replace(txthistory.Text, "<" & lstvariable.Text & ">", xstr)
+    Endif
   Else
     txthistory.RichText = xstr
-  Endif
-
-End
-
-Public Sub btnselection_Click()
-
-  Dim i As Integer
-  Dim xList As String[]
-
-  xList = New String[]
-  For i = 0 To $SelVar.Count - 1
-    If aComboBox[i].Text Then
-      xList.Add(aNameLabel[i].Text & Space(1) & aComboBox[i].Text)
-    Endif
-  Next
-
-  If xList.Count Then
-    If txthistory.Text Then
-      If txthistory.RichMode = True Then
-        txthistory.RichText = txthistory.RichText & "<br>" & xList.Join("<br>")
-      Else
-        txthistory.RichText = txthistory.RichText & gb.NewLine & xList.Join(gb.NewLine)
-      Endif
-    Else
-      If txthistory.RichMode = True Then
-        txthistory.RichText = xList.Join("<br>")
-      Else
-        txthistory.RichText = xList.Join(gb.NewLine)
-      Endif
-    Endif
-  Endif
-
-End
-
-Public Sub btndefault_Click()
-
-  If txthistory.Text Then
-    If txthistory.RichMode = True Then
-      txthistory.RichText = txthistory.RichText & "<br>" & $defValue
-    Else
-      txthistory.RichText = txthistory.RichText & gb.NewLine & $defValue
-    Endif
-  Else
-    txthistory.RichText = $defValue
   Endif
 
 End

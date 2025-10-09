@@ -60,11 +60,11 @@ Public Sub RemovePatientCache(patno As String)
     If res.Available Then
       For Each res
         encid = res["fldencounterval"]
-        modPatient.$PatProfileData.Clear(encid)
+        modPatient.$PatProfileData.Clear()
 
-        modPatient.$PatDOAData.Remove(encid)
-        modPatient.$PatDODData.Remove(encid)
-        modPatient.$PatDOFollData.Remove(encid)
+        modPatient.$PatDOAData.Remove()
+        modPatient.$PatDODData.Remove()
+        modPatient.$PatDOFollData.Remove()
       Next
     Endif
   Endif
