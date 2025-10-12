@@ -1,45 +1,72 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,55,49)
+  MoveScaled(0,0,56,54)
   Text = ("Expense Summary")
   Resizable = False
   { Frame1 Frame
-    MoveScaled(0,1,54,16)
+    MoveScaled(0,1,55,20)
     Text = ("Expense Summary")
     Alignment = Align.Left
     { Label1 Label
-      MoveScaled(1,3,24,3.5)
+      MoveScaled(1,7,18,3.5)
       Border = Border.Plain
       Text = ("OPD EXPENSES")
     }
     { Label2 Label
-      MoveScaled(1,7,24,3.5)
+      MoveScaled(1,11,18,3.5)
       Border = Border.Plain
       Text = ("IPD EXPENSES")
     }
     { Label3 Label
-      MoveScaled(1,11,24,3.5)
+      MoveScaled(1,15,18,3.5)
       Border = Border.Plain
       Text = ("TOTAL EXPENSES")
     }
-    { txtopdexpense ValueBox
-      MoveScaled(26,3,24,3.5)
+    { txtopdexpensecredit ValueBox
+      MoveScaled(20,7,14,3.5)
       ReadOnly = True
     }
-    { txtipdexpense ValueBox
-      MoveScaled(26,7,24,3.5)
+    { txtipdexpensecredit ValueBox
+      MoveScaled(20,11,14,3.5)
       ReadOnly = True
     }
-    { txttotalexpense ValueBox
-      MoveScaled(26,11,24,3.5)
+    { txttotalexpensecredit ValueBox
+      MoveScaled(20,15,14,3.5)
       Font = Font["Bold"]
       ReadOnly = True
     }
+    { txtopdexpensecash ValueBox
+      MoveScaled(38,7,14,3.5)
+      ReadOnly = True
+    }
+    { txtipdexpensecash ValueBox
+      MoveScaled(38,11,14,3.5)
+      ReadOnly = True
+    }
+    { txttotalexpensecash ValueBox
+      MoveScaled(38,15,14,3.5)
+      Font = Font["Bold"]
+      ReadOnly = True
+    }
+    { Label9 Label
+      MoveScaled(20,2,14,3.5)
+      Font = Font["Bold"]
+      Alignment = Align.Center
+      Border = Border.Plain
+      Text = ("CREDIT")
+    }
+    { Label10 Label
+      MoveScaled(38,2,14,3.5)
+      Font = Font["Bold"]
+      Alignment = Align.Center
+      Border = Border.Plain
+      Text = ("CASH")
+    }
   }
   { Frame2 Frame
-    MoveScaled(0,19,54,16)
-    Text = ("Payment Summary")
+    MoveScaled(0,23,54,16)
+    Text = ("Cash Payment Summary")
     Alignment = Align.Left
     { Label4 Label
       MoveScaled(1,3,24,3.5)
@@ -54,7 +81,7 @@
     { Label6 Label
       MoveScaled(1,11,24,3.5)
       Border = Border.Plain
-      Text = ("SURPLUS AMOUNT")
+      Text = ("SURPLUS CASH")
     }
     { txtcurrdeposit ValueBox
       MoveScaled(26,3,24,3.5)
@@ -71,7 +98,7 @@
     }
   }
   { Frame3 Frame
-    MoveScaled(0,36,54,12)
+    MoveScaled(0,40,54,12)
     Text = ("Limitations")
     Alignment = Align.Left
     { Label7 Label

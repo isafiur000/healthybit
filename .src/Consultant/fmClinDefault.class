@@ -6,6 +6,7 @@ Private $OptionList As Variant[]
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me)
+  cmbgender.List = ["Male", "Female", "Both Sex"]
   rbhistory.Value = True
   LoadFormats()
 
@@ -91,12 +92,12 @@ Private Sub ShowParameters()
   xxx = New String[]
   If cmbformat.Text Then
     If rbhistory.Value Then
-      xList = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select flditem as col from tblhistory where fldformat like &1", cmbformat.Text))
+      xList = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select flditem as col from tblhistory where fldformat like &1 and fldgender=&2", cmbformat.Text, cmbgender.Text))
       If xList.Exist("History of Illness") = False Then
         xxx.Add("History of Illness")
       Endif
     Else If rbdischarge.Value Then
-      xList = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select flditem as col from tbldischarge where fldformat like &1", cmbformat.Text))
+      xList = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select flditem as col from tbldischarge where fldformat like &1 and fldgender=&2", cmbformat.Text, cmbgender.Text))       ''
     Endif
 
     xxx.Insert(xList)
@@ -122,6 +123,7 @@ Public Sub btnaddtest_Click()
       res1 = modDatabase.$medConn.Create(sTable)
       res1["flditem"] = Trim(txtsubtest.Text)
       res1["fldformat"] = cmbformat.Text
+      res1["fldgender"] = cmbgender.Text
       res1["flddetail"] = ""
       res1["fldoptions"] = ""
       res1.Update()
@@ -134,7 +136,6 @@ End
 
 Public Sub ListBox1_Click()
 
-  $OptionList = New Variant[]
   ShowItemOptions()
 
 End
@@ -153,18 +154,21 @@ Private Sub ShowItemOptions()
   Dim res As Result
   Dim xVar As Variant[]
 
-  res = modDatabase.$myConn.Exec(Subst("select fldid,flddetail,fldoptions from &1", GetDefTable()) & " where flditem=&1 and fldformat like &2", ListBox1.Text, cmbformat.Text)             ''
-  If res.Available Then
-    res.MoveFirst
-    txtdetail.RichText = res["flddetail"]
-    If res["fldoptions"] Then
-      Try xVar = JSON.Decode(res["fldoptions"])
-      If xVar Then
-        $OptionList = xVar
+  $OptionList = New Variant[]
+  If ListBox1.Text Then
+    res = modDatabase.$myConn.Exec(Subst("select fldid,flddetail,fldoptions from &1", GetDefTable()) & " where flditem=&1 and fldformat like &2 and fldgender=&3", ListBox1.Text, cmbformat.Text, cmbgender.Text)             ''
+    If res.Available Then
+      res.MoveFirst
+      txtdetail.RichText = res["flddetail"]
+      If res["fldoptions"] Then
+        Try xVar = JSON.Decode(res["fldoptions"])
+        If xVar Then
+          $OptionList = xVar
+        Endif
       Endif
+    Else
+      txtdetail.RichText = ""
     Endif
-  Else
-    txtdetail.RichText = ""
   Endif
   SetOptionGrid()
   Frame1.Enabled = True
@@ -258,8 +262,8 @@ Public Sub btnBrOK_Click()
   Dim res As Result
   Dim res1 As Result
 
-  If ListBox1.Text And If cmbformat.Text Then
-    res = modDatabase.$medConn.Edit(GetDefTable(), "flditem=&1 and fldformat like &2", ListBox1.Text, cmbformat.Text)
+  If ListBox1.Text And If cmbformat.Text And If cmbgender.Text Then
+    res = modDatabase.$medConn.Edit(GetDefTable(), "flditem=&1 and fldformat like &2 and fldgender=&3", ListBox1.Text, cmbformat.Text, cmbgender.Text)
     If res.Available Then
       res["flddetail"] = txtdetail.RichText
       res["fldoptions"] = JSON.Encode($OptionList)
@@ -270,6 +274,7 @@ Public Sub btnBrOK_Click()
       res1 = modDatabase.$medConn.Create(GetDefTable())
       res1["flditem"] = ListBox1.Text
       res1["fldformat"] = cmbformat.Text
+      res1["fldgender"] = cmbgender.Text
       res1["flddetail"] = txtdetail.RichText
       res1["fldoptions"] = JSON.Encode($OptionList)
       res1.Update()
@@ -284,8 +289,8 @@ End
 
 Public Sub btnBrCancel_Click()
 
-  If ListBox1.Text And If cmbformat.Text Then
-    modDatabase.$medConn.Delete(GetDefTable(), "flditem=&1 and fldformat=&2", ListBox1.Text, cmbformat.Text)
+  If ListBox1.Text And If cmbformat.Text And If cmbgender.Text Then
+    modDatabase.$medConn.Delete(GetDefTable(), "flditem=&1 and fldformat=&2 and fldgender=&3", ListBox1.Text, cmbformat.Text, cmbgender.Text)
     txtdetail.RichText = ""
     ShowParameters()
     GridView1.Clear()
@@ -317,6 +322,7 @@ Public Sub btndefaultformats_Click()
       res1 = modDatabase.$medConn.Create("tblhistory")
       res1["flditem"] = xItem
       res1["fldformat"] = "Common"
+      res1["fldgender"] = "Both Sex"
       res1["flddetail"] = ""
       res1["fldoptions"] = ""
       res1.Update()
@@ -329,6 +335,7 @@ Public Sub btndefaultformats_Click()
       res1 = modDatabase.$medConn.Create("tbldischarge")
       res1["flditem"] = yItem
       res1["fldformat"] = "Common"
+      res1["fldgender"] = "Both Sex"
       res1["flddetail"] = ""
       res1["fldoptions"] = ""
       res1.Update()
@@ -355,6 +362,7 @@ Public Sub btnclaim_Click()
       res1 = modDatabase.$medConn.Create("tblhistory")
       res1["flditem"] = xItem
       res1["fldformat"] = "Claim Code"
+      res1["fldgender"] = "Both Sex"
       res1["flddetail"] = ""
       res1["fldoptions"] = ""
       res1.Update()
@@ -367,6 +375,7 @@ Public Sub btnclaim_Click()
       res1 = modDatabase.$medConn.Create("tbldischarge")
       res1["flditem"] = yItem
       res1["fldformat"] = "Claim Code"
+      res1["fldgender"] = "Both Sex"
       res1["flddetail"] = ""
       res1["fldoptions"] = ""
       res1.Update()

@@ -44,7 +44,7 @@ Public Sub Form_Open()
       mnucustreport.Enabled = True
       mnuservices.Enabled = True
       mnucustforms.Enabled = True
-      mnuformatexam.Enabled = True
+      ' mnuformatexam.Enabled = True
   End Select
 
   $UserRestrict = modBasic.$ClinicDisableCompo
@@ -1298,6 +1298,7 @@ Private Sub GetComboItemList()
   If $UserRestrict.Exist("Clinical Findings") = False Then
     btnmobexam.Enabled = True
     btnmobexamall.Enabled = True
+    mnuformatexam.Enabled = True
   Endif
   If $UserRestrict.Exist("Clinical Notes") = False Then
     btnmobnote.Enabled = True

@@ -101,7 +101,7 @@ Private Sub DisplaySelectImg()
 
   If PictureBox1.Tag Then
     If $strType = "IMAGE" Then
-      PictureBox1.Image = Image.Load(PictureBox1.Tag)
+      Try PictureBox1.Image = Image.Load(PictureBox1.Tag)
     Else If $strType = "DICOM" Then
       xpath = modDevAll.ConverDicomToPNG(PictureBox1.Tag)
       Try PictureBox1.Image = Image.Load(xpath)

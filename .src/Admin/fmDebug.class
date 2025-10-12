@@ -319,7 +319,7 @@ Private Sub UpdateFractionEncounter()
   Dim res As Result
 
   Inc Application.Busy
-  res1 = modDatabase.$myConn.Exec("select tblpatgenshare.fldid,tblpatgenshare.fldencounterval,tblpatgenshare.flditemid,tblpatbilling.fldencounterval from tblpatgenshare inner join tblpatbilling on tblpatgenshare.flditemid=tblpatbilling.fldid where tblpatgenshare.fldencounterval<>tblpatbilling.fldencounterval")
+  res1 = modDatabase.$myConn.Exec("select tblpatgenshare.fldid,tblpatgenshare.fldencounterval,tblpatgenshare.flditemid,tblpatbilling.fldencounterval from tblpatgenshare inner join tblpatbilling on (tblpatgenshare.flditemid=tblpatbilling.fldid and tblpatgenshare.fldencounterval=tblpatbilling.fldencounterval) where tblpatgenshare.fldencounterval<>tblpatbilling.fldencounterval")
   If res1.Available Then
     For Each res1
       res = modDatabase.$myConn.Edit("tblpatgenshare", "fldid=&1", res1["tblpatgenshare.fldid"])

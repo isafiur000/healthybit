@@ -55,11 +55,12 @@ Public Sub Form_Open()
   Else
     cmbfinding.List = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Physician Examinations", True)
   Endif
-  $ExamLst = modMedicine.FillClinicalSubClass("InPatient")
+  $ExamLst = modMedicine.FillClinicalSubClass("Physician Examinations")
   $UserRestrict = modBasic.$ClinicDisableCompo
 
   FillCustomFormMenu()
   FillCustomMenu()
+  FillStructExamMenu()
   SHowALgorithmList()
 
   SetHtmlTextOption(txthistory)
@@ -497,7 +498,7 @@ Private Function NoteTakingTypeList() As String[]
     Case "Absconder"
       aList = New String[]
     Case "Discharged", "LAMA", "Refer", "Death"
-      xList = modMedicine.GetClinDischargeList($billReference)
+      xList = modMedicine.GetClinDischargeList($billReference, txtgender.Text)
       If xList And If xList.Count Then
         aList = xList
       Else
@@ -521,7 +522,7 @@ Private Function GetHistoryList() As String[]
   xList.Add("Cause of Admission")
   xList.Add("General Complaints")
   xList.Add("History of Illness")
-  xnew = modMedicine.GetClinHistoryList($billReference)
+  xnew = modMedicine.GetClinHistoryList($billReference, txtgender.Text)
   If xnew And If xnew.Count Then
     xList.Insert(xnew)
   Else
@@ -628,6 +629,7 @@ Private Sub ButtonControl()
   btnaddexamlistmainall.Enabled = xx
   btnaddscales.Enabled = xx
   btntriage.Enabled = xx
+  mnustructured.Enabled = xx
   ''input/output
   btnaddinput.Enabled = xx
   btaddoutput.Enabled = xx
@@ -1682,6 +1684,17 @@ Public Sub GridView1_Menu()
 
 End
 
+Public Sub mnuaddimage_Click()
+
+  Dim hForm As FmTestImage
+
+  If GridView1.Rows.Selection.Count > 0 Then
+    hForm = New FmTestImage("IMAGE", Trim(txtencid.Text), GridView1[GridView1.Row, 0].Text, GridView1[GridView1.Row, 2].Text, "Examination", "")
+    hForm.ShowModal
+  Endif
+
+End
+
 Public Sub mnievidexam_Click()
 
   ''exam evidence
@@ -1851,7 +1864,7 @@ End
 Public Sub btnhistorydef_Click()
 
   If cmbinpathistory.Text Then
-    txthistory.RichText = AddHistory("History", cmbinpathistory.Text)
+    txthistory.RichText = AddHistory("History", Trim(txtencid.Text), cmbinpathistory.Text)
   Endif
 
 End
@@ -2192,7 +2205,7 @@ End
 Public Sub btnnotedef_Click()
 
   If cmbnote.Text Then
-    txtnote.RichText = AddHistory("Discharge", cmbnote.Text)
+    txtnote.RichText = AddHistory("Discharge", Trim(txtencid.Text), cmbnote.Text)
   Endif
 
 End
@@ -5485,6 +5498,171 @@ Public Sub mnucustform10_Click()
 
 End
 
+''===================== Structured exams==========================
+Private Sub FillStructExamMenu()
+
+  If $ExamLst.Count > 0 Then
+    mnurec1.Text = $ExamLst[0]
+    mnurec1.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 1 Then
+    mnurec2.Text = $ExamLst[1]
+    mnurec2.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 2 Then
+    mnurec3.Text = $ExamLst[2]
+    mnurec3.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 3 Then
+    mnurec4.Text = $ExamLst[3]
+    mnurec4.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 4 Then
+    mnurec5.Text = $ExamLst[4]
+    mnurec5.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 5 Then
+    mnurec6.Text = $ExamLst[5]
+    mnurec6.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 6 Then
+    mnurec7.Text = $ExamLst[6]
+    mnurec7.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 7 Then
+    mnurec8.Text = $ExamLst[7]
+    mnurec8.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 8 Then
+    mnurec9.Text = $ExamLst[8]
+    mnurec9.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 9 Then
+    mnurec10.Text = $ExamLst[9]
+    mnurec10.Enabled = True
+  Endif
+
+End
+
+Public Sub mnurec1_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec1.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec2_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec2.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec3_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec3.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec4_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec4.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec5_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec5.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec6_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec6.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec7_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec7.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec8_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec8.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec9_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec9.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec10_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec10.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
 ''------------------------ Algorithms ---------------------------------------------
 Private Sub SHowALgorithmList()
 
@@ -5703,6 +5881,7 @@ Private Sub RestrictUserAccess()
     btnaddexamlistmainall.Enabled = False
     btnaddscales.Enabled = False
     btntriage.Enabled = False
+    mnustructured.Enabled = False
   Endif
   If $UserRestrict.Exist("Body Weight") Then
     tlbtnadwt.Enabled = False

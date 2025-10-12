@@ -2231,19 +2231,21 @@ Public Sub txtdisc_LostFocus()
 
   If cmbitem.Text Then
     If modGridView.GetItemPresentGrid(GridView1, 4, cmbitem.Text) = True Then
-      Select modBasic.$BillDuplication
-        Case "Inform"
-          Balloon.Warning(("Item already punched"), Label8)
-          Balloon.Delay = modBasic.$BalloonDelay
-          txtqty.SetFocus
-        Case "Warn"
-          Message.Warning("Duplicate Entry", ("OK"))
-          txtqty.SetFocus
-        Case "Disable"
-          Message.Warning("Duplicate Entry not allowed", ("OK"))
-          cmbitem.Text = ""
-          cmbtype.SetFocus
-      End Select
+      If modBasic.$BillDuplicateAllow.Exist(cmbitem.Text) = False Then
+        Select modBasic.$BillDuplication
+          Case "Inform"
+            Balloon.Warning(("Item already punched"), Label8)
+            Balloon.Delay = modBasic.$BalloonDelay
+            txtqty.SetFocus
+          Case "Warn"
+            Message.Warning("Duplicate Entry", ("OK"))
+            txtqty.SetFocus
+          Case "Disable"
+            Message.Warning("Duplicate Entry not allowed", ("OK"))
+            cmbitem.Text = ""
+            cmbtype.SetFocus
+        End Select
+      Endif
     Endif
   Endif
 

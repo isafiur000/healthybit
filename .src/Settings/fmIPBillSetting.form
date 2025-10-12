@@ -437,16 +437,34 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label42 Label
-      MoveScaled(1,29,16,3)
+      MoveScaled(1,35,16,3)
       Border = Border.Plain
       Text = ("Discharge On")
     }
     { cmbdischarge ComboBox
-      MoveScaled(18,29,15.5,3)
+      MoveScaled(18,35,15.5,3)
     }
     { btndischarge ToolButton
-      MoveScaled(34,29,3,3)
+      MoveScaled(34,35,3,3)
       Picture = Picture["icon:/small/apply"]
+    }
+    { Frame111 Frame
+      MoveScaled(49,1,24,18)
+      Text = ("Expense Includes")
+      Alignment = Align.Left
+      { chkinexbed CheckBox
+        MoveScaled(2,4,19,3)
+        Text = ("Bed Charges")
+      }
+      { chkinexpequip CheckBox
+        MoveScaled(2,8,19,3)
+        Text = ("Equipments")
+      }
+      { btninexpense Button
+        MoveScaled(3,13,18,3)
+        Text = ("Save")
+        Picture = Picture["icon:/small/apply"]
+      }
     }
     Index = 3
     Text = ("Miscellaneous")

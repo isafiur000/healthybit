@@ -918,8 +918,8 @@ Private Sub EnterTextData()
   xx = TableView1.Row
   If TableView1[TableView1.Row, 11].Text = "Qualitative" Then
     xType = modFixLab.GetLabTestOptionType(TableView1[TableView1.Row, 2].Text)
-    sql = "select fldid,fldsubtest,fldtanswertype,fldreport,fldabnormal,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1" & modLabSub.GetLabRepoOrder("SubTest")
-    res = modDatabase.$myConn.Exec(sql, TableView1[TableView1.Row, 0].Text)
+    sql = "select fldid,fldsubtest,fldtanswertype,fldreport,fldabnormal,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1 and fldencounterval=&2" & modLabSub.GetLabRepoOrder("SubTest")
+    res = modDatabase.$myConn.Exec(sql, TableView1[TableView1.Row, 0].Text, $encid)
     If res.Available = False Then
       If xType = "Clinical Scale" Then
         yqualival = modExamOption.GetClinScalePopUp("Test", TableView1[TableView1.Row, 2].Text)
@@ -1326,7 +1326,7 @@ Public Sub mnupdatesub_Click()
   If TableView1.Rows.Selection.Count Then
     Inc Application.Busy
     modDatabase.$myConn.Begin
-    modDatabase.$myConn.Delete($tblpatlabsubtest, "fldtestid=&1", TableView1[TableView1.Row, 0].Text)
+    modDatabase.$myConn.Delete($tblpatlabsubtest, "fldtestid=&1 and fldencounterval=&2", TableView1[TableView1.Row, 0].Text, $encid)
     xType = modFixLab.GetLabTestOptionType(TableView1[TableView1.Row, 2].Text)
     If xType = "Fixed Components" Or If xType = "Left/Right Components" Then
       resx = modDatabase.$myConn.Exec("select fldsubtest,fldtanswertype,fldindex from tbltestquali where fldtestid=&1 GROUP BY fldsubtest", TableView1[TableView1.Row, 2].Text)
@@ -1869,8 +1869,8 @@ Public Sub FixButtonGroup_Click()
 
   j = Last.Tag
   xType = modFixLab.GetLabTestOptionType($xData[j][1])
-  sql = "select fldid,fldsubtest,fldtanswertype,fldreport,fldabnormal,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1" & modLabSub.GetLabRepoOrder("SubTest")
-  res = modDatabase.$myConn.Exec(sql, $xData[j][0])
+  sql = "select fldid,fldsubtest,fldtanswertype,fldreport,fldabnormal,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1 and fldencounterval=&2" & modLabSub.GetLabRepoOrder("SubTest")
+  res = modDatabase.$myConn.Exec(sql, $xData[j][0], $encid)
   If res.Available = True Then
     aData = New Variant[]
     For Each res

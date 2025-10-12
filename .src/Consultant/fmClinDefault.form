@@ -4,7 +4,7 @@
   MoveScaled(0,0,96,76)
   Text = ("History and Notes")
   { Label1 Label
-    MoveScaled(1,8.5,13,3)
+    MoveScaled(25,13,13,3)
     Border = Border.Plain
     Text = ("Component")
   }
@@ -19,7 +19,7 @@
     Picture = Picture["icon:/small/cancel"]
   }
   { Label3 Label
-    MoveScaled(1,0.625,13,3)
+    MoveScaled(1,0.625,10,3)
     Border = Border.Plain
     Text = ("Category")
   }
@@ -84,16 +84,16 @@
     Text = ("Default")
   }
   { Label6 Label
-    MoveScaled(1,4.5,13,3)
+    MoveScaled(1,4.5,10,3)
     Border = Border.Plain
     Text = ("Format")
   }
   { btnshow Button
-    MoveScaled(46,5,12,3)
+    MoveScaled(33,9,12,3)
     Text = ("Show")
   }
   { cmbformat ComboBox
-    MoveScaled(15,4.5,30,3)
+    MoveScaled(12,5,33,3)
   }
   { btnclaim Button
     MoveScaled(1,72,10,3)
@@ -102,12 +102,8 @@
   { ListBox1 ListBox
     MoveScaled(1,13,23,58)
   }
-  { btnaddtest Button
-    MoveScaled(46,9,7,3)
-    Text = ("Add")
-  }
   { txtsubtest TextBox
-    MoveScaled(15,8.5,30,3)
+    MoveScaled(39,13,40,3)
   }
   { Panel4 Panel
     MoveScaled(15,1,30,3)
@@ -123,7 +119,19 @@
     }
   }
   { txtdetail TextHTML
-    MoveScaled(25,13,70,23)
+    MoveScaled(25,17,70,19)
     ToolTip = ("<Variable> will be replaced by one of the values defined below")
+  }
+  { Label8 Label
+    MoveScaled(1,9,10,3)
+    Border = Border.Plain
+    Text = ("Gender")
+  }
+  { btnaddtest ToolButton
+    MoveScaled(81,13,3,3)
+    Picture = Picture["icon:/small/add"]
+  }
+  { cmbgender ComboBox
+    MoveScaled(12,9,17,3)
   }
 }

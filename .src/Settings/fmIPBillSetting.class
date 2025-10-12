@@ -297,6 +297,8 @@ Private Sub SetLowDeposit()
   cmbdeposerv.Text = modGlobalSetting.ShowSettingFromDBAny("LowDeposit/Service", cmbtarget.Text)
 
   cmbdischarge.Text = modGlobalSetting.ShowSettingFromDBAny("DischargePrint/OnClearance", cmbtarget.Text)
+  modGlobalSetting.ShowCheckBoxFromDBAny(chkinexbed, "DynamicExpense/BedCharges", cmbtarget.Text)
+  modGlobalSetting.ShowCheckBoxFromDBAny(chkinexpequip, "DynamicExpense/Equipments", cmbtarget.Text)
 
 End
 
@@ -360,6 +362,15 @@ Public Sub btndischarge_Click()
 
   modGlobalSetting.SaveSettingToDB("DischargePrint/OnClearance", cmbdischarge.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btndischarge)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btninexpense_Click()
+
+  modGlobalSetting.EnterSettingFromDB(chkinexbed, "DynamicExpense/BedCharges", cmbtarget.Text)
+  modGlobalSetting.EnterSettingFromDB(chkinexpequip, "DynamicExpense/Equipments", cmbtarget.Text)
+  Balloon.Info(("Information saved"), btninexpense)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -700,6 +711,8 @@ Public Sub btnsettall_Click()
   xList.Add("LowDeposit/Others")
   xList.Add("LowDeposit/Service")
   xList.Add("DischargePrint/OnClearance")
+  xList.Add("DynamicExpense/BedCharges")
+  xList.Add("DynamicExpense/Equipments")
 
   xList.Add("FixPayableUser/Test")
   xList.Add("FixPayableUser/Service")

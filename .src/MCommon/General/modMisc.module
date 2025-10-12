@@ -382,20 +382,24 @@ Public Function GetDuplicationAllow(sList As String[], sItem As String, xctrl As
   xbool = True
   If sItem Then
     If sList.Exist(sItem) = True Then
-      Select modBasic.$BillDuplication
-        Case "Inform"
-          xbool = True
-          Balloon.Warning(("Item already punched"), xctrl)
-          Balloon.Delay = modBasic.$BalloonDelay
-        Case "Warn"
-          xbool = True
-          Message.Warning("Duplicate Entry", ("OK"))
-        Case "Disable"
-          xbool = False
-          Message.Warning("Duplicate Entry not allowed", ("OK"))
-        Case Else
-          xbool = True
-      End Select
+      If modBasic.$BillDuplicateAllow.Exist(sItem) = False Then
+        Select modBasic.$BillDuplication
+          Case "Inform"
+            xbool = True
+            Balloon.Warning(("Item already punched"), xctrl)
+            Balloon.Delay = modBasic.$BalloonDelay
+          Case "Warn"
+            xbool = True
+            Message.Warning("Duplicate Entry", ("OK"))
+          Case "Disable"
+            xbool = False
+            Message.Warning("Duplicate Entry not allowed", ("OK"))
+          Case Else
+            xbool = True
+        End Select
+      Else
+        xbool = True
+      Endif
     Else
       xbool = True
     Endif

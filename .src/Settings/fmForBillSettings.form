@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,94,47)
+  MoveScaled(0,0,94,56)
   Tag = "Billing Rules"
   Text = ("Billing Rules")
   Resizable = False
@@ -20,17 +20,14 @@
     Text = ("Show")
     Picture = Picture["icon:/small/play"]
   }
-  { Separator1 Separator
-    MoveScaled(0,58,61,1)
-  }
   { lblcomp Label
     MoveScaled(41,1,26,3)
     Border = Border.Plain
   }
   { IconPanel1 IconPanel
-    MoveScaled(1,5,92,41)
+    MoveScaled(1,5,92,50)
     Enabled = False
-    Count = 9
+    Count = 10
     Index = 0
     Text = ("General")
     { Label3 Label
@@ -82,16 +79,16 @@
       Text = ("Default Type")
     }
     { Label48 Label
-      MoveScaled(1,23,28,3)
+      MoveScaled(1,37,28,3)
       Border = Border.Plain
       Text = ("Return Verification")
     }
     { cmbverifyret ComboBox
-      MoveScaled(30,23,15,3)
+      MoveScaled(30,37,15,3)
       ToolTip = ("When set \"Enable\", the Return entries (Counter Return, Pharmact Return) require approval in order to generate their invoices.")
     }
     { btnverifyret Button
-      MoveScaled(46,23,5,3)
+      MoveScaled(46,37,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     { cmblockmode ComboBox
@@ -117,28 +114,28 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label20 Label
-      MoveScaled(1,27,28,3)
+      MoveScaled(1,41,28,3)
       Border = Border.Plain
       Text = ("Edit Payable User")
     }
     { cmbsavpayble ComboBox
-      MoveScaled(30,27,15,3)
+      MoveScaled(30,41,15,3)
       ToolTip = ("Select Yes to allow edit Payable user for saved billing entries")
     }
     { btnsaventry Button
-      MoveScaled(46,27,5,3)
+      MoveScaled(46,41,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label88 Label
-      MoveScaled(1,31,28,3)
+      MoveScaled(1,45,28,3)
       Border = Border.Plain
       Text = ("Show Null Ledger")
     }
     { cmbnulledger ComboBox
-      MoveScaled(30,31,15,3)
+      MoveScaled(30,45,15,3)
     }
     { btnnulledger Button
-      MoveScaled(46,31,5,3)
+      MoveScaled(46,45,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     Index = 1
@@ -440,7 +437,7 @@
       ToolTip = ("Select if Invoice generation is allowed with Deposit")
     }
     { Frame2 Frame
-      MoveScaled(0,29,74,11)
+      MoveScaled(0,38,74,11)
       Text = ("Cash Handover Form")
       Alignment = Align.Left
       { Label47 Label
@@ -626,113 +623,6 @@
       MoveScaled(35,29,5,3)
       Picture = Picture["icon:/small/apply"]
     }
-    { Frame4 Frame
-      MoveScaled(41,1,34,35)
-      Text = ("Pharmacy Stock")
-      Alignment = Align.Left
-      { Label23 Label
-        MoveScaled(1,7,15,3)
-        Border = Border.Plain
-        Text = ("Medicine Source")
-      }
-      { cmbmedicinestock ComboBox
-        MoveScaled(17,7,12,3)
-        ToolTip = ("Select Target Comp ID for Medicine whose stock is used while billing from Cashier Form")
-      }
-      { btnpharmstock ToolButton
-        MoveScaled(30,7,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-      { Label89 Label
-        MoveScaled(1,19,15,3)
-        Border = Border.Plain
-        Text = ("Surgical Source")
-      }
-      { cmbsurgistock ComboBox
-        MoveScaled(17,19,12,3)
-        ToolTip = ("Select Target Comp ID for Surgicals whose stock is used while billing from Cashier Form")
-      }
-      { btnsurgistock ToolButton
-        MoveScaled(30,19,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-      { Label90 Label
-        MoveScaled(1,31,15,3)
-        Border = Border.Plain
-        Text = ("Extras Source")
-      }
-      { cmbextrastock ComboBox
-        MoveScaled(17,31,12,3)
-        ToolTip = ("Select Target Comp ID for Extra Items whose stock is used while billing from Cashier Form")
-      }
-      { btnextrastock ToolButton
-        MoveScaled(30,31,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-      { Label71 Label
-        MoveScaled(1,3,15,3)
-        Border = Border.Plain
-        Text = ("Alter Stock")
-      }
-      { cmbalterpharm ComboBox
-        MoveScaled(17,3,12,3)
-        ToolTip = ("If set to No then Counter billing of pharmacy items won't alter the target stock")
-      }
-      { btnalterpharm ToolButton
-        MoveScaled(30,3,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-      { Label94 Label
-        MoveScaled(1,23,15,3)
-        Border = Border.Plain
-        Text = ("Suture Source")
-      }
-      { cmbsuturestock ComboBox
-        MoveScaled(17,23,12,3)
-        ToolTip = ("Select Target Comp ID for Suture whose stock is used while billing from Cashier Form")
-      }
-      { btnsuturestock ToolButton
-        MoveScaled(30,23,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-      { Label95 Label
-        MoveScaled(1,27,15,3)
-        Border = Border.Plain
-        Text = ("Ortho Source")
-      }
-      { cmborthostock ComboBox
-        MoveScaled(17,27,12,3)
-        ToolTip = ("Select Target Comp ID for Orthopedics whose stock is used while billing from Cashier Form")
-      }
-      { btnorthostock ToolButton
-        MoveScaled(30,27,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-      { Label97 Label
-        MoveScaled(1,11,15,3)
-        Border = Border.Plain
-        Text = ("Label (Generic)")
-      }
-      { cmblabelgeneric ComboBox
-        MoveScaled(17,11,12,3)
-      }
-      { btnlabelgeneric ToolButton
-        MoveScaled(30,11,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-      { Label98 Label
-        MoveScaled(1,15,15,3)
-        Border = Border.Plain
-        Text = ("Label (Brand)")
-      }
-      { cmblabelbrand ComboBox
-        MoveScaled(17,15,12,3)
-      }
-      { btnlabelbrand ToolButton
-        MoveScaled(30,15,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-    }
     Index = 5
     Text = ("Bill Punching")
     { Label21 Label
@@ -758,102 +648,6 @@
     { btnautoretn Button
       MoveScaled(33,13,5,3)
       Picture = Picture["icon:/small/apply"]
-    }
-    { Frame1 Frame
-      MoveScaled(40,0,33,32)
-      Text = ("Billing Section")
-      Alignment = Align.Left
-      { Label29 Label
-        MoveScaled(1,3,11,3)
-        Border = Border.Plain
-        Text = ("Service")
-      }
-      { cmbcatgeneral ComboBox
-        MoveScaled(13,3,12.5,3)
-        Sorted = True
-      }
-      { Label30 Label
-        MoveScaled(1,7,11,3)
-        Border = Border.Plain
-        Text = ("Equipment")
-      }
-      { cmbcatequip ComboBox
-        MoveScaled(13,7,12.5,3)
-        Sorted = True
-      }
-      { Label31 Label
-        MoveScaled(1,11,11,3)
-        Border = Border.Plain
-        Text = ("Radiology")
-      }
-      { cmbcatradio ComboBox
-        MoveScaled(13,11,12.5,3)
-        Sorted = True
-      }
-      { Label32 Label
-        MoveScaled(1,15,11,3)
-        Border = Border.Plain
-        Text = ("Laboratory")
-      }
-      { cmbcatlab ComboBox
-        MoveScaled(13,15,12.5,3)
-        Sorted = True
-      }
-      { Label33 Label
-        MoveScaled(1,19,11,3)
-        Border = Border.Plain
-        Text = ("Procedure")
-      }
-      { cmbcatproc ComboBox
-        MoveScaled(13,19,12.5,3)
-        Sorted = True
-      }
-      { Label35 Label
-        MoveScaled(1,23,11,3)
-        Border = Border.Plain
-        Text = ("Other")
-      }
-      { cmbcatother ComboBox
-        MoveScaled(13,23,12.5,3)
-        Sorted = True
-      }
-      { btncatservice ToolButton
-        MoveScaled(26,3,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-      { btncatequip ToolButton
-        MoveScaled(26,7,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-      { btncatradio ToolButton
-        MoveScaled(26,11,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-      { btncatlab ToolButton
-        MoveScaled(26,15,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-      { btncatproc ToolButton
-        MoveScaled(26,19,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-      { btncatother ToolButton
-        MoveScaled(26,23,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-      { Label58 Label
-        MoveScaled(1,27,11,3)
-        Border = Border.Plain
-        Text = ("All Items")
-      }
-      { cmbcatall ComboBox
-        MoveScaled(13,27,12.5,3)
-        Sorted = True
-      }
-      { btncatall ToolButton
-        MoveScaled(26,27,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
     }
     { Label52 Label
       MoveScaled(1,9,16.625,3)
@@ -894,29 +688,29 @@
       Picture = Picture["icon:/small/apply"]
     }
     { cmbdiagnosis ComboBox
-      MoveScaled(53,33,14,3)
+      MoveScaled(18,37,14,3)
       ToolTip = ("ForceAll: Force counter user to insert diagnosis for allSchemes\nForce: Force counter user to insert diagnosis for Scheme with Reference No\nYes: Show option to insert diagnosis")
     }
     { btndiagnosis Button
-      MoveScaled(68,33,5,3)
+      MoveScaled(33,37,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label72 Label
-      MoveScaled(40,33,13,3)
+      MoveScaled(1,37,16.625,3)
       Border = Border.Plain
       Text = ("Add Diagnosis")
     }
     { Label75 Label
-      MoveScaled(1,37,23,3)
+      MoveScaled(1,45,23,3)
       Border = Border.Plain
       Text = ("Lock Credit Bill after (Hr)")
     }
     { txtpunchlock ValueBox
-      MoveScaled(25,37,7,3)
+      MoveScaled(25,45,7,3)
       ToolTip = ("Specify number of days after which encounter will not allow punching")
     }
     { btnpunchlock Button
-      MoveScaled(33,37,5,3)
+      MoveScaled(33,45,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label78 Label
@@ -933,15 +727,15 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label83 Label
-      MoveScaled(40,37,13,3)
+      MoveScaled(1,41,16.625,3)
       Border = Border.Plain
       Text = ("Lock Diagnosis")
     }
     { cmblockdiagno ComboBox
-      MoveScaled(53,37,14,3)
+      MoveScaled(18,41,14,3)
     }
     { btnlockdiagno Button
-      MoveScaled(68,37,5,3)
+      MoveScaled(33,41,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label86 Label
@@ -979,6 +773,10 @@
     { btnexpired Button
       MoveScaled(33,33,5,3)
       Picture = Picture["icon:/small/apply"]
+    }
+    { btndupliexcept Button
+      MoveScaled(41,5,10,3)
+      Text = ("Exception")
     }
     Index = 6
     Text = ("Restrictions")
@@ -1268,6 +1066,211 @@
     { btndischreturn Button
       MoveScaled(51,21,5,3)
       Picture = Picture["icon:/small/apply"]
+    }
+    Index = 9
+    Text = ("Miscellaneous")
+    { Frame1 Frame
+      MoveScaled(1,1,33,32)
+      Text = ("Billing Section")
+      Alignment = Align.Left
+      { btncatall ToolButton
+        MoveScaled(26,27,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { cmbcatall ComboBox
+        MoveScaled(13,27,12.5,3)
+        Sorted = True
+      }
+      { Label58 Label
+        MoveScaled(1,27,11,3)
+        Border = Border.Plain
+        Text = ("All Items")
+      }
+      { btncatother ToolButton
+        MoveScaled(26,23,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { btncatproc ToolButton
+        MoveScaled(26,19,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { btncatlab ToolButton
+        MoveScaled(26,15,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { btncatradio ToolButton
+        MoveScaled(26,11,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { btncatequip ToolButton
+        MoveScaled(26,7,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { btncatservice ToolButton
+        MoveScaled(26,3,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { cmbcatother ComboBox
+        MoveScaled(13,23,12.5,3)
+        Sorted = True
+      }
+      { Label35 Label
+        MoveScaled(1,23,11,3)
+        Border = Border.Plain
+        Text = ("Other")
+      }
+      { cmbcatproc ComboBox
+        MoveScaled(13,19,12.5,3)
+        Sorted = True
+      }
+      { Label33 Label
+        MoveScaled(1,19,11,3)
+        Border = Border.Plain
+        Text = ("Procedure")
+      }
+      { cmbcatlab ComboBox
+        MoveScaled(13,15,12.5,3)
+        Sorted = True
+      }
+      { Label32 Label
+        MoveScaled(1,15,11,3)
+        Border = Border.Plain
+        Text = ("Laboratory")
+      }
+      { cmbcatradio ComboBox
+        MoveScaled(13,11,12.5,3)
+        Sorted = True
+      }
+      { Label31 Label
+        MoveScaled(1,11,11,3)
+        Border = Border.Plain
+        Text = ("Radiology")
+      }
+      { cmbcatequip ComboBox
+        MoveScaled(13,7,12.5,3)
+        Sorted = True
+      }
+      { Label30 Label
+        MoveScaled(1,7,11,3)
+        Border = Border.Plain
+        Text = ("Equipment")
+      }
+      { cmbcatgeneral ComboBox
+        MoveScaled(13,3,12.5,3)
+        Sorted = True
+      }
+      { Label29 Label
+        MoveScaled(1,3,11,3)
+        Border = Border.Plain
+        Text = ("Service")
+      }
+    }
+    { Frame4 Frame
+      MoveScaled(38,1,34,35)
+      Text = ("Pharmacy Stock")
+      Alignment = Align.Left
+      { Label23 Label
+        MoveScaled(1,7,15,3)
+        Border = Border.Plain
+        Text = ("Medicine Source")
+      }
+      { cmbmedicinestock ComboBox
+        MoveScaled(17,7,12,3)
+        ToolTip = ("Select Target Comp ID for Medicine whose stock is used while billing from Cashier Form")
+      }
+      { btnpharmstock ToolButton
+        MoveScaled(30,7,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { Label89 Label
+        MoveScaled(1,19,15,3)
+        Border = Border.Plain
+        Text = ("Surgical Source")
+      }
+      { cmbsurgistock ComboBox
+        MoveScaled(17,19,12,3)
+        ToolTip = ("Select Target Comp ID for Surgicals whose stock is used while billing from Cashier Form")
+      }
+      { btnsurgistock ToolButton
+        MoveScaled(30,19,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { Label90 Label
+        MoveScaled(1,31,15,3)
+        Border = Border.Plain
+        Text = ("Extras Source")
+      }
+      { cmbextrastock ComboBox
+        MoveScaled(17,31,12,3)
+        ToolTip = ("Select Target Comp ID for Extra Items whose stock is used while billing from Cashier Form")
+      }
+      { btnextrastock ToolButton
+        MoveScaled(30,31,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { Label71 Label
+        MoveScaled(1,3,15,3)
+        Border = Border.Plain
+        Text = ("Alter Stock")
+      }
+      { cmbalterpharm ComboBox
+        MoveScaled(17,3,12,3)
+        ToolTip = ("If set to No then Counter billing of pharmacy items won't alter the target stock")
+      }
+      { btnalterpharm ToolButton
+        MoveScaled(30,3,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { Label94 Label
+        MoveScaled(1,23,15,3)
+        Border = Border.Plain
+        Text = ("Suture Source")
+      }
+      { cmbsuturestock ComboBox
+        MoveScaled(17,23,12,3)
+        ToolTip = ("Select Target Comp ID for Suture whose stock is used while billing from Cashier Form")
+      }
+      { btnsuturestock ToolButton
+        MoveScaled(30,23,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { Label95 Label
+        MoveScaled(1,27,15,3)
+        Border = Border.Plain
+        Text = ("Ortho Source")
+      }
+      { cmborthostock ComboBox
+        MoveScaled(17,27,12,3)
+        ToolTip = ("Select Target Comp ID for Orthopedics whose stock is used while billing from Cashier Form")
+      }
+      { btnorthostock ToolButton
+        MoveScaled(30,27,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { Label97 Label
+        MoveScaled(1,11,15,3)
+        Border = Border.Plain
+        Text = ("Label (Generic)")
+      }
+      { cmblabelgeneric ComboBox
+        MoveScaled(17,11,12,3)
+      }
+      { btnlabelgeneric ToolButton
+        MoveScaled(30,11,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { Label98 Label
+        MoveScaled(1,15,15,3)
+        Border = Border.Plain
+        Text = ("Label (Brand)")
+      }
+      { cmblabelbrand ComboBox
+        MoveScaled(17,15,12,3)
+      }
+      { btnlabelbrand ToolButton
+        MoveScaled(30,15,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
     }
     Index = 0
   }

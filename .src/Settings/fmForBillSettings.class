@@ -799,6 +799,17 @@ Public Sub btnduplicate_Click()
 
 End
 
+Public Sub btndupliexcept_Click()
+
+  Dim xType As String
+  Dim hForm As FmSettingList
+
+  xType = "CashBilling/DuplicateEntry"
+  hForm = New FmSettingList("Duplication Allowed Items", "Service List", xType, cmbtarget.Text)
+  hForm.ShowModal
+
+End
+
 Public Sub btnautoretn_Click()
 
   modGlobalSetting.SaveSettingToDB("CashBilling/AutoReturn", cmbautoretn.Text, cmbtarget.Text)

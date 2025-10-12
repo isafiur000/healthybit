@@ -441,7 +441,7 @@ Private Sub ShowPatLaboratoryReport(sType As String, sHide As Boolean)
         asx.Clear()
       Endif
 
-      res = modDatabase.$myConn.Exec("select fldsubtest,fldabnormal,fldreport,fldid,fldtestid,fldtanswertype,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1 and fldchk=&2 and fldsave=&3" & modLabSub.GetLabRepoOrder("SubTest"), $rData["fldid"], True, True)
+      res = modDatabase.$myConn.Exec("select fldsubtest,fldabnormal,fldreport,fldid,fldtestid,fldtanswertype,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1 and fldencounterval=&2 and fldchk=&3 and fldsave=&4" & modLabSub.GetLabRepoOrder("SubTest"), $rData["fldid"], $encid, True, True)
       If res.Available = True Then
         For Each res
           If xType = "Left/Right Components" Then
@@ -868,7 +868,7 @@ Private Sub SelectGridItems(sInt As Long)
     res1["fldchk"] = True
     res1["xyz"] = False
 
-    res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldtestid=&1", sInt)
+    res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldtestid=&1 and fldencounterval=&2", sInt, $encid)
     If res.Available Then
       For Each res
         res["fldchk"] = True

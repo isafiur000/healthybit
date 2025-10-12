@@ -1162,7 +1162,6 @@ ALTER TABLE tblpatexamsubtable ADD COLUMN fldhide BOOLEAN NULL
 ALTER TABLE tblpatradiosubtable ADD COLUMN fldhide BOOLEAN NULL
 
 ''-------------------------------- 0.5.21 -----------------------
-
 ALTER TABLE tblclaimcode ADD COLUMN fldclaimtype VARCHAR( 150 ) NULL
 
 ALTER TABLE tblconsult ADD COLUMN fldflagtime DATETIME NULL
@@ -1171,13 +1170,7 @@ ALTER TABLE tblopvisit ADD COLUMN fldflagtime DATETIME NULL
 ALTER TABLE tblentry ADD fldselltime DATETIME NULL
 ALTER TABLE tblentry ADD fldselluserid VARCHAR( 50 ) NULL
 
-
-ALTER TABLE tblcompexam ADD fldtanswertype VARCHAR( 50 ) NULL
-ALTER TABLE tblcompexam ADD fldgroupname VARCHAR( 150 ) NULL
-ALTER TABLE tblcompexam ADD fldexamorder INT( 11 ) NULL
-
-ALTER TABLE tbldeptexam ADD fldexamorder INT( 11 ) NULL
-
+''-------------------------- 0.5.22 ---------------------------------
 ALTER TABLE tblmedinventory ADD fldreceiver VARCHAR( 150 ) NULL
 ALTER TABLE tblmedinventory ADD fldfirsttime DATETIME NULL
 ALTER TABLE tblmedinventory ADD fldsecondtime DATETIME NULL
@@ -1186,5 +1179,19 @@ ALTER TABLE tblmedinventory ADD fldcomp_start VARCHAR( 50 ) NULL
 
 ALTER TABLE tblconsult ADD COLUMN fldsummary TEXT NULL
 ALTER TABLE tblopvisit ADD COLUMN fldsummary TEXT NULL
+
+ALTER TABLE tbldeptexam ADD fldexamorder INT( 11 ) NULL
+
+ALTER TABLE tblcompexam ADD fldtanswertype VARCHAR( 50 ) NULL
+ALTER TABLE tblcompexam ADD fldgroupname VARCHAR( 150 ) NULL
+ALTER TABLE tblcompexam ADD fldexamorder INT( 11 ) NULL
+ALTER TABLE tblcompexam ADD fldoptionlist TEXT NULL
+
+ALTER TABLE tblhistory ADD fldgender VARCHAR( 50 ) NULL
+ALTER TABLE tbldischarge ADD fldgender VARCHAR( 50 ) NULL
+
+ALTER TABLE tblpatdosing ADD COLUMN fldqtyorder DOUBLE NULL
+
+ALTER TABLE tblpatradiotest ADD COLUMN fldbcounter VARCHAR( 100 ) NULL
 
 

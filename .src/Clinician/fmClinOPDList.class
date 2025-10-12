@@ -70,7 +70,7 @@ Public Sub Form_Open()
       mnucustreport.Enabled = True
       mnuservices.Enabled = True
       mnucustforms.Enabled = True
-      mnuformatexams.Enabled = True
+      ' mnuformatexams.Enabled = True
   End Select
   $UserRestrict = modBasic.$ClinicDisableCompo
   $refList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldlocation from tblreferlist"))
@@ -1088,7 +1088,7 @@ Public Sub btnmobexam_Click()
       hForm1 = New FmEnterDepartExam(modBasic.$ClinOPDExamination, GridView1[GridView1.Row, 2].Text, modBasic.$ClinOPDExamination, "Physician Examinations")
       hForm1.ShowModal
     Else
-      hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 2].Text, "Physician Examinations", "Group")
+      hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 2].Text, "Physician Examinations", "All")
       hForm.ShowModal
     Endif
   Endif
@@ -1887,6 +1887,7 @@ Private Sub GetComboItemList()
   Endif
   If $UserRestrict.Exist("Clinical Findings") = False Then
     btnmobexam.Enabled = True
+    mnuformatexams.Enabled = True
   Endif
   If $UserRestrict.Exist("Products Request") = False Then
     btnmobprogress.Enabled = True

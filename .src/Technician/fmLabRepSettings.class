@@ -820,7 +820,7 @@ Private Sub ManipulateSecondGrid(Row As Integer, testid As Long)
 
   Dim res As Result
 
-  res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldtestid=&1 and fldsave=&2", testid, True)
+  res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldtestid=&1 and fldencounterval=&2 and fldsave=&3", testid, $encid, True)
   If GridView1[Row, 2].Picture = Picture["icons/checked.png"] Then
     For Each res
       res["fldchk"] = True
@@ -863,8 +863,8 @@ Private Sub SHowQualiSUbTest(serial As Long)
   Dim fld As ResultField
 
   GridView2.Clear
-  sql = "select fldid,fldchk,fldsubtest,fldabnormal,fldreport,fldorder from " & $tblpatlabsubtest & " where fldtestid=&1 and fldsave=&2" & modLabSub.GetLabRepoOrder("SubTest")
-  $rData1 = modDatabase.$myConn.Exec(sql, serial, True)
+  sql = "select fldid,fldchk,fldsubtest,fldabnormal,fldreport,fldorder from " & $tblpatlabsubtest & " where fldtestid=&1 and fldencounterval=&2 and fldsave=&3" & modLabSub.GetLabRepoOrder("SubTest")
+  $rData1 = modDatabase.$myConn.Exec(sql, serial, $encid, True)
 
   GridView2.Columns.Count = $rData1.Fields.Count
   GridView2.Rows.Count = $rData1.Count
@@ -1015,7 +1015,7 @@ Private Sub SelectRowMulti(i As Integer)
   If GridView1[i, 1].Picture = Picture["icons/checked.png"] Then
     FillTestAutoFooter(GridView1[i, 4].Text)
   Endif
-  res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldtestid=&1", GridView1[i, 0].Text)
+  res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldtestid=&1 and fldencounterval=&2", GridView1[i, 0].Text, $encid)
   If res.Available = True Then
     GridView1[i, 2].Picture = Picture["icons/checked.png"]
     For Each res
@@ -1058,7 +1058,7 @@ Public Sub mnudselal_Click()
   BlankSubGrid() ''false grid to make grid empty
   For i = 0 To GridView1.Rows.Count - 1
     GridView1[i, 1].Picture = Picture["icons/unchecked.png"]
-    res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldtestid=&1", GridView1[i, 0].Text)
+    res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldtestid=&1 and fldencounterval=&2", GridView1[i, 0].Text, $encid)
     If res.Available = True Then
       GridView1[i, 2].Picture = Picture["icons/unchecked.png"]
       For Each res
@@ -1268,8 +1268,8 @@ Private Sub EnterTextData()
   xx = Gridview1.Row
   If Gridview1[Gridview1.Row, 3].Text = "Qualitative" Then
     xType = modFixLab.GetLabTestOptionType(Gridview1[Gridview1.Row, 4].Text)
-    sql = "select fldid,fldsubtest,fldtanswertype,fldreport,fldabnormal,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1" & modLabSub.GetLabRepoOrder("SubTest")
-    res = modDatabase.$myConn.Exec(sql, Gridview1[Gridview1.Row, 0].Text)
+    sql = "select fldid,fldsubtest,fldtanswertype,fldreport,fldabnormal,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1 and fldencounterval=&2" & modLabSub.GetLabRepoOrder("SubTest")
+    res = modDatabase.$myConn.Exec(sql, Gridview1[Gridview1.Row, 0].Text, $encid)
     If res.Available = False Then
       yqualival = GetQualiRich(Gridview1[Gridview1.Row, 4].Text, Gridview1[Gridview1.Row, 9].RichText, "Test")
       If yqualival Then
@@ -1783,7 +1783,7 @@ Private Sub ShowPatLaboratoryReport(sType As String, sHide As Boolean)
               asx.Clear()
             Endif
 
-            res = modDatabase.$myConn.Exec("select fldsubtest,fldabnormal,fldreport,fldid,fldtestid,fldtanswertype,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1 and fldchk=&2 and fldsave=&3" & modLabSub.GetLabRepoOrder("SubTest"), GridView1[i, 0].Text, True, True)
+            res = modDatabase.$myConn.Exec("select fldsubtest,fldabnormal,fldreport,fldid,fldtestid,fldtanswertype,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1 and fldencounterval=&2 and fldchk=&3 and fldsave=&4" & modLabSub.GetLabRepoOrder("SubTest"), GridView1[i, 0].Text, $encid, True, True)
             If res.Available = True Then
               For Each res
                 If xType = "Left/Right Components" Then
@@ -2378,7 +2378,7 @@ Private Sub ShowPatLaboratoryReport(sType As String, sHide As Boolean)
               asx.Clear()
             Endif
 
-            res = modDatabase.$myConn.Exec("select fldsubtest,fldabnormal,fldreport,fldid,fldtestid,fldtanswertype,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1 and fldchk=&2 and fldsave=&3" & modLabSub.GetLabRepoOrder("SubTest"), GridView1[i, 0].Text, True, True)
+            res = modDatabase.$myConn.Exec("select fldsubtest,fldabnormal,fldreport,fldid,fldtestid,fldtanswertype,fldindex from " & $tblpatlabsubtest & " where fldtestid=&1 and fldencounterval=&2 and fldchk=&3 and fldsave=&4" & modLabSub.GetLabRepoOrder("SubTest"), GridView1[i, 0].Text, $encid, True, True)
             If res.Available = True Then
               For Each res
                 If xType = "Left/Right Components" Then

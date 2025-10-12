@@ -1311,7 +1311,7 @@ Private Sub FillSamplingEncounters()
   Endif
 
   If cmbrepocounter.Text Then
-    xsample = " and tblpatradiotest.fldsampleid like &7"
+    xsample = " and tblpatradiotest.fldbcounter like &7"
   Else
     xsample = ""
   Endif
@@ -1337,11 +1337,11 @@ Private Sub FillSamplingEncounters()
   Endif
 
   If rbencrepo.Value = True Then
-    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldsampleid,tblpatradiotest.fldnewdate from tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                        ''
+    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate from tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                        ''
   Else If rbinvoicrepo.Value = True Then
-    sql = "select tblpatradiotest.fldbillno as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldsampleid,tblpatradiotest.fldnewdate from tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder
+    sql = "select tblpatradiotest.fldbillno as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate from tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder
   Else If rbindoorrepo.Value = True Then
-    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldsampleid,tblpatradiotest.fldnewdate from tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                      ''
+    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate from tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                      ''
   Endif
   If rbpending.Value = True Then
     $rData2 = modDatabase.$myConn.Exec(sql, "Sampled", False, modBasic.$compID, modDate.StartSqlDate(dtsort.value), modDate.EndSqlDate(DateAdd(dtsort.Value, gb.Day, txtrangerepo.Value)), cmbcategory.Text, cmbrepocounter.Text & "%", LCase(Trim(txtsearch.Text)))
@@ -1455,7 +1455,7 @@ Public Sub mnucounter_Click()
     If xlocat Then
       res = modDatabase.$myConn.Edit("tblpatradiotest", "fldid=&1 and fldsave_report=&2", GridView2[GridView2.Row, 6].Text, False)
       If res.Available Then
-        res["fldsampleid"] = xlocat
+        res["fldbcounter"] = xlocat
         res["xyz"] = False
         res.Update
         FillSamplingEncounters()
@@ -2364,17 +2364,13 @@ Public Sub btnprefix_Click()
 
   If GridView1.Rows.Selection.Count Then
     res = modDatabase.$myConn.Edit("tblpatradiotest", "fldid=&1", GridView1[GridView1.Row, 0].Text)
-    If res["fldsampleid"] And If $counterLst.Exist(res["fldsampleid"]) = False Then
+    If res["fldsampleid"] Then
       Message.Warning("Reference is " & res["fldsampleid"], "OK")
     Else
 
       xrefer = InputBox("Reference For this Examination", "Radiology", modRadioSub.GetRadioAutoIncreasingNo(res["fldtestid"]))
       If xrefer Then
-        If res["fldsampleid"] And If $counterLst.Exist(res["fldsampleid"]) = True Then
-          res["fldsampleid"] = res["fldsampleid"] & "-" & xrefer
-        Else
-          res["fldsampleid"] = xrefer
-        Endif
+        res["fldsampleid"] = xrefer
         res.Update
         ShowGridMain()
       Endif

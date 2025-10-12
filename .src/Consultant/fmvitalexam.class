@@ -15,7 +15,7 @@ Public Sub Form_Open()
   cmbcategory.List = ["Triage Examinations", "Essential Examinations", "Physician Examinations", "Nursing Examinations", "Discharge Examinations"]                         ''
   cmbtype.List = ["Qualitative", "Quantitative"]
   cmbconstant.List = modSysCons.GetAllSysConstantsList()
-  $ExamOption = modMedicine.FillClinDirectOptionCombo()
+  $ExamOption = modMedicine.FillClinSepOptionCombo()
 
 End
 
@@ -117,6 +117,7 @@ Public Sub btnBrOK_Click()
       res["fldtype"] = cmbtype.Text
       res["fldsysconst"] = cmbconstant.Text
       res["fldtanswertype"] = cmboption.Text
+      res["fldoptionlist"] = ""
       res["fldgroupname"] = Trim(txtgroupname.Text)
       res["fldexamorder"] = 0
       res["fldflag"] = False
@@ -236,6 +237,33 @@ Public Sub GridView1_Click()
 
 End
 
+Public Sub btnoptions_Click()
+
+  Dim res As Result
+  Dim xlist As String[]
+  Dim aList As String[]
+
+  If GridView1.Rows.Selection.Count Then
+    res = modDatabase.$myConn.Edit("tblcompexam", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+    If res.Available Then
+      If res["fldoptionlist"] Then
+        xlist = JSON.Decode(res["fldoptionlist"])
+      Else
+        xlist = New String[]
+      Endif
+      aList = InputList(res["fldexamid"], xlist)
+
+      If aList And If aList.Count Then
+        res["fldoptionlist"] = JSON.Encode(aList)
+        res.Update
+        Balloon.Info(("Information updated"), btnoptions)
+        Balloon.Delay = modBasic.$BalloonDelay
+      Endif
+    Endif
+  Endif
+
+End
+
 Public Sub GridView1_Menu()
 
   mnuhide.Popup
@@ -244,7 +272,7 @@ End
 
 Public Sub mnudel_Click()
 
-  If GridView1.Rows.Selection.Count > 0 Then
+  If GridView1.Rows.Selection.Count Then
     If cmbcategory.Text Then
       modDatabase.$myConn.Delete("tblcompexam", "fldid=&1", GridView1[GridView1.Row, 0].Text)
       FillFindingGrid(cmbcategory.Text)

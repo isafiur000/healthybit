@@ -27,6 +27,8 @@ Private Sub GetRemainingParam()
 
   If $sType = "User List" Then
     xList = modGeneral.GetActiveUserIDAll()
+  Else If $sType = "Service List" Then
+    xList = modNonMedical.NonStockBillingItemArray("%", "%")
   Endif
   FillGridViewSelected(xList)
 
@@ -36,9 +38,7 @@ Private Sub ShowSettingParams()
 
   Dim res As Result
 
-  If $sType = "User List" Then
-    res = modDatabase.$myConn.Exec("select fldvalue as col from tbltabsettings where fldcategory=&1 and fldcomp=&2", $sItem, $sComp)
-  Endif
+  res = modDatabase.$myConn.Exec("select fldvalue as col from tbltabsettings where fldcategory=&1 and fldcomp=&2", $sItem, $sComp)
   modFillContainer.FillListBox(lstsecond, res, False)
 
 End
@@ -89,15 +89,13 @@ Public Sub btnsave_Click()
     If lstfirst[CStr(i)].Picture = Picture["icons/checked.png"] Then
       If lstsecond.List.Exist(lstfirst[CStr(i)].Text) = False Then
 
-        If $sType = "User List" Then
-          res = modDatabase.$myConn.Create("tbltabsettings")
-          res["fldcomp"] = $sComp
-          res["fldcategory"] = $sItem
-          res["fldvalue"] = lstfirst[CStr(i)].Text
-          res["fldtime"] = Now()
-          res["flduserid"] = modBasic.$lbluser
-          res.Update
-        Endif
+        res = modDatabase.$myConn.Create("tbltabsettings")
+        res["fldcomp"] = $sComp
+        res["fldcategory"] = $sItem
+        res["fldvalue"] = lstfirst[CStr(i)].Text
+        res["fldtime"] = Now()
+        res["flduserid"] = modBasic.$lbluser
+        res.Update
 
       Endif
     Endif
@@ -134,9 +132,7 @@ End
 Public Sub mnudelete_Click()
 
   If lstsecond.Text Then
-    If $sType = "User List" Then
-      modDatabase.$myConn.Delete("tbltabsettings", "fldcategory=&1 and fldcomp=&2 and fldvalue=&3", $sItem, $sComp, lstsecond.Text)
-    Endif
+    modDatabase.$myConn.Delete("tbltabsettings", "fldcategory=&1 and fldcomp=&2 and fldvalue=&3", $sItem, $sComp, lstsecond.Text)
     ShowSettingParams()
     GetRemainingParam()
   Endif

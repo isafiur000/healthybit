@@ -42,7 +42,7 @@ Private Sub SelectGridItems(sIndex As Long)
   If res1.Available Then
     res1["fldchk"] = True
     res1["xyz"] = False
-    res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldtestid=&1", sIndex)
+    res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldtestid=&1 and fldencounterval=&2", sIndex, $encid)
     If res.Available Then
       For Each res
         res["fldchk"] = True
@@ -327,7 +327,7 @@ Private Sub ShowRadioLaboratoryReport(sType As String, sHide As Boolean)
         asx.Clear()
       Endif
 
-      res = modDatabase.$myConn.Exec("select fldsubtest,fldabnormal,fldreport,fldid,fldtestid,fldtanswertype,fldindex from tblpatradiosubtest where fldtestid=&1 and fldchk=&2 and fldsave=&3" & modRadioSub.GetRadioRepoOrder("SubTest"), $rData["fldid"], True, True)
+      res = modDatabase.$myConn.Exec("select fldsubtest,fldabnormal,fldreport,fldid,fldtestid,fldtanswertype,fldindex from tblpatradiosubtest where fldtestid=&1 and fldencounterval=&2 and fldchk=&3 and fldsave=&4" & modRadioSub.GetRadioRepoOrder("SubTest"), $rData["fldid"], $encid, True, True)
       If res.Available = True Then
         For Each res
           If xType = "Left/Right Components" Then

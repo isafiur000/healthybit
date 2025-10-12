@@ -1,6 +1,7 @@
 ' Gambas class file
 
 Private $encid As String
+Private $sGender As String
 Private $billReference As String
 
 Public Sub _new(encid As String)
@@ -12,6 +13,7 @@ End
 Public Sub Form_Open()
 
   txtname.Text = modPatient.GetPatientNameByEnc($encid)
+  $sGender = modPatient.GetPatientSex($encid)
   $billReference = modNonMedical.GetFixedReference($encid)
   txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue($encid, "General Complaints")
   txthistorylabel.List = GetHistoryList()
@@ -34,7 +36,7 @@ Private Function GetHistoryList() As String[]
 
   xList = New String[]
   xList.Add("History of Illness")
-  xnew = modMedicine.GetClinHistoryList($billReference)
+  xnew = modMedicine.GetClinHistoryList($billReference, $sGender)
   If xnew And If xnew.Count Then
     xList.Insert(xnew)
   Else
@@ -92,7 +94,7 @@ End
 Public Sub btnhistorydef_Click()
 
   If txthistorylabel.Text Then
-    txthistory.RichText = AddHistory("History", txthistorylabel.Text)
+    txthistory.RichText = AddHistory("History", $encid, txthistorylabel.Text)
   Endif
 
 End

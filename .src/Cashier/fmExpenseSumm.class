@@ -11,23 +11,56 @@ End
 
 Private Sub ShowAccParams()
 
-  Dim xexpense As Float
-  Dim xipexpense As Float
-  Dim xopexpense As Float
+  Dim xtotCredit As Float
+  Dim xtotCash As Float
+  Dim xipdCredit As Float
+  Dim xipdCash As Float
+  Dim xoutCredit As Float
+  Dim xoutCash As Float
+
   Dim xpayment As Float
   Dim xcurdepo As Float
   Dim xdeposit As Float
 
-  xexpense = modNonMedical.TotalExpenseAmountbyPatient(modDatabase.$myConn, $encid)
-  xipexpense = modNonMedical.TotalExpenseAdmittedPatient(modDatabase.$myConn, $encid)
-  xopexpense = xexpense - xipexpense
+  Dim xdoa As Date
+  Dim res1 As Result
+  Dim res2 As Result
+
+  xdoa = modPatient.GetAdmissionDate($encid)
+  res1 = modDatabase.$myConn.Exec("select " & modNonMedical.CashCreditSQL() & " from tblpatbilling where fldencounterval=&1 and fldsave=&2", $encid, True)
+  If res1.Available Then
+    xtotCredit = res1["xcredit"]
+    xtotCash = res1["xcash"]
+  Else
+    xtotCredit = 0
+    xtotCash = 0
+  Endif
+
+  res2 = modDatabase.$myConn.Exec("select " & modNonMedical.CashCreditSQL() & " from tblpatbilling where fldencounterval=&1 and fldsave=&2 and fldtime>=&3", $encid, True, xdoa)
+  If res2.Available Then
+    xipdCredit = res2["xcredit"]
+    xipdCash = res2["xcash"]
+  Else
+    xipdCredit = 0
+    xipdCash = 0
+  Endif
+
+  xoutCredit = xtotCredit - xipdCredit
+  xoutCash = xtotCash - xipdCash
+
+  txtopdexpensecredit.Value = xoutCredit
+  txtopdexpensecash.Value = xoutCash
+
+  txtipdexpensecredit.Value = xipdCredit
+  txtipdexpensecash.Value = xipdCash
+
+  txttotalexpensecredit.Value = xtotCredit
+  txttotalexpensecash.Value = xtotCash
+
+  ''-------------------- Payments------------------------
   xdeposit = modNonMedical.GetPatientDeposit(modDatabase.$myConn, $encid)
   xpayment = modNonMedical.InvoicePaidAmountbyPatient(modDatabase.$myConn, $encid)
-  xcurdepo = (xdeposit + xpayment) - xexpense
-
-  txtopdexpense.Value = xopexpense
-  txtipdexpense.Value = xipexpense
-  txttotalexpense.Value = xexpense
+  xcurdepo = (xdeposit + xpayment) - xtotCash
 
   txtcurrdeposit.Value = xdeposit
   txtinvreceipt.Value = xpayment
