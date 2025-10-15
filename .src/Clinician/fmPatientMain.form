@@ -38,8 +38,8 @@
     { mnuextprocedure Menu
       Text = ("Extra Procedure")
     }
-    { mnuconsult Menu
-      Text = ("Consultation")
+    { btnintake Menu
+      Text = ("Nutrition Plan")
     }
     { mnumonitor Menu
       Text = ("Monitoring")
@@ -113,7 +113,7 @@
     { mnugrpvisit Menu
       Text = ("Visit History")
       { mnuhistory Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnuvisitremore Menu
         Text = ("Repository")
@@ -122,7 +122,7 @@
     { mnugrpexams Menu
       Text = ("Examination")
       { mnuexamlocal Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnuexamrepo Menu
         Text = ("Repository")
@@ -131,7 +131,7 @@
     { mnugrplabs Menu
       Text = ("Laboratory")
       { mnulablocal Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnulabremote Menu
         Text = ("Repository")
@@ -140,7 +140,7 @@
     { mnugrpradio Menu
       Text = ("Radiology")
       { mnuradiolocal Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnuradioremote Menu
         Text = ("Repository")
@@ -149,7 +149,7 @@
     { mnugrpmedicine Menu
       Text = ("Medicine")
       { mnuprescrlocal Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnupresremote Menu
         Text = ("Repository")
@@ -158,7 +158,7 @@
     { mnugrpselect Menu
       Text = ("Selected")
       { mnuallhist Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnuremoreport Menu
         Text = ("Repository")
@@ -176,7 +176,7 @@
     { mnufilelabs Menu
       Text = ("Laboratory")
       { mnuarchlab Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnuarchlabrepo Menu
         Text = ("Repository")
@@ -185,7 +185,7 @@
     { mnufileradio Menu
       Text = ("Radiology")
       { mnuarchradio Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnuarchradiorepo Menu
         Text = ("Repository")
@@ -194,7 +194,7 @@
     { mnufilegeneral Menu
       Text = ("General Docs")
       { mnuarchgeneral Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnuarchgenerlrepo Menu
         Text = ("Repository")
@@ -203,7 +203,7 @@
     { mnufilescaned Menu
       Text = ("Scanned Docs")
       { mnuscanimg Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnuscanimgrepo Menu
         Text = ("Repository")
@@ -212,7 +212,7 @@
     { mnufilepast Menu
       Text = ("Past Docs")
       { mnupastdocs Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnupastdocsrepo Menu
         Text = ("Repository")
@@ -876,10 +876,6 @@
         MoveScaled(70,0.625,11,3)
         Text = ("Pharm")
       }
-      { btnintake Button
-        MoveScaled(44,0.625,11,3)
-        Text = ("Diet")
-      }
       { btnscreendraw ToolButton
         MoveScaled(114,0.625,4,3)
         Picture = Picture["icon:/small/pen"]
@@ -895,6 +891,10 @@
       { btnminor Button
         MoveScaled(92,0.625,11,3)
         Text = ("Minor")
+      }
+      { mnuconsult Button
+        MoveScaled(44,0.625,11,3)
+        Text = ("Consult")
       }
     }
     { TabStrip1 TabPanel

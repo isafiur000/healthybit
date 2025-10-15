@@ -652,8 +652,10 @@ Public Sub GridView1_Click()
 
   Dim xval As Float
   Dim res As Result
+  Dim Row As Integer
 
   If GridView1.Column = 8 Then
+    Row = GridView1.Row
     xval = InputValue(GridView1[GridView1.Row, 4].Text, "Alter QTY", GridView1[GridView1.Row, 8].Text)
     If xval Then
       res = modDatabase.$myConn.Edit("tbltransfer", "fldid=&1 and fldsav=&2", GridView1[GridView1.Row, 0].Text, False)
@@ -663,6 +665,7 @@ Public Sub GridView1_Click()
         ShowTransferGrid()
       Endif
     Endif
+    GridView1.Row = Row
   Endif
 
 End
@@ -701,7 +704,7 @@ Private Sub FirstSaveItems()
   Dim res As Result
   Dim res1 As Result
 
-  res = modDatabase.$myConn.Exec("select fldid,fldstockno,fldoldstockno,fldqty,fldfromcomp,fldtocomp,fldlockcomp from tbltransfer where fldfromcomp=&1 and fldsav=&2", modBasic.$compID, False)
+  res = modDatabase.$myConn.Exec("select fldid,fldstockno,fldoldstockno,fldqty,fldfromcomp,fldtocomp,fldlockcomp from tbltransfer where fldfromcomp=&1 and fldsav=&2 and fldtocomp=&3", modBasic.$compID, False, cmbcompsent.Text)
   If res.Available = True Then
     Inc Application.Busy
     For Each res

@@ -34,9 +34,6 @@
     { mnumedproduct Menu
       Text = ("Blood Bank")
     }
-    { mnuconsultplan Menu
-      Text = ("Consultation")
-    }
     { mnumajor Menu
       Text = ("Major Surgery")
     }
@@ -71,13 +68,16 @@
       Enabled = False
     }
     { mnuscreendraw Menu
-      Text = ("Screen Drawing")
+      Text = ("Screen Draw")
+    }
+    { mnupatimage Menu
+      Text = ("Image Files")
     }
     { mnudicom Menu
-      Text = ("Dicom Images")
+      Text = ("Dicom Files")
     }
     { mnupatvideos Menu
-      Text = ("Video Data")
+      Text = ("Video Files")
     }
     { Menu4 Menu
       Text = ("- - - - Inputs - - - -")
@@ -120,7 +120,7 @@
     { mnugrpvisit Menu
       Text = ("Visit History")
       { mnuhistory Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
         Shortcut = "Ctrl+H"
       }
       { mnuvisiremote Menu
@@ -130,7 +130,7 @@
     { mnugrpexams Menu
       Text = ("Examination")
       { mnuexamlocal Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnuexamremote Menu
         Text = ("Repository")
@@ -139,7 +139,7 @@
     { mnugrplabs Menu
       Text = ("Laboratory")
       { mnulablocal Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnulabremote Menu
         Text = ("Repository")
@@ -148,7 +148,7 @@
     { mnugrpradio Menu
       Text = ("Radiology")
       { mnuraiolocal Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnuradioremote Menu
         Text = ("Repository")
@@ -157,7 +157,7 @@
     { mnugrpmedicine Menu
       Text = ("Medicines")
       { mnumedicinelocal Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnudrugremote Menu
         Text = ("Repository")
@@ -166,7 +166,7 @@
     { mnugrpselect Menu
       Text = ("Selected")
       { mnuhistrepo Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnureporemote Menu
         Text = ("Repository")
@@ -184,7 +184,7 @@
     { mnufileLabs Menu
       Text = ("Laboratory")
       { mnuarchlab Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnuarchlabrepo Menu
         Text = ("Repository")
@@ -193,7 +193,7 @@
     { mnufileRadio Menu
       Text = ("Radiology")
       { mnuarchradio Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnuarchradiorepo Menu
         Text = ("Repository")
@@ -202,7 +202,7 @@
     { mnufileGendocs Menu
       Text = ("General Docs")
       { mnuarchgeneral Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnuarchgenerlrepo Menu
         Text = ("Repository")
@@ -211,7 +211,7 @@
     { mnufileScan Menu
       Text = ("Scanned Docs")
       { mnuscannedimg Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnuscannedimgrepo Menu
         Text = ("Repository")
@@ -220,7 +220,7 @@
     { mnufilePast Menu
       Text = ("Past Docs")
       { mnupastdocs Menu
-        Text = ("Local DB")
+        Text = ("Hospital")
       }
       { mnupastdocsrepo Menu
         Text = ("Repository")
@@ -681,7 +681,7 @@
         { Panel23 Panel
           MoveScaled(0,32,60,3)
           { mnuminorproc Button
-            MoveScaled(10,0,10,3)
+            MoveScaled(20,0,10,3)
             Text = ("Minor")
           }
           { mnugenservice Button
@@ -689,20 +689,20 @@
             Text = ("Billing")
           }
           { mnudeviceuse Button
-            MoveScaled(20,0,10,3)
+            MoveScaled(30,0,10,3)
             Text = ("Device")
           }
           { mnuivinfusion Button
-            MoveScaled(30,0,10,3)
-            Text = ("IV Fluid")
-          }
-          { mnupatimage Button
             MoveScaled(40,0,10,3)
-            Text = ("Image")
+            Text = ("IV Fluid")
           }
           { mnupacsimage Button
             MoveScaled(50,0,9.5,3)
             Text = ("PACS")
+          }
+          { mnuconsultplan Button
+            MoveScaled(10,0,10,3)
+            Text = ("Consult")
           }
         }
       }
@@ -1305,6 +1305,10 @@
           MoveScaled(0.5,21,10,3)
           Text = ("Death")
         }
+        { btnnotice Button
+          MoveScaled(1,26,11,3)
+          Text = ("Notice")
+        }
       }
       { Panel35 Panel
         MoveScaled(14,0,102,39)
@@ -1358,12 +1362,12 @@
             Text = ("Follow Up Date")
           }
           { btnoutcome Button
-            MoveScaled(69,1,13,3)
+            MoveScaled(73,1,13,3)
             Text = ("Save")
             Picture = Picture["icon:/small/apply"]
           }
           { btnopreport Button
-            MoveScaled(84,1,16,3)
+            MoveScaled(87,1,13,3)
             Text = ("Report")
             Picture = Picture["icon:/small/html"]
           }

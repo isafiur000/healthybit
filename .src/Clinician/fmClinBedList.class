@@ -72,6 +72,9 @@ Public Sub Form_Open()
     cmbdept.Text = modSettings.ShowSettingFromFIle("IPClinic/DefaultDepart")
   Endif
 
+  modSettings.ShowCheckBox(chkshowdepart, "BedOccupancy/ShowParameters")
+  modSettings.ShowCheckBox(chkshowstatus, "BedOccupancy/ShowStatusIcons")
+
   If modHelpVariable.$LogInCategory = "Cashier" Then
     btnautoround.Visible = True
     btnautobill.Visible = True
@@ -2867,5 +2870,17 @@ Private Function AddMedicineRequest(encid As String, sStatus As String) As Integ
   Endif
 
   Return xcount
+
+End
+
+Public Sub chkshowdepart_Click()
+
+  modSettings.EnterCheckSetting(chkshowdepart, "BedOccupancy/ShowParameters")
+
+End
+
+Public Sub chkshowstatus_Click()
+
+  modSettings.EnterCheckSetting(chkshowstatus, "BedOccupancy/ShowStatusIcons")
 
 End

@@ -20,7 +20,7 @@ Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
 
-  cmbdept.List = modControlSub.GetDirectFillresult($sConn.Exec("select distinct(fldcomp) as col from tblmacaccess"))
+  cmbdept.List = modGeneral.CompList()
   cmbdept.Text = modSettings.ShowSettingFromFIle("Pharmacy/DefaultCompID")
   If cmbdept.Text = "%" Then
   Else

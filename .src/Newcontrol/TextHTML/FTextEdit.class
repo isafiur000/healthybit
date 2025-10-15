@@ -64,6 +64,9 @@ Public Sub SetHTMLRichText(sText As String)
       TextEdit1.Text = sText
       btnhtml.Value = False
     Endif
+  Else
+    TextEdit1.Text = ""
+    TextEdit1.RichText = ""
   Endif
 
 End

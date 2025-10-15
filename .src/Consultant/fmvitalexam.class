@@ -162,7 +162,7 @@ Private Sub FillFindingGrid(sType As String)
   Dim $rData As Result
 
   If cmbtarget.Text Then
-    sql = "select fldid,fldgroupname,fldflag,fldexamid,fldflag,fldtanswertype,fldsysconst,fldtype from tblcompexam where fldcomp=&1 and fldcategory=&2"
+    sql = "select fldid,fldgroupname,fldflag,fldexamid,fldflag,fldtanswertype,fldsysconst,fldtype from tblcompexam where fldcomp=&1 and fldcategory=&2 ORDER BY fldexamorder"
     $rData = modDatabase.$myConn.Exec(sql, cmbtarget.Text, sType)
 
     GridView1.Clear

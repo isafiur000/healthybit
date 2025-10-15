@@ -84,15 +84,17 @@ Public Sub Form_Open()
     If $sTable = "tblconsult" Then
       cmbdept.List = modGeneral.GetDepartForConsultOnly()
       pnlconsult.Visible = True
-      chkshowdepart.Value = True
     Else If $sTable = "tblopvisit" Then
       cmbdept.List = modGeneral.GetDepartForOPVisitOnly()
       pnlconsult.Visible = False
-      chkshowdepart.Value = False
     Endif
     cmbdept.Add("All")
     cmbdept.Text = modSettings.ShowSettingFromFIle("Clinic/DefaultOPD")
   Endif
+
+  modSettings.ShowCheckBox(chkshowdepart, "OPDPatientList/ShowParameters")
+  modSettings.ShowCheckBox(chkshowstatus, "OPDPatientList/ShowStatusIcons")
+  modSettings.ShowCheckBox(chknotice, "OPDPatientList/ShowNotices")
 
   If modHelpVariable.$LogInCategory = "Clinician" Then
     GetComboItemList()
@@ -246,9 +248,9 @@ Private Function GetFieldsList()
 
   xhospfld = modDataRepo.HospitalField()
   If $sTable = "tblconsult" Then
-    $SSQLFields = ["fldid", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldflag", "fldencounterval", "flduserid", "fldconsultname", "fldconsulttime", "fldbillingmode", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval"]
+    $SSQLFields = ["fldid", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldflag", "fldencounterval", "flduserid", "fldconsultname", "fldconsulttime", "fldbillingmode", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldnotice"]
   Else If $sTable = "tblopvisit" Then
-    $SSQLFields = ["fldid", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldflag", "fldencounterval", "fldencounterval", "fldconsultname", "fldconsulttime", "fldbillingmode", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval"]
+    $SSQLFields = ["fldid", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldflag", "fldencounterval", "fldencounterval", "fldconsultname", "fldconsulttime", "fldbillingmode", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldnotice"]
   Endif
   If xhospfld Then
     $SSQLFields.Add(xhospfld)
@@ -574,6 +576,11 @@ Private Sub ResizeGrid()
       .Columns[15].Width = 1
       .Columns[16].Width = 1
     Endif
+    If chknotice.Value = True Then
+      .Columns[17].Width = 125 * modBasic.$AppWidthRatio
+    Else
+      .Columns[17].Width = 1
+    Endif
 
     .Columns[2].Text = "EncID"
     .Columns[3].Text = "Name"
@@ -598,6 +605,9 @@ Private Sub ResizeGrid()
       .Columns[14].Text = "Equip"
       .Columns[15].Text = "Fluid"
       .Columns[16].Text = "Device"
+    Endif
+    If chknotice.Value = True Then
+      .Columns[17].Text = "Notice"
     Endif
 
     If $newColumn.Count Then
@@ -701,6 +711,8 @@ Public Sub GridView1_Click()
   Dim xData As String
   Dim Row As Integer
 
+  Dim xlst As String[]
+
   If GridView1.Rows.Selection.Count Then
     Row = GridView1.Row
     If GridView1.Column = 5 Then
@@ -710,6 +722,18 @@ Public Sub GridView1_Click()
         modPatientSub.MarkConsultVisitFlag(GridView1[GridView1.Row, 0].Text, $sTable)
       Else If GridView1[GridView1.Row, 5].Picture = Picture["icons/checked.png"] Then
         modPatientSub.UnMarkConsultVisitFlag(GridView1[GridView1.Row, 0].Text, $sTable)
+      Endif
+      FillBedGrid()
+
+    Else If GridView1.Column = 17 Then
+      xlst = New String[]
+      xData = InputCombo("Select Notice", GridView1[GridView1.Row, 2].Text, xlst, "", False)
+      If xData Then
+        If $sTable = "tblconsult" Then
+          modPatientSub.UpdateConsultNotice(GridView1[GridView1.Row, 0].Text, xData)
+        Else If $sTable = "tblopvisit" Then
+          modPatientSub.UpdateOPVisitNotice(GridView1[GridView1.Row, 0].Text, xData)
+        Endif
       Endif
       FillBedGrid()
 
@@ -2417,5 +2441,23 @@ Public Sub mnuexpocolumn_Click()
 
   hForm = New FmCustColumnSet(Me.Tag)
   hForm.ShowModal
+
+End
+
+Public Sub chkshowdepart_Click()
+
+  modSettings.EnterCheckSetting(chkshowdepart, "OPDPatientList/ShowParameters")
+
+End
+
+Public Sub chkshowstatus_Click()
+
+  modSettings.EnterCheckSetting(chkshowstatus, "OPDPatientList/ShowStatusIcons")
+
+End
+
+Public Sub chknotice_Click()
+
+  modSettings.EnterCheckSetting(chknotice, "OPDPatientList/ShowNotices")
 
 End
