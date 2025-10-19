@@ -734,8 +734,10 @@ Public Sub GridView1_Click()
     SHowPatIndicators(GridView1[GridView1.Row, 4].Text)
     If modBasic.$ClinDefaultReport Then
       xData = modMisc.GetDefaultReportClinic(GridView1[GridView1.Row, 4].Text)
-      modGeneralMain.$RightAdView.SetHtml(xData)
-      modGeneralMain.$RightAdView.Refresh()
+      If modGeneralMain.$RightAdView Then
+        modGeneralMain.$RightAdView.SetHtml(xData)
+        modGeneralMain.$RightAdView.Refresh()
+      Endif
     Endif
 
   Endif

@@ -3,7 +3,7 @@
 Private $encid As String
 Private $status As String
 Private $DiscPackage As String
-Private $Dept As String = "IPD"
+Private $Dept As String
 Private $doa As Date
 Private $xFinClear As Boolean
 Private $PatientNum As String
@@ -34,6 +34,7 @@ Private $sBillMode As String
 Private $LabelType As String
 Private xYear As Integer
 Private $ClinicianLst As String[]
+Private hOwnStockForm As FmWardStock
 
 Public Sub _new(encid As String, sStatus As String, DiscPackage As String)
 
@@ -49,12 +50,21 @@ Public Sub Form_Open()
   Dim xbirthDate As Date
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
+  Select $status
+    Case "Admitted", "Discharged", "LAMA", "Death", "Refer", "Absconder"
+      $Dept = "IPD"
+    Case Else
+      $Dept = "OPD"
+  End Select
+  hOwnStockForm = New FmWardStock($encid, $status, $DiscPackage, pnlwardstock)
+  hOwnStockForm.SetOwnDepartment($Dept)
 
   cmbdisctype.List = modBasic.$BillDiscountCash
   If cmbdisctype.List.Count = 0 Then
     cmbdisctype.Add($DiscPackage)
   Endif
   cmbdisctype.Text = $DiscPackage
+
   If modSettings.ShowSettingFromFIle("ClinicForms/ShowInjectionSubRoutes") = "Disable" Then
     cmbroute.List = modMedicine.AllComboRoute()
   Else
@@ -106,11 +116,10 @@ Public Sub Form_Open()
     $ShowReview = "No"
   Endif
 
-  ButtonControl()
   $AlphaList = New String[]
   dtdose.Value = Now()
   GetDoseFormatType()
-  rbsurg.Value = True
+
   rbcurrent.Value = True
   cmbcurrent.Text = "Continue"
   ShowRunningMedicine(cmbcurrent.Text)
@@ -119,7 +128,7 @@ Public Sub Form_Open()
     btngroup.Enabled = False
     btnrepeat.Enabled = False
     chksave.Enabled = False
-    GridView3.Enabled = False
+    pnlwardstock.Enabled = False
   Endif
   modSysCons.ClearPatParameterCalc()
   ShowBasicParamStatus()
@@ -129,16 +138,6 @@ End
 Public Sub Form_Close()
 
   modSysCons.ClearPatParameterCalc()
-
-End
-
-Private Sub ButtonControl()
-
-  Dim xx As Boolean
-
-  xx = modPatient.EnableClinicForm($Status)
-  GridView3.Enabled = xx
-  GridView4.Enabled = xx
 
 End
 
@@ -187,10 +186,7 @@ Public Sub Form_KeyRelease()
     BlankDosingBox()
     cmbroute.SetFocus
   Else If Key.Code = Key.F3 Then
-    TabPanel1.Index = 2
-    ShowCurrStockGrid()
-    ShowUsedGridViewList()
-    txtname.SetFocus
+
   Else If Key.Code = Key.F4 Then
     TabPanel1.Index = 3
     btndoserefresh_Click()
@@ -212,9 +208,7 @@ Public Sub TabPanel1_Click()
     BlankDosingBox()
     cmbroute.SetFocus
   Else If TabPanel1.Index = 2 Then
-    ShowUsedGridViewList()
-    ShowCurrStockGrid()
-    txtname.SetFocus
+    hOwnStockForm.RearrangeGrid()
   Else If TabPanel1.Index = 3 Then
     btndoserefresh_Click()
   Else If TabPanel1.Index = 4 Then
@@ -488,6 +482,8 @@ Public Sub cmbdisctype_Click()
 
   If cmbdisctype.Text Then
     ShowBillingParam(cmbdisctype.Text)
+    hOwnStockForm.$DiscPackage = cmbdisctype.Text
+    hOwnStockForm.UpdateBillingParam()
   Endif
 
 End
@@ -1243,6 +1239,141 @@ Public Sub btndispown_Click()
 
 End
 
+Private Sub SaveOwnDispensing(sID As Long, sStatus As String)
+
+  Dim sql1 As String
+  Dim res1 As Result
+  Dim res2 As Result
+  Dim sql2 As String
+
+  Dim tax As Float
+  Dim disc As Float
+  Dim xrate As Float
+  Dim xitem As String
+
+  Dim qtynew As Float
+  Dim xcateg As String
+  ' Dim xdose As Float
+  ' Dim xunit As String
+  Dim xerr As String
+
+  Dim xrefer As String
+  Dim xpayble As String
+  Dim xallow As Boolean
+  Dim xCshCrd As Float
+
+  xrefer = modBillings.GetReferralUserSetting("Pharmacy", $encid)
+  xpayble = modBillings.GetPayableUserSetting("Pharmacy", $encid)
+
+  xerr = ""
+  sql1 = "select fldid,fldtime,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,fldlabel,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit from tblpatdosing where fldid=&1"                                                   ''
+  res1 = modDatabase.$myConn.Exec(sql1, sID)
+  If res1.Available = True Then
+
+    'get tax and discount percentages
+    xcateg = res1["flditemtype"]
+    If res1["fldtaxper"] Then
+      tax = res1["fldtaxper"]
+    Else
+      tax = 0
+    Endif
+    If res1["flddiscper"] Then
+      disc = res1["flddiscper"]
+    Else
+      disc = 0
+    Endif
+    If res1["fldcashincredit"] Then
+      xCshCrd = res1["fldcashincredit"]
+    Else
+      xCshCrd = 0
+    Endif
+
+    If res1["fldfixrate"] Then
+      xrate = res1["fldfixrate"]
+    Else
+      xrate = modStock.GetCurrentSellingPrice(res1["flditem"], modBasic.$compID)
+    Endif
+    xallow = modNonMedical.AllowPharmProceedPreBill($encid, $DiscPackage, res1["fldqtydisp"], xrate, res1["flddiscper"], res1["fldbilltype"], xCshCrd, res1["fldroute"], res1["flditem"])
+    If xallow = True Then
+
+      Inc Application.Busy
+
+      qtynew = res1["fldqtydisp"]
+      modDatabase.$myConn.Begin
+      While qtynew > 0
+        'get stockno, rate and quantity based on expiry check
+        sql2 = "select fldstockno,fldqty from tblentry where fldstockid=&1 and fldcomp=&2 and fldstatus=&3 and fldqty>&4"
+        res2 = modDatabase.$myConn.Exec(sql2, res1["flditem"], modBasic.$compID, 1, 0)
+        If res2.Available Then
+          res2.MoveFirst
+
+          xitem = res1["flditem"]
+          If res1["fldfixname"] Then
+            xitem = res1["fldfixname"]
+            If res1["fldfixrate"] Then
+              xrate = res1["fldfixrate"]
+            Else
+              xrate = 0
+            Endif
+          Else
+            xrate = modStock.GetSellingPriceByStockNo(res2["fldstockno"], $sBillMode)
+          Endif
+
+          If qtynew <= res2["fldqty"] Then
+            If modBasic.$AutoBillUseOwn = "Enable" Then
+              modBillings.InsertBlankBillItemNewApp($encid, res1["fldbilltype"], res1["fldbillingmode"], res1["flddisctype"], res1["fldacledger"], res1["flditemtype"], res2["fldstockno"], xitem, xrate, qtynew, tax, disc, xCshCrd, "Done", res1["fldid"], True, False, "", xpayble, xrefer)
+            Endif
+            modStockSub.AddToExistEntry(res2["fldstockno"], (0 - qtynew), modBasic.$compID)
+            qtynew = 0
+          Else If qtynew > res2["fldqty"] Then
+            If modBasic.$AutoBillUseOwn = "Enable" Then
+              modBillings.InsertBlankBillItemNewApp($encid, res1["fldbilltype"], res1["fldbillingmode"], res1["flddisctype"], res1["fldacledger"], res1["flditemtype"], res2["fldstockno"], xitem, xrate, res2["fldqty"], tax, disc, xCshCrd, "Done", res1["fldid"], True, False, "", xpayble, xrefer)
+            Endif
+            modStockSub.AddToExistEntry(res2["fldstockno"], (0 - res2["fldqty"]), modBasic.$compID)
+            qtynew = qtynew - res2["fldqty"]
+          Endif
+          Wait
+        Else
+          Break
+        Endif
+      Wend
+
+      If res1["fldqtydisp"] > qtynew Then
+        If qtynew > 0 Then
+          modPharmSub.DuplicateRecordWithQTY(res1["fldid"], qtynew)
+          modPharmSub.UpdateQTYBefDispensing(res1["fldid"], res1["fldqtydisp"] - qtynew)
+        Endif
+        If sStatus = "Completed" Then
+          modPharmSub.UpdateDispensing(res1["fldid"], True, True)
+        Else
+          modPharmSub.UpdateDispensing(res1["fldid"], True, False)
+        Endif
+      Endif
+      modDatabase.$myConn.Commit
+
+      ''Why to insert dosing when save from local stock?
+      ' If modNonMedical.GetBillItemCategoryFromCombo(res1["fldroute"]) = "Medicines" Then
+      '   xdose = Round(res1["flddose"] / modMedConstant.GetDrugInitialStrength(res1["flditem"]), -2)
+      '   xunit = modPharmLabel.GetDosageFormForLabel(res1["flditem"], "Inpatient")
+      '   modPharmSub.InsertNurDosing(res1["fldid"], $encid, xdose, xunit, "")
+      ' Endif
+      Dec Application.Busy
+
+    Else
+      xerr = xerr & res1["fldfixname"] & gb.NewLine
+    Endif
+  Endif
+  If xerr Then
+    Balloon.Warning("<b>Over Set Discount/Credit Limit:</b>" & gb.NewLine & xerr, btndispown)
+  Endif
+
+Catch
+  modDatabase.$myConn.Rollback
+  Dec Application.Busy
+  modHelpVariable.CreateErrorReport()
+
+End
+
 Public Sub mnusave_Click()
 
   If GridView1.Rows.Selection.Count > 0 Then
@@ -1679,435 +1810,6 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
   Else
     GridView2.Data.Text = $rData1[$aMyFields1[Column]]
   Endif
-
-End
-
-''==================================== USE OWN ==============================
-Private Sub ShowCurrStockGrid()
-
-  If rbmed.Value = True Then
-    If cmbuseroute.Text Then
-      $rData = modDatabase.$syConn.Exec("select fldbrandid,fldbrand,fldbrandid,fldbrandid as qty from tblmedbrand where lower(fldbrandid) like &1 and fldbrandid in(select fldstockid from tblentry where fldqty>&2 and fldcomp like &3) and flddrug in(select flddrug from tbldrug where fldroute=&4) ORDER BY fldbrandid ASC", LCase(txtname.Text) & "%", 0, modBasic.$compID, cmbuseroute.Text)
-    Else
-      $rData = modDatabase.$syConn.Exec("select fldbrandid,fldbrand,fldbrandid,fldbrandid as qty from tblmedbrand where lower(fldbrandid) like &1 and fldbrandid in(select fldstockid from tblentry where fldqty>&2 and fldcomp like &3) ORDER BY fldbrandid ASC", LCase(txtname.Text) & "%", 0, modBasic.$compID)                                   ''
-    Endif
-  Else If rbsurg.Value = True Then
-    $rData = modDatabase.$syConn.Exec("select fldbrandid,fldbrand,fldbrandid,fldbrandid as qty from tblsurgbrand where lower(fldbrandid) like &1 and fldbrandid in(select fldstockid from tblentry where fldqty>&2 and fldcomp like &3) ORDER BY fldbrandid ASC", LCase(txtname.Text) & "%", 0, modBasic.$compID)
-  Else If rbextra.Value = True Then
-    $rData = modDatabase.$syConn.Exec("select fldbrandid,fldbrand,fldbrandid,fldbrandid as qty from tblextrabrand where lower(fldbrandid) like &1 and fldbrandid in(select fldstockid from tblentry where fldqty>&2 and fldcomp like &3) ORDER BY fldbrandid ASC", LCase(txtname.Text) & "%", 0, modBasic.$compID)
-  Endif
-
-  $aMyFields = New String[]
-  modGridView.ReadSmallData(GridView3, $rData, $aMyFields)
-
-  If Not $AlphaList.Count Then
-    For Each $rData
-      If $AlphaList.Count = 0 Then
-        $AlphaList.Add(UCase(Left($rData["fldbrandid"], 1)))
-      Else
-        If $AlphaList.Exist(UCase(Left($rData["fldbrandid"], 1))) = False Then
-          $AlphaList.Add(UCase(Left($rData["fldbrandid"], 1)))
-        Endif
-      Endif
-    Next
-    lstletter.List = $AlphaList
-  Endif
-
-  With GridView3
-    .Columns[0].Width = GridView3.Width - 65 * modBasic.$AppWidthRatio
-    .Columns[1].Width = 1
-    .Columns[2].Width = 1
-    .Columns[3].Width = 50 * modBasic.$AppWidthRatio
-    .Columns[0].Text = "Particulars"
-    .Columns[3].Text = "QTY"
-  End With
-
-End
-
-Public Sub GridView3_Data(Row As Integer, Column As Integer)
-
-  $rData.MoveTo(Row)
-  modGeneralMain.GridViewDecoration(GridView3, Row)
-  If Column = 3 Then
-    GridView3.Data.Text = modStock.TotalQTYbyBrand($rData["qty"], modBasic.$compID)
-  Else
-    GridView3.Data.Text = $rData[$aMyFields[Column]]
-  Endif
-  If Column = 0 Then
-    GridView3.Rows[Row].Height = Max(GridView3.Rows[Row].Height, GridView3.Data.Font.RichTextHeight(GridView3.Data.Text, GridView3.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView3.Rows.Height - GridView3.Font.Height))
-    GridView3.Data.WordWrap = True
-  Endif
-
-End
-
-Public Sub rbmed_Click()
-
-  $AlphaList.Clear()
-  txtname.Text = ""
-  ShowCurrStockGrid()
-  cmbuseroute.List = modMedicine.RouteMedicine()
-  cmbuseroute.Text = ""
-  txtname.SetFocus
-
-End
-
-Public Sub rbsurg_Click()
-
-  $AlphaList.Clear()
-  txtname.Text = ""
-  ShowCurrStockGrid()
-  cmbuseroute.Clear()
-  cmbuseroute.Text = ""
-  txtname.SetFocus
-
-End
-
-Public Sub rbextra_Click()
-
-  $AlphaList.Clear()
-  txtname.Text = ""
-  ShowCurrStockGrid()
-  cmbuseroute.Clear()
-  cmbuseroute.Text = ""
-  txtname.SetFocus
-
-End
-
-Public Sub txtname_Change()
-
-  ShowCurrStockGrid()
-
-End
-
-Public Sub txtname_Click()
-
-  txtname.Text = ""
-  ShowCurrStockGrid()
-
-End
-
-Public Sub lstletter_Click()
-
-  txtname.Text = lstletter.Text
-
-End
-
-Public Sub cmbuseroute_Click()
-
-  ShowCurrStockGrid()
-
-End
-
-Public Sub btnadd_Click()
-
-  Dim xval As Float
-  Dim sType As String
-
-  If GridView3.Rows.Selection.Count Then
-    Panel4.Enabled = False
-    If rbmed.Value = True Then
-      sType = "Medicines"
-    Else If rbsurg.Value = True Then
-      sType = "Surgicals"
-    Else If rbextra.Value = True Then
-      sType = "Extra Items"
-    Endif
-    xval = InputValue("QUANTITY OF <b>" & GridView3[GridView3.Row, 0].Text & "</b>", "Use Own Stock", 1)
-    Panel4.Enabled = True
-    If xval Then
-      EntryUseOwndata(sType, GridView3[GridView3.Row, 0].Text, xval)
-      ShowUsedGridViewList()
-    Endif
-  Endif
-
-End
-
-Public Sub btnaddone_Click()
-
-  Dim sType As String
-
-  If GridView3.Rows.Selection.Count Then
-    Panel4.Enabled = False
-    If rbmed.Value = True Then
-      sType = "Medicines"
-    Else If rbsurg.Value = True Then
-      sType = "Surgicals"
-    Else If rbextra.Value = True Then
-      sType = "Extra Items"
-    Endif
-    Panel4.Enabled = True
-    EntryUseOwndata(sType, GridView3[GridView3.Row, 0].Text, 1)
-    ShowUsedGridViewList()
-  Endif
-
-End
-
-Private Sub EntryUseOwndata(sType As String, sItem As String, sQty As Float)
-
-  Dim xroute As String
-  Dim xtax As Float
-  Dim xdisc As Float
-  Dim xdose As Float
-  Dim xfixrate As Float
-  Dim xfixname As String
-  ' Dim xvarfix As Variant[]
-  Dim itemmode As String
-  Dim CPharmFix As CFixRatePharmacy
-
-  CPharmFix = New CFixRatePharmacy(sType, sItem, $sBillMode)
-  xfixrate = CPharmFix.GetFixRate()
-  xfixname = CPharmFix.GetFixItem()
-  ' xvarfix = modStock.GetSellingPriceFixByStockID(sType, sItem, $sBillMode)
-  ' If xvarfix Then
-  '   xfixrate = xvarfix[1]
-  '   xfixname = xvarfix[0]
-  ' Else
-  '   xfixrate = 0
-  '   xfixname = ""
-  ' Endif
-  itemmode = $sBillMode
-  xtax = modNonMedical.ShowTaxValues(sType, sItem)
-  xdisc = modNonMedical.DiscPercentForCategoryValue($encid, $DiscPackage, sType, sItem, itemmode)
-  xroute = modMedicine.GetRouteFromItem(sItem, sType)
-
-  If sType = "Medicines" Then
-    xdose = sQty * modPharmLabel.GetPackVolValue(sItem) * modMedConstant.GetDrugInitialStrength(sItem)
-    modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, xroute, sItem, xdose, "stat", 1, sQty, $status, "", "", 0, xtax, xdisc, xfixname, xfixrate, "UseOwn", $Dept, "", False)
-  Else
-    modPharmSub.InsertNonMedDosingEntry(sType, $encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, xroute, sItem, sQty, $status, 0, xtax, xdisc, xfixname, xfixrate, "UseOwn", $Dept, "", False)
-  Endif
-
-End
-
-Private Sub ShowUsedGridViewList()
-
-  Dim sql As String
-  Dim Column As Integer
-  Dim fld As ResultField
-  Dim res As Result
-
-  sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,flduserid_order,fldid,fldid,fldstarttime from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstatus=&3 and fldorder=&4 and fldcurval=&5"                                                   ''
-  res = modDatabase.$myConn.Exec(sql, $encid, False, $status, "UseOwn", "Continue")
-
-  GridView4.Clear
-  GridView4.Columns.Count = res.Fields.Count
-  GridView4.Rows.Count = res.Count
-
-  With GridView4
-    .Rows.Height = modBasic.$AppGridRowHeight
-    .Columns[0].Width = 1
-    .Columns[1].Width = 1
-    .Columns[2].Width = 1
-    .Columns[3].Width = 300 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 1
-    .Columns[5].Width = 1
-    .Columns[6].Width = 1
-    .Columns[7].Width = 35 * modBasic.$AppWidthRatio
-    .Columns[8].Width = 1
-    .Columns[9].Width = 35 * modBasic.$AppWidthRatio
-    .Columns[10].Width = 35 * modBasic.$AppWidthRatio
-    .Columns[11].Width = 1
-
-    .Columns[3].Text = "Particulars"
-    .Columns[7].Text = "QTY"
-  End With
-
-  For Each res
-    Column = 0
-    For Each fld In res.Fields
-      modGeneralMain.GridExplicitDecoration(GridView4, res.Index, Column)
-      If Column = 9 Then
-        GridView4[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
-        GridView4[res.Index, Column].Text = ""
-      Else If Column = 10 Then
-        GridView4[res.Index, Column].Picture = Picture["icon:/tiny/apply"]
-        GridView4[res.Index, Column].Text = ""
-      Else
-        GridView4[res.Index, Column].Text = res[fld.Name]
-      Endif
-      GridView4.Rows[res.Index].Height = Max(GridView4.Rows[res.Index].Height, GridView4[res.Index, Column].Font.RichTextHeight(GridView4[res.Index, Column].Text, GridView4.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView4.Rows.Height - GridView4.Font.Height))
-      GridView4[res.Index, Column].WordWrap = True
-
-      Column = Column + 1
-    Next
-  Next
-  GridView4.Row = 0
-
-End
-
-Public Sub GridView4_Click()
-
-  Dim xval As Float
-  Dim Column As Integer
-  Dim Row As Integer
-  Dim res As Result
-
-  Row = GridView4.Row
-  Column = GridView4.Column
-  If GridView4.Column = 7 Then
-    xval = InputValue(GridView4[GridView4.Row, 3].Text, ("Change Value"), GridView4[GridView4.Row, 7].Text)
-    modPharmSub.UpdateQTYBefDispensing(GridView4[GridView4.Row, 0].Text, xval)
-    ShowUsedGridViewList()
-
-  Else If GridView4.Column = 9 Then
-    If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
-      res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1 and fldsave_order=&2", GridView4[GridView4.Row, 0].Text, False)
-      If modGeneral.AllowClinicalEdit(res["flduserid_order"]) = True Then
-        modDatabase.$myConn.Delete("tblpatdosing", "fldid=&1 and fldsave_order=&2", GridView4[GridView4.Row, 0].Text, False)
-      Else
-        res["fldcurval"] = "Cancelled"
-        res["flduserid_order"] = modBasic.$lbluser
-        res["xyz"] = False
-        res.Update
-      Endif
-      ShowUsedGridViewList()
-    Endif
-
-  Else If GridView4.Column = 10 Then
-    If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
-      SaveOwnDispensing(GridView4[GridView4.Row, 0].Text, "Completed")
-      ShowUsedGridViewList()
-      ShowCurrStockGrid()
-    Endif
-
-  Endif
-  GridView4.Row = Row
-  GridView4.Column = Column
-
-End
-
-Private Sub SaveOwnDispensing(sID As Long, sStatus As String)
-
-  Dim sql1 As String
-  Dim res1 As Result
-  Dim res2 As Result
-  Dim sql2 As String
-
-  Dim tax As Float
-  Dim disc As Float
-  Dim xrate As Float
-  Dim xitem As String
-
-  Dim qtynew As Float
-  Dim xcateg As String
-  ' Dim xdose As Float
-  ' Dim xunit As String
-  Dim xerr As String
-
-  Dim xrefer As String
-  Dim xpayble As String
-  Dim xallow As Boolean
-  Dim xCshCrd As Float
-
-  xrefer = modBillings.GetReferralUserSetting("Pharmacy", $encid)
-  xpayble = modBillings.GetPayableUserSetting("Pharmacy", $encid)
-
-  xerr = ""
-  sql1 = "select fldid,fldtime,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,fldlabel,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit from tblpatdosing where fldid=&1"                                                   ''
-  res1 = modDatabase.$myConn.Exec(sql1, sID)
-  If res1.Available = True Then
-
-    'get tax and discount percentages
-    xcateg = res1["flditemtype"]
-    If res1["fldtaxper"] Then
-      tax = res1["fldtaxper"]
-    Else
-      tax = 0
-    Endif
-    If res1["flddiscper"] Then
-      disc = res1["flddiscper"]
-    Else
-      disc = 0
-    Endif
-    If res1["fldcashincredit"] Then
-      xCshCrd = res1["fldcashincredit"]
-    Else
-      xCshCrd = 0
-    Endif
-
-    If res1["fldfixrate"] Then
-      xrate = res1["fldfixrate"]
-    Else
-      xrate = modStock.GetCurrentSellingPrice(res1["flditem"], modBasic.$compID)
-    Endif
-    xallow = modNonMedical.AllowPharmProceedPreBill($encid, $DiscPackage, res1["fldqtydisp"], xrate, res1["flddiscper"], res1["fldbilltype"], xCshCrd, res1["fldroute"], res1["flditem"])
-    If xallow = True Then
-
-      Inc Application.Busy
-
-      qtynew = res1["fldqtydisp"]
-      modDatabase.$myConn.Begin
-      While qtynew > 0
-        'get stockno, rate and quantity based on expiry check
-        sql2 = "select fldstockno,fldqty from tblentry where fldstockid=&1 and fldcomp=&2 and fldstatus=&3 and fldqty>&4"
-        res2 = modDatabase.$myConn.Exec(sql2, res1["flditem"], modBasic.$compID, 1, 0)
-        If res2.Available Then
-          res2.MoveFirst
-
-          xitem = res1["flditem"]
-          If res1["fldfixname"] Then
-            xitem = res1["fldfixname"]
-            If res1["fldfixrate"] Then
-              xrate = res1["fldfixrate"]
-            Else
-              xrate = 0
-            Endif
-          Else
-            xrate = modStock.GetSellingPriceByStockNo(res2["fldstockno"], $sBillMode)
-          Endif
-
-          If qtynew <= res2["fldqty"] Then
-            If modBasic.$AutoBillUseOwn = "Enable" Then
-              modBillings.InsertBlankBillItemNewApp($encid, res1["fldbilltype"], res1["fldbillingmode"], res1["flddisctype"], res1["fldacledger"], res1["flditemtype"], res2["fldstockno"], xitem, xrate, qtynew, tax, disc, xCshCrd, "Done", res1["fldid"], True, False, "", xpayble, xrefer)
-            Endif
-            modStockSub.AddToExistEntry(res2["fldstockno"], (0 - qtynew), modBasic.$compID)
-            qtynew = 0
-          Else If qtynew > res2["fldqty"] Then
-            If modBasic.$AutoBillUseOwn = "Enable" Then
-              modBillings.InsertBlankBillItemNewApp($encid, res1["fldbilltype"], res1["fldbillingmode"], res1["flddisctype"], res1["fldacledger"], res1["flditemtype"], res2["fldstockno"], xitem, xrate, res2["fldqty"], tax, disc, xCshCrd, "Done", res1["fldid"], True, False, "", xpayble, xrefer)
-            Endif
-            modStockSub.AddToExistEntry(res2["fldstockno"], (0 - res2["fldqty"]), modBasic.$compID)
-            qtynew = qtynew - res2["fldqty"]
-          Endif
-          Wait
-        Else
-          Break
-        Endif
-      Wend
-
-      If res1["fldqtydisp"] > qtynew Then
-        If qtynew > 0 Then
-          modPharmSub.DuplicateRecordWithQTY(res1["fldid"], qtynew)
-          modPharmSub.UpdateQTYBefDispensing(res1["fldid"], res1["fldqtydisp"] - qtynew)
-        Endif
-        If sStatus = "Completed" Then
-          modPharmSub.UpdateDispensing(res1["fldid"], True, True)
-        Else
-          modPharmSub.UpdateDispensing(res1["fldid"], True, False)
-        Endif
-      Endif
-      modDatabase.$myConn.Commit
-
-      ''Why to insert dosing when save from local stock?
-      ' If modNonMedical.GetBillItemCategoryFromCombo(res1["fldroute"]) = "Medicines" Then
-      '   xdose = Round(res1["flddose"] / modMedConstant.GetDrugInitialStrength(res1["flditem"]), -2)
-      '   xunit = modPharmLabel.GetDosageFormForLabel(res1["flditem"], "Inpatient")
-      '   modPharmSub.InsertNurDosing(res1["fldid"], $encid, xdose, xunit, "")
-      ' Endif
-      Dec Application.Busy
-
-    Else
-      xerr = xerr & res1["fldfixname"] & gb.NewLine
-    Endif
-  Endif
-  If xerr Then
-    Balloon.Warning("<b>Over Set Discount/Credit Limit:</b>" & gb.NewLine & xerr, GridView4)
-  Endif
-
-Catch
-  modDatabase.$myConn.Rollback
-  Dec Application.Busy
-  modHelpVariable.CreateErrorReport()
 
 End
 

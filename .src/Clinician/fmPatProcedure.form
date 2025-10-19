@@ -1,0 +1,624 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,122.5,86)
+  Tag = "Major Procedures"
+  Text = ("Major Procedures")
+  { Menu1 Menu
+    Text = ("File")
+  }
+  { mnudelperson Menu
+    Visible = False
+    { mnudelsurguser Menu
+      Text = ("Delete")
+    }
+  }
+  { Panel1 Panel
+    MoveScaled(0,0,122,82)
+    { Frame1 Frame
+      MoveScaled(0,1,120,14)
+      Text = ("Patient Profile")
+      Alignment = Align.Left
+      { !txtencid TextBox
+        MoveScaled(101,3,15,3)
+        #Public = True
+      }
+      { btnwebcam Button
+        MoveScaled(116,3,3,3)
+        Picture = Picture["icon:/small/camera"]
+      }
+      { txtpatweight ValueBox
+        MoveScaled(14,10,9,3)
+      }
+      { tlbtnadwt ToolButton
+        MoveScaled(23,10,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { txtpatage ValueBox
+        MoveScaled(36,10,7,3)
+      }
+      { cmbpatageunit ComboBox
+        MoveScaled(43,10,9,3)
+      }
+      { dtdob DateBox
+        MoveScaled(53,10,3,3)
+        Mode = DateChooser.DateTime
+      }
+      { txtpatheight ValueBox
+        MoveScaled(67,10,8,3)
+      }
+      { cmbpatheightunit ComboBox
+        MoveScaled(75,10,8,3)
+      }
+      { btnaddheit ToolButton
+        MoveScaled(83,10,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { txtbedno TextBox
+        MoveScaled(101,6.5,15,3)
+        ReadOnly = True
+      }
+      { Label38 Label
+        MoveScaled(1,3,12,3)
+        Border = Border.Plain
+        Text = ("Full Name")
+      }
+      { Label39 Label
+        MoveScaled(1,6.5,12,3)
+        Border = Border.Plain
+        Text = ("Address")
+      }
+      { Label40 Label
+        MoveScaled(43,6.5,4,3)
+        Border = Border.Plain
+        Text = ("Sex")
+      }
+      { Label41 Label
+        MoveScaled(90,6.5,10,3)
+        Border = Border.Plain
+        Text = ("Location")
+      }
+      { Label42 Label
+        MoveScaled(1,10,12,3)
+        Border = Border.Plain
+        Text = ("Weight (Kg)")
+      }
+      { Label43 Label
+        MoveScaled(30,10,5,3)
+        Border = Border.Plain
+        Text = ("Age")
+      }
+      { Label44 Label
+        MoveScaled(58,10,8,3)
+        Border = Border.Plain
+        Text = ("Height")
+      }
+      { txtpatientname TextBox
+        MoveScaled(14,3,34,3)
+        Font = Font["Bold"]
+        ReadOnly = True
+      }
+      { txtpatientaddress TextBox
+        MoveScaled(14,6.5,27,3)
+        ReadOnly = True
+      }
+      { txtgender TextBox
+        MoveScaled(48,6.5,8,3)
+        ReadOnly = True
+      }
+      { Label45 Label
+        MoveScaled(90,3,10,3)
+        Border = Border.Plain
+        Text = ("Encounter")
+      }
+      { txtpatdoa TextBox
+        MoveScaled(67,6.5,21,3)
+        ReadOnly = True
+      }
+      { Label46 Label
+        MoveScaled(58,6.5,8,3)
+        Border = Border.Plain
+        Text = ("DOReg")
+      }
+      { txtnow TextBox
+        MoveScaled(101,10,15,3)
+        Font = Font["Bold"]
+        ReadOnly = True
+      }
+      { Label47 Label
+        MoveScaled(90,10,10,3)
+        Border = Border.Plain
+        Text = ("Status")
+      }
+      { tlbtnaddbed ToolButton
+        MoveScaled(116,6.5,3,3)
+        Picture = Picture["icon:/small/add"]
+      }
+      { tlbtnpayment ToolButton
+        MoveScaled(116,10,3,3)
+        Picture = Picture["icon:/small/calculator"]
+      }
+      { btnpic ToolButton
+        MoveScaled(49,3,3,3)
+        Picture = Picture["icon:/small/image"]
+      }
+      { Label26 Label
+        MoveScaled(58,3,8,3)
+        Border = Border.Plain
+        Text = ("Doctor")
+      }
+      { btnsurgeon ButtonBox
+        MoveScaled(67,3,19,3)
+        Picture = Picture["icon:/small/people"]
+        ReadOnly = True
+      }
+      { btnsms ToolButton
+        MoveScaled(86,3,3,3)
+        Picture = Picture["icon:/small/phone"]
+      }
+      { btnprofile ToolButton
+        MoveScaled(52,3,3,3)
+        Picture = Picture["icon:/small/group"]
+      }
+      { txtcolor Label
+        MoveScaled(17,1,102,1.5)
+      }
+    }
+    { TabPanel1 TabPanel
+      MoveScaled(1,16,120,61)
+      Expand = True
+      Arrangement = Arrange.Horizontal
+      Count = 5
+      Index = 0
+      Text = ("Summary")
+      { Panel44 Panel
+        MoveScaled(0,0,50,53)
+        Arrangement = Arrange.Vertical
+        { Panel8 Panel
+          MoveScaled(0,0,49,21)
+          { btnrefer ButtonBox
+            MoveScaled(11,5,36.625,3)
+            Picture = Picture["icon:/small/people"]
+            ReadOnly = True
+          }
+          { btnpayto ButtonBox
+            MoveScaled(11,9,36.625,3)
+            Picture = Picture["icon:/small/people"]
+            ReadOnly = True
+          }
+          { dtplan DateBox
+            MoveScaled(11,13,20,3)
+            Mode = DateChooser.DateTime
+          }
+          { Label6 Label
+            MoveScaled(0,9,10,3)
+            Border = Border.Plain
+            Text = ("Payable")
+          }
+          { Label2 Label
+            MoveScaled(0,1,10,3)
+            Border = Border.Plain
+            Text = ("Procedure")
+          }
+          { Label4 Label
+            MoveScaled(0,13,10,3)
+            Border = Border.Plain
+            Text = ("Date")
+          }
+          { dtneplan ToolButton
+            MoveScaled(32,13,3,3)
+            Picture = Picture["icon:/small/calendar"]
+          }
+          { cmbprocedure TextBox
+            MoveScaled(11,1,36.625,3)
+            ReadOnly = True
+          }
+          { Label1 Label
+            MoveScaled(0,5,10,3)
+            Border = Border.Plain
+            Text = ("Refer")
+          }
+          { cmbpertype ComboBox
+            MoveScaled(0.375,17,13,3)
+            Sorted = True
+          }
+          { btnconsult2 ButtonBox
+            MoveScaled(14,17,30,3)
+            Picture = Picture["icon:/small/people"]
+            ReadOnly = True
+          }
+          { btnaddperson ToolButton
+            MoveScaled(45,17,3,3)
+            Picture = Picture["icon:/small/add"]
+          }
+        }
+        { grdperson GridView
+          MoveScaled(2,22,36,17)
+          Expand = True
+          Mode = Select.Single
+          Header = GridView.Both
+          AutoResize = False
+        }
+        { Panel61 Panel
+          MoveScaled(0,40,49,4)
+          { txtbillmode TextBox
+            MoveScaled(24,0.625,4,3)
+            Visible = False
+          }
+          { Label3 Label
+            MoveScaled(0,0.625,8,3)
+            Border = Border.Plain
+            Text = ("Status")
+          }
+          { cmbstatus ComboBox
+            MoveScaled(9,0.625,14,3)
+          }
+          { btnsubChange Button
+            MoveScaled(32,0.625,13,3)
+            Text = Shortcut(("Edit"), "E")
+            Picture = Picture["icon:/small/edit"]
+          }
+        }
+      }
+      { Panel2 Panel
+        MoveScaled(50,0,69,51)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        { Panel12 Panel
+          MoveScaled(0,0,68,4)
+          { Label11 Label
+            MoveScaled(0,0.5,12,3)
+            Border = Border.Plain
+            Text = ("Summary")
+          }
+          { btnnewsummry ToolButton
+            MoveScaled(17,0.5,3,3)
+            Picture = Picture["icon:/small/exec"]
+          }
+          { dctnewsummry ToolButton
+            MoveScaled(13,0.5,3,3)
+            Picture = Picture["icon:/small/edit"]
+          }
+          { Panel4 Panel
+            MoveScaled(29,0.5,21,2.75)
+            Border = Border.Plain
+            { rbsi RadioButton
+              MoveScaled(0,0,8,3)
+              Text = ("SI Unit")
+              Value = True
+            }
+            { rbmetric RadioButton
+              MoveScaled(11,0,10,2.75)
+              Text = ("Metric")
+            }
+          }
+          { btntemplnewsummary ToolButton
+            MoveScaled(21,0.5,3,3)
+            Picture = Picture["icon:/small/attach"]
+          }
+          { btncomment Button
+            MoveScaled(58,0.5,10,3)
+            Text = ("Save")
+            Picture = Picture["icon:/small/apply"]
+          }
+        }
+        { txtcomment TextHTML
+          MoveScaled(4,7,52,12)
+          Expand = True
+        }
+      }
+      Index = 1
+      Text = ("Reports")
+      { pnlabexams Panel
+        MoveScaled(0,0,78,34)
+        Expand = True
+        Arrangement = Arrange.Vertical
+      }
+      Index = 2
+      Text = ("Components")
+      { Panel3 Panel
+        MoveScaled(0,0,120,54)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        { Panel5 Panel
+          MoveScaled(0,0,91,4)
+          Border = Border.Plain
+          { Panel6 Panel
+            MoveScaled(0,0.5,83,3)
+            { rbonproced RadioButton
+              MoveScaled(21,0,18,3)
+              Text = ("Operative")
+              Value = True
+            }
+            { rbanesthe RadioButton
+              MoveScaled(40,0,18,3)
+              Text = ("Anesthesia")
+            }
+            { rbpostproc RadioButton
+              MoveScaled(59,0,18,3)
+              Text = ("Post-Operative")
+            }
+            { rbpreproc RadioButton
+              MoveScaled(1,0,18,3)
+              Text = ("Pre-Operative")
+            }
+          }
+        }
+        { TabPanel2 TabPanel
+          MoveScaled(0,4,119,49)
+          Expand = True
+          Arrangement = Arrange.Vertical
+          Count = 4
+          Index = 0
+          Text = ("Examination")
+          { Panel10 Panel
+            MoveScaled(0,0,103,34)
+            Expand = True
+            Arrangement = Arrange.Horizontal
+            { Panel14 Panel
+              MoveScaled(0,0,31,29)
+              Arrangement = Arrange.Vertical
+              { gridVariable GridView
+                MoveScaled(2,2,28,25)
+                Expand = True
+                Mode = Select.Single
+                Header = GridView.Horizontal
+                AutoResize = False
+              }
+            }
+            { Panel7 Panel
+              MoveScaled(32,0,2,29)
+              Arrangement = Arrange.Vertical
+            }
+            { Panel15 Panel
+              MoveScaled(37,0,63,29)
+              Expand = True
+              Arrangement = Arrange.Vertical
+              { gridvalues GridView
+                MoveScaled(0,0,62,27)
+                Expand = True
+                Mode = Select.Single
+                Header = GridView.Both
+                AutoResize = False
+              }
+            }
+            { Panel46 Panel
+              MoveScaled(101,0,1,29)
+              Arrangement = Arrange.Vertical
+            }
+          }
+          Index = 1
+          Text = ("Description")
+          { Panel62 Panel
+            MoveScaled(1,0,118,4)
+            { btnhelppre ToolButton
+              MoveScaled(88,0.5,3,3)
+              Picture = Picture["icon:/small/exec"]
+            }
+            { btntemplpre ToolButton
+              MoveScaled(92,0.5,3,3)
+              Picture = Picture["icon:/small/attach"]
+            }
+            { dcthelppre ToolButton
+              MoveScaled(84,0.5,3,3)
+              Picture = Picture["icon:/small/edit"]
+            }
+            { lblindication Label
+              MoveScaled(0,0.5,11.125,3)
+              Border = Border.Plain
+              Text = ("Indication")
+            }
+            { btnaddprelist ToolButton
+              MoveScaled(12,0.5,3,3)
+              Picture = Picture["icon:/small/add"]
+            }
+            { cmbprocindication ComboBox
+              MoveScaled(16,0.5,52,3)
+              Sorted = True
+            }
+            { btnpreindication ToolButton
+              MoveScaled(69,0.5,3,3)
+              Picture = Picture["icon:/small/apply"]
+            }
+            { btnprecomment Button
+              MoveScaled(106,0.5,10,3)
+              Text = ("Save")
+              Picture = Picture["icon:/small/apply"]
+            }
+          }
+          { txtproccomment TextHTML
+            MoveScaled(5,6,75,21)
+            Tag = "Auto"
+            Expand = True
+          }
+          Index = 2
+          Text = ("Consumables")
+          { pnluseown Panel
+            MoveScaled(1,1,117,27)
+            Expand = True
+            Arrangement = Arrange.Vertical
+          }
+          Index = 3
+          Text = ("Components")
+          { Panel21 Panel
+            MoveScaled(0,0,117,3)
+            { TextHTML1 TextHTML
+              MoveScaled(16,3,25,18)
+            }
+            { dcthelpincis ToolButton
+              MoveScaled(29,0,3,3)
+              Picture = Picture["icon:/small/edit"]
+            }
+            { Label17 Label
+              MoveScaled(0,0,14,3)
+              Border = Border.Plain
+              Text = ("Incision")
+            }
+            { btnhelpincis ToolButton
+              MoveScaled(33,0,3,3)
+              Picture = Picture["icon:/small/exec"]
+            }
+            { btnlstincis ToolButton
+              MoveScaled(37,0,3,3)
+              Picture = Picture["icon:/small/attach"]
+            }
+            { btnsaveincision ToolButton
+              MoveScaled(51,0,3,3)
+              Picture = Picture["icon:/small/apply"]
+            }
+            { Label18 Label
+              MoveScaled(61,0,14,3)
+              Border = Border.Plain
+              Text = ("Findings")
+            }
+            { dcthelpfind ToolButton
+              MoveScaled(89,0,3,3)
+              Picture = Picture["icon:/small/edit"]
+            }
+            { btnhelpfind ToolButton
+              MoveScaled(93,0,3,3)
+              Picture = Picture["icon:/small/exec"]
+            }
+            { btnlstfind ToolButton
+              MoveScaled(97,0,3,3)
+              Picture = Picture["icon:/small/attach"]
+            }
+            { btnsavefinding ToolButton
+              MoveScaled(111,0,3,3)
+              Picture = Picture["icon:/small/apply"]
+            }
+          }
+          { Panel53 Panel
+            MoveScaled(0,3,117,16)
+            Expand = True
+            Arrangement = Arrange.Horizontal
+            { txtincision TextHTML
+              MoveScaled(0,0,57,15)
+              Expand = True
+            }
+            { Panel56 Panel
+              MoveScaled(57,0,2,15)
+              Arrangement = Arrange.Vertical
+            }
+            { txtfindings TextHTML
+              MoveScaled(60,0,57,15)
+              Expand = True
+            }
+          }
+          { Panel54 Panel
+            MoveScaled(0,20,117,4)
+            { Label19 Label
+              MoveScaled(0,1,14,3)
+              Border = Border.Plain
+              Text = ("Procedures")
+            }
+            { dcthelpproc ToolButton
+              MoveScaled(29,1,3,3)
+              Picture = Picture["icon:/small/edit"]
+            }
+            { btnhelpproc ToolButton
+              MoveScaled(33,1,3,3)
+              Picture = Picture["icon:/small/exec"]
+            }
+            { btnlstproc ToolButton
+              MoveScaled(37,1,3,3)
+              Picture = Picture["icon:/small/attach"]
+            }
+            { btnsaveprocedure ToolButton
+              MoveScaled(51,1,3,3)
+              Picture = Picture["icon:/small/apply"]
+            }
+            { Label20 Label
+              MoveScaled(61,1,14,3)
+              Border = Border.Plain
+              Text = ("Closure")
+            }
+            { dcthelpclose ToolButton
+              MoveScaled(89,1,3,3)
+              Picture = Picture["icon:/small/edit"]
+            }
+            { btnhelpclos ToolButton
+              MoveScaled(93,1,3,3)
+              Picture = Picture["icon:/small/exec"]
+            }
+            { btnlstclose ToolButton
+              MoveScaled(97,1,3,3)
+              Picture = Picture["icon:/small/attach"]
+            }
+            { btnsaveclosure ToolButton
+              MoveScaled(111,1,3,3)
+              Picture = Picture["icon:/small/apply"]
+            }
+          }
+          { Panel55 Panel
+            MoveScaled(0,24,117,18)
+            Expand = True
+            Arrangement = Arrange.Horizontal
+            { txtprocedures TextHTML
+              MoveScaled(0,0,57,15)
+              Expand = True
+            }
+            { Panel57 Panel
+              MoveScaled(57,0,2,16)
+              Arrangement = Arrange.Vertical
+            }
+            { txtclosure TextHTML
+              MoveScaled(60,0,57,15)
+              Expand = True
+            }
+          }
+          Index = 0
+        }
+      }
+      Index = 3
+      Text = ("Pharmacy")
+      { Panel17 Panel
+        MoveScaled(0,0,63,26)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        { grdpharm GridView
+          MoveScaled(3,1,58,22)
+          Expand = True
+          Mode = Select.Single
+          Header = GridView.Both
+          AutoResize = False
+        }
+      }
+      { Panel16 Panel
+        MoveScaled(66,1,13,25)
+        { btnorderpre Button
+          MoveScaled(0,5,13,3)
+          Text = ("Request")
+          Picture = Picture["icon:/small/add"]
+        }
+        { btndosepre Button
+          MoveScaled(0,8,13,3)
+          Text = ("Dosing")
+          Picture = Picture["icon:/small/edit"]
+        }
+        { btninfusionpre Button
+          MoveScaled(0,11,13,3)
+          Text = ("Infusion")
+          Picture = Picture["icon:/small/edit"]
+        }
+        { btnshowallpre Button
+          MoveScaled(0,14,13,3)
+          Text = ("Show All")
+          Picture = Picture["icon:/small/view-detail"]
+        }
+        { btnall CheckBox
+          MoveScaled(0,1,12,3)
+          Text = ("All Med")
+        }
+      }
+      Index = 4
+      Text = ("History")
+      { pnlhistory Panel
+        MoveScaled(0,0,78,34)
+        Expand = True
+        Arrangement = Arrange.Vertical
+      }
+      Index = 0
+    }
+  }
+}

@@ -1,0 +1,220 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,121.25,77)
+  Tag = "Procedure List"
+  Text = ("Procedure List")
+  { mnufile Menu
+    Text = ("File")
+  }
+  { mnuhide Menu
+    Text = ("Menu1")
+    { mnueditdate Menu
+      Text = ("Alter Date")
+    }
+    { mnueditsection Menu
+      Text = ("Alter Section")
+    }
+  }
+  { Panel1 Panel
+    MoveScaled(0,0,121,76)
+    { Panel2 SidePanel
+      MoveScaled(0,0,38,75)
+      Arrangement = Arrange.Vertical
+      Orientation = Align.Left
+      { Panel3 Panel
+        MoveScaled(0,1,37,4)
+        { cmbfiscal ComboBox
+          MoveScaled(0,0.5,16,3)
+          Expand = True
+        }
+        { cmbcategory ComboBox
+          MoveScaled(18,0.5,18,3)
+          Sorted = True
+        }
+      }
+      { Panel12 Panel
+        MoveScaled(0,6,37,3)
+        { Panel13 Panel
+          MoveScaled(9,0,27,3)
+          { dtlisted DateBox
+            MoveScaled(0.5,0,17,3)
+          }
+          { dtneplist ToolButton
+            MoveScaled(18,0,3,3)
+            Picture = Picture["icon:/small/calendar"]
+          }
+          { txtrange SpinBox
+            MoveScaled(22,0,5,3)
+            MaxValue = 9
+          }
+        }
+        { chklist CheckBox
+          MoveScaled(0.25,0,8.625,3)
+          Text = ("Range")
+        }
+      }
+      { Panel16 Panel
+        MoveScaled(0,9,38,4)
+        { cmbitemname ComboBox
+          MoveScaled(0,0.5,36.5,3)
+          Sorted = True
+        }
+      }
+      { Panel8 Panel
+        MoveScaled(0,13,36,3)
+        { rbencounter RadioButton
+          MoveScaled(1,0,9.375,3)
+          Text = ("EncID")
+        }
+        { rbinvoice RadioButton
+          MoveScaled(11,0,10,3)
+          Text = ("Invoice")
+        }
+        { rbindoor RadioButton
+          MoveScaled(23,0,10,3)
+          Text = ("Saved")
+          Value = True
+        }
+      }
+      { Panel21 Panel
+        MoveScaled(0,16,38,4)
+        { cmbsourcedept ComboBox
+          MoveScaled(8,0.5,21,3)
+        }
+        { Label9 Label
+          MoveScaled(0,0.5,7,3)
+          Border = Border.Plain
+          Text = ("Depart")
+        }
+        { btnnewrefresh Button
+          MoveScaled(30,0.5,7,3)
+          Picture = Picture["icon:/small/refresh"]
+        }
+      }
+      { GridView2 GridView
+        MoveScaled(2,22,31,20)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Both
+        AutoResize = False
+      }
+      { Panel6 Panel
+        MoveScaled(0,48,37,17)
+        { btnpayto ButtonBox
+          MoveScaled(11,5,25,3)
+          Picture = Picture["icon:/small/people"]
+          ReadOnly = True
+        }
+        { Label13 Label
+          MoveScaled(0,5,10,3)
+          Border = Border.Plain
+          Text = ("Surgeon")
+        }
+        { btnaddin Button
+          MoveScaled(11,13,25,3)
+          Text = ("Accept [Ctrl + A]")
+          Picture = Picture["icon:/small/add"]
+        }
+        { Label5 Label
+          MoveScaled(0,1,10,3)
+          Border = Border.Plain
+          Text = ("Plan Date")
+        }
+        { dtbillplan DateBox
+          MoveScaled(11,1,22,3)
+          Mode = DateChooser.DateTime
+        }
+        { dtnepbilllan ToolButton
+          MoveScaled(33,1,3,3)
+          Picture = Picture["icon:/small/calendar"]
+        }
+        { Label1 Label
+          MoveScaled(0,9,10,3)
+          Border = Border.Plain
+          Text = ("Section")
+        }
+        { cmbprocteam ComboBox
+          MoveScaled(11,9,25,3)
+        }
+      }
+    }
+    { Panel7 Panel
+      MoveScaled(38,1,1,74)
+    }
+    { Panel4 Panel
+      MoveScaled(39,0,80,74)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      Border = Border.Plain
+      { Panel5 Panel
+        MoveScaled(0,1,79,13)
+        { dtprocedure DateBox
+          MoveScaled(11,1,17,3)
+        }
+        { btnepsort ToolButton
+          MoveScaled(29,1,3,3)
+          Picture = Picture["icon:/small/calendar"]
+        }
+        { Panel24 Panel
+          MoveScaled(50,1,27,3)
+          { rbreported RadioButton
+            MoveScaled(13,0,13.5,3)
+            Text = ("Completed")
+          }
+          { rbpending RadioButton
+            MoveScaled(0.5,0,11.5,3)
+            Text = ("Pending")
+            Value = True
+          }
+        }
+        { Label2 Label
+          MoveScaled(1,5,9,3)
+          Border = Border.Plain
+          Text = ("Section")
+        }
+        { cmbaddprocteam ComboBox
+          MoveScaled(11,5,22,3)
+        }
+        { btnaddcounter ToolButton
+          MoveScaled(34,5,3,3)
+          Picture = Picture["icon:/small/add"]
+        }
+        { txtsearch TextBox
+          MoveScaled(59,5,18,3)
+        }
+        { btnrefresh Button
+          MoveScaled(50,9,14,3)
+          Text = ("Refresh")
+          Picture = Picture["icon:/small/refresh"]
+        }
+        { cmbprocedure ComboBox
+          MoveScaled(1,9,36,3)
+          Sorted = True
+        }
+        { Label3 Label
+          MoveScaled(50,5,8,3)
+          Border = Border.Plain
+          Text = ("Enc ID")
+        }
+        { Label4 Label
+          MoveScaled(1,1,9,3)
+          Border = Border.Plain
+          Text = ("Date")
+        }
+        { btnform Button
+          MoveScaled(66,9,11,3)
+          Text = ("Form")
+          Picture = Picture["icon:/small/select"]
+          Default = True
+        }
+      }
+      { GridView1 GridView
+        MoveScaled(5,16,35,33)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Both
+      }
+    }
+  }
+}

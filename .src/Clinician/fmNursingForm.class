@@ -114,7 +114,7 @@ End
 Private Sub SetHtmlTextOption(TextHTML1 As TextHTML)
 
   TextHTML1.DictionaryPath = modBasic.$dictPathList
-  TextHTML1.UserList = modBasic.$IPConsultUserList
+  TextHTML1.UserList = modBasic.$OPConsulUserList
   If modBasic.$AutoRichTextMode = "Yes" Then
     TextHTML1.RichMode = True
   Else
@@ -449,7 +449,7 @@ Public Sub btnconsult_Click()
 
   Dim xMedUser As String[]
 
-  xMedUser = MedicalSelectedValue(("Select Consultant"), modBasic.$IPConsultUserList)
+  xMedUser = MedicalSelectedValue(("Select Consultant"), modBasic.$OPConsulUserList)
   If xMedUser And If xMedUser.Count Then
     btnconsult.Tag = xMedUser[0]
     btnconsult.Text = xMedUser[1]

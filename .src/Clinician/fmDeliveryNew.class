@@ -5,6 +5,7 @@ Private $focus As Boolean
 Private $PopDiagno As Boolean
 Private $UserRestrict As String[]
 Private $PatientNum As String
+Private hOwnStockForm As FmWardStock
 
 Private $billModeTest As String
 Private $billModeRadio As String
@@ -193,6 +194,9 @@ Private Sub GetEncounterValue()
             Wait
             If modPatientSub.AllowEncIDHistory(Trim(txtencid.Text), modDatabase.$myConn) = True Then
               GetDefaultBillingmodes()
+              hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
+              hOwnStockForm.SetOwnDepartment($DELExams)
+
               BlockDCButton()
               ButtonControl()
               If txtgender.Text = "Female" Then
@@ -390,7 +394,7 @@ Public Sub btnconsult_Click()
 
   Dim xMedUser As String[]
 
-  xMedUser = MedicalSelectedValue(("Select Consultant"), modBasic.$IPConsultUserList)
+  xMedUser = MedicalSelectedValue(("Select Consultant"), modBasic.$OPConsulUserList)
   If xMedUser And If xMedUser.Count Then
     btnconsult.Tag = xMedUser[0]
     btnconsult.Text = xMedUser[1]
@@ -577,16 +581,34 @@ Public Sub Form_KeyRelease()
     Endif
   Else If Key.Code = Key.F2 Then
     TabPanel1.Index = 1
+    ShowOrderTree("Pre Delivery", lstpredel)
+    FillPreDelivery()
+    lstpredel.SetFocus
   Else If Key.Code = Key.F3 Then
     TabPanel1.Index = 2
+    ShowOrderTree("On Delivery", lstondel)
+    FillonDelivery()
+    lstondel.SetFocus
   Else If Key.Code = Key.F4 Then
     TabPanel1.Index = 3
+    ShowOrderTree("Post Delivery", lstpostdel)
+    FillPostDelivery()
+    lstpostdel.SetFocus
   Else If Key.Code = Key.F5 Then
     TabPanel1.Index = 4
+    ShowOrderTree("Baby Examination", lstbabyexam)
+    cmbbabyencid.List = GetEncListConfinement(Trim(txtencid.Text))
+    cmbbabyencid.SetFocus
   Else If Key.Code = Key.F6 Then
     TabPanel1.Index = 5
+    LoadTreeData3()
+    ShowClinicTable()
   Else If Key.Code = Key.F7 Then
     TabPanel1.Index = 6
+    FillDosingGrid("Current")
+  Else If Key.Code = Key.F8 Then
+    TabPanel1.Index = 7
+    hOwnStockForm.RearrangeGrid()
   Else
     modGeneralmain.GoToNextControlTab()
   Endif
@@ -612,10 +634,12 @@ Public Sub TabPanel1_Click()
     cmbbabyencid.List = GetEncListConfinement(Trim(txtencid.Text))
     cmbbabyencid.SetFocus
   Else If TabPanel1.Index = 5 Then
-    FillDosingGrid("Current")
-  Else If TabPanel1.Index = 6 Then
     LoadTreeData3()
     ShowClinicTable()
+  Else If TabPanel1.Index = 6 Then
+    FillDosingGrid("Current")
+  Else If TabPanel1.Index = 7 Then
+    hOwnStockForm.RearrangeGrid()
   Endif
 
 End

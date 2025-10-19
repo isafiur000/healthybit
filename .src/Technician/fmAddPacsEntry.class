@@ -6,6 +6,8 @@ Private $TestList As String[]
 Public $sHost As String
 Public $sAET As String
 Public $sPPort As String
+Public $sNode As String
+Public $sPublic As String
 Public $sHttPort As String
 Public $sHTTPUser As String
 Public $sHTTPPass As String
@@ -52,6 +54,9 @@ Private Sub GetPacsServSetting(sHost As String)
   $sHost = modSettings.ShowSettingFromFIle(sHost & "/" & "HostName")
   $sAET = modSettings.ShowSettingFromFIle(sHost & "/" & "AETitle")
   $sPPort = modSettings.ShowSettingFromFIle(sHost & "/" & "Port")
+  $sNode = modSettings.ShowSettingFromFIle(sHost & "/" & "NodeName")
+  $sPublic = modSettings.ShowSettingFromFIle(sHost & "/" & "PublicIP")
+
   $sSSL = modSettings.ShowSettingFromFIle(sHost & "/" & "UseSSL")
   xhttp = modSettings.ShowSettingFromFIle(sHost & "/" & "HTTPPort")
   If xhttp Then

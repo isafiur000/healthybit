@@ -137,9 +137,6 @@ Public Function GetClinicianList() As String[]
   For Each xVar In modBasic.$OPConsultCodeList
     aList.Add(xVar[0])
   Next
-  For Each xVar In modBasic.$IPConsultCodeList
-    aList.Add(xVar[0])
-  Next
   xxx = modString.GetDistinctStringArray(aList)
 
   Return xxx
@@ -824,11 +821,7 @@ Public Sub btnconsult_Click()
   Dim xMedUser As String[]
 
   If GridView1.Rows.Selection.Count Then
-    If GridView1[GridView1.Row, 5].Text = "Consultation"
-      xMedUser = MedicalSelectedTwo(("Select Consultant User"), modBasic.$OPConsultCodeList)
-    Else
-      xMedUser = MedicalSelectedTwo(("Select Consultant User"), modBasic.$IPConsultCodeList)
-    Endif
+    xMedUser = MedicalSelectedTwo(("Select Consultant User"), modBasic.$OPConsultCodeList)
     If xMedUser And If xMedUser.Count Then
       btnconsult.Tag = xMedUser[0]
       btnconsult.Text = xMedUser[1]

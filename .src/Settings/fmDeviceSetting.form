@@ -1,12 +1,12 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,95,51)
+  MoveScaled(0,0,95,54)
   Text = ("Device Settings")
   Resizable = False
   { IconPanel1 IconPanel
-    MoveScaled(1,1,93,49)
-    Count = 12
+    MoveScaled(1,1,93,52)
+    Count = 13
     Index = 0
     Text = ("Barcode")
     { Label176 Label
@@ -169,7 +169,7 @@
       }
     }
     { Frame6 Frame
-      MoveScaled(1,17,72,27)
+      MoveScaled(1,23,72,27)
       Text = ("Webcam Media")
       Alignment = Align.Left
       { Label1 Label
@@ -314,7 +314,7 @@
       }
     }
     { pnlTelegram Frame
-      MoveScaled(1,36,71,11)
+      MoveScaled(1,40,71,11)
       Text = ("Telegram")
       Alignment = Align.Left
       { Label43 Label
@@ -365,7 +365,7 @@
     Index = 3
     Text = ("Messaging")
     { Frame3 Frame
-      MoveScaled(1,28,70,15)
+      MoveScaled(1,36,70,15)
       Text = ("GSM Modem")
       Alignment = Align.Left
       { cmbmodem ComboBox
@@ -434,7 +434,7 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Frame4 Frame
-      MoveScaled(1,10,70,7)
+      MoveScaled(1,13,70,7)
       Text = ("SMS API")
       Alignment = Align.Left
       { Label20 Label
@@ -465,6 +465,7 @@
     }
     { txtsmsnow LCDLabel
       MoveScaled(1,5,50,3)
+      Border = True
     }
     { Label31 Label
       MoveScaled(52,5,5,3)
@@ -479,7 +480,7 @@
       Picture = Picture["icon:/small/refresh"]
     }
     { Frame11 Frame
-      MoveScaled(1,19,70,7)
+      MoveScaled(1,25,70,7)
       Text = ("KDE Connect")
       Alignment = Align.Left
       { Label42 Label
@@ -618,7 +619,7 @@
       }
     }
     { Frame13 Frame
-      MoveScaled(1,36,71,11)
+      MoveScaled(1,39,71,11)
       Text = ("Right Panel LogIn")
       Alignment = Align.Left
       { Label56 Label
@@ -659,93 +660,69 @@
       }
     }
     Index = 5
-    Text = ("DICOM")
-    { Label21 Label
-      MoveScaled(1,34,14,3)
-      Border = Border.Plain
-      Text = ("Desktop Viewer")
-    }
-    { cmbdicomdesk ComboBox
-      MoveScaled(16,34,21,3)
-    }
-    { btndicom ToolButton
-      MoveScaled(38,34,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label32 Label
-      MoveScaled(1,38,14,3)
-      Border = Border.Plain
-      Text = ("Web Viewer")
-    }
-    { cmbdicomweb ComboBox
-      MoveScaled(16,38,21,3)
-    }
-    { btndicomdesk ToolButton
-      MoveScaled(38,38,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
+    Text = ("PACS")
     { Panel2 Panel
-      MoveScaled(0,0,73,33)
+      MoveScaled(0,0,73,46)
       Border = Border.Plain
       { Label29 Label
-        MoveScaled(13,9,8,3)
+        MoveScaled(13,17,8,3)
         Border = Border.Plain
         Text = ("Port")
       }
       { txtpacshost TextBox
-        MoveScaled(22,1,24,3)
+        MoveScaled(22,5,24,3)
         ToolTip = ("PACS Host/IP")
       }
       { txtpacsport TextBox
-        MoveScaled(22,9,14,3)
+        MoveScaled(22,17,14,3)
         ToolTip = ("PACS Connection Port")
       }
       { btnpacshost ToolButton
-        MoveScaled(47,1,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
-      { btnpacsaet ToolButton
         MoveScaled(47,5,3,3)
         Picture = Picture["icon:/small/apply"]
       }
+      { btnpacsaet ToolButton
+        MoveScaled(47,13,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
       { btnpacsport ToolButton
-        MoveScaled(37,9,3,3)
+        MoveScaled(37,17,3,3)
         Picture = Picture["icon:/small/apply"]
       }
       { Label27 Label
-        MoveScaled(13,1,8,3)
+        MoveScaled(13,5,8,3)
         Border = Border.Plain
         Text = ("Host")
       }
       { Label30 Label
-        MoveScaled(13,13,8,3)
+        MoveScaled(13,21,8,3)
         Border = Border.Plain
         Text = ("C-Find")
       }
       { cmbpacsfind ComboBox
-        MoveScaled(22,13,14,3)
+        MoveScaled(22,21,14,3)
       }
       { btnpacsfind ToolButton
-        MoveScaled(37,13,3,3)
+        MoveScaled(37,21,3,3)
         Picture = Picture["icon:/small/apply"]
       }
       { Label34 Label
-        MoveScaled(13,17,8,3)
+        MoveScaled(13,25,8,3)
         Border = Border.Plain
         Text = ("C-Get")
       }
       { cmbpacsget ComboBox
-        MoveScaled(22,17,14,3)
+        MoveScaled(22,25,14,3)
       }
       { btnpacsget ToolButton
-        MoveScaled(37,17,3,3)
+        MoveScaled(37,25,3,3)
         Picture = Picture["icon:/small/apply"]
       }
       { cmbpacname ListBox
-        MoveScaled(1,1,11,31)
+        MoveScaled(1,1,11,44)
       }
       { Panel1 Frame
-        MoveScaled(45,9,27,15)
+        MoveScaled(45,17,27,15)
         Text = ("HTTP Server")
         Alignment = Align.Left
         { txtorthancport TextBox
@@ -789,55 +766,112 @@
         }
       }
       { Label55 Label
-        MoveScaled(13,21,8,3)
+        MoveScaled(13,29,8,3)
         Border = Border.Plain
         Text = ("SSL")
       }
       { cmbpacsssl ComboBox
-        MoveScaled(22,21,14,3)
+        MoveScaled(22,29,14,3)
       }
       { btnpacsssl ToolButton
-        MoveScaled(37,21,3,3)
+        MoveScaled(37,29,3,3)
         Picture = Picture["icon:/small/apply"]
       }
-      { Label100 Label
-        MoveScaled(13,25,8,3)
-        Border = Border.Plain
-        Text = ("Folder")
-      }
-      { txtpacsupload ButtonBox
-        MoveScaled(22,25,49,3)
-        Picture = Picture["icon:/medium/archive"]
-      }
-      { btnpacsupload Button
-        MoveScaled(58,29,13,3)
-        Text = ("Upload")
-      }
       { txtpacsAET TextBox
-        MoveScaled(22,5,24,3)
+        MoveScaled(22,13,24,3)
         ToolTip = ("PACS AE Title")
       }
       { Label28 Label
-        MoveScaled(13,5,8,3)
+        MoveScaled(13,13,8,3)
         Border = Border.Plain
         Text = ("AE Title")
       }
-      { Label115 Label
-        MoveScaled(13,29,8,3)
+      { Frame21 Frame
+        MoveScaled(12,34,60,11)
+        Text = ("Upload")
+        Alignment = Align.Left
+        { Label115 Label
+          MoveScaled(1,7,8,3)
+          Border = Border.Plain
+          Text = ("EncID")
+        }
+        { chkencid CheckBox
+          MoveScaled(10,7,13,3)
+          Text = ("Change To")
+        }
+        { Label100 Label
+          MoveScaled(1,3,8,3)
+          Border = Border.Plain
+          Text = ("Folder")
+        }
+        { txtpacsupload ButtonBox
+          MoveScaled(10,3,49,3)
+          Picture = Picture["icon:/medium/archive"]
+        }
+        { txtencid TextBox
+          MoveScaled(23,7,17,3)
+          Enabled = False
+        }
+        { btnpacsupload Button
+          MoveScaled(46,7,13,3)
+          Text = ("Upload")
+        }
+      }
+      { Label76 Label
+        MoveScaled(13,1,8,3)
         Border = Border.Plain
-        Text = ("EncID")
+        Text = ("Name")
       }
-      { chkencid CheckBox
-        MoveScaled(22,29,13,3)
-        Text = ("Change To")
+      { txtpacsname TextBox
+        MoveScaled(22,1,24,3)
+        ToolTip = ("PACS Host/IP")
       }
-      { txtencid TextBox
-        MoveScaled(35,29,17,3)
-        Enabled = False
+      { btnpacsname ToolButton
+        MoveScaled(47,1,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { Label117 Label
+        MoveScaled(13,9,8,3)
+        Border = Border.Plain
+        Text = ("Public")
+      }
+      { txtpacspublic TextBox
+        MoveScaled(22,9,24,3)
+        ToolTip = ("PACS Host/IP")
+      }
+      { btnpacspublic ToolButton
+        MoveScaled(47,9,3,3)
+        Picture = Picture["icon:/small/apply"]
       }
     }
+    Index = 6
+    Text = ("DICOM")
+    { Label21 Label
+      MoveScaled(1,2,14,3)
+      Border = Border.Plain
+      Text = ("Desktop Viewer")
+    }
+    { cmbdicomdesk ComboBox
+      MoveScaled(16,2,21,3)
+    }
+    { Label32 Label
+      MoveScaled(1,6,14,3)
+      Border = Border.Plain
+      Text = ("Web Viewer")
+    }
+    { cmbdicomweb ComboBox
+      MoveScaled(16,6,21,3)
+    }
+    { btndicom ToolButton
+      MoveScaled(38,2,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { btndicomdesk ToolButton
+      MoveScaled(38,6,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
     { Frame14 Frame
-      MoveScaled(45,33,28,15)
+      MoveScaled(45,1,28,15)
       Text = ("Repository")
       Alignment = Align.Left
       { Label112 Label
@@ -877,7 +911,7 @@
         Picture = Picture["icon:/small/apply"]
       }
     }
-    Index = 6
+    Index = 7
     Text = ("Insurance")
     { Frame10 Frame
       MoveScaled(1,1,72,15)
@@ -965,7 +999,7 @@
       }
     }
     { Frame12 Frame
-      MoveScaled(1,16,72,31)
+      MoveScaled(1,20,72,31)
       Text = ("Claim Management")
       Alignment = Align.Left
       { Label45 Label
@@ -1148,7 +1182,7 @@
         Picture = Picture["icon:/small/apply"]
       }
     }
-    Index = 7
+    Index = 8
     Text = ("SS Fund")
     { Label58 Label
       MoveScaled(1,1,7.375,3)
@@ -1389,7 +1423,7 @@
       MoveScaled(69,29,3,3)
       Picture = Picture["icon:/small/apply"]
     }
-    Index = 8
+    Index = 9
     Text = ("Claim URL")
     { Frame15 Frame
       MoveScaled(1,1,71,11)
@@ -1517,7 +1551,7 @@
         Picture = Picture["icon:/small/pen"]
       }
     }
-    Index = 9
+    Index = 10
     Text = ("Payment")
     { Frame18 Frame
       MoveScaled(1,1,71,35)
@@ -1653,7 +1687,7 @@
       }
     }
     { Frame19 Frame
-      MoveScaled(1,37,71,11)
+      MoveScaled(1,40,71,11)
       Text = ("Online Booking")
       Alignment = Align.Left
       { lblhead10 Label
@@ -1689,7 +1723,7 @@
         Picture = Picture["icon:/small/apply"]
       }
     }
-    Index = 10
+    Index = 11
     Text = ("Reporting")
     { Label87 Label
       MoveScaled(1,1,29,3)
@@ -1740,7 +1774,7 @@
       MoveScaled(50,16,3,3)
       Picture = Picture["icon:/small/apply"]
     }
-    Index = 11
+    Index = 12
     Text = ("Cloud AI")
     { Label104 Label
       MoveScaled(1,1,13,3)

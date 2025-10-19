@@ -616,11 +616,14 @@ End
 Private Sub ShowPacsConfiguration(sServer As String)
 
   txtpacshost.Text = modSettings.ShowSettingFromFIle(sServer & "/" & "HostName")
+  txtpacsAET.Text = modSettings.ShowSettingFromFIle(sServer & "/" & "AETitle")
+  txtpacsport.Text = modSettings.ShowSettingFromFIle(sServer & "/" & "Port")
+  txtpacsname.Text = modSettings.ShowSettingFromFIle(sServer & "/" & "NodeName")
+  txtpacspublic.Text = modSettings.ShowSettingFromFIle(sServer & "/" & "PublicIP")
+
   cmbpacsfind.Text = modSettings.ShowSettingFromFIle(sServer & "/" & "FindCommand")
   cmbpacsget.Text = modSettings.ShowSettingFromFIle(sServer & "/" & "GetCommand")
   cmbpacsssl.Text = modSettings.ShowSettingFromFIle(sServer & "/" & "UseSSL")
-  txtpacsAET.Text = modSettings.ShowSettingFromFIle(sServer & "/" & "AETitle")
-  txtpacsport.Text = modSettings.ShowSettingFromFIle(sServer & "/" & "Port")
 
   txtorthancport.Text = modSettings.ShowSettingFromFIle(sServer & "/" & "HTTPPort")
   If modSettings.ShowSettingFromFIle(sServer & "/" & "HTTPUser") Then
@@ -637,6 +640,46 @@ Public Sub btnpacshost_Click()
   If cmbpacname.Text Then
     modSettings.SaveSettingsToFile(cmbpacname.Text & "/" & "HostName", txtpacshost.Text)
     Balloon.Info(("Information saved"), btnpacshost)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+End
+
+Public Sub btnpacsname_Click()
+
+  If cmbpacname.Text Then
+    modSettings.SaveSettingsToFile(cmbpacname.Text & "/" & "NodeName", txtpacsname.Text)
+    Balloon.Info(("Information saved"), btnpacsname)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+End
+
+Public Sub btnpacspublic_Click()
+
+  If cmbpacname.Text Then
+    modSettings.SaveSettingsToFile(cmbpacname.Text & "/" & "PublicIP", txtpacspublic.Text)
+    Balloon.Info(("Information saved"), btnpacspublic)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+End
+
+Public Sub btnpacsaet_Click()
+
+  If cmbpacname.Text Then
+    modSettings.SaveSettingsToFile(cmbpacname.Text & "/" & "AETitle", txtpacsAET.Text)
+    Balloon.Info(("Information saved"), btnpacsaet)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+End
+
+Public Sub btnpacsport_Click()
+
+  If cmbpacname.Text Then
+    modSettings.SaveSettingsToFile(cmbpacname.Text & "/" & "Port", txtpacsport.Text)
+    Balloon.Info(("Information saved"), btnpacsport)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
 
@@ -667,26 +710,6 @@ Public Sub btnpacsssl_Click()
   If cmbpacname.Text Then
     modSettings.SaveSettingsToFile(cmbpacname.Text & "/" & "UseSSL", cmbpacsssl.Text)
     Balloon.Info(("Information saved"), btnpacsssl)
-    Balloon.Delay = modBasic.$BalloonDelay
-  Endif
-
-End
-
-Public Sub btnpacsaet_Click()
-
-  If cmbpacname.Text Then
-    modSettings.SaveSettingsToFile(cmbpacname.Text & "/" & "AETitle", txtpacsAET.Text)
-    Balloon.Info(("Information saved"), btnpacsaet)
-    Balloon.Delay = modBasic.$BalloonDelay
-  Endif
-
-End
-
-Public Sub btnpacsport_Click()
-
-  If cmbpacname.Text Then
-    modSettings.SaveSettingsToFile(cmbpacname.Text & "/" & "Port", txtpacsport.Text)
-    Balloon.Info(("Information saved"), btnpacsport)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
 

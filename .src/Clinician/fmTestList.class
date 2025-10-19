@@ -515,7 +515,7 @@ Public Sub btnsave_Click()
   Dim xadv As String
 
   Inc Application.Busy
-  res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval= &1 and flditemtype=&2 and fldsave=&3 and fldstatus=&4", $encid, "Diagnostic Tests", False, "Punched")                 ''
+  res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval= &1 and flditemtype=&2 and fldsave=&3 and fldstatus=&4 and fldordcomp=&5", $encid, "Diagnostic Tests", False, "Punched", modBasic.$compID)                 ''
   If res.Available Then
     If modBasic.$AutoBillAdvReceipt = "Enable" Then
       xadv = modBillLock.AdvanceReceiptString("Advance Receipt")
@@ -898,7 +898,7 @@ Public Sub btnsavetree_Click()
   Dim xadv As String
 
   Inc Application.Busy
-  res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval= &1 and flditemtype=&2 and fldsave=&3 and fldstatus=&4", $encid, "Diagnostic Tests", False, "Punched")                 ''
+  res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval= &1 and flditemtype=&2 and fldsave=&3 and fldstatus=&4 and fldordcomp=&5", $encid, "Diagnostic Tests", False, "Punched", modBasic.$compID)                 ''
   If res.Available Then
     If modBasic.$AutoBillAdvReceipt = "Enable" Then
       xadv = modBillLock.AdvanceReceiptString("Advance Receipt")

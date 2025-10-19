@@ -1,0 +1,91 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,103,64)
+  Expand = True
+  Arrangement = Arrange.Vertical
+  { Panel1 Panel
+    MoveScaled(0,0,102,57)
+    Expand = True
+    Arrangement = Arrange.Horizontal
+    Spacing = True
+    { Panel2 Panel
+      MoveScaled(0,0,15,51)
+      Arrangement = Arrange.Vertical
+      { Panel9 Panel
+        MoveScaled(0,0,15,8)
+        { rbroute RadioButton
+          MoveScaled(0.5,0.5,10,3)
+          Text = ("Current")
+          Value = True
+        }
+        { rbcash RadioButton
+          MoveScaled(0.5,4,13,3)
+          Text = ("Protocols")
+        }
+      }
+      { cmbgroup ListBox
+        MoveScaled(1,9,13,23)
+        Expand = True
+      }
+      { txtdepart TextBox
+        MoveScaled(1,33,13,3)
+        Enabled = False
+      }
+    }
+    { Panel4 Panel
+      MoveScaled(15,1,42,46)
+      Arrangement = Arrange.Vertical
+      { Panel5 Panel
+        MoveScaled(0,6,42,4)
+        { txtsearch ButtonBox
+          MoveScaled(3.5,0.5,14,3)
+          Picture = Picture["icon:/small/cancel"]
+        }
+        { chkall CheckBox
+          MoveScaled(22,0.5,6,3)
+          Text = ("All")
+        }
+        { chkleftmain CheckBox
+          MoveScaled(0,0.5,3,3)
+        }
+        { btnselect Button
+          MoveScaled(31,0.5,9,3)
+          Tag = "Auto"
+          Picture = Picture["icon:/small/right"]
+        }
+      }
+      { GridView3 GridView
+        MoveScaled(3,10,25,31)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Horizontal
+        AutoResize = False
+      }
+    }
+    { Panel8 Panel
+      MoveScaled(60,1,42,51)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { Panel3 Panel
+        MoveScaled(0,0,38,4)
+        { btnsave Button
+          MoveScaled(20,0.5,12,3)
+          Text = Shortcut(("Save"), "S")
+          Picture = Picture["icon:/small/apply"]
+        }
+        { chksaveall CheckBox
+          MoveScaled(0.5,0.5,14,3)
+          Text = ("Select All")
+        }
+      }
+      { GridView4 GridView
+        MoveScaled(1,5,40,37)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Horizontal
+        AutoResize = False
+      }
+    }
+  }
+}

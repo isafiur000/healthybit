@@ -7,6 +7,7 @@ Private $aSympFields As String[]
 Private $rExamRes As Result
 Private $aExamFields As String[]
 
+Private $NumForm As FmQuantiEntry
 Private $focus As Boolean
 Private $sTatus As String
 Private $UserRestrict As String[]
@@ -18,7 +19,6 @@ Private $VidIndex As String
 
 Private hPtForm As FmClinHistory
 Private hDigForm As FmDiagnosticTab
-Private hOwnStockForm As FmWardStock
 
 Private $billModeTest As String
 Private $billModeRadio As String
@@ -98,6 +98,7 @@ Public Sub Form_Open()
   SetHtmlTextOption(txtgencomplaint)
   SetHtmlTextOption(txthistory)
   SetHtmlTextOption(txtplan)
+  SetHtmlTextOption(txtplanfinal)
   SetHtmlTextOption(txtcomment)
   rbimproved.Value = True
   rbimproved_Click()
@@ -169,6 +170,18 @@ Private Sub ShowPlanningInitial()
 
 End
 
+Private Sub ShowPlanningExpert()
+
+  Dim xexptAr As String[]
+
+  xexptAr = modPatPatho.ShowSelectedNoteUser(Trim(txtencid.Text), "Expert Planning")
+  If xexptAr And If xexptAr.Count Then
+    txtplanfinal.RichText = xexptAr[0]
+    lblfinaluser.Text = xexptAr[1]
+  Endif
+
+End
+
 Private Sub ShowTelemedSaved()
 
   Dim res As Result
@@ -228,25 +241,60 @@ Public Sub Form_KeyRelease()
     Endif
 
   Else If Key.Code = Key.F3 Then
-    TabPanel1.Index = 0
-  Else If Key.Code = Key.F4 Then
-    TabPanel1.Index = 1
-  Else If Key.Code = Key.F5 Then
-    TabPanel1.Index = 2
-  Else If Key.Code = Key.F6 Then
-    TabPanel1.Index = 3
-  Else If Key.Code = Key.F7 Then
-    TabPanel1.Index = 4
-  Else If Key.Code = Key.F8 Then
-    TabPanel1.Index = 5
-    If txtclinIndex.Value And If txtclinmode.Text Then
-      hOwnStockForm.SetOwnDepartment(txtclinIndex.Value & "|" & txtclinmode.Text)
+    If txtencid.Text Then
+      TabPanel2.Index = 0
     Endif
-    hOwnStockForm.RearrangeGrid()
+
+  Else If Key.Code = Key.F4 Then
+    If txtencid.Text Then
+      TabPanel2.Index = 1
+      txtgencomplaint.SetFocus
+    Endif
+
+  Else If Key.Code = Key.F5 Then
+    If txtencid.Text Then
+      btnsavevitals_Click()
+    Endif
+
+  Else If Key.Code = Key.F6 Then
+    If txtencid.Text Then
+      TabPanel1.Index = 0
+      txthistory.SetFocus
+    Endif
+
+  Else If Key.Code = Key.F4 And If Key.Control Then
+    If txtencid.Text Then
+      TabPanel1.Index = 0
+      cmbfinding.SetFocus
+    Endif
+
+  Else If Key.Code = Key.F7 Then
+    If txtencid.Text Then
+      TabPanel1.Index = 1
+    Endif
+
+  Else If Key.Code = Key.F8 Then
+    If txtencid.Text Then
+      TabPanel1.Index = 2
+      txtplan.SetFocus
+    Endif
+
+  Else If Key.Code = Key.F8 And If Key.Control Then
+    If txtencid.Text Then
+      TabPanel1.Index = 2
+      txtplanfinal.SetFocus
+    Endif
+
   Else If Key.Code = Key.F9 Then
-    TabPanel1.Index = 6
+    If txtencid.Text Then
+      TabPanel1.Index = 3
+      txtquery.SetFocus
+    Endif
+
   Else If Key.Code = Key.F10 Then
-    TabPanel1.Index = 7
+    If txtencid.Text Then
+      TabPanel1.Index = 4
+    Endif
 
   Else If Key.Code = Key["X"] And If Key.Control Then
     Me.Close()
@@ -259,21 +307,23 @@ End
 Public Sub TabPanel1_Click()
 
   If TabPanel1.Index = 0 Then
-    txtgencomplaint.SetFocus
-  Else If TabPanel1.Index = 1 Then
     txthistory.SetFocus
+  Else If TabPanel1.Index = 1 Then
   Else If TabPanel1.Index = 2 Then
-  Else If TabPanel1.Index = 3 Then
-  Else If TabPanel1.Index = 4 Then
-    txtquery.SetFocus
-  Else If TabPanel1.Index = 5 Then
-    If txtclinIndex.Value And If txtclinmode.Text Then
-      hOwnStockForm.SetOwnDepartment(txtclinIndex.Value & "|" & txtclinmode.Text)
-    Endif
-    hOwnStockForm.RearrangeGrid()
-  Else If TabPanel1.Index = 6 Then
-  Else If TabPanel1.Index = 7 Then
     txtplan.SetFocus
+  Else If TabPanel1.Index = 3 Then
+    txtquery.SetFocus
+  Else If TabPanel1.Index = 4 Then
+  Else If TabPanel1.Index = 5 Then
+  Endif
+
+End
+
+Public Sub TabPanel2_Click()
+
+  If TabPanel2.Index = 0 Then
+  Else If TabPanel2.Index = 1 Then
+    txtgencomplaint.SetFocus
   Endif
 
 End
@@ -324,6 +374,20 @@ Public Sub btnshowplan_Click()
 
 End
 
+Public Sub btnshowplanfinal_Click()
+
+  Dim xexptAr As String[]
+
+  If txtencid.Text Then
+    xexptAr = modPatPatho.ShowSelectedNoteUser(Trim(txtencid.Text), "Expert Planning")
+    If xexptAr And If xexptAr.Count Then
+      txtplanfinal.RichText = xexptAr[0]
+      lblfinaluser.Text = xexptAr[1]
+    Endif
+  Endif
+
+End
+
 Public Sub txtencid_LostFocus()
 
   GetEncounterValue()
@@ -363,7 +427,9 @@ Private Sub GetEncounterValue()
         pnlclinpara.Enabled = False
         txtclindepart.Text = GetConsultDepartment(txtclinmode.Text, txtclinIndex.Value, Trim(txtencid.Text))
       Else
-        GetConsultParamIndex(False)
+        If modBasic.$LockToOwnDepart = "Yes" And If modBasic.$FixedDepartment Then
+          btnselect_Click()
+        Endif
       Endif
       res = modDatabase.$myConn.Exec("select fldpatientval,flduserid from tblencounter where fldencounterval=&1", Trim(txtencid.Text))
       If res.Available = False Then
@@ -432,7 +498,6 @@ Private Sub GetEncounterValue()
               txtencid.ReadOnly = True
               modImage.ShowPhotoSplash("Patient", $PatientNum)
               modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
-              txtgencomplaint.SetFocus
               $focus = False
             Else
               Me.Enabled = False
@@ -469,13 +534,19 @@ Private Sub BasicInfoPatient()
     txthistory.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "History of Illness")
     FillExamtable()
     ShowPlanningInitial()
+    ShowPlanningExpert()
     ShowTelemedSaved()
     GetPatientOutComeVal()
 
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
     hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
-    hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
     modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
+    If modSettings.ShowSettingFromFIle("OPDForm/Complaints") = "General" Then
+      TabPanel2.Index = 1
+      txtgencomplaint.SetFocus
+    Else
+      txthistory.SetFocus
+    Endif
   Endif
 
 End
@@ -810,6 +881,7 @@ Private Sub ButtonControl()
   ''history
   btnhistory.Enabled = xx
   btnplan.Enabled = xx
+  btnplanfinal.Enabled = xx
   ''Telemedicine
   btnquery.Enabled = xx
   btnrepoupload.Enabled = xx
@@ -1130,13 +1202,13 @@ Public Sub cmbfinding_GotFocus()
     If modBasic.$ClinCategoryGrid = "Yes" Then
       xlist = modBasic.$ClinFindingCompGrouped
       If xlist.Count Then
-        cmbfinding.Text = GridViewGroup("Select Clinical Findings", xlist, modMisc.LockBoolean(modBasic.$LockExamList), cmbfinding, GridView1.Height)
+        cmbfinding.Text = GridViewGroup("Select Clinical Findings", xlist, modMisc.LockBoolean(modBasic.$LockExamList), Panel5, GridView1.Height + cmbfinding.Height)
         txtfinding.SetFocus
       Endif
     Else
       xlist = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Physician Examinations", True)
       If xlist.Count Then
-        cmbfinding.Text = GridViewNew("Select Clinical Findings", xlist, modMisc.LockBoolean(modBasic.$LockExamList), cmbfinding, GridView1.Height)
+        cmbfinding.Text = GridViewNew("Select Clinical Findings", xlist, modMisc.LockBoolean(modBasic.$LockExamList), Panel5, GridView1.Height + cmbfinding.Height)
         txtfinding.SetFocus
       Endif
     Endif
@@ -1346,32 +1418,26 @@ End
 
 Public Sub FillExamtable()
 
-  $rExamRes = modDatabase.$myConn.Exec("select fldid,fldtype,fldhead,fldabnormal,fldid,fldid,fldtime,fldsave,fldencounterval,fldsysconst,fldoption,flduserid,fldcomp,flduptime from tblpatientexam where fldencounterval=&1 and fldinput=&2 and fldsave=&3", Trim(txtencid.Text), "Physician Examinations", True)
+  $rExamRes = modDatabase.$myConn.Exec("select fldid,fldtype,fldhead,fldabnormal,fldid,fldid,fldtime,fldsave,fldencounterval,fldsysconst,fldoption from tblpatientexam where fldencounterval=&1 and fldinput=&2 and fldsave=&3", Trim(txtencid.Text), "Physician Examinations", True)
   $aExamFields = New String[]
   modGridView.ReadSmallData(GridView1, $rExamRes, $aExamFields)
 
   With GridView1
     .Columns[0].Width = 1
     .Columns[1].Width = 1
-    .Columns[2].Width = 300 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 200 * modBasic.$AppWidthRatio
     .Columns[3].Width = 25 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 450 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 175 * modBasic.$AppWidthRatio
     .Columns[5].Width = 25 * modBasic.$AppWidthRatio
     .Columns[6].Width = 150 * modBasic.$AppWidthRatio
     .Columns[7].Width = 1
     .Columns[8].Width = 1
     .Columns[9].Width = 1   ''fldsysconst
     .Columns[10].Width = 1  ''fldoption
-    .Columns[11].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[12].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[13].Width = 125 * modBasic.$AppWidthRatio
 
     .Columns[2].Text = "Examination"
     .Columns[4].Text = "Observation"
     .Columns[6].Text = "ReportTime"
-    .Columns[11].Text = "User"
-    .Columns[12].Text = "Location"
-    .Columns[13].Text = "Updated"
   End With
 
 End
@@ -1380,10 +1446,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
 
   $rExamRes.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView1, Row)
-  If Column = 2 Then
-    GridView1.Data.Text = $rExamRes[$aExamFields[Column]]
-    GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
-  Else If Column = 3 Then
+  If Column = 3 Then
     GridView1.Data.Picture = Picture[modMisc.GetGridIcon($rExamRes[$aExamFields[Column]])]
     GridView1.Data.Text = ""
   Else If Column = 4 Then
@@ -1396,8 +1459,9 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
     GridView1.Data.Text = ""
   Else If Column = 6 Then
     GridView1.Data.Text = modReportVar.GetDateTimeReport($rExamRes[$aExamFields[Column]], gb.GeneralDate)
-  Else If Column = 13 Then
-    GridView1.Data.Text = modReportVar.GetDateTimeReport($rExamRes[$aExamFields[Column]], gb.GeneralDate)
+  Else If Column = 2 Then
+    GridView1.Data.Text = $rExamRes[$aExamFields[Column]]
+    GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
   Else
     GridView1.Data.Text = $rExamRes[$aExamFields[Column]]
   Endif
@@ -1574,13 +1638,13 @@ Public Sub cmbsymptom_GotFocus()
     If modBasic.$ClinCategoryGrid = "Yes" Then
       xlist = modString.GetDualListFromVariant(modFixPatho.$SymptomCompVar, "fldtype", "fldsymptom", True)
       If xlist.Count Then
-        cmbsymptom.Text = GridViewGroup("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), cmbsymptom, grdchiefsymptom.Height)
+        cmbsymptom.Text = GridViewGroup("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), Panel13, grdchiefsymptom.Height + cmbsymptom.Height)
         txtsympval.SetFocus
       Endif
     Else
       xlist = modString.GetListFromVariant(modFixPatho.$SymptomCompVar, "fldsymptom", True)
       If xlist.Count Then
-        cmbsymptom.Text = GridViewNew("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), cmbsymptom, grdchiefsymptom.Height)
+        cmbsymptom.Text = GridViewNew("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), Panel13, grdchiefsymptom.Height + cmbsymptom.Height)
         txtsympval.SetFocus
       Endif
     Endif
@@ -2016,6 +2080,8 @@ Public Sub btnsavevitals_Click()
       Endif
     Endif
 
+    Try $NumForm.Close
+    pnlquanti.Visible = False
     Balloon.Info(("Information saved"), btnsavevitals)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
@@ -2025,6 +2091,11 @@ End
 Public Sub txtpulse_GotFocus()
 
   txtpulse.Tag = ""
+  If modBasic.$TabletModeEnable = "Yes" Then
+    Try $NumForm.Close
+    pnlquanti.Visible = True
+    $NumForm = New FmQuantiEntry(txtpulse, pnlquanti)
+  Endif
   txtpulse.SelectAll
 
 End
@@ -2032,6 +2103,11 @@ End
 Public Sub txtsystolicbp_GotFocus()
 
   txtsystolicbp.Tag = ""
+  If modBasic.$TabletModeEnable = "Yes" Then
+    Try $NumForm.Close
+    pnlquanti.Visible = True
+    $NumForm = New FmQuantiEntry(txtsystolicbp, pnlquanti)
+  Endif
   txtsystolicbp.SelectAll
 
 End
@@ -2039,6 +2115,11 @@ End
 Public Sub txtdiastolicbp_GotFocus()
 
   txtdiastolicbp.Tag = ""
+  If modBasic.$TabletModeEnable = "Yes" Then
+    Try $NumForm.Close
+    pnlquanti.Visible = True
+    $NumForm = New FmQuantiEntry(txtdiastolicbp, pnlquanti)
+  Endif
   txtdiastolicbp.SelectAll
 
 End
@@ -2046,6 +2127,11 @@ End
 Public Sub txtresprate_GotFocus()
 
   txtresprate.Tag = ""
+  If modBasic.$TabletModeEnable = "Yes" Then
+    Try $NumForm.Close
+    pnlquanti.Visible = True
+    $NumForm = New FmQuantiEntry(txtresprate, pnlquanti)
+  Endif
   txtresprate.SelectAll
 
 End
@@ -2053,6 +2139,11 @@ End
 Public Sub txtoxysat_GotFocus()
 
   txtoxysat.Tag = ""
+  If modBasic.$TabletModeEnable = "Yes" Then
+    Try $NumForm.Close
+    pnlquanti.Visible = True
+    $NumForm = New FmQuantiEntry(txtoxysat, pnlquanti)
+  Endif
   txtoxysat.SelectAll
 
 End
@@ -2060,6 +2151,11 @@ End
 Public Sub txttemp_GotFocus()
 
   txttemp.Tag = ""
+  If modBasic.$TabletModeEnable = "Yes" Then
+    Try $NumForm.Close
+    pnlquanti.Visible = True
+    $NumForm = New FmQuantiEntry(txttemp, pnlquanti)
+  Endif
   txttemp.SelectAll
 
 End
@@ -2142,6 +2238,53 @@ Public Sub btnplan_Click()
   If txtplan.Text Then
     modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", "Initial Planning", txtplan.KeyList.Join(";"), txtplan.RichText, xboolean)
     Balloon.Info(("Information saved"), btnplan)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+End
+
+Public Sub dcthelpplanfinal_Click()
+
+  Dim xx As String
+
+  xx = GetRichTextArea("Recommendation", txtplanfinal.RichText)
+  If xx Then
+    txtplanfinal.RichText = xx
+  Endif
+
+End
+
+Public Sub btntemplpplanfinal_Click()
+
+  txtplanfinal.RichText = txtplanfinal.RichText & DictionaryVIew(modBasic.$dictadvPath)
+
+End
+
+Public Sub btnplandefinal_Click()
+
+  txtplanfinal.RichText = AddHistory("Discharge", Trim(txtencid.Text), "Expert Planning")
+
+End
+
+Public Sub btnhelpplanfinal_Click()
+
+  txtplanfinal.RichText = txtplanfinal.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtplanfinal.Text)
+
+End
+
+Public Sub btnplanfinal_Click()
+
+  Dim xboolean As Boolean
+
+  If modBasic.$ClinHistoryInput = "Single" Then
+    xboolean = True
+  Else
+    xboolean = False
+  Endif
+
+  If txtplanfinal.Text Then
+    modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", "Expert Planning", txtplanfinal.KeyList.Join(";"), txtplanfinal.RichText, xboolean)
+    Balloon.Info(("Information saved"), btnplanfinal)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
 
@@ -3728,6 +3871,9 @@ Private Sub RestrictUserAccess()
   If $UserRestrict.Exist("Initial Planning") Then
     btnplan.Enabled = False
   Endif
+  If $UserRestrict.Exist("Expert Planning") Then
+    btnplanfinal.Enabled = False
+  Endif
 
   If $UserRestrict.Exist("Provisional Diagnosis") Then
     tlbtndeldises.Enabled = False
@@ -4092,6 +4238,7 @@ Public Sub btngetfeed_Click()
 
   If txtfeedback.Text Then
     modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", "Expert Planning", txtfeedback.KeyList.Join(";"), txtfeedback.RichText, xboolean)
+    ShowPlanningExpert()
     Balloon.Info(("Information saved"), btngetfeed)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
@@ -4112,7 +4259,7 @@ Public Sub btnsaveAll_Click()
 End
 
 ''---------------------- Outcome ---------------------------
-Private Sub GetConsultParamIndex(sPopUp As Boolean)
+Public Sub btnselect_Click()
 
   Dim xdept As String
   Dim xval As String
@@ -4123,7 +4270,7 @@ Private Sub GetConsultParamIndex(sPopUp As Boolean)
   Else
     xdept = ""
   Endif
-  xval = modPatientSub.GetConsultationID(Trim(txtencid.Text), xdept, sPopUp)
+  xval = modPatientSub.GetConsultationID(Trim(txtencid.Text), xdept, True)
   If xval Then
     asx = Split(xval, "|")
     txtclinIndex.Value = CLong(asx[0])
@@ -4133,12 +4280,6 @@ Private Sub GetConsultParamIndex(sPopUp As Boolean)
       txtclindepart.Text = GetConsultDepartment(txtclinmode.Text, txtclinIndex.Value, Trim(txtencid.Text))
     Endif
   Endif
-
-End
-
-Public Sub btnselect_Click()
-
-  GetConsultParamIndex(True)
 
 End
 

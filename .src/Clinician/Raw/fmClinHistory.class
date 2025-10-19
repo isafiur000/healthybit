@@ -32,7 +32,9 @@ Public Sub Form_Open()
   Endif
   AddListBiewContent($xFinList)
   WebView1.Zoom = modBasic.$WebZoomValue
-  modGeneralMain.$RightAdView.SetHtml("")
+  If modGeneralMain.$RightAdView Then
+    Try modGeneralMain.$RightAdView.SetHtml("")
+  Endif
   rbmetric.Value = True
 
 End
@@ -291,7 +293,9 @@ End
 
 Public Sub btnopenweb_Click()
 
-  modGeneralMain.$RightAdView.SetHtml(WebView1.Html)
-  modGeneralMain.$RightAdView.Refresh()
+  If modGeneralMain.$RightAdView Then
+    Try modGeneralMain.$RightAdView.SetHtml(WebView1.Html)
+    Try modGeneralMain.$RightAdView.Refresh()
+  Endif
 
 End

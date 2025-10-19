@@ -1,9 +1,9 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,105,66)
+  MoveScaled(0,0,112.5,66)
   Text = ("Pharmacy Order")
-  Resizable = False
+  Margin = True
   { mnuhide Menu
     { mnutaper Menu
       Text = ("Tapering Regimen")
@@ -36,21 +36,21 @@
     ReadOnly = True
   }
   { Label4 Label
-    MoveScaled(78,1,8,3)
+    MoveScaled(87,1,8,3)
     Border = Border.Plain
     Text = ("Gender")
   }
   { txtgender TextBox
-    MoveScaled(87,1,16,3)
+    MoveScaled(96,1,16,3)
     ReadOnly = True
   }
   { TabPanel1 TabPanel
-    MoveScaled(0,9,104,56)
+    MoveScaled(0,9,112,56)
     Count = 5
     Index = 0
     Text = ("Current [F1]")
     { grdmedicine GridView
-      MoveScaled(1,4,102,47)
+      MoveScaled(1,4,110,47)
       Mode = Select.Single
       Header = GridView.Both
     }
@@ -72,14 +72,14 @@
       Picture = Picture["icon:/small/refresh"]
     }
     { cmbstatus ComboBox
-      MoveScaled(78,0.625,18,3)
+      MoveScaled(87,0.625,18,3)
     }
     { btnstatus Button
-      MoveScaled(97,0.625,5,3)
+      MoveScaled(106,0.625,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     { btnaiadvice Button
-      MoveScaled(66,1,3,3)
+      MoveScaled(79,0.625,3,3)
       ToolTip = ("AI Advice")
       Picture = Picture["icon:/small/book"]
     }
@@ -93,48 +93,48 @@
       ToolTip = ("Category of Item")
     }
     { Panel7 Panel
-      MoveScaled(10,4,86,3)
+      MoveScaled(10,4,93,3)
       { cmbmedicine ComboBox
-        MoveScaled(0,0,56,3)
+        MoveScaled(0,0,62,3)
         ToolTip = ("Name of Medicines, surgical and extra items\nWrite few alphabets and press Down key to populate this combobox")
         Sorted = True
       }
       { txtdose ValueBox
-        MoveScaled(56,0,7,3)
+        MoveScaled(63,0,7,3)
         ToolTip = ("Unit Dose of the Medicine")
       }
       { cmbfreq ComboBox
-        MoveScaled(68,0,11,3)
+        MoveScaled(75,0,11,3)
         ToolTip = ("Frequency of Use")
       }
       { txtday ValueBox
-        MoveScaled(79,0,6,3)
+        MoveScaled(86,0,6,3)
         ToolTip = ("Duration of Use")
       }
       { lbldose Label
-        MoveScaled(63,0,5,3)
+        MoveScaled(70,0,5,3)
         Border = Border.Plain
         Text = ("mg")
       }
     }
     { txtqty ValueBox
-      MoveScaled(96,4,6,3)
+      MoveScaled(104,4,6,3)
       Background = &HDFDFDF
       ToolTip = ("Quantity of item ordered")
     }
     { txtdirection ComboBox
-      MoveScaled(10,7.375,56,3)
+      MoveScaled(10,7.375,62,3)
     }
     { chksave Button
-      MoveScaled(66,7.375,9,3)
+      MoveScaled(73,7.375,9,3)
       Picture = Picture["icon:/small/add"]
     }
     { btnshow Button
-      MoveScaled(91,0.375,3,3)
+      MoveScaled(99,0,3,3)
       Picture = Picture["icon:/small/text"]
     }
     { btnreview Button
-      MoveScaled(95,0.375,3,3)
+      MoveScaled(103,0,3,3)
       Picture = Picture["icon:/small/important"]
     }
     { chkout CheckBox
@@ -147,10 +147,10 @@
       Picture = Picture["icon:/small/insert-link"]
     }
     { Panel5 Panel
-      MoveScaled(1,11,103,40)
+      MoveScaled(1,11,110,40)
       Arrangement = Arrange.Horizontal
       { GridView1 GridView
-        MoveScaled(0,0,102,39)
+        MoveScaled(0,0,110,39)
         Expand = True
         Mode = Select.Single
         Header = GridView.Both
@@ -173,17 +173,17 @@
       Picture = Picture["icon:/small/repeat"]
     }
     { btndispown Button
-      MoveScaled(89,7.375,6,3)
+      MoveScaled(97,7.375,6,3)
       ToolTip = ("Dispense from Local Stock")
       Picture = Picture["icon:/small/apply"]
     }
     { mnusave Button
-      MoveScaled(96,7.375,6,3)
+      MoveScaled(104,7.375,6,3)
       ToolTip = ("Brought from Outside")
       Picture = Picture["icon:/small/download"]
     }
     { btnaireview Button
-      MoveScaled(99,0.375,3,3)
+      MoveScaled(107,0,3,3)
       Picture = Picture["icon:/small/book"]
     }
     { Label6 Label
@@ -200,52 +200,10 @@
       Text = ("Hours")
     }
     Index = 2
-    Text = ("Ward Stock [F3]")
-    { Panel4 Panel
-      MoveScaled(1,0.375,40,3)
-      { rbmed RadioButton
-        MoveScaled(0,0,12.5,3)
-        Text = ("Medicines")
-        Value = True
-      }
-      { rbsurg RadioButton
-        MoveScaled(12.5,0,12,3)
-        Text = ("Surgicals")
-      }
-      { rbextra RadioButton
-        MoveScaled(25,0,14,3)
-        Text = ("Extra Items")
-      }
-    }
-    { txtname ButtonBox
-      MoveScaled(11.5,3.75,12,3)
-      Picture = Picture["icon:/small/clear"]
-    }
-    { GridView3 GridView
-      MoveScaled(1,7,40,44)
-      Mode = Select.Single
-      Header = GridView.Horizontal
-    }
-    { lstletter ListBox
-      MoveScaled(41,4,4,47)
-      Sorted = True
-    }
-    { GridView4 GridView
-      MoveScaled(46,1,57,50)
-      Mode = Select.Single
-      Header = GridView.Horizontal
-      AutoResize = False
-    }
-    { cmbuseroute ComboBox
-      MoveScaled(1,3.75,10,3)
-    }
-    { btnadd Button
-      MoveScaled(32,3.75,8,3)
-      Picture = Picture["icon:/small/right"]
-    }
-    { btnaddone Button
-      MoveScaled(25.25,3.75,6,3)
-      Text = ("+1")
+    Text = ("Inventory [F3]")
+    { pnlwardstock Panel
+      MoveScaled(0.5,0,110.5,51)
+      Arrangement = Arrange.Vertical
     }
     Index = 3
     Text = ("Dosing [F4]")
@@ -265,7 +223,7 @@
       Sorted = True
     }
     { GridView2 GridView
-      MoveScaled(39,1,64,50)
+      MoveScaled(39,1,72,50)
       Mode = Select.Single
       Header = GridView.Both
       AutoResize = False
@@ -273,15 +231,15 @@
     Index = 4
     Text = ("Return [F5]")
     { Panel1 Panel
-      MoveScaled(1,0.375,102,4)
+      MoveScaled(1,0.375,110,4)
       { btnreturn Button
-        MoveScaled(84,0.625,16,3)
+        MoveScaled(92,0.5,16,3)
         Text = ("Return")
         Picture = Picture["icon:/small/cut"]
       }
     }
     { GridView5 GridView
-      MoveScaled(1,5,102,46)
+      MoveScaled(1,5,110,46)
       Expand = True
       Mode = Select.Single
       Header = GridView.Both
@@ -289,7 +247,7 @@
     Index = 0
   }
   { Panel3 Panel
-    MoveScaled(55,5,18,3)
+    MoveScaled(60,5,18,3)
     { rbvalue RadioButton
       MoveScaled(0,0,8,3)
       Text = ("Value")
@@ -301,17 +259,17 @@
     }
   }
   { txtlastdispdate TextBox
-    MoveScaled(78,5,18,3)
+    MoveScaled(87,5,18,3)
     Font = Font["Bold"]
     ReadOnly = True
     Placeholder = ("Last Sales")
   }
   { txttotalqty ValueBox
-    MoveScaled(97,5,6,3)
+    MoveScaled(106,5,6,3)
     Font = Font["Bold"]
   }
   { Panel2 Panel
-    MoveScaled(55,1,21,3)
+    MoveScaled(59,1,21,3)
     { rbgeneric RadioButton
       MoveScaled(0,0,10,3)
       Text = ("Generic")

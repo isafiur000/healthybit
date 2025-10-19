@@ -147,7 +147,9 @@ End
 
 Public Sub btnopenweb_Click()
 
-  modGeneralMain.$RightAdView.SetHtml(WebView1.Html)
-  modGeneralMain.$RightAdView.Refresh()
+  If modGeneralMain.$RightAdView Then
+    modGeneralMain.$RightAdView.SetHtml(WebView1.Html)
+    modGeneralMain.$RightAdView.Refresh()
+  Endif
 
 End
