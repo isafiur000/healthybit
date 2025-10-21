@@ -13,12 +13,19 @@ Private $tblpatlabtest As String
 Public Sub Form_Open()
 
   Dim xhospfld As String
+  Dim xlock As String
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
 
-  cmbcategory.List = ["%", "Diagnostic Tests", "General Services", "Procedures", "Equipment", "Radio Diagnostics", "Other Items", "Medicines", "Surgicals", "Extra Items"]                              ''
-  cmbcategory.Text = "%"
+  xlock = modGlobalSetting.ShowSettingFromDB("CashBilling/LockAccountReturn")
+  If xlock Then
+    cmbcategory.Text = xlock
+    cmbcategory.Enabled = False
+  Else
+    cmbcategory.List = ["%", "Diagnostic Tests", "General Services", "Procedures", "Equipment", "Radio Diagnostics", "Other Items", "Medicines", "Surgicals", "Extra Items"]                              ''
+    cmbcategory.Text = "%"
+  Endif
   cmbcomp.List = modBasic.$AllCompPerList
   cmbcomp.Text = "%"
   dtfir.Value = Now()

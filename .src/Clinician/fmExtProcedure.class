@@ -952,6 +952,17 @@ Public Sub mnumedicine_Click()
 
 End
 
+Public Sub mnuextprocedure_Click()
+
+  Dim hForm As FmAddExtraProced
+
+  If txtencid.Text Then
+    hForm = New FmAddExtraProced(Trim(txtencid.Text), $billModeProcedure)
+    hForm.ShowModal
+  Endif
+
+End
+
 Public Sub mnuequipment_Click()
 
   Dim hForm As FmEquipment

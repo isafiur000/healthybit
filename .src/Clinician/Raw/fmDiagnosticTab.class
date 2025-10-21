@@ -16,7 +16,18 @@ Public Sub Form_Open()
   rbmetric.Value = True
   rblabs.Value = True
   rbdaterepo.Value = True
-  WebView1.Zoom = modBasic.$WebZoomValue
+  If modBasic.$WebZoomValue Then
+    Slider1.Value = modBasic.$WebZoomValue * 100
+    WebView1.Zoom = Slider1.Value / 100
+  Endif
+
+End
+
+Public Sub Slider1_Change()
+
+  Inc Application.Busy
+  WebView1.Zoom = Slider1.Value / 100
+  Dec Application.Busy
 
 End
 

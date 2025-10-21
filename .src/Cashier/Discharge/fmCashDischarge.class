@@ -4952,7 +4952,7 @@ Private Sub ExecuteOldQuery()
     Next
   Endif
 
-  sql = "select fldid,fldtime,flditemtype,flditemno,flditemname,flditemrate,flditemqty,flddiscper,fldtaxper,fldditemamt,fldpayto,fldrefer,fldtaxamt,flddiscamt,fldbillingmode,fldsample,fldbilltype,flddisctype,fldacledger,fldretqty,flduserid,fldcashincredit from tblpatbilling where fldencounterval=&1 and fldsave=&2 and fldprint=&3 and flditemqty>&4"
+  sql = "select fldid,fldtime,flditemtype,flditemno,flditemname,flditemrate,flditemqty,flddiscper,fldtaxper,fldditemamt,fldpayto,fldrefer,fldtaxamt,flddiscamt,fldbillingmode,fldsample,fldbilltype,flddisctype,fldacledger,fldretqty,flduserid,fldcashincredit from tblpatbilling where fldencounterval=&1 and fldsave=&2 and fldprint=&3 and flditemqty>&4 ORDER BY flditemname"
   $rData1 = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), True, False, 0)
 
   For Each $rData1

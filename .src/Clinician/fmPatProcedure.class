@@ -5,8 +5,6 @@ Private $focus As Boolean
 Private $ProcBill As Long
 Private $UserRestrict As String[]
 
-Private $rData As Result
-Private $aMyFields As String[]
 Private $sTatus As String
 Private $PatientNum As String
 Private $AlphaList As String[]
@@ -38,8 +36,6 @@ End
 
 Public Sub Form_Open()
 
-  Dim def As String
-
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
   cmbpatheightunit.List = ["cm", "inch", "foot"]
@@ -48,6 +44,11 @@ Public Sub Form_Open()
   dtplan.Value = Now()
   $UserRestrict = modBasic.$ClinicDisableCompo
   $AlphaList = New String[]
+  If modBasic.$PayableSettingVerify = "Enable" Then
+    $sLevel = "Waiting"
+  Else
+    $sLevel = "Active"
+  Endif
 
   If modBasic.$PayableLockEntry = "Yes" Then
     btnpayto.Enabled = False
@@ -644,28 +645,6 @@ Catch
 
 End
 
-Private Sub SaveProcedureBilling(procIndex As Long)
-
-  Dim res As Result
-  Dim res1 As Result
-
-  res = modDatabase.$myConn.Exec("select fldid,fldencounterval,fldnewdate,flditem,fldreportquali,fldtime from tblpatgeneral where fldid=&1 and fldencounterval=&2 and fldreportquali=&3 and fldinput=&4 and fldsave=&5 and fldstatus=&6", procIndex, Trim(txtencid.Text), "Done", "Procedures", False, "Waiting")
-  If res.Available = True Then
-    If modBasic.$AutoBillProcedure = "Standard" Then
-    Else If modBasic.$AutoBillProcedure = "Full" Then
-      modBillings.GetAutoBillingEntry(res["fldencounterval"], $billModeProcedure, "Procedure", res["flditem"], 1, "Done", procIndex, True, False, btnpayto.Tag, btnrefer.Tag)                         ''
-    Else If modBasic.$AutoBillProcedure = "Partial" Then
-      modBillings.GetAutoBillingEntry(res["fldencounterval"], $billModeProcedure, "Procedure", res["flditem"], 1, "Punched", procIndex, False, False, btnpayto.Tag, btnrefer.Tag)
-    Endif
-    res1 = modDatabase.$myConn.Edit("tblpatgeneral", "fldid=&1", procIndex)
-    res1["fldstatus"] = "Cleared"
-    res1["fldsave"] = True
-    res1["xyz"] = False
-    res1.Update()
-  Endif
-
-End
-
 Public Sub btncomment_Click()
 
   Dim res As Result
@@ -999,6 +978,24 @@ Public Sub rbpostproc_Click()
 
 End
 
+' Private Function GetComponentTile() As String
+'
+'   Dim xexam As String
+'
+'   If rbpreproc.Value = True Then
+'     xexam = "Pre-Operative"
+'   Else If rbonproced.Value = True Then
+'     xexam = "Operative"
+'   Else If rbanesthe.Value = True Then
+'     xexam = "Anaesthesia"
+'   Else If rbpostproc.Value = True Then
+'     xexam = "Post-Operative"
+'   Endif
+'
+'   Return
+'
+' End
+
 ''========================= Examination ===========================
 Private Function GetLastValueProc(sFIeld As String, sCategory As String) As String
 
@@ -1066,6 +1063,24 @@ Private Function ProcedureExamType(sCateg As String) As String
     xx = "Post-Operative"
   Endif
   Return xx
+
+End
+
+Public Sub gridVariable_Click()
+
+  Dim xIndex As String
+
+  If rbpreproc.Value = True Then
+    xIndex = "Pre-Operative Exam:" & CStr($ProcIndex)
+  Else If rbonproced.Value = True Then
+    xIndex = "Operative Exam:" & CStr($ProcIndex)
+  Else If rbanesthe.Value = True Then
+    xIndex = "Anaesthesia:" & CStr($ProcIndex)
+  Else If rbpostproc.Value = True Then
+    xIndex = "Post-Operative Exam:" & CStr($ProcIndex)
+  Endif
+  AddExamSelectionProc(Trim(txtencid.Text), gridVariable[gridVariable.Row, 0].Text, gridVariable[gridVariable.Row, 2].Text, gridVariable[gridVariable.Row, 1].Text, gridVariable[gridVariable.Row, 4].Text, xIndex)
+  FillExamtable(xIndex, gridvalues)
 
 End
 
@@ -1225,9 +1240,9 @@ Public Sub FillExamtable(xcateg As String, xGridView As GridView)
     .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
     .Columns[1].Width = 1
-    .Columns[2].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 250 * modBasic.$AppWidthRatio
     .Columns[3].Width = 25 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 250 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 350 * modBasic.$AppWidthRatio
     .Columns[5].Width = 25 * modBasic.$AppWidthRatio
     .Columns[6].Width = 150 * modBasic.$AppWidthRatio
     .Columns[7].Width = 1
@@ -1421,15 +1436,15 @@ Private Sub FillDosingGrid(strType As String)
     .Columns[0].Width = 1
     .Columns[1].Width = 150 * modBasic.$AppWidthRatio
     .Columns[2].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 350 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 425 * modBasic.$AppWidthRatio
     .Columns[4].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[5].Width = 50 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 75 * modBasic.$AppWidthRatio
     .Columns[6].Width = 50 * modBasic.$AppWidthRatio
     .Columns[7].Width = 50 * modBasic.$AppWidthRatio
     .Columns[8].Width = 1
-    .Columns[9].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[9].Width = 100 * modBasic.$AppWidthRatio
 
-    .Columns[1].Text = "StartDate"
+    .Columns[1].Text = "Start"
     .Columns[2].Text = "Route"
     .Columns[3].Text = "Particulars"
     .Columns[4].Text = "Dose"
@@ -1458,6 +1473,13 @@ Private Sub FillDosingGrid(strType As String)
 
 End
 
+Public Sub grdpharm_Click()
+
+  UpdateMedStatus()
+  FillDosingGrid("Current")
+
+End
+
 Private Sub UpdateMedStatus()
 
   Dim xx As String[] = ["Continue", "Completed", "Discontinue", "On Hold", "Change", "ReWrite", "Cancelled", "Wasted"]
@@ -1473,9 +1495,5 @@ Private Sub UpdateMedStatus()
       res.Update()
     Endif
   Endif
-
-End
-
-Public Sub ScrollView1_Draw()
 
 End

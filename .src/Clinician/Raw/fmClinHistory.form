@@ -1,11 +1,11 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,112.5,76)
+  MoveScaled(0,0,118,76)
   Expand = True
   Arrangement = Arrange.Vertical
   { Panel1 Panel
-    MoveScaled(0,1,112,73)
+    MoveScaled(0,1,116,73)
     Expand = True
     Arrangement = Arrange.Horizontal
     { WebContainer2 Panel
@@ -74,17 +74,25 @@
       }
     }
     { Panel2 Panel
-      MoveScaled(44,0,68,51)
+      MoveScaled(44,0,70,51)
       Expand = True
       Arrangement = Arrange.Vertical
       { Panel4 Panel
-        MoveScaled(0,0,67,4)
-        { lbldate Label
-          MoveScaled(0.5,0.5,27,3)
-          Border = Border.Plain
+        MoveScaled(0,0,67,3)
+        Arrangement = Arrange.Horizontal
+        { Slider1 SliderBox
+          MoveScaled(1,0,36,3)
+          MinValue = 1
+          MaxValue = 1000
+          Step = 10
+          Value = 100
+        }
+        { Panel7 Panel
+          MoveScaled(38,0,4,3)
+          Expand = True
         }
         { Panel9 Panel
-          MoveScaled(46,0.5,21,2.75)
+          MoveScaled(46,0,21,2.75)
           Border = Border.Plain
           { rbsi RadioButton
             MoveScaled(0,0,10,2.75)
@@ -96,14 +104,27 @@
             Value = True
           }
         }
-        { btnopenweb ToolButton
-          MoveScaled(41,0.5,3.5,3)
+      }
+      { Panel3 Panel
+        MoveScaled(0,5,70,3)
+        Arrangement = Arrange.Horizontal
+        { lbldate Label
+          MoveScaled(0,0,56,3)
+          Font = Font["Bold"]
+          Border = Border.Plain
+        }
+        { Panel10 Panel
+          MoveScaled(56,0,4,3)
+          Expand = True
+        }
+        { btnopenweb Button
+          MoveScaled(60,0,9,3)
+          Text = ("Vew")
           Picture = Picture["icon:/small/html"]
-          Border = True
         }
       }
       { WebView1 HtmlView
-        MoveScaled(2,9,36,22)
+        MoveScaled(5,20,36,22)
         Expand = True
       }
     }

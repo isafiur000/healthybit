@@ -236,6 +236,7 @@ Public Sub btnselect_Click()
         If xqty Then
           EntryUseOwndata(sType, GridView3[Row, 1].Text, xqty)
         Endif
+        GridView3[Row, 0].Picture = Picture["icons/unchecked.png"]
       Endif
     Next
 

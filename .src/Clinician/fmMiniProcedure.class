@@ -96,8 +96,6 @@ Private Function GetProcedType() As String
 
   If rbminor.Value = True Then
     xtype = "Minor"
-  Else If rbinter.Value = True Then
-    xtype = "Intermediate"
   Else If rbplaster.Value = True
     xtype = "Plaster"
   Endif
@@ -107,12 +105,6 @@ Private Function GetProcedType() As String
 End
 
 Public Sub rbminor_Click()
-
-  FillComboList()
-
-End
-
-Public Sub rbinter_Click()
 
   FillComboList()
 
@@ -253,13 +245,14 @@ Public Sub btnsave_Click()
     For Each res
       If modBasic.$AutoBillProcedure Then
         If modBasic.$AutoBillProcedure = "Standard" Then
+          modBillings.GetAutoBillingEntry($encid, cmbdisctype.Text, "Procedure", res["flditem"], 1, "Done", res["fldid"], True, False, xpayble, xrefer)
         Else If modBasic.$AutoBillProcedure = "Full" Then
-          modBillings.GetAutoBillingEntry($encid, cmbdisctype.Text, "Procedure", res!flditem, 1, "Done", res!fldid, True, False, xpayble, xrefer)                          ''
+          modBillings.GetAutoBillingEntry($encid, cmbdisctype.Text, "Procedure", res["flditem"], 1, "Done", res["fldid"], True, False, xpayble, xrefer)                          ''
         Else If modBasic.$AutoBillProcedure = "Partial" Then
-          modBillings.GetAutoBillingEntry($encid, cmbdisctype.Text, "Procedure", res!flditem, 1, "Punched", res!fldid, False, False, xpayble, xrefer)
+          modBillings.GetAutoBillingEntry($encid, cmbdisctype.Text, "Procedure", res["flditem"], 1, "Punched", res["fldid"], False, False, xpayble, xrefer)
         Endif
       Endif
-      res1 = modDatabase.$myConn.Edit("tblpatgeneral", "fldid=&1", res!fldid)
+      res1 = modDatabase.$myConn.Edit("tblpatgeneral", "fldid=&1", res["fldid"])
       res1["fldstatus"] = "Cleared"
       res1["fldsave"] = True
       res1["flduserid"] = modBasic.$lbluser
