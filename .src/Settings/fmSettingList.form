@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,82,53)
+  MoveScaled(0,0,88,53)
   Resizable = False
   { mnuhide Menu
     Visible = False
@@ -9,21 +9,27 @@
       Text = ("Delete")
     }
   }
-  { lstfirst ListView
-    MoveScaled(1,1,32,47)
-    Sorted = True
-  }
   { chkall CheckBox
     MoveScaled(1,49,14,3)
     Text = ("Select All")
   }
-  { btnsave ToolButton
-    MoveScaled(34,27,9,7)
-    Picture = Picture["icon:/huge/right"]
-  }
   { lstsecond ListBox
-    MoveScaled(44,1,37,51)
+    MoveScaled(48,1,39,51)
     Mode = Select.Multiple
     ScrollBar = Scroll.Both
+  }
+  { GridView1 GridView
+    MoveScaled(1,5,44,43)
+  }
+  { chkleftmain CheckBox
+    MoveScaled(1,1,3,3)
+  }
+  { txtsearch ButtonBox
+    MoveScaled(5,1,22,3)
+    Picture = Picture["icon:/small/cancel"]
+  }
+  { btnsave Button
+    MoveScaled(36,1,9,3)
+    Picture = Picture["icon:/small/right"]
   }
 }

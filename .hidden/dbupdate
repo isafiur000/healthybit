@@ -1194,4 +1194,6 @@ ALTER TABLE tblpatdosing ADD COLUMN fldqtyorder DOUBLE NULL
 
 ALTER TABLE tblpatradiotest ADD COLUMN fldbcounter VARCHAR( 100 ) NULL
 
+ALTER TABLE tblproductgroup ADD fldcomp VARCHAR( 50 ) NULL
+UPDATE tblproductgroup SET fldcomp='%' WHERE fldcomp IS NULL
 

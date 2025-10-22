@@ -4,6 +4,9 @@ Private $sType As String
 Private $sItem As String
 Private $sComp As String
 
+Private $mainLst As String[]
+Private $sList As String[]
+
 Public Sub _new(sTitle As String, xType As String, xItem As String, xComp As String)
 
   Me.Title = sTitle
@@ -23,60 +26,98 @@ End
 
 Private Sub GetRemainingParam()
 
+  If $sType = "User List" Then
+    $mainLst = modGeneral.GetActiveUserIDAll()
+  Else If $sType = "Service List" Then
+    $mainLst = modNonMedical.NonStockBillingItemArray("%", "%")
+  Else If $sType = "Medicines List" Then
+    $mainLst = modMedicine.GetPharmacyItemList("Medicines")
+  Endif
+  FillGridViewSelected()
+
+End
+
+''==================== First Gridview ===================
+Public Sub txtsearch_Change()
+
+  FillGridViewSelected()
+
+End
+
+Private Sub FillGridViewSelected()
+
+  Dim xval As String
   Dim xList As String[]
 
-  If $sType = "User List" Then
-    xList = modGeneral.GetActiveUserIDAll()
-  Else If $sType = "Service List" Then
-    xList = modNonMedical.NonStockBillingItemArray("%", "%")
-  Endif
-  FillGridViewSelected(xList)
-
-End
-
-Private Sub ShowSettingParams()
-
-  Dim res As Result
-
-  res = modDatabase.$myConn.Exec("select fldvalue as col from tbltabsettings where fldcategory=&1 and fldcomp=&2", $sItem, $sComp)
-  modFillContainer.FillListBox(lstsecond, res, False)
-
-End
-
-Private Sub FillGridViewSelected(sList As String[])
-
-  Dim pic1 As Picture
-  Dim i As Integer
-  Dim xval As String
-
-  pic1 = Picture["icons/unchecked.png"]
-  lstfirst.Clear
-  i = 1
-  If sList And If sList.Count Then
-    For Each xval In sList
+  xList = New String[]
+  If $mainLst And If $mainLst.Count Then
+    For Each xval In $mainLst
       If Len(xval) Then
         If lstsecond.List.Exist(xval) Then
         Else
-          lstfirst.Add(CStr(i), xval, pic1)
-          i = i + 1
+
+          If Len(Trim(txtsearch.Text)) Then
+            If chkleftmain.Value = True Then
+              If LCase(xval) Like "*" & Trim(txtsearch.Text) & "*" Then
+                xList.Add(xval)
+              Endif
+            Else
+              If LCase(xval) Like Trim(txtsearch.Text) & "*" Then
+                xList.Add(xval)
+              Endif
+            Endif
+          Else
+            xList.Add(xval)
+          Endif
+
         Endif
       Endif
     Next
   Endif
 
+  $sList = xList
+
+  GridView1.Clear()
+  GridView1.Rows.Count = $sList.Count
+  GridView1.Columns.Count = 2
+
+  With GridView1
+    .Columns[0].Width = 25 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 300 * modBasic.$AppWidthRatio
+  End With
+
 End
 
-Public Sub lstfirst_Click()
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
 
-  modFillContainer.ShowCheckedListView(lstfirst)
-
-End
-
-Public Sub lstfirst_KeyRelease()
-
-  If Key.Code = Key.Space Then
-    modFillContainer.ShowCheckedListView(lstfirst)
+  modGeneralMain.GridViewDecoration(GridView1, Row)
+  If Column = 0 Then
+    GridView1.Data.Picture = Picture["icons/unchecked.png"]
+  Else
+    GridView1.Data.Text = $sList[Row]
   Endif
+
+End
+
+Public Sub GridView1_Click()
+
+  If GridView1.Column = 0 Then
+    modGridView.CheckUncheckGridNoDB(GridView1, 0)
+  Endif
+
+End
+
+Public Sub chkall_Click()
+
+  Dim i As Integer
+
+  For i = 0 To GridView1.Rows.Count - 1
+    If chkall.Value = True Then
+      GridView1[i, 0].Picture = Picture["icons/checked.png"]
+    Else If chkall.Value = False Then
+      GridView1[i, 0].Picture = Picture["icons/unchecked.png"]
+    Endif
+  Next
 
 End
 
@@ -85,17 +126,18 @@ Public Sub btnsave_Click()
   Dim res As Result
   Dim i As Integer
 
-  For i = 1 To lstfirst.Count
-    If lstfirst[CStr(i)].Picture = Picture["icons/checked.png"] Then
-      If lstsecond.List.Exist(lstfirst[CStr(i)].Text) = False Then
+  For i = 0 To GridView1.Rows.Count - 1
+    If GridView1[i, 0].Picture = Picture["icons/checked.png"] Then
+      If lstsecond.List.Exist(GridView1[i, 1].Text) = False Then
 
         res = modDatabase.$myConn.Create("tbltabsettings")
         res["fldcomp"] = $sComp
         res["fldcategory"] = $sItem
-        res["fldvalue"] = lstfirst[CStr(i)].Text
+        res["fldvalue"] = GridView1[i, 1].Text
         res["fldtime"] = Now()
         res["flduserid"] = modBasic.$lbluser
         res.Update
+        GridView1[i, 0].Picture = Picture["icons/unchecked.png"]
 
       Endif
     Endif
@@ -106,20 +148,13 @@ Public Sub btnsave_Click()
 
 End
 
-Public Sub chkall_Click()
+''============================= Second List =============================
+Private Sub ShowSettingParams()
 
-  Dim i As Integer
-  Dim xpic As Picture
+  Dim res As Result
 
-  If chkall.Value = True Then
-    xpic = Picture["icons/checked.png"]
-  Else
-    xpic = Picture["icons/unchecked.png"]
-  Endif
-
-  For i = 1 To lstfirst.Count
-    lstfirst[CStr(i)].Picture = xpic
-  Next
+  res = modDatabase.$myConn.Exec("select fldvalue as col from tbltabsettings where fldcategory=&1 and fldcomp=&2", $sItem, $sComp)
+  modFillContainer.FillListBox(lstsecond, res, False)
 
 End
 

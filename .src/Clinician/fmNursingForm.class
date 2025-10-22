@@ -2,7 +2,6 @@
 
 Public $PatientComp As String
 
-Private $NumForm As FmQuantiEntry
 Private $focus As Boolean
 Private $sTatus As String
 Private $UserRestrict As String[]
@@ -11,6 +10,12 @@ Private $ExamLst As String[]
 Private $PatientNum As String
 Private $vidRoom As String
 Private $VidIndex As String
+
+Private hViewVital As FmVitalView
+Private hinputVital As FmVitalInput
+Private hPtForm As FmClinHistory
+Private hOwnStockForm As FmWardStock
+Private hDoseCount As FmDosecount
 
 Private $billModeTest As String
 Private $billModeRadio As String
@@ -185,16 +190,6 @@ Public Sub Form_KeyRelease()
 
 End
 
-Public Sub TabPanel2_Click()
-
-  If TabPanel2.Index = 0 Then
-    cmbsymptom.SetFocus
-  Else If TabPanel2.Index = 1 Then
-    txtgencomplaint.SetFocus
-  Endif
-
-End
-
 Public Sub btnshowgencomp_Click()
 
   If txtencid.Text Then
@@ -317,24 +312,23 @@ End
 
 Private Sub BasicInfoPatient()
 
-  Dim hForm1 As FmVitalView
-  Dim hForm2 As FmVitalInput
-
   If txtencid.Text Then
     modRepository.$RepoDataStatus = False
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
     GetDefaultBillingmodes()
     ButtonControl()
     $dateReg = modPatient.GetRecordDate(Trim(txtencid.Text))
-    lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Nursing Diagnosis", Trim(txtencid.Text))
-    lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
+    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
     ShowSymptomData()
     txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "General Complaints")
     ShowEssentialExamRange()
     ShowEssentialExam()
 
-    hForm1 = New FmVitalView(Trim(txtencid.Text), Panel14)
-    hForm2 = New FmVitalInput(Trim(txtencid.Text), Panel12)
+    hViewVital = New FmVitalView(Trim(txtencid.Text), Panel14)
+    hinputVital = New FmVitalInput(Trim(txtencid.Text), pnlvitals)
+    hDoseCount = New FmDosecount(Trim(txtencid.Text), pnldosecount)
+    hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
+    hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
 
     dtmonitor.Value = Now()
     lbldtmonitor.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), dtmonitor.Value)
@@ -345,10 +339,6 @@ Private Sub BasicInfoPatient()
     ShowMonitoring()
 
     modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
-    If modSettings.ShowSettingFromFIle("OPDForm/Complaints") = "General" Then
-      TabPanel2.Index = 1
-      txtgencomplaint.SetFocus
-    Endif
   Endif
 
 End
@@ -707,6 +697,10 @@ Private Sub ButtonControl()
   btnmonplan.Enabled = xx
   btnmonimpression.Enabled = xx
 
+  pnlvitals.Enabled = xx
+  pnldosecount.Enabled = xx
+  pnlwardstock.Enabled = xx
+
   xval = modBasic.$LockDiagnosisList
   If xval = "No" Then
   Else
@@ -748,20 +742,28 @@ Public Sub mnupatlock_Click()
 End
 
 ''--------------------------------------------- icd disease --------------------------------------------------
+Public Sub chkalldiagno_Click()
+
+  modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+
+End
+
 Public Sub tlbtndeldises_Click()
 
   Dim res As Result
 
   If txtencid.Text Then
-    If lsticdisease.Text Then
+    If lsticdisease.Current.Text Then
       If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
-        res = modDatabase.$myConn.Edit("tblpatfindings", "fldcode=&1 and fldencounterval=&2 and fldtype=&3 and fldsave=&4", lsticdisease.Text, Trim(txtencid.Text), "Nursing Diagnosis", True)
-        res["fldsave"] = False
-        res["xyz"] = False
-        res.Update
-        lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Nursing Diagnosis", Trim(txtencid.Text))
-        Balloon.Delete(("Information deleted"), tlbtndeldises)
-        Balloon.Delay = modBasic.$BalloonDelay
+        res = modDatabase.$myConn.Edit("tblpatfindings", "fldcode=&1 and fldencounterval=&2 and fldtype=&3 and fldsave=&4", lsticdisease.Current.Text, Trim(txtencid.Text), "Nursing Diagnosis", True)
+        If res.Available Then
+          res["fldsave"] = False
+          res["xyz"] = False
+          res.Update
+          Balloon.Delete(("Information deleted"), tlbtndeldises)
+          Balloon.Delay = modBasic.$BalloonDelay
+          modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        Endif
       Endif
     Endif
   Endif
@@ -785,7 +787,7 @@ Public Sub tbndisease_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Nursing Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
-        lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Nursing Diagnosis", Trim(txtencid.Text))
+        modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
       Endif
     Endif
   Endif
@@ -806,7 +808,7 @@ Public Sub tbnsyndro_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Nursing Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1])
-        lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Nursing Diagnosis", Trim(txtencid.Text))
+        modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
       Endif
     Endif
   Endif
@@ -821,7 +823,7 @@ Public Sub btndismanual_Click()
     xx = InputBox(("Enter custom Nursing Diagnosis"), ("Nursing Diagnosis"), "")
     If xx Then
       modPatientGeneral.AddPatientFindings("Nursing Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
-      lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Nursing Diagnosis", Trim(txtencid.Text))
+      modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
     Endif
   Endif
 
@@ -844,24 +846,20 @@ Public Sub tlbtndelallergy_Click()
   Dim res As Result
 
   If txtencid.Text Then
-    If lstallergy.Text Then
+    If lsticdisease.Current.Text Then
       If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
-        res = modDatabase.$myConn.Edit("tblpatfindings", "fldcode=&1 and fldencounterval=&2 and fldtype=&3 and fldsave=&4", lstallergy.Text, Trim(txtencid.Text), "Allergic Drugs", True)
-        res["fldsave"] = False
-        res["xyz"] = False
-        res.Update
-        lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
-        Balloon.Delete(("Information deleted"), tlbtndelallergy)
-        Balloon.Delay = modBasic.$BalloonDelay
+        res = modDatabase.$myConn.Edit("tblpatfindings", "fldcode=&1 and fldencounterval=&2 and fldtype=&3 and fldsave=&4", lsticdisease.Current.Text, Trim(txtencid.Text), "Allergic Drugs", True)
+        If res.Available Then
+          res["fldsave"] = False
+          res["xyz"] = False
+          res.Update
+          Balloon.Delete(("Information deleted"), tlbtndelallergy)
+          Balloon.Delay = modBasic.$BalloonDelay
+          modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        Endif
       Endif
     Endif
   Endif
-
-End
-
-Public Sub chkallergy_Click()
-
-  lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
 
 End
 
@@ -873,7 +871,7 @@ Public Sub btnallergymanual_Click()
     xx = InputBox(("Enter custom Drug Allergy"), ("Drug Allergy"), "")
     If xx Then
       modPatientGeneral.AddPatientFindings("Allergic Drugs", Trim(txtencid.Text), xx, "", "")
-      lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
+      modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
     Endif
   Endif
 
@@ -881,25 +879,41 @@ End
 
 Public Sub btnallergy_Click()
 
+  Dim curLst As String[]
   Dim sName As String[]
   Dim sText As String
   Dim druglist As String[]
 
   If txtencid.Text Then
-    druglist = modString.GetRemainingArray(modBasic.$GenericMedName, lstallergy.List)
-    sName = GridListView(("Select Drugs"), druglist, lstallergy, lstallergy.Height + lsticdisease.Height + Panel9.Height)
+    curLst = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), True)
+    druglist = modString.GetRemainingArray(modBasic.$GenericMedName, curLst)
+    sName = GridListView(("Select Drugs"), druglist, lsticdisease, lsticdisease.Height + lsticdisease.Height + TabPanel1.Height)
     If sName And If sName.Count Then
       For Each sText In sName
         modPatientGeneral.AddPatientFindings("Allergic Drugs", Trim(txtencid.Text), sText, "", "")
       Next
     Endif
-    lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
+    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+  Endif
+
+End
+
+Public Sub TabPanel1_Click()
+
+  If TabPanel1.Index = 0 Then
+    hViewVital.RefreshValues()
+  Else If TabPanel1.Index = 1 Then
+  Else If TabPanel1.Index = 2 Then
+  Else If TabPanel1.Index = 3 Then
+  Else If TabPanel1.Index = 4 Then
+    hOwnStockForm.RearrangeGrid()
+  Else If TabPanel1.Index = 5 Then
+  Else If TabPanel1.Index = 6 Then
   Endif
 
 End
 
 ''------------------------------- exam ---------------------------------------------
-
 Public Sub btntriage_Click()
 
   Dim xcol As String
@@ -1396,8 +1410,6 @@ Public Sub btnsavevitals_Click()
 
     Balloon.Info(("Information saved"), btnsavevitals)
     Balloon.Delay = modBasic.$BalloonDelay
-    Try $NumForm.Close
-    pnlquanti.Visible = False
   Endif
 
 End
@@ -1405,11 +1417,6 @@ End
 Public Sub txtpulse_GotFocus()
 
   txtpulse.Tag = ""
-  If modBasic.$TabletModeEnable = "Yes" Then
-    Try $NumForm.Close
-    pnlquanti.Visible = True
-    $NumForm = New FmQuantiEntry(txtpulse, pnlquanti)
-  Endif
   txtpulse.SelectAll
 
 End
@@ -1417,11 +1424,6 @@ End
 Public Sub txtsystolicbp_GotFocus()
 
   txtsystolicbp.Tag = ""
-  If modBasic.$TabletModeEnable = "Yes" Then
-    Try $NumForm.Close
-    pnlquanti.Visible = True
-    $NumForm = New FmQuantiEntry(txtsystolicbp, pnlquanti)
-  Endif
   txtsystolicbp.SelectAll
 
 End
@@ -1429,11 +1431,6 @@ End
 Public Sub txtdiastolicbp_GotFocus()
 
   txtdiastolicbp.Tag = ""
-  If modBasic.$TabletModeEnable = "Yes" Then
-    Try $NumForm.Close
-    pnlquanti.Visible = True
-    $NumForm = New FmQuantiEntry(txtdiastolicbp, pnlquanti)
-  Endif
   txtdiastolicbp.SelectAll
 
 End
@@ -1441,11 +1438,6 @@ End
 Public Sub txtresprate_GotFocus()
 
   txtresprate.Tag = ""
-  If modBasic.$TabletModeEnable = "Yes" Then
-    Try $NumForm.Close
-    pnlquanti.Visible = True
-    $NumForm = New FmQuantiEntry(txtresprate, pnlquanti)
-  Endif
   txtresprate.SelectAll
 
 End
@@ -1453,11 +1445,6 @@ End
 Public Sub txtoxysat_GotFocus()
 
   txtoxysat.Tag = ""
-  If modBasic.$TabletModeEnable = "Yes" Then
-    Try $NumForm.Close
-    pnlquanti.Visible = True
-    $NumForm = New FmQuantiEntry(txtoxysat, pnlquanti)
-  Endif
   txtoxysat.SelectAll
 
 End
@@ -1465,11 +1452,6 @@ End
 Public Sub txttemp_GotFocus()
 
   txttemp.Tag = ""
-  If modBasic.$TabletModeEnable = "Yes" Then
-    Try $NumForm.Close
-    pnlquanti.Visible = True
-    $NumForm = New FmQuantiEntry(txttemp, pnlquanti)
-  Endif
   txttemp.SelectAll
 
 End
@@ -1859,11 +1841,11 @@ End
 
 Public Sub mnupatdosing_Click()
 
-  Dim hForm As FmDosecount
+  Dim hForm4 As FmDoseMobile
 
   If txtencid.Text Then
-    hForm = New FmDosecount(Trim(txtencid.Text))
-    hForm.ShowModal
+    hForm4 = New FmDoseMobile(Trim(txtencid.Text))
+    hForm4.ShowModal
   Endif
 
 End

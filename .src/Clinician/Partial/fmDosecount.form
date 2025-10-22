@@ -1,0 +1,135 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,109,58)
+  Expand = True
+  Text = ("Dosing Record")
+  Resizable = False
+  Arrangement = Arrange.Vertical
+  Margin = True
+  { Panel1 Panel
+    MoveScaled(0,0,109,53)
+    Expand = True
+    Arrangement = Arrange.Horizontal
+    Spacing = True
+    { Panel2 Panel
+      MoveScaled(0,0,33.875,47.875)
+      Arrangement = Arrange.Vertical
+      { ListBox1 ListView
+        MoveScaled(2,2,24,24)
+        Expand = True
+        Sorted = True
+      }
+      { Panel3 Panel
+        MoveScaled(0,36,33.5,3.875)
+        { btnexpo Button
+          MoveScaled(17,0.5,15.625,3)
+          Text = ("Export")
+          Picture = Picture["icon:/small/html"]
+        }
+        { btnrepo Button
+          MoveScaled(0,0.5,15.625,3)
+          Text = ("Report")
+          Picture = Picture["icon:/small/html"]
+        }
+      }
+    }
+    { Panel8 Panel
+      MoveScaled(35,2,73,43)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { lblmedicine Label
+        MoveScaled(0,0,73,3.5)
+        Font = Font["Bold"]
+        Border = Border.Plain
+      }
+      { Panel5 Panel
+        MoveScaled(0,6,71.875,4)
+        { lblregimen Label
+          MoveScaled(9,0.5,32,3)
+          Border = Border.Plain
+        }
+        { txtdose ValueBox
+          MoveScaled(42,0.5,8,3.25)
+          Text = ("ValueBox1")
+        }
+        { lblunit Label
+          MoveScaled(51,0.5,9,3.25)
+          Border = Border.Plain
+        }
+        { btnsave Button
+          MoveScaled(61,0.5,10,3.25)
+          Enabled = False
+          Tag = "Auto"
+          Text = ("Save")
+          Picture = Picture["icon:/small/add"]
+        }
+        { Label1 Label
+          MoveScaled(0,0.5,8,3)
+          Border = Border.Plain
+          Text = ("Regimen")
+        }
+      }
+      { GridView1 GridView
+        MoveScaled(0,11,66,23)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Both
+        AutoResize = False
+      }
+      { Panel7 Panel
+        MoveScaled(0,36,71.875,3.875)
+        { txtcounttoday ValueBox
+          MoveScaled(11,0.5,6,3)
+          ReadOnly = True
+        }
+        { Label9 Label
+          MoveScaled(19,0.5,5,3)
+          Border = Border.Plain
+          Text = ("Dose")
+        }
+        { txtdosetoday ValueBox
+          MoveScaled(24,0.5,8,3)
+          ReadOnly = True
+        }
+        { Label7 Label
+          MoveScaled(38,0.5,7,3)
+          Border = Border.Plain
+          Text = ("TOTAL:")
+        }
+        { Label6 Label
+          MoveScaled(46,0.5,3,3)
+          Border = Border.Plain
+          Text = ("N")
+        }
+        { txtcountsum ValueBox
+          MoveScaled(49,0.5,6,3)
+          ReadOnly = True
+        }
+        { txtdosesum ValueBox
+          MoveScaled(63,0.5,8,3)
+          ReadOnly = True
+        }
+        { Label5 Label
+          MoveScaled(58,0.5,5,3)
+          Border = Border.Plain
+          Text = ("Dose")
+        }
+        { Label3 Label
+          MoveScaled(0,0.5,7.25,3)
+          Border = Border.Plain
+          Text = ("TODAY:")
+        }
+        { Label8 Label
+          MoveScaled(7.5,0.5,3,3)
+          Border = Border.Plain
+          Text = ("N")
+        }
+        { txtid ValueBox
+          MoveScaled(32,0,4,3)
+          Visible = False
+        }
+      }
+    }
+  }
+}

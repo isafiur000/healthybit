@@ -997,6 +997,15 @@ Public Sub mnumonitorlist_Click()
 
 End
 
+Public Sub mnurequested_Click()
+
+  Dim hForm As FmDispList
+
+  hForm = New FmDispList("Requested")
+  modWorkSpace.Add(hForm)
+
+End
+
 Public Sub mnutransreport_Click()
 
   modWorkSpace.Remove(fmmedTransfer)

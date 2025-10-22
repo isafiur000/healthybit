@@ -92,13 +92,18 @@ Public Sub Form_Open()
   Else
     Panel7.Visible = False
   Endif
-  $reference = modSettings.ShowSettingFromFIle($Category & "/RecommendedExam")
-  If Not $reference Then
-    sList = modMedicine.FillClinicalReference($Category)
-    If sList And If sList.Count Then
-      $reference = sList[0]
+  If modBasic.$ClinStructuredExamFormat Then
+    $reference = modBasic.$ClinStructuredExamFormat
+  Else
+    $reference = modSettings.ShowSettingFromFIle($Category & "/RecommendedExam")
+    If Not $reference Then
+      sList = modMedicine.FillClinicalReference($Category)
+      If sList And If sList.Count Then
+        $reference = sList[0]
+      Endif
     Endif
   Endif
+
   If $reference Then
     cmbcategory.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldcategory) as col from tblstructexam where fldclass=&1 and fldsubclass=&2 and fldreferencee=&3", $sDepart, $Category, $reference))
     If cmbcategory.Count = 1 Then

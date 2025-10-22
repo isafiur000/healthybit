@@ -16,6 +16,12 @@ Public Sub Form_Open()
 
 End
 
+Public Sub RefreshValues()
+
+  FillDailyGrid()
+
+End
+
 Private Sub FillDailyGrid()
 
   Dim xfir As Date
@@ -24,7 +30,7 @@ Private Sub FillDailyGrid()
   Dim i As Integer
   Dim j As Integer
 
-  xfir = modDate.StartSqlHour(DateAdd(Now(), gb.Hour, -18))
+  xfir = modDate.StartSqlHour(DateAdd(Now(), gb.Hour, -12))
   xlast = modDate.StartSqlHour(DateAdd(Now(), gb.Hour, 1))
 
   GridView2.Clear()
@@ -45,10 +51,10 @@ Private Sub FillDailyGrid()
     .Rows.Height = modBasic.$AppGridRowHeight
     For j = 0 To GridView2.Columns.Count - 1
       If j = 0 Then
-        .Columns[j].Width = 150 * modBasic.$AppWidthRatio
+        .Columns[j].Width = 200 * modBasic.$AppWidthRatio
         .Columns[j].Text = "Examination"
       Else
-        .Columns[j].Width = 50 * modBasic.$AppWidthRatio
+        .Columns[j].Width = 65 * modBasic.$AppWidthRatio
         .Columns[j].Text = modReportVar.GetDateTimeReport(DateAdd(xfir, gb.Hour, j), gb.ShortTime)
       Endif
     Next

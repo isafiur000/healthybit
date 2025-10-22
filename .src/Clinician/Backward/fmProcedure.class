@@ -594,11 +594,11 @@ End
 
 Private Sub ClickDose(xcateg As String, xGridView As GridView)
 
-  Dim hForm As FmDosecount
+  Dim hForm As FmDoseMobile
 
   If txtencid.Text Then
     If $ProcIndex Then
-      hForm = New FmDosecount(Trim(txtencid.Text))
+      hForm = New FmDoseMobile(Trim(txtencid.Text))
       hForm.ShowModal
       FillDosingGrid("Current", xcateg, xGridView)
     Endif

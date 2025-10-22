@@ -33,6 +33,7 @@ Public Sub Form_Open()
   cmbdoctorlock.List = ["Yes", "No"]
   cmblockproced.List = ["Yes", "No"]
   cmbdeparttype.List = ["Location", "Service"]
+  cmbmedvisible.List = ["Allow", "Prevent"]
   cmbsympscale.List = modControlSub.GetDirectFillresult(modDatabase.$syConn.Exec("select fldexamid as col from tblexam where fldoption=&1 and fldstatus=&2", "Clinical Scale", "Active"))        ''
 
   cmbbedrelease.List = ["Enable", "Disable"]
@@ -85,6 +86,7 @@ Public Sub Form_Open()
   cmbopdoutdiagno.List = ["Provisional", "Final"]
   cmbdefhistory.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldformat) as col from tblhistory"))
   cmbdefdisch.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldformat) as col from tbldischarge"))
+  cmbdefstruct.List = modMedicine.FillClinicalReference("%")
 
 End
 
@@ -183,6 +185,7 @@ Private Sub GeneralSettings()
   cmbdoctorlock.Text = modGlobalSetting.ShowSettingFromDBAny("IPClinic/LockToOwnConsultant", cmbtarget.Text)
   cmblockproced.Text = modGlobalSetting.ShowSettingFromDBAny("IPClinic/LockToOwnProcedures", cmbtarget.Text)
   cmbdeparttype.Text = modGlobalSetting.ShowSettingFromDBAny("IPClinic/DepartmentType", cmbtarget.Text)
+  cmbmedvisible.Text = modGlobalSetting.ShowSettingFromDBAny("IPClinic/MedOrderVisibility", cmbtarget.Text)
 
   cmbsympscale.Text = modGlobalSetting.ShowSettingFromDBAny("IPClinic/SymptomCauseScale", cmbtarget.Text)
 
@@ -236,6 +239,25 @@ Public Sub btndeparttype_Click()
 
 End
 
+Public Sub btnmedvisible_Click()
+
+  modGlobalSetting.SaveSettingToDB("IPClinic/MedOrderVisibility", cmbmedvisible.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnmedvisible)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnmedvislist_Click()
+
+  Dim xType As String
+  Dim hForm As FmSettingList
+
+  xType = "IPClinic/MedOrderVisibility"
+  hForm = New FmSettingList("Select Medicines", "Medicines List", xType, cmbtarget.Text)
+  hForm.ShowModal
+
+End
+
 ''--------------------------------- Activity ------------------------
 Private Sub GetClinActivity()
 
@@ -254,6 +276,7 @@ Private Sub GetClinActivity()
   cmbdefipdexam.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/IPDExaminations", cmbtarget.Text)
   cmbdefhistory.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/HistoryFormat", cmbtarget.Text)
   cmbdefdisch.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/DischargeFormat", cmbtarget.Text)
+  cmbdefstruct.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/StructuredReference", cmbtarget.Text)
 
 End
 
@@ -309,6 +332,14 @@ Public Sub btndefdisch_Click()
 
   modGlobalSetting.SaveSettingToDB("ClinicForms/DischargeFormat", cmbdefdisch.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btndefdisch)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btndefstruct_Click()
+
+  modGlobalSetting.SaveSettingToDB("ClinicForms/StructuredReference", cmbdefstruct.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btndefstruct)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -664,6 +695,7 @@ Public Sub btnsettall_Click()
   xList.Add("IPClinic/LockToOwnConsultant")
   xList.Add("IPClinic/LockToOwnProcedures")
   xList.Add("IPClinic/DepartmentType")
+  xList.Add("IPClinic/MedOrderVisibility")
   xList.Add("IPClinic/SymptomCauseScale")
 
   xList.Add("IPClinic/MidBedRelease")
@@ -680,6 +712,7 @@ Public Sub btnsettall_Click()
   xList.Add("ClinicForms/IPDExaminations")
   xList.Add("ClinicForms/HistoryFormat")
   xList.Add("ClinicForms/DischargeFormat")
+  xList.Add("ClinicForms/StructuredReference")
 
   xList.Add("ClinicForms/ExamList_Lock")
   xList.Add("ClinicForms/SymptomList_Lock")

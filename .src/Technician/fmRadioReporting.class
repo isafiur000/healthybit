@@ -1587,10 +1587,10 @@ Private Sub ShowSampled(encid As String)
   Endif
 
   If chkall.Value = False Then
-    sql = "select fldid,fldchk,fldtestid,fldreportquali,flvisible,fldsampletype,fldreportquanti,fldtest_type,fldmethod,fldcondition,fldcomment,fldtime_report,fldencounterval,fldstatus,fldabnormal,fldpacstudy,fldgroupid,fldsampleid,fldreportquali,fldbillno,fldnewdate from tblpatradiotest where (fldstatus=&1 or fldstatus=&2) and fldencounterval=&3 and fldcomp_report=&4" & xcateg
+    sql = "select fldid,fldchk,fldtestid,fldreportquali,flvisible,fldsampletype,fldreportquanti,fldtest_type,fldmethod,fldcondition,fldcomment,fldtime_report,fldencounterval,fldstatus,fldabnormal,fldpacstudy,fldgroupid,fldsampleid,fldreportquali,fldbillno,fldnewdate,fldbcounter from tblpatradiotest where (fldstatus=&1 or fldstatus=&2) and fldencounterval=&3 and fldcomp_report=&4" & xcateg
     res = modDatabase.$myConn.Exec(sql, "Ordered", "Sampled", encid, modBasic.$compID)
   Else
-    sql = "select fldid,fldchk,fldtestid,fldreportquali,flvisible,fldsampletype,fldreportquanti,fldtest_type,fldmethod,fldcondition,fldcomment,fldtime_report,fldencounterval,fldstatus,fldabnormal,fldpacstudy,fldgroupid,fldsampleid,fldreportquali,fldbillno,fldnewdate from tblpatradiotest where (fldstatus=&1 or fldstatus=&2 or fldstatus=&3) and fldencounterval=&4 and fldcomp_report=&5" & xcateg
+    sql = "select fldid,fldchk,fldtestid,fldreportquali,flvisible,fldsampletype,fldreportquanti,fldtest_type,fldmethod,fldcondition,fldcomment,fldtime_report,fldencounterval,fldstatus,fldabnormal,fldpacstudy,fldgroupid,fldsampleid,fldreportquali,fldbillno,fldnewdate,fldbcounter from tblpatradiotest where (fldstatus=&1 or fldstatus=&2 or fldstatus=&3) and fldencounterval=&4 and fldcomp_report=&5" & xcateg
     res = modDatabase.$myConn.Exec(sql, "Ordered", "Sampled", "Reported", encid, modBasic.$compID)
   Endif
   FillSamplingGrid(res)
@@ -1616,10 +1616,10 @@ Private Sub ShowSampledBill(encid As String, billno As String)
   Endif
 
   If chkall.Value = False Then
-    sql = "select fldid,fldchk,fldtestid,fldreportquali,flvisible,fldsampletype,fldreportquanti,fldtest_type,fldmethod,fldcondition,fldcomment,fldtime_report,fldencounterval,fldstatus,fldabnormal,fldpacstudy,fldgroupid,fldsampleid,fldreportquali,fldbillno,fldnewdate from tblpatradiotest where (fldstatus=&1 or fldstatus=&2) and fldencounterval=&3 and fldcomp_report=&4 and fldbillno=&5" & xcateg
+    sql = "select fldid,fldchk,fldtestid,fldreportquali,flvisible,fldsampletype,fldreportquanti,fldtest_type,fldmethod,fldcondition,fldcomment,fldtime_report,fldencounterval,fldstatus,fldabnormal,fldpacstudy,fldgroupid,fldsampleid,fldreportquali,fldbillno,fldnewdate,fldbcounter from tblpatradiotest where (fldstatus=&1 or fldstatus=&2) and fldencounterval=&3 and fldcomp_report=&4 and fldbillno=&5" & xcateg
     res = modDatabase.$myConn.Exec(sql, "Ordered", "Sampled", encid, modBasic.$compID, billno)
   Else
-    sql = "select fldid,fldchk,fldtestid,fldreportquali,flvisible,fldsampletype,fldreportquanti,fldtest_type,fldmethod,fldcondition,fldcomment,fldtime_report,fldencounterval,fldstatus,fldabnormal,fldpacstudy,fldgroupid,fldsampleid,fldreportquali,fldbillno,fldnewdate from tblpatradiotest where (fldstatus=&1 or fldstatus=&2 or fldstatus=&3) and fldencounterval=&4 and fldcomp_report=&5 and fldbillno=&6" & xcateg
+    sql = "select fldid,fldchk,fldtestid,fldreportquali,flvisible,fldsampletype,fldreportquanti,fldtest_type,fldmethod,fldcondition,fldcomment,fldtime_report,fldencounterval,fldstatus,fldabnormal,fldpacstudy,fldgroupid,fldsampleid,fldreportquali,fldbillno,fldnewdate,fldbcounter from tblpatradiotest where (fldstatus=&1 or fldstatus=&2 or fldstatus=&3) and fldencounterval=&4 and fldcomp_report=&5 and fldbillno=&6" & xcateg
     res = modDatabase.$myConn.Exec(sql, "Ordered", "Sampled", "Reported", encid, modBasic.$compID, billno)
   Endif
   FillSamplingGrid(res)
@@ -1658,6 +1658,7 @@ Private Sub FillSamplingGrid(res As Result)
     .Columns[18].Width = 1
     .Columns[19].Width = 150 * modBasic.$AppWidthRatio
     .Columns[20].Width = 1   ''book date
+    .Columns[21].Width = 100 * modBasic.$AppWidthRatio  ''counter
 
     .Columns[2].Text = "Examination"
     .Columns[3].Text = "Observation"     ''5
@@ -1667,6 +1668,7 @@ Private Sub FillSamplingGrid(res As Result)
     .Columns[11].Text = "ReportDate"
     .Columns[17].Text = "Index"
     .Columns[19].Text = "Invoice"
+    .Columns[21].Text = "Counter"
   End With
 
   For Each res
@@ -2387,6 +2389,11 @@ Public Sub btnbarcode_Click()
   If GridView1.Rows.Selection.Count Then
     If GridView1[GridView1.Row, 20].Text Then
       sColl.Add(modReportVar.GetDateTimeReport(GridView1[GridView1.Row, 20].Text, gb.MediumDate), "SampleBookingDate")
+    Endif
+    If GridView1[GridView1.Row, 21].Text Then
+      sColl.Add(GridView1[GridView1.Row, 21].Text, "SampleCounter")
+    Endif
+    If sColl.Count Then
       modLabSub.PrintBarCodeSampling($encid, GridView1[GridView1.Row, 17].Text, GridView1[GridView1.Row, 2].Text, GridView1[GridView1.Row, 5].Text, txtencid.Text, sColl)
     Else
       modLabSub.PrintBarCodeSampling($encid, GridView1[GridView1.Row, 17].Text, GridView1[GridView1.Row, 2].Text, GridView1[GridView1.Row, 5].Text, txtencid.Text)

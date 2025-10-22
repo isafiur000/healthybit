@@ -147,8 +147,8 @@ Private Sub GetFirstComboList()
   cmbolddrug.List = modString.GetRemainingArray(xolddrug, xnewdrug)
   cmbnewdrug.List = xnewdrug
 
-  xoldbrand = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldbrandid as col from tblmedbrand"))
-  xnewbrand = modControlSub.GetDirectFillresult(modDatabase.$medConn.Exec("select fldbrandid as col from tblmedbrand"))
+  xoldbrand = modMedicine.GetPharmacyItemList("Medicines")
+  xnewbrand = modMedicine.GetPharmacyItemList("Medicines")
   cmboldbrand.List = modString.GetRemainingArray(xoldbrand, xnewbrand)
   cmbnewbrand.List = xnewbrand
 

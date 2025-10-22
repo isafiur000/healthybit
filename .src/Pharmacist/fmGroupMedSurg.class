@@ -1,10 +1,17 @@
 ' Gambas class file
 
 Private $rData As Result
+Private $aMyFields As String[]
 
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me)
+
+  cmbtarget.List = modBasic.$AllCompPerList
+  cmbtarget.Text = modBasic.$compID
+  If modHelpVariable.$LogInCategory = "Clinician" Then
+    cmbtarget.Enabled = False
+  Endif
 
   cmbroute.List = modMedicine.ComboRoute()
   cmbdoseunit.List = modMedicine.$MedicineUnitList
@@ -33,9 +40,15 @@ Public Sub Form_KeyRelease()
 
 End
 
+Public Sub cmbtarget_Click()
+
+  lblcomp.Text = modGeneral.GetCompNameFromCompID(cmbtarget.Text)
+
+End
+
 Public Sub btnrefresh_Click()
 
-  If cmbgroup.Text Then
+  If cmbgroup.Text And If cmbtarget.Text Then
     FillDosingGrid()
     cmbroute.SetFocus
   Endif
@@ -45,28 +58,13 @@ End
 Private Sub FillDosingGrid()
 
   Dim sql As String
-  Dim Column As Integer
-  Dim fld As ResultField
 
-  sql = "select fldid,fldroute,flditem,flddose,flddoseunit,fldfreq,fldday,fldqty,fldstart,fldadvice from tblproductgroup where fldmedgroup=&1 ORDER BY fldid DESC"
-  $rData = modDatabase.$myConn.Exec(sql, cmbgroup.Text)
-
-  GridView1.Clear
-  GridView1.Columns.Count = $rData.Fields.Count
-  GridView1.Rows.Count = $rData.Count
-
-  For Each $rData
-    Column = 0
-    For Each fld In $rData.Fields
-      modGeneralMain.GridExplicitDecoration(GridView1, $rData.Index, Column)
-      GridView1[$rData.Index, Column].Text = $rData[fld.Name]
-      Column = Column + 1
-    Next
-  Next
-  GridView1.Row = 0
+  sql = "select fldid,fldroute,flditem,flddose,flddoseunit,fldfreq,fldday,fldqty,fldstart,fldadvice from tblproductgroup where fldmedgroup=&1 and fldcomp=&2 ORDER BY fldid DESC"
+  $rData = modDatabase.$myConn.Exec(sql, cmbgroup.Text, cmbtarget.Text)
+  $aMyFields = New String[]
+  modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
 
   With GridView1
-    .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
     .Columns[1].Width = 75 * modBasic.$AppWidthRatio
     .Columns[2].Width = 300 * modBasic.$AppWidthRatio
@@ -88,6 +86,14 @@ Private Sub FillDosingGrid()
     .Columns[8].Text = "Start"
     .Columns[9].Text = "Advice"
   End With
+
+End
+
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  $rData.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView1, Row)
+  GridView1.Data.Text = $rData[$aMyFields[Column]]
 
 End
 
@@ -180,6 +186,7 @@ Public Sub tbtnadd_Click()
     If cmbroute.Text And If cmbmedicine.Text And If txtqty.Value Then
       res = modDatabase.$myConn.Create("tblproductgroup")
       res["fldmedgroup"] = cmbgroup.Text
+      res["fldcomp"] = cmbtarget.Text
       res["fldroute"] = cmbroute.Text
       res["flditem"] = cmbmedicine.Text
       res["flddose"] = txtdose.Value
@@ -307,7 +314,9 @@ Public Sub btnlist_Click()
   Dim xPath As String
 
   Inc Application.Busy
-  xPath = modRepoMaster.ShowPharmacyGroupListHTML()
+  If cmbtarget.Text Then
+    xPath = modRepoMaster.ShowPharmacyGroupListHTML(cmbtarget.Text)
+  Endif
   Dec Application.Busy
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
 

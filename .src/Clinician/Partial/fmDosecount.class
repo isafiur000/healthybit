@@ -11,12 +11,6 @@ End
 
 Public Sub Form_Open()
 
-  Dim hForm As FmQuantiEntry
-
-  modGeneralMain.ArrangeFormCentre(Me, "False")
-  hForm = New FmQuantiEntry(txtdose, pnlquanti)
-  txtpatientname.Text = modPatient.GetPatientNameByEnc($encid)
-  txtgender.Text = modPatient.GetPatientSex($encid)
   $sTatus = modPatient.CurrentAdmissionStatus($encid)
   FillMedicineList()
   ListBox1.SetFocus
@@ -76,11 +70,6 @@ Public Sub ListBox1_Click()
     lblunit.Text = modPharmLabel.GetDosageFormForLabel(lblmedicine.Text, "Inpatient")
     FillGridView(txtid.Value, lblmedicine.Text)
     btnsave.Enabled = True
-    If modBasic.$TabletModeEnable = "Yes" Then
-      pnlquanti.Visible = True
-    Else
-      pnlquanti.Visible = False
-    Endif
     txtdose.Value = Round(res["flddose"] / modMedConstant.GetDrugInitialStrength(lblmedicine.Text), -2)
     txtdose.SetFocus
   Endif
@@ -160,7 +149,6 @@ Public Sub btnsave_Click()
       res.Update
     Endif
     btnsave.Enabled = False
-    pnlquanti.Visible = False
     txtdose.Value = 0
     txtdose.Tag = ""
   Endif
