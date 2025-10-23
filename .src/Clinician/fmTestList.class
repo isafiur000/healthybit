@@ -279,8 +279,8 @@ Private Sub FillSelLabCOlumnView(sItem As String)
       sstr1 = "select flditemname from tblservicecost where (fldgroup=&1 or fldgroup=&2) and fldstatus=&3 and fldreport=&4 and flditemtype=&5"
       res = modDatabase.$myConn.Exec(sstr1, $BillMode, "%", "Active", sItem, "Diagnostic Tests")
     Else
-      sstr1 = "select distinct(fldgroupname) as col from tblgrouptest where fldgroupname in(select flditemname from tblservicecost where (fldgroup=&1 or fldgroup=&2) and fldstatus=&3) and fldgroupname in(select flditemname from tblcostgroup where fldgroup=&4)"                                                ''
-      res = modDatabase.$myConn.Exec(sstr1, $BillMode, "%", "Active", sItem)
+      sstr1 = "select distinct(fldgroupname) as col from tblgrouptest where fldgroupname in(select flditemname from tblservicecost where (fldgroup=&1 or fldgroup=&2) and fldstatus=&3) and fldgroupname in(select flditemname from tblcostgroup where fldgroup=&4 and (fldcomp=&5 or fldcomp=&6))"                                                ''
+      res = modDatabase.$myConn.Exec(sstr1, $BillMode, "%", "Active", sItem, modBasic.$compID, "%")
     Endif
     xxx = modControlSub.GetDirectFillresult(res)
     $TestList = xxx
@@ -998,7 +998,7 @@ Private Sub SHowSavedGrid()
   Dim FldLst As String[]
 
   $rData1 = New MyResult
-  xList = ["fldid", "fldtime", "flditemname", "fldrefer", "fldordcomp"]
+  xList = ["fldid", "fldtime", "flditemname", "fldrefer", "fldordcomp", "fldreason"]
   rex = modDatabase.$myConn.Exec("select fldpatbilling from tblfisclosing where (fldstate=&1 or fldstate IS NULL)", "Active")
   If rex.Available Then
     For Each rex
@@ -1024,18 +1024,21 @@ Private Sub SHowSavedGrid()
   $rData1.AddResult(res)
 
   $aMyFields1 = New String[]
-  modGridView.ReadSmallMyData(GridView2, $rData1, $aMyFields1, 5)
+  modGridView.ReadSmallMyData(GridView2, $rData1, $aMyFields1, 6)
 
   With GridView2
     .Columns[0].Width = 1
     .Columns[1].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 400 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 300 * modBasic.$AppWidthRatio
     .Columns[3].Width = 150 * modBasic.$AppWidthRatio
     .Columns[4].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 150 * modBasic.$AppWidthRatio
+
     .Columns[1].Text = "DateTime"
     .Columns[2].Text = "Test Name"
     .Columns[3].Text = "ReferBy"
     .Columns[4].Text = "From"
+    .Columns[5].Text = "Comment"
   End With
 
 End
@@ -1050,6 +1053,24 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
     GridView2.Data.Text = modGeneral.GetUserFullName($rData1[$aMyFields1[Column]])
   Else
     GridView2.Data.Text = $rData1[$aMyFields1[Column]]
+  Endif
+
+End
+
+Public Sub btnpostedit_Click()
+
+  Dim xx As String
+  Dim res As Result
+
+  If GridView2.Rows.Selection.Count > 0 Then
+    xx = GetTextArea(GridView2[GridView2.Row, 2].Text, GridView2[GridView2.Row, 5].Text)
+    If xx Then
+      res = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1", GridView2[GridView2.Row, 0].Text)
+      res["fldreason"] = xx
+      res["xyz"] = False
+      res.Update
+      SHowSavedGrid()
+    Endif
   Endif
 
 End

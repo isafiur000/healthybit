@@ -308,6 +308,7 @@ Public Sub btnOK_Click()
                         If cmbusname.Text = "Consultant" Then
                           fmConsultant.Show
                         Else If cmbusname.Text = "Clinician" Then
+                          ClinicianSettings()
                           fmOfficer.Show
                         Else If cmbusname.Text = "Research" Then
                           fmResearch.Show
@@ -459,5 +460,14 @@ Public Sub btnremote_Click()
   ' Else
   '   fmTmate.ShowModal
   ' Endif
+
+End
+
+Private Sub ClinicianSettings()
+
+  If modSettings.ShowSettingFromFIle("Application/DeskWidth") Then
+  Else
+    modSettings.SaveSettingsToFile("Application/DeskWidth", CStr(Screen.AvailableWidth - 100))
+  Endif
 
 End

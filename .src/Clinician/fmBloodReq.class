@@ -15,6 +15,7 @@ Public Sub Form_Open()
 
   Dim hForm As FmQuantiEntry
   Dim xstatus As String
+  Dim def As String
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
   If modBasic.$TabletModeEnable = "Yes" Then
@@ -23,12 +24,16 @@ Public Sub Form_Open()
 
   txtpatientname.Text = modPatient.GetPatientNameByEnc($encid)
   txtgender.Text = modPatient.GetPatientSex($encid)
-  txtpatientaddress.Text = ""
   xstatus = modPatient.CurrentAdmissionStatus($encid)
   txtlocation.Text = modPatient.GetLocationSetting($encid, xstatus)
 
   cmbitem.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(flditem) as col from tblbloodstore"))
   cmbgroup.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldgroup) as col from tblbloodstore"))
+  def = modSettings.ShowSettingFromFIle("BloodBank/GroupingCode")
+  If def Then
+    txtbloodgroup.Text = modLabTest.GetCurrTesValuePos("Last", $encid, modFixLab.GetLabTestIDFromSysConst(def), MMain.$defUnit)
+  Endif
+
   CompleteGrid()
   FillRequestGrid()
 
@@ -283,6 +288,17 @@ Public Sub mnuchange_Click()
     res["xyz"] = False
     res.Update
     CompleteGrid()
+  Endif
+
+End
+
+Public Sub btnsetgroup_Click()
+
+  Dim xx As String
+
+  xx = InputBox("Provide Laboratory Codes for Blood Grouping", "")
+  If xx Then
+    modSettings.SaveSettingsToFile("BloodBank/GroupingCode", xx)
   Endif
 
 End

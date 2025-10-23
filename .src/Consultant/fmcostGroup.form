@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,73,54)
+  MoveScaled(0,0,73,58)
   Tag = "Selected Lists"
   Text = ("Selected Lists")
   Resizable = False
@@ -12,55 +12,72 @@
       Shortcut = "Ctrl+D"
     }
   }
-  { cmbtype ComboBox
-    MoveScaled(15,1,15,3)
-  }
   { cmbgroup ComboBox
-    MoveScaled(15,5,37.5333,3)
+    MoveScaled(15,1,37.5,3)
     Sorted = True
   }
-  { btnrefresh ToolButton
-    MoveScaled(53,5,3,3.2667)
-    Picture = Picture["icon:/small/refresh"]
+  { cmbtarget ComboBox
+    MoveScaled(15,5,18,3)
+  }
+  { cmbtype ComboBox
+    MoveScaled(15,9,18,3)
   }
   { cmbtest ComboBox
-    MoveScaled(15,9,53,3)
+    MoveScaled(15,13,53,3)
     Sorted = True
   }
   { btnBrOK Button
-    MoveScaled(45,13,11.5333,3.2667)
+    MoveScaled(45,17,11.5,3.25)
     Text = Shortcut(("Save"), "S")
     Picture = Picture["icon:/small/add"]
   }
   { btnexport Button
-    MoveScaled(57,13,11.2667,3.2667)
+    MoveScaled(57,17,11.25,3.25)
     Text = ("Export")
     Picture = Picture["icon:/small/file"]
   }
   { btnadd2 Button
-    MoveScaled(1,13,11.2667,3)
+    MoveScaled(1,17,11.25,3)
     Text = ("List")
     Picture = Picture["icon:/small/file"]
   }
   { GridView1 GridView
-    MoveScaled(1,17,71,36)
+    MoveScaled(1,21,71,36)
     Mode = Select.Single
     Header = GridView.Both
     AutoResize = False
   }
   { Label1 Label
-    MoveScaled(1,5,13.4,3)
-    Text = ("Group Name")
+    MoveScaled(1,1,13.375,3)
     Border = Border.Plain
+    Text = ("Group Name")
   }
   { Label2 Label
-    MoveScaled(1,1,13.4,3)
-    Text = ("Category")
+    MoveScaled(1,9,13.375,3)
     Border = Border.Plain
+    Text = ("Category")
   }
   { Label3 Label
-    MoveScaled(1,9,13.4,3)
-    Text = ("Item Name")
+    MoveScaled(1,13,13.375,3)
     Border = Border.Plain
+    Text = ("Item Name")
+  }
+  { Label4 Label
+    MoveScaled(1,5,13.375,3)
+    Border = Border.Plain
+    Text = ("Location")
+  }
+  { lblcomp Label
+    MoveScaled(46,5,23,3)
+    Border = Border.Plain
+  }
+  { btnrefresh Button
+    MoveScaled(34,5,11,3)
+    Text = ("Show")
+    Picture = Picture["icon:/small/refresh"]
+  }
+  { btnlist ToolButton
+    MoveScaled(34,9,4,3)
+    Picture = Picture["icon:/small/text-list-order"]
   }
 }

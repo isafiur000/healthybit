@@ -91,6 +91,9 @@ Public Sub Form_Open()
     cmbdept.Add("All")
     cmbdept.Text = modSettings.ShowSettingFromFIle("Clinic/DefaultOPD")
   Endif
+  If modBasic.$FixAdviceOPOutcome = "Enable" Then
+    btnoutcome.Enabled = False
+  Endif
 
   modSettings.ShowCheckBox(chkshowdepart, "OPDPatientList/ShowParameters")
   modSettings.ShowCheckBox(chkshowstatus, "OPDPatientList/ShowStatusIcons")
@@ -171,7 +174,7 @@ End
 Public Sub Form_KeyRelease()
 
   If Key.Code = Key["S"] And If Key.Control Then
-    btnmobilebed_Click()
+    btnoutcome_Click()
   Else If Key.Code = Key["U"] And If Key.Control Then
     btnfollowdate_Click()
   Else If Key.Code = Key["D"] And If Key.Control Then
@@ -738,6 +741,15 @@ Public Sub GridView1_Click()
       FillBedGrid()
 
     Else
+      If modBasic.$FixAdviceOPOutcome = "Enable" Then
+        If modPatPatho.ShowSelectedNotes(GridView1[GridView1.Row, 2].Text, "Initial Planning") Then
+          btnoutcome.Enabled = True
+        Else
+          btnoutcome.Enabled = False
+        Endif
+      Else
+        btnoutcome.Enabled = True
+      Endif
       SHowPatIndicators(GridView1[GridView1.Row, 2].Text)
       If modBasic.$ClinDefaultReport Then
         xData = modMisc.GetDefaultReportClinic(GridView1[GridView1.Row, 2].Text)
@@ -890,7 +902,7 @@ Public Sub btnmobilevital_Click()
 
 End
 
-Public Sub btnmobilebed_Click()
+Public Sub btnoutcome_Click()
 
   Dim hForm As FmOPOutcome
 
@@ -903,7 +915,7 @@ Public Sub btnmobilebed_Click()
       Endif
       hForm.ShowModal
       FillBedGrid()
-      Balloon.Info(("Information updated"), btnmobilebed)
+      Balloon.Info(("Information updated"), btnoutcome)
       Balloon.Delay = modBasic.$BalloonDelay
       GridView1.SetFocus
     Endif
@@ -1093,13 +1105,23 @@ Public Sub btnopdsheet_Click()
 
 End
 
-Public Sub btnall_Click()
+Public Sub btnadvice_Click()
 
-  Dim hForm As FmHistoryMobile
+  Dim xboolean As Boolean
+  Dim xval As String
+
+  If modBasic.$ClinHistoryInput = "Single" Then
+    xboolean = True
+  Else
+    xboolean = False
+  Endif
 
   If GridView1.Rows.Selection.Count Then
-    hForm = New FmHistoryMobile(GridView1[GridView1.Row, 2].Text)
-    hForm.ShowModal
+    xval = GetRichTextArea("Clinician Advice", modPatPatho.ShowSelectedNotes(GridView1[GridView1.Row, 2].Text, "Initial Planning"))
+    If xval Then
+      modPatientGeneral.AddExamGeneralQualiData(GridView1[GridView1.Row, 2].Text, "Notes", "Initial Planning", "", xval, xboolean)
+      btnoutcome.Enabled = True
+    Endif
   Endif
 
 End
@@ -1869,8 +1891,8 @@ End
 
 Private Sub GetComboItemList()
 
-  If $UserRestrict.Exist("Patient History") = False Then
-    btnall.Enabled = True
+  If $UserRestrict.Exist("Initial Planning") = False Then
+    btnadvice.Enabled = True
   Endif
   If $UserRestrict.Exist("Provisional Diagnosis") = False Then
     btnmobilediagno.Enabled = True

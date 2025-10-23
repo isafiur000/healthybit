@@ -8,6 +8,8 @@ Private $aMyFields As String[]
 Private $patMessage As String
 Private $clinMessage As String
 
+Private $onlineSchemes As String[]
+
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
@@ -15,7 +17,8 @@ Public Sub Form_Open()
   $BillingOption = modBasic.$BillCashOption
   hPatient = New FmBillingEntry(Panel3)
 
-  cmbscheme.List = modNonMedical.FillDiscountCombo()
+  $onlineSchemes = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldtype from tbldiscount where fldonline=&1", "Enable"))
+  cmbscheme.List = $onlineSchemes
   cmbscheme.Add("%")
   cmbscheme.Text = "%"
   cmbdepart.List = modGeneral.GetDepartmentsForOPDBoth()
@@ -131,9 +134,11 @@ Public Sub GridView1_Click()
 
   Dim res As Result
   Dim xdate As Date
+  Dim xval As String
 
   If GridView1.Column = 0 Then
     modGridView.CheckUncheckGridNoDB(GridView1, 0)
+
   Else If GridView1.Column = 2 Then
     xdate = GetDateValue("Alter Consultation Date Time of " & GridView1[GridView1.Row, 5].Text & Space(1) & GridView1[GridView1.Row, 6].Text, "Consultation DateTime", GridView1[GridView1.Row, 12].Text)
     If xdate Then
@@ -142,6 +147,16 @@ Public Sub GridView1_Click()
       res.Update
       LoadGridData()
     Endif
+
+  Else If GridView1.Column = 8 Then
+    xval = InputCombo("Select Scheme for " & GridView1[GridView1.Row, 5].Text & Space(1) & GridView1[GridView1.Row, 6].Text, "Scheme", $onlineSchemes, GridView1[GridView1.Row, 8].Text, True)
+    If xval Then
+      res = modDatabase.$myConn.Edit("tblonlinebook", "fldbookingval=&1", GridView1[GridView1.Row, 13].Text)
+      res["flddisctype"] = xval
+      res.Update
+      LoadGridData()
+    Endif
+
   Endif
 
 End

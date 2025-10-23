@@ -8,9 +8,6 @@ Private $UserRestrict As String[]
 Private $sTatus As String
 Private $PatientNum As String
 Private $AlphaList As String[]
-Private $LedgerAC As String
-Private $xBillType As String
-Private $PharmMode As String
 Private $sLevel As String
 Private $PositionList As String[]
 
@@ -25,6 +22,12 @@ Private $billModeProcedure As String
 Private $billModeEquipment As String
 Private $billModeService As String
 Private $billModeOthers As String
+
+Private $PharmMode As String
+Private $LedgerAC As String
+Private $xBillType As String
+
+Private $LabMode As String
 
 Public Sub _new(encid As String, sIndex As Long, Focus As Boolean)
 
@@ -42,6 +45,7 @@ Public Sub Form_Open()
   $UserRestrict = modBasic.$ClinicDisableCompo
 
   dtplan.Value = Now()
+  cmblabdepart.List = modMedicine.GetPathoCategoryList("Test")
   $UserRestrict = modBasic.$ClinicDisableCompo
   $AlphaList = New String[]
   If modBasic.$PayableSettingVerify = "Enable" Then
@@ -550,6 +554,69 @@ Public Sub rbmetric_Click()
 
 End
 
+Public Sub mnulabrequest_Click()
+
+  Dim hForm As FmTestList
+
+  If txtencid.Text Then
+    If modNonMedical.AllowEntryWithDeposit(Trim(txtencid.Text), "Test") = True Then
+      hForm = New FmTestList(Trim(txtencid.Text), $billModeTest)
+      hForm.ShowModal
+    Endif
+  Endif
+
+End
+
+Public Sub mnuradiorequest_Click()
+
+  Dim hForm As FmRadioList
+
+  If txtencid.Text Then
+    If modNonMedical.AllowEntryWithDeposit(Trim(txtencid.Text), "Radio") = True Then
+      hForm = New FmRadioList(Trim(txtencid.Text), $billModeRadio)
+      hForm.ShowModal
+    Endif
+  Endif
+
+End
+
+Public Sub mnuconsultreq_Click()
+
+  Dim hForm As FmMiniConsult
+
+  If txtencid.Text Then
+    If modNonMedical.AllowEntryWithDeposit(Trim(txtencid.Text), "Service") = True Then
+      hForm = New FmMiniConsult(Trim(txtencid.Text), $billModeService)
+      hForm.ShowModal
+    Endif
+  Endif
+
+End
+
+Public Sub btnequip_Click()
+
+  Dim hForm6 As FmEquipment
+
+  If txtencid.Text Then
+    If modNonMedical.AllowEntryWithDeposit(Trim(txtencid.Text), "Equipment") = True Then
+      hForm6 = New FmEquipment(Trim(txtencid.Text), modNonMedical.DefaultBillingScheme(Trim(txtencid.Text), modBasic.$compID))
+      hForm6.ShowModal
+    Endif
+  Endif
+
+End
+
+Public Sub btnevent_Click()
+
+  Dim hForm As FmEventTime
+
+  If txtencid.Text Then
+    hForm = New FmEventTime(Trim(txtencid.Text), "Events")
+    hForm.ShowModal
+  Endif
+
+End
+
 ''================== Initialize ===============================
 Private Sub InitializeProcedures()
 
@@ -656,6 +723,42 @@ Public Sub btncomment_Click()
     res.Update
     Balloon.Info(("Information updated"), btncomment)
     Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+End
+
+Public Sub cmblabdepart_Click()
+
+  Dim resx As Result
+  Dim rey As Result
+
+  If cmblabdepart.Text Then
+    If Not $LabMode Then
+      resx = modDatabase.$myConn.Exec("select fldmode,fldbillingmode,fldacledger,fldbilltype,fldreference,fldlimit,fldlockstate from tbldiscount where fldtype=&1", $billModePharmacy)
+      If resx.Available Then
+        If resx["fldbillingmode"] Then
+          $LabMode = resx["fldbillingmode"]
+        Else
+          $LabMode = modPatient.GetPatBillingMode(Trim(txtencid.Text))
+        Endif
+      Endif
+    Endif
+
+    If $LabMode Then
+      rey = modDatabase.$myConn.Exec("select distinct(fldgroupname) as col from tblgrouptest where fldgroupname in(select flditemname from tblservicecost where (fldgroup=&1 or fldgroup=&2) and fldstatus=&3) and fldtestid in(select fldtestid from tbltest where fldcategory=&4) ORDER BY fldtestid", $LabMode, "%", "Active", cmblabdepart.Text)
+      cmblabtest.List = modControlSub.GetDirectFillresult(rey)
+    Endif
+  Endif
+
+End
+
+Public Sub btnlabtest_Click()
+
+  If cmblabtest.Text Then
+    If modBasic.$AutoBillTest = "Standard" Or If modBasic.$AutoBillTest = "Full" Or If modBasic.$AutoBillTest = "Partial" Then
+      modBillings.GetAutoBillingClinic(Trim(txtencid.Text), $billModePharmacy, "Test", cmblabtest.Text, 1, "Punched", 0, False, False, "", "")
+      Message.Info("Information saved", ("OK"))
+    Endif
   Endif
 
 End

@@ -104,7 +104,7 @@ Private Sub GetItemUnit()
     Else If $Category = "Test" Then
       txtunit.Text = modFixLab.GetTestUnitWithOutAgeSex(cmbvariable.Text, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))                     ''
     Else If $Category = "Symptom" Then
-      txtunit.List = ["Hours", "Days", "Weeks", "Months", "Years", "Episodes"]
+      txtunit.List = modMedicine.$SymptomFrequency
       cmbqualival.List = ["On/Off"]
     Endif
     If cmbtype.Text = "Qualitative" Then

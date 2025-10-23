@@ -78,7 +78,7 @@ Public Sub Form_Open()
   SHowALgorithmList()
 
   cmbpatheightunit.List = ["cm", "inch", "foot"]
-  cmbsympunit.List = ["Hours", "Days", "Weeks", "Months", "Years", "Episodes"]
+  cmbsympunit.List = modMedicine.$SymptomFrequency
   cmburgency.List = ["Urgent", "Normal"]
   If modBasic.$ItemListFormat = "GridView" Then
   Else
@@ -165,6 +165,15 @@ Private Sub ShowPlanningInitial()
   If xplanAr And If xplanAr.Count Then
     txtplan.RichText = xplanAr[0]
     lblinitialuser.Text = xplanAr[1]
+  Endif
+  If modBasic.$FixAdviceOPOutcome = "Enable" Then
+    If lblinitialuser.Text Then
+      btnoutcome.Enabled = True
+    Else
+      btnoutcome.Enabled = False
+    Endif
+  Else
+    btnoutcome.Enabled = True
   Endif
 
 End
@@ -1739,7 +1748,7 @@ Public Sub grdchiefsymptom_Click()
 
   pnlquantisyn.Visible = False
   If grdchiefsymptom.Column = 5 Then
-    xval = InputCombo("Select Unit of Symptom Duration", grdchiefsymptom[grdchiefsymptom.Row, 1].Text, ["Hours", "Days", "Weeks", "Months", "Years", "Episodes"], grdchiefsymptom[grdchiefsymptom.Row, 5].Text, True)
+    xval = InputCombo("Select Unit of Symptom Duration", grdchiefsymptom[grdchiefsymptom.Row, 1].Text, modMedicine.$SymptomFrequency, grdchiefsymptom[grdchiefsymptom.Row, 5].Text, True)
     If xval Then
       res = modDatabase.$myConn.Edit("tblexamgeneral", "fldid=&1", grdchiefsymptom[grdchiefsymptom.Row, 0].Text)
       If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
@@ -2143,6 +2152,7 @@ Public Sub btnplan_Click()
 
   If txtplan.Text Then
     modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", "Initial Planning", txtplan.KeyList.Join(";"), txtplan.RichText, xboolean)
+    btnoutcome.Enabled = True
     Balloon.Info(("Information saved"), btnplan)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
@@ -3715,7 +3725,6 @@ Private Sub RestrictUserAccess()
   Endif
   If $UserRestrict.Exist("Patient History") Then
     btnhistory.Enabled = False
-    btnplan.Enabled = False
   Endif
   If $UserRestrict.Exist("Clinical Findings") Then
     btnfinadd.Enabled = False

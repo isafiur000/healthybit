@@ -67,7 +67,7 @@ Public Sub Form_Open()
   SHowALgorithmList()
 
   cmbpatheightunit.List = ["cm", "inch", "foot"]
-  cmbsympunit.List = ["Hours", "Days", "Weeks", "Months", "Years", "Episodes"]
+  cmbsympunit.List = modMedicine.$SymptomFrequency
   $UserRestrict = modBasic.$ClinicDisableCompo
   xlocat = modSettings.ShowSettingFromFIle("ClinicForms/ImpressionList")
   If xlocat Then
@@ -1132,7 +1132,7 @@ Public Sub grdchiefsymptom_Click()
 
   pnlquantisyn.Visible = False
   If grdchiefsymptom.Column = 5 Then
-    xval = InputCombo("Select Unit of Symptom Duration", grdchiefsymptom[grdchiefsymptom.Row, 1].Text, ["Hours", "Days", "Weeks", "Months", "Years", "Episodes"], grdchiefsymptom[grdchiefsymptom.Row, 5].Text, True)
+    xval = InputCombo("Select Unit of Symptom Duration", grdchiefsymptom[grdchiefsymptom.Row, 1].Text, modMedicine.$SymptomFrequency, grdchiefsymptom[grdchiefsymptom.Row, 5].Text, True)
     If xval Then
       res = modDatabase.$myConn.Edit("tblexamgeneral", "fldid=&1", grdchiefsymptom[grdchiefsymptom.Row, 0].Text)
       If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then

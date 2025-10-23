@@ -5,7 +5,14 @@ Private $rData As Result
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me)
+
+  cmbtarget.List = modBasic.$AllCompPerList
+  cmbtarget.Text = modBasic.$compID
+  If modHelpVariable.$LogInCategory = "Clinician" Then
+    cmbtarget.Enabled = False
+  Endif
   cmbtype.List = ["Test", "Radio"]
+  cmbgroup.List = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select distinct(fldgroup) as col from tblcostgroup"))
 
 End
 
@@ -27,6 +34,36 @@ Public Sub Form_KeyRelease()
 
 End
 
+Public Sub cmbtarget_Click()
+
+  lblcomp.Text = modGeneral.GetCompNameFromCompID(cmbtarget.Text)
+
+End
+
+Public Sub cmbtype_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbtype)
+  modFillContainer.RestrictComboToContent(cmbtype)
+
+End
+
+Public Sub btnrefresh_Click()
+
+  If cmbgroup.Text And If cmbtarget.Text Then
+    FillGroupGrid()
+    cmbtest.SetFocus
+  Endif
+
+End
+
+Public Sub btnlist_Click()
+
+  If cmbtype.Text Then
+    cmbtest.List = modNonMedical.NonStockBillActiveItemArray(modNonMedical.GetBillItemCategoryFromCombo(cmbtype.Text), "%")
+  Endif
+
+End
+
 Private Sub FillGroupGrid()
 
   Dim sql As String
@@ -34,8 +71,8 @@ Private Sub FillGroupGrid()
   Dim fld As ResultField
 
   If cmbgroup.Text Then
-    sql = "select fldid,flditemtype,flditemname from tblcostgroup where fldgroup=&1"
-    $rData = modDatabase.$myConn.Exec(sql, cmbgroup.Text)
+    sql = "select fldid,flditemtype,flditemname from tblcostgroup where fldgroup=&1 and fldcomp=&2"
+    $rData = modDatabase.$myConn.Exec(sql, cmbgroup.Text, cmbtarget.Text)
 
     GridView1.Clear
     GridView1.Columns.Count = $rData.Fields.Count
@@ -64,14 +101,6 @@ Private Sub FillGroupGrid()
 
 End
 
-Public Sub cmbtype_LostFocus()
-
-  If cmbtype.Text Then
-    cmbtest.List = modNonMedical.NonStockBillActiveItemArray(modNonMedical.GetBillItemCategoryFromCombo(cmbtype.Text), "%")
-  Endif
-
-End
-
 Public Sub btnBrOK_KeyRelease()
 
   If Key.Code = Key.Return Or If Key.Code = Key.Enter Or If Key.Code = Key.AltKey Then
@@ -80,22 +109,14 @@ Public Sub btnBrOK_KeyRelease()
 
 End
 
-Public Sub cmbtype_Click()
-
-  If cmbtype.Text Then
-    cmbtest.Clear()
-    cmbgroup.List = modNonMedical.NonSTockCostingGroupList(cmbtype.Text)
-  Endif
-
-End
-
 Public Sub btnBrOK_Click()
 
   Dim res As Result
 
-  If cmbgroup.Text And If cmbtest.Text And If cmbtype.Text Then
+  If cmbgroup.Text And If cmbtest.Text And If cmbtype.Text And If cmbtarget.Text Then
     res = modDatabase.$myConn.Create("tblcostgroup")
     res["fldgroup"] = cmbgroup.Text
+    res["fldcomp"] = cmbtarget.Text
     res["flditemtype"] = cmbtype.Text
     res["flditemname"] = cmbtest.Text
     res.Update
@@ -106,20 +127,6 @@ Public Sub btnBrOK_Click()
     cmbgroup.List = modNonMedical.NonSTockCostingGroupList(cmbtype.Text)
     cmbtest.SetFocus
   Endif
-
-End
-
-Public Sub btnrefresh_Click()
-
-  FillGroupGrid()
-  cmbtest.SetFocus
-
-End
-
-Public Sub cmbtype_KeyRelease()
-
-  modFillContainer.AutoFillComboBox(cmbtype)
-  modFillContainer.RestrictComboToContent(cmbtype)
 
 End
 

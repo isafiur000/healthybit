@@ -16,7 +16,7 @@ Public Sub Form_Open()
   cmbroute.List = modMedicine.ComboRoute()
   cmbdoseunit.List = modMedicine.$MedicineUnitList
   cmbfreq.List = modMedicine.FrequencyCombo()
-  cmbgroup.List = MedGroupList()
+  cmbgroup.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldmedgroup as col from tblmedgroup"))
   cmbmode.List = modNonMedical.FillCashModeCombo()
   cmbtestmode.List = ["Pre-Administration", "Post-Administration"]
 
@@ -117,7 +117,7 @@ Public Sub tbtngroup_Click()
 
   hform = New FmAddVariableGrid("fldmedgroup", "tblmedgroup")
   hform.ShowModal
-  cmbgroup.List = MedGroupList()
+  cmbgroup.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldmedgroup as col from tblmedgroup"))
 
 End
 
@@ -146,18 +146,6 @@ Public Sub cmbfreq_KeyRelease()
 
   modFillContainer.AutoFillComboBox(cmbfreq)
   modFillContainer.RestrictComboToContent(cmbfreq)
-
-End
-
-Private Function MedGroupList() As String[]
-
-  Dim res As Result
-  Dim xx As String[]
-
-  res = modDatabase.$myConn.Exec("select fldmedgroup as col from tblmedgroup")
-  xx = modControlSub.GetDirectFillresult(res)
-
-  Return xx
 
 End
 
