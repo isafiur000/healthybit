@@ -987,7 +987,7 @@ End
 
 Public Sub btntemplnewsummary_Click()
 
-  txtcomment.RichText = txtcomment.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  txtcomment.RichText = txtcomment.RichText & DictionaryVIew("Summary of Procedure")
 
 End
 
@@ -1081,24 +1081,6 @@ Public Sub rbpostproc_Click()
 
 End
 
-' Private Function GetComponentTile() As String
-'
-'   Dim xexam As String
-'
-'   If rbpreproc.Value = True Then
-'     xexam = "Pre-Operative"
-'   Else If rbonproced.Value = True Then
-'     xexam = "Operative"
-'   Else If rbanesthe.Value = True Then
-'     xexam = "Anaesthesia"
-'   Else If rbpostproc.Value = True Then
-'     xexam = "Post-Operative"
-'   Endif
-'
-'   Return
-'
-' End
-
 ''========================= Examination ===========================
 Private Function GetLastValueProc(sFIeld As String, sCategory As String) As String
 
@@ -1166,6 +1148,24 @@ Private Function ProcedureExamType(sCateg As String) As String
     xx = "Post-Operative"
   Endif
   Return xx
+
+End
+
+Private Function GetComponentTile() As String
+
+  Dim xexam As String
+
+  If rbpreproc.Value = True Then
+    xexam = "Pre-Operative"
+  Else If rbonproced.Value = True Then
+    xexam = "Operative"
+  Else If rbanesthe.Value = True Then
+    xexam = "Anaesthesia"
+  Else If rbpostproc.Value = True Then
+    xexam = "Post-Operative"
+  Endif
+
+  Return xexam
 
 End
 
@@ -1440,7 +1440,7 @@ Public Sub dcthelppre_Click()
 
   Dim xx As String
 
-  xx = GetRichTextArea("Pre-Operative Note", txtproccomment.RichText)
+  xx = GetRichTextArea(GetComponentTile(), txtproccomment.RichText)
   If xx Then
     txtproccomment.RichText = xx
   Endif
@@ -1455,7 +1455,7 @@ End
 
 Public Sub btntemplpre_Click()
 
-  txtproccomment.RichText = txtproccomment.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  txtproccomment.RichText = txtproccomment.RichText & DictionaryVIew(GetComponentTile())
 
 End
 
@@ -1596,6 +1596,147 @@ Private Sub UpdateMedStatus()
       res["fldcurval"] = xval
       res["xyz"] = False
       res.Update()
+    Endif
+  Endif
+
+End
+
+''============== Structured Operation Note ======================
+Public Sub dcthelpincis_Click()
+
+  Dim xx As String
+
+  xx = GetRichTextArea("Explain Incision", txtincision.RichText)
+  If xx Then
+    txtincision.RichText = xx
+  Endif
+
+End
+
+Public Sub btnhelpincis_Click()
+
+  txtincision.RichText = txtincision.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtincision.Text)
+
+End
+
+Public Sub btnlstincis_Click()
+
+  txtincision.RichText = txtincision.RichText & DictionaryVIew("Explain Incision")
+
+End
+
+Public Sub dcthelpfind_Click()
+
+  Dim xx As String
+
+  xx = GetRichTextArea("Explain Findings", txtfindings.RichText)
+  If xx Then
+    txtfindings.RichText = xx
+  Endif
+
+End
+
+Public Sub btnhelpfind_Click()
+
+  txtfindings.RichText = txtfindings.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtfindings.Text)
+
+End
+
+Public Sub btnlstfind_Click()
+
+  txtfindings.RichText = txtfindings.RichText & DictionaryVIew("Explain Findings")
+
+End
+
+Public Sub dcthelpproc_Click()
+
+  Dim xx As String
+
+  xx = GetRichTextArea("Explain Procedure", txtprocedures.RichText)
+  If xx Then
+    txtprocedures.RichText = xx
+  Endif
+
+End
+
+Public Sub btnhelpproc_Click()
+
+  txtprocedures.RichText = txtprocedures.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtprocedures.Text)
+
+End
+
+Public Sub btnlstproc_Click()
+
+  txtprocedures.RichText = txtprocedures.RichText & DictionaryVIew("Explain Procedure")
+
+End
+
+Public Sub dcthelpclose_Click()
+
+  Dim xx As String
+
+  xx = GetRichTextArea("Explain Closure", txtclosure.RichText)
+  If xx Then
+    txtclosure.RichText = xx
+  Endif
+
+End
+
+Public Sub btnhelpclos_Click()
+
+  txtclosure.RichText = txtclosure.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtclosure.Text)
+
+End
+
+Public Sub btnlstclose_Click()
+
+  txtclosure.RichText = txtclosure.RichText & DictionaryVIew("Explain Closure")
+
+End
+
+Public Sub btnsaveincision_Click()
+
+  If txtencid.Text And If $ProcIndex Then
+    If txtincision.Text Then
+      modPatientGeneral.AddSubGeneralQualiData($ProcIndex, Trim(txtencid.Text), "Incision", txtincision.KeyList.Join(";"), txtincision.RichText)
+      Balloon.Info(("Information saved"), btnsaveincision)
+      Balloon.Delay = modBasic.$BalloonDelay
+    Endif
+  Endif
+
+End
+
+Public Sub btnsavefinding_Click()
+
+  If txtencid.Text And If $ProcIndex Then
+    If txtfindings.Text Then
+      modPatientGeneral.AddSubGeneralQualiData($ProcIndex, Trim(txtencid.Text), "Findings", txtfindings.KeyList.Join(";"), txtfindings.RichText)
+      Balloon.Info(("Information saved"), btnsavefinding)
+      Balloon.Delay = modBasic.$BalloonDelay
+    Endif
+  Endif
+
+End
+
+Public Sub btnsaveprocedure_Click()
+
+  If txtencid.Text And If $ProcIndex Then
+    If txtprocedures.Text Then
+      modPatientGeneral.AddSubGeneralQualiData($ProcIndex, Trim(txtencid.Text), "Proedures", txtprocedures.KeyList.Join(";"), txtprocedures.RichText)
+      Balloon.Info(("Information saved"), btnsaveprocedure)
+      Balloon.Delay = modBasic.$BalloonDelay
+    Endif
+  Endif
+
+End
+
+Public Sub btnsaveclosure_Click()
+
+  If txtencid.Text And If $ProcIndex Then
+    If txtclosure.Text Then
+      modPatientGeneral.AddSubGeneralQualiData($ProcIndex, Trim(txtencid.Text), "Closure", txtclosure.KeyList.Join(";"), txtclosure.RichText)
+      Balloon.Info(("Information saved"), btnsaveclosure)
+      Balloon.Delay = modBasic.$BalloonDelay
     Endif
   Endif
 

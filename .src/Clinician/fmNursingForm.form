@@ -16,8 +16,8 @@
     { mnupatsearch Menu
       Text = ("Search")
     }
-    { mnuscanfile Menu
-      Text = ("Scan File")
+    { mnuscanner Menu
+      Text = ("Scanner")
     }
     { mnubulkupload Menu
       Text = ("Bulk Upload")
@@ -674,60 +674,59 @@
       }
     }
     { Panel3 Panel
-      MoveScaled(0,30,120,5)
+      MoveScaled(0,30,120,4)
       { mnugenservice Button
-        MoveScaled(0,1,10,3)
+        MoveScaled(0,0.5,10,3)
         Text = ("Billing")
       }
       { mnuminorproc Button
-        MoveScaled(10,1,10,3)
+        MoveScaled(10,0.5,10,3)
         Text = ("Minor")
       }
       { mnudeviceuse Button
-        MoveScaled(20,1,10,3)
+        MoveScaled(20,0.5,10,3)
         Text = ("Device")
       }
       { mnuivinfusion Button
-        MoveScaled(30,1,10,3)
+        MoveScaled(30,0.5,10,3)
         Text = ("IV Fluid")
       }
       { mnupacsimage Button
-        MoveScaled(60,1,9.5,3)
+        MoveScaled(60,0.5,9.5,3)
         Text = ("PACS")
       }
       { btnaddcibf ToolButton
-        MoveScaled(71,1,3,3)
+        MoveScaled(71,0.5,3,3)
         Picture = Picture["icon:/small/webcam"]
       }
-      { btnaddscan ToolButton
-        MoveScaled(75,1,3,3)
-        ToolTip = ("Scan Document")
-        Picture = Picture["icon:/small/scanner"]
-      }
       { btnaddchart ToolButton
-        MoveScaled(79,1,3,3)
+        MoveScaled(79,0.5,3,3)
         ToolTip = ("Touch Screen Drawing")
         Picture = Picture["icon:/small/pen"]
       }
       { btnlab Button
-        MoveScaled(83,1,12,3)
+        MoveScaled(83,0.5,12,3)
         Text = ("Labs [F11]")
       }
       { btnpharm Button
-        MoveScaled(96,1,12,3)
+        MoveScaled(96,0.5,12,3)
         Text = ("Pharm [F12]")
       }
       { btnradioreq Button
-        MoveScaled(109,1,10,3)
+        MoveScaled(109,0.5,10,3)
         Text = ("Radio")
       }
       { mnupatdosing Button
-        MoveScaled(40,1,10,3)
+        MoveScaled(40,0.5,10,3)
         Text = ("Dosing")
       }
       { mnuequip Button
-        MoveScaled(50,1,10,3)
+        MoveScaled(50,0.5,10,3)
         Text = ("Equip")
+      }
+      { mnuscanfile ToolButton
+        MoveScaled(75,0.5,3,3)
+        Picture = Picture["icon:/small/attach"]
       }
     }
     { TabPanel1 TabPanel

@@ -764,9 +764,9 @@ Public Sub btntempltext_Click()
 
   Try j = Application.ActiveControl.Tag
   If aHTMLText[j] Then
-    aHTMLText[j].RichText = aHTMLText[j].RichText & DictionaryVIew(modBasic.$dictadvPath)
+    aHTMLText[j].RichText = aHTMLText[j].RichText & DictionaryVIew($xData[j][0])
   Else If aGenTextArea[j] Then
-    aGenTextArea[j].Text = aGenTextArea[j].Text & DictionaryVIew(modBasic.$dictadvPath)
+    aGenTextArea[j].Text = aGenTextArea[j].Text & DictionaryVIew($xData[j][0])
   Endif
 
 End

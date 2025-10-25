@@ -946,14 +946,14 @@ Public Sub btntempltext_Click()
   Try j = Application.ActiveControl.Tag
   ''Right
   If aHTMLTextR[j] Then
-    aHTMLTextR[j].RichText = aHTMLTextR[j].RichText & DictionaryVIew(modBasic.$dictadvPath)
+    aHTMLTextR[j].RichText = aHTMLTextR[j].RichText & DictionaryVIew($xData[j][0])
   Else If aGenTextAreaR[j] Then
-    aGenTextAreaR[j].Text = aGenTextAreaR[j].Text & DictionaryVIew(modBasic.$dictadvPath)
+    aGenTextAreaR[j].Text = aGenTextAreaR[j].Text & DictionaryVIew($xData[j][0])
     ''Left
   Else If aHTMLTextL[j] Then
-    aHTMLTextL[j].RichText = aHTMLTextL[j].RichText & DictionaryVIew(modBasic.$dictadvPath)
+    aHTMLTextL[j].RichText = aHTMLTextL[j].RichText & DictionaryVIew($xData[j][0])
   Else If aGenTextAreaL[j] Then
-    aGenTextAreaL[j].Text = aGenTextAreaL[j].Text & DictionaryVIew(modBasic.$dictadvPath)
+    aGenTextAreaL[j].Text = aGenTextAreaL[j].Text & DictionaryVIew($xData[j][0])
   Endif
 
 End

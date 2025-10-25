@@ -25,6 +25,9 @@
   { mnuservices Menu
     Text = ("Services")
     Enabled = False
+    { mnudemographic Menu
+      Text = ("Demography")
+    }
     { mnuconsultant Menu
       Text = ("Set Consultant")
     }
@@ -32,13 +35,10 @@
       Text = ("OCMC Form")
     }
     { mnumaternal Menu
-      Text = ("Maternal Form")
+      Text = ("Maternity")
     }
     { mnuvaccination Menu
       Text = ("Vaccination")
-    }
-    { mnureqconsult Menu
-      Text = ("Consult Request")
     }
     { mnuscanner Menu
       Text = ("Scan File")
@@ -429,12 +429,6 @@
         Text = ("Outcome")
         Border = True
       }
-      { btnmobiledemog ToolButton
-        MoveScaled(11,0.375,11,3)
-        Enabled = False
-        Text = ("Demog")
-        Border = True
-      }
       { btnmobilevital ToolButton
         MoveScaled(22,0.375,11,3)
         Enabled = False
@@ -493,6 +487,12 @@
         Picture = Picture["icon:/small/brightness"]
         Border = True
       }
+      { btnadvice ToolButton
+        MoveScaled(11,0.5,11,3)
+        Enabled = False
+        Text = ("Advice")
+        Border = True
+      }
     }
     { yPanelEntry Panel
       MoveScaled(0,13,118,4)
@@ -526,7 +526,7 @@
         Border = True
       }
       { btnmobevent ToolButton
-        MoveScaled(44,0.375,11,3)
+        MoveScaled(11,0.5,11,3)
         Enabled = False
         Text = ("Devices")
         Border = True
@@ -560,15 +560,15 @@
         Text = ("Billing")
         Border = True
       }
-      { btnadvice ToolButton
-        MoveScaled(11,0.375,11,3)
-        Enabled = False
-        Text = ("Advice")
-        Border = True
-      }
       { btnrefer ToolButton
         MoveScaled(6,0.375,5.25,3)
         Picture = Picture["icon:/small/home"]
+        Border = True
+      }
+      { mnureqconsult ToolButton
+        MoveScaled(44,0.5,11,3)
+        Enabled = False
+        Text = ("Consult")
         Border = True
       }
     }
@@ -581,19 +581,6 @@
     }
     { Panel6 Panel
       MoveScaled(1,59,118,4)
-      { Panel5 Panel
-        MoveScaled(1,0.5,21,3)
-        Border = Border.Plain
-        { rbsi RadioButton
-          MoveScaled(0,0,10,2.75)
-          Text = ("SI Unit")
-        }
-        { rbmetric RadioButton
-          MoveScaled(11,0,10,2.75)
-          Text = ("Metric")
-          Value = True
-        }
-      }
       { btnpersonal Button
         MoveScaled(110,0.5,3,3)
         Picture = Picture["icon:/small/house"]
@@ -603,7 +590,7 @@
         Picture = Picture["icon:/small/html"]
       }
       { Panel7 Panel
-        MoveScaled(74,0.5,29,3)
+        MoveScaled(80,0.5,29,3)
         Border = Border.Plain
         { rbdate RadioButton
           MoveScaled(0,0,8.5,3)
@@ -620,16 +607,35 @@
         }
       }
       { chkshowdepart CheckBox
-        MoveScaled(32,0.5,11,3)
+        MoveScaled(46,0.5,10,3)
         Text = ("Params")
       }
       { chkshowstatus CheckBox
-        MoveScaled(44,0.5,11,3)
+        MoveScaled(56.5,0.5,10,3)
         Text = ("Status")
       }
       { chknotice CheckBox
-        MoveScaled(55,0.5,11,3)
+        MoveScaled(67.5,0.5,10,3)
         Text = ("Notice")
+      }
+      { cmbunit ComboBox
+        MoveScaled(0.5,0.5,12,3)
+      }
+      { Panel5 Panel
+        MoveScaled(15,0.5,29,3)
+        { rbopd RadioButton
+          MoveScaled(1,0,9,3)
+          Text = ("OPD")
+        }
+        { rbipd RadioButton
+          MoveScaled(10,0,9,3)
+          Text = ("IPD")
+        }
+        { rbboth RadioButton
+          MoveScaled(19,0,9,3)
+          Text = ("Both")
+          Value = True
+        }
       }
     }
   }

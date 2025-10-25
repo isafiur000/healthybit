@@ -404,10 +404,18 @@ Private Sub DIsplayTextForm()
   For i = 0 To $sExamVar.Count - 1
     If i < 49 Then
 
-      With aWebRowAll[i]
-        .Height = 25 * AppFactor
-        .Width = Frame1.Width
-      End With
+      Select $sExamVar[i]["OptionType"]
+        Case "Multiple Selection"
+          With aWebRowAll[i]
+            .Height = 25 * Slider1.Value * AppFactor
+            .Width = Frame1.Width
+          End With
+        Case Else
+          With aWebRowAll[i]
+            .Height = 25 * AppFactor
+            .Width = Frame1.Width
+          End With
+      End Select
 
       If $sExamVar[i]["DataType"] = "Quantitative" Then
         With aWideRowAll[i]
@@ -461,9 +469,14 @@ Private Sub DIsplayTextForm()
         End With
       Else
         Select $sExamVar[i]["OptionType"]
-          Case "Sys Constant", "Multiple Selection", "Date Time", "BS Date", "Single Selection", "Dichotomous", "Quantitative", "Qualitative", "Clinical Scale", "Calculated", "ImageValue"
+          Case "Sys Constant", "Date Time", "BS Date", "Single Selection", "Dichotomous", "Quantitative", "Qualitative", "Clinical Scale", "Calculated", "ImageValue"
             With aWebPanel[i]
               .Height = 25 * AppFactor
+              .Width = Frame1.Width / 2
+            End With
+          Case "Multiple Selection"
+            With aWebPanel[i]
+              .Height = 25 * Slider1.Value * AppFactor
               .Width = Frame1.Width / 2
             End With
           Case Else
@@ -1022,9 +1035,9 @@ Public Sub btntemplsumm_Click()
 
   Try j = Application.ActiveControl.Tag
   If aHTMLText[j] Then
-    aHTMLText[j].RichText = aHTMLText[j].RichText & DictionaryVIew(modBasic.$dictadvPath)
+    aHTMLText[j].RichText = aHTMLText[j].RichText & DictionaryVIew(aNameLabel[j].Text)
   Else If aGenTextArea[j] Then
-    aGenTextArea[j].Text = aGenTextArea[j].Text & DictionaryVIew(modBasic.$dictadvPath)
+    aGenTextArea[j].Text = aGenTextArea[j].Text & DictionaryVIew(aNameLabel[j].Text)
   Endif
 
 End

@@ -295,28 +295,15 @@
             Text = ("Summary")
           }
           { btnnewsummry ToolButton
-            MoveScaled(17,0.5,3,3)
+            MoveScaled(31,0.5,3,3)
             Picture = Picture["icon:/small/exec"]
           }
           { dctnewsummry ToolButton
-            MoveScaled(13,0.5,3,3)
+            MoveScaled(27,0.5,3,3)
             Picture = Picture["icon:/small/edit"]
           }
-          { Panel4 Panel
-            MoveScaled(29,0.5,21,2.75)
-            Border = Border.Plain
-            { rbsi RadioButton
-              MoveScaled(0,0,8,3)
-              Text = ("SI Unit")
-              Value = True
-            }
-            { rbmetric RadioButton
-              MoveScaled(11,0,10,2.75)
-              Text = ("Metric")
-            }
-          }
           { btntemplnewsummary ToolButton
-            MoveScaled(21,0.5,3,3)
+            MoveScaled(35,0.5,3,3)
             Picture = Picture["icon:/small/attach"]
           }
           { btncomment Button
@@ -340,7 +327,7 @@
       Index = 2
       Text = ("Components")
       { Panel3 Panel
-        MoveScaled(0,0,120,54)
+        MoveScaled(0,0,119.5,54)
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel5 Panel
@@ -382,11 +369,24 @@
               MoveScaled(0,0,31,29)
               Arrangement = Arrange.Vertical
               { gridVariable GridView
-                MoveScaled(2,2,28,25)
+                MoveScaled(2,2,28,19)
                 Expand = True
                 Mode = Select.Single
                 Header = GridView.Horizontal
                 AutoResize = False
+              }
+              { Panel4 Panel
+                MoveScaled(1,24,29,3)
+                Border = Border.Plain
+                { rbsi RadioButton
+                  MoveScaled(1,0,11,3)
+                  Text = ("SI Unit")
+                  Value = True
+                }
+                { rbmetric RadioButton
+                  MoveScaled(14,0,11,2.75)
+                  Text = ("Metric")
+                }
               }
             }
             { Panel7 Panel
@@ -477,140 +477,173 @@
             Expand = True
           }
           Index = 2
-          Text = ("Consumables")
-          { pnluseown Panel
-            MoveScaled(1,1,117,27)
+          Text = ("Components")
+          { Panel13 Panel
+            MoveScaled(0,0,118,39)
             Expand = True
-            Arrangement = Arrange.Vertical
+            Arrangement = Arrange.Horizontal
+            { Panel18 Panel
+              MoveScaled(1,1,57,36)
+              Expand = True
+              Arrangement = Arrange.Vertical
+              { Panel19 Panel
+                MoveScaled(0,0,57,14)
+                Expand = True
+                Arrangement = Arrange.Vertical
+                { Panel20 Panel
+                  MoveScaled(0,0,57,4)
+                  { Label17 Label
+                    MoveScaled(0,0.5,14,3)
+                    Border = Border.Plain
+                    Text = ("Incision")
+                  }
+                  { dcthelpincis ToolButton
+                    MoveScaled(29,0.5,3,3)
+                    Picture = Picture["icon:/small/edit"]
+                  }
+                  { btnhelpincis ToolButton
+                    MoveScaled(33,0.5,3,3)
+                    Picture = Picture["icon:/small/exec"]
+                  }
+                  { btnlstincis ToolButton
+                    MoveScaled(37,0.5,3,3)
+                    Picture = Picture["icon:/small/attach"]
+                  }
+                  { btnsaveincision Button
+                    MoveScaled(47,0.5,9,3)
+                    Text = ("Save")
+                    Picture = Picture["icon:/small/apply"]
+                  }
+                }
+                { txtincision TextHTML
+                  MoveScaled(1,5,46,5)
+                  Expand = True
+                }
+              }
+              { Panel21 Panel
+                MoveScaled(0,14,56,1)
+              }
+              { Panel22 Panel
+                MoveScaled(0,16,57,15)
+                Expand = True
+                Arrangement = Arrange.Vertical
+                { Panel23 Panel
+                  MoveScaled(0,0,57,4)
+                  { Label19 Label
+                    MoveScaled(0,0.5,14,3)
+                    Border = Border.Plain
+                    Text = ("Procedures")
+                  }
+                  { dcthelpproc ToolButton
+                    MoveScaled(29,0.5,3,3)
+                    Picture = Picture["icon:/small/edit"]
+                  }
+                  { btnhelpproc ToolButton
+                    MoveScaled(33,0.5,3,3)
+                    Picture = Picture["icon:/small/exec"]
+                  }
+                  { btnlstproc ToolButton
+                    MoveScaled(37,0.5,3,3)
+                    Picture = Picture["icon:/small/attach"]
+                  }
+                  { btnsaveprocedure Button
+                    MoveScaled(47,0.5,9,3)
+                    Text = ("Save")
+                    Picture = Picture["icon:/small/apply"]
+                  }
+                }
+                { txtprocedures TextHTML
+                  MoveScaled(3,4,37,8)
+                  Expand = True
+                }
+              }
+            }
+            { Panel24 Panel
+              MoveScaled(58,1,2,28)
+            }
+            { Panel25 Panel
+              MoveScaled(60,1,57,36)
+              Expand = True
+              Arrangement = Arrange.Vertical
+              { Panel26 Panel
+                MoveScaled(0,0,57,14)
+                Expand = True
+                Arrangement = Arrange.Vertical
+                { Panel27 Panel
+                  MoveScaled(0,0,55,4)
+                  { Label18 Label
+                    MoveScaled(0,0.5,14,3)
+                    Border = Border.Plain
+                    Text = ("Findings")
+                  }
+                  { dcthelpfind ToolButton
+                    MoveScaled(28,0.5,3,3)
+                    Picture = Picture["icon:/small/edit"]
+                  }
+                  { btnhelpfind ToolButton
+                    MoveScaled(32,0.5,3,3)
+                    Picture = Picture["icon:/small/exec"]
+                  }
+                  { btnlstfind ToolButton
+                    MoveScaled(36,0.5,3,3)
+                    Picture = Picture["icon:/small/attach"]
+                  }
+                  { btnsavefinding Button
+                    MoveScaled(47,0.5,9,3)
+                    Text = ("Save")
+                    Picture = Picture["icon:/small/apply"]
+                  }
+                }
+                { txtfindings TextHTML
+                  MoveScaled(2,5,35,6)
+                  Expand = True
+                }
+              }
+              { Panel28 Panel
+                MoveScaled(0,14,56,1)
+              }
+              { Panel29 Panel
+                MoveScaled(0,16,57,14)
+                Expand = True
+                Arrangement = Arrange.Vertical
+                { Panel30 Panel
+                  MoveScaled(0,0,55,4)
+                  { Label20 Label
+                    MoveScaled(0,0.5,14,3)
+                    Border = Border.Plain
+                    Text = ("Closure")
+                  }
+                  { dcthelpclose ToolButton
+                    MoveScaled(28,0.5,3,3)
+                    Picture = Picture["icon:/small/edit"]
+                  }
+                  { btnhelpclos ToolButton
+                    MoveScaled(32,0.5,3,3)
+                    Picture = Picture["icon:/small/exec"]
+                  }
+                  { btnlstclose ToolButton
+                    MoveScaled(36,0.5,3,3)
+                    Picture = Picture["icon:/small/attach"]
+                  }
+                  { btnsaveclosure Button
+                    MoveScaled(47,0.5,9,3)
+                    Text = ("Save")
+                    Picture = Picture["icon:/small/apply"]
+                  }
+                }
+                { txtclosure TextHTML
+                  MoveScaled(2,4,38,8)
+                  Expand = True
+                }
+              }
+            }
           }
           Index = 3
-          Text = ("Components")
-          { Panel21 Panel
-            MoveScaled(0,0,117,3)
-            { TextHTML1 TextHTML
-              MoveScaled(16,3,25,18)
-            }
-            { dcthelpincis ToolButton
-              MoveScaled(29,0,3,3)
-              Picture = Picture["icon:/small/edit"]
-            }
-            { Label17 Label
-              MoveScaled(0,0,14,3)
-              Border = Border.Plain
-              Text = ("Incision")
-            }
-            { btnhelpincis ToolButton
-              MoveScaled(33,0,3,3)
-              Picture = Picture["icon:/small/exec"]
-            }
-            { btnlstincis ToolButton
-              MoveScaled(37,0,3,3)
-              Picture = Picture["icon:/small/attach"]
-            }
-            { btnsaveincision ToolButton
-              MoveScaled(51,0,3,3)
-              Picture = Picture["icon:/small/apply"]
-            }
-            { Label18 Label
-              MoveScaled(61,0,14,3)
-              Border = Border.Plain
-              Text = ("Findings")
-            }
-            { dcthelpfind ToolButton
-              MoveScaled(89,0,3,3)
-              Picture = Picture["icon:/small/edit"]
-            }
-            { btnhelpfind ToolButton
-              MoveScaled(93,0,3,3)
-              Picture = Picture["icon:/small/exec"]
-            }
-            { btnlstfind ToolButton
-              MoveScaled(97,0,3,3)
-              Picture = Picture["icon:/small/attach"]
-            }
-            { btnsavefinding ToolButton
-              MoveScaled(111,0,3,3)
-              Picture = Picture["icon:/small/apply"]
-            }
-          }
-          { Panel53 Panel
-            MoveScaled(0,3,117,16)
+          Text = ("Consumables")
+          { pnluseown Panel
+            MoveScaled(0,0,117,27)
             Expand = True
-            Arrangement = Arrange.Horizontal
-            { txtincision TextHTML
-              MoveScaled(0,0,57,15)
-              Expand = True
-            }
-            { Panel56 Panel
-              MoveScaled(57,0,2,15)
-              Arrangement = Arrange.Vertical
-            }
-            { txtfindings TextHTML
-              MoveScaled(60,0,57,15)
-              Expand = True
-            }
-          }
-          { Panel54 Panel
-            MoveScaled(0,20,117,4)
-            { Label19 Label
-              MoveScaled(0,1,14,3)
-              Border = Border.Plain
-              Text = ("Procedures")
-            }
-            { dcthelpproc ToolButton
-              MoveScaled(29,1,3,3)
-              Picture = Picture["icon:/small/edit"]
-            }
-            { btnhelpproc ToolButton
-              MoveScaled(33,1,3,3)
-              Picture = Picture["icon:/small/exec"]
-            }
-            { btnlstproc ToolButton
-              MoveScaled(37,1,3,3)
-              Picture = Picture["icon:/small/attach"]
-            }
-            { btnsaveprocedure ToolButton
-              MoveScaled(51,1,3,3)
-              Picture = Picture["icon:/small/apply"]
-            }
-            { Label20 Label
-              MoveScaled(61,1,14,3)
-              Border = Border.Plain
-              Text = ("Closure")
-            }
-            { dcthelpclose ToolButton
-              MoveScaled(89,1,3,3)
-              Picture = Picture["icon:/small/edit"]
-            }
-            { btnhelpclos ToolButton
-              MoveScaled(93,1,3,3)
-              Picture = Picture["icon:/small/exec"]
-            }
-            { btnlstclose ToolButton
-              MoveScaled(97,1,3,3)
-              Picture = Picture["icon:/small/attach"]
-            }
-            { btnsaveclosure ToolButton
-              MoveScaled(111,1,3,3)
-              Picture = Picture["icon:/small/apply"]
-            }
-          }
-          { Panel55 Panel
-            MoveScaled(0,24,117,18)
-            Expand = True
-            Arrangement = Arrange.Horizontal
-            { txtprocedures TextHTML
-              MoveScaled(0,0,57,15)
-              Expand = True
-            }
-            { Panel57 Panel
-              MoveScaled(57,0,2,16)
-              Arrangement = Arrange.Vertical
-            }
-            { txtclosure TextHTML
-              MoveScaled(60,0,57,15)
-              Expand = True
-            }
+            Arrangement = Arrange.Vertical
           }
           Index = 0
         }

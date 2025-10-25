@@ -1,0 +1,112 @@
+' Gambas class file
+
+Private $sCategory As String
+
+Public Sub _new(sCategory As String)
+
+  $sCategory = sCategory
+
+End
+
+Public Sub Form_Open()
+
+  cmbcategory.Text = $sCategory
+  txtdictpath.Text = modSettings.ShowSettingFromFIle("TextTemplate/Path")
+  If txtdictpath.Text Then
+    lstdict.List = SHowAdvanceDictItems(txtdictpath.Text, $sCategory)
+    tnadddictfile.Enabled = False
+    btndtctpath.Enabled = False
+  Endif
+
+End
+
+Public Sub tnadddictfile_Click()
+
+  Dim xPath As String
+
+  If Dialog.SelectDirectory() Then Return
+  xPath = Dialog.Path &/ "TextTemplate_" & modBasic.$lbluser & ".conf"
+  File.Save(xPath, "")
+  txtdictpath.Text = xPath
+
+End
+
+Public Sub txtdictpath_Click()
+
+  Dialog.Filter = ["*.conf", "Setting File"]
+  If Dialog.OpenFile() Then Return
+  txtdictpath.Text = Dialog.Path
+
+End
+
+Public Sub btndtctpath_Click()
+
+  modSettings.SaveSettingsToFile("TextTemplate/Path", txtdictpath.Text)
+  modBasic.$dictadvPath = txtdictpath.Text
+  Balloon.Info(("Information saved"), btndtctpath)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Private Function SHowAdvanceDictItems(xpath As String, sCategory As String) As String[]
+
+  Dim xxx As String[]
+  Dim ConfFile As Settings
+  Dim xtitle As String
+  Dim xkey As String
+
+  xxx = New String[]
+  If Exist(xpath) Then
+
+    ConfFile = New Settings(xpath)
+    For Each xtitle In ConfFile.Keys
+      If xtitle = sCategory Then
+        For Each xkey In ConfFile.Keys[xtitle]
+          xxx.Add(xkey)
+        Next
+      Endif
+    Next
+
+  Endif
+  Return xxx
+
+End
+
+Public Sub lstdict_Click()
+
+  Dim xpath As String
+
+  xpath = modSettings.ShowSettingFromFIle("TextTemplate/Path")
+  If Exist(xpath) Then
+    txtdicttile.Text = lstdict.Text
+    txtdictext.RichText = modControlSub.ShowSettingValue(xpath, $sCategory & "/" & lstdict.Text)
+  Endif
+
+End
+
+Public Sub btncreateTempla_Click()
+
+  txtdictext.RichText = GetRichTextArea($sCategory, txtdictext.RichText)
+
+End
+
+Public Sub btndictadd_Click()
+
+  Dim ConfFile As Settings
+  Dim xpath As String
+
+  If txtdicttile.Text Then
+    xpath = txtdictpath.Text
+    If Exist(xpath) Then
+
+      ConfFile = New Settings(modSettings.ShowSettingFromFIle("TextTemplate/Path"))
+      ConfFile[$sCategory & "/" & txtdicttile.Text] = Trim(txtdictext.RichText)
+      ConfFile.Save()
+      lstdict.List = SHowAdvanceDictItems(txtdictpath.Text, $sCategory)
+      Balloon.Info(("Information saved"), btndictadd)
+      Balloon.Delay = modBasic.$BalloonDelay
+
+    Endif
+  Endif
+
+End

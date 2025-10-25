@@ -9,10 +9,10 @@ Public Function GetPatCloudAIResponse(encid As String, sText As String) As Strin
   Dim xansw As String
 
   If encid Then
-    If modBasic.$AITextSupport = "Speech-To-Text" Then
-      xansw = CAudioRecord()
-    Else
+    If modBasic.$AITextSupport = "Text Generation" Then
       xansw = PatCloudAI(encid, sText, "")
+    Else
+      xansw = CAudioRecord()
     Endif
   Endif
 

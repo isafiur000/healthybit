@@ -4,12 +4,14 @@ Private $rData As MyResult
 Private $aMyFields As String[]
 Private $strType As String
 Private $strTitle As String
+Private $colCount As Integer
 
-Public Sub _new(res As MyResult, strTitle As String, strType As String, AllowExport As Boolean)
+Public Sub _new(res As MyResult, strTitle As String, strType As String, AllowExport As Boolean, colCount As Integer)
 
   $strType = strType
   $rData = res
   $strTitle = strTitle
+  $colCount = colCount
 
   Me.Title = $strTitle
   mnutransfer.Visible = AllowExport
@@ -31,7 +33,7 @@ End
 Private Sub ShowGridView()
 
   $aMyFields = New String[]
-  modGridView.ReadSmallMyData(GridView1, $rData, $aMyFields)
+  modGridView.ReadSmallMyData(GridView1, $rData, $aMyFields, $colCount)
   ResizeGridView()
 
 End
@@ -132,57 +134,24 @@ Public Sub mnutransfer_Click()
 
 End
 
-Public Sub mnugenimage_Click()
+Public Sub GridView1_Click()
 
-  Dim hForm As FmPatImage
+  Dim xpath As String
 
-  If GridView1.Rows.Selection.Count Then
-    hForm = New FmPatImage("IMAGE", GridView1[GridView1.Row, 0].Text, "")
-    hForm.ShowModal
-  Endif
-
-End
-
-Public Sub mnudicom_Click()
-
-  Dim hForm As FmPatImage
-
-  If GridView1.Rows.Selection.Count Then
-    hForm = New FmPatImage("DICOM", GridView1[GridView1.Row, 0].Text, "")
-    hForm.ShowModal
-  Endif
-
-End
-
-Public Sub mnupacs_Click()
-
-  Dim hForm As FmPacsFind
-
-  If GridView1.Rows.Selection.Count Then
-    hForm = New FmPacsFind(GridView1[GridView1.Row, 0].Text, "Visit")
-    hForm.ShowModal
-  Endif
-
-End
-
-Public Sub mnumovement_Click()
-
-  Dim xcoord As String[]
-  Dim xList As String[]
-  Dim hForm As FmWebView
-
-  xList = New String[]
-  For Each $rData
-    xcoord = modDataRepo.GetGeoCoordinates($rData["fldhospcode"])
-    If xcoord Then
-      If xcoord[0] And If xcoord[1] Then
-        xList.Add(xcoord[0] & "," & xcoord[1])
+  If GridView1.Column = 8 Then
+    If $strType = "ArchivedReports" Then
+      xpath = modImage.GetBlobFileData(GridView1[GridView1.Row, 0].Text, GridView1[GridView1.Row, 8].Text)
+      If Exist(xpath) Then
+        modDevice.DesktopOpenFile(xpath)
       Endif
     Endif
-  Next
-  If xList.Count Then
-    hForm = New FmWebView("https://www.google.com/maps/dir/" & xList.Join("/"))
-    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Else If GridView1.Column = 9 Then
+    If $strType = "ArchivedRepoReports" Then
+      xpath = modImage.GetBlobFileRemoteData(GridView1[GridView1.Row, 0].Text)
+      If Exist(xpath) Then
+        modDevice.DesktopOpenFile(xpath)
+      Endif
+    Endif
   Endif
 
 End
@@ -238,28 +207,6 @@ Public Sub mnuemail_Click()
       xx.Add(modPatient.GetPatientEmail(GridView1[GridView1.Row, 7].Text))
       hForm = New FmRemoteMail(xx, xpath, "Report", GridView1[GridView1.Row, 3].Text)
       hForm.ShowModal()
-    Endif
-  Endif
-
-End
-
-Public Sub GridView1_Click()
-
-  Dim xpath As String
-
-  If GridView1.Column = 8 Then
-    If $strType = "ArchivedReports" Then
-      xpath = modImage.GetBlobFileData(GridView1[GridView1.Row, 0].Text, GridView1[GridView1.Row, 8].Text)
-      If Exist(xpath) Then
-        modDevice.DesktopOpenFile(xpath)
-      Endif
-    Endif
-  Else If GridView1.Column = 9 Then
-    If $strType = "ArchivedRepoReports" Then
-      xpath = modImage.GetBlobFileRemoteData(GridView1[GridView1.Row, 0].Text)
-      If Exist(xpath) Then
-        modDevice.DesktopOpenFile(xpath)
-      Endif
     Endif
   Endif
 

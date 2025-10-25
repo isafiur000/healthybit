@@ -1919,16 +1919,20 @@ Public Sub dcthelphistory_Click()
 
   Dim xx As String
 
-  xx = GetRichTextArea("History Notes", txthistory.RichText)
-  If xx Then
-    txthistory.RichText = xx
+  If cmbinpathistory.Text Then
+    xx = GetRichTextArea(cmbinpathistory.Text, txthistory.RichText)
+    If xx Then
+      txthistory.RichText = xx
+    Endif
   Endif
 
 End
 
 Public Sub btntemplphistory_Click()
 
-  txthistory.RichText = txthistory.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  If cmbinpathistory.Text Then
+    txthistory.RichText = txthistory.RichText & DictionaryVIew(cmbinpathistory.Text)
+  Endif
 
 End
 
@@ -2240,16 +2244,20 @@ Public Sub dcthelpnote_Click()
 
   Dim xx As String
 
-  xx = GetRichTextArea("Clinical Note", txtnote.RichText)
-  If xx Then
-    txtnote.RichText = xx
+  If cmbnote.Text Then
+    xx = GetRichTextArea(cmbnote.Text, txtnote.RichText)
+    If xx Then
+      txtnote.RichText = xx
+    Endif
   Endif
 
 End
 
 Public Sub btntemplhelpnote_Click()
 
-  txtnote.RichText = txtnote.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  If cmbnote.Text Then
+    txtnote.RichText = txtnote.RichText & DictionaryVIew(cmbnote.Text)
+  Endif
 
 End
 
@@ -2489,7 +2497,7 @@ End
 
 Public Sub btntemplplansubj_Click()
 
-  txtsubject.RichText = txtsubject.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  txtsubject.RichText = txtsubject.RichText & DictionaryVIew("Subjective Parameters")
 
 End
 
@@ -2506,7 +2514,7 @@ End
 
 Public Sub btntemplplanobj_Click()
 
-  txtobject.RichText = txtobject.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  txtobject.RichText = txtobject.RichText & DictionaryVIew("Objective Parameters")
 
 End
 
@@ -2514,7 +2522,7 @@ Public Sub dctplanasses_Click()
 
   Dim xx As String
 
-  xx = GetRichTextArea("Therpeutic Assessment", txtmanage.RichText)
+  xx = GetRichTextArea("Clinical Assessment", txtmanage.RichText)
   If xx Then
     txtmanage.RichText = xx
   Endif
@@ -2523,7 +2531,7 @@ End
 
 Public Sub btntemplplanasses_Click()
 
-  txtmanage.RichText = txtmanage.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  txtmanage.RichText = txtmanage.RichText & DictionaryVIew("Clinical Assessment")
 
 End
 
@@ -2531,7 +2539,7 @@ Public Sub dctplanplan_Click()
 
   Dim xx As String
 
-  xx = GetRichTextArea("Therapeutic Planning", txtplan.RichText)
+  xx = GetRichTextArea("Clinical Planning", txtplan.RichText)
   If xx Then
     txtplan.RichText = xx
   Endif
@@ -2540,7 +2548,7 @@ End
 
 Public Sub btntemplplanplan_Click()
 
-  txtplan.RichText = txtplan.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  txtplan.RichText = txtplan.RichText & DictionaryVIew("Clinical Planning")
 
 End
 

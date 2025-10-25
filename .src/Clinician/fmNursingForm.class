@@ -1477,7 +1477,7 @@ End
 
 Public Sub btntemplpgencomp_Click()
 
-  txtgencomplaint.RichText = txtgencomplaint.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  txtgencomplaint.RichText = txtgencomplaint.RichText & DictionaryVIew("General Complaints")
 
 End
 
@@ -1580,7 +1580,7 @@ Public Sub btnaddchart_Click()
 
 End
 
-Public Sub btnaddscan_Click()
+Public Sub mnuscanner_Click()
 
   Dim sPath As String
   Dim sTitle As String
@@ -3041,7 +3041,7 @@ Public Sub dctprogproblem_Click()
 
   Dim xx As String
 
-  xx = GetRichTextArea("Problems", txtmonproblem.RichText)
+  xx = GetRichTextArea("Problem Summary", txtmonproblem.RichText)
   If xx Then
     txtmonproblem.RichText = xx
   Endif
@@ -3050,7 +3050,7 @@ End
 
 Public Sub btntemplpprogproblem_Click()
 
-  txtmonproblem.RichText = txtmonproblem.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  txtmonproblem.RichText = txtmonproblem.RichText & DictionaryVIew("Problem Summary")
 
 End
 
@@ -3058,7 +3058,7 @@ Public Sub dctprogtreat_Click()
 
   Dim xx As String
 
-  xx = GetRichTextArea("Treatment", txtmontreatment.RichText)
+  xx = GetRichTextArea("Treatment Summary", txtmontreatment.RichText)
   If xx Then
     txtmontreatment.RichText = xx
   Endif
@@ -3067,7 +3067,7 @@ End
 
 Public Sub btntemplprogtreat_Click()
 
-  txtmontreatment.RichText = txtmontreatment.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  txtmontreatment.RichText = txtmontreatment.RichText & DictionaryVIew("Treatment Summary")
 
 End
 
@@ -3075,7 +3075,7 @@ Public Sub dctproginout_Click()
 
   Dim xx As String
 
-  xx = GetRichTextArea("Input/Output", txtmoninout.RichText)
+  xx = GetRichTextArea("Intake/Output Summary", txtmoninout.RichText)
   If xx Then
     txtmoninout.RichText = xx
   Endif
@@ -3084,7 +3084,7 @@ End
 
 Public Sub btntemplproginout_Click()
 
-  txtmoninout.RichText = txtmoninout.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  txtmoninout.RichText = txtmoninout.RichText & DictionaryVIew("Intake/Output Summary")
 
 End
 
@@ -3101,7 +3101,7 @@ End
 
 Public Sub btntemplprogplan_Click()
 
-  txtmonplan.RichText = txtmonplan.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  txtmonplan.RichText = txtmonplan.RichText & DictionaryVIew("Nursing Plan")
 
 End
 

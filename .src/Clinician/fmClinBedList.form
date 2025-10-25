@@ -25,6 +25,9 @@
   { mnuservices Menu
     Text = ("Services")
     Enabled = False
+    { mnudemographic Menu
+      Text = ("Demography")
+    }
     { mnusetservice Menu
       Text = ("Set Service")
     }
@@ -33,9 +36,6 @@
     }
     { mnuvaccination Menu
       Text = ("Vaccination")
-    }
-    { mnureqconsult Menu
-      Text = ("Add Consult")
     }
     { mnuscanner Menu
       Text = ("Scan FIle")
@@ -646,10 +646,10 @@
         Text = ("Equip")
         Border = True
       }
-      { btnmobiledemog ToolButton
-        MoveScaled(44,0.375,11,3)
+      { mnureqconsult ToolButton
+        MoveScaled(44,0.5,11,3)
         Enabled = False
-        Text = ("Demog")
+        Text = ("Consult")
         Border = True
       }
     }

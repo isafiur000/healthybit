@@ -127,8 +127,10 @@ Public Sub IconPanel1_Click()
     SHowCOlumnSearchSetting()
   Else If IconPanel1.Index = 10 Then
     cmbdictoption.List = modMisc.GetReportOptionList()
-    txtdictpath.Text = modSettings.ShowSettingFromFIle("AdvancedDictionary/Path")
-    lstdict.List = SHowAdvanceDictItems()
+    txtdictpath.Text = modSettings.ShowSettingFromFIle("TextTemplate/Path")
+    If txtdictpath.Text Then
+      ShowTemplateCategories(txtdictpath.Text)
+    Endif
   Endif
 
 End
@@ -1424,11 +1426,11 @@ Private Sub ShowPDFVariable()
 
   Dim xx As String
 
-  xx = "[page]:the number of the pages currently being printed" & gb.NewLine
-  xx = xx & "[frompage]:the  number  of  the  first  page  to  be printed" & gb.NewLine
-  xx = xx & "[topage]:the number of the last page to be printed" & gb.NewLine
-  xx = xx & "[date]:the current date in system local format" & gb.NewLine
-  xx = xx & "[time]:the current time in system local format"
+  xx = "[page]:number of pages currently being printed" & gb.NewLine
+  xx = xx & "[frompage]:number of first page to be printed" & gb.NewLine
+  xx = xx & "[topage]:number of last page to be printed" & gb.NewLine
+  xx = xx & "[date]:current date in system local format" & gb.NewLine
+  xx = xx & "[time]:current time in system local format"
   Message.Info(xx, ("OK"))
 
 End
@@ -1981,6 +1983,17 @@ Public Sub btnsavecolsearch_Click()
 End
 
 ''--------------------------------- Advanced Dictionary ------------------------------
+Public Sub tnadddictfile_Click()
+
+  Dim xPath As String
+
+  If Dialog.SelectDirectory() Then Return
+  xPath = Dialog.Path &/ "TextTemplate_" & modBasic.$lbluser & ".conf"
+  File.Save(xPath, "")
+  txtdictpath.Text = xPath
+
+End
+
 Public Sub txtdictpath_Click()
 
   Dialog.Filter = ["*.conf", "Setting File"]
@@ -1991,76 +2004,53 @@ End
 
 Public Sub btndtctpath_Click()
 
-  modSettings.SaveSettingsToFile("AdvancedDictionary/Path", txtdictpath.Text)
+  modSettings.SaveSettingsToFile("TextTemplate/Path", txtdictpath.Text)
   modBasic.$dictadvPath = txtdictpath.Text
-  lstdict.List = SHowAdvanceDictItems()
   Balloon.Info(("Information saved"), btndtctpath)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
 
-Public Sub btndictoption_Click()
+Private Sub ShowTemplateCategories(sPath As String)
 
-  modSettings.SaveSettingsToFile("AdvancedDictionary/" & cmbdictoption.Text, txtdictoption.Text)
-  Balloon.Info(("Information saved"), btndictoption)
-  Balloon.Delay = modBasic.$BalloonDelay
+  Dim ConfFile As Settings
+  Dim xlist As String[]
+  Dim xtitle As String
 
-End
-
-Public Sub cmbdictoption_Click()
-
-  If cmbdictoption.Text Then
-    txtdictoption.Text = modSettings.ShowSettingFromFIle("AdvancedDictionary/" & cmbdictoption.Text)
+  If Exist(sPath) Then
+    xlist = New String[]
+    ConfFile = New Settings(sPath)
+    For Each xtitle In ConfFile.Keys
+      xlist.Add(xtitle)
+    Next
+    cmbcategory.List = xlist
   Endif
 
 End
 
-Public Sub btndictadd_Click()
+Public Sub btnshowcateg_Click()
 
-  Dim ConfFile As Settings
-  Dim xpath As String
-
-  If txtdicttile.Text Then
-    xpath = modSettings.ShowSettingFromFIle("AdvancedDictionary/Path")
-    If Exist(xpath) Then
-      ConfFile = New Settings(modSettings.ShowSettingFromFIle("AdvancedDictionary/Path"))
-      ConfFile["Dictionary/" & txtdicttile.Text] = Trim(txtdictext.RichText)
-      ConfFile.Save()
-      lstdict.List = SHowAdvanceDictItems()
-      Balloon.Info(("Information saved"), btndictadd)
-      Balloon.Delay = modBasic.$BalloonDelay
+  If txtdictpath.Text Then
+    If cmbcategory.Text Then
+      lstdict.List = SHowAdvanceDictItems(txtdictpath.Text, cmbcategory.Text)
     Endif
   Endif
 
 End
 
-Public Sub lstdict_Click()
-
-  Dim xpath As String
-
-  xpath = modSettings.ShowSettingFromFIle("AdvancedDictionary/Path")
-  If Exist(xpath) Then
-    txtdicttile.Text = lstdict.Text
-    txtdictext.RichText = modControlSub.ShowSettingValue(xpath, "Dictionary/" & lstdict.Text)
-  Endif
-
-End
-
-Private Function SHowAdvanceDictItems() As String[]
+Private Function SHowAdvanceDictItems(xpath As String, sCategory As String) As String[]
 
   Dim xxx As String[]
-  Dim xpath As String
   Dim ConfFile As Settings
   Dim xtitle As String
   Dim xkey As String
 
   xxx = New String[]
-  xpath = modSettings.ShowSettingFromFIle("AdvancedDictionary/Path")
   If Exist(xpath) Then
 
     ConfFile = New Settings(xpath)
     For Each xtitle In ConfFile.Keys
-      If xtitle = "Dictionary" Then
+      If xtitle = sCategory Then
         For Each xkey In ConfFile.Keys[xtitle]
           xxx.Add(xkey)
         Next
@@ -2072,13 +2062,63 @@ Private Function SHowAdvanceDictItems() As String[]
 
 End
 
-Public Sub tnadddictfile_Click()
+Public Sub lstdict_Click()
 
-  Dim xPath As String
+  Dim xpath As String
 
-  If Dialog.SelectDirectory() Then Return
-  xPath = Dialog.Path &/ modBasic.$lbluser & ".conf"
-  File.Save(xPath, "")
-  txtdictpath.Text = xPath
+  xpath = modSettings.ShowSettingFromFIle("TextTemplate/Path")
+  If Exist(xpath) Then
+    If cmbcategory.Text Then
+      txtdicttile.Text = lstdict.Text
+      txtdictext.RichText = modControlSub.ShowSettingValue(xpath, cmbcategory.Text & "/" & lstdict.Text)
+    Endif
+  Endif
+
+End
+
+Public Sub btncreateTempla_Click()
+
+  If cmbcategory.Text Then
+    txtdictext.RichText = GetRichTextArea(cmbcategory.Text, txtdictext.RichText)
+  Endif
+
+End
+
+Public Sub btndictadd_Click()
+
+  Dim ConfFile As Settings
+  Dim xpath As String
+
+  If txtdicttile.Text Then
+    xpath = txtdictpath.Text
+    If Exist(xpath) Then
+      If cmbcategory.Text Then
+        ConfFile = New Settings(modSettings.ShowSettingFromFIle("TextTemplate/Path"))
+        ConfFile[cmbcategory.Text & "/" & txtdicttile.Text] = Trim(txtdictext.RichText)
+        ConfFile.Save()
+        lstdict.List = SHowAdvanceDictItems(txtdictpath.Text, cmbcategory.Text)
+        ShowTemplateCategories(txtdictpath.Text)
+        Balloon.Info(("Information saved"), btndictadd)
+        Balloon.Delay = modBasic.$BalloonDelay
+      Endif
+    Endif
+  Endif
+
+End
+
+''---------------------- Not necessary ------------------------
+Public Sub cmbdictoption_Click()
+
+  If cmbdictoption.Text Then
+    txtdictoption.Text = modSettings.ShowSettingFromFIle("AdvancedDictionary/" & cmbdictoption.Text)
+  Endif
+
+End
+
+Public Sub btndictoption_Click()
+
+  modSettings.SaveSettingsToFile("AdvancedDictionary/" & cmbdictoption.Text, txtdictoption.Text)
+  Balloon.Info(("Information saved"), btndictoption)
+  Balloon.Delay = modBasic.$BalloonDelay
 
 End

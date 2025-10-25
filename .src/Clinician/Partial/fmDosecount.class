@@ -64,10 +64,11 @@ Public Sub ListBox1_Click()
   txtid.Value = CLong(ListBox1.Current.Key)
   lblmedicine.Text = ListBox1.Current.Text
   If txtid.Value Then
-    res = modDatabase.$myConn.Exec("select fldroute,flditem,flddose,fldfreq,flddays,fldstatus from tblpatdosing where fldid=&1 and flditem=&2", txtid.Value, lblmedicine.Text)
+    res = modDatabase.$myConn.Exec("select fldroute,flditem,flddose,fldfreq,flddays,fldstatus,flddirection from tblpatdosing where fldid=&1 and flditem=&2", txtid.Value, lblmedicine.Text)
     lblregimen.Text = res["fldroute"] & Space(2) & res["flddose"] & Space(1) & modMedConstant.GetMedicineDoseUnit(res["flditem"]) & " X " & res["fldfreq"] & " X " & res["flddays"] & " day(s)"
     lblregimen.Tag = res["fldfreq"]
     lblunit.Text = modPharmLabel.GetDosageFormForLabel(lblmedicine.Text, "Inpatient")
+    txtdirection.Text = res["flddirection"]
     FillGridView(txtid.Value, lblmedicine.Text)
     btnsave.Enabled = True
     txtdose.Value = Round(res["flddose"] / modMedConstant.GetDrugInitialStrength(lblmedicine.Text), -2)

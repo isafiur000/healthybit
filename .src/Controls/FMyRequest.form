@@ -1,56 +1,48 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(29.125,19.375,114,55)
+  MoveScaled(29.125,19.375,109,56)
   Text = ("Result")
   Resizable = False
-  { mnufile Menu
-    Text = ("File")
-    { mnuexpo Menu
-      Text = ("Export")
+  Arrangement = Arrange.Vertical
+  Margin = True
+  { Panel1 Panel
+    MoveScaled(0,0,108,42)
+    Expand = True
+    Arrangement = Arrange.Vertical
+    { mnudoreport Panel
+      MoveScaled(1,1,106,3.5)
+      { mnuopenfile Button
+        MoveScaled(0,0,12,3)
+        Text = ("View")
+      }
+      { mnuprint Button
+        MoveScaled(13,0,12,3)
+        Text = ("Print")
+      }
+      { mnuemail Button
+        MoveScaled(26,0,12,3)
+        Text = ("E-Mail")
+      }
+      { mnuftp Button
+        MoveScaled(39,0,12,3)
+        Text = ("FTP")
+      }
+      { mnuexpo Button
+        MoveScaled(92,0,12,3)
+        Text = ("Export")
+      }
+      { mnutransfer Button
+        MoveScaled(79,0,12,3)
+        Text = ("Transfer")
+      }
     }
-    { mnutransfer Menu
-      Text = ("Transfer")
+    { GridView1 GridView
+      MoveScaled(4,6,86,19)
+      Expand = True
+      Mode = Select.Single
+      Header = GridView.Both
+      AutoResize = False
     }
-    { mnumovement Menu
-      Text = ("Movement")
-      Visible = False
-    }
-  }
-  { mnuimages Menu
-    Text = ("Images")
-    Visible = False
-    { mnugenimage Menu
-      Text = ("General Images")
-    }
-    { mnudicom Menu
-      Text = ("DICOM Images")
-    }
-    { mnupacs Menu
-      Text = ("PACS Images")
-    }
-  }
-  { mnudoreport Menu
-    Text = ("Activity")
-    Visible = False
-    { mnuopenfile Menu
-      Text = ("Open File")
-    }
-    { mnuprint Menu
-      Text = ("Print File")
-      Shortcut = "Ctrl+P"
-    }
-    { mnuemail Menu
-      Text = ("E-Mail")
-    }
-    { mnuftp Menu
-      Text = ("Send To FTP")
-    }
-  }
-  { GridView1 GridView
-    MoveScaled(1,1,112,50)
-    Mode = Select.Single
-    Header = GridView.Both
-    AutoResize = False
   }
 }

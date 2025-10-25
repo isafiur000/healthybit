@@ -16,8 +16,8 @@
     { mnupatsearch Menu
       Text = ("Search")
     }
-    { mnuscanfile Menu
-      Text = ("Past Docs")
+    { mnuscanner Menu
+      Text = ("Scanner")
     }
     { mnubulkupload Menu
       Text = ("Bulk Upload")
@@ -95,6 +95,9 @@
     { mnupatdosing Menu
       Text = ("Drug Dosing")
       Shortcut = "Ctrl+M"
+    }
+    { mnupatcomment Menu
+      Text = ("Comment")
     }
   }
   { mnucurrent Menu
@@ -674,7 +677,7 @@
           MoveScaled(32,1,8.625,3)
         }
         { txtoxysat ValueBox
-          MoveScaled(11,8,8.625,3)
+          MoveScaled(11,9,8.625,3)
         }
         { txttemp ValueBox
           MoveScaled(32,9,8.625,3)
@@ -705,7 +708,7 @@
           Text = ("Resp Rate")
         }
         { Label11 Label
-          MoveScaled(1,8,10,3)
+          MoveScaled(1,9,10,3)
           Border = Border.Plain
           Text = ("S P O2")
         }
@@ -719,7 +722,7 @@
           Picture = Picture["icon:/small/refresh"]
         }
         { btntriage Button
-          MoveScaled(1,12,12,3)
+          MoveScaled(1,13,12,3)
           Text = ("Triage")
           Picture = Picture["icon:/small/color"]
         }
@@ -769,18 +772,17 @@
         Text = ("PACS")
       }
       { btnaddcibf ToolButton
-        MoveScaled(60,0.5,3,3)
+        MoveScaled(61,0.5,3,3)
         Picture = Picture["icon:/small/webcam"]
-      }
-      { btnaddscan ToolButton
-        MoveScaled(64,0.5,3,3)
-        ToolTip = ("Scan Document")
-        Picture = Picture["icon:/small/scanner"]
       }
       { btnaddchart ToolButton
         MoveScaled(68,0.5,3,3)
         ToolTip = ("Touch Screen Drawing")
         Picture = Picture["icon:/small/pen"]
+      }
+      { mnuscanfile ToolButton
+        MoveScaled(64.5,0.5,3,3)
+        Picture = Picture["icon:/small/attach"]
       }
     }
     { TabPanel1 TabPanel
@@ -883,47 +885,62 @@
         }
       }
       Index = 1
-      Text = ("Illness [F4]")
+      Text = ("History [F4]")
+      { Panel19 Panel
+        MoveScaled(0,0,25,39)
+        Arrangement = Arrange.Vertical
+        { cmbinpathistory ListBox
+          MoveScaled(1,2,23,27)
+          Expand = True
+        }
+        { Panel2 Panel
+          MoveScaled(0,35,24,3)
+          Border = Border.Plain
+          { rbsi RadioButton
+            MoveScaled(1,0,10,3)
+            Text = ("SI Unit")
+            Value = True
+          }
+          { rbmetric RadioButton
+            MoveScaled(13,0,10,3)
+            Text = ("Metric")
+          }
+        }
+      }
       { Panel20 Panel
-        MoveScaled(0,0,119,17)
+        MoveScaled(25,0,93,17)
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel11 Panel
-          MoveScaled(0,0,118,4)
+          MoveScaled(0,0,92,4)
           { dcthelphistory ToolButton
-            MoveScaled(33,0.5,3,3)
+            MoveScaled(50,0.5,3,3)
             Picture = Picture["icon:/small/edit"]
           }
           { btnhelphistory ToolButton
-            MoveScaled(37,0.5,3,3)
+            MoveScaled(54,0.5,3,3)
             Picture = Picture["icon:/small/exec"]
           }
           { btntemplphistory ToolButton
-            MoveScaled(41,0.5,3,3)
+            MoveScaled(58,0.5,3,3)
             Picture = Picture["icon:/small/attach"]
           }
           { btnshowhistory ToolButton
-            MoveScaled(45,0.5,3,3)
+            MoveScaled(63,0.5,3,3)
             Picture = Picture["icon:/small/refresh"]
           }
           { btnhistorydef ToolButton
-            MoveScaled(29,0.5,3,3)
+            MoveScaled(46,0.5,3,3)
             Picture = Picture["icon:/small/database"]
           }
-          { Label4 Label
-            MoveScaled(0,0.5,17,3)
+          { lblhistoryhead Label
+            MoveScaled(0,0.5,38,3)
             Border = Border.Plain
-            Text = ("History of Illness")
           }
           { btnhistory Button
-            MoveScaled(105,0.5,12,3)
+            MoveScaled(79,0.5,12,3)
             Text = ("Save")
             Picture = Picture["icon:/small/apply"]
-          }
-          { LCDLabel1 LCDLabel
-            MoveScaled(72,0.5,18,3)
-            Alignment = Align.Center
-            Border = True
           }
         }
         { txthistory TextHTML
@@ -972,18 +989,10 @@
             Text = ("Scales")
             Picture = Picture["icon:/small/calculator"]
           }
-          { Panel2 Panel
-            MoveScaled(95,0.5,21,3)
-            Border = Border.Plain
-            { rbsi RadioButton
-              MoveScaled(0,0,10,3)
-              Text = ("SI Unit")
-              Value = True
-            }
-            { rbmetric RadioButton
-              MoveScaled(11,0,10,3)
-              Text = ("Metric")
-            }
+          { LCDLabel1 LCDLabel
+            MoveScaled(97,0.5,18,3)
+            Alignment = Align.Center
+            Border = True
           }
         }
         { Panel18 Panel

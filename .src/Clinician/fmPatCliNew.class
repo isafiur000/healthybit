@@ -20,6 +20,7 @@ Private hPtForm As FmClinHistory
 Private hDigForm As FmDiagnosticTab
 Private hOwnStockForm As FmWardStock
 
+Private $billReference As String
 Private $billModeTest As String
 Private $billModeRadio As String
 Private $billModePharmacy As String
@@ -466,6 +467,7 @@ Private Sub BasicInfoPatient()
     modRepository.$RepoDataStatus = False
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
     GetDefaultBillingmodes()
+    cmbinpathistory.List = GetHistoryList()
     ButtonControl()
     $dateReg = modPatient.GetRecordDate(Trim(txtencid.Text))
     ' GetConsultParam()
@@ -489,10 +491,31 @@ Private Sub BasicInfoPatient()
 
 End
 
+Private Function GetHistoryList() As String[]
+
+  Dim xList As String[]
+  Dim xnew As String[]
+  Dim xfinal As String[]
+
+  xList = New String[]
+  xList.Add("History of Illness")
+  xnew = modMedicine.GetClinHistoryList($billReference, txtgender.Text)
+  If xnew And If xnew.Count Then
+    xList.Insert(xnew)
+  Else
+    xList.Insert(modMedicine.GetDefaultClinHistories())
+  Endif
+
+  xfinal = modString.BinaryDistinctStringArray(xList)
+  Return xfinal
+
+End
+
 Private Sub GetDefaultBillingmodes()
 
   Dim xpackage As String
 
+  $billReference = modNonMedical.GetFixedReference(Trim(txtencid.Text))
   Select $sTatus
     Case "Admitted", "Discharged", "LAMA", "Death", "Refer", "Absconder"
       $billModeTest = modNonMedical.GetAutoIPBillingPack("Test", Trim(txtencid.Text))
@@ -1523,7 +1546,7 @@ Public Sub GridView1_Click()
     FillExamtable()
 
   Else If GridView1.Column = 3 Then
-    xx = InputCombo("Select Flag for the observation", "Change Flag", ["Normal", "Abnormal"], modMisc.GetIconValue(GridView1[GridView1.Row, 3].Picture), True)
+    xx = InputCombo("Select Flag for observation", "Change Flag", ["Normal", "Abnormal"], modMisc.GetIconValue(GridView1[GridView1.Row, 3].Picture), True)
     If xx Then
       modClinSub.UpdateExamFlag(GridView1[GridView1.Row, 0].Text, xx)
       FillExamtable()
@@ -1558,7 +1581,7 @@ Public Sub btnaddsymplist_Click()
   If modBasic.$SelectMultiSymptoms = "Yes" Then
     xlist = modString.GetListFromVariant(modFixPatho.$SymptomCompVar, "fldsymptom", True)
     If xlist.Count Then
-      aList = GridListView("Select Presenting Complaints", xlist, Panel13, grdchiefsymptom.Height + cmbsymptom.Height + Label4.Height + cmbfinding.Height + GridView1.Height)
+      aList = GridListView("Select Presenting Complaints", xlist, Panel13, grdchiefsymptom.Height + cmbsymptom.Height + lblhistoryhead.Height + cmbfinding.Height + GridView1.Height)
       If aList And If aList.Count Then
         For Each xitem In aList
           modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", xitem, "", 0, "")
@@ -2076,26 +2099,13 @@ Public Sub txttemp_GotFocus()
 End
 
 ''--------------------- History and planning ---------------------------
-Public Sub dcthelphistory_Click()
+Public Sub cmbinpathistory_Click()
 
-  Dim xx As String
-
-  xx = GetRichTextArea("History Of Illness", txthistory.RichText)
-  If xx Then
-    txthistory.RichText = xx
+  If cmbinpathistory.Text Then
+    btnhistory.Enabled = True
+    lblhistoryhead.Text = cmbinpathistory.Text
+    txthistory.RichText = modPatPatho.ShowSelectedHistory(Trim(txtencid.Text), cmbinpathistory.Text)
   Endif
-
-End
-
-Public Sub btntemplphistory_Click()
-
-  txthistory.RichText = txthistory.RichText & DictionaryVIew(modBasic.$dictadvPath)
-
-End
-
-Public Sub btnhistorydef_Click()
-
-  txthistory.RichText = AddHistory("History", Trim(txtencid.Text), "History of Illness")
 
 End
 
@@ -2109,19 +2119,52 @@ Public Sub btnhistory_Click()
     xboolean = False
   Endif
 
-  If txthistory.Text Then
-    modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "History", "History of Illness", txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
-    Balloon.Info(("Information saved"), btnhistory)
-    Balloon.Delay = modBasic.$BalloonDelay
+  If cmbinpathistory.Text Then
+    If txthistory.Text Then
+      modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "History", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
+      Balloon.Info(("Information saved"), btnhistory)
+      Balloon.Delay = modBasic.$BalloonDelay
+      btnhistory.Enabled = False
+    Endif
   Endif
 
 End
 
+Public Sub btnhistorydef_Click()
+
+  If cmbinpathistory.Text Then
+    txthistory.RichText = AddHistory("History", Trim(txtencid.Text), cmbinpathistory.Text)
+  Endif
+
+End
+
+Public Sub dcthelphistory_Click()
+
+  Dim xx As String
+
+  If cmbinpathistory.Text Then
+    xx = GetRichTextArea(cmbinpathistory.Text, txthistory.RichText)
+    If xx Then
+      txthistory.RichText = xx
+    Endif
+  Endif
+
+End
+
+Public Sub btntemplphistory_Click()
+
+  If cmbinpathistory.Text Then
+    txthistory.RichText = txthistory.RichText & DictionaryVIew(cmbinpathistory.Text)
+  Endif
+
+End
+
+''------------------ Advice ---------------
 Public Sub dcthelpplan_Click()
 
   Dim xx As String
 
-  xx = GetRichTextArea("Recommendation", txtplan.RichText)
+  xx = GetRichTextArea("Clinician Advice", txtplan.RichText)
   If xx Then
     txtplan.RichText = xx
   Endif
@@ -2130,7 +2173,7 @@ End
 
 Public Sub btntemplpplan_Click()
 
-  txtplan.RichText = txtplan.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  txtplan.RichText = txtplan.RichText & DictionaryVIew("Clinician Advice")
 
 End
 
@@ -2178,7 +2221,7 @@ End
 
 Public Sub btntemplpgencomp_Click()
 
-  txtgencomplaint.RichText = txtgencomplaint.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  txtgencomplaint.RichText = txtgencomplaint.RichText & DictionaryVIew("General Complaints")
 
 End
 
@@ -2281,7 +2324,7 @@ Public Sub btnaddchart_Click()
 
 End
 
-Public Sub btnaddscan_Click()
+Public Sub mnuscanner_Click()
 
   Dim sPath As String
   Dim sTitle As String
@@ -4273,6 +4316,24 @@ Public Sub btnnotice_Click()
         modPatientSub.UpdateConsultNotice(txtclinIndex.Value, xx)
       Else If txtclinmode.Text = "OP Visit" Then
         modPatientSub.UpdateOPVisitNotice(txtclinIndex.Value, xx)
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub mnupatcomment_Click()
+
+  Dim res As Result
+  Dim xval As String
+
+  If $PatientNum Then
+    res = modDatabase.$myConn.Edit("tblpatientinfo", "fldpatientval=&1", $PatientNum)
+    If res.Available Then
+      xval = GetTextArea($PatientNum, res["fldcomment"])
+      If xval Then
+        res["fldcomment"] = xval
+        res.Update
       Endif
     Endif
   Endif

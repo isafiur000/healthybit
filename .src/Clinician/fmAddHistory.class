@@ -30,6 +30,8 @@ End
 
 Public Sub Form_Open()
 
+  Dim xList As String[]
+
   modGeneralMain.ArrangeFormCentre(Me, "False")
   If $sType = "History" Then
     $sTable = "tblhistory"
@@ -37,8 +39,21 @@ Public Sub Form_Open()
     $sTable = "tbldischarge"
   Endif
   $gender = modPatient.GetPatientSex($encid)
-  cmbformat.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec(Subst("select distinct(fldformat) as col from &1", $sTable) & " where flditem=&1 and (fldgender=&2 or fldgender=&3)", $sVariable, $gender, "Both Sex"))                     ''
+  xList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec(Subst("select distinct(fldformat) as col from &1", $sTable) & " where flditem=&1 and (fldgender=&2 or fldgender=&3)", $sVariable, $gender, "Both Sex"))                     ''
+  If xList And If xList.Count Then
+    xList.Add("Common")
+  Else
+    xList = ["Common"]
+  Endif
+  cmbformat.List = xList
   cmbformat.Text = "Common"
+
+End
+
+Public Sub cmbformat_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbformat)
+  modFillContainer.RestrictComboToContent(cmbformat)
 
 End
 

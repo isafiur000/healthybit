@@ -363,15 +363,19 @@ Public Sub dctsummary_Click()
 
   Dim xx As String
 
-  xx = GetRichTextArea("Procedure Note", txtsummary.RichText)
-  If xx Then
-    txtsummary.RichText = xx
+  If cmbprocedure.Text Then
+    xx = GetRichTextArea(cmbprocedure.Text, txtsummary.RichText)
+    If xx Then
+      txtsummary.RichText = xx
+    Endif
   Endif
 
 End
 
 Public Sub btntemplsumm_Click()
 
-  txtsummary.RichText = txtsummary.RichText & DictionaryVIew(modBasic.$dictadvPath)
+  If cmbprocedure.Text Then
+    txtsummary.RichText = txtsummary.RichText & DictionaryVIew(cmbprocedure.Text)
+  Endif
 
 End

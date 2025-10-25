@@ -35,7 +35,7 @@
       }
     }
     { Panel8 Panel
-      MoveScaled(35,2,73,43)
+      MoveScaled(35,1,73,43)
       Expand = True
       Arrangement = Arrange.Vertical
       { lblmedicine Label
@@ -44,7 +44,7 @@
         Border = Border.Plain
       }
       { Panel5 Panel
-        MoveScaled(0,6,71.875,4)
+        MoveScaled(0,4,71.875,4)
         { lblregimen Label
           MoveScaled(9,0.5,32,3)
           Border = Border.Plain
@@ -70,8 +70,13 @@
           Text = ("Regimen")
         }
       }
+      { txtdirection TextArea
+        MoveScaled(0,8,71,6)
+        ReadOnly = True
+        Wrap = True
+      }
       { GridView1 GridView
-        MoveScaled(0,11,66,23)
+        MoveScaled(0,16,66,19)
         Expand = True
         Mode = Select.Single
         Header = GridView.Both

@@ -1266,7 +1266,10 @@ Private Sub GetComboItemList()
     btnobsdiagno.Enabled = True
   Endif
   If $UserRestrict.Exist("Demographics") = False Then
-    btnmobiledemog.Enabled = True
+    mnudemographic.Enabled = True
+  Endif
+  If $UserRestrict.Exist("Consultation Plan") = False Then
+    mnureqconsult.Enabled = True
   Endif
   If $UserRestrict.Exist("Essential Examinations") = False Then
     btnmobilevital.Enabled = True
@@ -1351,7 +1354,7 @@ Public Sub btnmobilebed_Click()
 
 End
 
-Public Sub btnmobiledemog_Click()
+Public Sub mnudemographic_Click()
 
   Dim hForm7 As FmPatdemograph
 

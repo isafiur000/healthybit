@@ -1994,9 +1994,9 @@ Public Sub btntemplsumm_Click()
 
   Try j = Application.ActiveControl.Tag
   If aHTMLText[j] Then
-    aHTMLText[j].RichText = aHTMLText[j].RichText & DictionaryVIew(modBasic.$dictadvPath)
+    aHTMLText[j].RichText = aHTMLText[j].RichText & DictionaryVIew(aNameLabel[j].Text)
   Else If aGenTextArea[j] Then
-    aGenTextArea[j].Text = aGenTextArea[j].Text & DictionaryVIew(modBasic.$dictadvPath)
+    aGenTextArea[j].Text = aGenTextArea[j].Text & DictionaryVIew(aNameLabel[j].Text)
   Endif
 
 End
