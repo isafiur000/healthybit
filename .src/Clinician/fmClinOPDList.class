@@ -236,7 +236,7 @@ End
 
 Public Sub txtencid_Change()
 
-  FillBedGrid()
+  ' FillBedGrid()
 
 End
 
@@ -1152,16 +1152,10 @@ End
 Public Sub btnmobexam_Click()
 
   Dim hForm As FmEnterGroupExam
-  Dim hForm1 As FmEnterDepartExam
 
   If GridView1.Rows.Selection.Count Then
-    If modBasic.$ClinOPDExamination Then
-      hForm1 = New FmEnterDepartExam(modBasic.$ClinOPDExamination, GridView1[GridView1.Row, 2].Text, modBasic.$ClinOPDExamination, "Physician Examinations")
-      hForm1.ShowModal
-    Else
-      hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 2].Text, "Physician Examinations", "All")
-      hForm.ShowModal
-    Endif
+    hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 2].Text, "Physician Examinations", "All")
+    hForm.ShowModal
   Endif
 
 End
@@ -2314,6 +2308,22 @@ Public Sub mnucountuni_Click()
 End
 
 ''------------ History ---------------
+Public Sub mnuhistory_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    modPatReports.GetVisitHistoryResult(modPatient.GetPatientNoByEnc(GridView1[GridView1.Row, 2].Text))
+  Endif
+
+End
+
+Public Sub mnuvisiremote_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    modPatReports.GetRepoVisitHistoryResult(modPatient.GetPatientNoByEnc(GridView1[GridView1.Row, 2].Text))
+  Endif
+
+End
+
 Public Sub mnuexamlocal_Click()
 
   If GridView1.Rows.Selection.Count Then
@@ -2509,5 +2519,35 @@ End
 Public Sub chknotice_Click()
 
   modSettings.EnterCheckSetting(chknotice, "OPDPatientList/ShowNotices")
+
+End
+
+Public Sub mnugotooptometry_Click()
+
+  Dim hForm As FmExamAttach
+
+  If GridView1.Rows.Selection.Count Then
+    hForm = New FmExamAttach(GridView1[GridView1.Row, 2].Text, "Optometry", "Physician Examinations", True)
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+Public Sub mnugotoneuro_Click()
+
+  Dim hForm As FmExamAttach
+
+  If GridView1.Rows.Selection.Count Then
+    hForm = New FmExamAttach(GridView1[GridView1.Row, 2].Text, "Neurology", "Physician Examinations", True)
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+Public Sub mnugodelivery_Click()
+
+End
+
+Public Sub mnugotoexam_Click()
 
 End

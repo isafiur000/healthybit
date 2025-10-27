@@ -1529,6 +1529,14 @@ Public Sub btnshow_Click()
 
 End
 
+Public Sub txtencid_KeyRelease()
+
+  If Key.Code = Key.Return Or If Key.Code = Key.Enter Then
+    btnshow_Click()
+  Endif
+
+End
+
 Private Sub BasicInfoPatient()
 
   Dim xstatus As String

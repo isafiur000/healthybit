@@ -12,6 +12,8 @@ Private $reference As String
 Private $sTatus As String
 Private $Grouping As String
 
+Private hDigForm As FmDiagnosticTab
+
 Private $billModeTest As String
 Private $billModeRadio As String
 Private $billModePharmacy As String
@@ -278,6 +280,7 @@ Private Sub GetEncounterValue()
             Wait
             If modPatientSub.AllowEncIDHistory(Trim(txtencid.Text), modDatabase.$myConn) = True Then
               GetDefaultBillingmodes()
+              hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
               BlockDCButton()
               ButtonControl()
               txtencid.ReadOnly = True

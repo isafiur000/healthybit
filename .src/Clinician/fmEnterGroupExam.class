@@ -53,6 +53,7 @@ Private bClinBox As New Object[50, 50]
 Private bLeftRight As New Object[50, 50]
 Private bHTMLText As New Object[50, 50]
 Private bGenTextArea As New Object[50, 50]
+Private bListBox As New Object[50, 50]
 Private bWebSpace As New Object[50, 50]
 ''other variables
 Private $encid As String
@@ -192,7 +193,7 @@ Private Sub LoadFormData()
             xopList = JSON.Decode(sColl["fldoptionlist"])
           Else
             If sColl["fldtanswertype"] = "Dichotomous" Then
-              xopList = ["Yes", "No"]
+              xopList = ["No", "Yes"]
             Endif
           Endif
           Break
@@ -347,6 +348,8 @@ Private Sub CreateControls()
                     Case "Date Time", "BS Date"
                       bDateBox[i, j] = New DateBox(bHoriPanel[i, j])
                       bBSDate[i, j] = New ToolButton(bHoriPanel[i, j]) As "SubDateButton"
+                    Case "Multiple Selection"
+                      bListBox[i, j] = New ListBox(bHoriPanel[i, j])
                     Case "Single Selection"
                       bComboBox[i, j] = New ComboBox(bHoriPanel[i, j]) As "SubComboGroup"
                     Case "Dichotomous"
@@ -399,7 +402,9 @@ Private Sub DIsplayTextForm()
 
   Dim j As Integer
   Dim xopt As String
-  Dim rowHt As Integer
+  Dim browHt As Integer
+  Dim crowHt As Integer
+  Dim sumHt As Integer
 
   For i = 0 To $sExamVar.Count - 1
     If i < 49 Then
@@ -687,27 +692,40 @@ Private Sub DIsplayTextForm()
 
         Else If $sExamVar[i]["OptionType"] = "Fixed Components" Then
           ''----------- Fixed Components -----------------------
-          rowHt = 0
+          sumHt = 0
           For j = 0 To $sExamVar[i]["OptionList"].Count - 1
-            With bHoriPanel[i, j]
-              .Height = 25 * AppFactor
-              .Expand = True
-            End With
+            browHt = 0
+            crowHt = 0
 
             xopt = $sExamVar[i]["OptionList"][j]["fldtanswertype"]
             Select xopt
-              Case "Date Time", "BS Date", "Single Selection", "Dichotomous", "Quantitative", "Qualitative", "Clinical Scale"
+              Case "Multiple Selection"
+                With bHoriPanel[i, j]
+                  .Height = 25 * Slider1.Value * AppFactor
+                  .Expand = True
+                  browHt = browHt + (25 * Slider1.Value * AppFactor)
+                End With
+              Case Else
+                With bHoriPanel[i, j]
+                  .Height = 25 * AppFactor
+                  .Expand = True
+                  browHt = browHt + (25 * AppFactor)
+                End With
+            End Select
+
+            Select xopt
+              Case "Date Time", "BS Date", "Single Selection", "Dichotomous", "Quantitative", "Qualitative", "Clinical Scale", "Multiple Selection"
                 With cHoriPanel[i, j]
                   .Visible = False
                 End With
-              Case "Text Table", "RichText Area"
-                With cHoriPanel[i, j]
-                  .Height = (25 * Slider1.Value) * AppFactor
-                End With
-              Case Else
-                With cHoriPanel[i, j]
-                  .Height = (25 * Slider1.Value) * AppFactor
-                End With
+                ' Case "Text Table", "RichText Area"
+                '   With cHoriPanel[i, j]
+                '     .Height = (25 * Slider1.Value) * AppFactor
+                '   End With
+                ' Case Else
+                '   With cHoriPanel[i, j]
+                '     .Height = (25 * Slider1.Value) * AppFactor
+                '   End With
             End Select
 
             With bExamLabel[i, j]
@@ -727,13 +745,20 @@ Private Sub DIsplayTextForm()
             End With
 
             ''subcomponents
-            If xopt = "Single Selection" Then
+            If xopt = "Multiple Selection" Then
+              With bListBox[i, j]
+                .Expand = True
+                .Height = 25 * Slider1.Value * AppFactor
+                .Mode = Select.Multiple
+                .ScrollBar = Scroll.Both
+                .Tag = i
+              End With
+            Else If xopt = "Single Selection" Then
               With bComboBox[i, j]
                 .Expand = True
                 .Height = 28 * AppFactor
                 .List = modAllExam.SelectSubExamOptionList("Exam", $sExamVar[i]["ExamName"], $sExamVar[i]["OptionList"][j]["fldsubexam"], xopt)
                 .Tag = [i, j]
-                rowHt = rowHt + (25 * AppFactor)
               End With
             Else If xopt = "Dichotomous" Then
               With bDichoValue[i, j]
@@ -741,7 +766,6 @@ Private Sub DIsplayTextForm()
                 .Height = 25 * AppFactor
                 .List = modAllExam.SelectSubExamOptionList("Exam", $sExamVar[i]["ExamName"], $sExamVar[i]["OptionList"][j]["fldsubexam"], xopt)
                 .Tag = [i, j]
-                rowHt = rowHt + (25 * AppFactor)
               End With
             Else If xopt = "Date Time" Then
               With bDateBox[i, j]
@@ -749,7 +773,6 @@ Private Sub DIsplayTextForm()
                 .Height = 25 * AppFactor
                 .Mode = DateChooser.DateTime
                 .Tag = [i, j]
-                rowHt = rowHt + (25 * AppFactor)
               End With
               With bBSDate[i, j]
                 .Width = 30 * AppFactor
@@ -763,7 +786,6 @@ Private Sub DIsplayTextForm()
                 .Height = 25 * AppFactor
                 .Mode = DateChooser.DateTime
                 .Tag = [i, j]
-                rowHt = rowHt + (25 * AppFactor)
               End With
               With bBSDate[i, j]
                 .Width = 30 * AppFactor
@@ -777,7 +799,6 @@ Private Sub DIsplayTextForm()
                 .Height = 25 * AppFactor
                 .Wrap = True
                 .Tag = [i, j]
-                rowHt = rowHt + (25 * AppFactor)
               End With
               With bClinBox[i, j]
                 .Width = 75 * AppFactor
@@ -789,7 +810,6 @@ Private Sub DIsplayTextForm()
                 .Width = 100 * AppFactor
                 .Height = 25 * AppFactor
                 .Tag = [i, j]
-                rowHt = rowHt + (25 * AppFactor)
               End With
               With bUnitText[i, j]
                 .Width = 100 * AppFactor
@@ -801,14 +821,14 @@ Private Sub DIsplayTextForm()
                 .Expand = True
                 .Height = 25 * AppFactor
                 .Tag = [i, j]
-                rowHt = rowHt + (25 * AppFactor)
               End With
+
             Else If xopt = "Left and Right" Then
               With bLeftRight[i, j]
                 .Expand = True
                 .Height = (25 * Slider1.Value) * AppFactor
                 .Tag = [i, j]
-                rowHt = rowHt + ((25 * Slider1.Value) * AppFactor)
+                crowHt = crowHt + ((25 * Slider1.Value) * AppFactor)
               End With
             Else If xopt = "RichText Area" Then
               With bHTMLText[i, j]
@@ -816,7 +836,7 @@ Private Sub DIsplayTextForm()
                 .Height = ((25 * Slider1.Value) + 50) * AppFactor
                 .DictionaryPath = modBasic.$dictPathList
                 .Tag = [i, j]
-                rowHt = rowHt + (((25 * Slider1.Value) + 50) * AppFactor)
+                crowHt = crowHt + (((25 * Slider1.Value) + 50) * AppFactor)
               End With
             Else
               With bGenTextArea[i, j]
@@ -824,23 +844,28 @@ Private Sub DIsplayTextForm()
                 .Height = (25 * Slider1.Value) * AppFactor
                 .DictionaryPath = modBasic.$dictPathList
                 .Tag = [i, j]
-                rowHt = rowHt + ((25 * Slider1.Value) * AppFactor)
+                crowHt = crowHt + ((25 * Slider1.Value) * AppFactor)
               End With
             Endif
 
+            With cHoriPanel[i, j]
+              .Height = crowHt
+            End With
+
             With bWebSpace[i, j]
               .Height = 15 * AppFactor
-              rowHt = rowHt + (15 * AppFactor)
             End With
+
+            sumHt = sumHt + crowHt + (40 * AppFactor)
           Next
 
           With aExpanFixed[i]
             .Expand = True
-            .Height = rowHt + (25 * AppFactor)
+            .Height = sumHt + (25 * AppFactor)
             .Tag = i
           End With
           With aWideRowAll[i]
-            .Height = rowHt + (50 * AppFactor)
+            .Height = sumHt + (50 * AppFactor)
           End With
           ''-------- end of fixed components ----------------
 

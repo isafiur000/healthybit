@@ -75,6 +75,15 @@
   { mnuhistoryall Menu
     Text = ("History")
     Enabled = False
+    { mnuvisithist Menu
+      Text = ("Visit History")
+      { mnuhistory Menu
+        Text = ("Hospital")
+      }
+      { mnuvisiremote Menu
+        Text = ("Repository")
+      }
+    }
     { mnugrpexams Menu
       Text = ("Examination")
       { mnuexamlocal Menu
@@ -322,6 +331,29 @@
       Text = ("Exam10")
       Enabled = False
       Tag = "Structured Form"
+    }
+  }
+  { mnugotoform Menu
+    Text = ("Forms")
+    { Menu1 Menu
+      Text = ("Specialized")
+      Enabled = False
+    }
+    { mnugotooptometry Menu
+      Text = ("Optometry")
+    }
+    { mnugotoneuro Menu
+      Text = ("Neurology")
+    }
+    { Menu4 Menu
+      Text = ("General")
+      Enabled = False
+    }
+    { mnugodelivery Menu
+      Text = ("Delivery Form")
+    }
+    { mnugotoexam Menu
+      Text = ("Examination")
     }
   }
   { Panel1 Panel

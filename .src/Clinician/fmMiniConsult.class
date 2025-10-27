@@ -82,126 +82,12 @@ Public Sub cmbdisctype_KeyRelease()
 
 End
 
-Public Sub cmbconsult_GotFocus()
+''==================== New consult ========================
+Public Sub btnconsult_Change()
 
-  If Not cmbconsult.Text Then
-    If modBasic.$ItemListFormat = "GridView" Then
-      If $ConsList.Count Then
-        cmbconsult.Text = GridViewNew("Select Particulars", $ConsList, False, cmbconsult)
-      Endif
-    Endif
+  If btnconsult.Text = "" Then
+    btnconsult.Tag = ""
   Endif
-
-End
-
-Public Sub btnsubOK_Click()
-
-  Dim billItem As String
-
-  Dim xrefer As String
-  Dim xpayble As String
-
-  If cmbconsult.Text Then
-    If $ConsList.Exist(cmbconsult.Text) Then
-      xrefer = modBillings.GetReferralUserSetting("Service", $encid)
-      If btnconsult.Tag Then
-        xpayble = btnconsult.Tag
-      Else
-        xpayble = modBillings.GetPayableUserSetting("Service", $encid)
-      Endif
-
-      Inc Application.Busy
-      If modGeneral.GetCategoryFromDept(cmbconsult.Text) = "Consultation" Then
-        modPatientSub.AddConsultData($encid, cmbconsult.Text, dtconsult.Value, $BillMode, "IP Consultation", btnconsult.Tag)
-      Else
-        modPatientSub.AddOPVisitData($encid, cmbconsult.Text, dtconsult.Value, $BillMode, "IP Consultation")
-      Endif
-
-      If modBasic.$AutoBillConsult Then
-        billItem = modNonMedical.GetIPDepartConsultRate(cmbconsult.Text, cmbdisctype.Text)
-        If billItem Then
-          If modBasic.$AutoBillConsult = "Standard" Then
-          Else If modBasic.$AutoBillConsult = "Full" Then
-            modBillings.GetAutoBillingEntry($encid, cmbdisctype.Text, "Service", billItem, 1, "Done", 0, True, False, xpayble, xrefer)
-          Else If modBasic.$AutoBillConsult = "Partial" Then
-            modBillings.GetAutoBillingEntry($encid, cmbdisctype.Text, "Service", billItem, 1, "Punched", 0, False, False, xpayble, xrefer)
-          Endif
-        Endif
-      Endif
-      cmbconsult.Text = ""
-      FillLabtable()
-      Dec Application.Busy
-
-    Endif
-  Endif
-
-End
-
-Public Sub FillLabtable()
-
-  Dim sql As String
-  Dim Column As Integer
-  Dim fld As ResultField
-  Dim res As Result
-  Dim xFldList1 As String[] = ["fldid", "fldconsulttime", "fldencounterval", "fldconsultname", "fldid"]
-  Dim xFldList2 As String[] = ["fldid", "fldconsulttime", "fldencounterval", "fldconsultname", "fldid"]
-
-  xFldList1.Add(Quote("tblconsult"))
-  xFldList2.Add(Quote("tblopvisit"))
-  sql = "select " & xFldList1.Join(",") & " from tblconsult where fldencounterval=&1 and fldstatus=&2 UNION ALL select " & xFldList2.Join(",") & " from tblopvisit where fldencounterval=&1 and fldstatus=&2"                                             ''
-  res = modDatabase.$myConn.Exec(sql, $encid, "Planned")
-
-  GridView1.Clear
-  GridView1.Columns.Count = res.Fields.Count
-  GridView1.Rows.Count = res.Count
-
-  For Each res
-    Column = 0
-    For Each fld In res.Fields
-      modGeneralMain.GridExplicitDecoration(GridView1, res.Index, Column)
-      If Column = 1 Then
-        GridView1[res.Index, Column].Text = modReportVar.GetDateTimeReport(res["fldconsulttime"], gb.GeneralDate)
-      Else If Column = 4 Then
-        GridView1[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
-        GridView1[res.Index, Column].Text = ""
-      Else
-        GridView1[res.Index, Column].Text = res[fld.Name]
-      Endif
-      Column = Column + 1
-    Next
-  Next
-  GridView1.Row = 0
-
-  With GridView1
-    .Rows.Height = modBasic.$AppGridRowHeight
-    .Columns[0].Width = 1
-    .Columns[1].Width = 180 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 1
-    .Columns[3].Width = 300 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 25 * modBasic.$AppWidthRatio
-    .Columns[5].Width = 1
-
-    .Columns[1].Text = "DateTime"
-    .Columns[3].Text = "Consultation"
-  End With
-
-End
-
-Public Sub GridView1_Click()
-
-  If GridView1.Column = 4 Then
-    If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
-      modDatabase.$myConn.Delete(GridView1[GridView1.Row, 5].Text, "fldid=&1", GridView1[GridView1.Row, 0].Text)
-      FillLabtable()
-    Endif
-  Endif
-
-End
-
-Public Sub cmbconsult_KeyRelease()
-
-  modFillContainer.AutoFillComboBox(cmbconsult)
-  modFillContainer.RestrictComboToContent(cmbconsult)
 
 End
 
@@ -228,6 +114,116 @@ Public Sub btnsms_Click()
 
 End
 
+Public Sub cmbconsult_Click()
+
+  txtdepart.Text = cmbconsult.Text
+
+End
+
+Public Sub btnsubOK_Click()
+
+  Dim billItem As String
+
+  Dim xrefer As String
+  Dim xpayble As String
+
+  If txtdepart.Text Then
+    If $ConsList.Exist(txtdepart.Text) Then
+      xrefer = modBillings.GetReferralUserSetting("Service", $encid)
+      If btnconsult.Tag Then
+        xpayble = btnconsult.Tag
+      Else
+        xpayble = modBillings.GetPayableUserSetting("Service", $encid)
+      Endif
+
+      Inc Application.Busy
+      If modGeneral.GetCategoryFromDept(txtdepart.Text) = "Consultation" Then
+        modPatientSub.AddConsultData($encid, txtdepart.Text, dtconsult.Value, $BillMode, "IP Consultation", btnconsult.Tag)
+      Else
+        modPatientSub.AddOPVisitData($encid, txtdepart.Text, dtconsult.Value, $BillMode, "IP Consultation")
+      Endif
+
+      If modBasic.$AutoBillConsult Then
+        billItem = modNonMedical.GetIPDepartConsultRate(txtdepart.Text, cmbdisctype.Text)
+        If billItem Then
+          If modBasic.$AutoBillConsult = "Standard" Then
+          Else If modBasic.$AutoBillConsult = "Full" Then
+            modBillings.GetAutoBillingEntry($encid, cmbdisctype.Text, "Service", billItem, 1, "Done", 0, True, False, xpayble, xrefer)
+          Else If modBasic.$AutoBillConsult = "Partial" Then
+            modBillings.GetAutoBillingEntry($encid, cmbdisctype.Text, "Service", billItem, 1, "Punched", 0, False, False, xpayble, xrefer)
+          Endif
+        Endif
+      Endif
+      FillLabtable()
+      Dec Application.Busy
+
+    Endif
+  Endif
+
+End
+
+Public Sub FillLabtable()
+
+  Dim sql As String
+  Dim Column As Integer
+  Dim fld As ResultField
+  Dim res As Result
+  Dim xFldList1 As String[] = ["fldid", "fldconsultname", "fldencounterval", "fldconsulttime", "fldid"]
+  Dim xFldList2 As String[] = ["fldid", "fldconsultname", "fldencounterval", "fldconsulttime", "fldid"]
+
+  xFldList1.Add(Quote("tblconsult"))
+  xFldList2.Add(Quote("tblopvisit"))
+  sql = "select " & xFldList1.Join(",") & " from tblconsult where fldencounterval=&1 and fldstatus=&2 UNION ALL select " & xFldList2.Join(",") & " from tblopvisit where fldencounterval=&1 and fldstatus=&2"                                             ''
+  res = modDatabase.$myConn.Exec(sql, $encid, "Planned")
+
+  GridView1.Clear
+  GridView1.Columns.Count = res.Fields.Count
+  GridView1.Rows.Count = res.Count
+
+  For Each res
+    Column = 0
+    For Each fld In res.Fields
+      modGeneralMain.GridExplicitDecoration(GridView1, res.Index, Column)
+      If Column = 3 Then
+        GridView1[res.Index, Column].Text = modReportVar.GetDateTimeReport(res[fld.Name], gb.GeneralDate)
+      Else If Column = 4 Then
+        GridView1[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
+        GridView1[res.Index, Column].Text = ""
+      Else
+        GridView1[res.Index, Column].Text = res[fld.Name]
+      Endif
+      Column = Column + 1
+    Next
+  Next
+  GridView1.Row = 0
+
+  With GridView1
+    .Rows.Height = modBasic.$AppGridRowHeight
+    .Columns[0].Width = 1
+    .Columns[1].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 1
+    .Columns[3].Width = 175 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 25 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 1
+
+    .Columns[1].Text = "Consultation"
+    .Columns[3].Text = "DateTime"
+  End With
+
+End
+
+Public Sub GridView1_Click()
+
+  If GridView1.Column = 4 Then
+    If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
+      modDatabase.$myConn.Delete(GridView1[GridView1.Row, 5].Text, "fldid=&1", GridView1[GridView1.Row, 0].Text)
+      FillLabtable()
+    Endif
+  Endif
+
+End
+
+''====================== completed consult ===========================
 Private Sub CompleteGrid()
 
   Dim sql As String
@@ -246,7 +242,7 @@ Private Sub CompleteGrid()
     .Columns[1].Width = 150 * modBasic.$AppWidthRatio
     .Columns[2].Width = 1
     .Columns[3].Width = 250 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 150 * modBasic.$AppWidthRatio
     .Columns[5].Width = 1
 
     .Columns[1].Text = "DateTime"
@@ -264,14 +260,6 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
     GridView2.Data.Text = modReportVar.GetDateTimeReport($rData2[$aMyFields2[Column]], gb.GeneralDate)
   Else
     GridView2.Data.Text = $rData2[$aMyFields2[Column]]
-  Endif
-
-End
-
-Public Sub btnconsult_Change()
-
-  If btnconsult.Text = "" Then
-    btnconsult.Tag = ""
   Endif
 
 End

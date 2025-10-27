@@ -1289,11 +1289,17 @@ End
 
 Public Sub btnaddexamlist_Click()
 
+  Dim hForm1 As FmWardHistory
   Dim hForm As FmEnterGroupExam
 
   If txtencid.Text Then
-    hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "Group")
-    hForm.ShowModal
+    If modBasic.$ClinOPDExamination Then
+      hForm1 = New FmWardHistory(modBasic.$ClinOPDExamination, Trim(txtencid.Text), "Physician Examinations")
+      modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
+    Else
+      hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "Group")
+      hForm.ShowModal
+    Endif
     FillExamtable()
     ShowEssentialExam()
   Endif

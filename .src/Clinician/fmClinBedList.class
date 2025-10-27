@@ -1534,12 +1534,12 @@ End
 Public Sub btnmobexam_Click()
 
   Dim hForm As FmEnterGroupExam
-  Dim hForm1 As FmEnterDepartExam
+  Dim hForm1 As FmWardHistory
 
   If GridView1.Rows.Selection.Count Then
     If modBasic.$ClinIPDExamination Then
-      hForm1 = New FmEnterDepartExam(modBasic.$ClinIPDExamination, GridView1[GridView1.Row, 4].Text, modBasic.$ClinIPDExamination, "Physician Examinations")
-      hForm1.ShowModal
+      hForm1 = New FmWardHistory(modBasic.$ClinIPDExamination, GridView1[GridView1.Row, 4].Text, "Physician Examinations")
+      modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
     Else
       hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 4].Text, "Physician Examinations", "Group")
       hForm.ShowModal
