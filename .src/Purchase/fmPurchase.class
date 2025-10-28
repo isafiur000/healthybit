@@ -137,6 +137,40 @@ Public Sub mnustockDB_Click()
 
 End
 
+Public Sub mnuexpiry_Click()
+
+  Dim xdate As Date
+
+  Dialog.Title = "Select Expiry Date"
+  If Dialog.SelectDate() Then Return
+  xdate = Dialog.Date
+  modDashBoard.AutoDashboardExpiry(xdate)
+
+End
+
+Public Sub mnunonexpiry_Click()
+
+  Dim xList As String[] = ["1 Month", "2 Month", "3 Month", "6 Month", "9 Month", "12 Month", "15 Month"]
+  Dim xmonth As String
+
+  xmonth = InputCombo("Select Near-Expiry Month", "Near Expiry", xList, "3 Month", True)
+  If xmonth Then
+    modDashBoard.AutoDashboardNearExpiry(xmonth)
+  Endif
+
+End
+
+Public Sub mnuundermin_Click()
+
+  Dim xPath As String
+
+  Inc Application.Busy
+  xPath = modHTMLStock.ShowUnderStockItemReport()
+  Dec Application.Busy
+  modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
+
+End
+
 Public Sub mnuinfo_Click()
 
   modWorkSpace.Remove(fmSurgicals)

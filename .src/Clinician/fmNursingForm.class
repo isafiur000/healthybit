@@ -193,7 +193,7 @@ End
 Public Sub btnshowgencomp_Click()
 
   If txtencid.Text Then
-    txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "General Complaints")
+    ShowGeneralComplaints()
   Endif
 
 End
@@ -320,7 +320,7 @@ Private Sub BasicInfoPatient()
     $dateReg = modPatient.GetRecordDate(Trim(txtencid.Text))
     modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
     ShowSymptomData()
-    txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "General Complaints")
+    ShowGeneralComplaints()
     ShowEssentialExamRange()
     ShowEssentialExam()
 
@@ -1457,6 +1457,17 @@ Public Sub txttemp_GotFocus()
 End
 
 ''--------------------- History and planning ---------------------------
+Private Sub ShowGeneralComplaints()
+
+  Dim xcomplAr As String[]
+
+  xcomplAr = modPatPatho.ShowSelectedHistoryUser(Trim(txtencid.Text), "General Complaints")
+  If xcomplAr And If xcomplAr.Count Then
+    txtgencomplaint.RichText = xcomplAr[0]
+    lblcomplaintuser.Text = xcomplAr[1]
+  Endif
+
+End
 
 Public Sub dcthelpgencomp_Click()
 

@@ -10,8 +10,8 @@ Private $PatientNum As String
 Private $xFinClear As Boolean
 Private $NotesList As String[]
 
-' Private $rData As Result
-' Private $aMyFields As String[]
+Private $rData As Result
+Private $aMyFields As String[]
 Private $rSympRes As Result
 Private $aSympFields As String[]
 Private $rExamRes As Result
@@ -568,7 +568,7 @@ Private Sub BasicInfoPatient()
     lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
     lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
     lstsyndrome.List = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", Trim(txtencid.Text))
-    txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "General Complaints")
+    ShowGeneralComplaints()
     dtfind.Value = Now()
     lbldtfind.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), Now())
     ShowChiefSymptomData()
@@ -622,7 +622,7 @@ Private Sub ButtonControl()
   grdchiefsymptom.Enabled = xx
   btngencompln.Enabled = xx
   ''patient history
-  tlbtnhistory.Enabled = xx
+  btnhistory.Enabled = xx
   ''clinical findings
   btnfinadd.Enabled = xx
   GridView1.Enabled = xx
@@ -1121,6 +1121,18 @@ Public Sub Form_KeyRelease()
 End
 
 ''---------------------- General complaints ------------------------
+Private Sub ShowGeneralComplaints()
+
+  Dim xcomplAr As String[]
+
+  xcomplAr = modPatPatho.ShowSelectedHistoryUser(Trim(txtencid.Text), "General Complaints")
+  If xcomplAr And If xcomplAr.Count Then
+    txtgencomplaint.RichText = xcomplAr[0]
+    lblcomplaintuser.Text = xcomplAr[1]
+  Endif
+
+End
+
 Public Sub dcthelpgencomp_Click()
 
   Dim xx As String
@@ -1165,7 +1177,7 @@ End
 Public Sub btnshowgencomp_Click()
 
   If txtencid.Text Then
-    txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "General Complaints")
+    ShowGeneralComplaints()
   Endif
 
 End
@@ -1912,7 +1924,36 @@ Public Sub GridView1_Click()
 
 End
 
-''----------------------------------------------- history -------------------------------------------------------
+''----------------------------------------------- history -----------------------------------
+Private Sub ShowPatHistory()
+
+  Dim xcomplAr As String[]
+
+  If cmbinpathistory.Text Then
+    lblhistoryhead.Text = cmbinpathistory.Text
+    If cmbinpathistory.Text = "Initial Planning" Or If cmbinpathistory.Text = "Expert Planning" Then
+      xcomplAr = modPatPatho.ShowSelectedNoteUser(Trim(txtencid.Text), cmbinpathistory.Text)
+    Else
+      xcomplAr = modPatPatho.ShowSelectedHistoryUser(Trim(txtencid.Text), cmbinpathistory.Text)
+    Endif
+    If xcomplAr And If xcomplAr.Count Then
+      txthistory.RichText = xcomplAr[0]
+      lblhistoryuser.Text = xcomplAr[1]
+    Else
+      txthistory.RichText = ""
+      lblhistoryuser.Text = ""
+    Endif
+  Endif
+
+End
+
+Public Sub cmbinpathistory_Click()
+
+  ShowPatHistory()
+  btnhistory.Enabled = True
+
+End
+
 Public Sub btnhistorydef_Click()
 
   If cmbinpathistory.Text Then
@@ -1921,7 +1962,7 @@ Public Sub btnhistorydef_Click()
 
 End
 
-Public Sub tlbtnhistory_Click()
+Public Sub btnhistory_Click()
 
   Dim xboolean As Boolean
 
@@ -1938,31 +1979,9 @@ Public Sub tlbtnhistory_Click()
       Else
         modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "History", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
       Endif
-      Balloon.Info(("Information saved"), tlbtnhistory)
+      Balloon.Info(("Information saved"), btnhistory)
       Balloon.Delay = modBasic.$BalloonDelay
-      tlbtnhistory.Enabled = False
-    Endif
-  Endif
-
-End
-
-Public Sub cmbinpathistory_Click()
-
-  Dim xVar As String[]
-
-  If cmbinpathistory.Text Then
-    tlbtnhistory.Enabled = True
-    If cmbinpathistory.Text = "Initial Planning" Or If cmbinpathistory.Text = "Expert Planning" Then
-      xVar = modPatPatho.ShowSelectedNoteUser(Trim(txtencid.Text), cmbinpathistory.Text)
-    Else
-      xVar = modPatPatho.ShowSelectedHistoryUser(Trim(txtencid.Text), cmbinpathistory.Text)
-    Endif
-    If xVar And If xVar.Count Then
-      txthistory.RichText = xVar[0]
-      lblhistoryuser.Text = xVar[1]
-    Else
-      txthistory.RichText = ""
-      lblhistoryuser.Text = ""
+      btnhistory.Enabled = False
     Endif
   Endif
 
@@ -2332,58 +2351,71 @@ Private Sub ShowNoteTypeTime()
     sTypLst[i] = "'" & sTypLst[i] & "'"
   Next
 
-  If btnallnote.Value = False Then
-    sql = "select fldid,fldtime,flditem,flduserid,fldreportquali from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem in(" & sTypLst.Join(",") & ") and fldtime>=&3 and fldtime<=&4"
+  If chknoteall.Value Then
+    sql = "select fldid,fldtime,flditem,fldreportquali,flduserid,fldtime,flddetail from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem in(" & sTypLst.Join(",") & ") ORDER BY fldtime DESC"
   Else
-    sql = "select fldid,fldtime,flditem,flduserid,fldreportquali from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem in(" & sTypLst.Join(",") & ")"
+    sql = "select fldid,fldtime,flditem,fldreportquali,flduserid,fldtime,flddetail from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem in(" & sTypLst.Join(",") & ") and fldtime>=&3 and fldtime<=&4 ORDER BY fldtime DESC"
   Endif
-  res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Notes", modDate.StartSqlDate(dtnote.Value), modDate.EndSqlDate(dtnote.Value))
-
-  grdnote.Clear
-  grdnote.Columns.Count = res.Fields.Count
-  grdnote.Rows.Count = res.Count
-
-  For Each res
-    Column = 0
-    For Each fld In res.Fields
-      modGeneralMain.GridExplicitDecoration(grdnote, res.Index, Column)
-
-      If $sTatus = "Admitted" Then
-        If Column = 1 Then
-          grdnote[res.Index, Column].Text = modPatient.GetDayTimeFromAdmission(Trim(txtencid.Text), res["fldtime"])
-        Else If Column = 2 Then
-          grdnote[res.Index, Column].Text = Trim(Replace(res[fld.Name], "Note", ""))
-        Else
-          grdnote[res.Index, Column].Text = res[fld.Name]
-        Endif
-
-      Else
-        grdnote[res.Index, Column].Text = res[fld.Name]
-      Endif
-
-      Column = Column + 1
-    Next
-  Next
-  grdnote.Row = 0
+  $rData = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Notes", modDate.StartSqlDate(dtnote.Value), modDate.EndSqlDate(dtnote.Value))
+  $aMyFields = New String[]
+  modGridView.ReadSmallData(grdnote, $rData, $aMyFields)
 
   With grdnote
     .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
     If $sTatus = "Admitted" Then
       .Columns[1].Width = 100 * modBasic.$AppWidthRatio
-      .Columns[2].Width = 100 * modBasic.$AppWidthRatio
+      .Columns[2].Width = 150 * modBasic.$AppWidthRatio
       .Columns[1].Text = "DateTime"
     Else
       .Columns[1].Width = 1
-      .Columns[2].Width = 200 * modBasic.$AppWidthRatio
+      .Columns[2].Width = 150 * modBasic.$AppWidthRatio
     Endif
-    .Columns[3].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 200 * modBasic.$AppWidthRatio
+
+    .Columns[3].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 1
+    .Columns[6].Width = 1
 
     .Columns[2].Text = "Category"
-    .Columns[3].Text = "User"
-    .Columns[4].Text = "Impression"
+    .Columns[3].Text = "Impression"
+    .Columns[4].Text = "User"
   End With
+
+End
+
+Public Sub grdnote_Data(Row As Integer, Column As Integer)
+
+  $rData.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(grdnote, Row)
+  If Column = 1 Then
+    If chknoteall.Value Then
+      grdnote.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.GeneralDate)
+    Else
+      grdnote.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.MediumTime)
+    Endif
+  Else
+    grdnote.Data.Text = $rData[$aMyFields[Column]]
+  Endif
+
+End
+
+Public Sub grdnote_Click()
+
+  If grdnote.Rows.Selection.Count Then
+    cmbnote.Text = grdnote[grdnote.Row, 2].Text
+    txtnoteid.Value = grdnote[grdnote.Row, 0].Text
+    txtimpression.Text = grdnote[grdnote.Row, 3].Text
+    txtnote.RichText = grdnote[grdnote.Row, 6].Text
+    lblnoteuser.Text = modGeneral.GetUserFullName(grdnote[grdnote.Row, 4].Text) & " [" & modReportVar.GetDateTimeReport(grdnote[grdnote.Row, 5].Text, gb.GeneralDate) & "]"
+    If $sTatus = "Admitted" Then
+      btnoteadd.Enabled = True
+    Else
+      btnoteadd.Enabled = False
+    Endif
+  Else
+    btnoteadd.Enabled = True
+  Endif
 
 End
 
@@ -2396,29 +2428,9 @@ End
 
 Public Sub cmbnote_Click()
 
+  txtnoteid.Value = 0
   txtnote.Text = ""
   btnoteadd.Enabled = True
-
-End
-
-Public Sub grdnote_Click()
-
-  Dim res As Result
-
-  res = modDatabase.$myConn.Exec("select fldid,flditem,fldreportquali,flddetail from tblexamgeneral where fldid=&1", grdnote[grdnote.Row, 0].Text)
-  If res.Available Then
-    cmbnote.Text = res["flditem"]
-    txtnoteid.Value = res["fldid"]
-    txtimpression.Text = res["fldreportquali"]
-    txtnote.RichText = res["flddetail"]
-    If $sTatus = "Admitted" Then
-      btnoteadd.Enabled = True
-    Else
-      btnoteadd.Enabled = False
-    Endif
-  Else
-    btnoteadd.Enabled = True
-  Endif
 
 End
 
@@ -2431,7 +2443,7 @@ Public Sub dtnote_Click()
 
 End
 
-Public Sub btnallnote_Click()
+Public Sub chkallnote_Click()
 
   If txtencid.Text Then
     ShowNoteTypeTime()
@@ -5779,7 +5791,7 @@ Private Sub RestrictUserAccess()
     btngencompln.Enabled = False
   Endif
   If $UserRestrict.Exist("Patient History") Then
-    tlbtnhistory.Enabled = False
+    btnhistory.Enabled = False
   Endif
   If $UserRestrict.Exist("Clinical Findings") Then
     btnfinadd.Enabled = False

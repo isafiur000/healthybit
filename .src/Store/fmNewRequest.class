@@ -307,7 +307,7 @@ Public Sub GridView1_Click()
 
   If GridView1.Column = 4 Then
     If Not GridView1[GridView1.Row, 9].Text Then
-      xval = InputValue(("Edit Quantity of selected Particular"), "Store Request", GridView1[GridView1.Row, 4].Text)
+      xval = InputValue(GridView1[GridView1.Row, 4].Text, "Edit Quantity", GridView1[GridView1.Row, 4].Text)
       If xval Then
         res = modDatabase.$myConn.Edit("tblrequest", "fldid=&1 and fldordcomp=&2 and fldstatus=&3 and fldsave=&4", GridView1[GridView1.Row, 0].Text, modBasic.$compID, "Requested", False)
         res["fldqty"] = xval
@@ -319,7 +319,7 @@ Public Sub GridView1_Click()
 
   Else If GridView1.Column = 6 Then
     If Not GridView1[GridView1.Row, 9].Text Then
-      xstat = InputCombo(("Edit Urgency of selected Particular"), "Store Request", ["Normal", "Urgent"], GridView1[GridView1.Row, 6].Text, True)
+      xstat = InputCombo(GridView1[GridView1.Row, 4].Text, "Edit Urgency", ["Normal", "Urgent"], GridView1[GridView1.Row, 6].Text, True)
       If xstat Then
         res = modDatabase.$myConn.Edit("tblrequest", "fldid=&1 and fldordcomp=&2 and fldstatus=&3 and fldsave=&4", GridView1[GridView1.Row, 0].Text, modBasic.$compID, "Requested", False)
         res["fldurgent"] = xstat

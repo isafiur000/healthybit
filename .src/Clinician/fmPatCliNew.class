@@ -291,7 +291,7 @@ End
 Public Sub btnshowgencomp_Click()
 
   If txtencid.Text Then
-    txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "General Complaints")
+    ShowGeneralComplaints()
   Endif
 
 End
@@ -315,7 +315,7 @@ End
 Public Sub btnshowhistory_Click()
 
   If txtencid.Text Then
-    txthistory.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "History of Illness")
+    ShowPatHistory()
   Endif
 
 End
@@ -473,11 +473,10 @@ Private Sub BasicInfoPatient()
     ' GetConsultParam()
 
     ShowSymptomData()
-    txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "General Complaints")
+    ShowGeneralComplaints()
     ShowEssentialExamRange()
     ShowEssentialExam()
     modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
-    txthistory.RichText = modPatPatho.ShowSelectedHistoryValue(Trim(txtencid.Text), "History of Illness")
     FillExamtable()
     ShowPlanningInitial()
     ShowTelemedSaved()
@@ -2105,13 +2104,28 @@ Public Sub txttemp_GotFocus()
 End
 
 ''--------------------- History and planning ---------------------------
-Public Sub cmbinpathistory_Click()
+Private Sub ShowPatHistory()
+
+  Dim xcomplAr As String[]
 
   If cmbinpathistory.Text Then
-    btnhistory.Enabled = True
     lblhistoryhead.Text = cmbinpathistory.Text
-    txthistory.RichText = modPatPatho.ShowSelectedHistory(Trim(txtencid.Text), cmbinpathistory.Text)
+    xcomplAr = modPatPatho.ShowSelectedHistoryUser(Trim(txtencid.Text), cmbinpathistory.Text)
+    If xcomplAr And If xcomplAr.Count Then
+      txthistory.RichText = xcomplAr[0]
+      lblhistoryuser.Text = xcomplAr[1]
+    Else
+      txthistory.RichText = ""
+      lblhistoryuser.Text = ""
+    Endif
   Endif
+
+End
+
+Public Sub cmbinpathistory_Click()
+
+  ShowPatHistory()
+  btnhistory.Enabled = True
 
 End
 
@@ -2204,6 +2218,20 @@ Public Sub btnplan_Click()
     btnoutcome.Enabled = True
     Balloon.Info(("Information saved"), btnplan)
     Balloon.Delay = modBasic.$BalloonDelay
+    btnplan.Enabled = False
+  Endif
+
+End
+
+''=================== complaints =====================
+Private Sub ShowGeneralComplaints()
+
+  Dim xcomplAr As String[]
+
+  xcomplAr = modPatPatho.ShowSelectedHistoryUser(Trim(txtencid.Text), "General Complaints")
+  If xcomplAr And If xcomplAr.Count Then
+    txtgencomplaint.RichText = xcomplAr[0]
+    lblcomplaintuser.Text = xcomplAr[1]
   Endif
 
 End
@@ -2245,6 +2273,7 @@ Public Sub btngencompln_Click()
     modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "History", "General Complaints", txtgencomplaint.KeyList.Join(";"), txtgencomplaint.RichText, xboolean)
     Balloon.Info(("Information saved"), btngencompln)
     Balloon.Delay = modBasic.$BalloonDelay
+    btngencompln.Enabled = False
   Endif
   modSettings.SaveSettingsToFile("OPDForm/Complaints", "General")
 
