@@ -1,0 +1,90 @@
+' Gambas class file
+
+Private $encid As String
+Private $itemName As String
+Private $ageGroup As String
+Private $gender As String
+
+Private $rData As Result
+Private $aMyFields As String[]
+
+Public Sub _new(encid As String, sItem As String)
+
+  $encid = encid
+  $itemName = sItem
+
+End
+
+Public Sub Form_Open()
+
+  modGeneralMain.ArrangeFormCentre(Me, "False")
+  lblpatient.Text = modPatient.GetPatientNameByEnc($encid)
+  lblprocedure.Text = $itemName
+  $gender = modPatient.GetPatientSex($encid)
+  $ageGroup = modPatient.GetAgeGroupFIxed($encid, Now())
+  lbluser.Text = modGeneral.GetUserFullName(modBasic.$lbluser)
+  ShowQueryGrid()
+
+End
+
+Private Sub ShowQueryGrid()
+
+  Dim sql As String
+
+  sql = "select fldid,fldquery from tblchecklist where fldtitle in(select fldtitle from tblservicecheck where flditemname=&1 and (fldptsex=&2 or fldptsex=&3) and (fldagegroup=&4 or fldagegroup=&5) and fldstatus=&6)"                         ''
+  $rData = modDatabase.$myConn.Exec(sql, $itemName, $gender, "Both Sex", $ageGroup, "All Age", "Active")
+  $aMyFields = New String[]
+  modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
+
+  With GridView1
+    .Columns[0].Width = 35 * modBasic.$AppWidthRatio
+    .Columns[1].Expand = True
+
+    .Columns[1].Text = "Checklist"
+  End With
+
+End
+
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  $rData.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView1, Row)
+  If Column = 0 Then
+    GridView1.Data.Picture = Picture["icons/unchecked.png"]
+  Else
+    GridView1.Data.Text = $rData[$aMyFields[Column]]
+  Endif
+  GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
+  GridView1.Data.WordWrap = True
+
+End
+
+Public Sub GridView1_Click()
+
+  If GridView1.Column = 0 Then
+    modGridView.CheckUncheckGridNoDB(GridView1, 0)
+  Endif
+
+End
+
+Public Sub btnconfirm_Click()
+
+  Dim i As Integer
+  Dim xList As String[]
+
+  If chkconfirm.Value Then
+    xList = New String[]
+    For i = 0 To GridView1.Rows.Count - 1
+      If GridView1[i, 0].Picture = Picture["icons/checked.png"] Then
+        xList.Add(GridView1[i, 1].Text)
+      Else
+        Return
+      Endif
+    Next
+
+    If xList.Count = $rData.Count Then
+      Me.Close()
+    Endif
+  Endif
+
+End

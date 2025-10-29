@@ -178,8 +178,6 @@ Public Sub Form_KeyRelease()
 
   If Key.Code = Key["S"] And If Key.Control Then
     btnoutcome_Click()
-  Else If Key.Code = Key["U"] And If Key.Control Then
-    btnfollowdate_Click()
   Else If Key.Code = Key["D"] And If Key.Control Then
     btnmobilediagno_Click()
   Endif
@@ -1160,40 +1158,6 @@ Public Sub btnmobexam_Click()
   If GridView1.Rows.Selection.Count Then
     hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 2].Text, "Physician Examinations", "All")
     hForm.ShowModal
-  Endif
-
-End
-
-Public Sub btnfollowdate_Click()
-
-  Dim res As Result
-  Dim dt As Date
-
-  If GridView1.Rows.Selection.Count Then
-    dt = CTimeConsult("Follow Up", modPatient.GetFollowUpDate(GridView1[GridView1.Row, 2].Text))
-    If dt Then
-      res = modDatabase.$myConn.Edit("tblencounter", "fldencounterval=&1", GridView1[GridView1.Row, 2].Text)
-      res["fldfollowdate"] = dt
-      res["xyz"] = False
-      res.Update
-    Endif
-  Endif
-
-End
-
-Public Sub btnrefer_Click()
-
-  Dim res As Result
-  Dim xrefer As String
-
-  If GridView1.Rows.Selection.Count Then
-    xrefer = InputCombo("Select Refer Location from List", "Refer To", $refList, "", False)
-    If xrefer Then
-      res = modDatabase.$myConn.Edit("tblencounter", "fldencounterval=&1", GridView1[GridView1.Row, 2].Text)
-      res["fldreferto"] = xrefer
-      res["xyz"] = False
-      res.Update
-    Endif
   Endif
 
 End

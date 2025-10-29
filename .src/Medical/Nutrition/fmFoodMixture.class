@@ -3,7 +3,7 @@
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me)
-  cmbgroup.List = modControlSub.GetDirectFillresult(modDatabase.$medConn.Exec("select distinct(fldgroup) as col from tblfoodgroup"))
+  cmbgroup.List = modControlSub.GetDirectFillresult(modDatabase.$medConn.Exec("select fldgroup as col from tblfoodmix"))
   cmbtype.List = modControlSub.GetDirectFillresult(modDatabase.$medConn.Exec("select distinct(fldfoodtype) as col from tblfoodtype"))
   cmbstatus.List = ["Active", "Inactive"]
 
@@ -202,7 +202,7 @@ Private Sub GetAllBlank()
   cmbitem.Text = ""
   txtmethod.Text = ""
   txtdose.Value = 0
-  cmbstatus.Text
+  cmbstatus.Text = ""
 
 End
 

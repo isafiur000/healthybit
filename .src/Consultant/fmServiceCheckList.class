@@ -1,0 +1,205 @@
+' Gambas class file
+
+Private $rData As Result
+Private $aMyFields As String[]
+Private $ItemList As String[]
+
+Public Sub Form_Open()
+
+  modGeneralMain.ArrangeFormCentre(Me)
+  cmbtitle.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldtitle) as col from tblchecklist"))
+  cmbagegroup.List = modMedicine.AgeGroupListShortAll()
+  cmbgender.List = ["Male", "Female", "Both Sex"]
+  cmbstatus.List = ["Active", "Inactive"]
+  cmbtype.List = modNonMedical.BillItemCategory()
+
+End
+
+Public Sub Form_Resize()
+
+  modGeneralMain.ShowSelectedFormMenu(Me)
+
+End
+
+Public Sub Form_Close()
+
+  modGeneralMain.RecordFormExit(Me)
+
+End
+
+Public Sub Form_KeyRelease()
+
+  If Key.Code = Key.Esc Then
+    Me.Close
+  Else
+    modGeneralmain.GoToNextControlTab()
+  Endif
+
+End
+
+Public Sub btnshow_Click()
+
+  If cmbtitle.Text Then
+    ShowServiceCheckList()
+  Endif
+
+End
+
+Public Sub cmbagegroup_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbagegroup)
+  modFillContainer.RestrictComboToContent(cmbagegroup)
+
+End
+
+Public Sub cmbtitle_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbtitle)
+  modFillContainer.RestrictComboToContent(cmbtitle)
+
+End
+
+Public Sub cmbgender_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbgender)
+  modFillContainer.RestrictComboToContent(cmbgender)
+
+End
+
+Public Sub cmbstatus_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbstatus)
+  modFillContainer.RestrictComboToContent(cmbstatus)
+
+End
+
+Public Sub cmbtype_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbtype)
+  modFillContainer.RestrictComboToContent(cmbtype)
+
+End
+
+Public Sub cmbtype_Click()
+
+  $ItemList = New String[]
+  cmbitem.List = modNonMedical.NonStockBillingItemArray(cmbtype.Text, "%")
+
+End
+
+Public Sub cmbitem_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbitem)
+  modFillContainer.RestrictComboToContent(cmbitem)
+
+End
+
+Public Sub btnitemulti_Click()
+
+  Dim xxx As String[]
+
+  xxx = GridListView(("Select Particulars"), cmbitem.List)
+  If xxx And If xxx.Count Then
+    $ItemList.Insert(xxx)
+  Endif
+
+End
+
+Public Sub btnaddservice_Click()
+
+  Dim res As Result
+  Dim xval As String
+
+  If cmbtitle.Text Then
+    If cmbgender.Text And If cmbagegroup.Text And If cmbstatus.Text Then
+      If $ItemList.Count Then
+        For Each xval In $ItemList
+          res = modDatabase.$myConn.Create("tblservicecheck")
+          res["fldtitle"] = cmbtitle.Text
+          res["flditemname"] = xval
+          res["flditemtype"] = cmbtype.Text
+          res["fldptsex"] = cmbgender.Text
+          res["fldagegroup"] = cmbagegroup.Text
+          res["fldstatus"] = cmbstatus.Text
+          res["flduserid"] = modBasic.$lbluser
+          res["fldtime"] = Now()
+          res["fldcomp"] = modBasic.$compID
+          res.Update
+        Next
+      Else
+        If cmbitem.Text Then
+          res = modDatabase.$myConn.Create("tblservicecheck")
+          res["fldtitle"] = cmbtitle.Text
+          res["flditemname"] = cmbitem.Text
+          res["flditemtype"] = cmbtype.Text
+          res["fldptsex"] = cmbgender.Text
+          res["fldagegroup"] = cmbagegroup.Text
+          res["fldstatus"] = cmbstatus.Text
+          res["flduserid"] = modBasic.$lbluser
+          res["fldtime"] = Now()
+          res["fldcomp"] = modBasic.$compID
+          res.Update
+        Endif
+      Endif
+    Endif
+
+    ShowServiceCheckList()
+    cmbtype.Text = ""
+    cmbitem.Clear()
+    cmbitem.Text = ""
+    cmbtype.SetFocus
+  Endif
+
+End
+
+Private Sub ShowServiceCheckList()
+
+  Dim sql As String
+
+  sql = "select fldid,flditemtype,flditemname,fldptsex,fldagegroup,fldstatus from tblservicecheck where fldtitle=&1"
+  $rData = modDatabase.$myConn.Exec(sql, cmbtitle.Text)
+  $aMyFields = New String[]
+  modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
+
+  With GridView1
+    .Rows.Height = modBasic.$AppGridRowHeight
+    .Columns[0].Width = 1
+    .Columns[1].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 350 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 100 * modBasic.$AppWidthRatio
+
+    .Columns[1].Text = "Category"
+    .Columns[2].Text = "ItemName"
+    .Columns[3].Text = "Gender"
+    .Columns[4].Text = "AgeGroup"
+    .Columns[5].Text = "Status"
+  End With
+
+End
+
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  $rData.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView1, Row)
+  GridView1.Data.Text = $rData[$aMyFields[Column]]
+
+End
+
+Public Sub GridView1_Menu()
+
+  mnufile.Popup
+
+End
+
+Public Sub mnudelete_Click()
+
+  If GridView1.Rows.Selection.Count > 0 Then
+    modDatabase.$myConn.Delete("tblcustdiscount", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+    ShowServiceCheckList()
+    Balloon.Delete(("Information deleted"), GridView1)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+End

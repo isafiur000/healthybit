@@ -308,15 +308,6 @@ Public Sub mnuexamgroup_Click()
 
 End
 
-Public Sub mnudietpack_Click()
-
-  Dim hForm As FmServGroup
-
-  hForm = New FmServGroup("Diet Packages", "")
-  hForm.ShowModal
-
-End
-
 Public Sub mnuprocgroup_Click()
 
   Dim hForm As FmAddVarTwo
@@ -631,5 +622,12 @@ Public Sub mnusymptomgroup_Click()
 
   fmSymptomGroup.Close
   fmSymptomGroup.ShowModal
+
+End
+
+Public Sub mnuservchecklist_Click()
+
+  fmServiceCheckList.Close
+  fmServiceCheckList.ShowModal
 
 End

@@ -1,0 +1,269 @@
+' Gambas class file
+
+Private $rData As Result
+
+Public Sub Form_Open()
+
+  modGeneralMain.ArrangeFormCentre(Me)
+  cmbtype.List = ["Test", "Service", "Procedure", "Equipment", "Radio", "Others"]
+  cmbpayable.List = ["Enable", "Disable"]
+  cmbpackage.List = modNonMedical.FillDiscountCombo()
+  cmbdepartment.List = modControlSub.GetDirectFillresult(modDatabase.$medConn.Exec("select fldgroup as col from tblfoodmix"))
+
+End
+
+Public Sub Form_Resize()
+
+  modGeneralMain.ShowSelectedFormMenu(Me)
+
+End
+
+Public Sub Form_Close()
+
+  modGeneralMain.RecordFormExit(Me)
+
+End
+
+Public Sub Form_KeyRelease()
+
+  modGeneralmain.GoToNextControlTab()
+
+End
+
+Public Sub btnrefreshrate_Click()
+
+  If cmbdepartment.Text Then
+    FillGroupGrid()
+  Endif
+
+End
+
+Public Sub cmbpackage_Click()
+
+  cmbbilmode.Text = modNonMedical.GetDiscBindBillMode(cmbpackage.Text)
+
+End
+
+Public Sub btnrefresh_Click()
+
+  If cmbpackage.Text Then
+    cmbbilmode.Text = modNonMedical.GetDiscBindBillMode(cmbpackage.Text)
+  Endif
+
+End
+
+Public Sub cmbpackage_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbpackage)
+  modFillContainer.RestrictComboToContent(cmbpackage)
+
+End
+
+Public Sub cmbtype_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbtype)
+  modFillContainer.RestrictComboToContent(cmbtype)
+
+End
+
+Public Sub cmbitem_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbitem)
+  modFillContainer.RestrictComboToContent(cmbitem)
+
+End
+
+Public Sub cmbpayable_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbpayable)
+  modFillContainer.RestrictComboToContent(cmbpayable)
+
+End
+
+Public Sub cmbtype_Click()
+
+  If cmbbilmode.Text And If cmbtype.Text Then
+    cmbitem.List = modNonMedical.NonStockBillActiveItemArray(modNonMedical.GetBillItemCategoryFromCombo(cmbtype.Text), cmbbilmode.Text)
+  Endif
+
+End
+
+Public Sub cmbtype_GotFocus()
+
+  cmbitem.Clear()
+
+End
+
+Public Sub cmbitem_GotFocus()
+
+  Dim xLst As String[]
+
+  If cmbbilmode.Text And If cmbtype.Text Then
+    If Not cmbitem.Text Then
+      If modBasic.$ItemListFormat = "GridView" Then
+        xLst = modNonMedical.NonStockBillActiveItemArray(modNonMedical.GetBillItemCategoryFromCombo(cmbtype.Text), cmbbilmode.Text)
+        If xLst.Count Then
+          cmbitem.Text = GridViewNew("Select Particulars", xLst, False, cmbitem, GridView1.Height)
+        Endif
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub btnBrOK_KeyRelease()
+
+  If Key.Code = Key.Return Or If Key.Code = Key.Enter Or If Key.Code = Key.AltKey Then
+    btnBrOK_Click()
+  Endif
+
+End
+
+Public Sub btnBrOK_Click()
+
+  Dim res As Result
+
+  If cmbdepartment.Text And If cmbitem.Text And If cmbtype.Text And If cmbbilmode.Text Then
+    res = modDatabase.$myConn.Create("tblfoodorder")
+    res["fldgroup"] = cmbdepartment.Text
+    res["flddisctype"] = cmbpackage.Text
+    res["fldbillingmode"] = cmbbilmode.Text
+    res["flditemtype"] = cmbtype.Text
+    res["flditemname"] = cmbitem.Text
+    res["flditemqty"] = txtqty.Value
+    res["fldpayable"] = cmbpayable.Text
+    res["xyz"] = False
+    res.Update
+    FillGroupGrid()
+    cmbtype.Text = ""
+    cmbitem.Text = ""
+    txtqty.Value = 0
+    Balloon.Info(("Information saved"), btnBrOK)
+    Balloon.Delay = modBasic.$BalloonDelay
+    cmbtype.SetFocus
+  Endif
+
+End
+
+Public Sub btnedit_Click()
+
+  Dim res As Result
+  Dim Row As Integer
+
+  If GridView1.Rows.Selection.Count > 0 Then
+    Row = GridView1.Row
+    If cmbdepartment.Text And If cmbitem.Text And If cmbtype.Text And If cmbbilmode.Text Then
+      res = modDatabase.$myConn.Edit("tblfoodorder", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+      res["flddisctype"] = cmbpackage.Text
+      res["fldbillingmode"] = cmbbilmode.Text
+      res["flditemtype"] = cmbtype.Text
+      res["flditemname"] = cmbitem.Text
+      res["flditemqty"] = txtqty.Value
+      res["fldpayable"] = cmbpayable.Text
+      res["xyz"] = False
+      res.Update
+      FillGroupGrid()
+      Balloon.Info(("Information updated"), btnedit)
+      Balloon.Delay = modBasic.$BalloonDelay
+    Endif
+    GridView1.Row = Row
+  Endif
+
+End
+
+Private Sub FillGroupGrid()
+
+  Dim sql As String
+
+  sql = "select fldid,flddisctype,flditemname,flditemqty,fldbillingmode,flditemtype,fldpayable from tblfoodorder where fldgroup=&1"
+  $rData = modDatabase.$myConn.Exec(sql, cmbdepartment.Text)
+  FillGridData()
+
+End
+
+Private Sub FillGridData()
+
+  Dim Column As Integer
+  Dim fld As ResultField
+
+  GridView1.Clear
+  GridView1.Columns.Count = $rData.Fields.Count
+  GridView1.Rows.Count = $rData.Count
+
+  For Each $rData
+    Column = 0
+    For Each fld In $rData.Fields
+      modGeneralMain.GridExplicitDecoration(GridView1, $rData.Index, Column)
+      GridView1[$rData.Index, Column].Text = $rData[fld.Name]
+      Column = Column + 1
+    Next
+  Next
+  GridView1.Row = 0
+
+  With GridView1
+    .Rows.Height = modBasic.$AppGridRowHeight
+    .Columns[0].Width = 1
+    .Columns[1].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 400 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 50 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 1
+    .Columns[5].Width = 1
+    .Columns[6].Width = 1
+
+    .Columns[1].Text = "Package"
+    .Columns[2].Text = "Particulars"
+    .Columns[3].Text = "QTY"
+  End With
+
+End
+
+Public Sub GridView1_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    txtindex.Value = GridView1[GridView1.Row, 0].Text
+    cmbpackage.Text = GridView1[GridView1.Row, 1].Text
+    cmbbilmode.Text = GridView1[GridView1.Row, 4].Text
+
+    cmbtype.Text = GridView1[GridView1.Row, 5].Text
+    cmbitem.Text = GridView1[GridView1.Row, 2].Text
+    txtqty.Value = GridView1[GridView1.Row, 3].Text
+    cmbpayable.Text = GridView1[GridView1.Row, 6].Text
+  Endif
+
+End
+
+Public Sub GridView1_Menu()
+
+  mnuhide.Popup
+
+End
+
+Public Sub mnudel_Click()
+
+  If GridView1.Rows.Selection.Count > 0 Then
+    modDatabase.$myConn.Delete("tblautogroup", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+    FillGroupGrid()
+    Balloon.Delete(("Information deleted"), GridView1)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+End
+
+Public Sub mnudeleteall_Click()
+
+  Dim Row As Integer
+
+  For Row = 0 To GridView1.Rows.Count - 1
+    modDatabase.$myConn.Delete("tblautogroup", "fldid=&1", GridView1[Row, 0].Text)
+  Next
+  FillGroupGrid()
+  Balloon.Delete(("Information deleted"), GridView1)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnexport_Click()
+
+  modCHTMLReport.ExportGridToHTML(GridView1, Me.Title, cmbpackage.Text)
+
+End

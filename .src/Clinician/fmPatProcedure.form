@@ -147,7 +147,7 @@
         Border = Border.Plain
         Text = ("Doctor")
       }
-      { btnsurgeon ButtonBox
+      { btnipconsult ButtonBox
         MoveScaled(67,3,19,3)
         Picture = Picture["icon:/small/people"]
         ReadOnly = True
@@ -164,15 +164,62 @@
         MoveScaled(17,1,102,1.5)
       }
     }
+    { Panel31 Panel
+      MoveScaled(0,16,128,4)
+      { mnulabrequest Button
+        MoveScaled(64,0.5,13,3)
+        Text = ("Lab")
+      }
+      { mnuradiorequest Button
+        MoveScaled(77,0.5,13,3)
+        Text = ("Radio")
+      }
+      { mnuconsultreq Button
+        MoveScaled(103,0.5,13,3)
+        Text = ("Consult")
+      }
+      { btnequip Button
+        MoveScaled(22,0.5,13,3)
+        Text = ("Equip")
+      }
+      { btnevent Button
+        MoveScaled(35,0.5,13,3)
+        Text = ("Event")
+      }
+      { btnpacs Button
+        MoveScaled(90,0.5,13,3)
+        Text = ("PACS")
+      }
+      { mnugenservice Button
+        MoveScaled(0,0.5,11,3)
+        Text = ("Billing")
+      }
+      { mnudeviceuse Button
+        MoveScaled(11,0.5,11,3)
+        Text = ("Devices")
+      }
+      { btnvital Button
+        MoveScaled(48,0.5,11,3)
+        Text = ("Vitals")
+      }
+      { btntriage ToolButton
+        MoveScaled(59.5,0.5,4,3)
+        Picture = Picture["icon:/small/color"]
+      }
+      { btnscreendraw ToolButton
+        MoveScaled(116,0.5,4,3)
+        Picture = Picture["icon:/small/pen"]
+      }
+    }
     { TabPanel1 TabPanel
-      MoveScaled(1,16,120,61)
+      MoveScaled(1,21,120,54)
       Expand = True
       Arrangement = Arrange.Horizontal
       Count = 5
       Index = 0
       Text = ("Summary")
       { Panel44 Panel
-        MoveScaled(0,0,50,53)
+        MoveScaled(0,0,50,47)
         Arrangement = Arrange.Vertical
         { Panel8 Panel
           MoveScaled(0,0,49,21)
@@ -222,7 +269,7 @@
             MoveScaled(0.375,17,13,3)
             Sorted = True
           }
-          { btnconsult2 ButtonBox
+          { btnconperson ButtonBox
             MoveScaled(14,17,30,3)
             Picture = Picture["icon:/small/people"]
             ReadOnly = True
@@ -261,32 +308,9 @@
         }
       }
       { Panel2 Panel
-        MoveScaled(50,0,69,51)
+        MoveScaled(50,0,69,40)
         Expand = True
         Arrangement = Arrange.Vertical
-        { Panel11 Panel
-          MoveScaled(0,0,69,4)
-          { mnulabrequest Button
-            MoveScaled(0,0.5,13,3)
-            Text = ("Lab")
-          }
-          { mnuradiorequest Button
-            MoveScaled(13,0.5,13,3)
-            Text = ("Radio")
-          }
-          { mnuconsultreq Button
-            MoveScaled(26,0.5,13,3)
-            Text = ("Consult")
-          }
-          { btnequip Button
-            MoveScaled(39,0.5,13,3)
-            Text = ("Equip")
-          }
-          { btnevent Button
-            MoveScaled(52,0.5,13,3)
-            Text = ("Event")
-          }
-        }
         { Panel12 Panel
           MoveScaled(0,8,68,4)
           { Label11 Label

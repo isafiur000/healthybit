@@ -241,24 +241,28 @@ End
 Public Sub rbcategory_Click()
 
   GetFirstList()
+  chkall.Enabled = False
 
 End
 
 Public Sub rbsection_Click()
 
   GetFirstList()
+  chkall.Enabled = False
 
 End
 
 Public Sub rbgroup_Click()
 
   GetFirstList()
+  chkall.Enabled = False
 
 End
 
 Public Sub rbcashpack_Click()
 
   GetFirstList()
+  chkall.Enabled = True
 
 End
 
@@ -407,6 +411,20 @@ Public Sub GridView3_Select()
       txtlastsaledate.Foreground = Color.Default
     Endif
   Endif
+
+End
+
+Public Sub chkall_Click()
+
+  Dim Row As Integer
+
+  For Row = 0 To GridView3.Rows.Count - 1
+    If GridView3[Row, 0].Picture = Picture["icons/unchecked.png"] Then
+      GridView3[Row, 0].Picture = Picture["icons/checked.png"]
+    Else If GridView3[Row, 0].Picture = Picture["icons/checked.png"] Then
+      GridView3[Row, 0].Picture = Picture["icons/unchecked.png"]
+    Endif
+  Next
 
 End
 

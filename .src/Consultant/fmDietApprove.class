@@ -23,6 +23,7 @@ Public Sub Form_Open()
   rbwaiting.Value = True
   rbtotal.Value = True
   $DietFormat = "Mixture Code"
+  chkautobill.Value = True
 
   xhospfld = modDataRepo.HospitalField()
   $SSQLFields = ["fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval"]
@@ -143,7 +144,7 @@ Private Sub FillPatientGrid()
     .Columns[0].Width = 125 * modBasic.$AppWidthRatio
     .Columns[1].Width = 225 * modBasic.$AppWidthRatio
     .Columns[2].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 100 * modBasic.$AppWidthRatio
     .Columns[4].Width = 125 * modBasic.$AppWidthRatio
     .Columns[5].Width = 250 * modBasic.$AppWidthRatio
 
@@ -294,7 +295,7 @@ Private Sub SHowContinuePlan(encid As String)
     Endif
     .Columns[6].Width = 1
     .Columns[7].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[8].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[8].Width = 100 * modBasic.$AppWidthRatio
     .Columns[9].Width = 1
 
     .Columns[1].Text = "Type"
@@ -424,7 +425,7 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
     GridView2.Data.Text = ""
   Else If Column = 5 Then
     If rbwaiting.Value = True Then
-      GridView2.Data.Picture = Picture["icon:/tiny/apply"]
+      GridView2.Data.Picture = Picture["icons/unchecked.png"]
     Endif
     GridView2.Data.Text = ""
   Else If Column = 8 Then
@@ -476,17 +477,7 @@ Public Sub GridView2_Click()
           Balloon.Delay = modBasic.$BalloonDelay
         Endif
       Else If GridView2.Column = 5 Then
-        res = modDatabase.$myConn.Edit("tblextradosing", "fldid=&1", GridView2[GridView2.Row, 0].Text)                   ''
-        res["fldstatus"] = "Continue"
-        res["flduserid"] = modBasic.$lbluser
-        res["fldtime"] = Now()
-        res["fldcomp"] = modBasic.$compID
-        res["fldsave"] = True
-        res["xyz"] = False
-        res.Update
-        SHowContinuePlan(GridView1[GridView1.Row, 0].Text)
-        Balloon.Info(("Information saved"), GridView2)
-        Balloon.Delay = modBasic.$BalloonDelay
+        modGridView.CheckUncheckGridNoDB(GridView2, 5)
       Endif
     Endif
 
@@ -494,6 +485,63 @@ Public Sub GridView2_Click()
 
 End
 
+Public Sub btnapprove_Click()
+
+  Dim res As Result
+  Dim Row As Integer
+
+  If rbwaiting.Value = True Then
+    Inc Application.Busy
+    For Row = 0 To GridView2.Rows.Count - 1
+      If GridView2[Row, 5].Picture = Picture["icons/checked.png"] Then
+
+        modDatabase.$myConn.Begin
+        If chkautobill.Value = True Then
+          SetAutoBillDiet(GridView2[Row, 0].Text, GridView2[Row, 9].Text, GridView2[Row, 2].Text, CFloat(GridView2[Row, 3].Text))
+        Endif
+        res = modDatabase.$myConn.Edit("tblextradosing", "fldid=&1", GridView2[Row, 0].Text)
+        res["fldstatus"] = "Continue"
+        res["flduserid"] = modBasic.$lbluser
+        res["fldtime"] = Now()
+        res["fldcomp"] = modBasic.$compID
+        res["fldsave"] = True
+        res["xyz"] = False
+        res.Update
+        modDatabase.$myConn.Commit
+
+      Endif
+    Next
+    Dec Application.Busy
+    SHowContinuePlan(GridView1[GridView1.Row, 0].Text)
+    Balloon.Info(("Information saved"), btnapprove)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+Catch
+  modDatabase.$myConn.Rollback
+  Dec Application.Busy
+  modHelpVariable.CreateErrorReport()
+
+End
+
+Private Sub SetAutoBillDiet(sIndex As Long, encid As String, xGroup As String, xQty As Float)
+
+  Dim xdiscType As String
+  Dim res As Result
+
+  xdiscType = modNonMedical.DefaultBillingScheme(encid, modBasic.$compID)
+  If xdiscType Then
+    res = modDatabase.$myConn.Exec("select flditemname,flditemqty,fldbillingmode,flditemtype from tblfoodorder where fldgroup=&1 and flddisctype=&2", xGroup, xdiscType)
+    If res.Available Then
+      For Each res
+        modBillings.GetAutoBillingEntry(encid, xdiscType, res["flditemtype"], res["flditemname"], res["flditemqty"] * xQty, "Done", sIndex, True, False)
+      Next
+    Endif
+  Endif
+
+End
+
+''==================== Report =================
 Public Sub btnreport_Click()
 
   Dim sql As String

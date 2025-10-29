@@ -25,9 +25,6 @@
   { mnuservices Menu
     Text = ("Services")
     Enabled = False
-    { mnudemographic Menu
-      Text = ("Demography")
-    }
     { mnuconsultant Menu
       Text = ("Set Consultant")
     }
@@ -540,11 +537,6 @@
         Text = ("Exam")
         Border = True
       }
-      { btnfollowdate ToolButton
-        MoveScaled(0,0.375,5.25,3)
-        Picture = Picture["icon:/small/calendar"]
-        Border = True
-      }
       { btnmobprogress ToolButton
         MoveScaled(92,0.375,11,3)
         Enabled = False
@@ -592,15 +584,16 @@
         Text = ("Billing")
         Border = True
       }
-      { btnrefer ToolButton
-        MoveScaled(6,0.375,5.25,3)
-        Picture = Picture["icon:/small/home"]
-        Border = True
-      }
       { mnureqconsult ToolButton
         MoveScaled(44,0.5,11,3)
         Enabled = False
         Text = ("Consult")
+        Border = True
+      }
+      { mnudemographic ToolButton
+        MoveScaled(0,0.5,11,3)
+        Enabled = False
+        Text = ("Demog")
         Border = True
       }
     }

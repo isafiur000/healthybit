@@ -18,6 +18,7 @@
     MoveScaled(0,0,118,79)
     { Panel2 Panel
       MoveScaled(1,1,86,74)
+      Expand = True
       Arrangement = Arrange.Vertical
       { Panel4 Panel
         MoveScaled(1,1,83,4)
@@ -54,7 +55,7 @@
       { Panel11 Panel
         MoveScaled(1,5,83,4)
         { btnrefreshsave Button
-          MoveScaled(69,0.375,12,3)
+          MoveScaled(69,0.5,12,3)
           Text = ("Refresh")
           Picture = Picture["icon:/small/refresh"]
         }
@@ -76,7 +77,16 @@
         AutoResize = False
       }
       { Panel5 Panel
-        MoveScaled(1,35,73,2)
+        MoveScaled(1,35,84,4)
+        { btnapprove Button
+          MoveScaled(70,0.5,13,3)
+          Text = ("Approve")
+          Picture = Picture["icon:/small/apply"]
+        }
+        { chkautobill CheckBox
+          MoveScaled(2,0.5,15,3)
+          Text = ("Auto Billing")
+        }
       }
       { GridView2 GridView
         MoveScaled(1,41,84,32)

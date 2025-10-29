@@ -1,6 +1,7 @@
 ' Gambas class file
 
 Private $rData As Result
+Private $SuperMode As Boolean
 
 Public Sub Form_Open()
 
@@ -16,10 +17,21 @@ Public Sub Form_Open()
   lblrupee.Text = modBasic.$currency
   lblrupcost.Text = modBasic.$currency
   lblrupmrp.Text = modBasic.$currency
-  If modHelpVariable.$LogInCategory = "Account" Or If modHelpVariable.$LogInCategory = "Pharmacist" Then
-    txtnetcost.ReadOnly = False
+  If modHelpVariable.$LogInCategory = "Account" Then
+    $SuperMode = True
     txtrate.ReadOnly = False
+    txtnetcost.ReadOnly = False
     txtmrp.ReadOnly = False
+  Else If modHelpVariable.$LogInCategory = "Pharmacist" Then
+    $SuperMode = False
+    txtrate.ReadOnly = True
+    txtnetcost.ReadOnly = False
+    txtmrp.ReadOnly = False
+  Else
+    $SuperMode = False
+    txtrate.ReadOnly = True
+    txtnetcost.ReadOnly = True
+    txtmrp.ReadOnly = True
   Endif
   cmbcomp.SetFocus
 
@@ -40,6 +52,21 @@ End
 Public Sub Form_KeyRelease()
 
   modGeneralmain.GoToNextControlTab()
+
+End
+
+Public Sub btnlock_Click()
+
+  Dim xPass As String
+
+  xPass = InputPassword("Provide Root Password", "Verification", "")
+  If modPassword.GetSuperVerification(modBasic.$lbluser, xPass) = True Then
+    btnlock.Picture = Picture["icon:/small/unlock"]
+    $SuperMode = True
+    txtnetcost.ReadOnly = False
+    txtrate.ReadOnly = False
+    txtmrp.ReadOnly = False
+  Endif
 
 End
 
@@ -223,16 +250,13 @@ Public Sub btnupdate_Click()
       res = modDatabase.$myConn.Edit("tblentry", "fldstockno=&1", txtstockno.Value)
       res["fldbatch"] = Trim(txtbatch.Text)
       res["fldexpiry"] = dtexpiry.Value
-      If modHelpVariable.$LogInCategory = "Account" Then
+      If $SuperMode = True Then
         res["fldsellpr"] = txtrate.Value
-        res["fldcost"] = txtnetcost.Value
-        res["fldmrp"] = txtmrp.Value
         res["fldselltime"] = Now()
         res["fldselluserid"] = modBasic.$lbluser
-      Else If modHelpVariable.$LogInCategory = "Pharmacist" Then
-        res["fldcost"] = txtnetcost.Value
-        res["fldmrp"] = txtmrp.Value
       Endif
+      res["fldcost"] = txtnetcost.Value
+      res["fldmrp"] = txtmrp.Value
       res["fldstatus"] = txtorder.Value
       res["xyz"] = False
       res.Update()

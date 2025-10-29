@@ -1,0 +1,71 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,86,63)
+  Tag = "Service Checklist"
+  Text = ("Service Checklist")
+  Resizable = False
+  { mnufile Menu
+    { mnudelete Menu
+      Text = ("Delete")
+    }
+  }
+  { btnaddservice Button
+    MoveScaled(76,17,9,3)
+    Picture = Picture["icon:/small/add"]
+  }
+  { Label1 Label
+    MoveScaled(1,1,10,3)
+    Border = Border.Plain
+    Text = ("Checklist")
+  }
+  { btnitemulti ToolButton
+    MoveScaled(71,17,3,3)
+    Picture = Picture["icon:/small/grid"]
+  }
+  { GridView1 GridView
+    MoveScaled(1,21,84,41)
+    Mode = Select.Single
+    Header = GridView.Both
+    AutoResize = False
+  }
+  { cmbtitle ComboBox
+    MoveScaled(12,1,39,3)
+  }
+  { Label2 Label
+    MoveScaled(1,5,10,3)
+    Border = Border.Plain
+    Text = ("Age Group")
+  }
+  { cmbagegroup ComboBox
+    MoveScaled(12,5,18,3.25)
+  }
+  { Label3 Label
+    MoveScaled(1,9,10,3)
+    Border = Border.Plain
+    Text = ("Gender")
+  }
+  { cmbgender ComboBox
+    MoveScaled(12,9,18,3)
+  }
+  { Label4 Label
+    MoveScaled(1,13,10,3)
+    Border = Border.Plain
+    Text = ("Status")
+  }
+  { cmbstatus ComboBox
+    MoveScaled(12,13,18,3)
+  }
+  { cmbitem ComboBox
+    MoveScaled(14,17,56,3)
+    Sorted = True
+  }
+  { cmbtype ComboBox
+    MoveScaled(1,17,13,3)
+  }
+  { btnshow Button
+    MoveScaled(53,1,14,3)
+    Text = ("Show")
+    Picture = Picture["icon:/small/refresh"]
+  }
+}

@@ -160,8 +160,37 @@ Public Sub btnadd_Click()
   If cmbcomtaget.Text And If cmbmedicine.Text And If txtqty.Value Then
     If cmbcomtaget.Text = modBasic.$compID Then
     Else
-      AddRequestStore()
+      AddRequestStore(cmbroute.Text, cmbmedicine.Text, txtqty.Value, cmburgent.Text)
       SHowGridView()
+      ClearComboAll()
+      cmbroute.SetFocus
+    Endif
+  Endif
+
+End
+
+Public Sub btngroup_Click()
+
+  Dim xList As String[]
+  Dim xgroup As String
+  Dim res As Result
+
+  If cmbcomtaget.Text Then
+    If cmbcomtaget.Text = modBasic.$compID Then
+    Else
+
+      xList = modMedicine.GetMedicineProcolsList()
+      xgroup = GridViewNew("select Protocol", xList, False)
+      If xgroup Then
+        res = modDatabase.$myConn.Exec("select fldroute,flditem,flddose,flddoseunit,fldfreq,fldday,fldqty,fldstart,fldadvice from tblproductgroup where fldmedgroup=&1 and (fldcomp=&2 or fldcomp=&3)", xgroup, modBasic.$compID, "%")
+        If res.Available Then
+          For Each res
+            AddRequestStore(res["fldroute"], res["flditem"], res["fldqty"], "Normal")
+          Next
+          SHowGridView()
+        Endif
+      Endif
+
       ClearComboAll()
       cmbroute.SetFocus
     Endif
@@ -194,17 +223,17 @@ Public Sub btnadd_GotFocus()
 
 End
 
-Private Sub AddRequestStore()
+Private Sub AddRequestStore(sRoute As String, sItem As String, sQty As Float, xUrgency As String)
 
   Dim res As Result
 
   res = modDatabase.$myConn.Create("tblrequest")
-  res["fldstockid"] = cmbmedicine.Text
-  res["fldcategory"] = modNonMedical.GetBillItemCategoryFromCombo(cmbroute.Text)
-  res["fldqty"] = txtqty.Value
+  res["fldstockid"] = sItem
+  res["fldcategory"] = modNonMedical.GetBillItemCategoryFromCombo(sRoute)
+  res["fldqty"] = sQty
   res["fldstatus"] = "Requested"
-  res["fldfinalqty"] = txtqty.Value
-  res["fldurgent"] = cmburgent.Text
+  res["fldfinalqty"] = sQty
+  res["fldurgent"] = xUrgency
   res["fldexpdate"] = dtexpect.Value
   res["fldreference"] = ""
   res["fldremarks"] = cmbvendor.Text
@@ -218,7 +247,6 @@ Private Sub AddRequestStore()
   res["fldcomp"] = cmbcomtaget.Text
   res["fldsave"] = False
   res.Update
-  cmbroute.Text = ""
 
 End
 

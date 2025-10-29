@@ -210,8 +210,8 @@ Private Sub GetEncounterValue()
             txtbedno.Text = modPatient.GetLocationSetting(Trim(txtencid.Text), $sTatus)
             txtpatdoa.Text = modReportVar.GetDateTimeReport(modPatient.GetRecordDate(Trim(txtencid.Text)), gb.GeneralDate)
             txtpatweight.Value = modClinic.GetBodyWeight(Trim(txtencid.Text))
-            btnsurgeon.Tag = modPatient.GetAttendingConsultant(Trim(txtencid.Text))
-            btnsurgeon.Text = modGeneral.GetUserFullName(btnsurgeon.Tag)
+            btnipconsult.Tag = modPatient.GetAttendingConsultant(Trim(txtencid.Text))
+            btnipconsult.Text = modGeneral.GetUserFullName(btnipconsult.Tag)
             modClinSub.GetPatientHeight(Trim(txtencid.Text), txtpatheight, cmbpatheightunit)
             modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
             txtcolor.Background = modPatient.GetPatientColor(Trim(txtencid.Text))
@@ -248,7 +248,7 @@ Private Sub BlockDCButton()
   tlbtnadwt.Enabled = xx
   dtdob.Enabled = xx
   btnpic.Enabled = xx
-  btnsurgeon.Enabled = xx
+  btnipconsult.Enabled = xx
 
 End
 
@@ -339,30 +339,30 @@ Public Sub cmbpatageunit_KeyRelease()
 
 End
 
-Public Sub btnsurgeon_Click()
+Public Sub btnipconsult_Click()
 
   Dim xMedUser As String[]
 
   xMedUser = MedicalSelectedValue(("Select Consultant"), modBasic.$IPConsultUserList)
   If xMedUser And If xMedUser.Count Then
-    btnsurgeon.Tag = xMedUser[0]
-    btnsurgeon.Text = xMedUser[1]
+    btnipconsult.Tag = xMedUser[0]
+    btnipconsult.Text = xMedUser[1]
   Else
-    btnsurgeon.Tag = ""
-    btnsurgeon.Text = ""
+    btnipconsult.Tag = ""
+    btnipconsult.Text = ""
   Endif
-  If btnsurgeon.Tag And If txtencid.Text Then
-    modPatientSub.UpdateAttendingConsultant(Trim(txtencid.Text), btnsurgeon.Tag)
-    Balloon.Info(("Information saved"), btnsurgeon)
+  If btnipconsult.Tag And If txtencid.Text Then
+    modPatientSub.UpdateAttendingConsultant(Trim(txtencid.Text), btnipconsult.Tag)
+    Balloon.Info(("Information saved"), btnipconsult)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
 
 End
 
-Public Sub btnsurgeon_Change()
+Public Sub btnipconsult_Change()
 
-  If btnsurgeon.Text = "" Then
-    btnsurgeon.Tag = ""
+  If btnipconsult.Text = "" Then
+    btnipconsult.Tag = ""
   Endif
 
 End
@@ -424,8 +424,8 @@ Public Sub btnsms_Click()
 
   Dim xval As String
 
-  If btnsurgeon.Tag Then
-    xval = modDevice.SendSMSToInpatDoc(Trim(txtencid.Text), modGeneral.GetUserContact(btnsurgeon.Tag))
+  If btnipconsult.Tag Then
+    xval = modDevice.SendSMSToInpatDoc(Trim(txtencid.Text), modGeneral.GetUserContact(btnipconsult.Tag))
     If xval Then
       Balloon.Info(xval, btnsms)
       Balloon.Delay = modBasic.$BalloonDelay
@@ -617,8 +617,88 @@ Public Sub btnevent_Click()
 
 End
 
+Public Sub mnugenservice_Click()
+
+  Dim hForm As FmMiniService
+
+  If txtencid.Text Then
+    If modNonMedical.AllowEntryWithDeposit(Trim(txtencid.Text), "Service") = True Then
+      hForm = New FmMiniService(Trim(txtencid.Text), $billModeService, $billModeProcedure, $billModeOthers)
+      hForm.ShowModal
+    Endif
+  Endif
+
+End
+
+Public Sub mnudeviceuse_Click()
+
+  Dim hForm As FmDeviceUse
+
+  If txtencid.Text Then
+    hForm = New FmDeviceUse(Trim(txtencid.Text), "Devices")
+    hForm.ShowModal
+  Endif
+
+End
+
+Public Sub btnvital_Click()
+
+  Dim hForm As FmVItalMobile
+
+  If txtencid.Text Then
+    hForm = New FmVItalMobile(Trim(txtencid.Text))
+    hForm.ShowModal
+  Endif
+
+End
+
+Public Sub btntriage_Click()
+
+  Dim xcol As String
+
+  If txtencid.Text Then
+    xcol = InputColor("Triage", txtcolor.Background)
+    If xcol Then
+      txtcolor.Background = CInt(xcol)
+      modPatient.SetPatientColor(Trim(txtencid.Text), xcol)
+    Endif
+  Endif
+
+End
+
+Public Sub btnpacs_Click()
+
+  Dim hForm As FmPacsFind
+
+  If txtencid.Text Then
+    hForm = New FmPacsFind(Trim(txtencid.Text), "Visit")
+    hForm.ShowModal
+  Endif
+
+End
+
+Public Sub btnscreendraw_Click()
+
+  Dim sPath As String
+  Dim xxx As String[]
+  Dim xval As String
+
+  If txtencid.Text Then
+    xxx = CustomDraw()
+    If xxx Then
+      sPath = xxx[0]
+      If sPath Then
+        xval = modImage.SaveClinicScreenDraw(Trim(txtencid.Text), xxx[1], sPath)
+      Endif
+    Endif
+  Endif
+
+End
+
 ''================== Initialize ===============================
 Private Sub InitializeProcedures()
+
+  Dim hForm As FmPatCheckList
 
   Dim res As Result
   Dim res1 As Result
@@ -653,6 +733,9 @@ Private Sub InitializeProcedures()
 
       $PositionList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldusertype) as col from tblprocedureshare where flditemtype=&1 and fldbillingmode like &2 and (flditemname like &3 or flditemname=&4) and fldactive=&5", "Procedures", txtbillmode.Text, res["flditem"], "%", "Active"))
       ShowSurgUser()
+
+      hForm = New FmPatCheckList(Trim(txtencid.Text), cmbprocedure.Text)
+      hForm.ShowModal()
     Endif
 
   Endif
@@ -764,18 +847,37 @@ Public Sub btnlabtest_Click()
 End
 
 ''=========================== Add Team members =================
+Public Sub btnconperson_Click()
+
+  Dim xMedUser As String[]
+
+  If modBasic.$PayableUserFormat = "Restricted" Then
+    xMedUser = MedicalSelectedValue(("Select Sharing User"), modGeneral.CategoricalUserList("fldpayable", cmbpertype.Text))
+  Else
+    xMedUser = MedicalSelectedValue(("Select Sharing User"), modGeneral.CategoricalUserList("fldpayable"))
+  Endif
+  If xMedUser And If xMedUser.Count Then
+    btnconperson.Tag = xMedUser[0]
+    btnconperson.Text = xMedUser[1]
+  Else
+    btnconperson.Tag = ""
+    btnconperson.Text = ""
+  Endif
+
+End
+
 Public Sub btnaddperson_Click()
 
   If $ProcBill Then
-    If cmbpertype.Text And If btnsurgeon.Tag Then
+    If cmbpertype.Text And If btnconperson.Tag Then
       If Not btnpayto.Tag Then
-        modPatientGeneral.AddClinicalSharingUser("Procedures", $ProcBill, Trim(txtencid.Text), cmbpertype.Text, btnsurgeon.Tag, "", $sLevel, 100)
+        modPatientGeneral.AddClinicalSharingUser("Procedures", $ProcBill, Trim(txtencid.Text), cmbpertype.Text, btnconperson.Tag, "", $sLevel, 100)
         ' ' modPatientGeneral.AddSubGeneralQualiData($ProcIndex, Trim(txtencid.Text), cmbpertype.Text, btnconsult.Tag, "")
         ShowSurgUser()
         cmbpertype.Text = ""
-        btnsurgeon.Tag = ""
-        btnsurgeon.Text = ""
-        btnsurgeon.Enabled = True
+        btnconperson.Tag = ""
+        btnconperson.Text = ""
+        btnconperson.Enabled = True
         cmbpertype.SetFocus
       Endif
     Endif
