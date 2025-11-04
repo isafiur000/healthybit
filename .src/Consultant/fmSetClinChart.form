@@ -1,0 +1,124 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,83,76)
+  Tag = "Clinical Chart Setting"
+  Text = ("Clinical Chart Setting")
+  Margin = True
+  { Label5 Label
+    MoveScaled(1,1,11,3)
+    Border = Border.Plain
+    Text = ("Target:")
+  }
+  { cmbtarget ComboBox
+    MoveScaled(13,1,15,3)
+    ToolTip = ("Select target Department ID")
+    Sorted = True
+  }
+  { lblcomp Label
+    MoveScaled(33,1,31,3)
+    Border = Border.Plain
+  }
+  { Label1 Label
+    MoveScaled(1,5,11,3)
+    Border = Border.Plain
+    Text = ("Title")
+  }
+  { cmbcategory ComboBox
+    MoveScaled(13,5,38,3)
+  }
+  { btnrefresh Button
+    MoveScaled(52,5,12,3)
+    Text = ("Show")
+    Picture = Picture["icon:/small/refresh"]
+  }
+  { Label2 Label
+    MoveScaled(1,9,11,3)
+    Border = Border.Plain
+    Text = ("Gender")
+  }
+  { Label3 Label
+    MoveScaled(34,9,11,3)
+    Border = Border.Plain
+    Text = ("Age Group")
+  }
+  { Label7 Label
+    MoveScaled(1,13,11,3)
+    Border = Border.Plain
+    Text = ("X-Axis")
+  }
+  { Label8 Label
+    MoveScaled(1,17,11,3)
+    Border = Border.Plain
+    Text = ("Y-Axis")
+  }
+  { cmbagegroup ComboBox
+    MoveScaled(46,9,18,3)
+    ToolTip = ("Select target Department ID")
+    Sorted = True
+  }
+  { cmbgender ComboBox
+    MoveScaled(13,9,12,3)
+    ToolTip = ("Select target Department ID")
+    Sorted = True
+  }
+  { cmbtypex ComboBox
+    MoveScaled(13,13,12,3)
+  }
+  { cmbtypey ComboBox
+    MoveScaled(13,17,12,3)
+  }
+  { Label9 Label
+    MoveScaled(1,21,11,3)
+    Border = Border.Plain
+    Text = ("Formula")
+  }
+  { txtformula TextArea
+    MoveScaled(13,21,68,9)
+  }
+  { tbtnadd Button
+    MoveScaled(65,35,12,3)
+    Text = ("Save")
+    Picture = Picture["icon:/small/add"]
+  }
+  { btnedit ToolButton
+    MoveScaled(78,35,3,3)
+    Picture = Picture["icon:/small/edit"]
+  }
+  { GridView1 GridView
+    MoveScaled(1,39,80,36)
+    Mode = Select.Single
+    Header = GridView.Both
+    AutoResize = False
+  }
+  { Label4 Label
+    MoveScaled(1,31,11,3)
+    Border = Border.Plain
+    Text = ("Minimum")
+  }
+  { Label6 Label
+    MoveScaled(1,35,11,3)
+    Border = Border.Plain
+    Text = ("Maximum")
+  }
+  { txtminimum ValueBox
+    MoveScaled(13,31,15,3)
+  }
+  { txtmaximum ValueBox
+    MoveScaled(13,35,15,3)
+  }
+  { txtitemx TextBox
+    MoveScaled(26,13,49,3)
+  }
+  { txtitemy TextBox
+    MoveScaled(26,17,49,3)
+  }
+  { btnitemx ToolButton
+    MoveScaled(76,13,3,3)
+    Picture = Picture["icon:/small/add"]
+  }
+  { btnitemy ToolButton
+    MoveScaled(76,17,3,3)
+    Picture = Picture["icon:/small/add"]
+  }
+}

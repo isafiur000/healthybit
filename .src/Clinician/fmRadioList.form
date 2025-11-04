@@ -78,6 +78,7 @@
       { cmbtestgroup ListBox
         MoveScaled(0,4,16.5,30)
         Expand = True
+        ScrollBar = Scroll.Both
       }
       { chkdefault CheckBox
         MoveScaled(1,34,15,3)
@@ -107,9 +108,13 @@
         }
       }
       { ListView1 ListView
-        MoveScaled(0,10,30,34)
+        MoveScaled(0,10,30,28)
         Expand = True
         Sorted = True
+      }
+      { chknextvisit CheckBox
+        MoveScaled(1,46,23,3)
+        Text = ("Plan for Next Visit")
       }
     }
     { Panel8 Panel
@@ -146,6 +151,7 @@
       { cmbcategory ListBox
         MoveScaled(0,0,16,30)
         Expand = True
+        ScrollBar = Scroll.Both
       }
     }
     { Panel12 Panel
@@ -169,6 +175,10 @@
       { TreeView1 TreeView
         MoveScaled(1,5,31,27)
         Expand = True
+      }
+      { chknextvisitree CheckBox
+        MoveScaled(0,36,23,3)
+        Text = ("Plan for Next Visit")
       }
     }
     { Panel7 Panel
@@ -201,6 +211,7 @@
     Text = ("Report [F4]")
     { lsttestname ListBox
       MoveScaled(1,1,26,50)
+      ScrollBar = Scroll.Both
       Sorted = True
     }
     { TableView1 GridView

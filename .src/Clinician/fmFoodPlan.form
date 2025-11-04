@@ -32,14 +32,6 @@
     { dttoday DateBox
       MoveScaled(10,0.375,15,3)
     }
-    { btnrefresh Button
-      MoveScaled(26.625,0.375,5,3)
-      Picture = Picture["icon:/small/refresh"]
-    }
-    { dttime DateBox
-      MoveScaled(38,0.375,12,3)
-      Mode = DateChooser.TimeOnly
-    }
     { cmbtype ComboBox
       MoveScaled(10,4,27.375,3)
     }
@@ -50,25 +42,25 @@
     { txtdose ValueBox
       MoveScaled(10,12,8,3)
     }
-    { txtfreq SpinBox
-      MoveScaled(26,12,5.625,3)
-      MinValue = 1
-      MaxValue = 24
-      Value = 1
+    { cmbfreq ComboBox
+      MoveScaled(37,12,13,3)
+    }
+    { txtduration ValueBox
+      MoveScaled(10,16,8,3)
     }
     { btnadd Button
-      MoveScaled(41,12,9,3)
+      MoveScaled(39,16,11,3)
       Tag = "Auto"
       Text = ("Add")
       Picture = Picture["icon:/small/add"]
     }
-    { txtunit Label
-      MoveScaled(19,12,5,3)
-      Border = Border.Plain
+    { dttime DateBox
+      MoveScaled(26,0,12,3)
+      Mode = DateChooser.TimeOnly
     }
-    { pnlquanti Panel
-      MoveScaled(54,0,15,16)
-      Visible = False
+    { txtunit Label
+      MoveScaled(19,12,8,3)
+      Border = Border.Plain
     }
     { Label1 Label
       MoveScaled(0,0.375,9,3)
@@ -78,7 +70,7 @@
     { Label4 Label
       MoveScaled(0,12,9,3)
       Border = Border.Plain
-      Text = ("Dose")
+      Text = ("QTY")
     }
     { Label5 Label
       MoveScaled(0,4,9,3)
@@ -91,9 +83,9 @@
       Text = ("Item")
     }
     { Label7 Label
-      MoveScaled(33,12,7,3)
+      MoveScaled(31,12,5,3)
       Border = Border.Plain
-      Text = ("Hourly")
+      Text = ("Freq")
     }
     { ScrollView1 ScrollView
       MoveScaled(70,0.375,26,46)
@@ -282,7 +274,7 @@
       }
     }
     { GridView1 GridView
-      MoveScaled(0,16,69,34)
+      MoveScaled(0,20,69,30)
       Mode = Select.Single
       Header = GridView.Both
       AutoResize = False
@@ -303,6 +295,11 @@
     { chkmixture CheckBox
       MoveScaled(38,4,11,3)
       Text = ("Mixture")
+    }
+    { Label12 Label
+      MoveScaled(0,16,9,3)
+      Border = Border.Plain
+      Text = ("Days")
     }
     Index = 1
     Text = ("Saved Daily Plan [F2]")

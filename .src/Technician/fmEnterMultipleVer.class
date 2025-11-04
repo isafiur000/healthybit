@@ -10,6 +10,8 @@ Private aDelButton As New Object[50]
 Private aComboBox As New Object[50]
 Private aChkLock As New Object[50]
 Private aDichoValue As New Object[50]
+Private aLeftRightValue As New Object[50]
+Private aLeftRightText As New Object[50]
 Private aHTMLText As New Object[50]          ''aObj11
 Private aLineText As New Object[50]
 Private aUnitText As New Object[50]
@@ -153,6 +155,10 @@ Private Sub CreateControls()
           aChkLock[i] = New CheckBox(aWebPanel[i]) As "CheckLock"
         Case "Dichotomous"
           aDichoValue[i] = New DichotomousValue(aWebPanel[i]) As "DichoText"
+        Case "Left Right Qualitative"
+          aLeftRightText[i] = New LeftRightQuali(aWebPanel[i]) As "LeftRightText"
+        Case "Left Right Quantitative"
+          aLeftRightValue[i] = New LeftRightQuanti(aWebPanel[i]) As "LeftRightValue"
         Case "RichText Area"
           aHTMLText[i] = New TextHTML(aWebPanel[i]) As "TextHTMLgroup"
         Case "Label Only"
@@ -485,6 +491,22 @@ Private Sub DIsplayTextForm()
           .Tag = i
         End With
 
+      Else If $xData[i][3] = "Left Right Qualitative" Then
+        With aLeftRightText[i]
+          .Expand = True
+          .Height = 25 * AppFactor
+          .DataText = $xData[i][1]
+          .Tag = i
+        End With
+
+      Else If $xData[i][3] = "Left Right Quantitative" Then
+        With aLeftRightValue[i]
+          .Expand = True
+          .Height = 25 * AppFactor
+          .DataValue = $xData[i][1]
+          .Tag = i
+        End With
+
       Else If $xData[i][3] = "RichText Area" Then
         With aHTMLText[i]
           .Expand = True
@@ -781,6 +803,23 @@ Private Sub SaveEntryData()
 End
 
 ''for examination
+Private Sub SaveExamSubComponents(sSubExam As String, sHeadID As Long, sReport As String, sAbn As Boolean)
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", sSubExam, sHeadID)
+  If res.Available Then
+    res["fldreport"] = sReport
+    res["fldsave"] = True
+    res["fldabnormal"] = sAbn
+    res["flduserid"] = modBasic.$lbluser
+    res["fldtime"] = Now()
+    res["xyz"] = False
+    res.Update()
+  Endif
+
+End
+
 Private Sub FillExamSubExam()
 
   Dim i As Integer
@@ -802,67 +841,38 @@ Private Sub FillExamSubExam()
 
       Else
         If $xData[i][3] = "Multiple Selection" Or If $xData[i][3] = "Text Table" Or If $xData[i][3] = "Dual Columns" Or If $xData[i][3] = "Triple Columns" Or If $xData[i][3] = "Single Column" Then
-          res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
-          If res.Available Then
-            res["fldreport"] = ""
-            res["fldsave"] = True
-            res["fldabnormal"] = aAbnormCheck[i].Value
-            res["flduserid"] = modBasic.$lbluser
-            res["fldtime"] = Now()
-            res["xyz"] = False
-            res.Update()
-          Endif
+          SaveExamSubComponents($xData[i][0], $id, "", aAbnormCheck[i].Value)
+
         Else If $xData[i][3] = "Drug Sensitivity" Or If $xData[i][3] = "WHO Sensitivity" Then
-          res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
-          If res.Available Then
-            res["fldreport"] = ""
-            res["fldsave"] = True
-            res["fldabnormal"] = True
-            res["flduserid"] = modBasic.$lbluser
-            res["fldtime"] = Now()
-            res["xyz"] = False
-            res.Update()
-          Endif
+          SaveExamSubComponents($xData[i][0], $id, "", True)
+
         Else If $xData[i][3] = "Left and Right" Then
           If aLeftRight[i].DataText Then
-            res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = aLeftRight[i].DataText
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveExamSubComponents($xData[i][0], $id, aLeftRight[i].DataText, aAbnormCheck[i].Value)
           Endif
+
+        Else If $xData[i][3] = "Left Right Qualitative" Then
+          If aLeftRightText[i].DataText Then
+            SaveExamSubComponents($xData[i][0], $id, aLeftRightText[i].DataText, aAbnormCheck[i].Value)
+          Endif
+
+        Else If $xData[i][3] = "Left Right Quantitative" Then
+          If aLeftRightValue[i].DataValue Then
+            SaveExamSubComponents($xData[i][0], $id, aLeftRightValue[i].DataValue, aAbnormCheck[i].Value)
+          Endif
+
         Else If $xData[i][3] = "Date Time" Then
           If aDateBox[i].Value Then
-            res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = modDate.DateStringForExam(aDateBox[i].Value)
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveExamSubComponents($xData[i][0], $id, modDate.DateStringForExam(aDateBox[i].Value), aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "BS Date" Then
           If aDateBox[i].Value Then
-            res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = modDate.ConvertToLocaldate(aDateBox[i].Value)
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveExamSubComponents($xData[i][0], $id, modDate.ConvertToLocaldate(aDateBox[i].Value), aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "User Profile" Then
+
         Else If $xData[i][3] = "ImageValue" Then
           If aButtonBox[i].Text Then
             res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
@@ -870,84 +880,37 @@ Private Sub FillExamSubExam()
 
             Endif
           Endif
+
         Else If $xData[i][3] = "Calculated" Then
           If aCalcBox[i].Value Or If aCalcNull[i].Value Then
-            res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = CStr(aCalcBox[i].Value) & Space(1) & aCalcUnit[i].Text
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveExamSubComponents($xData[i][0], $id, CStr(aCalcBox[i].Value) & Space(1) & aCalcUnit[i].Text, aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "Quantitative" Or If $xData[i][3] = "Percent Sum" Then
           If aValueBox[i].Value Or If aNullCheck[i].Value Then
-            res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = CStr(aValueBox[i].Value) & Space(1) & aUnitText[i].Text
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveExamSubComponents($xData[i][0], $id, CStr(aValueBox[i].Value) & Space(1) & aUnitText[i].Text, aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "Clinical Scale" Then
           If aTextArea[i].Text Then
-            res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = CStr(aClinBox[i].Value)
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveExamSubComponents($xData[i][0], $id, CStr(aClinBox[i].Value), aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "Qualitative" Then
           If Len(Trim(aLineText[i].Text)) Then
-            res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = aLineText[i].Text
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveExamSubComponents($xData[i][0], $id, aLineText[i].Text, aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "Single Selection" Then
           If aComboBox[i].Text Then
-            res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = aComboBox[i].Text
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveExamSubComponents($xData[i][0], $id, aComboBox[i].Text, aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "Dichotomous" Then
           If aDichoValue[i].Value Then
-            res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = aDichoValue[i].Value
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveExamSubComponents($xData[i][0], $id, aDichoValue[i].Value, aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "RichText Area" Then
           If aHTMLText[i].Text Then
             If modBasic.$AutoClearHighlight = "Yes" Then
@@ -967,6 +930,7 @@ Private Sub FillExamSubExam()
               res.Update()
             Endif
           Endif
+
         Else If $xData[i][3] = "Label Only" Then
           res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
           If res.Available Then
@@ -978,6 +942,7 @@ Private Sub FillExamSubExam()
             res["xyz"] = False
             res.Update()
           Endif
+
         Else
           If Len(Trim(aGenTextArea[i].Text)) Then
             res = modDatabase.$myConn.Edit("tblpatientsubexam", "fldsubtexam=&1 and fldheadid=&2", $xData[i][0], $id)
@@ -993,6 +958,7 @@ Private Sub FillExamSubExam()
             Endif
           Endif
         Endif
+
       Endif
     Endif
   Next
@@ -1000,6 +966,23 @@ Private Sub FillExamSubExam()
 End
 
 ''for lab tests
+Private Sub SaveLabSubComponents(sSubExam As String, sHeadID As Long, sReport As String, sAbn As Boolean)
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", sSubExam, sHeadID)
+  If res.Available Then
+    res["fldreport"] = sReport
+    res["fldsave"] = True
+    res["fldabnormal"] = sAbn
+    res["flduserid"] = modBasic.$lbluser
+    res["fldtime"] = Now()
+    res["xyz"] = False
+    res.Update()
+  Endif
+
+End
+
 Private Sub FillLabTestSubTest()
 
   Dim i As Integer
@@ -1021,67 +1004,38 @@ Private Sub FillLabTestSubTest()
 
       Else
         If $xData[i][3] = "Multiple Selection" Or If $xData[i][3] = "Text Table" Or If $xData[i][3] = "Dual Columns" Or If $xData[i][3] = "Triple Columns" Or If $xData[i][3] = "Single Column" Then
-          res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-          If res.Available Then
-            res["fldreport"] = ""
-            res["fldsave"] = True
-            res["fldabnormal"] = aAbnormCheck[i].Value
-            res["flduserid"] = modBasic.$lbluser
-            res["fldtime"] = Now()
-            res["xyz"] = False
-            res.Update()
-          Endif
+          SaveLabSubComponents($xData[i][0], $id, "", aAbnormCheck[i].Value)
+
         Else If $xData[i][3] = "Drug Sensitivity" Or If $xData[i][3] = "WHO Sensitivity" Then
-          res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-          If res.Available Then
-            res["fldreport"] = ""
-            res["fldsave"] = True
-            res["fldabnormal"] = True
-            res["flduserid"] = modBasic.$lbluser
-            res["fldtime"] = Now()
-            res["xyz"] = False
-            res.Update()
-          Endif
+          SaveLabSubComponents($xData[i][0], $id, "", True)
+
         Else If $xData[i][3] = "Left and Right" Then
           If aLeftRight[i].DataText Then
-            res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = aLeftRight[i].DataText
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveLabSubComponents($xData[i][0], $id, aLeftRight[i].DataText, aAbnormCheck[i].Value)
           Endif
+
+        Else If $xData[i][3] = "Left Right Qualitative" Then
+          If aLeftRightText[i].DataText Then
+            SaveLabSubComponents($xData[i][0], $id, aLeftRightText[i].DataText, aAbnormCheck[i].Value)
+          Endif
+
+        Else If $xData[i][3] = "Left Right Quantitative" Then
+          If aLeftRightValue[i].DataValue Then
+            SaveLabSubComponents($xData[i][0], $id, aLeftRightValue[i].DataValue, aAbnormCheck[i].Value)
+          Endif
+
         Else If $xData[i][3] = "Date Time" Then
           If aDateBox[i].Value Then
-            res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = modDate.DateStringForExam(aDateBox[i].Value)
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveLabSubComponents($xData[i][0], $id, modDate.DateStringForExam(aDateBox[i].Value), aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "BS Date" Then
           If aDateBox[i].Value Then
-            res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = modDate.ConvertToLocaldate(aDateBox[i].Value)
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveLabSubComponents($xData[i][0], $id, modDate.ConvertToLocaldate(aDateBox[i].Value), aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "User Profile" Then
+
         Else If $xData[i][3] = "ImageValue" Then
           If aButtonBox[i].Text Then
             res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
@@ -1089,84 +1043,37 @@ Private Sub FillLabTestSubTest()
 
             Endif
           Endif
+
         Else If $xData[i][3] = "Calculated" Then
           If aCalcBox[i].Value Or If aCalcNull[i].Value Then
-            res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = CStr(aCalcBox[i].Value) & Space(1) & aCalcUnit[i].Text
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveLabSubComponents($xData[i][0], $id, CStr(aCalcBox[i].Value) & Space(1) & aCalcUnit[i].Text, aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "Quantitative" Or If $xData[i][3] = "Percent Sum" Then
           If aValueBox[i].Value Or If aNullCheck[i].Value Then
-            res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = CStr(aValueBox[i].Value) & Space(1) & aUnitText[i].Text
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveLabSubComponents($xData[i][0], $id, CStr(aValueBox[i].Value) & Space(1) & aUnitText[i].Text, aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "Clinical Scale" Then
           If aTextArea[i].Text Then
-            res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = CStr(aClinBox[i].Value)
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveLabSubComponents($xData[i][0], $id, CStr(aClinBox[i].Value), aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "Qualitative" Then
           If Len(Trim(aLineText[i].Text)) Then
-            res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = aLineText[i].Text
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveLabSubComponents($xData[i][0], $id, aLineText[i].Text, aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "Single Selection" Then
           If aComboBox[i].Text Then
-            res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = aComboBox[i].Text
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveLabSubComponents($xData[i][0], $id, aComboBox[i].Text, aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "Dichotomous" Then
           If aDichoValue[i].Value Then
-            res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = aDichoValue[i].Value
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveLabSubComponents($xData[i][0], $id, aDichoValue[i].Value, aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "RichText Area" Then
           If aHTMLText[i].Text Then
             If modBasic.$AutoClearHighlight = "Yes" Then
@@ -1186,6 +1093,7 @@ Private Sub FillLabTestSubTest()
               res.Update()
             Endif
           Endif
+
         Else If $xData[i][3] = "Label Only" Then
           res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
           If res.Available Then
@@ -1197,6 +1105,7 @@ Private Sub FillLabTestSubTest()
             res["xyz"] = False
             res.Update()
           Endif
+
         Else
           If Len(Trim(aGenTextArea[i].Text)) Then
             res = modDatabase.$myConn.Edit($tblpatlabsubtest, "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
@@ -1212,6 +1121,7 @@ Private Sub FillLabTestSubTest()
             Endif
           Endif
         Endif
+
       Endif
     Endif
   Next
@@ -1219,6 +1129,23 @@ Private Sub FillLabTestSubTest()
 End
 
 ''for radio tests
+Private Sub SaveRadioSubComponents(sSubExam As String, sHeadID As Long, sReport As String, sAbn As Boolean)
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", sSubExam, sHeadID)
+  If res.Available Then
+    res["fldreport"] = sReport
+    res["fldsave"] = True
+    res["fldabnormal"] = sAbn
+    res["flduserid"] = modBasic.$lbluser
+    res["fldtime"] = Now()
+    res["xyz"] = False
+    res.Update()
+  Endif
+
+End
+
 Private Sub FillRadioTestSubTest()
 
   Dim i As Integer
@@ -1240,67 +1167,38 @@ Private Sub FillRadioTestSubTest()
 
       Else
         If $xData[i][3] = "Multiple Selection" Or If $xData[i][3] = "Text Table" Or If $xData[i][3] = "Dual Columns" Or If $xData[i][3] = "Triple Columns" Or If $xData[i][3] = "Single Column" Then
-          res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-          If res.Available Then
-            res["fldreport"] = ""
-            res["fldsave"] = True
-            res["fldabnormal"] = aAbnormCheck[i].Value
-            res["flduserid"] = modBasic.$lbluser
-            res["fldtime"] = Now()
-            res["xyz"] = False
-            res.Update()
-          Endif
+          SaveRadioSubComponents($xData[i][0], $id, "", aAbnormCheck[i].Value)
+
         Else If $xData[i][3] = "Drug Sensitivity" Or If $xData[i][3] = "WHO Sensitivity" Then
-          res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-          If res.Available Then
-            res["fldreport"] = ""
-            res["fldsave"] = True
-            res["fldabnormal"] = True
-            res["flduserid"] = modBasic.$lbluser
-            res["fldtime"] = Now()
-            res["xyz"] = False
-            res.Update()
-          Endif
+          SaveRadioSubComponents($xData[i][0], $id, "", True)
+
         Else If $xData[i][3] = "Left and Right" Then
           If aLeftRight[i].DataText Then
-            res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = aLeftRight[i].DataText
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveRadioSubComponents($xData[i][0], $id, aLeftRight[i].DataText, aAbnormCheck[i].Value)
           Endif
+
+        Else If $xData[i][3] = "Left Right Qualitative" Then
+          If aLeftRightText[i].DataText Then
+            SaveRadioSubComponents($xData[i][0], $id, aLeftRightText[i].DataText, aAbnormCheck[i].Value)
+          Endif
+
+        Else If $xData[i][3] = "Left Right Quantitative" Then
+          If aLeftRightValue[i].DataValue Then
+            SaveRadioSubComponents($xData[i][0], $id, aLeftRightValue[i].DataValue, aAbnormCheck[i].Value)
+          Endif
+
         Else If $xData[i][3] = "Date Time" Then
           If aDateBox[i].Value Then
-            res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = modDate.DateStringForExam(aDateBox[i].Value)
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveRadioSubComponents($xData[i][0], $id, modDate.DateStringForExam(aDateBox[i].Value), aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "BS Date" Then
           If aDateBox[i].Value Then
-            res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = modDate.ConvertToLocaldate(aDateBox[i].Value)
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveRadioSubComponents($xData[i][0], $id, modDate.ConvertToLocaldate(aDateBox[i].Value), aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "User Profile" Then
+
         Else If $xData[i][3] = "ImageValue" Then
           If aButtonBox[i].Text Then
             res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
@@ -1308,84 +1206,37 @@ Private Sub FillRadioTestSubTest()
 
             Endif
           Endif
+
         Else If $xData[i][3] = "Calculated" Then
           If aCalcBox[i].Value Or If aCalcNull[i].Value Then
-            res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = CStr(aCalcBox[i].Value) & Space(1) & aCalcUnit[i].Text
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveRadioSubComponents($xData[i][0], $id, CStr(aCalcBox[i].Value) & Space(1) & aCalcUnit[i].Text, aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "Quantitative" Or If $xData[i][3] = "Percent Sum" Then
           If aValueBox[i].Value Or If aNullCheck[i].Value Then
-            res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = CStr(aValueBox[i].Value) & Space(1) & aUnitText[i].Text
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveRadioSubComponents($xData[i][0], $id, CStr(aValueBox[i].Value) & Space(1) & aUnitText[i].Text, aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "Clinical Scale" Then
           If aTextArea[i].Text Then
-            res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = CStr(aClinBox[i].Value)
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveRadioSubComponents($xData[i][0], $id, CStr(aClinBox[i].Value), aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "Qualitative" Then
           If Len(Trim(aLineText[i].Text)) Then
-            res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = aLineText[i].Text
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveRadioSubComponents($xData[i][0], $id, aLineText[i].Text, aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "Single Selection" Then
           If aComboBox[i].Text Then
-            res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = aComboBox[i].Text
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveRadioSubComponents($xData[i][0], $id, aComboBox[i].Text, aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "Dichotomous" Then
           If aDichoValue[i].Value Then
-            res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
-            If res.Available Then
-              res["fldreport"] = aDichoValue[i].Value
-              res["fldsave"] = True
-              res["fldabnormal"] = aAbnormCheck[i].Value
-              res["flduserid"] = modBasic.$lbluser
-              res["fldtime"] = Now()
-              res["xyz"] = False
-              res.Update()
-            Endif
+            SaveRadioSubComponents($xData[i][0], $id, aDichoValue[i].Value, aAbnormCheck[i].Value)
           Endif
+
         Else If $xData[i][3] = "RichText Area" Then
           If aHTMLText[i].Text Then
             If modBasic.$AutoClearHighlight = "Yes" Then
@@ -1405,6 +1256,7 @@ Private Sub FillRadioTestSubTest()
               res.Update()
             Endif
           Endif
+
         Else If $xData[i][3] = "Label Only" Then
           res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
           If res.Available Then
@@ -1416,6 +1268,7 @@ Private Sub FillRadioTestSubTest()
             res["xyz"] = False
             res.Update()
           Endif
+
         Else
           If Len(Trim(aGenTextArea[i].Text)) Then
             res = modDatabase.$myConn.Edit("tblpatradiosubtest", "fldsubtest=&1 and fldtestid=&2", $xData[i][0], $id)
@@ -1431,6 +1284,7 @@ Private Sub FillRadioTestSubTest()
             Endif
           Endif
         Endif
+
       Endif
     Endif
   Next
@@ -1497,6 +1351,14 @@ Private Sub SetQualitativeAbnormal(i As Integer)
   Else If $xData[i][3] = "Left and Right" Then
     If aLeftRight[i].DataText Then
       aAbnormCheck[i].Value = modAllExam.SelectSubExamAbnormal($frm, lblitem.Text, $xData[i][0], aLeftRight[i].DataText, $xData[i][3])
+    Endif
+  Else If $xData[i][3] = "Left Right Qualitative" Then
+    If aLeftRightText[i].DataText Then
+      aAbnormCheck[i].Value = modAllExam.SelectSubExamAbnormal($frm, lblitem.Text, $xData[i][0], aLeftRightText[i].DataText, $xData[i][3])
+    Endif
+  Else If $xData[i][3] = "Left Right Quantitative" Then
+    If aLeftRightValue[i].DataValue Then
+      aAbnormCheck[i].Value = modAllExam.SelectSubExamAbnormal($frm, lblitem.Text, $xData[i][0], aLeftRightValue[i].DataValue, $xData[i][3])
     Endif
   Else If $xData[i][3] = "Qualitative" Then
     If aLineText[i].Text Then

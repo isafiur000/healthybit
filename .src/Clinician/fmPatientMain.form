@@ -53,13 +53,6 @@
     { mnudemograph Menu
       Text = ("Demographic")
     }
-    { mnuexam Menu
-      Text = ("Essen Exams")
-      Shortcut = "Ctrl+E"
-    }
-    { mnutriage Menu
-      Text = ("Entry Exams")
-    }
     { mnuevent Menu
       Text = ("Event Timings")
     }
@@ -1033,11 +1026,11 @@
         Arrangement = Arrange.Vertical
       }
       { Panel13 Panel
-        MoveScaled(27,0,90,39)
+        MoveScaled(27,0,91,39)
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel15 Panel
-          MoveScaled(0,0,89,4)
+          MoveScaled(0,0,91,4)
           { txtfindmin ValueBox
             MoveScaled(56,0.375,3,3)
             Visible = False
@@ -1063,13 +1056,16 @@
             Picture = Picture["icon:/small/database"]
           }
           { btnhistory Button
-            MoveScaled(73,0.375,14,3)
+            MoveScaled(72,0.5,14,3)
             Text = ("Save")
             Picture = Picture["icon:/small/apply"]
           }
           { lblhistoryhead Label
             MoveScaled(0,0.5,36,3)
             Border = Border.Plain
+          }
+          { chkenabhistory CheckBox
+            MoveScaled(87,0.5,3,3)
           }
         }
         { txthistory TextHTML
@@ -1097,18 +1093,31 @@
             Text = ("FINDINGS")
           }
           { btnaddexamlistmainall Button
-            MoveScaled(29,0.5,12,3)
+            MoveScaled(25,0.5,12,3)
+            ToolTip = ("Departmental Examinations")
             Text = ("Depart")
             Picture = Picture["icon:/small/component"]
           }
           { btnaddexamlistmain Button
-            MoveScaled(42,0.5,12,3)
+            MoveScaled(38,0.5,12,3)
+            ToolTip = ("Supplemental Examinations")
             Text = ("Group")
             Picture = Picture["icon:/small/bookmark"]
           }
           { btnaddscales Button
-            MoveScaled(55,0.5,12,3)
+            MoveScaled(51,0.5,12,3)
+            ToolTip = ("Clinical Scales")
             Text = ("Scales")
+            Picture = Picture["icon:/small/calculator"]
+          }
+          { btnabcexam ToolButton
+            MoveScaled(21,0.5,3,3)
+            ToolTip = ("ABC Examinations")
+            Picture = Picture["icon:/small/text"]
+          }
+          { mnuexam ToolButton
+            MoveScaled(64,0.5,3,3)
+            ToolTip = ("Essential Examinations")
             Picture = Picture["icon:/small/calculator"]
           }
         }
@@ -1345,15 +1354,15 @@
         { Panel14 Panel
           MoveScaled(0,0,40,3.5)
           { lbldtnote Label
-            MoveScaled(15,0.375,10,3)
+            MoveScaled(15,0.375,12,3)
             Border = Border.Plain
           }
           { dtnote DateBox
             MoveScaled(0,0.375,15,3)
           }
           { chknoteall CheckBox
-            MoveScaled(31,0,8,3.5)
-            Text = ("All")
+            MoveScaled(28,0.375,10,4)
+            Text = ("All Date")
           }
         }
         { Panel4 Panel
@@ -1398,10 +1407,6 @@
             Text = Shortcut(("Add"), "A")
             Picture = Picture["icon:/small/apply"]
           }
-          { tbtnfollowcalen ToolButton
-            MoveScaled(30,0.375,3,3)
-            Picture = Picture["icon:/small/calendar"]
-          }
           { cmbnote ComboBox
             MoveScaled(0.5,0.375,23.75,3)
           }
@@ -1424,10 +1429,6 @@
           { btnnotedef ToolButton
             MoveScaled(41,0.375,3,3)
             Picture = Picture["icon:/small/database"]
-          }
-          { btnaddnotes ToolButton
-            MoveScaled(34,0.375,3,3)
-            Picture = Picture["icon:/small/added"]
           }
         }
         { Panel37 Panel
@@ -1748,184 +1749,181 @@
       Index = 9
       Text = ("SOAP[F10]")
       { Panel47 Panel
-        MoveScaled(0,0,27,39)
+        MoveScaled(0,0,34,39)
         Arrangement = Arrange.Vertical
         Border = Border.Plain
         { Panel46 Panel
           MoveScaled(0,0,27,4)
-          { lbldtplan Label
-            MoveScaled(15,0.375,12,3)
-            Border = Border.Plain
-          }
           { dtplan DateBox
             MoveScaled(0,0.375,15,3)
           }
+          { chkallplan CheckBox
+            MoveScaled(16,0.5,10,3)
+            Text = ("All Date")
+          }
         }
         { grdplan GridView
-          MoveScaled(0,4,27,22)
+          MoveScaled(0,4,33,26)
           Expand = True
           Mode = Select.Single
           AutoResize = False
         }
       }
       { Panel48 Panel
-        MoveScaled(27,2,2,18)
+        MoveScaled(34,2,1,18)
         Arrangement = Arrange.Vertical
       }
-      { ScrollView1 ScrollView
-        MoveScaled(29,0,90,37)
+      { Panel6 Panel
+        MoveScaled(35,0,83,44)
         Expand = True
         Arrangement = Arrange.Vertical
-        { pnlplan Panel
-          MoveScaled(0,0,88.75,87.5)
+        { Panel66 Panel
+          MoveScaled(0,0,83,4)
+          Arrangement = Arrange.Horizontal
+          Padding = 4
+          { Label6 Label
+            MoveScaled(0,0.5,9,3)
+            Border = Border.Plain
+            Text = ("Problem")
+          }
+          { txtproblem TextBox
+            MoveScaled(9,0.5,54,3)
+            Expand = True
+          }
+          { btnplanadd Button
+            MoveScaled(66,0.5,11,3)
+            Text = Shortcut(("Add"), "A")
+            Picture = Picture["icon:/small/add"]
+          }
+          { btnplanedit Button
+            MoveScaled(77,0.5,5,3)
+            Picture = Picture["icon:/small/edit"]
+          }
+        }
+        { ScrollView1 ScrollView
+          MoveScaled(0,4,78,35)
           Expand = True
           Arrangement = Arrange.Vertical
-          { Panel66 Panel
-            MoveScaled(1,0,87,4)
-            Arrangement = Arrange.Horizontal
-            Padding = 4
-            { Label6 Label
-              MoveScaled(0,0.625,9,3)
-              Border = Border.Plain
-              Text = ("Problem")
-            }
-            { txtproblem TextBox
-              MoveScaled(9,0.625,64,3)
-              Expand = True
-            }
-            { btnplanadd Button
-              MoveScaled(75,0.625,10,3)
-              Text = Shortcut(("Add"), "A")
-              Picture = Picture["icon:/small/apply"]
-            }
-          }
-          { Panel67 Panel
-            MoveScaled(1,4,81,4)
-            { Label9 Label
-              MoveScaled(0,1,23.375,3)
-              Border = Border.Plain
-              Text = ("Subjective Parameters")
-            }
-            { dctplansubj ToolButton
-              MoveScaled(25,1,3,3)
-              Picture = Picture["icon:/small/edit"]
-            }
-            { btnplansubj ToolButton
-              MoveScaled(29,1,3,3)
-              Picture = Picture["icon:/small/exec"]
-            }
-            { txtplanid ValueBox
-              MoveScaled(39,1,6,2)
-              Visible = False
-            }
-            { btntemplplansubj ToolButton
-              MoveScaled(33,0.875,3,3)
-              Picture = Picture["icon:/small/attach"]
-            }
-            { btnaddsubject ToolButton
-              MoveScaled(77,1,3,3)
-              Picture = Picture["icon:/small/apply"]
-            }
-          }
-          { txtsubject TextHTML
-            MoveScaled(1,8,86,15)
-            Tag = "Auto"
-          }
-          { Panel68 Panel
-            MoveScaled(1,23,82,4)
-            { Label14 Label
-              MoveScaled(0,1,23.375,3)
-              Border = Border.Plain
-              Text = ("Objective Parameters")
-            }
-            { dctplanobj ToolButton
-              MoveScaled(25,1,3,3)
-              Picture = Picture["icon:/small/edit"]
-            }
-            { btnplanobj ToolButton
-              MoveScaled(29,1,3,3)
-              Picture = Picture["icon:/small/exec"]
-            }
-            { btntemplplanobj ToolButton
-              MoveScaled(33,1,3,3)
-              Picture = Picture["icon:/small/attach"]
-            }
-            { btnaddobject ToolButton
-              MoveScaled(77,1,3,3)
-              Picture = Picture["icon:/small/apply"]
-            }
-          }
-          { txtobject TextHTML
-            MoveScaled(1,27,86,15)
-            Tag = "Auto"
-          }
-          { Panel69 Panel
-            MoveScaled(1,42,81,4)
-            { Label48 Label
-              MoveScaled(0,1,23.375,3)
-              Border = Border.Plain
-              Text = ("Assessment")
-            }
-            { dctplanasses ToolButton
-              MoveScaled(25,1,3,3)
-              Picture = Picture["icon:/small/edit"]
-            }
-            { btnplanasses ToolButton
-              MoveScaled(29,1,3,3)
-              Picture = Picture["icon:/small/exec"]
-            }
-            { btntemplplanasses ToolButton
-              MoveScaled(33,1,3,3)
-              Picture = Picture["icon:/small/attach"]
-            }
-            { btnaddassess ToolButton
-              MoveScaled(77,1,3,3)
-              Picture = Picture["icon:/small/apply"]
-            }
-          }
-          { Panel6 Panel
-            MoveScaled(1,46,87,24)
+          { pnlplan Panel
+            MoveScaled(0,0,75,85)
             Expand = True
             Arrangement = Arrange.Vertical
-            { txtmanage TextHTML
-              MoveScaled(0,0,86,24)
+            { Panel67 Panel
+              MoveScaled(1,0,73,4)
+              { Label9 Label
+                MoveScaled(0,1,23.375,3)
+                Border = Border.Plain
+                Text = ("Subjective Parameters")
+              }
+              { dctplansubj ToolButton
+                MoveScaled(25,1,3,3)
+                Picture = Picture["icon:/small/edit"]
+              }
+              { btnplansubj ToolButton
+                MoveScaled(29,1,3,3)
+                Picture = Picture["icon:/small/exec"]
+              }
+              { txtplanid ValueBox
+                MoveScaled(39,1,6,2)
+                Visible = False
+              }
+              { btntemplplansubj ToolButton
+                MoveScaled(33,0.875,3,3)
+                Picture = Picture["icon:/small/attach"]
+              }
+            }
+            { txtsubject TextHTML
+              MoveScaled(0,4,73,15)
               Tag = "Auto"
-              Expand = True
             }
-          }
-          { Panel70 Panel
-            MoveScaled(1,70,85,4)
-            { Label49 Label
-              MoveScaled(0,1,23.375,3)
-              Border = Border.Plain
-              Text = ("Planning")
+            { Panel68 Panel
+              MoveScaled(1,19,73,4)
+              { Label14 Label
+                MoveScaled(0,1,23.375,3)
+                Border = Border.Plain
+                Text = ("Objective Parameters")
+              }
+              { dctplanobj ToolButton
+                MoveScaled(25,1,3,3)
+                Picture = Picture["icon:/small/edit"]
+              }
+              { btnplanobj ToolButton
+                MoveScaled(29,1,3,3)
+                Picture = Picture["icon:/small/exec"]
+              }
+              { btntemplplanobj ToolButton
+                MoveScaled(33,1,3,3)
+                Picture = Picture["icon:/small/attach"]
+              }
             }
-            { dctplanplan ToolButton
-              MoveScaled(25,1,3,3)
-              Picture = Picture["icon:/small/edit"]
-            }
-            { btnplanplan ToolButton
-              MoveScaled(29,1,3,3)
-              Picture = Picture["icon:/small/exec"]
-            }
-            { btntemplplanplan ToolButton
-              MoveScaled(33,1,3,3)
-              Picture = Picture["icon:/small/attach"]
-            }
-            { btnaddplan ToolButton
-              MoveScaled(77,1,3,3)
-              Picture = Picture["icon:/small/apply"]
-            }
-          }
-          { Panel71 Panel
-            MoveScaled(1,74,86.875,13.875)
-            Arrangement = Arrange.Vertical
-            { txtplan TextHTML
-              MoveScaled(0,0,86,13)
+            { txtobject TextHTML
+              MoveScaled(1,23,73,15)
               Tag = "Auto"
+            }
+            { Panel69 Panel
+              MoveScaled(1,38,73,4)
+              { Label48 Label
+                MoveScaled(0,1,23.375,3)
+                Border = Border.Plain
+                Text = ("Assessment")
+              }
+              { dctplanasses ToolButton
+                MoveScaled(25,1,3,3)
+                Picture = Picture["icon:/small/edit"]
+              }
+              { btnplanasses ToolButton
+                MoveScaled(29,1,3,3)
+                Picture = Picture["icon:/small/exec"]
+              }
+              { btntemplplanasses ToolButton
+                MoveScaled(33,1,3,3)
+                Picture = Picture["icon:/small/attach"]
+              }
+            }
+            { Panel32 Panel
+              MoveScaled(1,42,73,24)
               Expand = True
+              Arrangement = Arrange.Vertical
+              { txtmanage TextHTML
+                MoveScaled(0,0,60,18)
+                Tag = "Auto"
+                Expand = True
+              }
+            }
+            { Panel70 Panel
+              MoveScaled(1,66,73,4)
+              { Label49 Label
+                MoveScaled(0,1,23.375,3)
+                Border = Border.Plain
+                Text = ("Planning")
+              }
+              { dctplanplan ToolButton
+                MoveScaled(25,1,3,3)
+                Picture = Picture["icon:/small/edit"]
+              }
+              { btnplanplan ToolButton
+                MoveScaled(29,1,3,3)
+                Picture = Picture["icon:/small/exec"]
+              }
+              { btntemplplanplan ToolButton
+                MoveScaled(33,1,3,3)
+                Picture = Picture["icon:/small/attach"]
+              }
+            }
+            { Panel71 Panel
+              MoveScaled(1,70,74,14)
+              Arrangement = Arrange.Vertical
+              { txtplan TextHTML
+                MoveScaled(0,0,72,13)
+                Tag = "Auto"
+                Expand = True
+              }
             }
           }
+        }
+        { lbluserplan Label
+          MoveScaled(0,39,75,3)
+          Border = Border.Plain
         }
       }
       Index = 10

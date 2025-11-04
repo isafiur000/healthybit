@@ -64,11 +64,12 @@ Public Sub ListBox1_Click()
   txtid.Value = CLong(ListBox1.Current.Key)
   lblmedicine.Text = ListBox1.Current.Text
   If txtid.Value Then
-    res = modDatabase.$myConn.Exec("select fldroute,flditem,flddose,fldfreq,flddays,fldstatus,flddirection from tblpatdosing where fldid=&1 and flditem=&2", txtid.Value, lblmedicine.Text)
+    res = modDatabase.$myConn.Exec("select fldroute,flditem,flddose,fldfreq,flddays,fldstatus,flddirection,fldmixing from tblpatdosing where fldid=&1 and flditem=&2", txtid.Value, lblmedicine.Text)
     lblregimen.Text = res["fldroute"] & Space(2) & res["flddose"] & Space(1) & modMedConstant.GetMedicineDoseUnit(res["flditem"]) & " X " & res["fldfreq"] & " X " & res["flddays"] & " day(s)"
     lblregimen.Tag = res["fldfreq"]
     lblunit.Text = modPharmLabel.GetDosageFormForLabel(lblmedicine.Text, "Inpatient")
     txtdirection.Text = res["flddirection"]
+    txtmixture.Text = res["fldmixing"]
     FillGridView(txtid.Value, lblmedicine.Text)
     btnsave.Enabled = True
     txtdose.Value = Round(res["flddose"] / modMedConstant.GetDrugInitialStrength(lblmedicine.Text), -2)
@@ -94,7 +95,7 @@ Private Sub FillGridView(dosno As Long, sItem As String)
     .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
     .Columns[1].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 225 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 250 * modBasic.$AppWidthRatio
     .Columns[3].Width = 50 * modBasic.$AppWidthRatio
     .Columns[4].Width = 50 * modBasic.$AppWidthRatio
     .Columns[5].Width = 25 * modBasic.$AppWidthRatio
@@ -134,42 +135,6 @@ Private Sub FillGridView(dosno As Long, sItem As String)
 
   txtcountsum.Value = modPharmacy.TotalDoseCount(dosno)
   txtdosesum.Value = modPharmacy.TotalDoseAmount(dosno)
-
-End
-
-Public Sub btnsave_Click()
-
-  Dim res As Result
-
-  If txtid.Value And If txtdose.Value Then
-    modPharmSub.InsertNurDosing(txtid.Value, $encid, txtdose.Value, lblunit.Text, "")
-    FillGridView(txtid.Value, lblmedicine.Text)
-    If lblregimen.Tag = "stat" Then
-      res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", txtid.Value)
-      res["fldcurval"] = "Completed"
-      res.Update
-    Endif
-    btnsave.Enabled = False
-    txtdose.Value = 0
-    txtdose.Tag = ""
-  Endif
-
-End
-
-Public Sub btnsave_KeyRelease()
-
-  If Key.Code = Key.Return Or If Key.Code = Key.Enter Or If Key.Code = Key.AltKey Then
-    btnsave_Click()
-    ListBox1.SetFocus
-  Endif
-
-End
-
-Public Sub btnexpo_Click()
-
-  If lblmedicine.Text Then
-    modCHTMLReport.ExportGridToHTML(GridView1, lblmedicine.Text, "Dosing Report",, $encid)
-  Endif
 
 End
 
@@ -220,17 +185,53 @@ Private Function GetPictureDosing(dosid As Long) As String
     xrout = modPharmacy.GetRouteFromDosing(res!flddoseno)
     If xrout = "injection" Or If xrout = "fluid" Or If xrout = "CIV" Or If xrout = "IIV" Then
       If Not res!fldfromtime Then
-        xx = "icon:/small/play"
+        xx = "icon:/tiny/play"
       Else If res!fldfromtime And If Not res!fldtotime Then
-        xx = "icon:/small/stop"
+        xx = "icon:/tiny/stop"
       Else If res!fldfromtime And If res!fldtotime Then
-        xx = "icon:/small/lock"
+        xx = "icon:/tiny/lock"
       Endif
     Else
-      xx = "icon:/small/lock"
+      xx = "icon:/tiny/lock"
     Endif
   Endif
   Return xx
+
+End
+
+Public Sub btnsave_Click()
+
+  Dim res As Result
+
+  If txtid.Value And If txtdose.Value Then
+    modPharmSub.InsertNurDosing(txtid.Value, $encid, txtdose.Value, lblunit.Text, "")
+    FillGridView(txtid.Value, lblmedicine.Text)
+    If lblregimen.Tag = "stat" Then
+      res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", txtid.Value)
+      res["fldcurval"] = "Completed"
+      res.Update
+    Endif
+    btnsave.Enabled = False
+    txtdose.Value = 0
+    txtdose.Tag = ""
+  Endif
+
+End
+
+Public Sub btnsave_KeyRelease()
+
+  If Key.Code = Key.Return Or If Key.Code = Key.Enter Or If Key.Code = Key.AltKey Then
+    btnsave_Click()
+    ListBox1.SetFocus
+  Endif
+
+End
+
+Public Sub btnexpo_Click()
+
+  If lblmedicine.Text Then
+    modCHTMLReport.ExportGridToHTML(GridView1, lblmedicine.Text, "Dosing Report",, $encid)
+  Endif
 
 End
 

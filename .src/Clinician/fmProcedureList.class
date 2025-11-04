@@ -247,7 +247,11 @@ Public Sub btnnewrefresh_Click()
 
   Inc Application.Busy
   If rbencounter.Value = True Then
-    FillSamplingEncounters()
+    If modBasic.$AutoBillAllowProcedure = "Unpaid" Then
+      FillUnpaidEncounters()
+    Else
+      FillSamplingEncounters()
+    Endif
   Else If rbinvoice.Value = True Then
     FillSamplingInvoices()
   Else If rbindoor.Value = True Then
@@ -255,6 +259,45 @@ Public Sub btnnewrefresh_Click()
   Endif
   Dec Application.Busy
   GridView2.SetFocus
+
+End
+
+Private Sub FillUnpaidEncounters()
+
+  Dim sql As String
+  Dim xsource As String
+  Dim aTarg As String
+  Dim bTarg As String
+  Dim xsection As String
+
+  If cmbsection.Text = "All Sections" Then
+    xsection = ""
+  Else
+    xsection = db.Subst(" and flditemname in(select flditemname from tblservicecost where fldreport=&1 and flditemtype=&2)", cmbsection.Text, "Procedures")
+  Endif
+  If cmbcategory.Text = "Any" Then
+    aTarg = "Major"
+    bTarg = "Intermediate"
+  Else
+    aTarg = cmbcategory.Text
+    bTarg = cmbcategory.Text
+  Endif
+  If cmbsourcedept.Text Then
+    xsource = db.Subst(" and fldcurrlocat like &1", cmbsourcedept.Text)
+  Else
+    xsource = ""
+  Endif
+
+  If chklist.Value = True Then
+    sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and (fldtarget=&3 or fldtarget=&4) and fldordtime>=&5 and fldordtime<=&6" & xsource & xsection                                               ''
+    $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", aTarg, bTarg, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)))
+  Else
+    sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and (fldtarget=&3 or fldtarget=&4)" & xsource & xsection                                                ''
+    $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", aTarg, bTarg)
+  Endif
+  $aMyFields2 = New String[]
+  modGridView.ReadSmallData(GridView2, $rData2, $aMyFields2)
+  SHowPatientGrid()
 
 End
 
@@ -442,7 +485,11 @@ Private Sub AddProcedureData()
       Dec Application.Busy
 
       If rbencounter.Value = True Then
-        FillSamplingEncounters()
+        If modBasic.$AutoBillAllowProcedure = "Unpaid" Then
+          FillUnpaidEncounters()
+        Else
+          FillSamplingEncounters()
+        Endif
       Else If rbinvoice.Value = True Then
         FillSamplingInvoices()
       Else If rbindoor.Value = True Then
@@ -561,6 +608,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   Else If Column = 9 Then
     GridView1.Data.Text = modPatient.GetPatientAgeString($rData[$aMyFields[Column]], Now()) & "/" & modPatient.GetPatientSex($rData[$aMyFields[Column]])
   Else If Column = 10 Then
+    GridView1.Data.Text = modPatient.GetPatientContactByEnc($rData[$aMyFields[Column]])
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]
   Endif

@@ -1,0 +1,151 @@
+' Gambas class file
+
+Private $rData As Result
+Private $aMyFields As String[]
+
+Public Sub Form_Open()
+
+  modGeneralMain.ArrangeFormCentre(Me)
+  If modHelpVariable.$LogInCategory = "Clinician" Then
+    cmbtarget.Text = modBasic.$compID
+    cmbtarget.Enabled = False
+  Else
+    cmbtarget.List = modBasic.$AllCompPerList
+    cmbtarget.Enabled = True
+  Endif
+  cmbcategory.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldtitle) as col from tblclinchart"))
+  cmbtypex.List = ["Exam", "Test"]
+  cmbtypey.List = ["Exam", "Test"]
+  cmbagegroup.List = modMedicine.AgeGroupListShortAll()
+  cmbgender.List = ["Male", "Female", "Both Sex"]
+
+End
+
+Public Sub Form_Resize()
+
+  modGeneralMain.ShowSelectedFormMenu(Me)
+
+End
+
+Public Sub Form_Close()
+
+  modGeneralMain.RecordFormExit(Me)
+
+End
+
+Public Sub cmbtarget_Click()
+
+  lblcomp.Text = modGeneral.GetCompNameFromCompID(cmbtarget.Text)
+
+End
+
+Public Sub cmbtarget_KeyRelease()
+
+  modFillContainer.RestrictComboToContent(cmbtarget)
+
+End
+
+Public Sub btnrefresh_Click()
+
+  If cmbtarget.Text Then
+    ShowGridView()
+  Endif
+
+End
+
+Private Sub GetConstantList(sType As String) As String[]
+
+  Dim xList As String[]
+
+  If sType = "Exam" Then
+    xList = modSysCons.SysExaminationList()
+  Else If sType = "Test" Then
+    xList = modSysCons.SysLabTestList()
+  Endif
+
+  Return xList
+
+End
+
+Public Sub btnitemx_Click()
+
+  Dim xList As String[]
+
+  If cmbtypex.Text Then
+    xList = GetConstantList(cmbtypex.Text)
+    txtitemx.Text = DIctionaryList(xList)
+  Endif
+
+End
+
+Public Sub btnitemy_Click()
+
+  Dim yList As String[]
+
+  If cmbtypey.Text Then
+    yList = GetConstantList(cmbtypey.Text)
+    txtitemy.Text = DIctionaryList(yList)
+  Endif
+
+End
+
+Public Sub tbtnadd_Click()
+
+  Dim res As Result
+
+  If cmbtarget.Text And If cmbcategory.Text Then
+    If txtitemx.Text And If txtitemy.Text Then
+      res = modDatabase.$myConn.Create("tblclinchart")
+      res["fldtitle"] = Trim(cmbcategory.Text)
+      res["fldcomp"] = cmbtarget.Text
+      res["fldptsex"] = cmbgender.Text
+      res["fldagegroup"] = cmbagegroup.Text
+      res["fldxtype"] = cmbtypex.Text
+      res["fldxvalue"] = Trim(txtitemx.Text)
+      res["fldytype"] = cmbtypey.Text
+      res["fldyvalue"] = Trim(txtitemy.Text)
+      res["fldformula"] = Trim(txtformula.Text)
+      res["fldminimum"] = txtminimum.Value
+      res["fldmaximum"] = txtmaximum.Value
+      res.Update
+      ShowGridView()
+      txtitemx.Text = ""
+      txtitemy.Text = ""
+    Endif
+  Endif
+
+End
+
+Private Sub ShowGridView()
+
+  Dim sql As String
+
+  sql = "select fldid,fldtitle,fldxvalue,fldyvalue,fldptsex,fldagegroup from tblclinchart where fldcomp=&1"
+  $rData = modDatabase.$myConn.Exec(sql, cmbtarget.Text)
+  $aMyFields = New String[]
+  modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
+
+  With GridView1
+    .Columns[0].Width = 1
+    .Columns[1].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 150 * modBasic.$AppWidthRatio
+
+    .Columns[1].Text = "Variable"
+    .Columns[2].Text = "X-Value"
+    .Columns[3].Text = "Y-Value"
+    .Columns[4].Text = "Gender"
+    .Columns[5].Text = "Age Group"
+  End With
+
+End
+
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  $rData.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView1, Row)
+  GridView1.Data.Text = $rData[$aMyFields[Column]]
+
+End

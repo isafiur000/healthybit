@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,100,43)
+  MoveScaled(0,0,100,47)
   Text = ("Department Settings")
   Resizable = False
   { btnsettall Button
@@ -10,7 +10,7 @@
     Picture = Picture["icon:/small/edit"]
   }
   { IconPanel1 IconPanel
-    MoveScaled(1,5,98,37)
+    MoveScaled(1,5,98,41)
     Enabled = False
     Count = 9
     Index = 0
@@ -49,19 +49,6 @@
     }
     { btndeptlock ToolButton
       MoveScaled(57,5,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label18 Label
-      MoveScaled(1,31,22,3)
-      Border = Border.Plain
-      Text = ("Symptom Caussation")
-    }
-    { cmbsympscale ComboBox
-      MoveScaled(24,31,32,3)
-      Sorted = True
-    }
-    { btnsympscale ToolButton
-      MoveScaled(57,31,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label44 Label
@@ -103,6 +90,42 @@
     { btnmedvislist Button
       MoveScaled(65,21,12,3)
       Text = ("List")
+    }
+    { Label52 Label
+      MoveScaled(1,25,34,3)
+      Border = Border.Plain
+      Text = ("Enable Consultation List for")
+    }
+    { Label53 Label
+      MoveScaled(1,29,34,3)
+      Border = Border.Plain
+      Text = ("Enable OP Visit List for")
+    }
+    { Label54 Label
+      MoveScaled(1,33,34,3)
+      Border = Border.Plain
+      Text = ("Enable Clinic Forms for")
+    }
+    { cmbconsultlist ComboBox
+      MoveScaled(36,25,20,3)
+    }
+    { cmbopvisitlist ComboBox
+      MoveScaled(36,29,20,3)
+    }
+    { cmbclinforms ComboBox
+      MoveScaled(36,33,20,3)
+    }
+    { btnconsultlist ToolButton
+      MoveScaled(57,25,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { btnopvisitlist ToolButton
+      MoveScaled(57,29,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { btnclinforms ToolButton
+      MoveScaled(57,33,3,3)
+      Picture = Picture["icon:/small/apply"]
     }
     Index = 1
     Text = ("Data Entry")
@@ -242,101 +265,78 @@
       Picture = Picture["icon:/small/apply"]
     }
     Index = 2
-    Text = ("Activity")
-    { Label16 Label
-      MoveScaled(1,1,25,3)
-      Border = Border.Plain
-      Text = ("Triage Color Value")
-    }
-    { cmbtriage ComboBox
-      MoveScaled(27,1,16,3)
-    }
-    { btntriage ToolButton
-      MoveScaled(44,1,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label25 Label
-      MoveScaled(1,5,25,3)
-      Border = Border.Plain
-      Text = ("Vitals Entry Interval (Min)")
-    }
-    { btnvitalinterval ToolButton
-      MoveScaled(44,5,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label28 Label
-      MoveScaled(1,9,25,3)
-      Border = Border.Plain
-      Text = ("Restrict to Dosing Time")
-    }
-    { btndosing ToolButton
-      MoveScaled(44,9,3,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { cmbdosing ComboBox
-      MoveScaled(27,9,16,3)
-    }
-    { txtvitalinterval ValueBox
-      MoveScaled(27,5,10,3)
-    }
+    Text = ("Default")
     { Label40 Label
-      MoveScaled(1,13,25,3)
+      MoveScaled(1,5,25,3)
       Border = Border.Plain
       Text = ("Default OPD Examination")
     }
     { Label41 Label
-      MoveScaled(1,17,25,3)
+      MoveScaled(1,9,25,3)
       Border = Border.Plain
       Text = ("Default IPD Examination")
     }
     { cmbdefopdexam ComboBox
-      MoveScaled(27,13,27,3)
+      MoveScaled(27,5,27,3)
     }
     { cmbdefipdexam ComboBox
-      MoveScaled(27,17,27,3)
+      MoveScaled(27,9,27,3)
     }
     { btndefopdexam ToolButton
-      MoveScaled(56,13,3,3)
+      MoveScaled(56,5,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { btndefipdexam ToolButton
-      MoveScaled(56,17,3,3)
+      MoveScaled(56,9,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label56 Label
-      MoveScaled(1,21,25,3)
+      MoveScaled(1,13,25,3)
       Border = Border.Plain
       Text = ("Default History Format")
     }
     { cmbdefhistory ComboBox
-      MoveScaled(27,21,27,3)
+      MoveScaled(27,13,27,3)
     }
     { btndefhistory ToolButton
-      MoveScaled(56,21,3,3)
+      MoveScaled(56,13,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label57 Label
-      MoveScaled(1,25,25,3)
+      MoveScaled(1,17,25,3)
       Border = Border.Plain
       Text = ("Default Discharge Format")
     }
     { cmbdefdisch ComboBox
-      MoveScaled(27,25,27,3)
+      MoveScaled(27,17,27,3)
     }
     { btndefdisch ToolButton
-      MoveScaled(56,25,3,3)
+      MoveScaled(56,17,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label58 Label
-      MoveScaled(1,29,25,3)
+      MoveScaled(1,21,25,3)
       Border = Border.Plain
       Text = ("Default Structured Exams")
     }
     { cmbdefstruct ComboBox
-      MoveScaled(27,29,27,3)
+      MoveScaled(27,21,27,3)
     }
     { btndefstruct ToolButton
-      MoveScaled(56,29,3,3)
+      MoveScaled(56,21,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label18 Label
+      MoveScaled(1,1,25,3)
+      Border = Border.Plain
+      Text = ("Symptom Caussation")
+    }
+    { cmbsympscale ComboBox
+      MoveScaled(27,1,42,3)
+      Sorted = True
+    }
+    { btnsympscale ToolButton
+      MoveScaled(71,1,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     Index = 3
@@ -404,76 +404,89 @@
     Index = 4
     Text = ("Manage")
     { Label43 Label
-      MoveScaled(1,1,34,3)
+      MoveScaled(1,21,34,3)
       Border = Border.Plain
       Text = ("Release Bed without  outcome")
     }
     { cmbbedrelease ComboBox
-      MoveScaled(36,1,20,3)
+      MoveScaled(36,21,20,3)
     }
     { btnbedrelease ToolButton
-      MoveScaled(57,1,3,3)
+      MoveScaled(57,21,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label49 Label
-      MoveScaled(1,5,34,3)
+      MoveScaled(1,17,34,3)
       Border = Border.Plain
       Text = ("Hold Bed after Discharge (Hour)")
     }
     { txtholdbed ValueBox
-      MoveScaled(36,5,20,3)
+      MoveScaled(36,17,8,3)
     }
     { btnholdbed ToolButton
-      MoveScaled(57,5,3,3)
+      MoveScaled(45,17,3,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label55 Label
-      MoveScaled(1,9,34,3)
+      MoveScaled(1,25,34,3)
       Border = Border.Plain
       Text = ("Release Bed on")
     }
     { cmbbedfreeon ComboBox
-      MoveScaled(36,9,20,3)
+      MoveScaled(36,25,20,3)
     }
     { btnbedfreeon ToolButton
-      MoveScaled(57,9,3,3)
+      MoveScaled(57,25,3,3)
       Picture = Picture["icon:/small/apply"]
     }
-    { Label52 Label
-      MoveScaled(1,13,34,3)
+    { Label16 Label
+      MoveScaled(1,1,25,3)
       Border = Border.Plain
-      Text = ("Enable Consultation List for")
+      Text = ("Triage Color Value")
     }
-    { cmbconsultlist ComboBox
-      MoveScaled(36,13,20,3)
+    { cmbtriage ComboBox
+      MoveScaled(27,1,17,3)
     }
-    { btnconsultlist ToolButton
-      MoveScaled(57,13,3,3)
+    { btntriage ToolButton
+      MoveScaled(45,1,3,3)
       Picture = Picture["icon:/small/apply"]
     }
-    { Label53 Label
-      MoveScaled(1,17,34,3)
+    { Label25 Label
+      MoveScaled(1,5,25,3)
       Border = Border.Plain
-      Text = ("Enable OP Visit List for")
+      Text = ("Vitals Entry Interval (Min)")
     }
-    { cmbopvisitlist ComboBox
-      MoveScaled(36,17,20,3)
+    { txtvitalinterval ValueBox
+      MoveScaled(27,5,10,3)
     }
-    { btnopvisitlist ToolButton
-      MoveScaled(57,17,3,3)
+    { btnvitalinterval ToolButton
+      MoveScaled(45,5,3,3)
       Picture = Picture["icon:/small/apply"]
     }
-    { Label54 Label
-      MoveScaled(1,21,34,3)
+    { Label28 Label
+      MoveScaled(1,9,25,3)
       Border = Border.Plain
-      Text = ("Enable Clinic Forms for")
+      Text = ("Restrict to Dosing Time")
     }
-    { cmbclinforms ComboBox
-      MoveScaled(36,21,20,3)
+    { cmbdosing ComboBox
+      MoveScaled(27,9,17,3)
     }
-    { btnclinforms ToolButton
-      MoveScaled(57,21,3,3)
+    { btndosing ToolButton
+      MoveScaled(45,9,3,3)
       Picture = Picture["icon:/small/apply"]
+    }
+    { Label61 Label
+      MoveScaled(1,13,25,3)
+      Border = Border.Plain
+      Text = ("Dosing Day Start Time")
+    }
+    { btndoseday ToolButton
+      MoveScaled(45,13,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { dtdoseday DateBox
+      MoveScaled(27,13,17,3)
+      Mode = DateChooser.TimeOnly
     }
     Index = 5
     Text = ("Telemed")

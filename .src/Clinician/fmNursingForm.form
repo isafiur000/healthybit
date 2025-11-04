@@ -56,9 +56,6 @@
       Text = ("- - - - Parameters - - - -")
       Enabled = False
     }
-    { mnutriage Menu
-      Text = ("Triage Exams")
-    }
     { mnudemo Menu
       Text = ("Demographics")
       Shortcut = "Ctrl+G"
@@ -658,18 +655,23 @@
           Text = ("S P O2")
         }
         { btnsavevitals Button
-          MoveScaled(22,12.5,13.5,3)
+          MoveScaled(24,12.5,13.5,3)
           Text = ("Vitals [F5]")
-          Picture = Picture["icon:/small/apply"]
+          Picture = Picture["icon:/small/calculator"]
         }
         { btntriage Button
-          MoveScaled(1,12.5,12,3)
+          MoveScaled(1,12.5,11,3)
           Text = ("Triage")
           Picture = Picture["icon:/small/color"]
         }
         { btnshowvital ToolButton
-          MoveScaled(37,12.5,3,3)
+          MoveScaled(38,12.5,3,3)
           Picture = Picture["icon:/small/refresh"]
+        }
+        { btnabcexam Button
+          MoveScaled(12.5,12.5,11,3)
+          Text = ("ABC")
+          Picture = Picture["icon:/small/text"]
         }
       }
     }

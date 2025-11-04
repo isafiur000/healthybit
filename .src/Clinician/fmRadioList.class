@@ -539,7 +539,11 @@ Public Sub btnselect_Click()
 
         If modBasic.$AutoBillRadio = "Standard" Or If modBasic.$AutoBillRadio = "Full" Or If modBasic.$AutoBillRadio = "Partial" Then
           If modMisc.GetDuplicationAllow(xList, ListView1[CStr(i)].Text, btnselect) = True Then
-            modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", ListView1[CStr(i)].Text, 1, "Punched", 0, False, False, xpayble, xrefer, cmbtarget.Text)
+            If chknextvisit.Value = True Then
+              modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", ListView1[CStr(i)].Text, 1, "Planned", 0, False, False, xpayble, xrefer, cmbtarget.Text)
+            Else
+              modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", ListView1[CStr(i)].Text, 1, "Punched", 0, False, False, xpayble, xrefer, cmbtarget.Text)
+            Endif
             acount = acount + 1
           Endif
           ListView1[CStr(i)].Picture = Picture["icons/unchecked.png"]
@@ -568,8 +572,8 @@ Private Sub ShowGrid()
   Dim sql As String
   Dim res As Result
 
-  sql = "select fldid,flditemname,fldstatus,fldreason,fldordtime,fldtarget from tblpatbilling where fldencounterval=&1 and flditemtype=&2 and fldsave=&3"
-  res = modDatabase.$myConn.Exec(sql, $encid, "Radio Diagnostics", False)
+  sql = "select fldid,flditemname,fldstatus,fldreason,fldordtime,fldtarget,fldstatus from tblpatbilling where fldencounterval=&1 and flditemtype=&2 and fldsave=&3 and (fldstatus=&4 or fldstatus=&5)"
+  res = modDatabase.$myConn.Exec(sql, $encid, "Radio Diagnostics", False, "Punched", "Planned")
   ShowInitialGridView(res)
 
 End
@@ -605,11 +609,13 @@ Private Sub ShowInitialGridView(res As Result)
     .Columns[3].Width = 1
     .Columns[4].Width = 150 * modBasic.$AppWidthRatio
     .Columns[5].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[6].Width = 75 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "Particulars"
     .Columns[2].Text = "Status"
     .Columns[4].Text = "Date Time"
     .Columns[5].Text = "Target"
+    .Columns[6].Text = "Status"
   End With
 
 End
@@ -646,11 +652,11 @@ Public Sub btnsave_Click()
     For Each res
 
       If modBasic.$AutoBillRadio = "Standard" Then
-        If modNonMedical.AllowPreCheckDeposit($encid, res["fldditemamt"], res["flddisctype"]) = True Then
+        If modNonMedical.AllowPreCheckDeposit($encid, res["fldditemamt"], res["fldbilltype"]) = True Then
           SavePartialEntry(res, xadv)
         Endif
       Else If modBasic.$AutoBillRadio = "Full" Then
-        If modNonMedical.AllowPreEntryWithDeposit($encid, "Radio", res["fldditemamt"], res["flddisctype"], btnsave) = True Then
+        If modNonMedical.AllowPreEntryWithDeposit($encid, "Radio", res["fldditemamt"], res["fldbilltype"], btnsave) = True Then
           SavePartialEntry(res, xadv)
         Endif
       Else
@@ -913,8 +919,8 @@ Private Sub ShowGridTree()
   Dim Column As Integer
   Dim fld As ResultField
 
-  sql = "select fldid,flditemname,fldstatus,fldreason,fldordtime,fldtarget,fldextrarow from tblpatbilling where fldencounterval=&1 and flditemtype=&2 and fldsave=&3"
-  res = modDatabase.$myConn.Exec(sql, $encid, "Radio Diagnostics", False)
+  sql = "select fldid,flditemname,fldstatus,fldreason,fldordtime,fldtarget,fldextrarow,fldstatus from tblpatbilling where fldencounterval=&1 and flditemtype=&2 and fldsave=&3 and (fldstatus=&4 or fldstatus=&5)"
+  res = modDatabase.$myConn.Exec(sql, $encid, "Radio Diagnostics", False, "Punched", "Planned")
   GridView4.Clear
   GridView4.Columns.Count = res.Fields.Count
   GridView4.Rows.Count = res.Count
@@ -942,12 +948,14 @@ Private Sub ShowGridTree()
     .Columns[4].Width = 150 * modBasic.$AppWidthRatio
     .Columns[5].Width = 75 * modBasic.$AppWidthRatio
     .Columns[6].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[7].Width = 75 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "Particulars"
     .Columns[2].Text = "Status"
     .Columns[4].Text = "Date Time"
     .Columns[5].Text = "Target"
     .Columns[6].Text = "Test Name"
+    .Columns[7].Text = "Status"
   End With
 
 End
@@ -992,7 +1000,11 @@ Public Sub btnselecttree_Click()
       If modBasic.$AutoBillRadio = "Standard" Or If modBasic.$AutoBillRadio = "Full" Or If modBasic.$AutoBillRadio = "Partial" Then
         If modMisc.GetDuplicationAllow(xList, TreeView1.Current.Text, btnselecttree) = True Then
           xparent = Split(TreeView1.Current.ParentKey, "@")
-          modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", TreeView1.Current.Text, 1, "Punched", 0, False, False, xpayble, xrefer, cmbtarget.Text, xparent[1])
+          If chknextvisit.Value = True Then
+            modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", TreeView1.Current.Text, 1, "Planned", 0, False, False, xpayble, xrefer, cmbtarget.Text, xparent[1])
+          Else
+            modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", TreeView1.Current.Text, 1, "Punched", 0, False, False, xpayble, xrefer, cmbtarget.Text, xparent[1])
+          Endif
           acount = acount + 1
         Endif
         TreeView1.Current.Picture = Picture["icons/coll2.png"]
@@ -1032,11 +1044,11 @@ Public Sub btnsavetree_Click()
     For Each res
 
       If modBasic.$AutoBillRadio = "Standard" Then
-        If modNonMedical.AllowPreCheckDeposit($encid, res["fldditemamt"], res["flddisctype"]) = True Then
+        If modNonMedical.AllowPreCheckDeposit($encid, res["fldditemamt"], res["fldbilltype"]) = True Then
           SavePartialEntry(res, xadv)
         Endif
       Else If modBasic.$AutoBillRadio = "Full" Then
-        If modNonMedical.AllowPreEntryWithDeposit($encid, "Radio", res["fldditemamt"], res["flddisctype"], btnsave) = True Then
+        If modNonMedical.AllowPreEntryWithDeposit($encid, "Radio", res["fldditemamt"], res["fldbilltype"], btnsave) = True Then
           SavePartialEntry(res, xadv)
         Endif
       Else

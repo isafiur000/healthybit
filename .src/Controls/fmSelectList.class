@@ -16,7 +16,7 @@ Public Sub _new(sTitle As String, xType As String, xItemName As String)
       cmbcategory.List = ["Diagnostic Tests", "General Services", "Procedures", "Equipment", "Radio Diagnostics", "Other Items"]
     Case "Complaints List"
       cmbcategory.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldcategory) as col from tblsymptoms"))
-    Case "Essential Examinations", "Physician Examinations", "Nursing Examinations", "Triage Examinations", "Discharge Examinations"
+    Case "Essential Examinations", "Physician Examinations", "Nursing Examinations", "ABC Examinations", "Discharge Examinations"
       cmbcategory.List = ["Qualitative", "Quantitative"]
   End Select
   ShowFilledList()
@@ -39,7 +39,7 @@ Private Sub LoadSelectedListsView()
       GetServiceBillingItemListView(cmbcategory.Text, modNonMedical.GetDiscBindBillMode(txtitemname.Text))
     Case "Complaints List"
       CompComplaintsListView(cmbcategory.Text)
-    Case "Essential Examinations", "Physician Examinations", "Nursing Examinations", "Triage Examinations", "Discharge Examinations"
+    Case "Essential Examinations", "Physician Examinations", "Nursing Examinations", "ABC Examinations", "Discharge Examinations"
       CompVitalExamListView(cmbcategory.Text)
   End Select
 
@@ -85,7 +85,7 @@ Private Sub ShowFilledList()
       Else
         res = modDatabase.$myConn.Exec("select fldsymptom as col from tblcomplaints where fldcomp=&1", txtitemname.Text)
       Endif
-    Case "Essential Examinations", "Physician Examinations", "Nursing Examinations", "Triage Examinations", "Discharge Examinations"
+    Case "Essential Examinations", "Physician Examinations", "Nursing Examinations", "ABC Examinations", "Discharge Examinations"
       $tbl = "tblcompexam"
       sql = "select fldexamid as col from tblcompexam where fldcomp=&1 and fldcategory=&2"
       res = modDatabase.$myConn.Exec(sql, txtitemname.Text, $typ)
@@ -126,7 +126,7 @@ Public Sub btnsave_Click()
             res["fldsymptom"] = lstfirst[CStr(i)].Text
             res["fldflag"] = False
             res["fldcomp"] = asx[0]
-          Case "Essential Examinations", "Physician Examinations", "Nursing Examinations", "Triage Examinations", "Discharge Examinations"
+          Case "Essential Examinations", "Physician Examinations", "Nursing Examinations", "ABC Examinations", "Discharge Examinations"
             res["fldtype"] = cmbcategory.Text
             res["fldcategory"] = $typ
             res["fldexamid"] = lstfirst[CStr(i)].Text

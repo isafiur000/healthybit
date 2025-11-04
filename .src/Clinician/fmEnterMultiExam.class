@@ -1,12 +1,17 @@
 ' Gambas class file
 
 ''controls
+Private aWebRowAll As New Object[50]
+Private aWideRowAll As New Object[50]
+Private aWebFrame As New Object[50]
+Private aWebPanel As New Object[50]
 Private aIndexLabel As New Object[50]    ''aLab
 Private aNameLabel As New Object[50]       ''aObj
 Private aAbnormCheck As New Object[50]       ''aObj2
 Private aHTMLText As New Object[50]          ''aObj11
 Private aLineText As New Object[50]
 Private aUnitText As New Object[50]
+Private aNullCheck As New Object[50]
 Private aValueBox As New Object[50]
 Private aQuantiBox As New Object[50]
 Private aQuantiMax As New Object[50]
@@ -18,12 +23,16 @@ Private aComboBox As New Object[50]
 Private aChkLock As New Object[50]
 Private aTextArea As New Object[50]
 Private aDichoValue As New Object[50]
+Private aLeftRightValue As New Object[50]
+Private aLeftRightText As New Object[50]
 Private aLeftRight As New Object[50]
 Private aGridView As New Object[50]         ''aObg11
 Private aListBox As New Object[50]
 Private aGenTextArea As New Object[50]
 Private aButtonBox As New Object[50]
 Private aHelpButton As New Object[50]          ''aObj3
+Private aBlankBox As New Object[50]
+Private aWebSpace As New Object[50]
 ''other variables
 Private $encid As String
 Private $sTable As String
@@ -48,7 +57,6 @@ Private AppFactor As Float
 Public Sub _new(sPrompt As String, encid As String, sTable As String, idList As String[], sCategory As String)
 
   Dim idx As String
-  Dim i As Integer
   Dim ht As String
 
   Dim rsn As Result
@@ -227,57 +235,7 @@ Public Sub _new(sPrompt As String, encid As String, sTable As String, idList As 
 
     Endif
   Next
-
-  For i = 0 To $xitem.Count - 1
-    If i < 49 Then
-      ''Create controls
-      aIndexLabel[i] = New Label(Frame1) As "IndexLabel"
-      aNameLabel[i] = New TextLabel(Frame1) As "NameLabel"
-      aAbnormCheck[i] = New CheckBox(Frame1) As "CheckBoxgroup"
-      If $xType[i] = "Quantitative" Then
-        aQuantiBox[i] = New ValueBox(Frame1) As "QuantiGroup"
-        aQuantiMax[i] = New ValueBox(Frame1) As "QuantiGroupMax"
-        aQuantiMin[i] = New ValueBox(Frame1) As "QuantiGroupMin"
-      Else
-        Select $xOption[i]
-          Case "Sys Constant"
-            aGenTextArea[i] = New TextPlain(Frame1) As "GenAreaGroup"
-          Case "Multiple Selection"
-            aListBox[i] = New ListBox(Frame1) As "ListBoxgroup"
-          Case "Text Table"
-            aGridView[i] = New GridView(Frame1) As "GridViewgroup"
-          Case "Left and Right"
-            aLeftRight[i] = New LeftRightTextArea(Frame1) As "LeftRightGroup"
-          Case "Date Time", "BS Date"
-            aDateBox[i] = New DateBox(Frame1) As "DateGroup"
-            aBSDate[i] = New ToolButton(Frame1) As "BSButton"
-          Case "User Profile"
-            aLineText[i] = New TextBox(Frame1) As "TextLineGroup"
-          Case "ImageValue"
-            aButtonBox[i] = New ButtonBox(Frame1) As "ImageBoxGroup"
-          Case "Single Selection"
-            aComboBox[i] = New ComboBox(Frame1) As "ComboGroup"
-            aChkLock[i] = New CheckBox(Frame1) As "CheckLock"
-          Case "Dichotomous"
-            aDichoValue[i] = New DichotomousValue(Frame1) As "DichoText"
-          Case "Quantitative"
-            aValueBox[i] = New ValueBox(Frame1) As "ValueGroup"
-            aUnitText[i] = New TextBox(Frame1) As "UnitGroup"
-          Case "Qualitative"
-            aLineText[i] = New TextBox(Frame1) As "TextLineGroup"
-          Case "Clinical Scale"
-            aTextArea[i] = New TextArea(Frame1) As "TextAreaGroup"
-            aClinBox[i] = New ValueBox(Frame1) As "ClinGroup"
-          Case "RichText Area"
-            aHTMLText[i] = New TextHTML(Frame1) As "TextHTMLgroup"
-          Case Else
-            aGenTextArea[i] = New TextPlain(Frame1) As "GenAreaGroup"
-        End Select
-      Endif
-      aHelpButton[i] = New ToolButton(Frame1) As "ButtonBoxgroup"
-    Endif
-  Next
-  DIsplayTextForm()
+  CreateControls()
 
 End
 
@@ -302,14 +260,94 @@ Public Sub Form_Close()
 
 End
 
-Public Sub Form_Resize()
+Private Sub CreateControls()
 
-  Dim xht As Integer
+  Dim i As Integer
 
-  xht = ($xitem.Count * 25 * Slider1.Value + 30) * AppFactor
-  If Frame1.Height < xht Then
-    Frame1.Height = xht
-  Endif
+  For i = 0 To $xitem.Count - 1
+    If i < 49 Then
+      ''Create controls
+      aWebRowAll[i] = New HBox(Frame1)
+      aWebFrame[i] = New HBox(aWebRowAll[i])
+      aIndexLabel[i] = New Label(aWebFrame[i]) As "IndexLabel"
+      aNameLabel[i] = New TextLabel(aWebFrame[i]) As "NameLabel"
+
+      If $xType[i] = "Quantitative" Then
+        aWebPanel[i] = New HBox(aWebRowAll[i])
+        aAbnormCheck[i] = New CheckBox(aWebPanel[i]) As "CheckBoxgroup"
+        aQuantiBox[i] = New ValueBox(aWebPanel[i]) As "QuantiGroup"
+        aQuantiMax[i] = New ValueBox(aWebPanel[i]) As "QuantiGroupMax"
+        aQuantiMin[i] = New ValueBox(aWebPanel[i]) As "QuantiGroupMin"
+        aHelpButton[i] = New ToolButton(aWebPanel[i]) As "ButtonBoxgroup"
+        aBlankBox[i] = New Label(aWebPanel[i])
+        aWideRowAll[i] = New HBox(Frame1)
+        aWebSpace[i] = New Separator(Frame1)
+
+      Else
+        Select $xOption[i]
+          Case "Sys Constant", "Multiple Selection", "Clinical Scale", "Date Time", "BS Date", "User Profile", "ImageValue", "Single Selection", "Dichotomous", "Left Right Qualitative", "Left Right Quantitative", "Quantitative", "Qualitative"
+            aWebPanel[i] = New HBox(aWebRowAll[i])
+            aAbnormCheck[i] = New CheckBox(aWebPanel[i]) As "CheckBoxgroup"
+            Select $xOption[i]
+              Case "Sys Constant"
+                aGenTextArea[i] = New TextPlain(aWebPanel[i]) As "GenAreaGroup"
+              Case "Multiple Selection"
+                aListBox[i] = New ListBox(aWebPanel[i]) As "ListBoxgroup"
+              Case "Clinical Scale"
+                aTextArea[i] = New TextArea(aWebPanel[i]) As "TextAreaGroup"
+                aClinBox[i] = New ValueBox(aWebPanel[i]) As "ClinGroup"
+              Case "Date Time", "BS Date"
+                aDateBox[i] = New DateBox(aWebPanel[i]) As "DateGroup"
+                aBSDate[i] = New ToolButton(aWebPanel[i]) As "BSButton"
+              Case "User Profile"
+                aLineText[i] = New TextBox(aWebPanel[i]) As "TextLineGroup"
+              Case "ImageValue"
+                aButtonBox[i] = New ButtonBox(aWebPanel[i]) As "ImageBoxGroup"
+              Case "Single Selection"
+                aComboBox[i] = New ComboBox(aWebPanel[i]) As "ComboGroup"
+                aChkLock[i] = New CheckBox(aWebPanel[i]) As "CheckLock"
+              Case "Dichotomous"
+                aDichoValue[i] = New DichotomousValue(aWebPanel[i]) As "DichoText"
+              Case "Left Right Qualitative"
+                aLeftRightText[i] = New LeftRightQuali(aWebPanel[i]) As "LeftRightText"
+              Case "Left Right Quantitative"
+                aLeftRightValue[i] = New LeftRightQuanti(aWebPanel[i]) As "LeftRightValue"
+              Case "Quantitative"
+                aValueBox[i] = New ValueBox(aWebPanel[i]) As "ValueGroup"
+                aUnitText[i] = New TextBox(aWebPanel[i]) As "UnitGroup"
+                aNullCheck[i] = New CheckBox(aWebPanel[i]) As "NullCheckBox"
+              Case "Qualitative"
+                aLineText[i] = New TextBox(aWebPanel[i]) As "TextLineGroup"
+            End Select
+            aHelpButton[i] = New ToolButton(aWebPanel[i]) As "ButtonBoxgroup"
+            aBlankBox[i] = New Label(aWebPanel[i])
+            aWideRowAll[i] = New HBox(Frame1)
+            aWebSpace[i] = New Separator(Frame1)
+
+          Case Else
+            aWebPanel[i] = New HBox(aWebRowAll[i])
+            aWideRowAll[i] = New HBox(Frame1)
+            aAbnormCheck[i] = New CheckBox(aWideRowAll[i]) As "CheckBoxgroup"
+            Select $xOption[i]
+              Case "Text Table"
+                aGridView[i] = New GridView(aWideRowAll[i]) As "GridViewgroup"
+              Case "Left and Right"
+                aLeftRight[i] = New LeftRightTextArea(aWideRowAll[i]) As "LeftRightGroup"
+              Case "RichText Area"
+                aHTMLText[i] = New TextHTML(aWideRowAll[i]) As "TextHTMLgroup"
+              Case Else
+                aGenTextArea[i] = New TextPlain(aWideRowAll[i]) As "GenAreaGroup"
+            End Select
+            aHelpButton[i] = New ToolButton(aWideRowAll[i]) As "ButtonBoxgroup"
+            aBlankBox[i] = New Label(aWideRowAll[i])
+            aWebSpace[i] = New Separator(Frame1)
+
+        End Select
+      Endif
+
+    Endif
+  Next
+  DIsplayTextForm()
 
 End
 
@@ -318,16 +356,50 @@ Private Sub DIsplayTextForm()
   Dim i As Integer
   Dim xlimit As Float[]
 
-  Frame1.Height = ($xitem.Count * 25 * Slider1.Value + 30) * AppFactor
-  Frame1.Width = 875 * AppFactor
-
   For i = 0 To $xitem.Count - 1
     If i < 49 Then
 
+      Select $xOption[i]
+        Case "Multiple Selection", "Clinical Scale"
+          With aWebRowAll[i]
+            .Height = 25 * Slider1.Value * AppFactor
+            .Width = Frame1.Width
+          End With
+        Case Else
+          With aWebRowAll[i]
+            .Height = 25 * AppFactor
+            .Width = Frame1.Width
+          End With
+      End Select
+
+      If $xType[i] = "Quantitative" Then
+        With aWideRowAll[i]
+          .Visible = False
+        End With
+      Else
+        Select $xOption[i]
+          Case "Sys Constant", "Multiple Selection", "Clinical Scale", "Date Time", "BS Date", "User Profile", "ImageValue", "Single Selection", "Dichotomous", "Left Right Qualitative", "Left Right Quantitative", "Quantitative", "Qualitative"
+            With aWideRowAll[i]
+              .Visible = False
+            End With
+          Case "Text Table", "RichText Area"
+            With aWideRowAll[i]
+              .Height = ((25 * Slider1.Value) + 50) * AppFactor
+            End With
+          Case Else
+            With aWideRowAll[i]
+              .Height = (25 * Slider1.Value) * AppFactor
+            End With
+        End Select
+      Endif
+
+      With aWebFrame[i]
+        .Height = 25 * AppFactor
+        .Expand = True
+      End With
+
       ''create index label
       With aIndexLabel[i]
-        .X = 5 * AppFactor
-        .Y = (i * 25 * Slider1.Value + 15) * AppFactor
         .Width = 25 * AppFactor
         .Height = 25 * AppFactor
         .Text = i + 1
@@ -336,11 +408,10 @@ Private Sub DIsplayTextForm()
 
       ''create Name Label
       With aNameLabel[i]
-        .X = (5 + 25) * AppFactor
-        .Y = (i * 25 * Slider1.Value + 15) * AppFactor
-        .Width = 250 * AppFactor
-        .Height = 25 * Slider1.Value * AppFactor
-        .Text = $xitem[i]
+        .Expand = True
+        .Height = 25 * AppFactor
+        .Text = "<p>" & $xitem[i] & "</p>"
+        .Font.Bold = True
         .Tag = i
         .Wrap = True
         If $xHelpList[i] = "Null" Then
@@ -350,36 +421,52 @@ Private Sub DIsplayTextForm()
         Endif
       End With
 
-      ''create abnormal checkbox
-      With aAbnormCheck[i]
-        .X = (260 + 25) * AppFactor
-        .Y = (i * 25 * Slider1.Value + 15) * AppFactor
-        .Width = 100 * AppFactor
-        .Height = 25 * AppFactor
-        .Text = "Flag"
-        .Tag = i
+      If $xType[i] = "Quantitative" Then
+        With aWebPanel[i]
+          .Height = 25 * AppFactor
+          .Width = Frame1.Width / 2
+        End With
+      Else
+        Select $xOption[i]
+          Case "Sys Constant", "Date Time", "BS Date", "User Profile", "ImageValue", "Single Selection", "Dichotomous", "Left Right Qualitative", "Left Right Quantitative", "Quantitative", "Qualitative"
+            With aWebPanel[i]
+              .Height = 25 * AppFactor
+              .Width = Frame1.Width / 2
+            End With
+          Case "Multiple Selection", "Clinical Scale"
+            With aWebPanel[i]
+              .Height = 25 * Slider1.Value * AppFactor
+              .Width = Frame1.Width / 2
+            End With
+          Case Else
+            With aWebPanel[i]
+              .Visible = False
+            End With
+        End Select
+      Endif
 
-        If modBasic.$ClinFlagAbnormExam = "Disable" Then
-          .Visible = False
-        Else
-          .Visible = True
-        Endif
-      End With
-
-      ''create observation entry
       If $xType[i] = "Quantitative" Then
         xlimit = modClinic.GetBothQuantiExamVal($xExam[i], $encid)
+        ''create abnormal checkbox
+        With aAbnormCheck[i]
+          .Width = 75 * AppFactor
+          .Height = 25 * AppFactor
+          .Text = "Flag"
+          .Tag = i
+          If modBasic.$ClinFlagAbnormExam = "Disable" Then
+            .Visible = False
+          Else
+            .Visible = True
+          Endif
+        End With
+
         With aQuantiBox[i]
-          .X = (365 + 25) * AppFactor
-          .Y = (i * 25 * Slider1.Value + 15) * AppFactor
           .Width = 100 * AppFactor
           .Height = 25 * AppFactor
           .Tag = i
         End With
         'min value
         With aQuantiMin[i]
-          .X = (470 + 25) * AppFactor
-          .Y = (i * 25 * Slider1.Value + 15) * AppFactor
           .Width = 50 * AppFactor
           .Height = 25 * AppFactor
           .Enabled = False
@@ -388,8 +475,6 @@ Private Sub DIsplayTextForm()
         End With
         ''max value
         With aQuantiMax[i]
-          .X = (525 + 25) * AppFactor
-          .Y = (i * 25 * Slider1.Value + 15) * AppFactor
           .Width = 50 * AppFactor
           .Height = 25 * AppFactor
           .Enabled = False
@@ -397,41 +482,49 @@ Private Sub DIsplayTextForm()
           .Tag = i
         End With
 
-      Else
+      Else ''qualitative
+        With aAbnormCheck[i]
+          .Width = 75 * AppFactor
+          .Height = 25 * AppFactor
+          .Text = "Flag"
+          .Tag = i
+          If modBasic.$ClinFlagAbnormExam = "Disable" Then
+            .Visible = False
+          Else
+            .Visible = True
+          Endif
+        End With
+
         If $xOption[i] = "Multiple Selection" Then
           With aListBox[i]
-            .X = (365 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
-            .Width = 250 * AppFactor
-            .Height = (25 * Slider1.Value - 5) * AppFactor
+            .Expand = True
+            .Height = 25 * Slider1.Value * AppFactor
+            .Mode = Select.Multiple
             .ScrollBar = Scroll.Both
             .Tag = i
           End With
 
-        Else If $xOption[i] = "Text Table" Then
-          DisplayAgegrid(Split($xOpList[i], "|"), "", aGridView[i])
-          With aGridView[i]
-            .X = (365 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
-            .Width = 400 * AppFactor
-            .Height = (25 * Slider1.Value - 5) * AppFactor
-            .ScrollBar = Scroll.Both
-            .AutoResize = True
+        Else If $xOption[i] = "Clinical Scale" Then
+          With aTextArea[i]
+            .Expand = True
+            .Height = 25 * Slider1.Value * AppFactor
+            .Wrap = True
+            .Tag = i
+          End With
+          With aClinBox[i]
+            .Width = 75 * AppFactor
+            .Height = 25 * AppFactor
             .Tag = i
           End With
 
         Else If $xOption[i] = "Single Selection" Then
           With aComboBox[i]
-            .X = (365 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
-            .Width = 250 * AppFactor
+            .Expand = True
             .Height = 25 * AppFactor
             .List = Split($xOpList[i], "|")
             .Tag = i
           End With
           With aChkLock[i]
-            .X = (650 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
             .Width = 25 * AppFactor
             .Height = 25 * AppFactor
             .Value = False
@@ -440,35 +533,34 @@ Private Sub DIsplayTextForm()
 
         Else If $xOption[i] = "Dichotomous" Then
           With aDichoValue[i]
-            .X = (365 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
-            .Width = 250 * AppFactor
+            .Expand = True
             .Height = 25 * AppFactor
             .List = Split($xOpList[i], "|")
             .Tag = i
           End With
 
-        Else If $xOption[i] = "Left and Right" Then
-          With aLeftRight[i]
-            .X = (365 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
-            .Width = 400 * AppFactor
-            .Height = (25 * Slider1.Value - 5) * AppFactor
+        Else If $xOption[i] = "Left Right Qualitative" Then
+          With aLeftRightText[i]
+            .Expand = True
+            .Height = 25 * AppFactor
+            .Tag = i
+          End With
+
+        Else If $xOption[i] = "Left Right Quantitative" Then
+          With aLeftRightValue[i]
+            .Expand = True
+            .Height = 25 * AppFactor
             .Tag = i
           End With
 
         Else If $xOption[i] = "Date Time" Then
           With aDateBox[i]
-            .X = (365 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
             .Width = 200 * AppFactor
             .Height = 25 * AppFactor
             .Mode = DateChooser.DateTime
             .Tag = i
           End With
           With aBSDate[i]
-            .X = (575 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
             .Width = 30 * AppFactor
             .Height = 25 * AppFactor
             .Picture = Picture["icon:/small/calendar"]
@@ -477,16 +569,12 @@ Private Sub DIsplayTextForm()
 
         Else If $xOption[i] = "BS Date" Then
           With aDateBox[i]
-            .X = (365 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
             .Width = 200 * AppFactor
             .Height = 25 * AppFactor
             .Mode = DateChooser.DateTime
             .Tag = i
           End With
           With aBSDate[i]
-            .X = (575 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
             .Width = 30 * AppFactor
             .Height = 25 * AppFactor
             .Picture = Picture["icon:/small/calendar"]
@@ -504,72 +592,67 @@ Private Sub DIsplayTextForm()
 
         Else If $xOption[i] = "ImageValue" Then
           With aButtonBox[i]
-            .X = (365 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
-            .Width = 250 * AppFactor
+            .Expand = True
             .Height = 25 * AppFactor
             .Text = ""
             .Tag = i
           End With
 
-        Else If $xOption[i] = "Clinical Scale" Then
-          With aTextArea[i]
-            .X = (365 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
-            .Width = 300 * AppFactor
-            .Height = (25 * Slider1.Value - 5) * AppFactor
-            .Wrap = True
-            .Tag = i
-          End With
-          With aClinBox[i]
-            .X = (675 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
-            .Width = 50 * AppFactor
-            .Height = 25 * AppFactor
-            .Tag = i
-          End With
-
         Else If $xOption[i] = "Quantitative" Then
           With aValueBox[i]
-            .X = (365 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
-            .Width = 150 * AppFactor
-            .Height = 25 * AppFactor
-            .Tag = i
-          End With
-          With aUnitText[i]
-            .X = (525 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
             .Width = 100 * AppFactor
             .Height = 25 * AppFactor
             .Tag = i
           End With
+          With aUnitText[i]
+            .Width = 100 * AppFactor
+            .Height = 25 * AppFactor
+            .Tag = i
+          End With
+          With aNullCheck[i]
+            .Width = 75 * AppFactor
+            .Height = 25 * AppFactor
+            .Tag = i
+            .Value = False
+            .Text = "Null"
+          End With
 
         Else If $xOption[i] = "Qualitative" Then
           With aLineText[i]
-            .X = (365 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
-            .Width = 250 * AppFactor
+            .Expand = True
             .Height = 25 * AppFactor
+            .Tag = i
+          End With
+
+        Else If $xOption[i] = "Left and Right" Then
+          With aLeftRight[i]
+            .Expand = True
+            .Height = (25 * Slider1.Value) * AppFactor
+            .Tag = i
+          End With
+
+        Else If $xOption[i] = "Text Table" Then
+          DisplayAgegrid(Split($xOpList[i], "|"), "", aGridView[i])
+          With aGridView[i]
+            .Expand = True
+            .Height = ((25 * Slider1.Value) + 50) * AppFactor
+            .ScrollBar = Scroll.Both
+            .AutoResize = True
             .Tag = i
           End With
 
         Else If $xOption[i] = "RichText Area" Then
           With aHTMLText[i]
-            .X = (365 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
-            .Width = 400 * AppFactor
-            .Height = (25 * Slider1.Value - 5) * AppFactor
+            .Expand = True
+            .Height = ((25 * Slider1.Value) + 50) * AppFactor
             .DictionaryPath = modBasic.$dictPathList
             .Tag = i
           End With
 
         Else
           With aGenTextArea[i]
-            .X = (365 + 25) * AppFactor
-            .Y = (i * 25 * Slider1.Value + 15) * AppFactor
-            .Width = 400 * AppFactor
-            .Height = (25 * Slider1.Value - 5) * AppFactor
+            .Expand = True
+            .Height = (25 * Slider1.Value) * AppFactor
             .DictionaryPath = modBasic.$dictPathList
             .Tag = i
           End With
@@ -579,14 +662,21 @@ Private Sub DIsplayTextForm()
 
       ''create help button
       With aHelpButton[i]
-        .X = (792 + 25) * AppFactor
-        .Y = (i * 25 * Slider1.Value + 15) * AppFactor
         .Width = 25 * AppFactor
         .Height = 25 * AppFactor
         .Text = ""
         .Picture = Picture["icon:/small/info"]
         .Tag = i
         .Tooltip = "[Ctrl+O] to display Options"
+      End With
+
+      With aBlankBox[i]
+        .Height = 25 * AppFactor
+        .Width = 15 * AppFactor
+      End With
+
+      With aWebSpace[i]
+        .Height = 15 * AppFactor
       End With
 
     Endif
@@ -755,6 +845,14 @@ Private Sub FillExamSubExam()
         Else If $xOption[i] = "Left and Right" Then
           If aLeftRight[i].DataText Then
             modClinSub.AddQualiDataUniq($encid, $idList[i], $xitem[i], $xOption[i], aLeftRight[i].DataText, aAbnormCheck[i].Value, $sTable, $xSysCons[i], $sCategory, $xUniqList[i])
+          Endif
+        Else If $xOption[i] = "Left Right Qualitative" Then
+          If aLeftRightText[i].DataText Then
+            modClinSub.AddQualiDataUniq($encid, $idList[i], $xitem[i], $xOption[i], aLeftRightText[i].DataText, aAbnormCheck[i].Value, $sTable, $xSysCons[i], $sCategory, $xUniqList[i])
+          Endif
+        Else If $xOption[i] = "Left Right Quantitative" Then
+          If aLeftRightValue[i].DataValue Then
+            modClinSub.AddQualiDataUniq($encid, $idList[i], $xitem[i], $xOption[i], aLeftRightValue[i].DataValue, aAbnormCheck[i].Value, $sTable, $xSysCons[i], $sCategory, $xUniqList[i])
           Endif
         Else If $xOption[i] = "Date Time" Then
           If aDateBox[i].Value Then

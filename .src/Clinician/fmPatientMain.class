@@ -16,6 +16,8 @@ Private $rSympRes As Result
 Private $aSympFields As String[]
 Private $rExamRes As Result
 Private $aExamFields As String[]
+Private $rPlanRes As Result
+Private $aPlanFields As String[]
 
 Private hDigForm As FmDiagnosticTab
 Private hPtForm As FmClinHistory
@@ -218,7 +220,6 @@ Private Sub GetEncounterValue()
               modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
               $focus = False
               $EBMDiagnosis = ""
-              $NotesList = New String[]
             Else
               Me.Enabled = False
             Endif
@@ -557,14 +558,10 @@ Private Sub BasicInfoPatient()
   If txtencid.Text Then
     GetDefaultBillingmodes()
     cmbinpathistory.List = GetHistoryList()
-    cmbnote.List = NoteTakingTypeList()
-    If $sTatus = "Admitted" Then
-      cmbnotetype.List = ["All Types", "Progress Note", "Clinicians Note", "Nurses Note", "Transfer Note", "Patient Note"]
-      cmbnotetype.Text = "All Types"
-    Else
-      cmbnotetype.Text = "All Types"
-      Panel4.Visible = False
-    Endif
+    $NotesList = NoteTakingTypeList()
+    cmbnote.List = $NotesList
+    cmbnotetype.List = ["All Types", "Progress Note", "Clinicians Note", "Nurses Note", "Transfer Note", "Patient Note"]
+    cmbnotetype.Text = "All Types"
     lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
     lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
     lstsyndrome.List = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", Trim(txtencid.Text))
@@ -623,6 +620,7 @@ Private Sub ButtonControl()
   btngencompln.Enabled = xx
   ''patient history
   btnhistory.Enabled = xx
+  chkenabhistory.Enabled = xx
   ''clinical findings
   btnfinadd.Enabled = xx
   GridView1.Enabled = xx
@@ -641,10 +639,7 @@ Private Sub ButtonControl()
   ' btnotedit.Enabled = xx
   ''planning
   btnplanadd.Enabled = xx
-  btnaddsubject.Enabled = xx
-  btnaddobject.Enabled = xx
-  btnaddassess.Enabled = xx
-  btnaddplan.Enabled = xx
+  btnplanedit.Enabled = xx
   ''provisional Diagnosis
   tlbtndelprov.Enabled = xx
   btnprovcustom.Enabled = xx
@@ -700,7 +695,7 @@ Private Sub ButtonControl()
   mnuevent.Enabled = xx
   mnudeviceuse.Enabled = xx
   ''triage
-  mnutriage.Enabled = xx
+  btnabcexam.Enabled = xx
   ''vital exam
   btnvital.Enabled = xx
   mnuexam.Enabled = xx
@@ -1063,7 +1058,6 @@ Public Sub TabStrip1_Click()
       ShowMedFluids("Current")
     Else If TabStrip1.Index = 9 Then ''SOAP
       dtplan.Value = Now()
-      lbldtplan.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), Now())
       ShowProblemList()
     Else If TabStrip1.Index = 9 Then ''History
     Endif
@@ -1950,7 +1944,9 @@ End
 Public Sub cmbinpathistory_Click()
 
   ShowPatHistory()
-  btnhistory.Enabled = True
+  If chkenabhistory.Enabled = True Then
+    btnhistory.Enabled = True
+  Endif
 
 End
 
@@ -1959,6 +1955,12 @@ Public Sub btnhistorydef_Click()
   If cmbinpathistory.Text Then
     txthistory.RichText = AddHistory("History", Trim(txtencid.Text), cmbinpathistory.Text)
   Endif
+
+End
+
+Public Sub chkenabhistory_Click()
+
+  btnhistory.Enabled = True
 
 End
 
@@ -2305,13 +2307,6 @@ Public Sub btnoteadd_Click()
 
 End
 
-Public Sub btnaddnotes_Click()
-
-  txtnote.RichText = $NotesList.Join(gb.NewLine)
-  $NotesList = New String[]
-
-End
-
 Public Sub dcthelpnote_Click()
 
   Dim xx As String
@@ -2340,10 +2335,17 @@ Private Sub ShowNoteTypeTime()
   Dim sTypLst As String[]
 
   If cmbnotetype.Text = "All Types" Then
-    sTypLst = NoteTakingTypeList()
+    If $sTatus = "Admitted" Then
+      sTypLst = ["Progress Note", "Clinicians Note", "Nurses Note", "Transfer Note", "Patient Note"]
+    Else
+      sTypLst = New String[]
+      sTypLst.Insert(["Progress Note", "Clinicians Note", "Nurses Note", "Transfer Note", "Patient Note"])
+      sTypLst.Insert($NotesList.Copy())
+    Endif
   Else
     sTypLst = [cmbnotetype.Text]
   Endif
+
   For i = 0 To sTypLst.Count - 1
     sTypLst[i] = "'" & sTypLst[i] & "'"
   Next
@@ -2405,10 +2407,10 @@ Public Sub grdnote_Click()
     txtimpression.Text = grdnote[grdnote.Row, 3].Text
     txtnote.RichText = grdnote[grdnote.Row, 6].Text
     lblnoteuser.Text = modGeneral.GetUserFullName(grdnote[grdnote.Row, 4].Text) & " [" & modReportVar.GetDateTimeReport(grdnote[grdnote.Row, 5].Text, gb.GeneralDate) & "]"
-    If $sTatus = "Admitted" Then
-      btnoteadd.Enabled = True
+    If $NotesList.Exist(grdnote[grdnote.Row, 2].Text) Then
+      btnotedit.Enabled = True
     Else
-      btnoteadd.Enabled = False
+      btnotedit.Enabled = False
     Endif
   Else
     btnoteadd.Enabled = True
@@ -2467,25 +2469,6 @@ Public Sub btnotedit_Click()
 
 End
 
-Public Sub tbtnfollowcalen_Click()
-
-  Dim res As Result
-  Dim dt As Date
-
-  If txtencid.Text Then
-    dt = CTimeConsult("Follow Up", modPatient.GetFollowUpDate(Trim(txtencid.Text)))
-    If dt Then
-      res = modDatabase.$myConn.Edit("tblencounter", "fldencounterval=&1", Trim(txtencid.Text))
-      res["fldfollowdate"] = dt
-      res["xyz"] = False
-      res.Update
-      Balloon.Info(("Information saved"), tbtnfollowcalen)
-      Balloon.Delay = modBasic.$BalloonDelay
-    Endif
-  Endif
-
-End
-
 ''----------------------------------------------------- planning --------------------------------------------------------------
 Public Sub btnplanadd_Click()
 
@@ -2497,10 +2480,10 @@ Public Sub btnplanadd_Click()
       res["fldencounterval"] = Trim(txtencid.Text)
       res["fldplancategory"] = "Clinician Plan"
       res["fldproblem"] = txtproblem.Text
-      res["fldsubjective"] = ""
-      res["fldobjective"] = ""
-      res["fldassess"] = ""
-      res["fldplan"] = ""
+      res["fldsubjective"] = txtsubject.RichText
+      res["fldobjective"] = txtobject.RichText
+      res["fldassess"] = txtmanage.RichText
+      res["fldplan"] = txtplan.RichText
       res["flduserid"] = modBasic.$lbluser
       res["fldtime"] = Now()
       res["fldcomp"] = modBasic.$compID
@@ -2516,33 +2499,102 @@ Public Sub btnplanadd_Click()
 
 End
 
+Public Sub btnplanedit_Click()
+
+  Dim res As Result
+
+  If txtplanid.Value Then
+    If txtproblem.Text Then
+      res = modDatabase.$myConn.Edit("tblpatplanning", "fldid=&1", txtplanid.Value)
+      If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
+        res["fldproblem"] = txtproblem.Text
+        res["fldsubjective"] = txtsubject.RichText
+        res["fldobjective"] = txtobject.RichText
+        res["fldassess"] = txtmanage.RichText
+        res["fldplan"] = txtplan.RichText
+        res["flduserid"] = modBasic.$lbluser
+        res["flduptime"] = Now()
+        res["fldcomp"] = modBasic.$compID
+        res["xyz"] = False
+        res.Update()
+        ShowProblemList()
+        Balloon.Info(("Information saved"), btnplanedit)
+        Balloon.Delay = modBasic.$BalloonDelay
+      Else
+        Message.Warning("Authorization with " & res["flduserid"], ("OK"))
+      Endif
+    Endif
+  Endif
+  'don't catch error
+
+End
+
+Public Sub dtplan_Click()
+
+  If txtencid.Text Then
+    ShowProblemList()
+  Endif
+
+End
+
+Public Sub chkallplan_Click()
+
+  If txtencid.Text Then
+    ShowProblemList()
+  Endif
+
+End
+
 Private Sub ShowProblemList()
 
   Dim sql As String
-  Dim Column As Integer
-  Dim fld As ResultField
-  Dim res As Result
 
-  sql = "select fldid,fldproblem from tblpatplanning where fldencounterval=&1 and fldplancategory=&2 and fldtime>=&3 and fldtime<=&4"
-  res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Clinician Plan", modDate.StartSqlDate(dtplan.Value), modDate.EndSqlDate(dtplan.Value))
+  If chkallplan.Value Then
+    sql = "select fldid,fldproblem,fldtime,fldsubjective,fldobjective,fldassess,fldplan,flduserid,fldtime from tblpatplanning where fldencounterval=&1 and fldplancategory=&2 ORDER BY fldtime DESC"
+  Else
+    sql = "select fldid,fldproblem,fldtime,fldsubjective,fldobjective,fldassess,fldplan,flduserid,fldtime from tblpatplanning where fldencounterval=&1 and fldplancategory=&2 and fldtime>=&3 and fldtime<=&4 ORDER BY fldtime DESC"
+  Endif
+  $rPlanRes = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Clinician Plan", modDate.StartSqlDate(dtplan.Value), modDate.EndSqlDate(dtplan.Value))
+  $aPlanFields = New String[]
+  modGridView.ReadSmallData(grdplan, $rPlanRes, $aPlanFields)
 
-  grdplan.Clear
-  grdplan.Columns.Count = res.Fields.Count
-  grdplan.Rows.Count = res.Count
+  With grdplan
+    .Columns[0].Width = 1
+    .Columns[1].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 1
+    .Columns[4].Width = 1
+    .Columns[5].Width = 1
+    .Columns[6].Width = 1
+    .Columns[7].Width = 1
+    .Columns[8].Width = 1
+  End With
 
-  For Each res
-    Column = 0
-    For Each fld In res.Fields
-      modGeneralMain.GridExplicitDecoration(grdplan, res.Index, Column)
-      grdplan[res.Index, Column].Text = res[fld.Name]
-      Column = Column + 1
-    Next
-  Next
-  grdplan.Row = 0
+End
 
-  grdplan.Rows.Height = modBasic.$AppGridRowHeight
-  grdplan.Columns[0].Width = 1
-  grdplan.Columns[1].Width = 220 * modBasic.$AppWidthRatio
+Public Sub grdplan_Data(Row As Integer, Column As Integer)
+
+  $rPlanRes.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(grdplan, Row)
+  If Column = 2 Then
+    grdplan.Data.Text = modReportVar.GetDateTimeReport($rPlanRes[$aPlanFields[Column]], gb.GeneralDate)
+  Else
+    grdplan.Data.Text = $rPlanRes[$aPlanFields[Column]]
+  Endif
+
+End
+
+Public Sub grdplan_Click()
+
+  If grdplan.Rows.Selection.Count Then
+    txtplanid.Value = grdplan[grdplan.Row, 0].Text
+    txtproblem.Text = grdplan[grdplan.Row, 1].Text
+    txtsubject.RichText = grdplan[grdplan.Row, 3].Text
+    txtobject.RichText = grdplan[grdplan.Row, 4].Text
+    txtmanage.RichText = grdplan[grdplan.Row, 5].Text
+    txtplan.RichText = grdplan[grdplan.Row, 6].Text
+    lbluserplan.Text = modGeneral.GetUserFullName(grdplan[grdplan.Row, 7].Text) & " [" & modReportVar.GetDateTimeReport(grdplan[grdplan.Row, 8].Text, gb.GeneralDate) & "]"
+  Endif
 
 End
 
@@ -2611,137 +2663,6 @@ End
 Public Sub btntemplplanplan_Click()
 
   txtplan.RichText = txtplan.RichText & DictionaryVIew("Clinical Planning")
-
-End
-
-Public Sub grdplan_Click()
-
-  Dim sql As String
-  Dim res As Result
-
-  sql = "select fldid,fldproblem,fldsubjective,fldobjective,fldassess,fldplan from tblpatplanning where fldid=&1"
-  res = modDatabase.$myConn.Exec(sql, grdplan[grdplan.Row, 0].Text)
-  If res.Available Then
-    txtplanid.Value = res!fldid
-    txtproblem.Text = res!fldproblem
-    txtsubject.RichText = res!fldsubjective
-    txtobject.RichText = res!fldobjective
-    txtmanage.RichText = res!fldassess
-    txtplan.RichText = res!fldplan
-  Endif
-
-End
-
-Public Sub dtplan_Click()
-
-  If txtencid.Text Then
-    lbldtplan.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), dtplan.Value)
-    ShowProblemList()
-  Endif
-
-End
-
-Public Sub btnaddsubject_Click()
-
-  Dim res As Result
-
-  If txtplanid.Value Then
-    If txtproblem.Text Then
-      res = modDatabase.$myConn.Edit("tblpatplanning", "fldid=&1", txtplanid.Value)
-      If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
-        res["fldsubjective"] = txtsubject.RichText
-        res["flduserid"] = modBasic.$lbluser
-        res["flduptime"] = Now()
-        res["fldcomp"] = modBasic.$compID
-        res["xyz"] = False
-        res.Update()
-        ShowProblemList()
-        Balloon.Info(("Information saved"), btnaddsubject)
-        Balloon.Delay = modBasic.$BalloonDelay
-      Else
-        Message.Warning("Authorization with " & res["flduserid"], ("OK"))
-      Endif
-    Endif
-  Endif
-  'don't catch error
-
-End
-
-Public Sub btnaddobject_Click()
-
-  Dim res As Result
-
-  If txtplanid.Value Then
-    If txtproblem.Text Then
-      res = modDatabase.$myConn.Edit("tblpatplanning", "fldid=&1", txtplanid.Value)
-      If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
-        res["fldobjective"] = txtobject.RichText
-        res["flduserid"] = modBasic.$lbluser
-        res["flduptime"] = Now()
-        res["fldcomp"] = modBasic.$compID
-        res["xyz"] = False
-        res.Update()
-        ShowProblemList()
-        Balloon.Info(("Information saved"), btnaddobject)
-        Balloon.Delay = modBasic.$BalloonDelay
-      Else
-        Message.Warning("Authorization with " & res["flduserid"], ("OK"))
-      Endif
-    Endif
-  Endif
-  'don't catch error
-
-End
-
-Public Sub btnaddassess_Click()
-
-  Dim res As Result
-
-  If txtplanid.Value Then
-    If txtproblem.Text Then
-      res = modDatabase.$myConn.Edit("tblpatplanning", "fldid=&1", txtplanid.Value)
-      If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
-        res["fldassess"] = txtmanage.RichText
-        res["flduserid"] = modBasic.$lbluser
-        res["flduptime"] = Now()
-        res["fldcomp"] = modBasic.$compID
-        res["xyz"] = False
-        res.Update()
-        ShowProblemList()
-        Balloon.Info(("Information saved"), btnaddassess)
-        Balloon.Delay = modBasic.$BalloonDelay
-      Else
-        Message.Warning("Authorization with " & res["flduserid"], ("OK"))
-      Endif
-    Endif
-  Endif
-  'don't catch error
-
-End
-
-Public Sub btnaddplan_Click()
-
-  Dim res As Result
-
-  If txtplanid.Value Then
-    If txtproblem.Text Then
-      res = modDatabase.$myConn.Edit("tblpatplanning", "fldid=&1", txtplanid.Value)
-      If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
-        res["fldplan"] = txtplan.RichText
-        res["flduserid"] = modBasic.$lbluser
-        res["flduptime"] = Now()
-        res["fldcomp"] = modBasic.$compID
-        res["xyz"] = False
-        res.Update()
-        ShowProblemList()
-        Balloon.Info(("Information saved"), btnaddplan)
-        Balloon.Delay = modBasic.$BalloonDelay
-      Else
-        Message.Warning("Authorization with " & res["flduserid"], ("OK"))
-      Endif
-    Endif
-  Endif
-  'don't catch error
 
 End
 
@@ -2968,7 +2889,7 @@ Public Sub btndrpstat_Click()
   If res.Available Then
     opt = New Long[]
     For Each res
-      opt.Add(res!fldid)
+      opt.Add(res["fldid"])
     Next
     modMedError.ShowMedicationReviewMultipleDosID(Trim(txtencid.Text), opt, "Report")
   Endif
@@ -3142,7 +3063,7 @@ Public Sub btndrp_Click()
   If res.Available Then
     opt = New Long[]
     For Each res
-      opt.Add(res!fldid)
+      opt.Add(res["fldid"])
     Next
     modMedError.ShowMedicationReviewMultipleDosID(Trim(txtencid.Text), opt, "Report")
   Endif
@@ -3930,12 +3851,12 @@ Public Sub mnuexam_Click()
 
 End
 
-Public Sub mnutriage_Click()
+Public Sub btnabcexam_Click()
 
   Dim hForm As FmTriage
 
   If txtencid.Text
-    hForm = New FmTriage("Triage Examinations", Trim(txtencid.Text))
+    hForm = New FmTriage("ABC Examinations", Trim(txtencid.Text))
     hForm.ShowModal
     txtcolor.Background = modPatient.GetPatientColor(Trim(txtencid.Text))
   Endif
@@ -4233,7 +4154,7 @@ End
 
 Public Sub mnudiscrollback_Click()
 
-  If Message.Question("Are you sure to rollback the outcome ?", ("No"), ("Yes")) = 2 Then
+  If Message.Question("Are you sure to rollback outcome ?", ("No"), ("Yes")) = 2 Then
     If $xFinClear = False Then
       modPatientSub.RollbackDischarge(Trim(txtencid.Text))
       Message.Info("Outcome rollback completed", "OK")
@@ -5789,6 +5710,7 @@ Private Sub RestrictUserAccess()
   Endif
   If $UserRestrict.Exist("Patient History") Then
     btnhistory.Enabled = False
+    chkenabhistory.Enabled = False
   Endif
   If $UserRestrict.Exist("Clinical Findings") Then
     btnfinadd.Enabled = False
@@ -5818,10 +5740,7 @@ Private Sub RestrictUserAccess()
   Endif
   If $UserRestrict.Exist("Therapeutic Planning") Then
     btnplanadd.Enabled = False
-    btnaddsubject.Enabled = False
-    btnaddobject.Enabled = False
-    btnaddassess.Enabled = False
-    btnaddplan.Enabled = False
+    btnplanedit.Enabled = False
   Endif
 
   If $UserRestrict.Exist("Provisional Diagnosis") Then
@@ -5934,8 +5853,8 @@ Private Sub RestrictUserAccess()
     btnvital.Enabled = False
     mnuexam.Enabled = False
   Endif
-  If $UserRestrict.Exist("Triage Examinations") Then
-    mnutriage.Enabled = False
+  If $UserRestrict.Exist("ABC Examinations") Then
+    btnabcexam.Enabled = False
   Endif
 
 End

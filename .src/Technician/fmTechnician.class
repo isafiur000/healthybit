@@ -1,5 +1,6 @@
 ' Gambas class file
 
+Private $ExamLst As String[]
 Private $MacID As Integer
 Private $RepoUpload As Boolean
 
@@ -14,6 +15,8 @@ Public Sub Form_Open()
   modGeneralMain.GetFirstValues(ServerSocket1, ServerSocket2)
   modGeneralMain.LoadMainForms(Me, pnltop, pnlleft, Workspace1, pnlright, pnlbottom)
   DiaplayCustMenu()
+  $ExamLst = modMedicine.FillClinicalSubClass("Diagnostic Examinations")
+  FillExamMenu()
   modLinkDB.LoadExtraDBSettings()
   modBasic.LoadLabRadioList()
   modBasic.LabRadiologySeting()
@@ -144,6 +147,153 @@ Public Sub mnucust5_Click()
 
 End
 
+''===================== Structured exams==========================
+Private Sub FillExamMenu()
+
+  If $ExamLst.Count > 0 Then
+    mnurec1.Text = $ExamLst[0]
+    mnurec1.Visible = True
+  Endif
+
+  If $ExamLst.Count > 1 Then
+    mnurec2.Text = $ExamLst[1]
+    mnurec2.Visible = True
+  Endif
+
+  If $ExamLst.Count > 2 Then
+    mnurec3.Text = $ExamLst[2]
+    mnurec3.Visible = True
+  Endif
+
+  If $ExamLst.Count > 3 Then
+    mnurec4.Text = $ExamLst[3]
+    mnurec4.Visible = True
+  Endif
+
+  If $ExamLst.Count > 4 Then
+    mnurec5.Text = $ExamLst[4]
+    mnurec5.Visible = True
+  Endif
+
+  If $ExamLst.Count > 5 Then
+    mnurec6.Text = $ExamLst[5]
+    mnurec6.Visible = True
+  Endif
+
+  If $ExamLst.Count > 6 Then
+    mnurec7.Text = $ExamLst[6]
+    mnurec7.Visible = True
+  Endif
+
+  If $ExamLst.Count > 7 Then
+    mnurec8.Text = $ExamLst[7]
+    mnurec8.Visible = True
+  Endif
+
+  If $ExamLst.Count > 8 Then
+    mnurec9.Text = $ExamLst[8]
+    mnurec9.Visible = True
+  Endif
+
+  If $ExamLst.Count > 9 Then
+    mnurec10.Text = $ExamLst[9]
+    mnurec10.Visible = True
+  Endif
+
+End
+
+''--------------------------------- Selected Examination-----------------------------
+Public Sub mnurec1_Click()
+
+  Dim hForm As FmWardHistory
+
+  hForm = New FmWardHistory(mnurec1.Text, "", "Diagnostic Examinations")
+  modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+
+End
+
+Public Sub mnurec2_Click()
+
+  Dim hForm As FmWardHistory
+
+  hForm = New FmWardHistory(mnurec2.Text, "", "Diagnostic Examinations")
+  modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+
+End
+
+Public Sub mnurec3_Click()
+
+  Dim hForm As FmWardHistory
+
+  hForm = New FmWardHistory(mnurec3.Text, "", "Diagnostic Examinations")
+  modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+
+End
+
+Public Sub mnurec4_Click()
+
+  Dim hForm As FmWardHistory
+
+  hForm = New FmWardHistory(mnurec4.Text, "", "Diagnostic Examinations")
+  modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+
+End
+
+Public Sub mnurec5_Click()
+
+  Dim hForm As FmWardHistory
+
+  hForm = New FmWardHistory(mnurec5.Text, "", "Diagnostic Examinations")
+  modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+
+End
+
+Public Sub mnurec6_Click()
+
+  Dim hForm As FmWardHistory
+
+  hForm = New FmWardHistory(mnurec6.Text, "", "Diagnostic Examinations")
+  modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+
+End
+
+Public Sub mnurec7_Click()
+
+  Dim hForm As FmWardHistory
+
+  hForm = New FmWardHistory(mnurec7.Text, "", "Diagnostic Examinations")
+  modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+
+End
+
+Public Sub mnurec8_Click()
+
+  Dim hForm As FmWardHistory
+
+  hForm = New FmWardHistory(mnurec8.Text, "", "Diagnostic Examinations")
+  modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+
+End
+
+Public Sub mnurec9_Click()
+
+  Dim hForm As FmWardHistory
+
+  hForm = New FmWardHistory(mnurec9.Text, "", "Diagnostic Examinations")
+  modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+
+End
+
+Public Sub mnurec10_Click()
+
+  Dim hForm As FmWardHistory
+
+  hForm = New FmWardHistory(mnurec10.Text, "", "Diagnostic Examinations")
+  modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+
+End
+
+''===================== others =======================
 Public Sub mnutestadd_Click()
 
   If modGlobalSetting.ShowSettingFromDB("GeneralSettings/Laboratory_TestAddition") = "Yes" Then

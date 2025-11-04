@@ -15,6 +15,8 @@ Private $PatSex As String
 Private $PatWeight As Float
 Private $PatHeight As Float
 
+Private $rDataM As Result
+Private $aMyFieldsM As String[]
 Private $rData1 As Result
 Private $aMyFields1 As String[]
 Private $rData2 As Result
@@ -610,6 +612,8 @@ End
 
 Public Sub txtdose_GotFocus()
 
+  Dim cForm As CRecommendDosing
+
   If cmbmedicine.Text Then
     If modStockSub.GetComboStockControl(cmbroute.Text, cmbmedicine.Text, rbgeneric, rbrand, modDatabase.$medConn) = False Then
       cmbmedicine.Text = ""
@@ -631,8 +635,10 @@ Public Sub txtdose_GotFocus()
         lbldose.Text = modMedConstant.GetDrugDosingUnit(cmbmedicine.Text)
 
         If modBasic.$MedDoseRecommend = "Yes" Then
-          txtdose.Value = modMedDosing.RecommendedDoseDrug($encid, xYear, cmbmedicine.Text)
-          cmbfreq.Text = modMedDosing.RecommendedFrequencyDrug(xYear, cmbmedicine.Text, True)
+          cForm = New CRecommendDosing($encid, xYear, cmbmedicine.Text)
+          txtdose.Value = cForm.UnitDose()
+          cmbfreq.Text = cForm.Frequency()
+          lblregimen.Text = cForm.Regimen()
         Endif
 
         If $HideDos = False Then
@@ -1023,23 +1029,17 @@ End
 Private Sub FillDosingGrid()
 
   Dim sql As String
-  Dim Column As Integer
-  Dim fld As ResultField
-  Dim res As Result
 
   If rblabel.Value = True Then
-    sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldqtydisp,flduserid_order,fldid,fldid,fldstarttime,fldcurval,flddirection from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstatus=&3 and fldorder=&4 and (fldcurval=&5 or fldcurval=&6)"
+    sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldqtydisp,flduserid_order,fldid,fldid,fldstarttime,fldcurval,flddirection,flddosecount,fldmixing from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstatus=&3 and fldorder=&4 and (fldcurval=&5 or fldcurval=&6)"
   Else
-    sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,flduserid_order,fldid,fldid,fldstarttime,fldcurval,flddirection from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstatus=&3 and fldorder=&4 and (fldcurval=&5 or fldcurval=&6)"                                                   ''
+    sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,flduserid_order,fldid,fldid,fldstarttime,fldcurval,flddirection,flddosecount,fldmixing from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstatus=&3 and fldorder=&4 and (fldcurval=&5 or fldcurval=&6)"                                                   ''
   Endif
-  res = modDatabase.$myConn.Exec(sql, $encid, False, $status, "Request", "Continue", "Reserve")
-
-  GridView1.Clear
-  GridView1.Columns.Count = res.Fields.Count
-  GridView1.Rows.Count = res.Count
+  $rDataM = modDatabase.$myConn.Exec(sql, $encid, False, $status, "Request", "Continue", "Reserve")
+  $aMyFieldsM = New String[]
+  modGridView.ReadSmallData(GridView1, $rDataM, $aMyFieldsM)
 
   With GridView1
-    .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
     .Columns[1].Width = 100 * modBasic.$AppWidthRatio
     .Columns[2].Width = 75 * modBasic.$AppWidthRatio
@@ -1054,6 +1054,8 @@ Private Sub FillDosingGrid()
     .Columns[11].Width = 1
     .Columns[12].Width = 75 * modBasic.$AppWidthRatio
     .Columns[13].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[14].Width = 50 * modBasic.$AppWidthRatio
+    .Columns[15].Width = 200 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "Start"
     .Columns[2].Text = "Route"
@@ -1064,33 +1066,32 @@ Private Sub FillDosingGrid()
     .Columns[7].Text = "QTY"
     .Columns[12].Text = "Status"
     .Columns[13].Text = "Direction"
+    .Columns[14].Text = "N"
+    .Columns[15].Text = "Mixture"
   End With
 
-  For Each res
-    Column = 0
-    For Each fld In res.Fields
-      modGeneralMain.GridExplicitDecoration(GridView1, res.Index, Column)
-      If Column = 1 Then
-        GridView1[res.Index, Column].Text = modReportVar.GetDateTimeReport(res["fldstarttime"], gb.GeneralDate)
-      Else If Column = 4 Then
-        If rblabel.Value = True Then
-          GridView1[res.Index, Column].Text = modPharmacy.GetMedicineDoseInFormat(res[fld.Name], "Label")
-        Else
-          GridView1[res.Index, Column].Text = res[fld.Name]
-        Endif
-      Else If Column = 9 Then
-        GridView1[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
-        GridView1[res.Index, Column].Text = ""
-      Else
-        GridView1[res.Index, Column].Text = res[fld.Name]
-      Endif
-      GridView1.Rows[res.Index].Height = Max(GridView1.Rows[res.Index].Height, GridView1[res.Index, Column].Font.RichTextHeight(GridView1[res.Index, Column].Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
-      GridView1[res.Index, Column].WordWrap = True
+End
 
-      Column = Column + 1
-    Next
-  Next
-  GridView1.Row = 0
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  $rDataM.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView1, Row)
+  If Column = 1 Then
+    GridView1.Data.Text = modReportVar.GetDateTimeReport($rDataM[$aMyFieldsM[Column]], gb.GeneralDate)
+  Else If Column = 4 Then
+    If rblabel.Value = True Then
+      GridView1.Data.Text = modPharmacy.GetMedicineDoseInFormat($rDataM[$aMyFieldsM[Column]], "Label")
+    Else
+      GridView1.Data.Text = $rDataM[$aMyFieldsM[Column]]
+    Endif
+  Else If Column = 9 Then
+    GridView1.Data.Picture = Picture["icon:/tiny/cancel"]
+    GridView1.Data.Text = ""
+  Else
+    GridView1.Data.Text = $rDataM[$aMyFieldsM[Column]]
+  Endif
+  GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
+  GridView1.Data.WordWrap = True
 
 End
 
@@ -1116,7 +1117,11 @@ Public Sub GridView1_Click()
 
   Else If GridView1.Column = 4 Then
     If modGeneral.AllowClinicalEdit(GridView1[GridView1.Row, 8].Text) = True Then
-      xval = InputValue(GridView1[GridView1.Row, 3].Text, ("Alter Unit Dose"), GridView1[GridView1.Row, 4].Text)
+      If GridView1[GridView1.Row, 4].Text Then
+        xval = InputValue(GridView1[GridView1.Row, 3].Text, ("Alter Unit Dose"), GridView1[GridView1.Row, 4].Text)
+      Else
+        xval = InputValue(GridView1[GridView1.Row, 3].Text, ("Alter Unit Dose"), 0)
+      Endif
       If xval Then
         modPharmSub.UpdateDoseBefDispensing(GridView1[GridView1.Row, 0].Text, xval)
         FillDosingGrid()
@@ -1172,6 +1177,28 @@ Public Sub GridView1_Click()
       yval = InputBox(GridView1[GridView1.Row, 3].Text, ("Alter Direction"), GridView1[GridView1.Row, 13].Text)
       If yval Then
         modPharmSub.UpdateAdviceBefDispensing(GridView1[GridView1.Row, 0].Text, yval)
+        FillDosingGrid()
+      Endif
+    Endif
+
+  Else If GridView1.Column = 14 Then
+    If modGeneral.AllowClinicalEdit(GridView1[GridView1.Row, 8].Text) = True Then
+      If GridView1[GridView1.Row, 14].Text Then
+        xval = InputValue(GridView1[GridView1.Row, 3].Text, ("Alter Maximum Dose Count"), GridView1[GridView1.Row, 14].Text)
+      Else
+        xval = InputValue(GridView1[GridView1.Row, 3].Text, ("Alter Maximum Dose Count"), 0)
+      Endif
+      If xval Then
+        modPharmSub.UpdateMaxCountBeffDispensing(GridView1[GridView1.Row, 0].Text, xval)
+        FillDosingGrid()
+      Endif
+    Endif
+
+  Else If GridView1.Column = 15 Then
+    If modGeneral.AllowClinicalEdit(GridView1[GridView1.Row, 8].Text) = True Then
+      yval = InputBox(GridView1[GridView1.Row, 3].Text, ("Alter Compounding Direction"), GridView1[GridView1.Row, 15].Text)
+      If yval Then
+        modPharmSub.UpdateMixtureBefDispensing(GridView1[GridView1.Row, 0].Text, yval)
         FillDosingGrid()
       Endif
     Endif

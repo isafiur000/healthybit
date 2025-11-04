@@ -17,13 +17,13 @@ Public Sub ReadSmallData(GridView1 As GridView, $hres As Result, $aMyFields As S
   Dim rxf As ResultField
 
   GridView1.Clear
-  GridView1.Columns.Count = $hres.Fields.Count
-  GridView1.Rows.Count = $hres.Count
   For Each rxf In $hres.Fields
     $aMyFields.Add(rxf.Name)
   Next
-  GridView1.Rows.Height = modBasic.$AppGridRowHeight
+  GridView1.Columns.Count = $hres.Fields.Count
+  GridView1.Rows.Count = $hres.Count
 
+  GridView1.Rows.Height = modBasic.$AppGridRowHeight
   If {index} Then
     GridView1.Row = {index}
   Else
@@ -37,16 +37,15 @@ Public Sub ReadSmallMyData(GridView1 As GridView, $hres As MyResult, $aMyFields 
   Dim rxf As String
 
   GridView1.Clear
-  GridView1.Rows.Count = $hres.Count
   If $hres.Count Then
     GridView1.Columns.Count = $hres.Fields.Count
     For Each rxf In $hres.Fields
       $aMyFields.Add(rxf)
     Next
-
   Else
     GridView1.Columns.Count = $Columns
   Endif
+  GridView1.Rows.Count = $hres.Count
 
   GridView1.Rows.Height = modBasic.$AppGridRowHeight
 

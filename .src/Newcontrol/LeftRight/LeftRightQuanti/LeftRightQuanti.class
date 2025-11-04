@@ -1,0 +1,94 @@
+' Gambas class file
+
+Export
+
+Inherits UserControl
+
+Public Const _Properties As String = "*,HeaderText,DataValue,LeftValue,RightValue,LeftTitle,RightTitle"
+
+Property DataValue As String
+Property LeftValue As Float
+Property RightValue As Float
+Property HeaderText As String
+Property LeftTitle As String
+Property RightTitle As String
+
+Private $hForm As FmLeftRightQuanti
+
+Public Sub _new()
+
+  $hForm = New FmLeftRightQuanti(Me)
+
+End
+
+Private Function DataValue_Read() As String
+
+  Return $hForm.GetDataValue()
+
+End
+
+Private Sub DataValue_Write(Value As String)
+
+  $hForm.SetDataValue(Value)
+
+End
+
+Private Function LeftValue_Read() As Float
+
+  Return $hForm.GetLeftValue()
+
+End
+
+Private Sub LeftValue_Write(Value As Float)
+
+  $hForm.SetLeftValue(Value)
+
+End
+
+Private Function RightValue_Read() As Float
+
+  Return $hForm.GetRightValue()
+
+End
+
+Private Sub RightValue_Write(Value As Float)
+
+  $hForm.SetRightValue(Value)
+
+End
+
+Private Function LeftTitle_Read() As String
+
+  Return $hForm.GetLeftTitle()
+
+End
+
+Private Sub LeftTitle_Write(Value As String)
+
+  $hForm.SetLeftTitle(Value)
+
+End
+
+Private Function RightTitle_Read() As String
+
+  Return $hForm.GetRightTitle()
+
+End
+
+Private Sub RightTitle_Write(Value As String)
+
+  $hForm.SetRightTitle(Value)
+
+End
+
+Private Function HeaderText_Read() As String
+
+  Return $hForm.GetHeaderText()
+
+End
+
+Private Sub HeaderText_Write(Value As String)
+
+  $hForm.SetHeaderText(Value)
+
+End

@@ -88,7 +88,7 @@
       Index = 0
       Text = ("New Test [F5]")
       { Panel3 Panel
-        MoveScaled(0,-1,120,29)
+        MoveScaled(0,-1,121,29)
         Expand = True
         Arrangement = Arrange.Horizontal
         { Panel4 Panel
@@ -177,20 +177,16 @@
           MoveScaled(44,0,2,29)
         }
         { Panel5 Panel
-          MoveScaled(46,1,73,28)
+          MoveScaled(46,1,75,28)
           Expand = True
           Arrangement = Arrange.Vertical
           { Panel9 Panel
-            MoveScaled(0,0,71,4)
+            MoveScaled(0,0,75,4)
             { Panel10 Panel
-              MoveScaled(42,0.5,27,3)
+              MoveScaled(28,0.5,23,3)
               { rbadded RadioButton
                 MoveScaled(11,0,11,3)
                 Text = ("Added")
-              }
-              { btnaddedsearch ToolButton
-                MoveScaled(23,0,3,3)
-                Picture = Picture["icon:/small/find"]
               }
               { rbwaiting RadioButton
                 MoveScaled(0,0,10,3)
@@ -199,10 +195,22 @@
               }
             }
             { Panel17 Panel
-              MoveScaled(0,0.5,26,3)
+              MoveScaled(0,0.5,21,3)
               { cmbfiscal ComboBox
                 MoveScaled(1,0,18,3)
               }
+            }
+            { btnaddedsearch ToolButton
+              MoveScaled(63,0.5,3,3)
+              Picture = Picture["icon:/small/find"]
+            }
+            { btnenchelp ToolButton
+              MoveScaled(67,0.5,3,3)
+              Picture = Picture["icon:/small/help"]
+            }
+            { btnservbill ToolButton
+              MoveScaled(71,0.5,3,3)
+              Picture = Picture["icon:/small/calculator"]
             }
           }
           { GridView4 GridView
@@ -213,7 +221,7 @@
             AutoResize = False
           }
           { Panel6 Panel
-            MoveScaled(0,19,72,4)
+            MoveScaled(0,19,74,4)
             { btnformatlist ToolButton
               MoveScaled(35,0.5,3,3)
               Picture = Picture["icon:/small/text-list"]
@@ -227,28 +235,28 @@
               Text = ("Format")
             }
             { Label5 Label
-              MoveScaled(43,0.5,5,3)
+              MoveScaled(45,0.5,5,3)
               Border = Border.Plain
               Text = ("Date")
             }
             { dtplan DateBox
-              MoveScaled(48,0.5,20,3)
+              MoveScaled(50,0.5,20,3)
               Mode = DateChooser.DateTime
             }
             { btndtplan ToolButton
-              MoveScaled(68,0.5,3,3)
+              MoveScaled(70,0.5,3,3)
               Picture = Picture["icon:/small/calendar"]
             }
           }
           { Panel11 Panel
-            MoveScaled(0,23,72,4)
+            MoveScaled(0,23,74,4)
             { btnpayto ButtonBox
               MoveScaled(8,0.5,26,3)
               Picture = Picture["icon:/small/people"]
               ReadOnly = True
             }
             { btnaddin Button
-              MoveScaled(59,0.5,12,3)
+              MoveScaled(61,0.5,12,3)
               Text = ("Add")
               Picture = Picture["icon:/small/add"]
             }
@@ -484,6 +492,10 @@
             Border = Border.Plain
             Text = ("Variable")
           }
+          { btnpatbill ToolButton
+            MoveScaled(38,1,3,3)
+            Picture = Picture["icon:/small/calculator"]
+          }
         }
         { GridView1 GridView
           MoveScaled(1,16,82,18)
@@ -535,25 +547,29 @@
         { Panel27 Panel
           MoveScaled(0,0,36,3)
           { Panel26 Panel
-            MoveScaled(15,0,20,3)
+            MoveScaled(0,0,27,3)
             Border = Border.Plain
             { rbdate RadioButton
-              MoveScaled(0,0,8.5,3)
+              MoveScaled(0,0,8,3)
               Text = ("Date")
               Value = True
             }
             { rbtriage RadioButton
-              MoveScaled(10,0,9.5,2.75)
+              MoveScaled(17,0,9.5,2.75)
               Text = ("Triage")
             }
-          }
-          { txtcolor Label
-            MoveScaled(0,0,14,3)
-            Border = Border.Plain
+            { rbname RadioButton
+              MoveScaled(8,0,9,3)
+              Text = ("Name")
+            }
           }
         }
+        { txtcolor Label
+          MoveScaled(0,4,36,1)
+          Border = Border.Plain
+        }
         { lsticdisease ListBox
-          MoveScaled(1,6,35,9)
+          MoveScaled(0,7,35,9)
         }
         { Panel23 Panel
           MoveScaled(0,17,35,9)

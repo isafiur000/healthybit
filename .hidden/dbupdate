@@ -1177,9 +1177,6 @@ ALTER TABLE tblmedinventory ADD fldsecondtime DATETIME NULL
 ALTER TABLE tblmedinventory ADD flduserid_start VARCHAR( 25 ) NULL
 ALTER TABLE tblmedinventory ADD fldcomp_start VARCHAR( 50 ) NULL
 
-ALTER TABLE tblconsult ADD COLUMN fldsummary TEXT NULL
-ALTER TABLE tblopvisit ADD COLUMN fldsummary TEXT NULL
-
 ALTER TABLE tbldeptexam ADD fldexamorder INT( 11 ) NULL
 
 ALTER TABLE tblcompexam ADD fldtanswertype VARCHAR( 50 ) NULL
@@ -1202,4 +1199,14 @@ UPDATE tblcostgroup SET fldcomp='%' WHERE fldcomp IS NULL
 
 ALTER TABLE tblmedregimen ADD fldcomp VARCHAR( 50 ) NULL
 UPDATE tblmedregimen SET fldcomp='%' WHERE fldcomp IS NULL
+
+ALTER TABLE tblconsult ADD COLUMN fldsummary TEXT NULL
+ALTER TABLE tblconsult ADD COLUMN fldflaguser VARCHAR( 25 ) NULL
+ALTER TABLE tblconsult ADD COLUMN fldpresummary TEXT NULL
+
+ALTER TABLE tblopvisit ADD COLUMN fldsummary TEXT NULL
+ALTER TABLE tblopvisit ADD COLUMN fldflaguser VARCHAR( 25 ) NULL
+ALTER TABLE tblopvisit ADD COLUMN fldpresummary TEXT NULL
+
+
 

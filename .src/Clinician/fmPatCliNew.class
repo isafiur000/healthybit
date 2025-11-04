@@ -840,6 +840,7 @@ Private Sub ButtonControl()
   btngencompln.Enabled = xx
   ''history
   btnhistory.Enabled = xx
+  chkenabhistory.Enabled = xx
   btnplan.Enabled = xx
   ''Telemedicine
   btnquery.Enabled = xx
@@ -876,7 +877,7 @@ Private Sub ButtonControl()
   mnuscreendraw.Enabled = xx
   btnaddchart.Enabled = xx
   ''triage
-  mnutriage.Enabled = xx
+  btnabcexam.Enabled = xx
   ''vitals
   mnuvital.Enabled = xx
   Frame2.Enabled = xx
@@ -2125,6 +2126,14 @@ End
 Public Sub cmbinpathistory_Click()
 
   ShowPatHistory()
+  If chkenabhistory.Enabled = True Then
+    btnhistory.Enabled = True
+  Endif
+
+End
+
+Public Sub chkenabhistory_Click()
+
   btnhistory.Enabled = True
 
 End
@@ -2610,12 +2619,12 @@ Public Sub mnuvital_Click()
 
 End
 
-Public Sub mnutriage_Click()
+Public Sub btnabcexam_Click()
 
   Dim hForm As FmTriage
 
   If txtencid.Text
-    hForm = New FmTriage("Triage Examinations", Trim(txtencid.Text))
+    hForm = New FmTriage("ABC Examinations", Trim(txtencid.Text))
     hForm.ShowModal
     UpdateTriage()
   Endif
@@ -3803,6 +3812,7 @@ Private Sub RestrictUserAccess()
   Endif
   If $UserRestrict.Exist("Patient History") Then
     btnhistory.Enabled = False
+    chkenabhistory.Enabled = False
   Endif
   If $UserRestrict.Exist("Clinical Findings") Then
     btnfinadd.Enabled = False
@@ -3863,8 +3873,8 @@ Private Sub RestrictUserAccess()
   If $UserRestrict.Exist("PACS Images") Then
     mnupacsimage.Enabled = False
   Endif
-  If $UserRestrict.Exist("Triage Examinations") Then
-    mnutriage.Enabled = False
+  If $UserRestrict.Exist("ABC Examinations") Then
+    btnabcexam.Enabled = False
   Endif
   If $UserRestrict.Exist("Essential Examinations") Then
     mnuvital.Enabled = False

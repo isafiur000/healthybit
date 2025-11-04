@@ -1192,6 +1192,8 @@ End
 
 Public Sub txtdose_GotFocus()
 
+  Dim cForm As CRecommendDosing
+
   If cmbmedicine.Text Then
     If modStockSub.GetComboControlGeneric(cmbroute.Text, cmbmedicine.Text, modDatabase.$medConn) = False Then
       cmbmedicine.Text = ""
@@ -1233,8 +1235,9 @@ Public Sub txtdose_GotFocus()
           lbldose.Text = modMedConstant.GetDrugDosingUnit(cmbmedicine.Text)
 
           If modBasic.$MedDoseRecommend = "Yes" Then
-            txtdose.Value = modMedDosing.RecommendedDoseDrug(Trim(txtencid.Text), xYear, cmbmedicine.Text)
-            cmbfreq.Text = modMedDosing.RecommendedFrequencyDrug(xYear, cmbmedicine.Text)
+            cForm = New CRecommendDosing(Trim(txtencid.Text), xYear, cmbmedicine.Text)
+            txtdose.Value = cForm.UnitDose()
+            cmbfreq.Text = cForm.Frequency()
           Endif
 
           If $HideDos = False Then  ''fresh pass to textboxes

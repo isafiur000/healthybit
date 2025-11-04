@@ -659,7 +659,7 @@ Private Sub ButtonControl()
   mnuscreendraw.Enabled = xx
   btnaddchart.Enabled = xx
   ''triage
-  mnutriage.Enabled = xx
+  btnabcexam.Enabled = xx
   ''vitals
   mnuvital.Enabled = xx
   Frame2.Enabled = xx
@@ -1884,12 +1884,12 @@ Public Sub mnuvital_Click()
 
 End
 
-Public Sub mnutriage_Click()
+Public Sub btnabcexam_Click()
 
   Dim hForm As FmTriage
 
   If txtencid.Text
-    hForm = New FmTriage("Triage Examinations", Trim(txtencid.Text))
+    hForm = New FmTriage("ABC Examinations", Trim(txtencid.Text))
     hForm.ShowModal
     UpdateTriage()
   Endif
@@ -2912,8 +2912,8 @@ Private Sub RestrictUserAccess()
   If $UserRestrict.Exist("PACS Images") Then
     mnupacsimage.Enabled = False
   Endif
-  If $UserRestrict.Exist("Triage Examinations") Then
-    mnutriage.Enabled = False
+  If $UserRestrict.Exist("ABC Examinations") Then
+    btnabcexam.Enabled = False
   Endif
   If $UserRestrict.Exist("Essential Examinations") Then
     mnuvital.Enabled = False

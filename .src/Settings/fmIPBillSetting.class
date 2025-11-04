@@ -43,6 +43,8 @@ Public Sub Form_Open()
   cmbbedcharge.List = ["Exact", "Daily"]
   cmbuseown.List = ["Enable", "Disable"]
   cmbadvreceipt.List = ["Enable", "Disable"]
+  cmbplanproc.List = ["Paid", "Unpaid"]
+  cmbplanradio.List = ["Paid", "Unpaid"]
 
   cmbdepopharm.List = ["Warn", "Disable", "None"]
   cmbdepoequip.List = ["Warn", "Disable", "None"]
@@ -171,6 +173,9 @@ Private Sub ShowAutoIPBilling()
   cmbuseown.Text = modGlobalSetting.ShowSettingFromDBAny("AutoIPBilling/UseOwnBilling", cmbtarget.Text)
   cmbadvreceipt.Text = modGlobalSetting.ShowSettingFromDBAny("AutoIPBilling/AdvancedReceipt", cmbtarget.Text)
 
+  cmbplanproc.Text = modGlobalSetting.ShowSettingFromDBAny("AutoIPBilling/AllowProcedure", cmbtarget.Text)
+  cmbplanradio.Text = modGlobalSetting.ShowSettingFromDBAny("AutoIPBilling/AllowRadiology", cmbtarget.Text)
+
 End
 
 Public Sub btnautoconsult_Click()
@@ -281,6 +286,23 @@ Public Sub btnadvreceipt_Click()
 
   modGlobalSetting.SaveSettingToDB("AutoIPBilling/AdvancedReceipt", cmbadvreceipt.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btnadvreceipt)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''-------------- plan
+Public Sub btnplanproc_Click()
+
+  modGlobalSetting.SaveSettingToDB("AutoIPBilling/AllowProcedure", cmbplanproc.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnplanproc)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnplanradio_Click()
+
+  modGlobalSetting.SaveSettingToDB("AutoIPBilling/AllowRadiology", cmbplanradio.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnplanradio)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -676,6 +698,9 @@ Public Sub btnsettall_Click()
   xList.Add("AutoIPBilling/BedChargeMode")
   xList.Add("AutoIPBilling/UseOwnBilling")
   xList.Add("AutoIPBilling/AdvancedReceipt")
+
+  xList.Add("AutoIPBilling/AllowProcedure")
+  xList.Add("AutoIPBilling/AllowRadiology")
 
   xList.Add("AutoIPBillingMode/BedCharge")
   xList.Add("AutoIPBillingMode_Input/BedCharge")

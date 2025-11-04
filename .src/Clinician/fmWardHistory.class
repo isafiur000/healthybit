@@ -594,16 +594,6 @@ Private Sub LoadTreeData()
 
 End
 
-Public Sub cmbcategory_GotFocus()
-
-  If modBasic.$TabletModeEnable = "Yes" Then
-    If Not cmbcategory.Text Then
-      cmbcategory.Popup
-    Endif
-  Endif
-
-End
-
 Public Sub cmbcategory_Click()
 
   If txtencid.Text Then
@@ -624,13 +614,6 @@ End
 Public Sub btncollapse_Click()
 
   grdtreeview.CollapseAll()
-
-End
-
-Public Sub cmbcategory_KeyRelease()
-
-  modFillContainer.AutoFillComboBox(cmbcategory)
-  modFillContainer.RestrictComboToContent(cmbcategory)
 
 End
 

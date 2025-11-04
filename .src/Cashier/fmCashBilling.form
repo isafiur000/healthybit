@@ -203,25 +203,28 @@
   }
   { mnuapiextra Menu
     Text = ("Extra")
-    { mnuuser Menu
-      Text = ("Insert Payable")
-      Shortcut = "Ctrl+P"
+    { mnupayall Menu
+      Text = ("Edit Payable")
+      { mnuuser Menu
+        Text = ("Insert Payable")
+        Shortcut = "Ctrl+P"
+      }
+      { mnuremovpay Menu
+        Text = ("Remove Payable")
+      }
     }
-    { mnuremovpay Menu
-      Text = ("Remove Payable")
-    }
-    { mnurefer Menu
-      Text = ("Insert Referral")
-      Shortcut = "Ctrl+R"
-    }
-    { mnuremovrefer Menu
-      Text = ("Remove Referral")
+    { mnureferall Menu
+      Text = ("Edit Referral")
+      { mnurefer Menu
+        Text = ("Insert Referral")
+        Shortcut = "Ctrl+R"
+      }
+      { mnuremovrefer Menu
+        Text = ("Remove Referral")
+      }
     }
     { mnumedhilimit Menu
       Text = ("Medicine Limits")
-    }
-    { mnuclearqrscan Menu
-      Text = ("Clear Qr Code")
     }
     { mnussfBooking Menu
       Text = ("SSF Booking")
@@ -229,8 +232,17 @@
     { mnuimisclaim Menu
       Text = ("Claim Upload")
     }
+  }
+  { mnuactivity Menu
+    Text = ("Activity")
+    { mnuclearqrscan Menu
+      Text = ("Clear Qr Code")
+    }
     { mnupharmout Menu
       Text = ("Outer Pharmacy")
+    }
+    { mnupastorder Menu
+      Text = ("Pending Orders")
     }
   }
   { mnuhidden Menu

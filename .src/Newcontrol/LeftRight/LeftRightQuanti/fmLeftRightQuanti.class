@@ -1,0 +1,107 @@
+' Gambas class file
+
+Public Sub SetDataValue(sText As String)
+
+  Dim valColl As Collection
+
+  If sText Then
+    Try valColl = JSON.Decode(sText)
+    If valColl Then
+      txtright.Value = valColl[lblright.Text]
+      txtleft.Value = valColl[lblleft.Text]
+    Endif
+  Endif
+
+End
+
+Public Function GetDataValue() As String
+
+  Dim xxx As String
+  Dim xcoll As Collection
+
+  xcoll = New Collection
+  xcoll.Add(txtright.Value, lblright.Text)
+  xcoll.Add(txtleft.Value, lblleft.Text)
+  xxx = JSON.Encode(xcoll)
+  Return xxx
+
+End
+
+Public Sub SetLeftValue(sText As Float)
+
+  txtleft.Value = sText
+
+End
+
+Public Function GetLeftValue() As Float
+
+  Return txtleft.Value
+
+End
+
+Public Sub SetRightValue(sText As Float)
+
+  txtright.Value = sText
+
+End
+
+Public Function GetRightValue() As Float
+
+  Return txtright.Value
+
+End
+
+Public Sub SetHeaderText(sText As String)
+
+  Dim valColl As Collection
+
+  If sText Then
+    Try valColl = JSON.Decode(sText)
+    If valColl Then
+      lblright.Text = valColl["RIGHT"]
+      lblleft.Text = valColl["LEFT"]
+    Endif
+  Endif
+
+End
+
+Public Function GetHeaderText() As String
+
+  Dim xxx As String
+  Dim xcoll As Collection
+
+  xcoll = New Collection
+  xcoll.Add(lblright.Text, "RIGHT")
+  xcoll.Add(lblleft.Text, "LEFT")
+  xxx = JSON.Encode(xcoll)
+  Return xxx
+
+End
+
+Public Sub SetLeftTitle(sText As String)
+
+  If sText Then
+    lblleft.Text = sText
+  Endif
+
+End
+
+Public Function GetLeftTitle() As String
+
+  Return Trim(lblleft.Text)
+
+End
+
+Public Sub SetRightTitle(sText As String)
+
+  If sText Then
+    lblright.Text = sText
+  Endif
+
+End
+
+Public Function GetRightTitle() As String
+
+  Return Trim(lblright.Text)
+
+End

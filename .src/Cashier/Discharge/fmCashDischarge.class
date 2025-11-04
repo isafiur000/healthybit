@@ -3447,6 +3447,8 @@ End
 
 Public Sub txtdose_GotFocus()
 
+  Dim cForm As CRecommendDosing
+
   If cmbmedicine.Text Then
     If modStockSub.GetComboControlGeneric(cmbroute.Text, cmbmedicine.Text, modDatabase.$medConn) = False Then
       cmbmedicine.Text = ""
@@ -3481,8 +3483,9 @@ Public Sub txtdose_GotFocus()
           txtday.Enabled = True
 
           If modBasic.$MedDoseRecommend = "Yes" Then
-            txtdose.Value = modMedDosing.RecommendedDoseDrug(Trim(txtencid.Text), xYear, cmbmedicine.Text)
-            cmbfreq.Text = modMedDosing.RecommendedFrequencyDrug(xYear, cmbmedicine.Text)
+            cForm = New CRecommendDosing(Trim(txtencid.Text), xYear, cmbmedicine.Tex)
+            txtdose.Value = cForm.UnitDose()
+            cmbfreq.Text = cForm.Frequency()
           Endif
           If CheckDuplicate() = True Then
             txtdose.SelectAll
@@ -5136,6 +5139,12 @@ End
 Private Function AllowDischargePending() As Boolean
 
   Dim xval As Boolean
+  Dim yval As Boolean
+  Dim zval As Boolean
+  Dim xgo As Boolean
+
+  Dim paidamt As Float
+  Dim expenseamt As Float
 
   xval = True
   If modBasic.$BillBedCharge = "Free" Then
@@ -5143,14 +5152,34 @@ Private Function AllowDischargePending() As Boolean
   Else
     If hPatNewBed.GetPendingBedCharge() > 0 Then
       xval = False
+      Message.Warning("Pending Bed Charges", ("OK"))
     Endif
   Endif
 
   If GridView1.Rows.Count > 0 Then
-    xval = False
+    yval = False
+    Message.Warning("Unsaved Items", ("OK"))
+  Else
+    yval = True
   Endif
 
-  Return xval
+  zval = True
+  If modBasic.$BillDischargeCreditCheck = "Enable" Then
+    paidamt = modNonMedical.ShowCreditLimitEnc(Trim(txtencid.Text))
+    expenseamt = modNonMedical.TotalSavedCreditExpensebyPatient(modDatabase.$myConn, Trim(txtencid.Text))
+    If expenseamt > paidamt Then
+      zval = False
+      Message.Warning("Insufficient Credit Limit", ("OK"))
+    Endif
+  Endif
+
+  If xval = True And If yval = True And If zval = True Then
+    xgo = True
+  Else
+    xgo = False
+  Endif
+
+  Return xgo
 
 End
 
@@ -5286,8 +5315,6 @@ Public Sub btndischarge_Click()
 
         Endif
       Endif
-    Else
-      Message.Warning("Unsaved Items", ("OK"))
     Endif
   Endif
 

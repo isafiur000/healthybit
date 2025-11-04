@@ -4,6 +4,8 @@ Private $encid As String
 Private $BillMode As String
 Private $sPackage As String
 Private $xFinClear As Boolean
+Private $rData As Result
+Private $aMyFields As String[]
 Private $rData2 As Result
 Private $aMyFields2 As String[]
 Private $ConsList As String[]
@@ -114,9 +116,19 @@ Public Sub btnsms_Click()
 
 End
 
+Public Sub txtsearch_Change()
+
+  cmbconsult.List = modString.SelectStringArrayToText(txtsearch.Text, $ConsList, chkleft.Value)
+
+End
+
 Public Sub cmbconsult_Click()
 
   txtdepart.Text = cmbconsult.Text
+  dtconsult.Value = Now()
+  txtpresummary.RichText = ""
+  btnconsult.Tag = ""
+  btnconsult.Text = ""
 
 End
 
@@ -138,9 +150,9 @@ Public Sub btnsubOK_Click()
 
       Inc Application.Busy
       If modGeneral.GetCategoryFromDept(txtdepart.Text) = "Consultation" Then
-        modPatientSub.AddConsultData($encid, txtdepart.Text, dtconsult.Value, $BillMode, "IP Consultation", btnconsult.Tag)
+        modPatientSub.AddConsultData($encid, txtdepart.Text, dtconsult.Value, $BillMode, "IP Consultation", btnconsult.Tag, txtpresummary.RichText)
       Else
-        modPatientSub.AddOPVisitData($encid, txtdepart.Text, dtconsult.Value, $BillMode, "IP Consultation")
+        modPatientSub.AddOPVisitData($encid, txtdepart.Text, dtconsult.Value, $BillMode, "IP Consultation", txtpresummary.RichText)
       Endif
 
       If modBasic.$AutoBillConsult Then
@@ -165,46 +177,24 @@ End
 Public Sub FillLabtable()
 
   Dim sql As String
-  Dim Column As Integer
-  Dim fld As ResultField
-  Dim res As Result
-  Dim xFldList1 As String[] = ["fldid", "fldconsultname", "fldencounterval", "fldconsulttime", "fldid"]
-  Dim xFldList2 As String[] = ["fldid", "fldconsultname", "fldencounterval", "fldconsulttime", "fldid"]
+  Dim xFldList1 As String[] = ["fldid", "fldconsultname", "fldencounterval", "fldconsulttime", "fldid", "fldpresummary"]
+  Dim xFldList2 As String[] = ["fldid", "fldconsultname", "fldencounterval", "fldconsulttime", "fldid", "fldpresummary"]
 
   xFldList1.Add(Quote("tblconsult"))
   xFldList2.Add(Quote("tblopvisit"))
   sql = "select " & xFldList1.Join(",") & " from tblconsult where fldencounterval=&1 and fldstatus=&2 UNION ALL select " & xFldList2.Join(",") & " from tblopvisit where fldencounterval=&1 and fldstatus=&2"                                             ''
-  res = modDatabase.$myConn.Exec(sql, $encid, "Planned")
-
-  GridView1.Clear
-  GridView1.Columns.Count = res.Fields.Count
-  GridView1.Rows.Count = res.Count
-
-  For Each res
-    Column = 0
-    For Each fld In res.Fields
-      modGeneralMain.GridExplicitDecoration(GridView1, res.Index, Column)
-      If Column = 3 Then
-        GridView1[res.Index, Column].Text = modReportVar.GetDateTimeReport(res[fld.Name], gb.GeneralDate)
-      Else If Column = 4 Then
-        GridView1[res.Index, Column].Picture = Picture["icon:/tiny/cancel"]
-        GridView1[res.Index, Column].Text = ""
-      Else
-        GridView1[res.Index, Column].Text = res[fld.Name]
-      Endif
-      Column = Column + 1
-    Next
-  Next
-  GridView1.Row = 0
+  $rData = modDatabase.$myConn.Exec(sql, $encid, "Planned")
+  $aMyFields = New String[]
+  modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
 
   With GridView1
-    .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
-    .Columns[1].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 250 * modBasic.$AppWidthRatio
     .Columns[2].Width = 1
     .Columns[3].Width = 175 * modBasic.$AppWidthRatio
     .Columns[4].Width = 25 * modBasic.$AppWidthRatio
     .Columns[5].Width = 1
+    .Columns[6].Width = 1
 
     .Columns[1].Text = "Consultation"
     .Columns[3].Text = "DateTime"
@@ -212,13 +202,58 @@ Public Sub FillLabtable()
 
 End
 
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  $rData.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView1, Row)
+  If Column = 3 Then
+    GridView1.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.GeneralDate)
+  Else If Column = 4 Then
+    GridView1.Data.Picture = Picture["icon:/tiny/cancel"]
+    GridView1.Data.Text = ""
+  Else
+    GridView1.Data.Text = $rData[$aMyFields[Column]]
+  Endif
+
+End
+
 Public Sub GridView1_Click()
+
+  Dim res As Result
 
   If GridView1.Column = 4 Then
     If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
-      modDatabase.$myConn.Delete(GridView1[GridView1.Row, 5].Text, "fldid=&1", GridView1[GridView1.Row, 0].Text)
+      modDatabase.$myConn.Delete(GridView1[GridView1.Row, 6].Text, "fldid=&1", GridView1[GridView1.Row, 0].Text)
       FillLabtable()
     Endif
+  Else
+
+    If GridView1[GridView1.Row, 6].Text = "tblconsult" Then
+      res = modDatabase.$myConn.Exec("select fldconsultname,fldconsulttime,fldpresummary,flduserid from tblconsult where fldid=&1", GridView1[GridView1.Row, 0].Text)
+      If res.Available Then
+        txtdepart.Text = res["fldconsultname"]
+        dtconsult.Value = res["fldconsulttime"]
+        txtpresummary.RichText = res["fldpresummary"]
+        btnconsult.Tag = res["flduserid"]
+        If res["flduserid"] Then
+          btnconsult.Tag = res["flduserid"]
+          btnconsult.Text = modGeneral.GetUserFullName(res["flduserid"])
+        Else
+          btnconsult.Tag = ""
+          btnconsult.Text = ""
+        Endif
+      Endif
+    Else If GridView1[GridView1.Row, 6].Text = "tblopvisit" Then
+      res = modDatabase.$myConn.Exec("select fldconsultname,fldconsulttime,fldpresummary from tblconsult where fldid=&1", GridView1[GridView1.Row, 0].Text)
+      If res.Available Then
+        txtdepart.Text = res["fldconsultname"]
+        dtconsult.Value = res["fldconsulttime"]
+        txtpresummary.RichText = res["fldpresummary"]
+        btnconsult.Tag = ""
+        btnconsult.Text = ""
+      Endif
+    Endif
+
   Endif
 
 End

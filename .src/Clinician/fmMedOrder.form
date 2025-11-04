@@ -100,7 +100,7 @@
         Sorted = True
       }
       { txtdose ValueBox
-        MoveScaled(63,0,7,3)
+        MoveScaled(62,0,8,3)
         ToolTip = ("Unit Dose of the Medicine")
       }
       { cmbfreq ComboBox
@@ -138,7 +138,7 @@
       Picture = Picture["icon:/small/important"]
     }
     { chkout CheckBox
-      MoveScaled(65,0.375,15,3)
+      MoveScaled(56,0.375,15,3)
       Text = ("Out of Stock")
     }
     { btngroup Button
@@ -199,6 +199,10 @@
       Border = Border.Plain
       Text = ("Hours")
     }
+    { lblregimen Label
+      MoveScaled(73,0.375,19,3)
+      Border = Border.Plain
+    }
     Index = 2
     Text = ("Inventory [F3]")
     { pnlwardstock Panel
@@ -220,6 +224,7 @@
     }
     { ListBox1 ListBox
       MoveScaled(1,4,37,47)
+      ScrollBar = Scroll.Both
       Sorted = True
     }
     { GridView2 GridView

@@ -1071,17 +1071,6 @@ Public Sub btnpharm_Click()
 
 End
 
-Public Sub btndiet_Click()
-
-  Dim hForm15 As FmFoodPlan
-
-  If GridView1.Rows.Selection.Count Then
-    hForm15 = New FmFoodPlan(GridView1[GridView1.Row, 2].Text)
-    hForm15.ShowModal
-  Endif
-
-End
-
 Public Sub btndosing_Click()
 
   Dim hForm4 As FmDoseMobile
@@ -1151,13 +1140,30 @@ Public Sub btnadvice_Click()
 
 End
 
-Public Sub btnmobexam_Click()
+Public Sub btnmobexamall_Click()
 
   Dim hForm As FmEnterGroupExam
 
   If GridView1.Rows.Selection.Count Then
     hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 2].Text, "Physician Examinations", "All")
     hForm.ShowModal
+  Endif
+
+End
+
+Public Sub btnmobexam_Click()
+
+  Dim hForm As FmEnterGroupExam
+  Dim hForm1 As FmWardHistory
+
+  If GridView1.Rows.Selection.Count Then
+    If modBasic.$ClinOPDExamination Then
+      hForm1 = New FmWardHistory(modBasic.$ClinOPDExamination, GridView1[GridView1.Row, 2].Text, "Physician Examinations")
+      modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
+    Else
+      hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 2].Text, "Physician Examinations", "Group")
+      hForm.ShowModal
+    Endif
   Endif
 
 End
@@ -1923,6 +1929,7 @@ Private Sub GetComboItemList()
   Endif
   If $UserRestrict.Exist("Clinical Findings") = False Then
     btnmobexam.Enabled = True
+    btnmobexamall.Enabled = True
     mnuformatexams.Enabled = True
   Endif
   If $UserRestrict.Exist("Products Request") = False Then
@@ -1937,9 +1944,6 @@ Private Sub GetComboItemList()
   Endif
   If $UserRestrict.Exist("Pharmacy Request") = False Then
     btnpharm.Enabled = True
-  Endif
-  If $UserRestrict.Exist("PO Intake Plan") = False Then
-    btndiet.Enabled = True
   Endif
 
 End

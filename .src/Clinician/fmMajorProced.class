@@ -43,10 +43,7 @@ Public Sub Form_Open()
   If txtmode.Text Then
     cmbprocedure.List = modString.GetListFromCompareVariant($ProcList, "flditemname", "fldgroup", txtmode.Text, False)
   Endif
-  dtplan.Value = Now()
   SHowUnpaidGrid()
-
-  dtplan.SetFocus
 
 End
 
@@ -106,17 +103,6 @@ Public Sub TabPanel1_Click()
     SHowSavedGrid()
   Else If TabPanel1.Index = 2 Then
     CompleteGrid()
-  Endif
-
-End
-
-Public Sub dtneplan_Click()
-
-  Dim xx As String
-
-  xx = BSDateFormat(("Enter BS Date in yyyy/mm/dd format"), ("Date Converter"), modDate.ConvertToLocaldate(dtplan.Value))
-  If xx Then
-    dtplan.Value = modDate.ConvertToEnglishdate(xx)
   Endif
 
 End
@@ -212,7 +198,11 @@ Public Sub btnsubOK_Click()
           xrefer = modBillings.GetReferralUserSetting("Procedure", $encid)
           xTarg = GetProcTarget(cmbprocedure.Text)
           If modBasic.$AutoBillProcedure = "Standard" Or If modBasic.$AutoBillProcedure = "Full" Or If modBasic.$AutoBillProcedure = "Partial" Then
-            modBillings.GetAutoBillingEntry($encid, cmbdisctype.Text, "Procedure", cmbprocedure.Text, 1, "Punched", 0, False, False, "", xrefer, xTarg)
+            If chknextvisit.Value = True Then
+              modBillings.GetAutoBillingEntry($encid, cmbdisctype.Text, "Procedure", cmbprocedure.Text, 1, "Planned", 0, False, False, "", xrefer, xTarg)
+            Else
+              modBillings.GetAutoBillingEntry($encid, cmbdisctype.Text, "Procedure", cmbprocedure.Text, 1, "Punched", 0, False, False, "", xrefer, xTarg)
+            Endif
             SHowUnpaidGrid()
           Endif
         Endif
@@ -244,11 +234,11 @@ Public Sub btnsaveproc_Click()
     For Each res
 
       If modBasic.$AutoBillProcedure = "Standard" Then
-        If modNonMedical.AllowPreCheckDeposit($encid, res["fldditemamt"], res["flddisctype"]) = True Then
+        If modNonMedical.AllowPreCheckDeposit($encid, res["fldditemamt"], res["fldbilltype"]) = True Then
           SavePartialEntry(res, xadv)
         Endif
       Else If modBasic.$AutoBillProcedure = "Full" Then
-        If modNonMedical.AllowPreEntryWithDeposit($encid, "Procedure", res["fldditemamt"], res["flddisctype"], btnsaveproc) = True Then
+        If modNonMedical.AllowPreEntryWithDeposit($encid, "Procedure", res["fldditemamt"], res["fldbilltype"], btnsaveproc) = True Then
           SavePartialEntry(res, xadv)
         Endif
       Else
@@ -288,8 +278,8 @@ Private Sub SHowUnpaidGrid()
 
   Dim sql As String
 
-  sql = "select fldid,fldordtime,flditemname,fldstatus,fldid from tblpatbilling where fldencounterval=&1 and flditemtype=&2 and fldsave=&3 and fldstatus=&4 and fldordcomp=&5 and (fldtarget=&6 or fldtarget=&7) and (flditemqty-fldretqty)>&8"
-  $rData4 = modDatabase.$myConn.Exec(sql, $encid, "Procedures", False, "Punched", modBasic.$compID, "Major", "Intermediate", 0)
+  sql = "select fldid,fldordtime,flditemname,fldstatus,fldid from tblpatbilling where fldencounterval=&1 and flditemtype=&2 and fldsave=&3 and (fldstatus=&4 or fldstatus=&5) and fldordcomp=&6 and (fldtarget=&7 or fldtarget=&8) and (flditemqty-fldretqty)>&9"
+  $rData4 = modDatabase.$myConn.Exec(sql, $encid, "Procedures", False, "Punched", "Planned", modBasic.$compID, "Major", "Intermediate", 0)
   $aMyFields4 = New String[]
   modGridView.ReadSmallData(GridView4, $rData4, $aMyFields4)
 

@@ -49,20 +49,6 @@
   }
   { mnudataentry Menu
     Text = ("Input")
-    { mnuparam Menu
-      Text = ("- - - - Parameters - - - -")
-      Enabled = False
-    }
-    { mnutriage Menu
-      Text = ("Triage Exams")
-    }
-    { mnudemo Menu
-      Text = ("Demographics")
-      Shortcut = "Ctrl+G"
-    }
-    { mnuvital Menu
-      Text = ("Essen Exams")
-    }
     { Menu6 Menu
       Text = ("- - - - Images - - - -")
       Enabled = False
@@ -82,6 +68,10 @@
     { Menu4 Menu
       Text = ("- - - - Inputs - - - -")
       Enabled = False
+    }
+    { mnudemo Menu
+      Text = ("Demographics")
+      Shortcut = "Ctrl+G"
     }
     { mnuequip Menu
       Text = ("Equipments")
@@ -916,7 +906,7 @@
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel11 Panel
-          MoveScaled(0,0,92,4)
+          MoveScaled(0,0,93,4)
           { dcthelphistory ToolButton
             MoveScaled(50,0.5,3,3)
             Picture = Picture["icon:/small/edit"]
@@ -942,9 +932,12 @@
             Border = Border.Plain
           }
           { btnhistory Button
-            MoveScaled(79,0.5,12,3)
+            MoveScaled(78,0.5,12,3)
             Text = ("Save")
             Picture = Picture["icon:/small/apply"]
+          }
+          { chkenabhistory CheckBox
+            MoveScaled(90,0.5,3,3)
           }
         }
         { txthistory TextHTML
@@ -966,15 +959,15 @@
         { Panel5 Panel
           MoveScaled(0,0,117,4)
           { txtfindmin ValueBox
-            MoveScaled(75,0.5,4,3)
+            MoveScaled(84,0.5,4,3)
             Visible = False
           }
           { txtfindmax ValueBox
-            MoveScaled(80,0.5,4,3)
+            MoveScaled(89,0.5,4,3)
             Visible = False
           }
           { btnshowexamall ToolButton
-            MoveScaled(70,0.5,3,3)
+            MoveScaled(79,0.5,3,3)
             Picture = Picture["icon:/small/refresh"]
           }
           { Label9 Label
@@ -983,17 +976,20 @@
             Text = ("Findings ")
           }
           { btnaddexamlistall Button
-            MoveScaled(17,0.5,12,3)
+            MoveScaled(23,0.5,12,3)
+            ToolTip = ("Departmental Examinations")
             Text = ("Depart")
             Picture = Picture["icon:/small/component"]
           }
           { btnaddexamlist Button
-            MoveScaled(30,0.5,12,3)
+            MoveScaled(36,0.5,12,3)
+            ToolTip = ("Supplemental Examinations")
             Text = ("Groups")
             Picture = Picture["icon:/small/bookmark"]
           }
           { btnaddscales Button
-            MoveScaled(43,0.5,12,3)
+            MoveScaled(49,0.5,12,3)
+            ToolTip = ("Clinical Scales")
             Text = ("Scales")
             Picture = Picture["icon:/small/calculator"]
           }
@@ -1001,6 +997,16 @@
             MoveScaled(97,0.5,18,3)
             Alignment = Align.Center
             Border = True
+          }
+          { btnabcexam ToolButton
+            MoveScaled(19,0.5,3,3)
+            ToolTip = ("ABC Examinations")
+            Picture = Picture["icon:/small/text"]
+          }
+          { mnuvital ToolButton
+            MoveScaled(62,0.5,3,3)
+            ToolTip = ("Essential Examinations")
+            Picture = Picture["icon:/small/calculator"]
           }
         }
         { Panel18 Panel
