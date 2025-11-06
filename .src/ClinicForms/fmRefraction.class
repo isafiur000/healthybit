@@ -10,14 +10,14 @@ Private pointsEyeOD_y As Float[]
 Private pointsEyeOS_x As Float[]
 Private pointsEyeOS_y As Float[]
 
-Private $distLst As String[] = ["20/16", "20/20", "20/20p", "20/25", "20/25p", "20/30", "20/30p", "20/40", "20/40p", "20/50", "20/50p", "20/60", "20/60p", "20/80", "20/80p", "20/100", "20/100p", "20/125", "20/125p", "20/200", "20/320", "20/400", "20/500", "20/600", "20/800", "CF CF", "HM+", "PL+ PR Accurate", "PL+ PR Inaccurate", "PL", "NPL", "20/1200", "CF 2m", "CF 1m", "CSM", "FFL", "Defer", "CF 3m"]
-Private $nearLst As String[] = ["N 02", "N 2.5", "N 03", "N 04", "N 05", "N 06", "N 08", "N 10", "N 12", "N 14", "N 16", "N 18", "N 20", "N 24", "N 32", "N 36", "N 40", "N 50", "N 63", "N 80", "Defer", "6/5", "6/6", "6/6p", "6/9", "6/9p", "6/12", "6/12p", "6/18", "6/18p", "6/24", "6/24p", "6/36", "6/60", "< N36", "< 6/60", "FFL"]
+Private $nearLst As String[] = ["N 02", "N 2.5", "N 03", "N 04", "N 05", "N 06", "N 08", "N 10", "N 12", "N 14", "N 16", "N 18", "N 20", "N 24", "N 32", "N 36", "N 40", "N 50", "N 63", "N 80", "Defer", "CSM"]
 Private $nearShorLst As String[] = ["6/5", "6/6", "6/6p", "6/9", "6/9p", "6/12", "6/12p", "6/18", "6/18p", "6/24", "6/24p", "6/36", "6/60", "5/60", "4/60", "3/60", "2/60", "1/60", "CF CF", "HM", "PL+", "PL-", "Defer", "CSM"]
 Private $numList As String[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"]
 
 Private $encid As String
 Private $sExam As String
 Private $sType As String
+Private hDigForm As FmDiagnosticTab
 
 Public Sub _new(encid As String, sExam As String, sType As String)
 
@@ -29,20 +29,21 @@ End
 
 Public Sub Form_Open()
 
-  pctpowerod.Image = Image.Load("Images/power.png").Stretch(pctpowerod.Width, pctpowerod.Height)
-  pctpoweros.Image = Image.Load("Images/power.png").Stretch(pctpoweros.Width, pctpoweros.Height)
+  hDigForm = New FmDiagnosticTab($encid, pnlreport)
+  ' pctpowerod.Image = Image.Load("Images/power.png").Stretch(pctpowerod.Width, pctpowerod.Height)
+  ' pctpoweros.Image = Image.Load("Images/power.png").Stretch(pctpoweros.Width, pctpoweros.Height)
   picteyeright.Image = Image.Load("Images/eye.png").Stretch(picteyeright.Width, picteyeright.Height)
   picteyeleft.Image = Image.Load("Images/eye.png").Stretch(picteyeleft.Width, picteyeleft.Height)
 
-  cmbodunaideddistance.List = $distLst
-  cmbosunaideddistance.List = $distLst
-  cmbodglassdistance.List = $distLst
-  cmbosglassdistance.List = $distLst
-  cmbodaidedclmain.List = $distLst
-  cmbosaidedclmain.List = $distLst
-  cmbodpinhole.List = $distLst
+  cmbodunaideddistance.List = $nearShorLst
+  cmbosunaideddistance.List = $nearShorLst
+  cmbodglassdistance.List = $nearShorLst
+  cmbosglassdistance.List = $nearShorLst
+  cmbodaidedclmain.List = $nearShorLst
+  cmbosaidedclmain.List = $nearShorLst
+  cmbodpinhole.List = $nearShorLst
   cmbodpinhole.Add("Nl", 0)
-  cmbospinhole.List = $distLst
+  cmbospinhole.List = $nearShorLst
   cmbospinhole.Add("Nl", 0)
 
   cmbodunaidednear.List = $nearLst
@@ -53,9 +54,6 @@ Public Sub Form_Open()
   cmbosaidedclnear.List = $nearLst
   cmbodnearvisionmain.List = $nearLst
   cmbosnearvisionmain.List = $nearLst
-
-  cmbodnearvisionRS.List = $nearShorLst
-  cmbosnearvisionRS.List = $nearShorLst
 
   cmbodnearvisionchart.List = ["English", "Nepali", "Hindi", "Urdu"]
   cmbosnearvisionchart.List = ["English", "Nepali", "Hindi", "Urdu"]
@@ -71,18 +69,18 @@ Public Sub Form_Open()
 
   cmbbothpgplenstype.List = ["Single Vision - Distance", "Single Vision - Near", "Bifocal", "Progressive"]
 
-  cmbodretinodrug.List = ["Dry", "Atropine", "Homatropine", "Tropicamide", "Cyclopentolate", "AR"]
-  cmbosretinodrug.List = ["Dry", "Atropine", "Homatropine", "Tropicamide", "Cyclopentolate", "AR"]
+  cmbrightdrug.List = ["Atropine", "Homatropine", "Tropicamide", "Cyclopentolate"]  ''"Dry","AR"
+  cmbleftdrug.List = ["Atropine", "Homatropine", "Tropicamide", "Cyclopentolate"]
 
   cmbodsubjbaseval.List = ["Up and Out", "Up and In", "Down and Out", "Down and In", "Up", "Down", "Out", "In"]
   cmbossubjbaseval.List = ["Up and Out", "Up and In", "Down and Out", "Down and In", "Up", "Down", "Out", "In"]
   cmbodprescbaseval.List = ["Up and Out", "Up and In", "Down and Out", "Down and In", "Up", "Down", "Out", "In"]
   cmbosprescbaseval.List = ["Up and Out", "Up and In", "Down and Out", "Down and In", "Up", "Down", "Out", "In"]
 
-  txtodsubjBCVA.List = $distLst
-  txtossubjBCVA.List = $distLst
-  txtodprescBCVA.List = $distLst
-  txtosprescBCVA.List = $distLst
+  txtodsubjBCVA.List = $nearShorLst
+  txtossubjBCVA.List = $nearShorLst
+  txtodprescBCVA.List = $nearShorLst
+  txtosprescBCVA.List = $nearShorLst
 
   cmbodsubjaxisval.List = $nearLst
   cmbossubjaxisval.List = $nearLst
@@ -102,66 +100,66 @@ Public Sub Form_Open()
 End
 
 '==============
-Public Sub drwcrossOD_Draw()
-
-  Dim i As Integer
-
-  Paint.Brush = Paint.Color(Color.red)
-  Paint.LineWidth = 3
-
-  For i = 0 To pointsPowerOD_x.Max
-    If i = 0 Then
-      Paint.MoveTo(pointsPowerOD_x[i], pointsPowerOD_y[i])
-    Else
-      If Abs(pointsPowerOD_x[i] - pointsPowerOD_x[i - 1]) > 20 Or If Abs(pointsPowerOD_y[i] - pointsPowerOD_y[i - 1]) > 20 Then                   ''
-        Paint.MoveTo(pointsPowerOD_x[i], pointsPowerOD_y[i])
-      Else
-        Paint.LineTo(pointsPowerOD_x[i], pointsPowerOD_y[i])
-      Endif
-    Endif
-  Next
-  Paint.Stroke()
-
-End
-
-Public Sub drwcrossOD_MouseMove()
-
-  pointsPowerOD_x.Add(Mouse.X)
-  pointsPowerOD_y.Add(Mouse.Y)
-  drwcrossOD.Refresh
-
-End
-
-''----------------------
-Public Sub drwcrossOS_Draw()
-
-  Dim i As Integer
-
-  Paint.Brush = Paint.Color(Color.red)
-  Paint.LineWidth = 3
-
-  For i = 0 To pointsPowerOS_x.Max
-    If i = 0 Then
-      Paint.MoveTo(pointsPowerOS_x[i], pointsPowerOS_y[i])
-    Else
-      If Abs(pointsPowerOS_x[i] - pointsPowerOS_x[i - 1]) > 20 Or If Abs(pointsPowerOS_y[i] - pointsPowerOS_y[i - 1]) > 20 Then                   ''
-        Paint.MoveTo(pointsPowerOS_x[i], pointsPowerOS_y[i])
-      Else
-        Paint.LineTo(pointsPowerOS_x[i], pointsPowerOS_y[i])
-      Endif
-    Endif
-  Next
-  Paint.Stroke()
-
-End
-
-Public Sub drwcrossOS_MouseMove()
-
-  pointsPowerOS_x.Add(Mouse.X)
-  pointsPowerOS_y.Add(Mouse.Y)
-  drwcrossOS.Refresh
-
-End
+' Public Sub drwcrossOD_Draw()
+'
+'   Dim i As Integer
+'
+'   Paint.Brush = Paint.Color(Color.red)
+'   Paint.LineWidth = 3
+'
+'   For i = 0 To pointsPowerOD_x.Max
+'     If i = 0 Then
+'       Paint.MoveTo(pointsPowerOD_x[i], pointsPowerOD_y[i])
+'     Else
+'       If Abs(pointsPowerOD_x[i] - pointsPowerOD_x[i - 1]) > 20 Or If Abs(pointsPowerOD_y[i] - pointsPowerOD_y[i - 1]) > 20 Then                   ''
+'         Paint.MoveTo(pointsPowerOD_x[i], pointsPowerOD_y[i])
+'       Else
+'         Paint.LineTo(pointsPowerOD_x[i], pointsPowerOD_y[i])
+'       Endif
+'     Endif
+'   Next
+'   Paint.Stroke()
+'
+' End
+'
+' Public Sub drwcrossOD_MouseMove()
+'
+'   pointsPowerOD_x.Add(Mouse.X)
+'   pointsPowerOD_y.Add(Mouse.Y)
+'   drwcrossOD.Refresh
+'
+' End
+'
+' ''----------------------
+' Public Sub drwcrossOS_Draw()
+'
+'   Dim i As Integer
+'
+'   Paint.Brush = Paint.Color(Color.red)
+'   Paint.LineWidth = 3
+'
+'   For i = 0 To pointsPowerOS_x.Max
+'     If i = 0 Then
+'       Paint.MoveTo(pointsPowerOS_x[i], pointsPowerOS_y[i])
+'     Else
+'       If Abs(pointsPowerOS_x[i] - pointsPowerOS_x[i - 1]) > 20 Or If Abs(pointsPowerOS_y[i] - pointsPowerOS_y[i - 1]) > 20 Then                   ''
+'         Paint.MoveTo(pointsPowerOS_x[i], pointsPowerOS_y[i])
+'       Else
+'         Paint.LineTo(pointsPowerOS_x[i], pointsPowerOS_y[i])
+'       Endif
+'     Endif
+'   Next
+'   Paint.Stroke()
+'
+' End
+'
+' Public Sub drwcrossOS_MouseMove()
+'
+'   pointsPowerOS_x.Add(Mouse.X)
+'   pointsPowerOS_y.Add(Mouse.Y)
+'   drwcrossOS.Refresh
+'
+' End
 
 '-------------------------------------------
 Public Sub drweyeleft_Draw()
@@ -338,20 +336,6 @@ Public Sub cmbosnearvisionmain_KeyRelease()
 
 End
 
-Public Sub cmbodnearvisionRS_KeyRelease()
-
-  ' modFillContainer.AutoFillComboBox(cmbodnearvisionRS)
-  modFillContainer.RestrictComboToContent(cmbodnearvisionRS)
-
-End
-
-Public Sub cmbosnearvisionRS_KeyRelease()
-
-  ' modFillContainer.AutoFillComboBox(cmbosnearvisionRS)
-  modFillContainer.RestrictComboToContent(cmbosnearvisionRS)
-
-End
-
 Public Sub cmbodnearvisionchart_KeyRelease()
 
   ' modFillContainer.AutoFillComboBox(cmbodnearvisionchart)
@@ -415,17 +399,17 @@ Public Sub cmbbothpgplenstype_KeyRelease()
 
 End
 
-Public Sub cmbodretinodrug_KeyRelease()
+Public Sub cmbrightdrug_KeyRelease()
 
-  modFillContainer.AutoFillComboBox(cmbodretinodrug)
-  modFillContainer.RestrictComboToContent(cmbodretinodrug)
+  modFillContainer.AutoFillComboBox(cmbrightdrug)
+  modFillContainer.RestrictComboToContent(cmbrightdrug)
 
 End
 
-Public Sub cmbosretinodrug_KeyRelease()
+Public Sub cmbleftdrug_KeyRelease()
 
-  modFillContainer.AutoFillComboBox(cmbosretinodrug)
-  modFillContainer.RestrictComboToContent(cmbosretinodrug)
+  modFillContainer.AutoFillComboBox(cmbleftdrug)
+  modFillContainer.RestrictComboToContent(cmbleftdrug)
 
 End
 
@@ -510,5 +494,269 @@ Public Sub cmbosprescaxisval_KeyRelease()
 
   ' modFillContainer.AutoFillComboBox(cmbosprescaxisval)
   modFillContainer.RestrictComboToContent(cmbosprescaxisval)
+
+End
+
+''================================ SAVE BUTTONS ========================
+Private Sub AddLeftRightParam(sExam As String, sItem As String, sRight As Variant, sLeft As Variant, sIndex As Long)
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Create("tblpatientsubexam")
+  res["fldencounterval"] = $encid
+  res["fldsubtexam"] = sItem
+  res["fldheadid"] = sIndex
+  res["fldparent"] = sExam
+  res["fldreport"] = modString.GetLefRightJSON(sLeft, sRight)
+  res["fldtanswertype"] = "Qualitative"
+  res["fldsave"] = True
+  res["fldabnormal"] = False
+  res["flduserid"] = modBasic.$lbluser
+  res["fldtime"] = Now()
+  res["xyz"] = False
+  res.Update()
+
+End
+
+Private Function GetValuesCollection(sExam As String, xSide As String, sPanel As Panel, Optional sReplace As String) As Variant[]
+
+  Dim xVar As Variant[]
+  Dim xcont As Control
+  Dim xtextbox As TextBox
+  Dim xvalubox As ValueBox
+  Dim xcombobox As ComboBox
+
+  Dim asx As String[]
+  Dim sColl As Collection
+  Dim xitem As String
+
+  xVar = New Variant[]
+  If sReplace Then
+    sColl = New Collection
+    sColl.Add("Drug Used", "Variable")
+    sColl.Add(sReplace, "Value")
+    xVar.Add(sColl)
+  Endif
+
+  For Each xcont In sPanel.Children
+    sColl = New Collection
+    xitem = ""
+    If xcont Is ComboBox Then
+      xcombobox = xcont
+      asx = Split(xcombobox.Tag, ";")
+      If asx[1] = sExam And If asx[0] = xSide Then
+        xitem = Replace(xcombobox.Tag, asx[0] & ";" & asx[1] & ";", "")
+        If sReplace Then
+          xitem = Replace(xitem, "{Drug}", sReplace)
+        Endif
+        sColl.Add(xitem, "Variable")
+        sColl.Add(xcombobox.Text, "Value")
+      Endif
+
+    Else If xcont Is TextBox Then
+      xtextbox = xcont
+      asx = Split(xtextbox.Tag, ";")
+      If asx[1] = sExam And If asx[0] = xSide Then
+        xitem = Replace(xtextbox.Tag, asx[0] & ";" & asx[1] & ";", "")
+        If sReplace Then
+          xitem = Replace(xitem, "{Drug}", sReplace)
+        Endif
+        sColl.Add(xitem, "Variable")
+        sColl.Add(xtextbox.Text, "Value")
+      Endif
+
+    Else If xcont Is ValueBox Then
+      xvalubox = xcont
+      asx = Split(xvalubox.Tag, ";")
+      If asx[1] = sExam And If asx[0] = xSide Then
+        xitem = Replace(xvalubox.Tag, asx[0] & ";" & asx[1] & ";", "")
+        If sReplace Then
+          xitem = Replace(xitem, "{Drug}", sReplace)
+        Endif
+        sColl.Add(xitem, "Variable")
+        sColl.Add(xvalubox.Value, "Value")
+      Endif
+    Endif
+
+    xVar.Add(sColl)
+  Next
+
+  Return xVar
+
+End
+
+Private Sub SaveLeftRightExams(xhash As String, sExam As String, sPanelRight As Panel, sPanelLeft As Panel, Optional sReplaceRight As String, Optional sReplaceLeft As String)
+
+  Dim sIndex As Long
+
+  Dim xVarRight As Variant[]
+  Dim xVarLeft As Variant[]
+  Dim newColl As Collection
+  Dim varList As String[]
+  Dim xItem As String
+
+  Dim aColl As Collection
+  Dim bColl As Collection
+  Dim xleft As String
+  Dim xright As String
+
+  If sReplaceRight Then
+    xVarRight = GetValuesCollection(sExam, "RIGHT", sPanelRight, sReplaceRight)
+  Else
+    xVarRight = GetValuesCollection(sExam, "RIGHT", sPanelRight)
+  Endif
+  If sReplaceLeft Then
+    xVarLeft = GetValuesCollection(sExam, "LEFT", sPanelLeft, sReplaceLeft)
+  Else
+    xVarLeft = GetValuesCollection(sExam, "LEFT", sPanelLeft)
+  Endif
+
+  varList = New String[]
+  For Each newColl In xVarRight
+    varList.Add(newColl["Variable"])
+  Next
+  For Each newColl In xVarLeft
+    If varList.Exist(newColl["Variable"]) = False Then
+      varList.Add(newColl["Variable"])
+    Endif
+  Next
+
+  If varList.Count And If xhash Then
+    modClinSub.AddClinicExam($encid, "", sExam, "Left/Right Components", "", 0, False, $sType, "", "Regular", xhash)
+    sIndex = modClinic.GetExamIndexFromFilePath(xhash, $encid, sExam)
+    If sIndex Then
+      For Each xItem In varList
+
+        For Each aColl In xVarRight
+          If aColl["Variable"] = xItem Then
+            xright = aColl["Value"]
+            Break
+          Endif
+        Next
+        For Each bColl In xVarLeft
+          If bColl["Variable"] = xItem Then
+            xleft = bColl["Value"]
+            Break
+          Endif
+        Next
+
+        If xright Or If xleft Then
+          AddLeftRightParam(sExam, xItem, xright, xleft, sIndex)
+        Endif
+
+      Next
+    Endif
+  Endif
+
+End
+
+Public Sub btnvisual_Click()
+
+  Dim xhash As String
+
+  xhash = $encid & ":" & "Visual Acuity" & ":" & modMisc.GetWebIndexStr(modString.GetDateString(Now()))
+  SaveLeftRightExams(xhash, "Visual Acuity", pnlvisualright, pnlvisualleft)
+  modClinSub.AddClinicExam($encid, "", "Stereopsis", "", txtbothstreopsis.Text, 0, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", "Miscellaneous Visual Acuity", "", txtbothmiscell.Text, 0, False, $sType, "", "Regular", xhash)
+  Balloon.Info(("Information saved"), btnvisual)
+  Balloon.Delay = modBasic.$BalloonDelay
+  btnvisual.Enabled = False
+
+End
+
+Public Sub btnpresent_Click()
+
+  Dim xhash As String
+
+  xhash = $encid & ":" & "Present Glass" & ":" & modMisc.GetWebIndexStr(modString.GetDateString(Now()))
+  SaveLeftRightExams(xhash, "Present Glass", pnlpresentright, pnlpresentleft)
+  modClinSub.AddClinicExam($encid, "", "Present Glass Lens Type", "", cmbbothpgplenstype.Text, 0, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", "Present Glass Remarks", "", txtbothpgpremark.Text, 0, False, $sType, "", "Regular", xhash)
+  Balloon.Info(("Information saved"), btnpresent)
+  Balloon.Delay = modBasic.$BalloonDelay
+  btnpresent.Enabled = False
+
+End
+
+Public Sub btnfinal_Click()
+
+  Dim xhash As String
+
+  xhash = $encid & ":" & "Final Subjective Refraction" & ":" & modMisc.GetWebIndexStr(modString.GetDateString(Now()))
+  SaveLeftRightExams(xhash, "Final Subjective Refraction", pnlrefractright, pnlrefractleft)
+  Balloon.Info(("Information saved"), btnfinal)
+  Balloon.Delay = modBasic.$BalloonDelay
+  btnfinal.Enabled = False
+
+End
+
+Public Sub btnprescribe_Click()
+
+  Dim xhash As String
+
+  xhash = $encid & ":" & "Prescribed Glass" & ":" & modMisc.GetWebIndexStr(modString.GetDateString(Now()))
+  SaveLeftRightExams(xhash, "Prescribed Glass", pnlprescrright, pnlprescrleft)
+  modClinSub.AddClinicExam($encid, "", "Prescribed Glass Source", "", cmbbothprescsource.Text, 0, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", "Prescribed Glass Remarks", "", txtbothpresremark.Text, 0, False, $sType, "", "Regular", xhash)
+  Balloon.Info(("Information saved"), btnprescribe)
+  Balloon.Delay = modBasic.$BalloonDelay
+  btnprescribe.Enabled = False
+
+End
+
+''----------- retinoscopy
+Public Sub btnretinoscopydrug_Click()
+
+  Dim xhash As String
+  Dim xright As String
+  Dim xleft As String
+
+  If rbrightdry.Value = True Then
+    xright = "Dry"
+  Else If rbrightAR.Value = True Then
+    xright = "AR"
+  Else If rbrightdrug.Value Then
+    xright = cmbrightdrug.Text
+  Endif
+
+  If rbleftdry.Value = True Then
+    xleft = "Dry"
+  Else If rbleftAR.Value = True Then
+    xleft = "AR"
+  Else If rbleftdrug.Value = True Then
+    xleft = cmbleftdrug.Text
+  Endif
+
+  xhash = $encid & ":" & "Retinoscopy" & ":" & modMisc.GetWebIndexStr(modString.GetDateString(Now()))
+  If xright And If xleft Then
+    SaveLeftRightExams(xhash, "Retinoscopy", pnlretinoright, pnlretinileft, xright, xleft)
+    Balloon.Info(("Information saved"), btnretinoscopydrug)
+    Balloon.Delay = modBasic.$BalloonDelay
+    btnretinoscopydrug.Enabled = False
+  Endif
+
+End
+
+Public Sub btnnewglass_Click()
+
+  Dim xPath As String
+  Dim xList As String[] = ["Prescribed Glass", "Prescribed Glass Source", "Prescribed Glass Remarks"]
+
+  If $encid Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowPatientUniExaminationgReport($encid, $sType, xList, "Glass Prescription")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview($encid, xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub TabPanel1_Click()
+
+  btnvisual.Enabled = True
+  btnretinoscopydrug.Enabled = True
+  btnpresent.Enabled = True
+  btnfinal.Enabled = True
+  btnprescribe.Enabled = True
 
 End

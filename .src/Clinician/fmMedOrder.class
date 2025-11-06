@@ -1031,9 +1031,9 @@ Private Sub FillDosingGrid()
   Dim sql As String
 
   If rblabel.Value = True Then
-    sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldqtydisp,flduserid_order,fldid,fldid,fldstarttime,fldcurval,flddirection,flddosecount,fldmixing from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstatus=&3 and fldorder=&4 and (fldcurval=&5 or fldcurval=&6)"
+    sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldqtydisp,flduserid_order,fldid,fldid,fldstarttime,fldcurval,flddirection,flddosecount,fldmixing,flddose from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstatus=&3 and fldorder=&4 and (fldcurval=&5 or fldcurval=&6)"
   Else
-    sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,flduserid_order,fldid,fldid,fldstarttime,fldcurval,flddirection,flddosecount,fldmixing from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstatus=&3 and fldorder=&4 and (fldcurval=&5 or fldcurval=&6)"                                                   ''
+    sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,flduserid_order,fldid,fldid,fldstarttime,fldcurval,flddirection,flddosecount,fldmixing,flddose from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstatus=&3 and fldorder=&4 and (fldcurval=&5 or fldcurval=&6)"                                                   ''
   Endif
   $rDataM = modDatabase.$myConn.Exec(sql, $encid, False, $status, "Request", "Continue", "Reserve")
   $aMyFieldsM = New String[]
@@ -1056,6 +1056,7 @@ Private Sub FillDosingGrid()
     .Columns[13].Width = 200 * modBasic.$AppWidthRatio
     .Columns[14].Width = 50 * modBasic.$AppWidthRatio
     .Columns[15].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[16].Width = 1 ''dose
 
     .Columns[1].Text = "Start"
     .Columns[2].Text = "Route"
@@ -1117,8 +1118,8 @@ Public Sub GridView1_Click()
 
   Else If GridView1.Column = 4 Then
     If modGeneral.AllowClinicalEdit(GridView1[GridView1.Row, 8].Text) = True Then
-      If GridView1[GridView1.Row, 4].Text Then
-        xval = InputValue(GridView1[GridView1.Row, 3].Text, ("Alter Unit Dose"), GridView1[GridView1.Row, 4].Text)
+      If GridView1[GridView1.Row, 16].Text Then
+        xval = InputValue(GridView1[GridView1.Row, 3].Text, ("Alter Unit Dose"), GridView1[GridView1.Row, 16].Text)
       Else
         xval = InputValue(GridView1[GridView1.Row, 3].Text, ("Alter Unit Dose"), 0)
       Endif

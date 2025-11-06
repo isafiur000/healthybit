@@ -139,6 +139,26 @@ Public Sub btnsave_Click()
 
 End
 
+Public Sub btnedit_Click()
+
+  Dim res As Result
+
+  If GridView1.Rows.Selection.Count Then
+    If cmbvaccine.Text And If txtdose.Value And If cmbschedule.Text Then
+      res = modDatabase.$myConn.Edit("tblvaccdosing", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+      res["flditem"] = cmbvaccine.Text
+      res["fldstockno"] = txtstockno.Value
+      res["fldtype"] = cmbschedule.Text
+      res["fldvalue"] = txtdose.Value
+      res["fldunit"] = Trim(txtunit.Text)
+      res["flduserid"] = btnvacuser.Tag
+      res.Update
+      SHowVaccineRecord()
+    Endif
+  Endif
+
+End
+
 Private Sub SHowVaccineRecord()
 
   Dim sql As String

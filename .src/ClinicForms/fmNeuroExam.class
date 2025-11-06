@@ -199,6 +199,7 @@ Private Sub AddLeftRightParam(sItem As String, sRight As Variant, sLeft As Varia
   res["fldheadid"] = sIndex
   res["fldparent"] = $sExam & " [Two-sided Examinations]"
   res["fldreport"] = modString.GetLefRightJSON(sLeft, sRight)
+  res["fldtanswertype"] = "Qualitative"
   res["fldsave"] = True
   res["fldabnormal"] = False
   res["flduserid"] = modBasic.$lbluser
