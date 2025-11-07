@@ -542,7 +542,7 @@ Private Sub ShowPlanProcedures()
   Endif
 
   If txtsearch.Text Then
-    xencid = Subst(" and fldencounterval=&1", Trim(txtsearch.Text))
+    xencid = db.Subst(" and fldencounterval=&1", Trim(txtsearch.Text))
   Else
     xencid = ""
   Endif

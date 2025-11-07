@@ -2,7 +2,12 @@
 
 Private $rData As Result
 
+Private $exceptList As String[]
+
 Public Sub Form_Open()
+
+  Dim xx As Boolean
+  Dim yy As Boolean
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
@@ -12,7 +17,18 @@ Public Sub Form_Open()
   BlankAllBox()
   DisplayDefaultStockReturnMode()
   If modBasic.$AccessStockReturn = "Disable" Then
+    $exceptList = modGlobalSetting.GetDBTableList("InventorySaveAccess/StockReturn:Pharmacy")
+    If $exceptList.Count Then
+      xx = True
+    Else
+      xx = False
+    Endif
     If modGlobalSetting.GetDBTableList("InventorySaveAccess/StockReturn").Exist(modBasic.$lbluser) = True Then
+      yy = True
+    Else
+      yy = False
+    Endif
+    If xx = True And If yy = True Then
       mnusave.Enabled = True
     Else
       mnusave.Enabled = False

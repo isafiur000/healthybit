@@ -1,0 +1,80 @@
+' Gambas class file
+
+Public Sub Form_Open()
+
+  modGeneralMain.ArrangeFormCentre(Me, "False")
+  cmbtarget.List = modBasic.$AllCompList
+
+End
+
+Public Sub cmbtarget_Click()
+
+  lblcomp.Text = modGeneral.GetCompNameFromCompID(cmbtarget.Text)
+
+End
+
+Public Sub btnclear_Click()
+
+  txtsubject.Text = ""
+  txtcontent.Text = ""
+
+End
+
+Public Sub btnfile_Click()
+
+  Dialog.OpenFile()
+  btnfile.Text = Dialog.Path
+
+End
+
+Public Sub btnsend_Click()
+
+  Dim res As Result
+  Dim xblobfile As String
+  Dim xextension As String
+
+  If cmbtarget.Text And If txtsubject.Text Then
+    If btnfile.Text And If Exist(btnfile.Text) Then
+      If modMisc.BlobTarget("OfficeDocs") = "FTP" Then
+        xblobfile = modFTPSub.SendBlobToFTP(btnfile.Text, modBasic.$compID, "OfficeDocs")
+      Else
+        xblobfile = File.Load(btnfile.Text)
+      Endif
+      xextension = File.Ext(btnfile.Text)
+    Endif
+
+    Inc Application.Busy
+    res = modDatabase.$myConn.Create("tblmessage")
+    res["fldtarget"] = cmbtarget.Text
+    res["fldsubject"] = txtsubject.Text
+    res["fldmessage"] = txtcontent.Text
+    If modMisc.BlobTarget("OfficeDocs") = "FTP" Then
+      res["fldblob"] = ""
+      res["fldlink"] = xblobfile
+    Else
+      res["fldblob"] = xblobfile
+      res["fldlink"] = ""
+    Endif
+    res["fldextension"] = xextension
+    res["fldreply"] = rbreply.Value
+    res["fldimportant"] = rbimportant.Value
+
+    res["flduserid"] = modBasic.$lbluser
+    res["fldtime"] = Now()
+    res["fldcomp"] = modBasic.$compID
+    res["fldsave"] = True
+    res["fldhostmac"] = modHelpVariable.$MACAddress
+
+    res["fldresponse"] = ""
+    res["fldupuserid"] = ""
+    res["flduptime"] = ""
+    res["fldupsave"] = False
+
+    res.Update()
+    Dec Application.Busy
+
+    Balloon.Info(("Data saved"), btnsend)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+End

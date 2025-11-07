@@ -70,7 +70,8 @@ Public Sub Form_Open()
       mnucustreport.Enabled = True
       mnuservices.Enabled = True
       mnucustforms.Enabled = True
-      ' mnuformatexams.Enabled = True
+      mnuformatexams.Enabled = True
+      mnugotoform.Enabled = True
   End Select
   cmbunit.List = ["Metric", "SI Unit"]
   cmbunit.Text = "Metric"
@@ -1930,7 +1931,6 @@ Private Sub GetComboItemList()
   If $UserRestrict.Exist("Clinical Findings") = False Then
     btnmobexam.Enabled = True
     btnmobexamall.Enabled = True
-    mnuformatexams.Enabled = True
   Endif
   If $UserRestrict.Exist("Products Request") = False Then
     btnmobprogress.Enabled = True

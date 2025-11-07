@@ -840,7 +840,7 @@ Private Sub ShowLeftGridView(res As Result)
   With GridView4
     .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 250 * modBasic.$AppWidthRatio
-    .Columns[1].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 350 * modBasic.$AppWidthRatio
     .Columns[2].Width = 1
     .Columns[3].Width = 1
     .Columns[4].Width = 100 * modBasic.$AppWidthRatio
@@ -1426,6 +1426,7 @@ Private Sub FillSamplingEncounters()
   Dim xcateg As String
   Dim xsample As String
   Dim xsearch As String
+  Dim xpreun As String
   Dim xunion As String
   Dim xorder As String
 
@@ -1460,19 +1461,25 @@ Private Sub FillSamplingEncounters()
   Endif
 
   If rbdate.Value = True Then
+    xpreun = ""
     xunion = ""
     xorder = ""
   Else If rbtriage.Value = True Then
+    xpreun = ""
     xunion = " inner join tblencounter on tblpatradiotest.fldencounterval=tblencounter.fldencounterval"
     xorder = " ORDER BY FIELD(tblencounter.fldheight, '0', '65280', '16776960', '16711680') DESC"
+  Else If rbname.Value = True Then
+    xpreun = "("
+    xunion = " inner join tblencounter on tblpatradiotest.fldencounterval=tblencounter.fldencounterval) inner join tblpatientinfo on tblencounter.fldpatientval=tblpatientinfo.fldpatientval"
+    xorder = " ORDER BY tblpatientinfo.fldptnamefir"
   Endif
 
   If rbencrepo.Value = True Then
-    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldencounterval from tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                        ''
+    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldencounterval from " & xpreun & "tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                        ''
   Else If rbinvoicrepo.Value = True Then
-    sql = "select tblpatradiotest.fldbillno as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldencounterval from tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder
+    sql = "select tblpatradiotest.fldbillno as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldencounterval from " & xpreun & "tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder
   Else If rbindoorrepo.Value = True Then
-    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldencounterval from tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                      ''
+    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldencounterval from " & xpreun & "tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                      ''
   Endif
   If rbpending.Value = True Then
     $rData2 = modDatabase.$myConn.Exec(sql, "Sampled", False, modBasic.$compID, modDate.StartSqlDate(dtsort.value), modDate.EndSqlDate(DateAdd(dtsort.Value, gb.Day, txtrangerepo.Value)), cmbcategory.Text, cmbrepocounter.Text & "%", LCase(Trim(txtsearch.Text)))

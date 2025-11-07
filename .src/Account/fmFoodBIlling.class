@@ -241,7 +241,7 @@ End
 Public Sub mnudel_Click()
 
   If GridView1.Rows.Selection.Count > 0 Then
-    modDatabase.$myConn.Delete("tblautogroup", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+    modDatabase.$myConn.Delete("tblfoodorder", "fldid=&1", GridView1[GridView1.Row, 0].Text)
     FillGroupGrid()
     Balloon.Delete(("Information deleted"), GridView1)
     Balloon.Delay = modBasic.$BalloonDelay
@@ -254,7 +254,7 @@ Public Sub mnudeleteall_Click()
   Dim Row As Integer
 
   For Row = 0 To GridView1.Rows.Count - 1
-    modDatabase.$myConn.Delete("tblautogroup", "fldid=&1", GridView1[Row, 0].Text)
+    modDatabase.$myConn.Delete("tblfoodorder", "fldid=&1", GridView1[Row, 0].Text)
   Next
   FillGroupGrid()
   Balloon.Delete(("Information deleted"), GridView1)

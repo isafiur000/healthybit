@@ -13,10 +13,14 @@ Private $InjGenricLst As String[]
 Private $LiqBrandLst As String[]
 Private $LiqGenricLst As String[]
 
+Private $exceptList As String[]
+
 Public Sub Form_Open()
 
   Dim xcont As Control
   Dim OBSwatchall As Observer
+  Dim xx As Boolean
+  Dim yy As Boolean
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
@@ -54,7 +58,18 @@ Public Sub Form_Open()
   BlanKVnedor()
   BlankALl()
   If modBasic.$AccessPurchaseEntry = "Disable" Then
+    $exceptList = modGlobalSetting.GetDBTableList("InventorySaveAccess/PurchaseEntry:Pharmacy")
+    If $exceptList.Count Then
+      xx = True
+    Else
+      xx = False
+    Endif
     If modGlobalSetting.GetDBTableList("InventorySaveAccess/PurchaseEntry").Exist(modBasic.$lbluser) = True Then
+      yy = True
+    Else
+      yy = False
+    Endif
+    If xx = True And If yy = True Then
       mnusqve.Enabled = True
     Else
       mnusqve.Enabled = False

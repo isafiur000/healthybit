@@ -1,0 +1,68 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,72,57)
+  Tag = "Secure Messaging"
+  Text = ("Secure Messaging")
+  Resizable = False
+  Margin = True
+  { txtsubject TextBox
+    MoveScaled(1,8,70,3)
+  }
+  { btnfile ButtonBox
+    MoveScaled(13,44,58,3)
+    Picture = Picture["icon:/small/attach"]
+  }
+  { rbreply CheckBox
+    MoveScaled(1,48,17,3)
+    Text = ("Reply Required")
+  }
+  { rbimportant CheckBox
+    MoveScaled(52,48,15,3)
+    Text = ("Important")
+  }
+  { btnsend Button
+    MoveScaled(51,52,19,3.5)
+    Text = Shortcut(("Send"), "S")
+    Picture = Picture["icon:/small/apply"]
+  }
+  { btnclear Button
+    MoveScaled(1,52,19,3.5)
+    Text = Shortcut(("Clear"), "C")
+    Picture = Picture["icon:/small/clear"]
+  }
+  { Label3 Label
+    MoveScaled(1,1,11,3)
+    Border = Border.Plain
+    Text = ("Recepient")
+  }
+  { Label1 Label
+    MoveScaled(1,5,11,3)
+    Border = Border.Plain
+    Text = ("Subject")
+  }
+  { Label2 Label
+    MoveScaled(1,12,11,3)
+    Border = Border.Plain
+    Text = ("Message")
+  }
+  { Label4 Label
+    MoveScaled(1,44,11,3)
+    Border = Border.Plain
+    Text = ("Attachment")
+  }
+  { txtcontent TextArea
+    MoveScaled(1,16,70,27)
+    Wrap = True
+    ScrollBar = Scroll.Vertical
+  }
+  { cmbtarget ComboBox
+    MoveScaled(13,1,20,3)
+    ToolTip = ("Select target Department ID")
+    Sorted = True
+  }
+  { lblcomp Label
+    MoveScaled(34,1,37,3)
+    Border = Border.Plain
+  }
+}

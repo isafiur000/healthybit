@@ -3,7 +3,12 @@
 Private $rData As Result
 Private $aMyFields As String[]
 
+Private $exceptList As String[]
+
 Public Sub Form_Open()
+
+  Dim xx As Boolean
+  Dim yy As Boolean
 
   cmbvendor.List = modSupplier.FillVendorNameCombo("Active")
   cmbroute.List = modMedicine.ComboRoute()
@@ -17,7 +22,18 @@ Public Sub Form_Open()
   Endif
 
   If modBasic.$AccessStoreRequest = "Disable" Then
+    $exceptList = modGlobalSetting.GetDBTableList("InventorySaveAccess/StoreRequest:Pharmacy")
+    If $exceptList.Count Then
+      xx = True
+    Else
+      xx = False
+    Endif
     If modGlobalSetting.GetDBTableList("InventorySaveAccess/StoreRequest").Exist(modBasic.$lbluser) = True Then
+      yy = True
+    Else
+      yy = False
+    Endif
+    If xx = True And If yy = True Then
       btnsave.Enabled = True
     Else
       btnsave.Enabled = False
@@ -271,7 +287,11 @@ Private Sub SHowGridView()
 
   Dim sql As String
 
-  sql = "select fldid,fldordtime,fldstockid,fldcategory,fldqty,fldcomp,fldurgent,fldexpdate,fldorduserid,fldreference from tblrequest where fldordcomp=&1 and fldstatus=&2 and fldcomp=&3 and flduserid IS NULL"
+  If chknewonly.Value = True Then
+    sql = "select fldid,fldordtime,fldstockid,fldcategory,fldqty,fldcomp,fldurgent,fldexpdate,fldorduserid,fldreference from tblrequest where fldordcomp=&1 and fldstatus=&2 and fldcomp=&3 and flduserid IS NULL and fldreference IS NULL"
+  Else
+    sql = "select fldid,fldordtime,fldstockid,fldcategory,fldqty,fldcomp,fldurgent,fldexpdate,fldorduserid,fldreference from tblrequest where fldordcomp=&1 and fldstatus=&2 and fldcomp=&3 and flduserid IS NULL"
+  Endif
   $rData = modDatabase.$myConn.Exec(sql, modBasic.$compID, "Requested", cmbcomtaget.Text)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
@@ -384,9 +404,19 @@ Public Sub btnsave_Click()
   Dim res As Result
   Dim ref As String
   Dim idLock As Boolean
+  Dim strItem As String[]
+  Dim i As Integer
 
   If cmbcomtaget.Text Then
-    res1 = modDatabase.$myConn.Exec("select fldid from tblrequest where fldstatus=&1 and fldordcomp=&2 and fldsave=&3 and fldcomp=&4 and flduserid IS NULL", "Requested", modBasic.$compID, False, cmbcomtaget.Text)
+    If $exceptList.Count Then
+      strItem = $exceptList.Copy()
+      For i = 0 To strItem.Count - 1
+        strItem[i] = "'" & strItem[i] & "'"
+      Next
+      res1 = modDatabase.$myConn.Exec("select fldid,fldstockid from tblrequest where fldstatus=&1 and fldordcomp=&2 and fldsave=&3 and fldcomp=&4 and flduserid IS NULL and fldstockid in(" & strItem.Join(",") & ")", "Requested", modBasic.$compID, False, cmbcomtaget.Text)
+    Else
+      res1 = modDatabase.$myConn.Exec("select fldid,fldstockid from tblrequest where fldstatus=&1 and fldordcomp=&2 and fldsave=&3 and fldcomp=&4 and flduserid IS NULL", "Requested", modBasic.$compID, False, cmbcomtaget.Text)
+    Endif
     If res1.Available Then
 
       Inc Application.Busy

@@ -1,0 +1,150 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,126,77)
+  Tag = "Messaging"
+  Text = ("Messaging")
+  { Panel1 Panel
+    MoveScaled(0,0,125,76)
+    { Panel2 Panel
+      MoveScaled(0,0,125,5)
+      { btnnewmsg Button
+        MoveScaled(109,1,14,3)
+        Text = ("New Msg")
+      }
+      { cmborigin ComboBox
+        MoveScaled(9,1,21,3)
+      }
+      { Label1 Label
+        MoveScaled(1,1,7,3)
+        Border = Border.Plain
+        Text = ("Origin")
+      }
+      { btnrefresh Button
+        MoveScaled(92,1,14,3)
+        Text = ("Refresh")
+      }
+      { Panel3 Panel
+        MoveScaled(63,1,25,3)
+        { rbnew RadioButton
+          MoveScaled(0,0,11,3)
+          Text = ("Pending")
+          Value = True
+        }
+        { rbold RadioButton
+          MoveScaled(13,0,11,3)
+          Text = ("Replied")
+        }
+      }
+      { chkdate CheckBox
+        MoveScaled(34,1,8,3)
+        Text = ("Date")
+      }
+      { dtselect DateBox
+        MoveScaled(43,1,14,3)
+      }
+    }
+    { Panel15 Panel
+      MoveScaled(1,6,100,20)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { GridView1 GridView
+        MoveScaled(0,0,94,18)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Both
+        AutoResize = False
+      }
+    }
+    { Panel4 Panel
+      MoveScaled(1,35,123,40)
+      Expand = True
+      Arrangement = Arrange.Horizontal
+      { Panel5 Panel
+        MoveScaled(0,0,66,40)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        { Panel11 Panel
+          MoveScaled(1,0,64.875,3)
+          Arrangement = Arrange.Horizontal
+          { txtsubject TextBox
+            MoveScaled(0,0,64,3)
+            ReadOnly = True
+          }
+        }
+        { Panel12 Panel
+          MoveScaled(1,5,64.875,30.875)
+          Arrangement = Arrange.Horizontal
+          { txtmessage TextArea
+            MoveScaled(0,0,64,30)
+            Expand = True
+            ReadOnly = True
+            Wrap = True
+          }
+        }
+        { Panel7 Panel
+          MoveScaled(1,36,64.875,4)
+          { chkimportant CheckBox
+            MoveScaled(19,0.5,13,3)
+            Enabled = False
+            Text = ("Important")
+          }
+          { txtmessid ValueBox
+            MoveScaled(37,0.5,7,3)
+            Visible = False
+          }
+          { btnattach Button
+            MoveScaled(48,0.5,16,3)
+            Text = ("Attachment")
+          }
+          { chkreply CheckBox
+            MoveScaled(0,0.5,17,3)
+            Enabled = False
+            Text = ("Reply Required")
+          }
+        }
+      }
+      { Panel10 Panel
+        MoveScaled(66,1,2,35)
+      }
+      { Panel6 Panel
+        MoveScaled(68,0,55,40)
+        Arrangement = Arrange.Vertical
+        { Panel8 Panel
+          MoveScaled(1,0,54,4)
+          Arrangement = Arrange.Horizontal
+          { Label2 Label
+            MoveScaled(0,0.5,31,3)
+            Expand = True
+            Border = Border.Plain
+            Text = ("Response")
+          }
+          { lblrespondant Label
+            MoveScaled(32,0.5,21,3)
+            Border = Border.Plain
+          }
+        }
+        { Panel13 Panel
+          MoveScaled(1,5,53.875,30.875)
+          Arrangement = Arrange.Horizontal
+          { txtresponse TextArea
+            MoveScaled(0,0,53,30)
+            Expand = True
+            Wrap = True
+          }
+        }
+        { Panel9 Panel
+          MoveScaled(0.5,35,54,4)
+          { btnsave Button
+            MoveScaled(34,0.5,16,3)
+            Text = ("Respond")
+          }
+        }
+      }
+    }
+    { Panel14 Panel
+      MoveScaled(2,32,71,2)
+    }
+  }
+}

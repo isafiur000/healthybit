@@ -86,8 +86,8 @@ Public Sub Form_KeyRelease()
     TabPanel1.Index = 2
   Else If Key.Code = Key.F4 Then
     TabPanel1.Index = 3
-  Else
-    modGeneralmain.GoToNextControlTab()
+    ' Else
+    '   modGeneralmain.GoToNextControlTab()
   Endif
 
 End
@@ -532,28 +532,31 @@ Public Sub btnselect_Click()
   End Select
 
   If modMisc.AllowDiagnoBilling($encid) = True Then
+    If txtcomment.Text Then
 
-    Inc Application.Busy
-    For i = 1 To ListView1.Count
-      If ListView1[CStr(i)].Picture = Picture["icons/checked.png"] Then     '
+      Inc Application.Busy
+      For i = 1 To ListView1.Count
+        If ListView1[CStr(i)].Picture = Picture["icons/checked.png"] Then     '
 
-        If modBasic.$AutoBillRadio = "Standard" Or If modBasic.$AutoBillRadio = "Full" Or If modBasic.$AutoBillRadio = "Partial" Then
-          If modMisc.GetDuplicationAllow(xList, ListView1[CStr(i)].Text, btnselect) = True Then
-            If chknextvisit.Value = True Then
-              modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", ListView1[CStr(i)].Text, 1, "Planned", 0, False, False, xpayble, xrefer, cmbtarget.Text)
-            Else
-              modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", ListView1[CStr(i)].Text, 1, "Punched", 0, False, False, xpayble, xrefer, cmbtarget.Text)
+          If modBasic.$AutoBillRadio = "Standard" Or If modBasic.$AutoBillRadio = "Full" Or If modBasic.$AutoBillRadio = "Partial" Then
+            If modMisc.GetDuplicationAllow(xList, ListView1[CStr(i)].Text, btnselect) = True Then
+              If chknextvisit.Value = True Then
+                modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", ListView1[CStr(i)].Text, 1, "Planned", 0, False, False, xpayble, xrefer, cmbtarget.Text, "", txtcomment.Text)
+              Else
+                modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", ListView1[CStr(i)].Text, 1, "Punched", 0, False, False, xpayble, xrefer, cmbtarget.Text, "", txtcomment.Text)
+              Endif
+              acount = acount + 1
             Endif
-            acount = acount + 1
+            ListView1[CStr(i)].Picture = Picture["icons/unchecked.png"]
           Endif
-          ListView1[CStr(i)].Picture = Picture["icons/unchecked.png"]
+
         Endif
+      Next
+      Dec Application.Busy
+      ShowGrid()
+      txtcomment.Text = ""
 
-      Endif
-    Next
-    Dec Application.Busy
-    ShowGrid()
-
+    Endif
   Else
     Message.Warning("Diagnosis not provided", ("OK"))
   Endif
@@ -993,27 +996,30 @@ Public Sub btnselecttree_Click()
   End Select
 
   If modMisc.AllowDiagnoBilling($encid) = True Then
+    If txtcommenttree.Text Then
 
-    Inc Application.Busy
-    If TreeView1.Current.Picture = Picture["icons/coll3.png"] Then   '
+      Inc Application.Busy
+      If TreeView1.Current.Picture = Picture["icons/coll3.png"] Then   '
 
-      If modBasic.$AutoBillRadio = "Standard" Or If modBasic.$AutoBillRadio = "Full" Or If modBasic.$AutoBillRadio = "Partial" Then
-        If modMisc.GetDuplicationAllow(xList, TreeView1.Current.Text, btnselecttree) = True Then
-          xparent = Split(TreeView1.Current.ParentKey, "@")
-          If chknextvisit.Value = True Then
-            modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", TreeView1.Current.Text, 1, "Planned", 0, False, False, xpayble, xrefer, cmbtarget.Text, xparent[1])
-          Else
-            modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", TreeView1.Current.Text, 1, "Punched", 0, False, False, xpayble, xrefer, cmbtarget.Text, xparent[1])
+        If modBasic.$AutoBillRadio = "Standard" Or If modBasic.$AutoBillRadio = "Full" Or If modBasic.$AutoBillRadio = "Partial" Then
+          If modMisc.GetDuplicationAllow(xList, TreeView1.Current.Text, btnselecttree) = True Then
+            xparent = Split(TreeView1.Current.ParentKey, "@")
+            If chknextvisit.Value = True Then
+              modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", TreeView1.Current.Text, 1, "Planned", 0, False, False, xpayble, xrefer, cmbtarget.Text, xparent[1], txtcommenttree.Text)
+            Else
+              modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", TreeView1.Current.Text, 1, "Punched", 0, False, False, xpayble, xrefer, cmbtarget.Text, xparent[1], txtcommenttree.Text)
+            Endif
+            acount = acount + 1
           Endif
-          acount = acount + 1
+          TreeView1.Current.Picture = Picture["icons/coll2.png"]
         Endif
-        TreeView1.Current.Picture = Picture["icons/coll2.png"]
+
       Endif
+      Dec Application.Busy
+      ShowGridTree()
+      txtcommenttree.Text = ""
 
     Endif
-    Dec Application.Busy
-    ShowGridTree()
-
   Else
     Message.Warning("Diagnosis not provided", ("OK"))
   Endif
