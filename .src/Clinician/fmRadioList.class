@@ -42,6 +42,11 @@ Public Sub Form_Open()
   If Not $BillMode Then
     $BillMode = modpatient.GetPatBillingMode($encid)
   Endif
+  If modBasic.$ClinRadioComment = "Optional" Then
+    txtcomment.Visible = False
+  Else
+    txtcomment.Visible = True
+  Endif
 
   $bedLocation = modPatient.GetPatientLocation($encid)
   $xFinClear = modNonMedical.GetFinanceClearance($encid)
@@ -508,6 +513,7 @@ Public Sub btnselect_Click()
   Dim xList As String[]
   Dim j As Integer
   Dim acount As Integer
+  Dim xgo As Boolean
 
   acount = 0
   If btnrefer.Tag Then
@@ -532,7 +538,17 @@ Public Sub btnselect_Click()
   End Select
 
   If modMisc.AllowDiagnoBilling($encid) = True Then
-    If txtcomment.Text Then
+    If modBasic.$ClinRadioComment = "Optional" Then
+      xgo = True
+    Else
+      If txtcomment.Text Then
+        xgo = True
+      Else
+        xgo = False
+      Endif
+    Endif
+
+    If xgo = True Then
 
       Inc Application.Busy
       For i = 1 To ListView1.Count
@@ -972,6 +988,7 @@ Public Sub btnselecttree_Click()
   Dim j As Integer
   Dim acount As Integer
   Dim xparent As String[]
+  Dim xgo As Boolean
 
   acount = 0
   If btnrefer.Tag Then
@@ -996,7 +1013,17 @@ Public Sub btnselecttree_Click()
   End Select
 
   If modMisc.AllowDiagnoBilling($encid) = True Then
-    If txtcommenttree.Text Then
+    If modBasic.$ClinRadioComment = "Optional" Then
+      xgo = True
+    Else
+      If txtcommenttree.Text Then
+        xgo = True
+      Else
+        xgo = False
+      Endif
+    Endif
+
+    If xgo = True Then
 
       Inc Application.Busy
       If TreeView1.Current.Picture = Picture["icons/coll3.png"] Then   '

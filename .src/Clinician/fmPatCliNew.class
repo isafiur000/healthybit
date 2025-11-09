@@ -266,6 +266,12 @@ Public Sub Form_KeyRelease()
 
 End
 
+Public Sub btnclose_Click()
+
+  Me.Close()
+
+End
+
 Public Sub TabPanel1_Click()
 
   If TabPanel1.Index = 0 Then
@@ -1573,6 +1579,23 @@ Public Sub GridView1_Click()
 
   Endif
   GridView1.Row = Row
+
+End
+
+Public Sub GridView1_Menu()
+
+  mnuhidefind.Popup()
+
+End
+
+Public Sub mnuaddimage_Click()
+
+  Dim hForm As FmTestImage
+
+  If GridView1.Rows.Selection.Count > 0 Then
+    hForm = New FmTestImage("IMAGE", Trim(txtencid.Text), GridView1[GridView1.Row, 0].Text, GridView1[GridView1.Row, 2].Text, "Examination", "")
+    hForm.ShowModal
+  Endif
 
 End
 

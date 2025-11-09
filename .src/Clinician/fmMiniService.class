@@ -6,8 +6,8 @@ Private $xNHISCode As String
 
 Private $rData2 As Result
 Private $aMyFields2 As String[]
-Private $rData3 As MyResult
-Private $aMyFields3 As String[]
+Private $allVar As Variant[]
+Private $GridVar As Variant[]
 
 Private $encid As String
 Private $billModeService As String
@@ -266,87 +266,6 @@ Public Sub rbcashpack_Click()
 
 End
 
-Private Sub LoadItemList()
-
-  Dim res As Result
-  Dim res1 As Result
-  Dim res2 As Result
-  Dim res3 As Result
-  Dim xsearch As String
-
-  If chkleftmain.Value Then
-    xsearch = "%" & LCase(txtsearch.Text) & "%"
-  Else
-    xsearch = LCase(txtsearch.Text) & "%"
-  Endif
-
-  $rData3 = New MyResult
-  If rbcategory.Value = True Then
-    If cmbsection.Text = "General Services" Then
-      res = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and lower(flditemname) like &3 and flditemtype=&4 ORDER BY flditemname", $ratePlanService, "Active", xsearch, "General Services")
-    Else If cmbsection.Text = "Procedures" Then
-      res = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and lower(flditemname) like &3 and flditemtype=&4 ORDER BY flditemname", $ratePlanProcedure, "Active", xsearch, "Procedures")
-    Else If cmbsection.Text = "Other Items" Then
-      res = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and lower(flditemname) like &3 and flditemtype=&4 ORDER BY flditemname", $ratePlanOthers, "Active", xsearch, "Other Items")
-    Endif
-    $rData3.AddResult(res)
-
-  Else If rbsection.Value = True Then
-    res1 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and lower(flditemname) like &3 and flditemtype=&4 and fldreport=&5 ORDER BY flditemname", $ratePlanService, "Active", xsearch, "General Services", cmbsection.Text)
-    If res1.Available Then
-      $rData3.AddResult(res1)
-    Endif
-    res2 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and lower(flditemname) like &3 and flditemtype=&4 and fldreport=&5 ORDER BY flditemname", $ratePlanProcedure, "Active", xsearch, "Procedures", cmbsection.Text)
-    If res2.Available Then
-      $rData3.AddResult(res2)
-    Endif
-    res3 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and lower(flditemname) like &3 and flditemtype=&4 and fldreport=&5 ORDER BY flditemname", $ratePlanOthers, "Active", xsearch, "Other Items", cmbsection.Text)
-    If res3.Available Then
-      $rData3.AddResult(res3)
-    Endif
-
-  Else If rbgroup.Value = True Then
-    res1 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and lower(flditemname) like &3 and flditemtype=&4 and fldbillitem=&5 ORDER BY flditemname", $ratePlanService, "Active", xsearch, "General Services", cmbsection.Text)
-    If res1.Available Then
-      $rData3.AddResult(res1)
-    Endif
-    res2 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and lower(flditemname) like &3 and flditemtype=&4 and fldbillitem=&5 ORDER BY flditemname", $ratePlanProcedure, "Active", xsearch, "Procedures", cmbsection.Text)
-    If res2.Available Then
-      $rData3.AddResult(res2)
-    Endif
-    res3 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and lower(flditemname) like &3 and flditemtype=&4 and fldbillitem=&5 ORDER BY flditemname", $ratePlanOthers, "Active", xsearch, "Other Items", cmbsection.Text)
-    If res3.Available Then
-      $rData3.AddResult(res3)
-    Endif
-
-  Else If rbcashpack.Value = True Then
-    res1 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and lower(flditemname) like &3 and flditemtype=&4 and flditemname in(select flditemname from tblservicegroup where fldgroup=&5) ORDER BY flditemname", $ratePlanService, "Active", xsearch, "General Services", cmbsection.Text)
-    If res1.Available Then
-      $rData3.AddResult(res1)
-    Endif
-    res2 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and lower(flditemname) like &3 and flditemtype=&4 and flditemname in(select flditemname from tblservicegroup where fldgroup=&5) ORDER BY flditemname", $ratePlanProcedure, "Active", xsearch, "Procedures", cmbsection.Text)
-    If res2.Available Then
-      $rData3.AddResult(res2)
-    Endif
-    res3 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and lower(flditemname) like &3 and flditemtype=&4 and flditemname in(select flditemname from tblservicegroup where fldgroup=&5) ORDER BY flditemname", $ratePlanOthers, "Active", xsearch, "Other Items", cmbsection.Text)
-    If res3.Available Then
-      $rData3.AddResult(res3)
-    Endif
-
-  Endif
-
-  $aMyFields3 = New String[]
-  modGridView.ReadSmallMyData(GridView3, $rData3, $aMyFields3, 4)
-
-  With GridView3
-    .Columns[0].Width = 35 * modBasic.$AppWidthRatio
-    .Columns[1].Expand = True
-    .Columns[2].Width = 1
-    .Columns[3].Width = 1
-  End With
-
-End
-
 Public Sub cmbsection_Click()
 
   If cmbsection.Text Then
@@ -357,29 +276,107 @@ End
 
 Public Sub txtsearch_Change()
 
-  LoadItemList()
+  Dim xVar As Variant[]
+
+  xVar = modString.SelectStringVariantToText($allVar, CStr(1), txtsearch.Text, chkleftmain.Value)
+  LoadSelectGridView(xVar)
+
+End
+
+Private Sub LoadItemList()
+
+  Dim res As Result
+  Dim res1 As Result
+  Dim res2 As Result
+  Dim res3 As Result
+
+  $allVar = New Variant[]
+  If rbcategory.Value = True Then
+    If cmbsection.Text = "General Services" Then
+      res = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and flditemtype=&3 ORDER BY flditemname", $ratePlanService, "Active", "General Services")
+    Else If cmbsection.Text = "Procedures" Then
+      res = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and flditemtype=&3 ORDER BY flditemname", $ratePlanProcedure, "Active", "Procedures")
+    Else If cmbsection.Text = "Other Items" Then
+      res = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and flditemtype=&3 ORDER BY flditemname", $ratePlanOthers, "Active", "Other Items")
+    Endif
+    modTextDB.COnvertResultToCollection(res, $allVar)
+
+  Else If rbsection.Value = True Then
+    res1 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and flditemtype=&3 and fldreport=&4 ORDER BY flditemname", $ratePlanService, "Active", "General Services", cmbsection.Text)
+    If res1.Available Then
+      modTextDB.COnvertResultToCollection(res1, $allVar)
+    Endif
+    res2 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and flditemtype=&3 and fldreport=&4 ORDER BY flditemname", $ratePlanProcedure, "Active", "Procedures", cmbsection.Text)
+    If res2.Available Then
+      modTextDB.COnvertResultToCollection(res2, $allVar)
+    Endif
+    res3 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and flditemtype=&3 and fldreport=&4 ORDER BY flditemname", $ratePlanOthers, "Active", "Other Items", cmbsection.Text)
+    If res3.Available Then
+      modTextDB.COnvertResultToCollection(res3, $allVar)
+    Endif
+
+  Else If rbgroup.Value = True Then
+    res1 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and flditemtype=&3 and fldbillitem=&4 ORDER BY flditemname", $ratePlanService, "Active", "General Services", cmbsection.Text)
+    If res1.Available Then
+      modTextDB.COnvertResultToCollection(res1, $allVar)
+    Endif
+    res2 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and flditemtype=&3 and fldbillitem=&4 ORDER BY flditemname", $ratePlanProcedure, "Active", "Procedures", cmbsection.Text)
+    If res2.Available Then
+      modTextDB.COnvertResultToCollection(res2, $allVar)
+    Endif
+    res3 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and flditemtype=&3 and fldbillitem=&4 ORDER BY flditemname", $ratePlanOthers, "Active", "Other Items", cmbsection.Text)
+    If res3.Available Then
+      modTextDB.COnvertResultToCollection(res3, $allVar)
+    Endif
+
+  Else If rbcashpack.Value = True Then
+    res1 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and flditemtype=&3 and flditemname in(select flditemname from tblservicegroup where fldgroup=&4) ORDER BY flditemname", $ratePlanService, "Active", "General Services", cmbsection.Text)
+    If res1.Available Then
+      modTextDB.COnvertResultToCollection(res1, $allVar)
+    Endif
+    res2 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and flditemtype=&3 and flditemname in(select flditemname from tblservicegroup where fldgroup=&4) ORDER BY flditemname", $ratePlanProcedure, "Active", "Procedures", cmbsection.Text)
+    If res2.Available Then
+      modTextDB.COnvertResultToCollection(res2, $allVar)
+    Endif
+    res3 = modDatabase.$myConn.Exec("select flditemname,flditemname,flditemtype,fldgroup from tblservicecost where fldgroup=&1 and fldstatus=&2 and flditemtype=&3 and flditemname in(select flditemname from tblservicegroup where fldgroup=&4) ORDER BY flditemname", $ratePlanOthers, "Active", "Other Items", cmbsection.Text)
+    If res3.Available Then
+      modTextDB.COnvertResultToCollection(res3, $allVar)
+    Endif
+
+  Endif
+
+  LoadSelectGridView($allVar)
+
+End
+
+Private Sub LoadSelectGridView(sVar As Variant[])
+
+  $GridVar = sVar
+  GridView3.Clear()
+  GridView3.Columns.Count = 4
+  GridView3.Rows.Count = $GridVar.Count
+  With GridView3
+    .Rows.Height = modBasic.$AppGridRowHeight
+    .Columns[0].Width = 35 * modBasic.$AppWidthRatio
+    .Columns[1].Expand = True
+    .Columns[2].Width = 1
+    .Columns[3].Width = 1
+  End With
 
 End
 
 Public Sub GridView3_Data(Row As Integer, Column As Integer)
 
-  $rData3.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView3, Row)
   If Column = 0 Then
     GridView3.Data.Picture = Picture["icons/unchecked.png"]
+  Else If Column = 1 Then
+    GridView3.Data.Text = $GridVar[Row][CStr(Column)]
+    GridView3.Rows[Row].Height = Max(GridView3.Rows[Row].Height, GridView3.Data.Font.RichTextHeight(GridView3.Data.Text, GridView3.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView3.Rows.Height - GridView3.Font.Height))
   Else
-    GridView3.Data.Text = $rData3[$aMyFields3[Column]]
+    GridView3.Data.Text = $GridVar[Row][CStr(Column)]
   Endif
-  GridView3.Rows[Row].Height = Max(GridView3.Rows[Row].Height, GridView3.Data.Font.RichTextHeight(GridView3.Data.Text, GridView3.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView3.Rows.Height - GridView3.Font.Height))
   GridView3.Data.WordWrap = True
-
-End
-
-Public Sub GridView3_Click()
-
-  If GridView3.Column = 0 Then
-    modGridView.CheckUncheckGridNoDB(GridView3, 0)
-  Endif
 
 End
 
@@ -390,7 +387,7 @@ Public Sub GridView3_Select()
   Dim xdate As Date
 
   If GridView3.Rows.Selection.Count Then
-    xform = modNonMedical.GetServiceKeyFromCategory($rData3["flditemtype"])
+    xform = modNonMedical.GetServiceKeyFromCategory($GridVar[GridView3.Row][CStr(2)])
     If xform = "Service" Then
       xpackg = cmbdiscservice.Text
     Else If xform = "Procedure" Then
@@ -410,6 +407,14 @@ Public Sub GridView3_Select()
       txtlastsaledate.Text = ""
       txtlastsaledate.Foreground = Color.Default
     Endif
+  Endif
+
+End
+
+Public Sub GridView3_Click()
+
+  If GridView3.Column = 0 Then
+    modGridView.CheckUncheckGridNoDB(GridView3, 0)
   Endif
 
 End

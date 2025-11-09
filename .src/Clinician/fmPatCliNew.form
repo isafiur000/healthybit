@@ -427,6 +427,11 @@
       Enabled = False
     }
   }
+  { mnuhidefind Menu
+    { mnuaddimage Menu
+      Text = ("Add Image")
+    }
+  }
   { Panel1 Panel
     MoveScaled(0,0,121,83)
     { Frame1 Frame
@@ -721,21 +726,20 @@
     { Panel15 Panel
       MoveScaled(0,32,121,4)
       { btnlab Button
-        MoveScaled(73,0.5,12,3)
+        MoveScaled(71,0.5,12,3)
         Text = ("Labs [F11]")
       }
       { btnpharm Button
-        MoveScaled(85,0.5,12,3)
+        MoveScaled(83,0.5,12,3)
         Text = ("Pharm [F12]")
       }
       { btnradioreq Button
-        MoveScaled(97,0.5,10,3)
+        MoveScaled(95,0.5,10,3)
         Text = ("Radio")
       }
       { btnsaveAll Button
-        MoveScaled(107,0.5,13,3)
+        MoveScaled(105,0.5,11,3)
         Text = ("Save All")
-        Picture = Picture["icon:/small/apply"]
       }
       { mnugenservice Button
         MoveScaled(0,0.5,10,3)
@@ -762,17 +766,21 @@
         Text = ("PACS")
       }
       { btnaddcibf ToolButton
-        MoveScaled(61,0.5,3,3)
+        MoveScaled(60,0.5,3,3)
         Picture = Picture["icon:/small/webcam"]
       }
       { btnaddchart ToolButton
-        MoveScaled(68,0.5,3,3)
+        MoveScaled(67,0.5,3,3)
         ToolTip = ("Touch Screen Drawing")
         Picture = Picture["icon:/small/pen"]
       }
       { mnuscanfile ToolButton
-        MoveScaled(64.5,0.5,3,3)
+        MoveScaled(63.5,0.5,3,3)
         Picture = Picture["icon:/small/attach"]
+      }
+      { btnclose Button
+        MoveScaled(116,0.5,4,3)
+        Picture = Picture["icon:/small/close"]
       }
     }
     { TabPanel1 TabPanel

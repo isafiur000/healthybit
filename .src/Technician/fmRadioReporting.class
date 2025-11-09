@@ -1463,7 +1463,7 @@ Private Sub FillSamplingEncounters()
   If rbdate.Value = True Then
     xpreun = ""
     xunion = ""
-    xorder = ""
+    xorder = " ORDER BY tblpatradiotest.fldnewdate"
   Else If rbtriage.Value = True Then
     xpreun = ""
     xunion = " inner join tblencounter on tblpatradiotest.fldencounterval=tblencounter.fldencounterval"
