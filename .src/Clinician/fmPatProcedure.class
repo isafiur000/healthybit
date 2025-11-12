@@ -15,6 +15,7 @@ Private hOwnStockForm As FmWardStock
 Private hPtForm As FmClinHistory
 Private hDigForm As FmDiagnosticTab
 
+Private $billReference As String
 Private $billModeTest As String
 Private $billModeRadio As String
 Private $billModePharmacy As String
@@ -437,14 +438,19 @@ End
 ''--------------------------------------- General --------------------------------------
 Private Sub BasicInfoPatient()
 
+  Dim sHistoryList As String[]
+  Dim sDischList As String[]
+
   If txtencid.Text Then
     modRepository.$RepoDataStatus = False
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
     GetDefaultBillingmodes()
+    sHistoryList = modMedicine.GetClinHistoryList($billReference, txtgender.Text)
+    sDischList = modMedicine.GetClinDischargeList($billReference, txtgender.Text)
     InitializeProcedures()
 
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
-    hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
+    hPtForm = New FmClinHistory($PatientNum, "PatientID", sHistoryList, sDischList, pnlhistory)
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnluseown)
 
     ButtonControl()
@@ -457,6 +463,7 @@ Private Sub GetDefaultBillingmodes()
   Dim xpackage As String
   Dim resx As Result
 
+  $billReference = modNonMedical.GetFixedReference(Trim(txtencid.Text))
   Select $sTatus
     Case "Admitted", "Discharged", "LAMA", "Death", "Refer", "Absconder"
       $billModeTest = modNonMedical.GetAutoIPBillingPack("Test", Trim(txtencid.Text))

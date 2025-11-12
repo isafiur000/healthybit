@@ -78,6 +78,7 @@ Public Sub _new(encid As String, sTable As String, sType As String)
   $sTable = sTable
   $sType = sType
 
+  $idList = New String[]
   AppFactor = modBasic.$AppScaleFactor
   ht = modSettings.ShowSettingFromFIle("MultipleTextBox/Height")
   If ht Then
@@ -144,9 +145,10 @@ Public Sub cmbcategory_Click()
   lblitem.Text = cmbcategory.Text
   btnBrOK.Enabled = True
   If lblitem.Text Then
-    Try $idList.Clear()
-    Frame1.Children.Clear()
-    Wait
+    $idList.Clear()
+    If Frame1.Children.Count Then
+      Frame1.Children.Clear()
+    Endif
     If $sType = "Group" Then
       $idList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldexamid from tblgroupexam where fldgroupname=&1", lblitem.Text))
     Else If $sType = "Scales" Then

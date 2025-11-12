@@ -1256,8 +1256,29 @@
         MoveScaled(62,0,53,39)
         Arrangement = Arrange.Vertical
         Border = Border.Plain
+        { pnlclinpara Panel
+          MoveScaled(0,1,53,4)
+          { txtclinIndex ValueBox
+            MoveScaled(29,0.5,8,3)
+            ReadOnly = True
+          }
+          { btnselect Button
+            MoveScaled(39,0.5,13,3)
+            Text = ("Select")
+            Picture = Picture["icon:/small/select"]
+          }
+          { lbloutcome3 Label
+            MoveScaled(0,0.5,7,3)
+            Border = Border.Plain
+            Text = ("Depart")
+          }
+          { txtclindepart TextBox
+            MoveScaled(7,0.5,21,3)
+            ReadOnly = True
+          }
+        }
         { Panel36 Panel
-          MoveScaled(0,0,52,8)
+          MoveScaled(0,6,52,7.5)
           { rbimproved RadioButton
             MoveScaled(1,0.5,12,3)
             Text = ("Discharge")
@@ -1284,41 +1305,8 @@
             Text = ("Death")
           }
         }
-        { pnlclinpara Panel
-          MoveScaled(0,8,53,4)
-          { lbloutcome2 Label
-            MoveScaled(0,0.5,11.5,3)
-            Border = Border.Plain
-            Text = ("Index No")
-          }
-          { txtclinIndex ValueBox
-            MoveScaled(12,0.5,15,3)
-            ReadOnly = True
-          }
-          { btnselect Button
-            MoveScaled(39,0.5,13,3)
-            Text = ("Select")
-            Picture = Picture["icon:/small/select"]
-          }
-          { txtclinmode TextBox
-            MoveScaled(31,0.5,6,3)
-            Visible = False
-          }
-        }
-        { Panel39 Panel
-          MoveScaled(0,12,51,4)
-          { lbloutcome3 Label
-            MoveScaled(0,0.5,11.5,3)
-            Border = Border.Plain
-            Text = ("Department")
-          }
-          { txtclindepart TextBox
-            MoveScaled(12,0.5,28,3)
-            ReadOnly = True
-          }
-        }
         { pnloutcome Panel
-          MoveScaled(0,16,51,4)
+          MoveScaled(0,14,52,4)
           Enabled = False
           { cmbrefer ComboBox
             MoveScaled(18,0.5,26,3)
@@ -1335,8 +1323,8 @@
             Text = ("Follow Up Date")
           }
         }
-        { Panel38 Panel
-          MoveScaled(0,20,53,4)
+        { pnlsaveoutcome Panel
+          MoveScaled(0,19,53,4)
           { btnnotice Button
             MoveScaled(1,0.5,11,3)
             Text = ("Notice")
@@ -1350,6 +1338,10 @@
             MoveScaled(39,0.5,13,3)
             Text = ("Report")
             Picture = Picture["icon:/small/html"]
+          }
+          { txtclinmode TextBox
+            MoveScaled(12,0.5,6,3)
+            Visible = False
           }
         }
         { txtcomment TextHTML

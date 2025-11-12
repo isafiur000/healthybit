@@ -6,18 +6,20 @@ Public Sub DesktopOpenFile(sFile As String)
   Dim xexec As String
   Dim arcmd As String[]
 
-  xscript = modBasic.$DefaultViewPath
-  If xscript Then
-    xexec = modBasic.$DefaultViewShell
-    If xexec Then
-      arcmd = [xexec, xscript, sFile]
+  If Exist(sFile) Then
+    xscript = modBasic.$DefaultViewPath
+    If xscript Then
+      xexec = modBasic.$DefaultViewShell
+      If xexec Then
+        arcmd = [xexec, xscript, sFile]
+      Else
+        arcmd = [xscript, sFile]
+      Endif
+      modBasic.DebugString("Execute " & arcmd.Join(Space(1)))
+      Exec arcmd
     Else
-      arcmd = [xscript, sFile]
+      Desktop.Open(sFile)
     Endif
-    modBasic.DebugString("Execute " & arcmd.Join(Space(1)))
-    Exec arcmd
-  Else
-    Desktop.Open(sFile)
   Endif
 
 End

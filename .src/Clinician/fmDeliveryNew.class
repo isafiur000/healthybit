@@ -3247,7 +3247,7 @@ Private Sub ShowSelectedVar3()
       hForm11 = New FmEnterMultiExamVir(grdtreecompl.Text, Trim(txtencid.Text), "On Delivery", sList, $Category)
       hForm11.ShowModal
     Else
-      hForm = New FmEnterMultiExam(grdtreecompl.Text, Trim(txtencid.Text), "On Delivery", sList, $Category)
+      hForm = New FmEnterMultiExam(grdtreecompl.Text, Trim(txtencid.Text), "On Delivery", sList, $Category, False)
       hForm.ShowModal
     Endif
     ShowClinicTable()

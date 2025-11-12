@@ -555,8 +555,13 @@ End
 
 Private Sub BasicInfoPatient()
 
+  Dim sHistoryList As String[]
+  Dim sDischList As String[]
+
   If txtencid.Text Then
     GetDefaultBillingmodes()
+    sHistoryList = modMedicine.GetClinHistoryList($billReference, txtgender.Text)
+    sDischList = modMedicine.GetClinDischargeList($billReference, txtgender.Text)
     cmbinpathistory.List = GetHistoryList()
     $NotesList = NoteTakingTypeList()
     cmbnote.List = $NotesList
@@ -572,7 +577,7 @@ Private Sub BasicInfoPatient()
     FillExamtable()
     ButtonControl()
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
-    hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
+    hPtForm = New FmClinHistory($PatientNum, "PatientID", sHistoryList, sDischList, pnlhistory)
     TabStrip1.Index = 0
   Endif
 

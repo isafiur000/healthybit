@@ -681,6 +681,13 @@ Public Sub mnussfupload_Click()
 
 End
 
+Public Sub mnuinvupload_Click()
+
+  modWorkSpace.Remove(fmInvoiceUpload)
+  modWorkSpace.Add(fmInvoiceUpload)
+
+End
+
 Public Sub mnudischargebill_Click()
 
   If modHelpVariable.$SysDisableDate = "Yes" And If modHelpVariable.$IRDLevel = "Yes" Then

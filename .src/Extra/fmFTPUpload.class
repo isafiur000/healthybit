@@ -1,6 +1,7 @@
 ' Gambas class file
 
 Private $sFile As String
+Private $xNew As Boolean
 
 Public Sub _new(sFile As String)
 
@@ -15,7 +16,12 @@ Public Sub Form_Open()
   txtfolder.Text = modBasic.$RepoManFolder
   txtuser.Text = modBasic.$RepoManUser
   txtpassword.Text = modBasic.$RepoManPass
-  txtfile.Text = File.Name($sFile)
+  If $sFile Then
+    txtfile.Text = File.Name($sFile)
+    $xNew = False
+  Else
+    $xNew = True
+  Endif
 
 End
 
@@ -25,10 +31,18 @@ Public Sub btnftp_Click()
   Dim xfile As String
 
   If txthost.Text And If txtfolder.Text And If txtuser.Text Then
-    If File.Ext($sFile) Then
-      xfile = modString.GetNowString() & "." & File.Ext($sFile)
+    If $xNew = True Then
+      If File.Ext($sFile) Then
+        xfile = File.Name($sFile) & "." & File.Ext($sFile)
+      Else
+        xfile = File.Name($sFile)
+      Endif
     Else
-      xfile = modString.GetNowString()
+      If File.Ext($sFile) Then
+        xfile = modString.GetNowString() & "." & File.Ext($sFile)
+      Else
+        xfile = modString.GetNowString()
+      Endif
     Endif
     Inc Application.Busy
     xx = modDevAll.SendFileToFTP(txthost.Text, txtfolder.Text, txtuser.Text, txtpassword.Text, xfile, $sFile)
@@ -43,7 +57,13 @@ End
 
 Public Sub txtfile_Click()
 
-  modDevice.DesktopOpenFile($sFile)
+  If $sFile Then
+    modDevice.DesktopOpenFile($sFile)
+  Else
+    If Dialog.OpenFile() Then Return
+    txtfile.Text = Dialog.Path
+    $sFile = txtfile.Text
+  Endif
 
 End
 

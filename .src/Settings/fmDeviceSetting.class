@@ -86,6 +86,8 @@ Public Sub Form_Open()
 
   DisplayCloudAI()
 
+  ShowBipannaSetting()
+
 End
 
 Public Sub btnmodemrefresh_Click()
@@ -1907,5 +1909,71 @@ Public Sub btnaddAIquerydrug_Click()
   If xx Then
     modBasic.$CloudAIDrugQuery.Add(Trim(xx))
   Endif
+
+End
+
+''================== bipanna =====================
+Private Sub ShowBipannaSetting()
+
+  txtbipptreatment.Text = modSettings.ShowSettingFromFIle("Bipanna/TreatmentURL")
+  txtbippkidney.Text = modSettings.ShowSettingFromFIle("Bipanna/KidneyURL")
+  txtbippbilling.Text = modSettings.ShowSettingFromFIle("Bipanna/BillingURL")
+  If modSettings.ShowSettingFromFIle("Bipanna/HospitalCode") Then
+    txtbipphospcode.Text = UnBase64(modSettings.ShowSettingFromFIle("Bipanna/HospitalCode"))
+  Endif
+
+End
+
+Public Sub btnbipptreatment_Click()
+
+  modSettings.SaveSettingsToFile("Bipanna/TreatmentURL", txtbipptreatment.Text)
+  modBasic.$BipannaTreatmentURL = txtbipptreatment.Text
+  Balloon.Info(("Information saved"), btnbipptreatment)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnbippkidney_Click()
+
+  modSettings.SaveSettingsToFile("Bipanna/KidneyURL", txtbippkidney.Text)
+  modBasic.$BipannaKidneyURL = txtbippkidney.Text
+  Balloon.Info(("Information saved"), btnbippkidney)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnbippbilling_Click()
+
+  modSettings.SaveSettingsToFile("Bipanna/BillingURL", txtbippbilling.Text)
+  modBasic.$BipannaBillingtURL = txtbippbilling.Text
+  Balloon.Info(("Information saved"), btnbippbilling)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnbipphospcode_Click()
+
+  modSettings.SaveSettingsToFile("Bipanna/HospitalCode", Base64(txtbipphospcode.Text))
+  modBasic.$BipannaHospitalCode = txtbipphospcode.Text
+  Balloon.Info(("Information saved"), btnbipphospcode)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub txtbipptreatment_Click()
+
+  txtbipptreatment.Text = ""
+
+End
+
+Public Sub txtbippkidney_Click()
+
+  txtbippkidney.Text = ""
+
+End
+
+Public Sub txtbippbilling_Click()
+
+  txtbippbilling.Text = ""
 
 End

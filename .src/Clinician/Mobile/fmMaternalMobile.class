@@ -443,7 +443,7 @@ Private Sub ShowSelectedVar()
         hForm11 = New FmEnterMultiExamVir(grdtreeview.Text, $encid, cmbancvisit.Text, sList, $Category)
         hForm11.ShowModal
       Else
-        hForm = New FmEnterMultiExam(grdtreeview.Text, $encid, cmbancvisit.Text, sList, $Category)
+        hForm = New FmEnterMultiExam(grdtreeview.Text, $encid, cmbancvisit.Text, sList, $Category, False)
         hForm.ShowModal
       Endif
       ShowClinicTable()
@@ -720,7 +720,7 @@ Private Sub ShowSelectedVar1()
         hForm11 = New FmEnterMultiExamVir(grdtreeview1.Text, $encid, cmbpncvisit.Text, sList, $Category)
         hForm11.ShowModal
       Else
-        hForm = New FmEnterMultiExam(grdtreeview1.Text, $encid, cmbpncvisit.Text, sList, $Category)
+        hForm = New FmEnterMultiExam(grdtreeview1.Text, $encid, cmbpncvisit.Text, sList, $Category, False)
         hForm.ShowModal
       Endif
       ShowClinicTable1()
