@@ -251,7 +251,7 @@ Public Sub Unpaidtable()
 
   Dim sql As String
 
-  sql = "select fldid,fldordtime,flditemname,fldstatus,fldid from tblpatbilling where fldencounterval=&1 and flditemtype=&2 and fldsave=&3 and (fldstatus=&4 or fldstatus=&5) and fldordcomp=&6 and (fldtarget=&7 or fldtarget=&8 or fldtarget=&9) and (flditemqty-fldretqty)>&{10}"
+  sql = "select fldid,fldordtime,flditemname,fldstatus,fldid,fldreason from tblpatbilling where fldencounterval=&1 and flditemtype=&2 and fldsave=&3 and (fldstatus=&4 or fldstatus=&5) and fldordcomp=&6 and (fldtarget=&7 or fldtarget=&8 or fldtarget=&9) and (flditemqty-fldretqty)>&{10}"
   $rData4 = modDatabase.$myConn.Exec(sql, $encid, "Procedures", False, "Punched", "Planned", modBasic.$compID, "Minor", "Extra", "Plaster", 0)
   $aMyFields4 = New String[]
   modGridView.ReadSmallData(GridView4, $rData4, $aMyFields4)
@@ -262,6 +262,8 @@ Public Sub Unpaidtable()
     .Columns[2].Width = 275 * modBasic.$AppWidthRatio
     .Columns[3].Width = 75 * modBasic.$AppWidthRatio
     .Columns[4].Width = 25 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 1
+
     .Columns[1].Text = "DateTime"
     .Columns[2].Text = "Procedure"
     .Columns[3].Text = "Status"
@@ -288,6 +290,41 @@ Public Sub GridView4_Click()
 
   If GridView4.Column = 4 Then
     If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
+      modDatabase.$myConn.Delete("tblpatbilling", "fldid=&1 and fldsave=&2", GridView4[GridView4.Row, 0].Text, False)
+      Unpaidtable()
+    Endif
+  Endif
+
+End
+
+Public Sub GridView4_Menu()
+
+  mnuhide.Popup()
+
+End
+
+Public Sub mnucomment_Click()
+
+  Dim xx As String
+  Dim res As Result
+
+  If GridView4.Rows.Selection.Count > 0 Then
+    xx = GetTextArea(GridView4[GridView4.Row, 2].Text, GridView4[GridView4.Row, 5].Text)
+    If xx Then
+      res = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1", GridView4[GridView4.Row, 0].Text)
+      res["fldreason"] = xx
+      res["xyz"] = False
+      res.Update
+      Unpaidtable()
+    Endif
+  Endif
+
+End
+
+Public Sub mnudelete_Click()
+
+  If GridView4.Rows.Selection.Count Then
+    If Message.Question("Are you sure ?", ("No"), ("Yes")) = 2 Then
       modDatabase.$myConn.Delete("tblpatbilling", "fldid=&1 and fldsave=&2", GridView4[GridView4.Row, 0].Text, False)
       Unpaidtable()
     Endif
@@ -357,7 +394,7 @@ Private Sub SHowSavedGrid()
 
   Dim sql As String
 
-  sql = "select fldid,fldtime,flditemname,fldrefer,fldbillno from tblpatbilling where fldencounterval=&1 and flditemtype=&2 and fldsave=&3 and (fldstatus=&4 or fldstatus=&5) and fldsample=&6 and (fldtarget=&7 or fldtarget=&8 or fldtarget=&9) and (flditemqty-fldretqty)>&{10} and fldid NOT IN(select fldgroupid from tblpatgeneral where fldencounterval=&1)"
+  sql = "select fldid,fldtime,flditemname,fldrefer,fldbillno,fldreason from tblpatbilling where fldencounterval=&1 and flditemtype=&2 and fldsave=&3 and (fldstatus=&4 or fldstatus=&5) and fldsample=&6 and (fldtarget=&7 or fldtarget=&8 or fldtarget=&9) and (flditemqty-fldretqty)>&{10} and fldid NOT IN(select fldgroupid from tblpatgeneral where fldencounterval=&1)"
   $rData1 = modDatabase.$myConn.Exec(sql, $encid, "Procedures", True, "Done", "Cleared", "Waiting", "Minor", "Extra", "Plaster", 0)
   $aMyFields1 = New String[]
   modGridView.ReadSmallData(GridView2, $rData1, $aMyFields1)
@@ -368,11 +405,13 @@ Private Sub SHowSavedGrid()
     .Columns[2].Width = 325 * modBasic.$AppWidthRatio
     .Columns[3].Width = 125 * modBasic.$AppWidthRatio
     .Columns[4].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 200 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "DateTime"
     .Columns[2].Text = "Procedure"
     .Columns[3].Text = "ReferBy"
     .Columns[4].Text = "Invoice"
+    .Columns[5].Text = "Comment"
   End With
 
 End

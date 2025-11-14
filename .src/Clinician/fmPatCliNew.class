@@ -2723,6 +2723,45 @@ Public Sub mnucurarchive_Click()
 
 End
 
+Public Sub mnucurvisitsumm_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modPatReports.GetOPDSummaryReportAllComp(Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnuallhistory_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowPatientHistoryReport(Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnuplanningall_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowPatientNoteReport(Trim(txtencid.Text), "Outpatient Notes")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
 Public Sub mnuexamrepo_Click()
 
   Dim xPath As String

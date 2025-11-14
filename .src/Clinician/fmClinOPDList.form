@@ -6,6 +6,7 @@
   Text = ("OPD Patients")
   { mnufile Menu
     Text = ("File")
+    Checked = True
     { mnusearchname Menu
       Text = ("Search (Name)")
     }
@@ -50,6 +51,12 @@
   { mnudata Menu
     Text = ("Current")
     Enabled = False
+    { mnucurvisitsumm Menu
+      Text = ("Visit Summary")
+    }
+    { mnuallhistory Menu
+      Text = ("History")
+    }
     { mnuvitalexam Menu
       Text = ("Vital Exams")
     }
@@ -61,6 +68,9 @@
     }
     { mnuradioview Menu
       Text = ("Radiology")
+    }
+    { mnuplanningall Menu
+      Text = ("OPD Advices")
     }
     { mnumedview Menu
       Text = ("Drug Dosing")

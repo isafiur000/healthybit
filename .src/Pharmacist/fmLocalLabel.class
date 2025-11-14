@@ -41,7 +41,7 @@ Private Sub FillWordCode()
     cmbword.List = ["Every", "Difference", "Hour", "Day", "Morning", "Noon", "Evening"]
 
   Else If rbprec.Value = True Then
-    cmbword.List = ["Two-hourly", "Hourly", "stat", "PRN", "SOS", "AM", "HS", "Pre", "Post", "Alt day", "Third day", "Fourth day", "Weekly", "Biweekly", "Triweekly", "Monthly", "Yearly", "Tapering"]                                                                  ''
+    cmbword.List = ["Two-hourly", "Hourly", "stat", "PRN", "SOS", "AM", "HS", "Pre", "Post", "Alt day", "Third day", "Fourth day", "Weekly", "Twice weekly", "Thrice weekly", "Biweekly", "Triweekly", "Monthly", "Yearly", "Tapering"]                                                                  ''
 
   Else If rbdosage.Value = True Then
     sql = "select distinct(fldvolunit) as col from tblmedbrand"

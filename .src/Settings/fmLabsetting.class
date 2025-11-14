@@ -56,6 +56,7 @@ Public Sub Form_Open()
 
   cmbwsheet.List = ["Continuous", "Categorical"]
   cmbprofilesheet.List = ["Minimum", "Detail"]
+  cmbworkcomment.List = ["Enable", "Disable"]
   cmbhidden.List = modMedicine.GetPathoCategoryList("Test")
   cmbhidden.Add("All Departments")
   cmblockspec.List = ["Yes", "No"]
@@ -640,6 +641,7 @@ Private Sub SHowSamplingData()
 
   cmbwsheet.Text = modSettings.ShowSettingFromFIle("LabWorksheet/PrintMode")
   cmbprofilesheet.Text = modSettings.ShowSettingFromFIle("LabWorksheet/Profile")
+  cmbworkcomment.Text = modSettings.ShowSettingFromFIle("LabWorksheet/Comment")
 
   cmbautospecimen.Text = modSettings.ShowSettingFromFIle("TestAddition/AutoSpecimen")
   cmbautosampleid.Text = modSettings.ShowSettingFromFIle("TestAddition/AutoSampleID")
@@ -676,24 +678,6 @@ Public Sub btnspecsuffix_Click()
   modSettings.SaveSettingsToFile("TestAddition/AutoSampleSuffix", cmbspecsuffix.Text)
   modBasic.$LabAutoSampleSuffix = cmbspecsuffix.Text
   Balloon.Info(("Information saved"), btnspecsuffix)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btnwsheet_Click()
-
-  modSettings.SaveSettingsToFile("LabWorksheet/PrintMode", cmbwsheet.Text)
-  modBasic.$LabWorkSheet = cmbwsheet.Text
-  Balloon.Info(("Information saved"), btnwsheet)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btnprofilesheet_Click()
-
-  modSettings.SaveSettingsToFile("LabWorksheet/Profile", cmbprofilesheet.Text)
-  modBasic.$LabSheetProfile = cmbprofilesheet.Text
-  Balloon.Info(("Information saved"), btnprofilesheet)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -739,6 +723,34 @@ Public Sub btnautoload_Click()
   modSettings.SaveSettingsToFile("TestAddition/AutoSampleLoad", cmbautoload.Text)
   modBasic.$AutoSampleLoad = cmbautoload.Text
   Balloon.Info(("Information saved"), btnautoload)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''-------------- worksheet
+Public Sub btnwsheet_Click()
+
+  modSettings.SaveSettingsToFile("LabWorksheet/PrintMode", cmbwsheet.Text)
+  modBasic.$LabWorkSheet = cmbwsheet.Text
+  Balloon.Info(("Information saved"), btnwsheet)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnprofilesheet_Click()
+
+  modSettings.SaveSettingsToFile("LabWorksheet/Profile", cmbprofilesheet.Text)
+  modBasic.$LabSheetProfile = cmbprofilesheet.Text
+  Balloon.Info(("Information saved"), btnprofilesheet)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnworkcomment_Click()
+
+  modSettings.SaveSettingsToFile("LabWorksheet/Comment", cmbworkcomment.Text)
+  modBasic.$LabSheetComment = cmbworkcomment.Text
+  Balloon.Info(("Information saved"), btnworkcomment)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

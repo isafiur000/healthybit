@@ -60,9 +60,9 @@ Private Sub ShowMessageGrid()
   Endif
 
   If chkdate.Value = True Then
-    sql = "select fldid,fldtime,fldreply,fldimportant,fldsubject,fldid,fldextension,fldmessage,flduserid,fldresponse,fldupuserid,fldreply,fldimportant from tblmessage where fldtarget=&1 and fldcomp like &2 and fldtime>=&3 and fldtime<=&4" & xstr & " ORDER BY fldtime DESC"                      ''
+    sql = "select fldid,fldtime,fldreply,fldimportant,fldsubject,fldid,fldextension,fldmessage,flduserid,fldresponse,fldupuserid,fldreply,fldimportant,fldcomp from tblmessage where fldtarget=&1 and fldcomp like &2 and fldtime>=&3 and fldtime<=&4" & xstr & " ORDER BY fldtime DESC"                      ''
   Else
-    sql = "select fldid,fldtime,fldreply,fldimportant,fldsubject,fldid,fldextension,fldmessage,flduserid,fldresponse,fldupuserid,fldreply,fldimportant from tblmessage where fldtarget=&1 and fldcomp like &2" & xstr & " ORDER BY fldtime DESC"
+    sql = "select fldid,fldtime,fldreply,fldimportant,fldsubject,fldid,fldextension,fldmessage,flduserid,fldresponse,fldupuserid,fldreply,fldimportant,fldcomp from tblmessage where fldtarget=&1 and fldcomp like &2" & xstr & " ORDER BY fldtime DESC"
   Endif
   $rData = modDatabase.$myConn.Exec(sql, modBasic.$compID, xorigin, modDate.StartSqlDate(Now()), modDate.EndSqlDate(Now()))
   $aMyFields = New String[]
@@ -81,11 +81,13 @@ Private Sub ShowMessageGrid()
     .Columns[10].Width = 100 * modBasic.$AppWidthRatio
     .Columns[11].Width = 1
     .Columns[12].Width = 1
+    .Columns[13].Width = 100 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "DateTime"
     .Columns[4].Text = "Subject"
     .Columns[8].Text = "Sender"
     .Columns[10].Text = "Respondent"
+    .Columns[13].Text = "Origin"
   End With
 
 End

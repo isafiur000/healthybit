@@ -30,6 +30,7 @@ Private aCalcNull As New Object[50]
 Private aCalcLimit As New Object[50]
 Private aButtonBox As New Object[50]
 Private aHelpButton As New Object[50]           ''aObj3
+Private aBlankSpace As New Object[50]
 Private aWebSpace As New Object[50]
 ''other variables
 Private $frm As String
@@ -161,6 +162,7 @@ Private Sub CreateControls()
           aGenTextArea[i] = New TextPlain(aWebFrame[i]) As "GenAreaGroup"
       End Select
       aHelpButton[i] = New ToolButton(aWebFrame[i]) As "ButtonBoxgroup"
+      aBlankSpace[i] = New Panel(aWebFrame[i])
       aWebSpace[i] = New Separator(Frame1)
     Endif
   Next
@@ -189,7 +191,7 @@ Private Sub DIsplayTextForm()
 
       ''create Name Label
       With aNameLabel[i]
-        .Width = 222 * AppFactor
+        .Width = 250 * AppFactor
         .Height = Slider1.Value * 25 * AppFactor
         .Text = $xData[i][0]
         .Tag = i
@@ -229,7 +231,8 @@ Private Sub DIsplayTextForm()
       ''create observation entry
       If $xData[i][3] = "Multiple Selection" Or If $xData[i][3] = "Drug Sensitivity" Or If $xData[i][3] = "WHO Sensitivity" Or If $xData[i][3] = "Text Table" Or If $xData[i][3] = "Dual Columns" Or If $xData[i][3] = "Triple Columns" Or If $xData[i][3] = "Single Column" Then
         With aGridView[i]
-          .Width = 475 * AppFactor
+          ' .Width = 475 * AppFactor
+          .Expand = True
           .Height = 25 * Slider1.Value * AppFactor
           .Mode = Select.Single
           If $xData[i][3] = "Dual Columns" Or If $xData[i][3] = "Triple Columns" Then
@@ -282,7 +285,8 @@ Private Sub DIsplayTextForm()
       Else If $xData[i][3] = "Left and Right" Then
         asx = GetListForControl($xData[i][0], $xData[i][3])
         With aLeftRight[i]
-          .Width = 475 * AppFactor
+          ' .Width = 475 * AppFactor
+          .Expand = True
           .Height = 25 * Slider1.Value * AppFactor
           If asx.Count >= 1 Then
             .LeftTitle = asx[0]
@@ -330,7 +334,8 @@ Private Sub DIsplayTextForm()
 
       Else If $xData[i][3] = "ImageValue" Then
         With aButtonBox[i]
-          .Width = 250 * AppFactor
+          ' .Width = 250 * AppFactor
+          .Expand = True
           .Height = 25 * AppFactor
           .Text = ""
           .Tag = i
@@ -369,7 +374,8 @@ Private Sub DIsplayTextForm()
           ' Endif
         End With
         With aCalcLimit[i]
-          .Width = 200 * AppFactor
+          ' .Width = 200 * AppFactor
+          .Expand = True
           .Height = 25 * AppFactor
           .Border = Border.Plain
           .Text = modFixLab.GetSubLatTestQualiReference(lblitem.Text, $xData[i][0])
@@ -411,7 +417,8 @@ Private Sub DIsplayTextForm()
           ' Endif
         End With
         With aLimitLabel[i]
-          .Width = 200 * AppFactor
+          ' .Width = 200 * AppFactor
+          .Expand = True
           .Height = 25 * AppFactor
           .Border = Border.Plain
           .Text = modFixLab.GetSubLatTestQualiReference(lblitem.Text, $xData[i][0])
@@ -420,7 +427,8 @@ Private Sub DIsplayTextForm()
 
       Else If $xData[i][3] = "Clinical Scale" Then
         With aTextArea[i]
-          .Width = 250 * AppFactor
+          ' .Width = 250 * AppFactor
+          .Expand = True
           .Height = 25 * AppFactor
           .Tag = i
         End With
@@ -433,7 +441,8 @@ Private Sub DIsplayTextForm()
 
       Else If $xData[i][3] = "Qualitative" Then
         With aLineText[i]
-          .Width = 250 * AppFactor
+          ' .Width = 250 * AppFactor
+          .Expand = True
           .Height = 25 * AppFactor
           .Text = $xData[i][1]
           .Tag = i
@@ -452,7 +461,8 @@ Private Sub DIsplayTextForm()
 
       Else If $xData[i][3] = "Single Selection" Then
         With aComboBox[i]
-          .Width = 300 * AppFactor
+          ' .Width = 300 * AppFactor
+          .Expand = True
           .Height = 25 * AppFactor
           .List = GetListForControl($xData[i][0], $xData[i][3])
           .Text = $xData[i][1]
@@ -473,7 +483,8 @@ Private Sub DIsplayTextForm()
 
       Else If $xData[i][3] = "Dichotomous" Then
         With aDichoValue[i]
-          .Width = 400 * AppFactor
+          ' .Width = 400 * AppFactor
+          .Expand = True
           .Height = 25 * AppFactor
           .List = GetListForControl($xData[i][0], $xData[i][3])
           .Value = $xData[i][1]
@@ -483,7 +494,8 @@ Private Sub DIsplayTextForm()
 
       Else If $xData[i][3] = "Left Right Qualitative" Then
         With aLeftRightText[i]
-          .Width = 400 * AppFactor
+          ' .Width = 400 * AppFactor
+          .Expand = True
           .Height = 25 * AppFactor
           .DataText = $xData[i][1]
           .Tag = i
@@ -492,7 +504,8 @@ Private Sub DIsplayTextForm()
 
       Else If $xData[i][3] = "Left Right Quantitative" Then
         With aLeftRightValue[i]
-          .Width = 400 * AppFactor
+          ' .Width = 400 * AppFactor
+          .Expand = True
           .Height = 25 * AppFactor
           .DataValue = $xData[i][1]
           .Tag = i
@@ -501,7 +514,8 @@ Private Sub DIsplayTextForm()
 
       Else If $xData[i][3] = "RichText Area" Then
         With aHTMLText[i]
-          .Width = 475 * AppFactor
+          ' .Width = 475 * AppFactor
+          .Expand = True
           .Height = 25 * Slider1.Value * AppFactor
           .RichText = $xData[i][1]
           .DictionaryPath = modBasic.$dictPathList
@@ -511,7 +525,8 @@ Private Sub DIsplayTextForm()
 
       Else If $xData[i][3] = "Label Only" Then
         With aLineText[i]
-          .Width = 200 * AppFactor
+          ' .Width = 200 * AppFactor
+          .Expand = True
           .Height = 25 * AppFactor
           .Enabled = False
           .Text = ""
@@ -521,7 +536,8 @@ Private Sub DIsplayTextForm()
 
       Else
         With aGenTextArea[i]
-          .Width = 475 * AppFactor
+          ' .Width = 475 * AppFactor
+          .Expand = True
           .Height = 25 * Slider1.Value * AppFactor
           .Text = $xData[i][1]
           .DictionaryPath = modBasic.$dictPathList
@@ -542,6 +558,11 @@ Private Sub DIsplayTextForm()
         ' If modBasic.$LabQuickMulti = "Yes" Then
         '   .Enabled = False
         ' Endif
+      End With
+
+      With aBlankSpace[i]
+        .Width = 50 * AppFactor
+        .Height = 25 * AppFactor
       End With
 
       With aWebSpace[i]
@@ -678,13 +699,13 @@ Public Sub Form_Close()
 
 End
 
-Public Sub Form_Resize()
-
-  If Frame1.Height < $xData.Count * 45 Then
-    Frame1.Height = $xData.Count * 45
-  Endif
-
-End
+' Public Sub Form_Resize()
+'
+'   If Frame1.Height < $xData.Count * 45 Then
+'     Frame1.Height = $xData.Count * 45
+'   Endif
+'
+' End
 
 Public Sub btnexectext_Click()
 

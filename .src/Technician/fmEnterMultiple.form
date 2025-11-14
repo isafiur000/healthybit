@@ -3,9 +3,8 @@
 { Form Form
   MoveScaled(0,0,110,69)
   Text = ("Enter Components")
-  Resizable = False
   Arrangement = Arrange.Vertical
-  AutoResize = True
+  Margin = True
   { Panel2 Panel
     MoveScaled(0,0,110,4)
     { lblitem Label
@@ -31,15 +30,14 @@
       Text = ("Name:")
     }
   }
-  { Panel3 Panel
-    MoveScaled(0,4,110,56)
-    { ScrollView1 ScrollView
-      MoveScaled(1,0,108,55)
-      { Frame1 Panel
-        MoveScaled(0,0,107,54)
-        Arrangement = Arrange.Vertical
-        AutoResize = True
-      }
+  { ScrollView1 ScrollView
+    MoveScaled(0,4,108,55)
+    Expand = True
+    Arrangement = Arrange.Vertical
+    { Frame1 Panel
+      MoveScaled(0,0,107,54)
+      Arrangement = Arrange.Vertical
+      AutoResize = True
     }
   }
   { Panel1 Panel

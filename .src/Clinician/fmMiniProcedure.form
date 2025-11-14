@@ -4,6 +4,14 @@
   MoveScaled(0,0,107,71)
   Text = ("Minor Procedures")
   Resizable = False
+  { mnuhide Menu
+    { mnucomment Menu
+      Text = ("Comment")
+    }
+    { mnudelete Menu
+      Text = ("Delete")
+    }
+  }
   { Panel1 Panel
     MoveScaled(0,0,106,70)
     { TabPanel1 TabPanel
@@ -177,6 +185,7 @@
       }
       { txtsummary TextHTML
         MoveScaled(1,23,69,18)
+        Tag = "Auto"
         Expand = True
       }
       Index = 2

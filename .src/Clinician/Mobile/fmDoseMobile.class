@@ -11,6 +11,7 @@ Private aNameLabel As New Object[50]
 Private aHorizPanel As New Object[50]
 Private aIndexVal As New Object[50]
 Private aTimeLabel As New Object[50]
+Private aTimeBox As New Object[50]
 Private aRegmLabel As New Object[50]
 Private aQuantiBox As New Object[50]
 Private aUnitLabel As New Object[50]
@@ -90,7 +91,12 @@ Private Sub LoadControlsWeb()
 
     For Each $rData
       If i < 49 Then
-        xtime = GetCurrentTime($rData["fldid"], $rData["fldfreq"], $rData["fldstarttime"])
+        Select $rData["fldfreq"]
+          Case "stat", "PRN", "SOS"
+            xtime = Time(Now())
+          Case Else
+            xtime = GetCurrentTime($rData["fldid"], $rData["fldfreq"], $rData["fldstarttime"])
+        End Select
         If xtime Then
 
           aWebFrame[i] = New VBox(Frame1)
@@ -98,6 +104,7 @@ Private Sub LoadControlsWeb()
           aHorizPanel[i] = New HBox(aWebFrame[i])
           aIndexVal[i] = New ValueBox(aHorizPanel[i])
           aTimeLabel[i] = New Label(aHorizPanel[i])
+          aTimeBox[i] = New DateBox(aHorizPanel[i])
           aRegmLabel[i] = New Label(aHorizPanel[i])
           aUnitLabel[i] = New Label(aHorizPanel[i])
           aQuantiBox[i] = New ValueBox(aHorizPanel[i])
@@ -108,74 +115,80 @@ Private Sub LoadControlsWeb()
 
           With aWebFrame[i]
             .Width = Frame1.Width
-            .Height = 60 * AppFactor
+            .Height = 50 * AppFactor
           End With
 
           With aNameLabel[i]
-            .Height = 30 * AppFactor
+            .Height = 25 * AppFactor
             .Text = "<b>" & $rData["flditem"] & "</b>"
             .Tag = i
           End With
 
           With aHorizPanel[i]
-            .Height = 30 * AppFactor
+            .Height = 25 * AppFactor
           End With
 
           With aIndexVal[i]
             .Width = 25 * AppFactor
-            .Height = 30 * AppFactor
+            .Height = 25 * AppFactor
             .Value = $rData["fldid"]
             .Visible = False
             .Tag = i
           End With
           With aTimeLabel[i]
-            .Width = 75 * AppFactor
-            .Height = 30 * AppFactor
-            .Text = CStr(xtime)
+            .Width = 50 * AppFactor
+            .Height = 25 * AppFactor
+            .Text = modReportVar.GetDateTimeReport(xtime, gb.ShortTime)
+            .Tag = i
+          End With
+          With aTimeBox[i]
+            .Mode = DateChooser.TimeOnly
+            .Value = xtime
+            .Visible = False
             .Tag = i
           End With
           With aRegmLabel[i]
             .Expand = True
-            .Height = 30 * AppFactor
+            .Height = 25 * AppFactor
             .Text = $rData["fldroute"] & Space(2) & modMedConstant.GetMedicineRegimenInFormat($rData["fldroute"], $rData["flditem"], $rData["flddose"], $rData["fldfreq"], $rData["flddays"])
             .Tag = $rData["fldfreq"]
           End With
 
           With aUnitLabel[i]
             .Width = 75 * AppFactor
-            .Height = 30 * AppFactor
+            .Height = 25 * AppFactor
             .Border = Border.Plain
             .Text = modMedConstant.GetMedicineDoseFormat($rData["fldroute"], $rData["flditem"], $rData["flddose"], modBasic.$MedicineDoseFormat)  '''Round($rData["flddose"] / modMedConstant.GetDrugInitialStrength($rData["flditem"]), -2)
             .Tag = i
           End With
           With aQuantiBox[i]
             .Width = 75 * AppFactor
-            .Height = 30 * AppFactor
+            .Height = 25 * AppFactor
             .Tag = i
           End With
           xunit = modPharmLabel.GetDosageFormForLabel($rData["flditem"], "Inpatient")
           With aDoseLabel[i]
             .Width = 75 * AppFactor
-            .Height = 30 * AppFactor
+            .Height = 25 * AppFactor
             .Border = Border.Plain
             .Text = xunit
             .Tag = i
           End With
           With aCountBox[i]
             .Width = 50 * AppFactor
-            .Height = 30 * AppFactor
+            .Height = 25 * AppFactor
             .Enabled = False
             .Value = modPharmacy.TotalDoseCount($rData["fldid"], Now())
             .Tag = i
           End With
           With aSkipBox[i]
             .Width = 75 * AppFactor
-            .Height = 30 * AppFactor
+            .Height = 25 * AppFactor
             .Text = "Skip"
             .Tag = i
           End With
           With aBlankBox[i]
-            .Height = 15 * AppFactor
+            .Height = 8 * AppFactor
           End With
 
         Endif
@@ -199,9 +212,9 @@ Public Sub btnsaveall_Click()
 
             If aTimeLabel[i].Text Then
               If aSkipBox[i].Value Then
-                modPharmSub.InsertNurDosing(aIndexVal[i].Value, $encid, 0, aDoseLabel[i].Text, CDate(aTimeLabel[i].Text))
+                modPharmSub.InsertNurDosing(aIndexVal[i].Value, $encid, 0, aDoseLabel[i].Text, aTimeBox[i].Value)
               Else
-                modPharmSub.InsertNurDosing(aIndexVal[i].Value, $encid, aQuantiBox[i].Value, aDoseLabel[i].Text, CDate(aTimeLabel[i].Text))
+                modPharmSub.InsertNurDosing(aIndexVal[i].Value, $encid, aQuantiBox[i].Value, aDoseLabel[i].Text, aTimeBox[i].Value)
               Endif
             Else
               modPharmSub.InsertNurDosing(aIndexVal[i].Value, $encid, aQuantiBox[i].Value, aDoseLabel[i].Text, "")

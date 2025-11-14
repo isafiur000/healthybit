@@ -1208,5 +1208,7 @@ ALTER TABLE tblopvisit ADD COLUMN fldsummary TEXT NULL
 ALTER TABLE tblopvisit ADD COLUMN fldflaguser VARCHAR( 25 ) NULL
 ALTER TABLE tblopvisit ADD COLUMN fldpresummary TEXT NULL
 
+ALTER TABLE tblsyndromes ADD fldcomp VARCHAR( 50 ) NULL
+UPDATE tblsyndromes SET fldcomp='%' WHERE fldcomp IS NULL
 
 

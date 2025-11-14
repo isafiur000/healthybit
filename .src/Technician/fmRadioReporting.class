@@ -1475,11 +1475,11 @@ Private Sub FillSamplingEncounters()
   Endif
 
   If rbencrepo.Value = True Then
-    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldencounterval from " & xpreun & "tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                        ''
+    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval from " & xpreun & "tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                        ''
   Else If rbinvoicrepo.Value = True Then
-    sql = "select tblpatradiotest.fldbillno as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldencounterval from " & xpreun & "tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder
+    sql = "select tblpatradiotest.fldbillno as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval from " & xpreun & "tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder
   Else If rbindoorrepo.Value = True Then
-    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldencounterval from " & xpreun & "tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                      ''
+    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval from " & xpreun & "tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                      ''
   Endif
   If rbpending.Value = True Then
     $rData2 = modDatabase.$myConn.Exec(sql, "Sampled", False, modBasic.$compID, modDate.StartSqlDate(dtsort.value), modDate.EndSqlDate(DateAdd(dtsort.Value, gb.Day, txtrangerepo.Value)), cmbcategory.Text, cmbrepocounter.Text & "%", LCase(Trim(txtsearch.Text)))
@@ -1508,6 +1508,7 @@ Private Sub FillSamplingEncounters()
     .Columns[10].Width = 100 * modBasic.$AppWidthRatio
     .Columns[11].Width = 150 * modBasic.$AppWidthRatio
     .Columns[12].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[13].Width = 125 * modBasic.$AppWidthRatio
 
     .Columns[2].Text = "Name"
     .Columns[4].Text = "TestName"
@@ -1517,6 +1518,7 @@ Private Sub FillSamplingEncounters()
     .Columns[10].Text = "Counter"
     .Columns[11].Text = "Planned"
     .Columns[12].Text = "Contact"
+    .Columns[13].Text = "Scheme"
   End With
 
 End
@@ -1536,6 +1538,8 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
     GridView2.Data.Text = modReportVar.GetDateTimeReport($rData2[$aMyFields2[Column]], gb.GeneralDate)
   Else If Column = 12 Then
     GridView2.Data.Text = modPatient.GetPatientContactByEnc($rData2[$aMyFields2[Column]])
+  Else If Column = 13 Then
+    GridView2.Data.Text = modPatient.ShowDiscountCategEnc($rData2[$aMyFields2[Column]])
   Else
     GridView2.Data.Text = $rData2[$aMyFields2[Column]]
   Endif

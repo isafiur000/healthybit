@@ -682,8 +682,8 @@ Public Sub btnfinal_Click()
 
   Dim xhash As String
 
-  xhash = $encid & ":" & "Final Subjective Refraction" & ":" & modMisc.GetWebIndexStr(modString.GetDateString(Now()))
-  SaveLeftRightExams(xhash, "Final Subjective Refraction", pnlrefractright, pnlrefractleft)
+  xhash = $encid & ":" & "Subjective Refraction" & ":" & modMisc.GetWebIndexStr(modString.GetDateString(Now()))
+  SaveLeftRightExams(xhash, "Subjective Refraction", pnlrefractright, pnlrefractleft)
   Balloon.Info(("Information saved"), btnfinal)
   Balloon.Delay = modBasic.$BalloonDelay
   btnfinal.Enabled = False
@@ -737,6 +737,72 @@ Public Sub btnretinoscopydrug_Click()
 
 End
 
+Public Sub TabPanel1_Click()
+
+  btnvisual.Enabled = True
+  btnretinoscopydrug.Enabled = True
+  btnpresent.Enabled = True
+  btnfinal.Enabled = True
+  btnprescribe.Enabled = True
+
+End
+
+Public Sub btnrepovisual_Click()
+
+  Dim xPath As String
+  Dim xList As String[] = ["Visual Acuity", "Stereopsis", "Miscellaneous Visual Acuity"]
+
+  If $encid Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowPatientUniExaminationgReport($encid, $sType, xList, "Visual Acuity")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview($encid, xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub btnrepopresent_Click()
+
+  Dim xPath As String
+  Dim xList As String[] = ["Present Glass", "Present Glass Lens Type", "Present Glass Remarks"]
+
+  If $encid Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowPatientUniExaminationgReport($encid, $sType, xList, "Present Glass Prescription")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview($encid, xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub btnreporetinsocopy_Click()
+
+  Dim xPath As String
+  Dim xList As String[] = ["Retinoscopy"]
+
+  If $encid Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowPatientUniExaminationgReport($encid, $sType, xList, "Retinoscopy")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview($encid, xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub btnreportrefraction_Click()
+
+  Dim xPath As String
+  Dim xList As String[] = ["Subjective Refraction"]
+
+  If $encid Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowPatientUniExaminationgReport($encid, $sType, xList, "Final Subjective Refraction")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview($encid, xPath, "ReportSize")
+  Endif
+
+End
+
 Public Sub btnnewglass_Click()
 
   Dim xPath As String
@@ -748,15 +814,5 @@ Public Sub btnnewglass_Click()
     Dec Application.Busy
     modControlSub.OpenHTMLPreview($encid, xPath, "ReportSize")
   Endif
-
-End
-
-Public Sub TabPanel1_Click()
-
-  btnvisual.Enabled = True
-  btnretinoscopydrug.Enabled = True
-  btnpresent.Enabled = True
-  btnfinal.Enabled = True
-  btnprescribe.Enabled = True
 
 End

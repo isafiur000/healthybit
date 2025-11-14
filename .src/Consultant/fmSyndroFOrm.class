@@ -6,6 +6,13 @@ Private $aMyFields As String[]
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me)
+  If modHelpVariable.$LogInCategory = "Clinician" Then
+    cmbtarget.Text = modBasic.$compID
+    cmbtarget.Enabled = False
+  Else
+    cmbtarget.List = modBasic.$AllCompPerList
+    cmbtarget.Enabled = True
+  Endif
   cmbcategory.List = modMedicine.GetPathoCategoryList("Syndrome")
 
 End
@@ -32,6 +39,18 @@ Public Sub Form_KeyRelease()
 
 End
 
+Public Sub cmbtarget_Click()
+
+  lblcomp.Text = modGeneral.GetCompNameFromCompID(cmbtarget.Text)
+
+End
+
+Public Sub cmbtarget_KeyRelease()
+
+  modFillContainer.RestrictComboToContent(cmbtarget)
+
+End
+
 Public Sub tlbtnadd_Click()
 
   Dim hForm As FmAddVariable1
@@ -50,17 +69,20 @@ Public Sub btnadd_Click()
     txtcode.Text = "Other"
   Endif
   If cmbcategory.Text And If txtsyndrome.Text And If txtcode.Text Then
-    res = modDatabase.$medConn.Create("tblsyndromes")
-    res["fldsyndrome"] = Trim(txtsyndrome.Text)
-    res["fldcategory"] = cmbcategory.Text
-    res["fldsymcode"] = txtcode.Text
-    res.Update
-    ShowGridData(cmbcategory.Text)
-    txtsyndrome.Text = ""
-    txtcode.Text = ""
-    txtsearch.Text = ""
-    Balloon.Info(("Information saved"), btnadd)
-    Balloon.Delay = modBasic.$BalloonDelay
+    If cmbtarget.Text Then
+      res = modDatabase.$medConn.Create("tblsyndromes")
+      res["fldsyndrome"] = Trim(txtsyndrome.Text)
+      res["fldcategory"] = cmbcategory.Text
+      res["fldsymcode"] = txtcode.Text
+      res["fldcomp"] = cmbtarget.Text
+      res.Update
+      ShowGridData(cmbcategory.Text)
+      txtsyndrome.Text = ""
+      txtcode.Text = ""
+      txtsearch.Text = ""
+      Balloon.Info(("Information saved"), btnadd)
+      Balloon.Delay = modBasic.$BalloonDelay
+    Endif
   Endif
 
 End
@@ -74,7 +96,7 @@ End
 Public Sub btndel_Click()
 
   If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
-    modDatabase.$medConn.Delete("tblsyndromes", "fldsyndrome=&1", GridView1[GridView1.Row, 0].Text)
+    modDatabase.$medConn.Delete("tblsyndromes", "fldsyndrome=&1 and fldcomp=&2", GridView1[GridView1.Row, 0].Text, cmbtarget.Text)
     ShowGridData(cmbcategory.Text)
     txtsyndrome.Text = ""
     txtcode.Text = ""
@@ -87,7 +109,7 @@ End
 Private Sub ShowGridData(sType As String)
 
   If sType Then
-    $rData = modDatabase.$medConn.Exec("select fldsyndrome,fldsymcode from tblsyndromes where fldcategory=&1", sType)
+    $rData = modDatabase.$medConn.Exec("select fldsyndrome,fldsymcode from tblsyndromes where fldcategory=&1 and fldcomp=&2", sType, cmbtarget.Text)
     $aMyFields = New String[]
     modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
     With GridView1

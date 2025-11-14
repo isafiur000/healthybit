@@ -1726,7 +1726,11 @@ Private Sub SampleWorkSheet(sCategList As String[])
   Dim $sampleDate As String[]
   Dim $invoiceNo As String[]
 
-  $BillingReport = New CReportHTML([("Test Name"), ("Observations")], "LaboratoryReport", $encid, ["Footer"])
+  If modBasic.$LabSheetComment = "Enable" Then
+    $BillingReport = New CReportHTML([("Test Name"), ("Observations"), ("Comment")], "LaboratoryReport", $encid, ["Footer"])
+  Else
+    $BillingReport = New CReportHTML([("Test Name"), ("Observations")], "LaboratoryReport", $encid, ["Footer"])
+  Endif
   $BillingReport.UserData.Add("Department: ", "Report")
   $BillingReport.UserData.Add(sCateg, "PARAM1")
   $BillingReport.UserData.Add(txtencid.Text, "SearchVariable")
@@ -1745,7 +1749,7 @@ Private Sub SampleWorkSheet(sCategList As String[])
 
     For i = 0 To GridView1.Rows.Count - 1
       If GridView1[i, 1].Picture = Picture["icons/checked.png"] And If modFixLab.GetLabTestCategory(GridView1[i, 3].Text) = sCateg Then
-        res = modDatabase.$myConn.Exec("select fldtestid,fldmethod,fldsampleid,fldsampletype,fldtest_type,fldrefername,fldcondition,fldtime_sample,fldbillno from " & $tblpatlabtest & " where fldid=&1", GridView1[i, 0].Text)
+        res = modDatabase.$myConn.Exec("select fldtestid,fldmethod,fldsampleid,fldsampletype,fldtest_type,fldrefername,fldcondition,fldtime_sample,fldbillno,fldcomment from " & $tblpatlabtest & " where fldid=&1", GridView1[i, 0].Text)
 
         $referName.Add(res["fldrefername"])
         $condiName.Add(res["fldcondition"])
@@ -1765,6 +1769,9 @@ Private Sub SampleWorkSheet(sCategList As String[])
         With asx
           .Add(xval)
           .Add("")
+          If modBasic.$LabSheetComment = "Enable" Then
+            .Add(res["fldcomment"])
+          Endif
         End With
         $BillingReport.Add(asx)
         asx.Clear()

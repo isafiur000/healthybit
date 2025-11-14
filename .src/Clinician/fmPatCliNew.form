@@ -92,6 +92,13 @@
   }
   { mnucurrent Menu
     Text = ("Current")
+    { mnucurvisitsumm Menu
+      Text = ("Visit Summary")
+    }
+    { mnuallhistory Menu
+      Text = ("History")
+      Radio = True
+    }
     { mnuexamrepo Menu
       Text = ("Examination")
     }
@@ -100,6 +107,9 @@
     }
     { mnuradio Menu
       Text = ("Radiology")
+    }
+    { mnuplanningall Menu
+      Text = ("OPD Advices")
     }
     { mnudrugdosing Menu
       Text = ("Drug Dosing")
@@ -879,6 +889,7 @@
         }
         { txtgencomplaint TextHTML
           MoveScaled(0,5,51,16)
+          Tag = "Auto"
           Expand = True
         }
         { lblcomplaintuser Label
@@ -1307,7 +1318,6 @@
         }
         { pnloutcome Panel
           MoveScaled(0,14,52,4)
-          Enabled = False
           { cmbrefer ComboBox
             MoveScaled(18,0.5,26,3)
             Visible = False
@@ -1346,6 +1356,7 @@
         }
         { txtcomment TextHTML
           MoveScaled(0,24,50,14)
+          Tag = "Auto"
           Expand = True
         }
       }

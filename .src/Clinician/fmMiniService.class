@@ -616,8 +616,8 @@ Private Sub CompleteGrid()
 
   Dim sql As String
 
-  sql = "select fldid,fldordtime,flditemname,flditemqty,fldid,flditemtype from tblpatbilling where fldencounterval=&1 and fldsave=&2 and fldprint=&3 and fldordcomp like &4 and (flditemtype=&5 or flditemtype=&6 or flditemtype=&7)"
-  $rData2 = modDatabase.$myConn.Exec(sql, $encid, True, False, modBasic.$compID, "General Services", "Procedures", "Other Items")
+  sql = "select fldid,fldordtime,flditemname,flditemqty,fldid,flditemtype,flddisctype from tblpatbilling where fldencounterval=&1 and fldsave=&2 and fldordcomp like &3 and (flditemtype=&4 or flditemtype=&5 or flditemtype=&6)"
+  $rData2 = modDatabase.$myConn.Exec(sql, $encid, True, modBasic.$compID, "General Services", "Procedures", "Other Items")
   $aMyFields2 = New String[]
   modGridView.ReadSmallData(GridView2, $rData2, $aMyFields2)
 
@@ -629,11 +629,13 @@ Private Sub CompleteGrid()
     .Columns[3].Width = 50 * modBasic.$AppWidthRatio
     .Columns[4].Width = 1
     .Columns[5].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[6].Width = 150 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "DateTime"
     .Columns[2].Text = "Particulars"
     .Columns[3].Text = "QTY"
     .Columns[5].Text = "Category"
+    .Columns[6].Text = "Scheme"
   End With
 
 End

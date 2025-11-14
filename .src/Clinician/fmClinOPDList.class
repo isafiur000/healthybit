@@ -431,14 +431,14 @@ Private Function ExecuteQuery(xFldList As String[]) As Result
   If chkdate.Value = True Then
     If modBasic.$FixedDepartment Then
       sql = Subst("select &1 from " & xpreun & "&2", xFldList.Join(","), $sTable) & xunion & "  where " & $sTable & "." & "fldconsulttime>=&1 and " & $sTable & "." & "fldconsulttime<=&2 and " & $sTable & "." & "fldstatus=&3 and " & $sTable & "." & "fldconsultname=&4" & xencid & xconsult & xpaid & xcolor & xstate & xforward & $RepoStr & xorder                                           ''
-      res = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(dtsort.Value), modDate.EndSqlDate(DateAdd(dtsort.Value, gb.Day, txtrange.Value)), "Planned", modBasic.$FixedDepartment)
+      res = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(DateAdd(dtsort.Value, gb.Day, 0 - txtrange.Value)), modDate.EndSqlDate(dtsort.Value), "Planned", modBasic.$FixedDepartment)
     Else
       If cmbdept.Text = "All" Then
         sql = Subst("select &1 from " & xpreun & "&2", xFldList.Join(","), $sTable) & xunion & " where " & $sTable & "." & "fldconsulttime>=&1 and " & $sTable & "." & "fldconsulttime<=&2 and " & $sTable & "." & "fldstatus=&3" & xencid & xconsult & xpaid & xcolor & xstate & xforward & $RepoStr & xorder                                             ''
       Else
         sql = Subst("select &1 from " & xpreun & "&2", xFldList.Join(","), $sTable) & xunion & " where " & $sTable & "." & "fldconsulttime>=&1 and " & $sTable & "." & "fldconsulttime<=&2 and " & $sTable & "." & "fldstatus=&3 and " & $sTable & "." & "fldconsultname=&4" & xencid & xconsult & xpaid & xcolor & xstate & xforward & $RepoStr & xorder
       Endif
-      res = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(dtsort.Value), modDate.EndSqlDate(DateAdd(dtsort.Value, gb.Day, txtrange.Value)), "Planned", cmbdept.Text)
+      res = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(DateAdd(dtsort.Value, gb.Day, 0 - txtrange.Value)), modDate.EndSqlDate(dtsort.Value), "Planned", cmbdept.Text)
     Endif
 
   Else
@@ -763,7 +763,7 @@ Public Sub GridView1_Click()
 
     Else If GridView1.Column = 17 Then
       xlst = New String[]
-      xData = InputCombo("Select Notice", GridView1[GridView1.Row, 2].Text, xlst, "", False)
+      xData = InputCombo("Select Notice", GridView1[GridView1.Row, 2].Text, xlst, GridView1[GridView1.Row, 17].Text, False)
       If xData Then
         If $sTable = "tblconsult" Then
           modPatientSub.UpdateConsultNotice(GridView1[GridView1.Row, 0].Text, xData)
@@ -1819,6 +1819,45 @@ Public Sub mnulabview_Click()
   If GridView1.Rows.Selection.Count Then
     Inc Application.Busy
     xPath = modCHTMLPatient.ShowPatientLaboratoryReport(GridView1[GridView1.Row, 2].Text, LabUnitForm())
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(GridView1[GridView1.Row, 2].Text, xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnucurvisitsumm_Click()
+
+  Dim xPath As String
+
+  If GridView1.Rows.Selection.Count Then
+    Inc Application.Busy
+    xPath = modPatReports.GetOPDSummaryReportAllComp(GridView1[GridView1.Row, 2].Text)
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(GridView1[GridView1.Row, 2].Text, xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnuallhistory_Click()
+
+  Dim xPath As String
+
+  If GridView1.Rows.Selection.Count Then
+    Inc Application.Busy
+    xPath = modPatReports.ShowPatientHistoryReport(GridView1[GridView1.Row, 2].Text)
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(GridView1[GridView1.Row, 2].Text, xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnuplanningall_Click()
+
+  Dim xPath As String
+
+  If GridView1.Rows.Selection.Count Then
+    Inc Application.Busy
+    xPath = modPatReports.ShowPatientNoteReport(GridView1[GridView1.Row, 2].Text, "Outpatient Notes")
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(GridView1[GridView1.Row, 2].Text, xPath, "ReportSize")
   Endif

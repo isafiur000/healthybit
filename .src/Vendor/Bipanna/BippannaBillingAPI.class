@@ -3,8 +3,6 @@
 Private $patID As String
 Private $sDiseaseId As Integer
 Private $sBillNo As String
-Private $sBillAmt As Float
-Private $sBillPath As String
 Private $xOutput As String
 
 Public Sub _new(sPatID As String, sDiseaseID As Integer, sBillNo As String)
@@ -73,7 +71,6 @@ Private Sub ExecuteAPI()
   Dim ycont As String
 
   Dim aPath As String
-  Dim xpatout As String
 
   xurl = modBasic.$BipannaBillingtURL
   xauth = "Authorization: Bearer " & modBasic.$BipannaHospitalCode
