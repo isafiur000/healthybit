@@ -44,6 +44,7 @@ Private Sub LoadSpecializedForms(sType As String)
   Dim hForm1 As FmNeuroExam
   ' Dim hForm2 As FmOptometry
   Dim hForm2 As FmRefraction
+  Dim hForm3 As FmANCForm
 
   If sType = "Neurology" Then
     hForm1 = New FmNeuroExam(Trim(txtencid.Text), sType, $DataType, Panel2)
@@ -54,6 +55,10 @@ Private Sub LoadSpecializedForms(sType As String)
     hForm2 = New FmRefraction(Trim(txtencid.Text), sType, $DataType, Panel2)
     Panel2.Height = hForm2.Height
     Panel2.Width = hForm2.Width + 25 * modBasic.$AppWidthRatio
+  Else If sType = "ANC Visit" Then
+    hForm3 = New FmANCForm(Trim(txtencid.Text), sType, $DataType, Panel2)
+    Panel2.Height = hForm3.Height
+    Panel2.Width = hForm3.Width + 25 * modBasic.$AppWidthRatio
   Endif
 
 End

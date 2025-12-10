@@ -1400,12 +1400,16 @@ End
 Public Sub btnaddcounter_Click()
 
   Dim hForm As FmAddVariableGrid
+  Dim xPass As String
 
-  hform = New FmAddVariableGrid("fldcounter", "tblradiocounter")
-  hform.ShowModal
-  $counterLst = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select fldcounter as col from tblradiocounter"))
-  cmbcounter.List = $counterLst
-  cmbrepocounter.List = $counterLst
+  xPass = InputPassword("Provide Root Password", "Verification", "")
+  If modPassword.GetSuperVerification(modBasic.$lbluser, xPass) = True Then
+    hform = New FmAddVariableGrid("fldcounter", "tblradiocounter")
+    hform.ShowModal
+    $counterLst = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select fldcounter as col from tblradiocounter"))
+    cmbcounter.List = $counterLst
+    cmbrepocounter.List = $counterLst
+  Endif
 
 End
 

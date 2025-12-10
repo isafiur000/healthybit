@@ -1,0 +1,595 @@
+' Gambas class file
+
+Private $encid As String
+Private $sExam As String
+Private $sType As String
+Private $PatientNum As String
+
+Private $ObsColumns As String[] = ["Date of Birth", "Gestational Age", "Complicattions during preg.", "Mode of delivery", "Complication in 3rd stage", "Puerperium", "Live/SB", "Gender", "Birth Weight", "Outcome"]
+Private $ANCColumns As String[] = ["Date of Regd", "Fetal Movement", "Gest. Age", "Uterine Ht.", "SFH (cm)", "Presentation", "Relation of PP to pelvic brim", "FHS", "Weight (Kg)", "Blood Pressure", "Edema", "Urine Albumin", "Urine Sugar", "Medicine", "Next Visit", "Sign"]
+Private $ObsVarData As Variant[]
+Private $ANCVarData As Variant[]
+
+Private $ObsHistoryCount As Integer
+Private aObsRowAll As New Object[15]
+Private aObsBirthDate As New Object[15]
+Private aObsGestAge As New Object[15]
+Private aObsComplPreg As New Object[15]
+Private aObsDelMode As New Object[15]
+Private aObsComplStage As New Object[15]
+Private aObsPupureum As New Object[15]
+Private aObsLiveSB As New Object[15]
+Private aObsBabySex As New Object[15]
+Private aObsBirthWt As New Object[15]
+Private aObsOutcome As New Object[15]
+Private aObsBtnSave As New Object[15]
+Private aObsBlankBox As New Object[15]
+
+Private $ANCChartCount As Integer
+Private aANCRowAll As New Object[25]
+Private aANCEntryDate As New Object[25]
+Private aANCFetalMove As New Object[25]
+Private aANCGestAge As New Object[25]
+Private aANCUterineHt As New Object[25]
+Private aANCSFHCm As New Object[25]
+Private aANCPresent As New Object[25]
+Private aANCRelation As New Object[25]
+Private aANCFHS As New Object[25]
+Private aANCPatWeight As New Object[25]
+Private aANCBloodPress As New Object[25]
+Private aANCDiastBP As New Object[25]
+Private aANCEdema As New Object[25]
+Private aANCUrineAlbum As New Object[25]
+Private aANCUrineSugar As New Object[25]
+Private aANCMedicine As New Object[25]
+Private aANCNextVisit As New Object[25]
+Private aANCSigna As New Object[25]
+Private aANCBtnSave As New Object[25]
+Private aANCBlankBox As New Object[25]
+
+Public Sub _new(encid As String, sExam As String, sType As String)
+
+  $encid = encid
+  $sExam = sExam
+  $sType = sType
+
+End
+
+Public Sub Form_Open()
+
+  $PatientNum = modPatient.GetPatientNoByEnc($encid)
+
+  GetPastObstetrics()
+  $ObsHistoryCount = $ObsVarData.Count
+  SetObstHistory()
+
+  GetPastANCParams()
+  $ANCChartCount = $ANCVarData.Count
+  SetANCCharrt()
+
+End
+
+''=========================== Obstetrics ==========================================
+Private Sub SetObstHistory()
+
+  Dim i As Integer
+  Dim j As Integer
+  Dim aHeader As New Object[10]
+
+  For j = 0 To $ObsColumns.Count - 1
+    aHeader[j] = New TextLabel(pnlobsheader)
+    aHeader[j].Alignment = Align.Center
+    aHeader[j].Text = $ObsColumns[j]
+    aHeader[j].Height = 50 * modBasic.$AppScaleFactor
+    aHeader[j].Font.Bold = True
+    aHeader[j].Wrap = True
+    Select j
+      Case 6, 7, 8
+        aHeader[j].Width = 64 * modBasic.$AppScaleFactor
+      Case 3, 9
+        aHeader[j].Width = 100 * modBasic.$AppScaleFactor
+      Case Else
+        aHeader[j].Width = 125 * modBasic.$AppScaleFactor
+    End Select
+  Next
+
+  For i = 0 To $ObsHistoryCount - 1
+    aObsRowAll[i] = New HBox(Frame1)
+    aObsBirthDate[i] = New TextBox(aObsRowAll[i])
+    aObsGestAge[i] = New TextBox(aObsRowAll[i])
+    aObsComplPreg[i] = New TextBox(aObsRowAll[i])
+    aObsDelMode[i] = New TextBox(aObsRowAll[i])
+    aObsComplStage[i] = New TextBox(aObsRowAll[i])
+    aObsPupureum[i] = New TextBox(aObsRowAll[i])
+    aObsLiveSB[i] = New TextBox(aObsRowAll[i])
+    aObsBabySex[i] = New TextBox(aObsRowAll[i])
+    aObsBirthWt[i] = New TextBox(aObsRowAll[i])
+    aObsOutcome[i] = New TextBox(aObsRowAll[i])
+    aObsBtnSave[i] = New Button(aObsRowAll[i]) As "ObsButton"
+    aObsBlankBox[i] = New Separator(Frame1)
+  Next
+  SetObstetricControls()
+
+End
+
+Private Sub SetObstetricControls()
+
+  Dim i As Integer
+  Dim sColl As Collection
+
+  For i = 0 To $ObsHistoryCount - 1
+    sColl = $ObsVarData[i]
+    With aObsRowAll[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .AutoResize = True
+      .Spacing = True
+      .Tag = i
+    End With
+
+    With aObsBirthDate[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 125 * modBasic.$AppScaleFactor
+      .Text = sColl[$ObsColumns[0]]
+      .Tag = i
+    End With
+
+    With aObsGestAge[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 125 * modBasic.$AppScaleFactor
+      .Text = sColl[$ObsColumns[1]]
+      .Tag = i
+    End With
+
+    With aObsComplPreg[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 125 * modBasic.$AppScaleFactor
+      .Text = sColl[$ObsColumns[2]]
+      .Tag = i
+    End With
+
+    With aObsDelMode[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 100 * modBasic.$AppScaleFactor
+      .Text = sColl[$ObsColumns[3]]
+      .Tag = i
+    End With
+
+    With aObsComplStage[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 125 * modBasic.$AppScaleFactor
+      .Text = sColl[$ObsColumns[4]]
+      .Tag = i
+    End With
+
+    With aObsPupureum[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 125 * modBasic.$AppScaleFactor
+      .Text = sColl[$ObsColumns[5]]
+      .Tag = i
+    End With
+
+    With aObsLiveSB[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 64 * modBasic.$AppScaleFactor
+      .Text = sColl[$ObsColumns[6]]
+      .Tag = i
+    End With
+
+    With aObsBabySex[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 64 * modBasic.$AppScaleFactor
+      .Text = sColl[$ObsColumns[7]]
+      .Tag = i
+    End With
+
+    With aObsBirthWt[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 64 * modBasic.$AppScaleFactor
+      .Text = sColl[$ObsColumns[8]]
+      .Tag = i
+    End With
+
+    With aObsOutcome[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 100 * modBasic.$AppScaleFactor
+      .Text = sColl[$ObsColumns[9]]
+      .Tag = i
+    End With
+
+    With aObsBtnSave[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 75 * modBasic.$AppScaleFactor
+      .Text = "Save"
+      If sColl.Count > 1 Then
+        .Visible = False
+      Else
+        .Visible = True
+      Endif
+      .Tag = i
+    End With
+
+    With aObsBlankBox[i]
+      .Height = 8 * modBasic.$AppScaleFactor
+      .Tag = i
+    End With
+
+  Next
+
+End
+
+Public Sub ObsButton_Click()
+
+  Dim i As Integer
+  Dim sColl As Collection
+
+  i = Last.Tag
+  sColl = New Collection
+  If aObsBirthDate[i] And If aObsBirthDate[i].Text Then
+    sColl.Add(aObsBirthDate[i].Text, $ObsColumns[0])
+  Endif
+  If aObsGestAge[i] And If aObsGestAge[i].Text Then
+    sColl.Add(aObsGestAge[i].Text, $ObsColumns[1])
+  Endif
+  If aObsComplPreg[i] And If aObsComplPreg[i].Text Then
+    sColl.Add(aObsComplPreg[i].Text, $ObsColumns[2])
+  Endif
+  If aObsDelMode[i] And If aObsDelMode[i].Text Then
+    sColl.Add(aObsDelMode[i].Text, $ObsColumns[3])
+  Endif
+  If aObsComplStage[i] And If aObsComplStage[i].Text Then
+    sColl.Add(aObsComplStage[i].Text, $ObsColumns[4])
+  Endif
+  If aObsPupureum[i] And If aObsPupureum[i].Text Then
+    sColl.Add(aObsPupureum[i].Text, $ObsColumns[5])
+  Endif
+  If aObsLiveSB[i] And If aObsLiveSB[i].Text Then
+    sColl.Add(aObsLiveSB[i].Text, $ObsColumns[6])
+  Endif
+  If aObsBabySex[i] And If aObsBabySex[i].Text Then
+    sColl.Add(aObsBabySex[i].Text, $ObsColumns[7])
+  Endif
+  If aObsBirthWt[i] And If aObsBirthWt[i].Text Then
+    sColl.Add(aObsBirthWt[i].Text, $ObsColumns[8])
+  Endif
+  If aObsOutcome[i] And If aObsOutcome[i].Text Then
+    sColl.Add(aObsOutcome[i].Text, $ObsColumns[9])
+  Endif
+
+  If sColl.Count Then
+    modPatientGeneral.AddExamGeneralQualiData($encid, $sType, "Birth History", "", JSON.Encode(sColl), False)
+    Balloon.Info(("Information saved"), aObsBtnSave[i])
+    Balloon.Delay = modBasic.$BalloonDelay
+
+    If pnlobsheader.Children.Count Then
+      pnlobsheader.Children.Clear()
+    Endif
+    If Frame1.Children.Count Then
+      Frame1.Children.Clear()
+    Endif
+
+    GetPastObstetrics()
+    $ObsHistoryCount = $ObsVarData.Count
+    SetObstHistory()
+  Endif
+
+End
+
+Private Sub GetPastObstetrics()
+
+  Dim res As Result
+  Dim xdate As Date
+  Dim sColl As Collection
+
+  xdate = DateAdd(Now(), gb.Year, -1)
+  $ObsVarData = New Variant[]
+  res = modDatabase.$myConn.Exec("select flddetail from tblexamgeneral where fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&1) and fldinput=&2 and flditem=&3 and fldtime>&4", $PatientNum, $sType, "Birth History", xdate)
+  If res.Available Then
+    For Each res
+      $ObsVarData.Add(JSON.Decode(res["flddetail"]))
+    Next
+  Endif
+
+  sColl = New Collection
+  sColl.Add("", "Date of Birth")
+  $ObsVarData.Add(sColl)
+
+End
+
+''========================================= ANC ======================================
+Private Sub SetANCCharrt()
+
+  Dim i As Integer
+  Dim j As Integer
+  Dim aHeader As New Object[17]
+
+  For j = 0 To $ANCColumns.Count - 1
+    aHeader[j] = New TextLabel(pnlanchead)
+    aHeader[j].Alignment = Align.Center
+    aHeader[j].Text = $ANCColumns[j]
+    aHeader[j].Height = 50 * modBasic.$AppScaleFactor
+    aHeader[j].Font.Bold = True
+    aHeader[j].Wrap = True
+    Select j
+      Case 2, 3, 4, 7, 8, 10, 11, 12
+        aHeader[j].Width = 64 * modBasic.$AppScaleFactor
+      Case Else
+        aHeader[j].Width = 125 * modBasic.$AppScaleFactor
+    End Select
+  Next
+
+  For i = 0 To $ANCChartCount - 1
+    aANCRowAll[i] = New HBox(Frame2)
+    aANCEntryDate[i] = New TextBox(aANCRowAll[i])
+    aANCFetalMove[i] = New TextBox(aANCRowAll[i])
+    aANCGestAge[i] = New TextBox(aANCRowAll[i])
+    aANCUterineHt[i] = New TextBox(aANCRowAll[i])
+    aANCSFHCm[i] = New TextBox(aANCRowAll[i])
+    aANCPresent[i] = New TextBox(aANCRowAll[i])
+    aANCRelation[i] = New TextBox(aANCRowAll[i])
+    aANCFHS[i] = New TextBox(aANCRowAll[i])
+    aANCPatWeight[i] = New TextBox(aANCRowAll[i])
+    aANCBloodPress[i] = New TextBox(aANCRowAll[i])
+    aANCEdema[i] = New TextBox(aANCRowAll[i])
+    aANCUrineAlbum[i] = New TextBox(aANCRowAll[i])
+    aANCUrineSugar[i] = New TextBox(aANCRowAll[i])
+    aANCMedicine[i] = New TextBox(aANCRowAll[i])
+    aANCNextVisit[i] = New TextBox(aANCRowAll[i])
+    aANCSigna[i] = New TextBox(aANCRowAll[i])
+    aANCBtnSave[i] = New Button(aANCRowAll[i]) As "ANCButton"
+    aANCBlankBox[i] = New Separator(Frame2)
+  Next
+  SetANCChartControls()
+
+End
+
+Private Sub SetANCChartControls()
+
+  Dim i As Integer
+  Dim sColl As Collection
+
+  For i = 0 To $ANCChartCount - 1
+    sColl = $ANCVarData[i]
+    With aANCRowAll[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .AutoResize = True
+      .Spacing = True
+      .Tag = i
+    End With
+
+    With aANCEntryDate[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 125 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[0]]
+      .ReadOnly = True
+      .Tag = i
+    End With
+
+    With aANCFetalMove[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 125 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[1]]
+      .Tag = i
+    End With
+
+    With aANCGestAge[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 64 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[2]]
+      .Tag = i
+    End With
+
+    With aANCUterineHt[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 64 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[3]]
+      .Tag = i
+    End With
+
+    With aANCSFHCm[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 64 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[4]]
+      .Tag = i
+    End With
+
+    With aANCPresent[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 125 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[5]]
+      .Tag = i
+    End With
+
+    With aANCRelation[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 125 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[6]]
+      .Tag = i
+    End With
+
+    With aANCFHS[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 64 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[7]]
+      .Tag = i
+    End With
+
+    With aANCPatWeight[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 64 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[8]]
+      .Tag = i
+    End With
+
+    With aANCBloodPress[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 125 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[9]]
+      .Tag = i
+    End With
+
+    With aANCEdema[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 64 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[10]]
+      .Tag = i
+    End With
+
+    With aANCUrineAlbum[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 64 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[11]]
+      .Tag = i
+    End With
+
+    With aANCUrineSugar[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 64 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[12]]
+      .Tag = i
+    End With
+
+    With aANCMedicine[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 125 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[13]]
+      .Tag = i
+    End With
+
+    With aANCNextVisit[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 125 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[14]]
+      .Tag = i
+    End With
+
+    With aANCSigna[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 125 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[15]]
+      .Tag = i
+    End With
+
+    With aANCBtnSave[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 75 * modBasic.$AppScaleFactor
+      .Text = "Save"
+      If sColl.Count > 2 Then
+        .Visible = False
+      Else
+        .Visible = True
+      Endif
+      .Tag = i
+    End With
+
+    With aANCBlankBox[i]
+      .Height = 8 * modBasic.$AppScaleFactor
+      .Tag = i
+    End With
+
+  Next
+
+End
+
+Public Sub ANCButton_Click()
+
+  Dim i As Integer
+  Dim xhash As String
+
+  i = Last.Tag
+  xhash = $encid & ":" & "ANCChart" & ":" & modMisc.GetWebIndexStr(modString.GetDateString(Now()))
+  If aANCFetalMove[i] And If aANCFetalMove[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[1], "No Selection", aANCFetalMove[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCGestAge[i] And If aANCGestAge[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[2], "No Selection", aANCGestAge[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCUterineHt[i] And If aANCUterineHt[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[3], "No Selection", aANCUterineHt[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCSFHCm[i] And If aANCSFHCm[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[4], "No Selection", aANCSFHCm[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCPresent[i] And If aANCPresent[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[5], "No Selection", aANCPresent[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCRelation[i] And If aANCRelation[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[6], "No Selection", aANCRelation[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCFHS[i] And If aANCFHS[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[7], "No Selection", aANCFHS[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCPatWeight[i] And If aANCPatWeight[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[8], "No Selection", aANCPatWeight[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCBloodPress[i] And If aANCBloodPress[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[9], "No Selection", aANCBloodPress[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCEdema[i] And If aANCEdema[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[10], "No Selection", aANCEdema[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCUrineAlbum[i] And If aANCUrineAlbum[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[11], "No Selection", aANCUrineAlbum[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCUrineSugar[i] And If aANCUrineSugar[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[12], "No Selection", aANCUrineSugar[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCMedicine[i] And If aANCMedicine[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[13], "No Selection", aANCMedicine[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCNextVisit[i] And If aANCNextVisit[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[14], "No Selection", aANCNextVisit[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCSigna[i] And If aANCSigna[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[15], "No Selection", aANCSigna[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+
+  Balloon.Info(("Information saved"), aANCBtnSave[i])
+  Balloon.Delay = modBasic.$BalloonDelay
+
+  If pnlanchead.Children.Count Then
+    pnlanchead.Children.Clear()
+  Endif
+  If Frame2.Children.Count Then
+    Frame2.Children.Clear()
+  Endif
+
+  GetPastANCParams()
+  $ANCChartCount = $ANCVarData.Count
+  SetANCCharrt()
+
+End
+
+Private Sub GetPastANCParams()
+
+  Dim res As Result
+  Dim res1 As Result
+  Dim xdate As Date
+  Dim sColl As Collection
+
+  xdate = DateAdd(Now(), gb.Year, -1)
+  $ANCVarData = New Variant[]
+  res = modDatabase.$myConn.Exec("select distinct(fldencounterval) as fldencounterval from tblpatientexam where fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&1) and fldinput=&2 and fldmethod=&3 and fldtime>&4 ORDER BY fldtime", $PatientNum, $sType, "ANC Chart", xdate)
+  If res.Available Then
+    For Each res
+      sColl = New Collection
+      sColl.Add(res["fldencounterval"], "Encounter")
+      sColl.Add(modReportVar.GetDateTimeReport(modPatient.GetRecordDate(res["fldencounterval"]), gb.MediumDate), "Date of Regd")
+      res1 = modDatabase.$myConn.Exec("select fldhead,fldrepquali,fldrepquanti from tblpatientexam where fldencounterval=&1 and fldinput=&2 and fldmethod=&3 and fldtime>&4", res["fldencounterval"], $sType, "ANC Chart", xdate)
+      If res1.Available Then
+        For Each res1
+          If res1["fldrepquanti"] Then
+            sColl.Add(res1["fldrepquanti"], res1["fldhead"])
+          Else
+            sColl.Add(res1["fldrepquali"], res1["fldhead"])
+          Endif
+        Next
+      Endif
+      $ANCVarData.Add(sColl)
+    Next
+  Endif
+  sColl = New Collection
+  sColl.Add($encid, "Encounter")
+  sColl.Add(modReportVar.GetDateTimeReport(modPatient.GetRecordDate($encid), gb.MediumDate), "Date of Regd")
+  $ANCVarData.Add(sColl)
+
+End

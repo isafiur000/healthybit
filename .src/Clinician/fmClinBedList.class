@@ -1535,11 +1535,24 @@ Public Sub btnmobexam_Click()
 
   Dim hForm As FmEnterGroupExam
   Dim hForm1 As FmWardHistory
+  Dim hForm2 As FmExamAttach
 
   If GridView1.Rows.Selection.Count Then
     If modBasic.$ClinIPDExamination Then
-      hForm1 = New FmWardHistory(modBasic.$ClinIPDExamination, GridView1[GridView1.Row, 4].Text, "Physician Examinations")
-      modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
+      Select modBasic.$ClinIPDExamination
+        Case "Neurology Form"
+          hForm2 = New FmExamAttach(GridView1[GridView1.Row, 4].Text, "Neurology", "Physician Examinations", True)
+          modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm2)
+        Case "Refraction Form"
+          hForm2 = New FmExamAttach(GridView1[GridView1.Row, 4].Text, "Optometry", "Physician Examinations", True)
+          modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm2)
+        Case "ANC Visit Form"
+          hForm2 = New FmExamAttach(GridView1[GridView1.Row, 4].Text, "ANC Visit", "Physician Examinations", True)
+          modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm2)
+        Case Else
+          hForm1 = New FmWardHistory(modBasic.$ClinIPDExamination, GridView1[GridView1.Row, 4].Text, "Physician Examinations")
+          modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
+      End Select
     Else
       hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 4].Text, "Physician Examinations", "Group")
       hForm.ShowModal
@@ -2845,6 +2858,13 @@ Private Function AddMedicineRequest(encid As String, sStatus As String) As Integ
       rex = modDatabase.$myConn.Exec("select fldid from tblpatdosing where fldencounterval=&1 and fldstarttime>=&2 and fldstarttime<=&3 and flditemtype=&4 and fldcurval=&5 and flddays=&6", encid, modDate.StartSqlDate(Now()), modDate.EndSqlDate(Now()), "Medicines", "Continue", 0)
       If rex.Available = False Then
 
+        itemtype = modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"])
+        CPharmFix = New CFixRatePharmacy(itemtype, res["flditem"], res["fldbillingmode"])
+        xfixrate = CPharmFix.GetFixRate()
+        xfixname = CPharmFix.GetFixItem()
+        itemmode = res["fldbillingmode"]
+        xtax = modNonMedical.ShowTaxValues(itemtype, res["flditem"])
+        xdisc = modNonMedical.DiscPercentForCategoryValue(encid, res["flddisctype"], itemtype, res["flditem"], itemmode)
         If modMedConstant.GetNarcoticType(res["flditem"]) = "Yes" Then
           If res["fldprescriber"] And If res["fldregno"] Then
             txprescriber = res["fldprescriber"]
@@ -2856,18 +2876,12 @@ Private Function AddMedicineRequest(encid As String, sStatus As String) As Integ
               txpresno = xnarcotic[0]
             Endif
           Endif
+          If txprescriber And If txpresno Then
+            modPharmSub.InsertDosingEntry(encid, res["fldbilltype"], res["fldbillingmode"], res["flddisctype"], res["fldacledger"], res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtydisp"], sStatus, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", "IPD", res["flddirection"], False, xcurVal)                     '
+          Endif
         Else
-          txprescriber = ""
-          txpresno = ""
+          modPharmSub.InsertDosingEntry(encid, res["fldbilltype"], res["fldbillingmode"], res["flddisctype"], res["fldacledger"], res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtydisp"], sStatus, "", "", 0, xtax, xdisc, xfixname, xfixrate, "Request", "IPD", res["flddirection"], False, xcurVal)                     '
         Endif
-        itemtype = modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"])
-        CPharmFix = New CFixRatePharmacy(itemtype, res["flditem"], res["fldbillingmode"])
-        xfixrate = CPharmFix.GetFixRate()
-        xfixname = CPharmFix.GetFixItem()
-        itemmode = res["fldbillingmode"]
-        xtax = modNonMedical.ShowTaxValues(itemtype, res["flditem"])
-        xdisc = modNonMedical.DiscPercentForCategoryValue(encid, res["flddisctype"], itemtype, res["flditem"], itemmode)
-        modPharmSub.InsertDosingEntry(encid, res["fldbilltype"], res["fldbillingmode"], res["flddisctype"], res["fldacledger"], res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtydisp"], sStatus, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", "IPD", res["flddirection"], False, xcurVal)                     '
         xcount = xcount + 1
       Endif
 

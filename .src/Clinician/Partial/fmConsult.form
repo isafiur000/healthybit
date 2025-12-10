@@ -1,0 +1,109 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,95,60)
+  Expand = True
+  Arrangement = Arrange.Vertical
+  { Panel1 Panel
+    MoveScaled(0,0,94,58)
+    Expand = True
+    Arrangement = Arrange.Horizontal
+    { Panel2 Panel
+      MoveScaled(0,0,27,56)
+      Arrangement = Arrange.Vertical
+      { Panel3 Panel
+        MoveScaled(0,0,26,3)
+        { rbconsult RadioButton
+          MoveScaled(1,0,12,3)
+          Text = ("Consult")
+          Value = True
+        }
+        { rbopvisit RadioButton
+          MoveScaled(14,0,11,3)
+          Text = ("Others")
+        }
+      }
+      { Panel4 Panel
+        MoveScaled(0,3,26,4)
+        { chkleft CheckBox
+          MoveScaled(1,0.5,3,3)
+        }
+        { txtsearch TextBox
+          MoveScaled(4,0.5,19,3)
+        }
+      }
+      { cmbconsult ListBox
+        MoveScaled(2,8,19,35)
+        Expand = True
+        ScrollBar = Scroll.Both
+      }
+    }
+    { Panel5 Panel
+      MoveScaled(27,2,67,52)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { Panel6 Panel
+        MoveScaled(0,1,67,3.5)
+        { Label5 Label
+          MoveScaled(0,0.5,12,3)
+          Border = Border.Plain
+          Text = ("Department")
+        }
+        { txtdepart Label
+          MoveScaled(13,0.5,53,3)
+          Font = Font["Bold"]
+          Border = Border.Plain
+        }
+      }
+      { Panel7 Panel
+        MoveScaled(0,4,67,3.5)
+        { Label20 Label
+          MoveScaled(0,0.5,12,3)
+          Border = Border.Plain
+          Text = ("Consultant")
+        }
+        { btnconsult ButtonBox
+          MoveScaled(13,0.5,33,3)
+          Picture = Picture["icon:/small/people"]
+          ReadOnly = True
+        }
+        { btnsms ToolButton
+          MoveScaled(47,0.5,3,3)
+          Picture = Picture["icon:/small/phone"]
+        }
+        { cmbdisctype TextBox
+          MoveScaled(51,1,13,2)
+          Visible = False
+        }
+      }
+      { Panel8 Panel
+        MoveScaled(0,8,67,4)
+        { Label1 Label
+          MoveScaled(0,0.5,12,3)
+          Border = Border.Plain
+          Text = ("Date Time")
+        }
+        { dtconsult DateBox
+          MoveScaled(13,0.5,22,3)
+          Mode = DateChooser.DateTime
+        }
+        { btnsubOK Button
+          MoveScaled(53,0.5,13,3)
+          Text = Shortcut(("Add"), "A")
+          Picture = Picture["icon:/small/add"]
+        }
+      }
+      { txtpresummary TextHTML
+        MoveScaled(0,12,66,17)
+        Tag = "Auto"
+      }
+      { GridView1 GridView
+        MoveScaled(0,29,66,21)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Both
+        AutoResize = False
+      }
+    }
+  }
+}

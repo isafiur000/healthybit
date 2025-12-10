@@ -2165,16 +2165,6 @@ Private Sub EntryUseOwndata(sType As String, sItem As String, sQty As Float)
   Else
     itemmode = "%"
   Endif
-  ' xvarfix = modStock.GetSellingPriceFixByStockID(sType, sItem, $PharmMode)
-  ' If xvarfix Then
-  '   xfixrate = xvarfix[1]
-  '   xfixname = xvarfix[0]
-  '   itemmode = txtbillmode.Text
-  ' Else
-  '   xfixrate = 0
-  '   xfixname = ""
-  '   itemmode = "%"
-  ' Endif
   xtax = modNonMedical.ShowTaxValues(sType, sItem)
   xdisc = modNonMedical.DiscPercentForCategoryValue(Trim(txtencid.Text), $billModePharmacy, sType, sItem, itemmode)
   xroute = modMedicine.GetRouteFromItem(sItem, sType)
@@ -2309,6 +2299,7 @@ Private Sub SaveOwnDispensing(sID As Long)
   Dim xpayble As String
   Dim xallow As Boolean
   Dim xCshCrd As Float
+  Dim xstr As Float
 
   xrefer = modBillings.GetReferralUserSetting("Pharmacy", Trim(txtencid.Text))
   xpayble = modBillings.GetPayableUserSetting("Pharmacy", Trim(txtencid.Text))
@@ -2394,9 +2385,14 @@ Private Sub SaveOwnDispensing(sID As Long)
       modDatabase.$myConn.Commit
 
       If modNonMedical.GetBillItemCategoryFromCombo(res1["fldroute"]) = "Medicines" Then
-        xdose = Round(res1["flddose"] / modMedConstant.GetDrugInitialStrength(res1["flditem"]), -2)
+        xstr = modMedConstant.GetDrugInitialStrength(res1["flditem"])
+        If xstr Then
+          xdose = Round(res1["flddose"] / xstr, -2)
+        Endif
         xunit = modPharmLabel.GetDosageFormForLabel(res1["flditem"], "Inpatient")
-        modPharmSub.InsertNurDosing(res1["fldid"], Trim(txtencid.Text), xdose, xunit, "")
+        If xdose Then
+          modPharmSub.InsertNurDosing(res1["fldid"], Trim(txtencid.Text), xdose, xunit, "")
+        Endif
       Endif
       Dec Application.Busy
 
@@ -2769,29 +2765,17 @@ Public Sub mnuallencreport_Click()
   Dim xPath As String
   Dim xpatno As String
   Dim xList As String[]
-  Dim xvarList As Variant[]
-  Dim examlist As String[]
-  Dim lablist As String[]
-  Dim radiolist As String[]
 
   If txtencid.Text Then
     xpatno = $PatientNum
-    xList = SelectMedBody("")
+    xList = SelectMedBody("", "View")
     Wait
     If xList Then
-      If xList.Exist("Selected Investigations") Then
-        xvarList = ListViewMulti(Trim(txtencid.Text))
-        If xvarList Then
-          examlist = xvarList[0]
-          lablist = xvarList[1]
-          radiolist = xvarList[2]
-        Endif
-      Endif
+      Inc Application.Busy
+      xpath = modPatReportAll.ShowAllEncounterReport(Trim(txtencid.Text), xList, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+      Dec Application.Busy
+      modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
     Endif
-    Inc Application.Busy
-    xpath = modPatReports.ShowAllEncounterReport(Trim(txtencid.Text), xList, examlist, lablist, radiolist, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
-    Dec Application.Busy
-    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
   Endif
 
 End

@@ -643,7 +643,7 @@ Public Sub CommandPrint(sType As String, sUser As String, sPass As String, sVal 
       Wait
 
     Else If sType = "--print-patreport" Then
-      xPath = modPatReports.ShowAllCompleteReport(sVal, MMain.$defUnit)
+      xPath = modPatReportAll.ShowAllCompleteReport(sVal, MMain.$defUnit)
       Print File.Load(xPath)
       'modControlSub.OpenHTMLPreview(sVal, xPath, "ReportSize")
       Wait

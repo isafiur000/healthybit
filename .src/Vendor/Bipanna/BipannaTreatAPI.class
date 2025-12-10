@@ -59,7 +59,11 @@ Private Sub ExecuteAPI()
 
   Dim aColl As Collection
 
-  xurl = modBasic.$BipannaBillingtURL
+  If $sType = "Treatment" Then
+    xurl = modBasic.$BipannaTreatmentURL
+  Else If $sType = "Kidney Session" Then
+    xurl = modBasic.$BipannaKidneyURL
+  Endif
   xauth = "Authorization: Bearer " & modBasic.$BipannaHospitalCode
   xcont = "Content-Type: application/json"
   ycont = "Accept: application/json"

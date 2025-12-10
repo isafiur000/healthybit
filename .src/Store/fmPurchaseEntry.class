@@ -59,7 +59,7 @@ Public Sub Form_Open()
   BlankALl()
   If modBasic.$AccessPurchaseEntry = "Disable" Then
     $exceptList = modGlobalSetting.GetDBTableList("InventorySaveAccess/PurchaseEntry:Pharmacy")
-    If $exceptList.Count Then
+    If $exceptList And If $exceptList.Count Then
       xx = True
     Else
       xx = False

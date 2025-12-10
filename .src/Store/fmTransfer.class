@@ -41,7 +41,7 @@ Public Sub Form_Open()
   modSettings.ShowCheckBox(chklockstock, "StockTransfer/Locker")
   If modBasic.$AccessStockTransfer = "Disable" Then
     $exceptList = modGlobalSetting.GetDBTableList("InventorySaveAccess/StockTransfer:Pharmacy")
-    If $exceptList.Count Then
+    If $exceptList And If $exceptList.Count Then
       xx = True
     Else
       xx = False
@@ -728,7 +728,7 @@ Private Sub FirstSaveItems(sLocker As Boolean)
   Dim strItem As String[]
   Dim i As Integer
 
-  If $exceptList.Count Then
+  If $exceptList And If $exceptList.Count Then
     strItem = $exceptList.Copy()
     For i = 0 To strItem.Count - 1
       strItem[i] = "'" & strItem[i] & "'"

@@ -1,12 +1,15 @@
 ' Gambas class file
 
 Private $txtbuttFile As String
+Private $sFormat As String
+
 Private $sValue As String[]
 Private $xFinList As String[]
 
-Public Sub Run(txtbuttFile As String) As String[]
+Public Sub Run(txtbuttFile As String, sFormat As String) As String[]
 
   $txtbuttFile = txtbuttFile
+  $sFormat = sFormat
   If Me.ShowModal() Then Return $sValue
 
 End
@@ -14,7 +17,11 @@ End
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
-  $xFinList = modMedicine.GetCustReportVariables(chkselect.Value)
+  If $sFormat = "View" Then
+    $xFinList = modMedicine.GetAttachReportVariables()
+  Else If $sFormat = "Print" Then
+    $xFinList = modMedicine.GetMedVariables()
+  Endif
   AddListBiewContent($xFinList)
   ShowCheckedView()
 
@@ -25,13 +32,6 @@ Public Sub Form_KeyRelease()
   If Key.Code = Key.Esc Then
     Me.Close()
   Endif
-
-End
-
-Public Sub chkselect_Click()
-
-  $xFinList = modMedicine.GetCustReportVariables(chkselect.Value)
-  AddListBiewContent($xFinList)
 
 End
 

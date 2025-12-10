@@ -555,13 +555,8 @@ End
 
 Private Sub BasicInfoPatient()
 
-  Dim sHistoryList As String[]
-  Dim sDischList As String[]
-
   If txtencid.Text Then
     GetDefaultBillingmodes()
-    sHistoryList = modMedicine.GetClinHistoryList($billReference, txtgender.Text)
-    sDischList = modMedicine.GetClinDischargeList($billReference, txtgender.Text)
     cmbinpathistory.List = GetHistoryList()
     $NotesList = NoteTakingTypeList()
     cmbnote.List = $NotesList
@@ -577,7 +572,7 @@ Private Sub BasicInfoPatient()
     FillExamtable()
     ButtonControl()
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
-    hPtForm = New FmClinHistory($PatientNum, "PatientID", sHistoryList, sDischList, pnlhistory)
+    hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
     TabStrip1.Index = 0
   Endif
 
@@ -1597,11 +1592,24 @@ Public Sub btnaddexamlistmain_Click()
 
   Dim hForm As FmEnterGroupExam
   Dim hForm1 As FmWardHistory
+  Dim hForm2 As FmExamAttach
 
   If txtencid.Text Then
     If modBasic.$ClinIPDExamination Then
-      hForm1 = New FmWardHistory(modBasic.$ClinIPDExamination, Trim(txtencid.Text), "Physician Examinations")
-      modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
+      Select modBasic.$ClinIPDExamination
+        Case "Neurology Form"
+          hForm2 = New FmExamAttach(Trim(txtencid.Text), "Neurology", "Physician Examinations", True)
+          modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm2)
+        Case "Refraction Form"
+          hForm2 = New FmExamAttach(Trim(txtencid.Text), "Optometry", "Physician Examinations", True)
+          modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm2)
+        Case "ANC Visit Form"
+          hForm2 = New FmExamAttach(Trim(txtencid.Text), "ANC Visit", "Physician Examinations", True)
+          modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm2)
+        Case Else
+          hForm1 = New FmWardHistory(modBasic.$ClinIPDExamination, Trim(txtencid.Text), "Physician Examinations")
+          modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
+      End Select
     Else
       hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "Group")
       hForm.ShowModal

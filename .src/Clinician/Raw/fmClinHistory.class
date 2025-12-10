@@ -2,20 +2,16 @@
 
 Private $patId As String
 Private $sType As String
-Private $HistoryList As String[]
-Private $DischargeList As String[]
 
 Private $xFinList As String[]
 Private $PatNum As String
 Private $rData As Result
 Private $aMyFields As String[]
 
-Public Sub _new(patId As String, sType As String, sHistory As String[], sDischarge As String[])
+Public Sub _new(patId As String, sType As String)
 
   $patId = patId
   $sType = sType
-  $HistoryList = sHistory
-  $DischargeList = sDischarge
 
 End
 
@@ -32,7 +28,7 @@ Public Sub Form_Open()
   Endif
   $xFinList = GetSelectedItemList()
   If Not $xFinList.Count Then
-    $xFinList = modMedicine.GetCustReportVariables(chkselect.Value, $HistoryList, $DischargeList)
+    $xFinList = modMedicine.GetAttachReportVariables()
   Endif
   AddListBiewContent($xFinList)
 
@@ -86,7 +82,7 @@ Public Sub btnselect_Click()
 
   Dim i As Integer
 
-  $xFinList = SelectMedBody("PatientHistory")
+  $xFinList = SelectMedBody("PatientHistory", "View")
   If $xFinList And If $xFinList.Count Then
     For i = 0 To $xFinList.Count - 1
       modSettings.SaveSettingsToFile("PatientHistory/content_" & CStr(i + 1), $xFinList[i])                   ''
@@ -98,7 +94,7 @@ End
 
 Public Sub chkselect_Click()
 
-  $xFinList = modMedicine.GetCustReportVariables(chkselect.Value, $HistoryList, $DischargeList)
+  $xFinList = modMedicine.GetAttachReportVariables()
   AddListBiewContent($xFinList)
 
 End
@@ -171,28 +167,15 @@ End
 
 Private Sub GetSelectHistoryResultStr(xList As String[], encid As String) As String
 
-  Dim xvarList As Variant[]
-  Dim examlist As String[]
-  Dim lablist As String[]
-  Dim radiolist As String[]
   Dim sUnit As String
   Dim xstring As String
 
   If encid Then
     If modPatientSub.GetPatPassCheck(modDatabase.$myConn, $PatNum) = True Then
       If xList Then
-        If xList.Exist("Selected Investigations") Then
-          xvarList = ListViewMulti(encid)
-          If xvarList Then
-            examlist = xvarList[0]
-            lablist = xvarList[1]
-            radiolist = xvarList[2]
-          Endif
-        Endif
+        sUnit = modLabSub.GetTestUnitFromButton(rbsi, rbmetric)
+        xstring = modPatReportAll.ShowCompleteReport(encid, xList, sUnit, True)
       Endif
-      sUnit = modLabSub.GetTestUnitFromButton(rbsi, rbmetric)
-      xstring = modPatReports.ShowCompleteReport(encid, xList, examlist, lablist, radiolist, sUnit, True)
-
     Else
       xstring = "You do not have permission to view"
     Endif

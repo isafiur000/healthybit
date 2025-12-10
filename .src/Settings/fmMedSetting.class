@@ -15,6 +15,7 @@ Public Sub Form_Open()
   cmbrandsubst.List = ["Yes", "No"]
   cmbinjsub.List = ["Enable", "Disable"]
   cmblockstock.List = ["Enable", "Disable"]
+  cmbcurnarcotic.List = ["Select", "User"]
 
   cmblabelregimen.List = ["Yes", "No"]
   cmblabelauto.List = ["High Risk", "Low Risk", "All Types"]
@@ -220,6 +221,7 @@ Private Sub DisplayGeneral()
   cmbdrugprob.Text = modSettings.ShowSettingFromFIle("MedicineSetting/LogDrugProblems")
   cmballergy.Text = modSettings.ShowSettingFromFIle("MedicineSetting/CheckPreviousSensitivity")
   txtnorevioew.Text = modSettings.ShowSettingFromFIle("MedicineSetting/DisableDrugProblems")
+  cmbcurnarcotic.Text = modSettings.ShowSettingFromFIle("MedicineSetting/NarcoticsPrescriber")
 
   cmbrandsubst.Text = modSettings.ShowSettingFromFIle("ClinicForms/AllowBrandSubstitution")
   cmbinjsub.Text = modSettings.ShowSettingFromFIle("ClinicForms/ShowInjectionSubRoutes")
@@ -249,6 +251,15 @@ Public Sub btnallergy_Click()
 
   modSettings.SaveSettingsToFile("MedicineSetting/CheckPreviousSensitivity", cmballergy.Text)
   Balloon.Info(("Information saved"), btnallergy)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btncurnarcotic_Click()
+
+  modSettings.SaveSettingsToFile("MedicineSetting/NarcoticsPrescriber", cmbcurnarcotic.Text)
+  modBasic.$MedNarcoPrescriber = cmbcurnarcotic.Text
+  Balloon.Info(("Information saved"), btncurnarcotic)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

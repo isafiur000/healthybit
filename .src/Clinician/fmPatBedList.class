@@ -142,7 +142,7 @@ Private Sub FillBedGrid()
         If $sTable = "tblconsult" Then
           xorder = " ORDER BY " & $sTable & "." & "fldconsulttime"
         Else If $sTable = "tblopvisit" Then
-          xorder = " ORDER BY " & $sTable & "." & "fldconsulttime DESC"
+          xorder = " ORDER BY " & $sTable & "." & "fldtime DESC"
         Endif
       Else If rbtriage.Value = True Then
         xunion = " inner join tblencounter on " & $sTable & "." & "fldencounterval=tblencounter.fldencounterval"
@@ -232,12 +232,36 @@ Private Sub ResizeGrid(xGridView As GridView)
     .Columns[4].Text = $Headers[4]
 
     If chkshowstatus.Value = True Then
-      .Columns[5].Width = 50 * $wdFactor
-      .Columns[6].Width = 50 * $wdFactor
-      .Columns[7].Width = 50 * $wdFactor
-      .Columns[8].Width = 50 * $wdFactor
-      .Columns[9].Width = 50 * $wdFactor
-      .Columns[10].Width = 50 * $wdFactor
+      If modSettings.ShowSettingFromFIle("PatientDashBoard/Hide_Drugs") = "Yes" Then
+        .Columns[5].Width = 1
+      Else
+        .Columns[5].Width = 50 * $wdFactor
+      Endif
+      If modSettings.ShowSettingFromFIle("PatientDashBoard/Hide_Labs") = "Yes" Then
+        .Columns[6].Width = 1
+      Else
+        .Columns[6].Width = 50 * $wdFactor
+      Endif
+      If modSettings.ShowSettingFromFIle("PatientDashBoard/Hide_Radio") = "Yes" Then
+        .Columns[7].Width = 1
+      Else
+        .Columns[7].Width = 50 * $wdFactor
+      Endif
+      If modSettings.ShowSettingFromFIle("PatientDashBoard/Hide_Equip") = "Yes" Then
+        .Columns[8].Width = 2
+      Else
+        .Columns[8].Width = 50 * $wdFactor
+      Endif
+      If modSettings.ShowSettingFromFIle("PatientDashBoard/Hide_Fluid") = "Yes" Then
+        .Columns[9].Width = 1
+      Else
+        .Columns[9].Width = 50 * $wdFactor
+      Endif
+      If modSettings.ShowSettingFromFIle("PatientDashBoard/Hide_Device") = "Yes" Then
+        .Columns[10].Width = 1
+      Else
+        .Columns[10].Width = 50 * $wdFactor
+      Endif
 
       .Columns[5].Text = $Headers[5]
       .Columns[6].Text = $Headers[6]

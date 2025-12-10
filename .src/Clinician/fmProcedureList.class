@@ -289,10 +289,10 @@ Private Sub FillUnpaidEncounters()
   Endif
 
   If chklist.Value = True Then
-    sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and (fldtarget=&3 or fldtarget=&4) and fldordtime>=&5 and fldordtime<=&6" & xsource & xsection                                               ''
+    sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and (fldtarget=&3 or fldtarget=&4) and fldordtime>=&5 and fldordtime<=&6 and flditemqty>fldretqty" & xsource & xsection                                               ''
     $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", aTarg, bTarg, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)))
   Else
-    sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and (fldtarget=&3 or fldtarget=&4)" & xsource & xsection                                                ''
+    sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and (fldtarget=&3 or fldtarget=&4) and flditemqty>fldretqty" & xsource & xsection                                                ''
     $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", aTarg, bTarg)
   Endif
   $aMyFields2 = New String[]
@@ -668,8 +668,10 @@ Public Sub btnform_Click()
   Dim hForm As FmPatProcedure
 
   If GridView1.Rows.Selection.Count Then
-    hForm = New FmPatProcedure(GridView1[GridView1.Row, 7].Text, GridView1[GridView1.Row, 0].Text, True)
-    modWorkSpace.Add(hForm)
+    If GridView1[GridView1.Row, 11].Text = "Planned" Then
+      hForm = New FmPatProcedure(GridView1[GridView1.Row, 7].Text, GridView1[GridView1.Row, 0].Text, True)
+      modWorkSpace.Add(hForm)
+    Endif
   Endif
 
 End

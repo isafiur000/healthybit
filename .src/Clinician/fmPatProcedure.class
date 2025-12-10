@@ -438,19 +438,14 @@ End
 ''--------------------------------------- General --------------------------------------
 Private Sub BasicInfoPatient()
 
-  Dim sHistoryList As String[]
-  Dim sDischList As String[]
-
   If txtencid.Text Then
     modRepository.$RepoDataStatus = False
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
     GetDefaultBillingmodes()
-    sHistoryList = modMedicine.GetClinHistoryList($billReference, txtgender.Text)
-    sDischList = modMedicine.GetClinDischargeList($billReference, txtgender.Text)
     InitializeProcedures()
 
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
-    hPtForm = New FmClinHistory($PatientNum, "PatientID", sHistoryList, sDischList, pnlhistory)
+    hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnluseown)
 
     ButtonControl()

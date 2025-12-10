@@ -14,6 +14,8 @@ Private $aMyFields1 As String[]
 Private $rData3 As Result
 Private $aMyFields3 As String[]
 
+Private $hConsultForm As FmConsult
+
 Public Sub _new(encid As String, DiscType As String)
 
   $encid = encid
@@ -81,6 +83,11 @@ Public Sub TabPanel1_Click()
     SHowSavedGrid()
   Else If TabPanel1.Index = 2 Then
     CompleteGrid()
+  Else If TabPanel1.Index = 3 Then
+    If pnlconsult.Children.Count Then
+      pnlconsult.Children.Clear()
+    Endif
+    $hConsultForm = New FmConsult($encid, $sPackage, pnlconsult)
   Endif
 
 End

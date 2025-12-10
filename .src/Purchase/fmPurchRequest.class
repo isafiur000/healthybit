@@ -30,7 +30,7 @@ Public Sub Form_Open()
   rbnew.Value = True
   If modBasic.$AccessPurchaseOrder = "Disable" Then
     $exceptList = modGlobalSetting.GetDBTableList("InventorySaveAccess/PurchaseOrder:Pharmacy")
-    If $exceptList.Count Then
+    If $exceptList And If $exceptList.Count Then
       xx = True
     Else
       xx = False

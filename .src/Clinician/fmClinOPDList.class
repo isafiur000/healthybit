@@ -1163,11 +1163,24 @@ Public Sub btnmobexam_Click()
 
   Dim hForm As FmEnterGroupExam
   Dim hForm1 As FmWardHistory
+  Dim hForm2 As FmExamAttach
 
   If GridView1.Rows.Selection.Count Then
     If modBasic.$ClinOPDExamination Then
-      hForm1 = New FmWardHistory(modBasic.$ClinOPDExamination, GridView1[GridView1.Row, 2].Text, "Physician Examinations")
-      modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
+      Select modBasic.$ClinOPDExamination
+        Case "Neurology Form"
+          hForm2 = New FmExamAttach(GridView1[GridView1.Row, 2].Text, "Neurology", "Physician Examinations", True)
+          modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm2)
+        Case "Refraction Form"
+          hForm2 = New FmExamAttach(GridView1[GridView1.Row, 2].Text, "Optometry", "Physician Examinations", True)
+          modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm2)
+        Case "ANC Visit Form"
+          hForm2 = New FmExamAttach(GridView1[GridView1.Row, 2].Text, "ANC Visit", "Physician Examinations", True)
+          modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm2)
+        Case Else
+          hForm1 = New FmWardHistory(modBasic.$ClinOPDExamination, GridView1[GridView1.Row, 2].Text, "Physician Examinations")
+          modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
+      End Select
     Else
       hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 2].Text, "Physician Examinations", "Group")
       hForm.ShowModal
@@ -1831,7 +1844,7 @@ Public Sub mnucurvisitsumm_Click()
 
   If GridView1.Rows.Selection.Count Then
     Inc Application.Busy
-    xPath = modPatReports.GetOPDSummaryReportAllComp(GridView1[GridView1.Row, 2].Text)
+    xPath = modPatReportAll.GetOPDSummaryReportAllComp(GridView1[GridView1.Row, 2].Text)
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(GridView1[GridView1.Row, 2].Text, xPath, "ReportSize")
   Endif

@@ -509,7 +509,7 @@ Public Sub mnutransfer_Click()
   Dim xList As String[]
 
   If GridView1.Rows.Count > 0 Then
-    xList = modPatReports.GetCourseOfTreatment(GridView1[GridView1.Row, 1].Text)
+    xList = modClinicReport.GetCourseOfTreatment(GridView1[GridView1.Row, 1].Text)
     If xList Then
       Message.Info(xList.Join(gb.NewLine), ("OK"))
     Endif

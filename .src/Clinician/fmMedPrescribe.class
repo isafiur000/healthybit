@@ -285,16 +285,6 @@ Private Sub EnterDosingRecord()
   Endif
   If cmbroute.Text And If cmbmedicine.Text Then
 
-    If modMedConstant.GetNarcoticType(cmbmedicine.Text) = "Yes" Then
-      xnarcotic = DualGridValue(("Select Narcotic Prescriber"), $ClinicianLst, False)
-      If xnarcotic Then
-        txprescriber = xnarcotic[1]
-        txpresno = xnarcotic[0]
-      Endif
-    Else
-      txprescriber = ""
-      txpresno = ""
-    Endif
     itemtype = modNonMedical.GetBillItemCategoryFromCombo(cmbroute.Text)
     CPharmFix = New CFixRatePharmacy(itemtype, cmbmedicine.Text, $sBillMode)
     xfixrate = CPharmFix.GetFixRate()
@@ -303,7 +293,18 @@ Private Sub EnterDosingRecord()
     itemmode = $sBillMode
     xtax = modNonMedical.ShowTaxValues(itemtype, cmbmedicine.Text)
     xdisc = modNonMedical.DiscPercentForCategoryValue($encid, $DiscPackage, itemtype, cmbmedicine.Text, itemmode)
-    InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), cmbadminsite.Text, txtdosecount.Value, Trim(txtdilution.Text), 0, xcurVal)                     '
+    If modMedConstant.GetNarcoticType(cmbmedicine.Text) = "Yes" Then
+      xnarcotic = DualGridValue(("Select Narcotic Prescriber"), $ClinicianLst, False)
+      If xnarcotic Then
+        txprescriber = xnarcotic[1]
+        txpresno = xnarcotic[0]
+      Endif
+      If txprescriber And If txpresno Then
+        InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), cmbadminsite.Text, txtdosecount.Value, Trim(txtdilution.Text), 0, xcurVal)                     '
+      Endif
+    Else
+      InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, "", "", 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), cmbadminsite.Text, txtdosecount.Value, Trim(txtdilution.Text), 0, xcurVal)                     '
+    Endif
     ClearAllControl()
   Endif
 

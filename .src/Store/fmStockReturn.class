@@ -18,7 +18,7 @@ Public Sub Form_Open()
   DisplayDefaultStockReturnMode()
   If modBasic.$AccessStockReturn = "Disable" Then
     $exceptList = modGlobalSetting.GetDBTableList("InventorySaveAccess/StockReturn:Pharmacy")
-    If $exceptList.Count Then
+    If $exceptList And If $exceptList.Count Then
       xx = True
     Else
       xx = False

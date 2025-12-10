@@ -463,7 +463,7 @@ Public Sub btnbedrepo_Click()
 
   Dim xList As String[]
 
-  xList = modPatReports.GetCourseOfTreatment($encid)
+  xList = modClinicReport.GetCourseOfTreatment($encid)
   If xList Then
     Message.Info(xList.Join(gb.NewLine), ("OK"))
   Endif

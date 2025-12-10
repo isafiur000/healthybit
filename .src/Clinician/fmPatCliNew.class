@@ -474,15 +474,10 @@ End
 
 Private Sub BasicInfoPatient()
 
-  Dim sHistoryList As String[]
-  Dim sDischList As String[]
-
   If txtencid.Text Then
     modRepository.$RepoDataStatus = False
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
     GetDefaultBillingmodes()
-    sHistoryList = modMedicine.GetClinHistoryList($billReference, txtgender.Text)
-    sDischList = modMedicine.GetClinDischargeList($billReference, txtgender.Text)
     cmbinpathistory.List = GetHistoryList()
     ButtonControl()
     $dateReg = modPatient.GetRecordDate(Trim(txtencid.Text))
@@ -499,7 +494,7 @@ Private Sub BasicInfoPatient()
     GetPatientOutComeVal()
 
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
-    hPtForm = New FmClinHistory($PatientNum, "PatientID", sHistoryList, sDischList, pnlhistory)
+    hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
     modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
   Endif
@@ -1313,11 +1308,23 @@ Public Sub btnaddexamlist_Click()
 
   Dim hForm1 As FmWardHistory
   Dim hForm As FmEnterGroupExam
+  Dim hForm2 As FmExamAttach
 
   If txtencid.Text Then
     If modBasic.$ClinOPDExamination Then
-      hForm1 = New FmWardHistory(modBasic.$ClinOPDExamination, Trim(txtencid.Text), "Physician Examinations")
-      modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
+      Select modBasic.$ClinOPDExamination
+        Case "Neurology Form"
+          hForm2 = New FmExamAttach(Trim(txtencid.Text), "Neurology", "Physician Examinations", True)
+          modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm2)
+        Case "Refraction Form"
+          hForm2 = New FmExamAttach(Trim(txtencid.Text), "Optometry", "Physician Examinations", True)
+          modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm2)
+        Case "ANC Visit Form"
+          hForm2 = New FmExamAttach(Trim(txtencid.Text), "ANC Visit", "Physician Examinations", True)
+        Case Else
+          hForm1 = New FmWardHistory(modBasic.$ClinOPDExamination, Trim(txtencid.Text), "Physician Examinations")
+          modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
+      End Select
     Else
       hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "Group")
       hForm.ShowModal
@@ -2729,7 +2736,7 @@ Public Sub mnucurvisitsumm_Click()
 
   If txtencid.Text Then
     Inc Application.Busy
-    xPath = modPatReports.GetOPDSummaryReportAllComp(Trim(txtencid.Text))
+    xPath = modPatReportAll.GetOPDSummaryReportAllComp(Trim(txtencid.Text))
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
   Endif

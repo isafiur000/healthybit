@@ -20,8 +20,8 @@ Public Sub Form_Open()
   cmblocat.Text = "%"
   cmbstate.List = ["Pending", "Completed", "Any"]
   cmbstate.Text = "Pending"
-  cmbaccount.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldacledger) as col from tbldiscount where fldbilltype=&1 and fldreference IS NULL", "Credit"))
-  ' cmbaccount.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldacledger) as col from tbldiscount where fldbilltype=&1", "Credit"))
+  ' cmbaccount.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldacledger) as col from tbldiscount where fldbilltype=&1 and fldreference IS NULL", "Credit"))
+  cmbaccount.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldacledger) as col from tbldiscount where fldbilltype=&1", "Credit"))
   If cmbaccount.Count Then
     cmbaccount.Index = 0
   Endif

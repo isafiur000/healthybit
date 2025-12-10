@@ -58,6 +58,7 @@ End
 Public Sub ListBox1_Click()
 
   Dim res As Result
+  Dim xstr As Float
 
   txtdose.Value = 0
   txtdose.Tag = ""
@@ -72,7 +73,10 @@ Public Sub ListBox1_Click()
     txtmixture.Text = res["fldmixing"]
     FillGridView(txtid.Value, lblmedicine.Text)
     btnsave.Enabled = True
-    txtdose.Value = Round(res["flddose"] / modMedConstant.GetDrugInitialStrength(lblmedicine.Text), -2)
+    xstr = modMedConstant.GetDrugInitialStrength(lblmedicine.Text)
+    If xstr Then
+      txtdose.Value = Round(res["flddose"] / xstr, -2)
+    Endif
     txtdose.SetFocus
   Endif
 

@@ -29,7 +29,7 @@ Public Sub Form_Open()
   IniateCategoryPharmArray()
   If modBasic.$AccessStockConsume = "Disable" Then
     $exceptList = modGlobalSetting.GetDBTableList("InventorySaveAccess/StockConsume:Pharmacy")
-    If $exceptList.Count Then
+    If $exceptList And If $exceptList.Count Then
       xx = True
     Else
       xx = False
@@ -504,7 +504,7 @@ Public Sub btncomsave_Click()
   Dim strItem As String[]
   Dim i As Integer
 
-  If $exceptList.Count Then
+  If $exceptList And If $exceptList.Count Then
     strItem = $exceptList.Copy()
     For i = 0 To strItem.Count - 1
       strItem[i] = "'" & strItem[i] & "'"

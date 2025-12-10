@@ -23,7 +23,7 @@ Public Sub Form_Open()
 
   If modBasic.$AccessStoreRequest = "Disable" Then
     $exceptList = modGlobalSetting.GetDBTableList("InventorySaveAccess/StoreRequest:Pharmacy")
-    If $exceptList.Count Then
+    If $exceptList And If $exceptList.Count Then
       xx = True
     Else
       xx = False
@@ -408,7 +408,7 @@ Public Sub btnsave_Click()
   Dim i As Integer
 
   If cmbcomtaget.Text Then
-    If $exceptList.Count Then
+    If $exceptList And If $exceptList.Count Then
       strItem = $exceptList.Copy()
       For i = 0 To strItem.Count - 1
         strItem[i] = "'" & strItem[i] & "'"

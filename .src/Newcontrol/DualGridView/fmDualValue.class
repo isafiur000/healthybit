@@ -19,7 +19,9 @@ Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
   If $sLock = True Then
-    Panel1.Enabled = False
+    Panel1.Visible = False
+  Else
+    Panel1.Visible = True
   Endif
   $sValue = New String[]
   $GridDataList = $sList

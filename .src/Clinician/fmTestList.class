@@ -411,8 +411,6 @@ Public Sub btnselect_Click()
   End Select
 
   If modMisc.AllowDiagnoBilling($encid) = True Then
-
-    Inc Application.Busy
     For i = 1 To ListView1.Count
       If ListView1[CStr(i)].Picture = Picture["icons/checked.png"] Then     '
 
@@ -430,9 +428,7 @@ Public Sub btnselect_Click()
 
       Endif
     Next
-    Dec Application.Busy
     ShowGrid()
-
   Else
     Message.Warning("Diagnosis not provided", ("OK"))
   Endif
@@ -871,8 +867,6 @@ Public Sub btnselecttree_Click()
   End Select
 
   If modMisc.AllowDiagnoBilling($encid) = True Then
-
-    Inc Application.Busy
     If TreeView1.Current.Picture = Picture["icons/coll3.png"] Then   '
 
       If modBasic.$AutoBillTest = "Standard" Or If modBasic.$AutoBillTest = "Full" Or If modBasic.$AutoBillTest = "Partial" Then
@@ -888,9 +882,7 @@ Public Sub btnselecttree_Click()
       Endif
 
     Endif
-    Dec Application.Busy
     ShowGridTree()
-
   Else
     Message.Warning("Diagnosis not provided", ("OK"))
   Endif

@@ -2954,7 +2954,7 @@ Public Function HMISRegister83(xdtfir As Date, xdtlast As Date, sLocaType As Str
           .Add(xrefer)  ''source (Refer)
           .Add("")  ''brought dead
 
-          .Add(modPatReports.GetPatientPresentingSymptomReport(res["fldencounterval"]).Join("<br>"))
+          .Add(modClinicReport.GetPatientChiefComplaintsReport(res["fldencounterval"], False).Join("<br>"))
           If xlabLst And If xlabLst.Count Then
             .Add(xlabLst.Join("; "))
           Else
