@@ -1,19 +1,20 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,120,75)
+  MoveScaled(0,0,120,150)
   Expand = True
   Arrangement = Arrange.Vertical
+  Spacing = True
   { TabPanel1 TabPanel
-    MoveScaled(0,0,118,72)
+    MoveScaled(0,0,118,89)
     Expand = True
     Arrangement = Arrange.Vertical
     Spacing = True
-    Count = 5
+    Count = 6
     Index = 0
     Text = ("Obstetrics")
     { Panel2 Panel
-      MoveScaled(0,0,113,28)
+      MoveScaled(0,0,113,36)
       Arrangement = Arrange.Horizontal
       Border = Border.Plain
       { Panel3 Panel
@@ -35,148 +36,165 @@
             Picture = Picture["icon:/small/apply"]
           }
         }
-        { TextArea1 TextArea
+        { txtriskfactors TextArea
           MoveScaled(1,4,38,14)
           Tag = "Auto"
           Expand = True
           Wrap = True
-        }
-        { Panel15 Panel
-          MoveScaled(0,20,63,4)
-          { Label8 Label
-            MoveScaled(0,0.5,8,3)
-            Font = Font["Bold"]
-            Border = Border.Plain
-            Text = ("Gravida")
-          }
-          { ValueBox1 ValueBox
-            MoveScaled(8,0.5,5,3)
-          }
-          { ValueBox2 ValueBox
-            MoveScaled(24,0.5,5,3)
-          }
-          { Label9 Label
-            MoveScaled(16,0.5,8,3)
-            Font = Font["Bold"]
-            Border = Border.Plain
-            Text = ("Parity")
-          }
-          { ValueBox3 ValueBox
-            MoveScaled(40,0.5,5,3)
-          }
-          { Label10 Label
-            MoveScaled(32,0.5,8,3)
-            Font = Font["Bold"]
-            Border = Border.Plain
-            Text = ("Living")
-          }
-          { ValueBox4 ValueBox
-            MoveScaled(57,0.5,5,3)
-          }
-          { Label11 Label
-            MoveScaled(48,0.5,9,3)
-            Font = Font["Bold"]
-            Border = Border.Plain
-            Text = ("Abortion")
-          }
         }
       }
       { Panel7 Panel
         MoveScaled(66,0,2,23)
       }
       { Panel5 Panel
-        MoveScaled(69,0,42,28)
+        MoveScaled(69,0,43,36)
         Arrangement = Arrange.Vertical
+        { Panel14 Panel
+          MoveScaled(0,0,40.5,4)
+          { Label8 Label
+            MoveScaled(0,0.5,8,3)
+            Font = Font["Bold"]
+            Border = Border.Plain
+            Text = ("Gravida")
+          }
+          { txtgravida ValueBox
+            MoveScaled(8,0.5,8,3)
+          }
+          { Label9 Label
+            MoveScaled(20,0.5,9,3)
+            Font = Font["Bold"]
+            Border = Border.Plain
+            Text = ("Parity")
+          }
+          { txtparity ValueBox
+            MoveScaled(29,0.5,8,3)
+          }
+        }
+        { Panel15 Panel
+          MoveScaled(0,4,40.5,4)
+          { txtabortion ValueBox
+            MoveScaled(29,0.5,8,3)
+          }
+          { Label10 Label
+            MoveScaled(0,0.5,8,3)
+            Font = Font["Bold"]
+            Border = Border.Plain
+            Text = ("Living")
+          }
+          { txtliving ValueBox
+            MoveScaled(8,0.5,8,3)
+          }
+          { Label11 Label
+            MoveScaled(20,0.5,9,3)
+            Font = Font["Bold"]
+            Border = Border.Plain
+            Text = ("Abortion")
+          }
+        }
         { Panel6 Panel
-          MoveScaled(0,0,42,4)
+          MoveScaled(0,8,40.5,4)
           { Label1 Label
-            MoveScaled(0,0.5,20,3)
+            MoveScaled(0,0.5,15.5,3)
             Font = Font["Bold"]
             Expand = True
             Border = Border.Plain
             Text = ("LMP")
           }
-          { TextBox1 TextBox
-            MoveScaled(20,0.5,19,3)
+          { dtlmp ToolButton
+            MoveScaled(35,0.5,3,3)
+            Picture = Picture["icon:/small/calendar"]
+          }
+          { txtlmp MaskBox
+            MoveScaled(16,0.5,19,3)
+            Mask = "0000/00/00"
           }
         }
         { Panel8 Panel
-          MoveScaled(0,4,42,4)
+          MoveScaled(0,12,40.5,4)
           { Label2 Label
-            MoveScaled(0,0.5,20,3)
+            MoveScaled(0,0.5,15.5,3)
             Font = Font["Bold"]
             Expand = True
             Border = Border.Plain
             Text = ("EDD")
           }
-          { TextBox2 TextBox
-            MoveScaled(20,0.5,19,3)
+          { dtedd ToolButton
+            MoveScaled(35,0.5,3,3)
+            Picture = Picture["icon:/small/calendar"]
+          }
+          { txtedd MaskBox
+            MoveScaled(16,0.5,19,3)
+            Mask = "0000/00/00"
           }
         }
         { Panel9 Panel
-          MoveScaled(0,8,42,4)
+          MoveScaled(0,16,40.5,4)
           { Label4 Label
-            MoveScaled(0,0.5,20,3)
+            MoveScaled(0,0.5,15.5,3)
             Font = Font["Bold"]
             Expand = True
             Border = Border.Plain
             Text = ("Mens. cycle")
           }
-          { TextBox3 TextBox
-            MoveScaled(20,0.5,19,3)
+          { txtmenscycle TextBox
+            MoveScaled(16,0.5,23,3)
           }
         }
         { Panel10 Panel
-          MoveScaled(0,12,42,4)
+          MoveScaled(0,20,40.5,4)
           { Label5 Label
-            MoveScaled(0,1,20,3)
+            MoveScaled(0,1,15.5,3)
             Font = Font["Bold"]
             Expand = True
             Border = Border.Plain
             Text = ("Contraception")
           }
-          { TextBox4 TextBox
-            MoveScaled(20,0.5,19,3)
+          { txtcontracept TextBox
+            MoveScaled(16,0.5,23,3)
           }
         }
         { Panel11 Panel
-          MoveScaled(0,16,42,4)
+          MoveScaled(0,24,40.5,4)
           { Label6 Label
-            MoveScaled(0,0.5,20,3)
+            MoveScaled(0,0.5,15.5,3)
             Font = Font["Bold"]
             Expand = True
             Border = Border.Plain
             Text = ("Married For")
           }
-          { TextBox5 TextBox
-            MoveScaled(20,0.5,19,3)
+          { txtmarried TextBox
+            MoveScaled(16,0.5,23,3)
           }
         }
         { Panel12 Panel
-          MoveScaled(0,20,42,4)
+          MoveScaled(0,28,40.5,4)
           { Label7 Label
-            MoveScaled(0,0.5,20,3)
+            MoveScaled(0,0.5,15.5,3)
             Font = Font["Bold"]
             Expand = True
             Border = Border.Plain
             Text = ("Quickening")
           }
-          { TextBox6 TextBox
-            MoveScaled(20,0.5,19,3)
+          { txtquicken TextBox
+            MoveScaled(16,0.5,23,3)
           }
         }
         { Panel13 Panel
-          MoveScaled(0,24,40,4)
-          { btnvisual2 Button
+          MoveScaled(0,32,40.5,4)
+          { btnsavediagnosis Button
             MoveScaled(20,0.5,19,3)
             Text = ("Save")
             Picture = Picture["icon:/small/apply"]
+          }
+          { txtreference TextBox
+            MoveScaled(1,0.5,17,3)
+            Enabled = False
           }
         }
       }
     }
     { ScrollView1 ScrollView
-      MoveScaled(14,32,52,24)
+      MoveScaled(14,40,52,24)
       Expand = True
       Arrangement = Arrange.Horizontal
       { VBox1 VBox
@@ -195,15 +213,16 @@
       }
     }
     Index = 1
-    Text = ("History")
+    Text = ("History & Examination")
     { Panel18 Panel
-      MoveScaled(0,0,117,65)
-      Expand = True
+      MoveScaled(0,0,117,31)
       Arrangement = Arrange.Horizontal
+      AutoResize = True
+      Border = Border.Plain
       { Panel20 Panel
-        MoveScaled(0,0,37,62)
-        Expand = True
+        MoveScaled(0,0,37,29)
         Arrangement = Arrange.Vertical
+        AutoResize = True
         Spacing = True
         { Panel51 Panel
           MoveScaled(0,0,37,3.5)
@@ -213,16 +232,11 @@
             Font = Font["Bold"]
             Expand = True
             Border = Border.Plain
-            Text = ("Past Hostory")
-          }
-          { btnvisual3 Button
-            MoveScaled(21,0,12,3.5)
-            Text = ("Save")
-            Picture = Picture["icon:/small/apply"]
+            Text = ("Past History")
           }
         }
         { Panel24 Panel
-          MoveScaled(0,5,37,3.5)
+          MoveScaled(0,4,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label15 Label
             MoveScaled(0,0,13,3.5)
@@ -231,13 +245,13 @@
             Border = Border.Plain
             Text = ("HTN")
           }
-          { TextBox7 TextBox
+          { txtpastHTN TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel25 Panel
-          MoveScaled(0,8.5,37,3.5)
+          MoveScaled(0,8,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label16 Label
             MoveScaled(0,0,13,3.5)
@@ -246,13 +260,13 @@
             Border = Border.Plain
             Text = ("Thromboembolism")
           }
-          { TextBox8 TextBox
+          { txtpastThrombo TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel26 Panel
-          MoveScaled(0,12,37,3.5)
+          MoveScaled(0,11,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label17 Label
             MoveScaled(0,0,13,3.5)
@@ -261,13 +275,13 @@
             Border = Border.Plain
             Text = ("DM")
           }
-          { TextBox9 TextBox
+          { txtpastDM TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel27 Panel
-          MoveScaled(0,15.5,37,3.5)
+          MoveScaled(0,15,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label18 Label
             MoveScaled(0,0,13,3.5)
@@ -276,157 +290,7 @@
             Border = Border.Plain
             Text = ("TB")
           }
-          { TextBox10 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel28 Panel
-          MoveScaled(0,19,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label19 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("Date of 1st Exam")
-          }
-          { TextBox11 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel29 Panel
-          MoveScaled(0,22.5,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label20 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("BMI")
-          }
-          { TextBox12 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel30 Panel
-          MoveScaled(0,26,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label21 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("Height")
-          }
-          { TextBox13 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel31 Panel
-          MoveScaled(0,29.5,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label22 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("Weight")
-          }
-          { TextBox14 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel32 Panel
-          MoveScaled(0,33,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label23 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("BP")
-          }
-          { TextBox15 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel33 Panel
-          MoveScaled(0,36.5,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label24 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("P/A")
-          }
-          { TextBox16 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel34 Panel
-          MoveScaled(0,40,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label25 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("Ht of Uterus")
-          }
-          { TextBox17 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel35 Panel
-          MoveScaled(0,43.5,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label26 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("Presentation")
-          }
-          { TextBox18 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel36 Panel
-          MoveScaled(0,47,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label27 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("FHS")
-          }
-          { TextBox19 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel37 Panel
-          MoveScaled(0,50.5,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label28 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("C/O")
-          }
-          { TextBox20 TextBox
+          { txtpastTB TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
@@ -436,28 +300,12 @@
         MoveScaled(37,1,2,24)
       }
       { Panel21 Panel
-        MoveScaled(39,0,37,62)
-        Expand = True
+        MoveScaled(39,0,37,30)
         Arrangement = Arrange.Vertical
+        AutoResize = True
         Spacing = True
-        { Panel53 Panel
-          MoveScaled(0,0,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label13 Label
-            MoveScaled(0,0,21,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("Past Hostory")
-          }
-          { btnvisual4 Button
-            MoveScaled(21,0,12,3.5)
-            Text = ("Save")
-            Picture = Picture["icon:/small/apply"]
-          }
-        }
         { Panel38 Panel
-          MoveScaled(0,7,37,3.5)
+          MoveScaled(0,1,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label29 Label
             MoveScaled(0,0,13,3.5)
@@ -466,13 +314,13 @@
             Border = Border.Plain
             Text = ("Heart Disease")
           }
-          { TextBox21 TextBox
+          { txtpastHeart TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel39 Panel
-          MoveScaled(0,11,37,3.5)
+          MoveScaled(0,5,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label30 Label
             MoveScaled(0,0,13,3.5)
@@ -481,13 +329,13 @@
             Border = Border.Plain
             Text = ("Kidney Disease")
           }
-          { TextBox22 TextBox
+          { txtpastKidney TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel40 Panel
-          MoveScaled(0,14,37,3.5)
+          MoveScaled(0,8,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label31 Label
             MoveScaled(0,0,13,3.5)
@@ -496,13 +344,13 @@
             Border = Border.Plain
             Text = ("Operation")
           }
-          { TextBox23 TextBox
+          { txtpastOperation TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel41 Panel
-          MoveScaled(0,18,37,3.5)
+          MoveScaled(0,12,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label32 Label
             MoveScaled(0,0,13,3.5)
@@ -511,13 +359,13 @@
             Border = Border.Plain
             Text = ("Connective Tissue Disorder")
           }
-          { TextBox24 TextBox
+          { txtpastConnect TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel42 Panel
-          MoveScaled(0,21,37,3.5)
+          MoveScaled(0,15,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label33 Label
             MoveScaled(0,0,13,3.5)
@@ -526,13 +374,13 @@
             Border = Border.Plain
             Text = ("Bronchial Astma")
           }
-          { TextBox25 TextBox
+          { txtpastAsthama TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel43 Panel
-          MoveScaled(0,25,37,3.5)
+          MoveScaled(0,19,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label34 Label
             MoveScaled(0,0,13,3.5)
@@ -541,114 +389,17 @@
             Border = Border.Plain
             Text = ("Others")
           }
-          { TextBox26 TextBox
+          { txtpastOther TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
-        { Panel44 Panel
-          MoveScaled(0,28,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label35 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("Pallor")
-          }
-          { TextBox27 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel45 Panel
-          MoveScaled(0,32,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label36 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("Icterus")
-          }
-          { TextBox28 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel46 Panel
-          MoveScaled(0,35,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label37 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("Edema")
-          }
-          { TextBox29 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel47 Panel
-          MoveScaled(0,39,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label38 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("P/S")
-          }
-          { TextBox30 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel48 Panel
-          MoveScaled(0,42,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label39 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("Cx")
-          }
-          { TextBox31 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel49 Panel
-          MoveScaled(0,46,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label40 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("Discharge")
-          }
-          { TextBox32 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
-          }
-        }
-        { Panel50 Panel
-          MoveScaled(0,49,37,3.5)
-          Arrangement = Arrange.Horizontal
-          { Label41 Label
-            MoveScaled(0,0,13,3.5)
-            Font = Font["Bold"]
-            Expand = True
-            Border = Border.Plain
-            Text = ("Bleeding")
-          }
-          { TextBox33 TextBox
-            MoveScaled(13,0,19,3.5)
-            Expand = True
+        { Panel53 Panel
+          MoveScaled(0,22.5,37,3.5)
+          { btnpasthistory Button
+            MoveScaled(13,0,19,3)
+            Text = ("Save")
+            Picture = Picture["icon:/small/apply"]
           }
         }
       }
@@ -656,9 +407,9 @@
         MoveScaled(76,0,2,24)
       }
       { Panel23 Panel
-        MoveScaled(78,0,37,61)
-        Expand = True
+        MoveScaled(78,0,37,30)
         Arrangement = Arrange.Vertical
+        AutoResize = True
         Spacing = True
         { Panel66 Panel
           MoveScaled(0,0,37,3.5)
@@ -668,16 +419,11 @@
             Font = Font["Bold"]
             Expand = True
             Border = Border.Plain
-            Text = ("Family Hostory")
-          }
-          { btnvisual5 Button
-            MoveScaled(21,0,12,3.5)
-            Text = ("Save")
-            Picture = Picture["icon:/small/apply"]
+            Text = ("Family History")
           }
         }
         { Panel52 Panel
-          MoveScaled(0,7,37,3.5)
+          MoveScaled(0,4,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label43 Label
             MoveScaled(0,0,13,3.5)
@@ -686,13 +432,13 @@
             Border = Border.Plain
             Text = ("HTN")
           }
-          { TextBox35 TextBox
+          { txtfamlHTN TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel54 Panel
-          MoveScaled(0,11,37,3.5)
+          MoveScaled(0,8,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label45 Label
             MoveScaled(0,0,13,3.5)
@@ -701,13 +447,13 @@
             Border = Border.Plain
             Text = ("DM")
           }
-          { TextBox37 TextBox
+          { txtfamlDM TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel55 Panel
-          MoveScaled(0,15,37,3.5)
+          MoveScaled(0,12,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label46 Label
             MoveScaled(0,0,13,3.5)
@@ -716,13 +462,13 @@
             Border = Border.Plain
             Text = ("TB")
           }
-          { TextBox38 TextBox
+          { txtfamlTB TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel56 Panel
-          MoveScaled(0,20,37,3.5)
+          MoveScaled(0,17,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label47 Label
             MoveScaled(0,0,13,3.5)
@@ -731,13 +477,327 @@
             Border = Border.Plain
             Text = ("Multiple Pregnancy")
           }
-          { TextBox39 TextBox
+          { txtfamlMultPreg TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
+        { Panel90 Panel
+          MoveScaled(0,21,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label61 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Allergy History")
+          }
+          { txtfamlallergy TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel16 Panel
+          MoveScaled(0,25,37,3.5)
+          { btnFamlHist Button
+            MoveScaled(13,0,19,3)
+            Text = ("Save")
+            Picture = Picture["icon:/small/apply"]
+          }
+        }
+      }
+      { Panel1 Panel
+        MoveScaled(115,1,2,24)
+      }
+    }
+    { Panel91 Panel
+      MoveScaled(0,31,93,1)
+    }
+    { Panel83 Panel
+      MoveScaled(0,33,118,41)
+      Arrangement = Arrange.Horizontal
+      AutoResize = True
+      Border = Border.Plain
+      { Panel84 Panel
+        MoveScaled(0,1,36,38)
+        Arrangement = Arrange.Vertical
+        AutoResize = True
+        Spacing = True
+        { Panel28 Panel
+          MoveScaled(0,0,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label19 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Date of 1st Exam")
+          }
+          { txtpastfirexam TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel29 Panel
+          MoveScaled(0,3.5,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label20 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("BMI")
+          }
+          { txtpastBMI TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel30 Panel
+          MoveScaled(0,7,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label21 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Height")
+          }
+          { txtpastHeight TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel31 Panel
+          MoveScaled(0,10.5,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label22 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Weight")
+          }
+          { txtpastWeight TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel32 Panel
+          MoveScaled(0,14,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label23 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("BP")
+          }
+          { txtpastBP TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel33 Panel
+          MoveScaled(0,17.5,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label24 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("P/A")
+          }
+          { txtpastPA TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel34 Panel
+          MoveScaled(0,21,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label25 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Ht of Uterus")
+          }
+          { txtpastHtUterus TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel35 Panel
+          MoveScaled(0,24.5,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label26 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Presentation")
+          }
+          { txtpastPresent TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel36 Panel
+          MoveScaled(0,28,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label27 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("FHS")
+          }
+          { txtpastFHS TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel37 Panel
+          MoveScaled(0,31.5,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label28 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("C/O")
+          }
+          { txtpastCO TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+      }
+      { Panel85 Panel
+        MoveScaled(36,0,2,24)
+      }
+      { Panel87 Panel
+        MoveScaled(38,1,36,38)
+        Arrangement = Arrange.Vertical
+        AutoResize = True
+        Spacing = True
+        { Panel44 Panel
+          MoveScaled(0,0,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label35 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Pallor")
+          }
+          { txtpastPallor TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel45 Panel
+          MoveScaled(0,4,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label36 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Icterus")
+          }
+          { txtpastIcterus TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel46 Panel
+          MoveScaled(0,7,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label37 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Edema")
+          }
+          { txtpastEdema TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel47 Panel
+          MoveScaled(0,11,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label38 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("P/S")
+          }
+          { txtpastPS TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel48 Panel
+          MoveScaled(0,14,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label39 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Cx")
+          }
+          { txtpastCX TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel49 Panel
+          MoveScaled(0,18,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label40 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Discharge")
+          }
+          { txtpastDischarge TextBox
+            MoveScaled(13,0,19,3.5)
+            Expand = True
+          }
+        }
+        { Panel50 Panel
+          MoveScaled(0,21,37,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label41 Label
+            MoveScaled(0,0,13,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Bleeding")
+          }
+          { txtpastbleed TextBox
+            MoveScaled(50,0,19,3.5)
+            Expand = True
+          }
+        }
+      }
+      { Panel86 Panel
+        MoveScaled(74,0,2,24)
+      }
+      { Panel89 Panel
+        MoveScaled(76,1,36,38)
+        Arrangement = Arrange.Vertical
+        AutoResize = True
+        Spacing = True
         { Panel57 Panel
-          MoveScaled(0,24,37,3.5)
+          MoveScaled(0,0,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label48 Label
             MoveScaled(0,0,13,3.5)
@@ -746,13 +806,13 @@
             Border = Border.Plain
             Text = ("Duration amenorrhoea")
           }
-          { TextBox40 TextBox
+          { txtfamlAmendura TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel58 Panel
-          MoveScaled(0,27,37,3.5)
+          MoveScaled(0,3,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label49 Label
             MoveScaled(0,0,13,3.5)
@@ -761,13 +821,13 @@
             Border = Border.Plain
             Text = ("Breast/Nipple")
           }
-          { TextBox41 TextBox
+          { txtfamlBreast TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel59 Panel
-          MoveScaled(0,31,37,3.5)
+          MoveScaled(0,7,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label50 Label
             MoveScaled(0,0,13,3.5)
@@ -776,13 +836,13 @@
             Border = Border.Plain
             Text = ("Chest")
           }
-          { TextBox42 TextBox
+          { txtfamlChest TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel60 Panel
-          MoveScaled(0,34,37,3.5)
+          MoveScaled(0,10,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label51 Label
             MoveScaled(0,0,13,3.5)
@@ -791,13 +851,13 @@
             Border = Border.Plain
             Text = ("CVS")
           }
-          { TextBox43 TextBox
+          { txtfamlcardio TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel61 Panel
-          MoveScaled(0,38,37,3.5)
+          MoveScaled(0,14,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label52 Label
             MoveScaled(0,0,13,3.5)
@@ -806,28 +866,28 @@
             Border = Border.Plain
             Text = ("P/V")
           }
-          { TextBox44 TextBox
+          { txtfamlPV TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel62 Panel
-          MoveScaled(0,41,37,3.5)
+          MoveScaled(0,17,37,3.5)
           Arrangement = Arrange.Horizontal
-          { Label53 Label
+          { Label1x Label
             MoveScaled(0,0,13,3.5)
             Font = Font["Bold"]
             Expand = True
             Border = Border.Plain
             Text = ("Uterus")
           }
-          { TextBox45 TextBox
+          { txtfamlUterus TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel63 Panel
-          MoveScaled(0,45,37,3.5)
+          MoveScaled(0,21,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label54 Label
             MoveScaled(0,0,13,3.5)
@@ -836,13 +896,13 @@
             Border = Border.Plain
             Text = ("Adnexa")
           }
-          { TextBox46 TextBox
+          { txtfamlAdnexa TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel64 Panel
-          MoveScaled(0,48,37,3.5)
+          MoveScaled(0,24,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label55 Label
             MoveScaled(0,0,13,3.5)
@@ -851,13 +911,13 @@
             Border = Border.Plain
             Text = ("Tenderness")
           }
-          { TextBox47 TextBox
+          { txtfamlTender TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
         { Panel65 Panel
-          MoveScaled(0,52,37,3.5)
+          MoveScaled(0,28,37,3.5)
           Arrangement = Arrange.Horizontal
           { Label56 Label
             MoveScaled(0,0,13,3.5)
@@ -866,20 +926,248 @@
             Border = Border.Plain
             Text = ("Adv")
           }
-          { TextBox48 TextBox
+          { txtfamlAdv TextBox
             MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
+        { Panel92 Panel
+          MoveScaled(0,31.5,37,3.5)
+          { btnexamination Button
+            MoveScaled(13,0,19,3)
+            Text = ("Save")
+            Picture = Picture["icon:/small/apply"]
+          }
+        }
       }
-      { Panel1 Panel
-        MoveScaled(115,1,2,24)
+      { Panel88 Panel
+        MoveScaled(112,0,2,24)
       }
     }
     Index = 2
     Text = ("Laboratory")
+    { Panel70 Panel
+      MoveScaled(-1,0,116,21)
+      Arrangement = Arrange.Horizontal
+      Spacing = True
+      { Panel75 Panel
+        MoveScaled(0,0,65,19)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        { Panel78 Panel
+          MoveScaled(1,0,62,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label58 Label
+            MoveScaled(0,0,48,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Grouping and Serology")
+          }
+          { btnaddserology Button
+            MoveScaled(48,0,12,3)
+            Text = ("Add")
+            Picture = Picture["icon:/small/add"]
+          }
+        }
+        { GridView6 GridView
+          MoveScaled(2,4,44,10)
+          Expand = True
+          Mode = Select.Single
+          Header = GridView.Horizontal
+        }
+        { Panel77 Panel
+          MoveScaled(0,15,63,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label60 Label
+            MoveScaled(1,0,28,3.5)
+            Font = Font["Bold"]
+            Border = Border.Plain
+            Text = ("Husband Blood Group Rh Type")
+          }
+          { txthusband TextBox
+            MoveScaled(29,0,18,3.5)
+            Expand = True
+          }
+          { btnaddhusband Button
+            MoveScaled(51,0,12,3)
+            Text = ("Add")
+            Picture = Picture["icon:/small/add"]
+          }
+        }
+      }
+      { Panel76 Panel
+        MoveScaled(65,0,48,19)
+        Arrangement = Arrange.Vertical
+        { Panel79 Panel
+          MoveScaled(0,0,43,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label59 Label
+            MoveScaled(0,0,26,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Vaccines")
+          }
+          { btnaddvaccine Button
+            MoveScaled(26,0,12,3)
+            Text = ("Add")
+            Picture = Picture["icon:/small/add"]
+          }
+        }
+        { GridView7 GridView
+          MoveScaled(2,4,42,13)
+          Expand = True
+          Mode = Select.Single
+          Header = GridView.Horizontal
+        }
+      }
+    }
+    { Panel71 Panel
+      MoveScaled(0,21,116,21)
+      Arrangement = Arrange.Horizontal
+      Spacing = True
+      { Panel73 Panel
+        MoveScaled(0,0,55,19)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        { Panel80 Panel
+          MoveScaled(0,0,43,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label44 Label
+            MoveScaled(0,0,26,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Hematology")
+          }
+          { btnaddhemato Button
+            MoveScaled(26,0,12,3)
+            Text = ("Add")
+            Picture = Picture["icon:/small/add"]
+          }
+        }
+        { GridView3 GridView
+          MoveScaled(2,4,44,12)
+          Expand = True
+          Mode = Select.Single
+          Header = GridView.Horizontal
+        }
+      }
+      { Panel74 Panel
+        MoveScaled(55,0,55,19)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        { Panel81 Panel
+          MoveScaled(0,0,43,3.5)
+          Arrangement = Arrange.Horizontal
+          { Label53 Label
+            MoveScaled(0,0,26,3.5)
+            Font = Font["Bold"]
+            Expand = True
+            Border = Border.Plain
+            Text = ("Urine")
+          }
+          { btnadduring Button
+            MoveScaled(26,0,12,3)
+            Text = ("Add")
+            Picture = Picture["icon:/small/add"]
+          }
+        }
+        { GridView4 GridView
+          MoveScaled(2,4,44,12)
+          Expand = True
+          Mode = Select.Single
+          Header = GridView.Horizontal
+        }
+      }
+    }
+    { Panel72 Panel
+      MoveScaled(0,42,116,21)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { Panel82 Panel
+        MoveScaled(0,0,43,3.5)
+        Arrangement = Arrange.Horizontal
+        { Label57 Label
+          MoveScaled(0,0,26,3.5)
+          Font = Font["Bold"]
+          Expand = True
+          Border = Border.Plain
+          Text = ("Biochemistry")
+        }
+        { btnaddbiochem Button
+          MoveScaled(26,0,12,3)
+          Text = ("Add")
+          Picture = Picture["icon:/small/add"]
+        }
+      }
+      { GridView5 GridView
+        MoveScaled(2,4,44,12)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Horizontal
+      }
+    }
     Index = 3
     Text = ("Ultrasound")
+    { Panel17 Panel
+      MoveScaled(0,1,103,29)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { HBox1 HBox
+        MoveScaled(0,0,100,3.5)
+        { Label13 Label
+          MoveScaled(0,0,11,3.5)
+          Font = Font["Bold"]
+          Border = Border.Plain
+          Text = ("Ultrasound")
+        }
+        { Panel68 Panel
+          MoveScaled(11,0,18,3)
+          Expand = True
+        }
+        { btnaddusg Button
+          MoveScaled(87,0,12,3)
+          Text = ("Add")
+          Picture = Picture["icon:/small/add"]
+        }
+      }
+      { GridView1 GridView
+        MoveScaled(1,5,50,20)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Both
+      }
+    }
+    { Panel67 Panel
+      MoveScaled(0,32,100,32)
+      Arrangement = Arrange.Vertical
+      { HBox2 HBox
+        MoveScaled(0,0,98,3.5)
+        { Label42 Label
+          MoveScaled(0,0,8,3.5)
+          Font = Font["Bold"]
+          Border = Border.Plain
+          Text = ("Others")
+        }
+        { Panel69 Panel
+          MoveScaled(8,0,18,3)
+          Expand = True
+        }
+        { btnaddothers Button
+          MoveScaled(85,0,12,3)
+          Text = ("Add")
+          Picture = Picture["icon:/small/add"]
+        }
+      }
+      { GridView2 GridView
+        MoveScaled(0,4,44,21)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Both
+      }
+    }
     Index = 4
     Text = ("ANC Chart")
     { ScrollView2 ScrollView
@@ -898,6 +1186,160 @@
           MoveScaled(15,14,24,11)
           Arrangement = Arrange.Vertical
           AutoResize = True
+        }
+      }
+    }
+    Index = 5
+    Text = ("Outcome")
+    { Panel93 Panel
+      MoveScaled(2,2,115,62)
+      Expand = True
+      Arrangement = Arrange.Horizontal
+      { Panel94 Panel
+        MoveScaled(0,0,59,16)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        { Panel95 Panel
+          MoveScaled(0,0,59,4)
+          { dcthelpplan ToolButton
+            MoveScaled(28,0.5,3,3)
+            Picture = Picture["icon:/small/edit"]
+          }
+          { Label62 Label
+            MoveScaled(0,0.5,17,2.75)
+            Border = Border.Plain
+            Text = ("Clinician Advice")
+          }
+          { btnhelpplan ToolButton
+            MoveScaled(32,0.5,3,3)
+            Picture = Picture["icon:/small/exec"]
+          }
+          { btntemplpplan ToolButton
+            MoveScaled(36,0.5,3,3)
+            Picture = Picture["icon:/small/attach"]
+          }
+          { btnshowplan ToolButton
+            MoveScaled(40,0.5,3,3)
+            Picture = Picture["icon:/small/refresh"]
+          }
+          { btnplandef ToolButton
+            MoveScaled(24,0.5,3,3)
+            Picture = Picture["icon:/small/database"]
+          }
+          { btnplan Button
+            MoveScaled(49,0.5,9,3)
+            Text = ("Add")
+            Picture = Picture["icon:/small/apply"]
+          }
+        }
+        { txtplan TextHTML
+          MoveScaled(0,4,58,8)
+          Tag = "Auto"
+          Expand = True
+        }
+        { lblinitialuser Label
+          MoveScaled(0,12,58,3)
+          Border = Border.Plain
+        }
+      }
+      { Panel96 Panel
+        MoveScaled(59,0,1,39)
+      }
+      { Panel97 Panel
+        MoveScaled(60,0,53,39)
+        Arrangement = Arrange.Vertical
+        Border = Border.Plain
+        { pnlclinpara Panel
+          MoveScaled(0,1,53,4)
+          { txtclinIndex ValueBox
+            MoveScaled(29,0.5,8,3)
+            ReadOnly = True
+          }
+          { btnselect Button
+            MoveScaled(39,0.5,13,3)
+            Text = ("Select")
+            Picture = Picture["icon:/small/select"]
+          }
+          { lbloutcome3 Label
+            MoveScaled(0,0.5,7,3)
+            Border = Border.Plain
+            Text = ("Depart")
+          }
+          { txtclindepart TextBox
+            MoveScaled(7,0.5,21,3)
+            ReadOnly = True
+          }
+        }
+        { Panel98 Panel
+          MoveScaled(0,6,52,7.5)
+          { rbimproved RadioButton
+            MoveScaled(1,0.5,12,3)
+            Text = ("Discharge")
+            Value = True
+          }
+          { rbfollowup RadioButton
+            MoveScaled(19,1,12,3)
+            Text = ("Follow Up")
+          }
+          { rbadmission RadioButton
+            MoveScaled(36,1,12.75,3)
+            Text = ("Admission")
+          }
+          { rbreferred RadioButton
+            MoveScaled(1,4,12,3)
+            Text = ("Referred")
+          }
+          { rblama RadioButton
+            MoveScaled(19,4,12,3)
+            Text = ("LAMA")
+          }
+          { rbdeath RadioButton
+            MoveScaled(36,4,10,3)
+            Text = ("Death")
+          }
+        }
+        { pnloutcome Panel
+          MoveScaled(0,14,52,4)
+          { cmbrefer ComboBox
+            MoveScaled(18,0.5,26,3)
+            Visible = False
+          }
+          { dtfollowup DateBox
+            MoveScaled(18,0.5,26,3)
+            Visible = False
+            Mode = DateChooser.DateTime
+          }
+          { lbloutcome Label
+            MoveScaled(0,0.5,16,3)
+            Border = Border.Plain
+            Text = ("Follow Up Date")
+          }
+        }
+        { pnlsaveoutcome Panel
+          MoveScaled(0,19,53,4)
+          { btnnotice Button
+            MoveScaled(1,0.5,11,3)
+            Text = ("Notice")
+          }
+          { btnoutcome Button
+            MoveScaled(25,0.5,13,3)
+            Text = ("Save")
+            Picture = Picture["icon:/small/apply"]
+          }
+          { btnopreport Button
+            MoveScaled(39,0.5,13,3)
+            Text = ("Report")
+            Picture = Picture["icon:/small/html"]
+          }
+          { txtclinmode TextBox
+            MoveScaled(12,0.5,6,3)
+            Visible = False
+          }
+        }
+        { txtcomment TextHTML
+          MoveScaled(0,24,50,14)
+          Tag = "Auto"
+          Expand = True
         }
       }
     }

@@ -53,6 +53,7 @@ Public Sub IconPanel1_Click()
     cmbaddress.List = ["Yes", "No"]
     cmbinvtypealign.List = AlignmentList()
     cmbportalqrform.List = ["Archive:All Categories", "Archive:Diagnostic Tests", "Archive:Radio Diagnostics", "Archive:General Reports", "Archive:Patient Portal"]
+    cmbnullinvoice.List = modMisc.CustomReportList()
     ShowHeaderSett()
     ShowEndNote()
 
@@ -1050,6 +1051,7 @@ Private Sub ShowHeaderSett()
   txtbackground.Text = modSettings.ShowSettingFromFIle("Invoice/Body_BackgroundPicture")
   txtfooterpict.Text = modSettings.ShowSettingFromFIle("Invoice/Footer_Picture")
   cmbportalqrform.Text = modSettings.ShowSettingFromFIle("Invoice/QRCodeLink")
+  cmbnullinvoice.Text = modSettings.ShowSettingFromFIle("Invoice/NullFormat")
 
 End
 
@@ -1190,6 +1192,14 @@ Public Sub btnportalqrform_Click()
 
   modSettings.SaveSettingsToFile("Invoice/QRCodeLink", cmbportalqrform.Text)
   Balloon.Info(("Information saved"), btnportalqrform)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnnullinvoice_Click()
+
+  modSettings.SaveSettingsToFile("Invoice/NullFormat", cmbnullinvoice.Text)
+  Balloon.Info(("Information saved"), btnnullinvoice)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

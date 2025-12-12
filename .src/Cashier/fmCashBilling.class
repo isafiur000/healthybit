@@ -318,6 +318,9 @@ Private Sub GetF12KeyPress()
 
     If ShowBilling() = True Then
       If hPatient.Enabled = True Then
+        If txttotnew.Value = 0 And If txttotsaved.Value = 0 Then
+          PrintNullFormat()
+        Endif
         hPatient.$ACLedger = cmbledgerac.Text
         hPatient.$ACReference = Trim(txtreference.Text)
         hPatient.DirectCashBilling()
@@ -370,6 +373,19 @@ Private Sub GetF12KeyPress()
       RefresgOldData()
     Endif
 
+  Endif
+
+End
+
+Private Sub PrintNullFormat()
+
+  Dim hCls As CReportCustom
+
+  If txtencid.Text Then
+    If modBasic.$BillNullFormat Then
+      hCls = New CReportCustom(Trim(txtencid.Text), modBasic.$BillNullFormat, "InvoiceSize", MMain.$defUnit)
+      hCls.Preview()
+    Endif
   Endif
 
 End

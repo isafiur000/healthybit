@@ -1,0 +1,63 @@
+' Gambas class file
+
+Private $TableList As String[]
+
+Public Sub Form_Open()
+
+  $TableList = modDBApp.DBRegularTablesSelField(modDatabase.$myConn, ["fldencounterval"])
+  $TableList.Add("tblpatientinfo")
+  dtfir.Value = Now()
+  dtlast.Value = Now()
+  modBasic.$YearlabtestList = New String[]
+  modBasic.$YearpatexamList = New String[]
+
+End
+
+Public Sub btnaddtables_Click()
+
+  Dim xList As String[]
+
+  xList = GridListView("Select Tables", $TableList)
+  If xList And If xList.Count Then
+    ListBox1.List = xList
+  Endif
+
+End
+
+Public Sub txtfolder_Click()
+
+  If Dialog.SelectDirectory() Then Return
+  txtfolder.Text = Dialog.Path
+
+End
+
+Public Sub btndump_Click()
+
+  Dim sTable As String
+  Dim xcmd As String
+
+  Dim xhost As String
+  Dim xuser As String
+  Dim xpass As String
+  Dim xdabase As String
+  Dim xtime As String
+  Dim xquery As String
+
+  If txtfolder.Text Then
+    xhost = modDatabase.$myConn.Host
+    xuser = modDatabase.$myConn.User
+    xpass = modDatabase.$myConn.Password
+    xdabase = modDatabase.$myConn.Name
+
+    For Each sTable In ListBox1.List
+      xtime = modMedReports.GetTableTimeField(sTable)
+      If xtime Then
+        xquery = xtime & db.Subst(" BETWEEN &1 AND &2", dtfir.Value, dtlast.Value)
+        xcmd = "mysqldump -h " & xhost & " -u " & xuser & " -p" & xpass & Space(1) & xdabase & Space(1) & sTable & " --where=" & Quote(xquery) & " > " & txtfolder.Text &/ sTable & ".sql"
+        Print xcmd
+        Shell xcmd Wait
+      Endif
+    Next
+  Endif
+
+End

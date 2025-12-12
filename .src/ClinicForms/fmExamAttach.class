@@ -56,9 +56,11 @@ Private Sub LoadSpecializedForms(sType As String)
     Panel2.Height = hForm2.Height
     Panel2.Width = hForm2.Width + 25 * modBasic.$AppWidthRatio
   Else If sType = "ANC Visit" Then
-    hForm3 = New FmANCForm(Trim(txtencid.Text), sType, $DataType, Panel2)
-    Panel2.Height = hForm3.Height
-    Panel2.Width = hForm3.Width + 25 * modBasic.$AppWidthRatio
+    If txtgender.Text = "Female" Then
+      hForm3 = New FmANCForm(Trim(txtencid.Text), sType, $DataType, Panel2)
+      Panel2.Height = hForm3.Height
+      Panel2.Width = hForm3.Width + 25 * modBasic.$AppWidthRatio
+    Endif
   Endif
 
 End
@@ -544,6 +546,19 @@ Public Sub mnupharm_Click()
         hForm = New FmMedOrder(Trim(txtencid.Text), $Status, $billModePharmacy)
         hForm.ShowModal
       Endif
+    Endif
+  Endif
+
+End
+
+Public Sub mnubilling_Click()
+
+  Dim hForm As FmMiniService
+
+  If txtencid.Text Then
+    If modNonMedical.AllowEntryWithDeposit(Trim(txtencid.Text), "Service") = True Then
+      hForm = New FmMiniService(Trim(txtencid.Text), $billModeService, $billModeProcedure, $billModeOthers)
+      hForm.ShowModal
     Endif
   Endif
 

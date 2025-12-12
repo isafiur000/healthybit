@@ -4475,3 +4475,25 @@ Public Sub mnupatcomment_Click()
   Endif
 
 End
+
+Public Sub mnufollowdate_Click()
+
+  Dim res As Result
+  Dim xold As Date
+  Dim xdate As Date
+
+  res = modDatabase.$myConn.Edit("tblencounter", "fldencounterval=&1", Trim(txtencid.Text))
+  If res.Available Then
+    If res["fldfollowdate"] Then
+      xold = res["fldfollowdate"]
+    Else
+      xold = Now()
+    Endif
+    xdate = GetDateValue("Set Follow Up Date", Trim(txtencid.Text), xold)
+    If xdate Then
+      res["fldfollowdate"] = xdate
+      res.Update
+    Endif
+  Endif
+
+End

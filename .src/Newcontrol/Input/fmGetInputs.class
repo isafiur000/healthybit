@@ -4,6 +4,7 @@ Private aRowPanel As New Object[50]
 Private aNameLabel As New Object[50]
 Private aValueBox As New Object[50]
 Private aLineText As New Object[50]
+Private aAreaText As New Object[50]
 Private aSpacing As New Object[50]
 
 Private $sVar As Variant[]
@@ -35,6 +36,8 @@ Private Sub LoadFormData()
       aNameLabel[i] = New TextLabel(aRowPanel[i]) As "NameLabel"
       If $sVar[i][1] = "Number" Then
         aValueBox[i] = New ValueBox(aRowPanel[i]) As "ValueGroup"
+      Else If $sVar[i][1] = "MultiLine" Then
+        aAreaText[i] = New TextArea(aRowPanel[i]) As "TextAreaGroup"
       Else If $sVar[i][1] = "String" Then
         aLineText[i] = New TextBox(aRowPanel[i]) As "TextLineGroup"
       Endif
@@ -60,7 +63,11 @@ Private Sub DIsplayTextForm()
     If i < 49 Then
 
       With aRowPanel[i]
-        .Height = 25
+        If $sVar[i][1] = "MultiLine" Then
+          .Height = 100
+        Else
+          .Height = 25
+        Endif
         .Width = Frame1.Width
       End With
 
@@ -76,6 +83,13 @@ Private Sub DIsplayTextForm()
           .Expand = True
           .Height = 25
           .Value = 0
+          .Tag = i
+        End With
+      Else If $sVar[i][1] = "MultiLine" Then
+        With aAreaText[i]
+          .Expand = True
+          .Height = 100
+          .Text = ""
           .Tag = i
         End With
       Else If $sVar[i][1] = "String" Then
@@ -111,6 +125,8 @@ Public Sub btnBrOK_Click()
           Else
             sColl.Add(0, aNameLabel[i].Text)
           Endif
+        Else If aAreaText[i] And If aAreaText[i].Text Then
+          sColl.Add(aAreaText[i].Text, aNameLabel[i].Text)
         Else If aLineText[i] And If aLineText[i].Text Then
           sColl.Add(aLineText[i].Text, aNameLabel[i].Text)
         Endif
@@ -118,6 +134,8 @@ Public Sub btnBrOK_Click()
       Else
         If aValueBox[i] And If aValueBox[i].Value Then
           sColl.Add(aValueBox[i].Value, aNameLabel[i].Text)
+        Else If aAreaText[i] And If aAreaText[i].Text Then
+          sColl.Add(aAreaText[i].Text, aNameLabel[i].Text)
         Else If aLineText[i] And If aLineText[i].Text Then
           sColl.Add(aLineText[i].Text, aNameLabel[i].Text)
         Endif
