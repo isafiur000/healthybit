@@ -28,7 +28,7 @@ Private SysFallPort As String
 Public Sub Form_Open()
 
   Me.Center
-  cmbcommand.List = ["wsrep_%", "--Cluster Integrity--", "wsrep_cluster_state_uuid", "wsrep_cluster_conf_id", "wsrep_cluster_size", "wsrep_cluster_status", "--Node Status--", "wsrep_ready", "wsrep_connected", "wsrep_local_state_comment", "--Replication Health--", "wsrep_local_recv_queue_avg", "wsrep_flow_control_paused", "wsrep_cert_deps_distance", "--Network Issues--", "wsrep_local_send_queue_avg", "Status Report", "Process List", "Ping Server", "mysqltuner"]                                                                      ''
+  cmbcommand.List = ["wsrep_%", "--Cluster Integrity--", "wsrep_cluster_state_uuid", "wsrep_cluster_conf_id", "wsrep_cluster_size", "wsrep_cluster_status", "--Node Status--", "wsrep_ready", "wsrep_connected", "wsrep_local_state_comment", "--Replication Health--", "wsrep_local_recv_queue_avg", "wsrep_flow_control_paused", "wsrep_cert_deps_distance", "--Network Issues--", "wsrep_local_send_queue_avg", "Status Report", "Process List", "Ping Server", "Extended Status", "Server Variables", "mysqltuner"]                                                                      ''
   ReadGaleraConfigFile()
   txtservermain.Text = SysMainHost
   txtreadserver.Text = SysExtHost
@@ -144,6 +144,10 @@ Private Function GetQueryReport(scon As Connection) As String
         xx = modDBApp.MysqlAdminValue(scon.Type, scon.Host, scon.User, scon.Password, scon.Port, "processlist")
       Else If cmbcommand.Text = "Ping Server" Then
         xx = modDBApp.MysqlAdminValue(scon.Type, scon.Host, scon.User, scon.Password, scon.Port, "ping")
+      Else If cmbcommand.Text = "Extended Status" Then
+        xx = modDBApp.MysqlAdminValue(scon.Type, scon.Host, scon.User, scon.Password, scon.Port, "extended-status")
+      Else If cmbcommand.Text = "Server Variables" Then
+        xx = modDBApp.MysqlAdminValue(scon.Type, scon.Host, scon.User, scon.Password, scon.Port, "variables")
       Else If cmbcommand.Text = "mysqltuner" Then
         xx = modDBApp.MySQLTunerReport(scon.Type, scon.Host, scon.User, scon.Password, scon.Port, txtrammain.Value, txtswapmain.Value)
       Else
