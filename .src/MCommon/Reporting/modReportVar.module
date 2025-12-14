@@ -623,7 +623,7 @@ Public Function GetColumnValueRaw(sType As String, encid As String, Optional sUn
   If sType = "Chief Complaints" Then
     xval = modClinicReport.GetPatientChiefComplaintsReport(encid, False).Join(gb.NewLine)
   Else If sType = "Presenting Complaints" Then
-    xval = modPatReports.GetPatientPresentingSymptomReport(encid, False).Join(gb.NewLine)
+    xval = modPatReports.GetPatientPresentingSymptomReport(encid).Join(gb.NewLine)
   Else If sType = "Provisional Diagnosis" Then
     xval = modPatient.PatientFindingList(encid, "Provisional Diagnosis").Join(gb.newline)
   Else If sType = "Final Diagnosis" Then
@@ -1673,7 +1673,7 @@ Public Function GetReportVarHistory($encid As String, $Line As String) As String
 
   ''from exam table
   If (String.InStr($Line, "PresentingSymptoms") > 0) Then
-    $Line = Replace($Line, "{PresentingSymptoms}", modString.TextToHTML(modPatReports.GetPatientPresentingSymptomReport($encid, False).Join(gb.NewLine)))
+    $Line = Replace($Line, "{PresentingSymptoms}", modString.TextToHTML(modPatReports.GetPatientPresentingSymptomReport($encid).Join(gb.NewLine)))
   Endif
   If (String.InStr($Line, "GeneralComplaints") > 0) Then
     $Line = Replace($Line, "{GeneralComplaints}", modPatPatho.ShowSelectedHistory($encid, "General Complaints"))
