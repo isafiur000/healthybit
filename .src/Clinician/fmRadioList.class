@@ -45,7 +45,7 @@ Public Sub Form_Open()
 
   $bedLocation = modPatient.GetPatientLocation($encid)
   $xFinClear = modNonMedical.GetFinanceClearance($encid)
-  $LabDepartList = modMedicine.GetPathoCategoryList("Radio")
+  GetCategoryList()
   btnrefer.Tag = modBillings.GetReferralUserSetting("Radio", $encid)
   If btnrefer.Tag Then
     btnrefer.Text = modGeneral.GetUserFullName(btnrefer.Tag)
@@ -92,6 +92,19 @@ Public Sub Form_KeyRelease()
 
 End
 
+Private Sub GetCategoryList()
+
+  Dim asx As String[]
+  Dim xList As String[]
+
+  xList = New String[]
+  xList.Add("All Sections")
+  asx = modMedicine.GetPathoCategoryList("Radio")
+  xList.Insert(asx)
+  $LabDepartList = xList
+
+End
+
 Public Sub TabPanel1_Click()
 
   If TabPanel1.Index = 0 Then
@@ -102,7 +115,6 @@ Public Sub TabPanel1_Click()
     ShowGrid()
   Else If TabPanel1.Index = 2 Then
     cmbcategory.List = $LabDepartList
-    cmbcategory.Add("All Sections")
     ShowGridTree()
   Else If TabPanel1.Index = 3 Then
     lsttestname.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldtestid) as col from tblpatradiotest where fldencounterval=&1", $encid))
@@ -322,7 +334,6 @@ Public Sub rblabs_Click()
 
   cmbtestgroup.Clear()
   cmbtestgroup.List = $LabDepartList
-  cmbtestgroup.Add("All Sections")
 
 End
 

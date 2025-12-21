@@ -510,7 +510,7 @@ Private Function NoteTakingTypeList() As String[]
         aList = ["Condition of Discharge", "Advice on Discharge"]
       Endif
     Case Else
-      aList = ["Progress Note", "Clinicians Note", "Nurses Note", "Transfer Note"]
+      aList = ["Progress Note", "Doctor Order", "Clinicians Note", "Nurses Note", "Transfer Note"]
   End Select
 
   Return aList
@@ -560,7 +560,7 @@ Private Sub BasicInfoPatient()
     cmbinpathistory.List = GetHistoryList()
     $NotesList = NoteTakingTypeList()
     cmbnote.List = $NotesList
-    cmbnotetype.List = ["All Types", "Progress Note", "Clinicians Note", "Nurses Note", "Transfer Note", "Patient Note"]
+    cmbnotetype.List = ["All Types", "Progress Note", "Doctor Order", "Clinicians Note", "Nurses Note", "Transfer Note", "Patient Note"]
     cmbnotetype.Text = "All Types"
     lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
     lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
@@ -1849,6 +1849,7 @@ Public Sub GridView1_Click()
           If yqualival Then
             modClinSub.UpdateClinicQualiData(GridView1[GridView1.Row, 0].Text, yqualival[0], yqualival[1], "")
           Endif
+        Else If xType = "JSONCollection" Then
         Else If xType = "Date Time" Then
           xdate = GetDateValue(GridView1[GridView1.Row, 2].Text, ("Select Date Time"), Val(GridView1[GridView1.Row, 4].RichText))
           If xdate Then
@@ -2349,10 +2350,10 @@ Private Sub ShowNoteTypeTime()
 
   If cmbnotetype.Text = "All Types" Then
     If $sTatus = "Admitted" Then
-      sTypLst = ["Progress Note", "Clinicians Note", "Nurses Note", "Transfer Note", "Patient Note"]
+      sTypLst = ["Progress Note", "Doctor Order", "Clinicians Note", "Nurses Note", "Transfer Note", "Patient Note"]
     Else
       sTypLst = New String[]
-      sTypLst.Insert(["Progress Note", "Clinicians Note", "Nurses Note", "Transfer Note", "Patient Note"])
+      sTypLst.Insert(["Progress Note", "Doctor Order", "Clinicians Note", "Nurses Note", "Transfer Note", "Patient Note"])
       sTypLst.Insert($NotesList.Copy())
     Endif
   Else
@@ -2373,7 +2374,6 @@ Private Sub ShowNoteTypeTime()
   modGridView.ReadSmallData(grdnote, $rData, $aMyFields)
 
   With grdnote
-    .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
     If $sTatus = "Admitted" Then
       .Columns[1].Width = 100 * modBasic.$AppWidthRatio

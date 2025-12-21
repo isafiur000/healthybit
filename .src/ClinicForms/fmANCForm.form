@@ -10,7 +10,7 @@
     Expand = True
     Arrangement = Arrange.Vertical
     Spacing = True
-    Count = 6
+    Count = 7
     Index = 0
     Text = ("Obstetrics")
     { Panel2 Panel
@@ -514,12 +514,12 @@
       MoveScaled(1,31,75,1)
     }
     { Panel83 Panel
-      MoveScaled(0,33,118,41)
+      MoveScaled(0,33,118,44)
       Arrangement = Arrange.Horizontal
       AutoResize = True
       Border = Border.Plain
       { Panel84 Panel
-        MoveScaled(0,1,36,38)
+        MoveScaled(0,1,37,41)
         Arrangement = Arrange.Vertical
         AutoResize = True
         Spacing = True
@@ -659,7 +659,7 @@
           }
         }
         { Panel37 Panel
-          MoveScaled(0,31.5,37,3.5)
+          MoveScaled(0,31.5,37,6.25)
           Arrangement = Arrange.Horizontal
           { Label28 Label
             MoveScaled(0,0,13,3.5)
@@ -668,17 +668,18 @@
             Border = Border.Plain
             Text = ("C/O")
           }
-          { txtpastCO TextBox
-            MoveScaled(13,0,19,3.5)
+          { txtpastCO TextArea
+            MoveScaled(13,0,20,6)
             Expand = True
+            Wrap = True
           }
         }
       }
       { Panel85 Panel
-        MoveScaled(36,0,2,24)
+        MoveScaled(38,0,2,24)
       }
       { Panel87 Panel
-        MoveScaled(38,1,36,38)
+        MoveScaled(40,1,37,38)
         Arrangement = Arrange.Vertical
         AutoResize = True
         Spacing = True
@@ -772,8 +773,8 @@
             Expand = True
           }
         }
-        { Panel50 Panel
-          MoveScaled(0,21,37,3.5)
+        { Panel91 Panel
+          MoveScaled(0,21.5,36,4)
           Arrangement = Arrange.Horizontal
           { Label41 Label
             MoveScaled(0,0,13,3.5)
@@ -783,16 +784,16 @@
             Text = ("Bleeding")
           }
           { txtpastbleed TextBox
-            MoveScaled(50,0,19,3.5)
+            MoveScaled(13,0,19,3.5)
             Expand = True
           }
         }
       }
       { Panel86 Panel
-        MoveScaled(74,0,2,24)
+        MoveScaled(77,0,2,24)
       }
       { Panel89 Panel
-        MoveScaled(76,1,36,38)
+        MoveScaled(79,1,37,38)
         Arrangement = Arrange.Vertical
         AutoResize = True
         Spacing = True
@@ -941,7 +942,7 @@
         }
       }
       { Panel88 Panel
-        MoveScaled(112,0,2,24)
+        MoveScaled(116,0,2,24)
       }
     }
     Index = 2
@@ -958,16 +959,20 @@
           MoveScaled(1,0,62,3.5)
           Arrangement = Arrange.Horizontal
           { Label58 Label
-            MoveScaled(0,0,48,3.5)
+            MoveScaled(0,0,35,3.5)
             Font = Font["Bold"]
             Expand = True
             Border = Border.Plain
             Text = ("Grouping and Serology")
           }
           { btnaddserology Button
-            MoveScaled(48,0,12,3)
+            MoveScaled(41,0,12,3)
             Text = ("Add")
             Picture = Picture["icon:/small/add"]
+          }
+          { btneditserology Button
+            MoveScaled(53,0,6,3)
+            Picture = Picture["icon:/small/edit"]
           }
         }
         { GridView6 GridView
@@ -1000,7 +1005,7 @@
         MoveScaled(65,0,48,19)
         Arrangement = Arrange.Vertical
         { Panel79 Panel
-          MoveScaled(0,0,43,3.5)
+          MoveScaled(0,0,47,3.5)
           Arrangement = Arrange.Horizontal
           { Label59 Label
             MoveScaled(0,0,26,3.5)
@@ -1013,6 +1018,10 @@
             MoveScaled(26,0,12,3)
             Text = ("Add")
             Picture = Picture["icon:/small/add"]
+          }
+          { btneditvaccine Button
+            MoveScaled(38,0,6,3)
+            Picture = Picture["icon:/small/edit"]
           }
         }
         { GridView7 GridView
@@ -1032,7 +1041,7 @@
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel80 Panel
-          MoveScaled(0,0,43,3.5)
+          MoveScaled(0,0,53,3.5)
           Arrangement = Arrange.Horizontal
           { Label44 Label
             MoveScaled(0,0,26,3.5)
@@ -1042,9 +1051,13 @@
             Text = ("Hematology")
           }
           { btnaddhemato Button
-            MoveScaled(26,0,12,3)
+            MoveScaled(27,0,12,3)
             Text = ("Add")
             Picture = Picture["icon:/small/add"]
+          }
+          { btnedithematology Button
+            MoveScaled(39,0,6,3)
+            Picture = Picture["icon:/small/edit"]
           }
         }
         { GridView3 GridView
@@ -1059,7 +1072,7 @@
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel81 Panel
-          MoveScaled(0,0,43,3.5)
+          MoveScaled(0,0,51,3.5)
           Arrangement = Arrange.Horizontal
           { Label53 Label
             MoveScaled(0,0,26,3.5)
@@ -1072,6 +1085,10 @@
             MoveScaled(26,0,12,3)
             Text = ("Add")
             Picture = Picture["icon:/small/add"]
+          }
+          { btnediturine Button
+            MoveScaled(38,0,6,3)
+            Picture = Picture["icon:/small/edit"]
           }
         }
         { GridView4 GridView
@@ -1087,7 +1104,7 @@
       Expand = True
       Arrangement = Arrange.Vertical
       { Panel82 Panel
-        MoveScaled(0,0,43,3.5)
+        MoveScaled(0,0,61,3.5)
         Arrangement = Arrange.Horizontal
         { Label57 Label
           MoveScaled(0,0,26,3.5)
@@ -1100,6 +1117,10 @@
           MoveScaled(26,0,12,3)
           Text = ("Add")
           Picture = Picture["icon:/small/add"]
+        }
+        { btneditbiochem Button
+          MoveScaled(38,0,6,3)
+          Picture = Picture["icon:/small/edit"]
         }
       }
       { GridView5 GridView
@@ -1128,9 +1149,14 @@
           Expand = True
         }
         { btnaddusg Button
-          MoveScaled(87,0,12,3)
+          MoveScaled(76,0,12,3)
           Text = ("Add")
           Picture = Picture["icon:/small/add"]
+        }
+        { btneditusg Button
+          MoveScaled(88,0,12,3)
+          Text = ("Edit")
+          Picture = Picture["icon:/small/edit"]
         }
       }
       { GridView1 GridView
@@ -1156,9 +1182,14 @@
           Expand = True
         }
         { btnaddothers Button
-          MoveScaled(85,0,12,3)
+          MoveScaled(69,0,12,3)
           Text = ("Add")
           Picture = Picture["icon:/small/add"]
+        }
+        { btneditothers Button
+          MoveScaled(81,0,12,3)
+          Text = ("Edit")
+          Picture = Picture["icon:/small/edit"]
         }
       }
       { GridView2 GridView
@@ -1196,11 +1227,41 @@
       Expand = True
       Arrangement = Arrange.Horizontal
       { Panel94 Panel
-        MoveScaled(0,0,59,16)
+        MoveScaled(0,0,59,38)
         Expand = True
         Arrangement = Arrange.Vertical
-        { Panel95 Panel
+        { Panel50 Panel
           MoveScaled(0,0,59,4)
+          { Label63 Label
+            MoveScaled(0,0.5,21,3)
+            Border = Border.Plain
+            Text = ("Provisional Diagnosis")
+          }
+          { chkalldiagno CheckBox
+            MoveScaled(28,0.5,7,3)
+            Text = ("All")
+          }
+          { btndismanual ToolButton
+            MoveScaled(47,0.5,3,3)
+            ToolTip = ("Write Provisional Diagnosis")
+            Picture = Picture["icon:/small/add"]
+          }
+          { tbnsyndro ToolButton
+            MoveScaled(51,0.5,3,3)
+            ToolTip = ("Select Provisional Diagnosis")
+            Picture = Picture["icon:/small/add"]
+          }
+          { tbndisease ToolButton
+            MoveScaled(55,0.5,3,3)
+            ToolTip = ("Select Provisional Diagnosis from List")
+            Picture = Picture["icon:/small/add"]
+          }
+        }
+        { lsticdisease TreeView
+          MoveScaled(0,4,59,15)
+        }
+        { Panel95 Panel
+          MoveScaled(0,21,59,4)
           { dcthelpplan ToolButton
             MoveScaled(28,0.5,3,3)
             Picture = Picture["icon:/small/edit"]
@@ -1233,12 +1294,12 @@
           }
         }
         { txtplan TextHTML
-          MoveScaled(0,4,58,8)
+          MoveScaled(0,25,58,8)
           Tag = "Auto"
           Expand = True
         }
         { lblinitialuser Label
-          MoveScaled(0,12,58,3)
+          MoveScaled(0,33,58,3)
           Border = Border.Plain
         }
       }
@@ -1342,6 +1403,13 @@
           Expand = True
         }
       }
+    }
+    Index = 6
+    Text = ("History")
+    { pnlhistory Panel
+      MoveScaled(3,5,68,52)
+      Expand = True
+      Arrangement = Arrange.Vertical
     }
     Index = 0
   }

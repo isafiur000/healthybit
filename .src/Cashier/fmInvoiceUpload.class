@@ -20,8 +20,8 @@ Public Sub Form_Open()
   cmblocat.Text = "%"
   cmbstate.List = ["Pending", "Completed", "Any"]
   cmbstate.Text = "Pending"
-  ' cmbaccount.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldacledger) as col from tbldiscount where fldbilltype=&1 and fldreference IS NULL", "Credit"))
-  cmbaccount.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldacledger) as col from tbldiscount where fldbilltype=&1", "Credit"))
+  cmbaccount.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldacledger) as col from tbldiscount where fldbilltype=&1 and fldreference IS NULL", "Credit"))
+  ' cmbaccount.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldacledger) as col from tbldiscount where fldbilltype=&1", "Credit"))
   If cmbaccount.Count Then
     cmbaccount.Index = 0
   Endif
@@ -282,16 +282,27 @@ End
 
 Public Sub GridView1_Click()
 
+  Dim res As Result
+
   $RepoList = New String[]
   btnupload.Text = "Upload"
   txttotal.Value = 0
   txttotal.Value = GetTotalSelectedAMT(GridView1.Row)
 
   txtgridencid.Text = GridView1[GridView1.Row, 2].Text
-  txtgridnhsi.Text = modPatient.GetPatientSSFbyCode(GridView1[GridView1.Row, 0].Text)
-  If Not txtgridnhsi.Text Then
+  res = modDatabase.$myConn.Exec("select fldserviceid,fldidentify from tblsociallist where fldpatientval=&1", modPatient.GetPatientNoByEnc(GridView1[GridView1.Row, 2].Text))
+  If res.Available And If res.Count = 1 Then
+    txtgridnhsi.Text = res["fldserviceid"]
+    txtdiseaseid.Text = res["fldidentify"]
+  Else
     txtgridnhsi.Text = modPatient.GetPatientExtCOdebyEnc(GridView1[GridView1.Row, 2].Text)
   Endif
+  If txtgridnhsi.Text Then
+    txtdiseaseid.ReadOnly = True
+  Else
+    txtdiseaseid.ReadOnly = False
+  Endif
+
   txtgridclaim.Text = GridView1[GridView1.Row, 0].Text
   txtaccount.Text = GridView1[GridView1.Row, 1].Text
   cmbnodiagno.Text = ""
@@ -582,13 +593,13 @@ Public Sub btngridclaim_Click()
   Dim hForm2 As BippannaBillingAPI
   Dim xout As String
 
-  If txtgridnhsi.Text And If txtdiseaseid.Value Then
+  If txtgridnhsi.Text And If txtdiseaseid.Text Then
     Select cmbbippatask.Text
       Case "Treatment", "Kidney Session"
-        hForm1 = New BipannaTreatAPI(cmbbippatask.Text, txtgridnhsi.Text, txtdiseaseid.Value, txtcategcode.Value, txtprice.Value)
+        hForm1 = New BipannaTreatAPI(cmbbippatask.Text, txtgridnhsi.Text, CInt(txtdiseaseid.Text), txtcategcode.Value, txtprice.Value)
         xout = hForm1.GetUploadAPI()
       Case "Billing"
-        hForm2 = New BippannaBillingAPI(txtgridnhsi.Text, txtdiseaseid.Value, txtgridclaim.Text)
+        hForm2 = New BippannaBillingAPI(txtgridnhsi.Text, CInt(txtdiseaseid.Text), txtgridclaim.Text)
         xout = hForm2.GetUploadAPI()
     End Select
 

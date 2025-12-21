@@ -1165,7 +1165,7 @@ Public Sub btnpredict_Click()
     aVar.Add([xindep, "String"])
   Next
   If aVar.Count Then
-    xjson = GetInputs(aVar, True)
+    xjson = GetJSONValue(aVar, True)
     If xjson Then
 
       bmdLst.Add("import json")

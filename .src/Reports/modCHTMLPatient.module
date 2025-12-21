@@ -605,7 +605,7 @@ Public Function ShowPatientNoteReport(encid As String, sFormat As String) As Str
   $BillingReport.UserData.Add(sFormat, "PARAM1")
 
   If sFormat = "Inpatient Notes" Then
-    red1 = modDatabase.$syConn.Exec("select DISTINCT DATE(fldtime) as fldtime from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and (flditem=&3 or flditem=&4 or flditem=&5 or flditem=&6) ORDER BY fldtime", encid, "Notes", "Progress Note", "Clinicians Note", "Nurses Note", "Transfer Note")
+    red1 = modDatabase.$syConn.Exec("select DISTINCT DATE(fldtime) as fldtime from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and (flditem=&3 or flditem=&4 or flditem=&5 or flditem=&6 or flditem=&7) ORDER BY fldtime", encid, "Notes", "Progress Note", "Doctor Order", "Clinicians Note", "Nurses Note", "Transfer Note")
   Else If sFormat = "Outpatient Notes" Then
     red1 = modDatabase.$syConn.Exec("select DISTINCT DATE(fldtime) as fldtime from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and (flditem=&3 or flditem=&4) ORDER BY fldtime", encid, "Notes", "Initial Planning", "Expert Planning")
   Else If sFormat = "Discharge Notes" Then
@@ -617,7 +617,7 @@ Public Function ShowPatientNoteReport(encid As String, sFormat As String) As Str
       $BillingReport.AddSection(modReportVar.GetDateTimeReport(xdt, gb.MediumDate), True)
 
       If sFormat = "Inpatient Notes" Then
-        res = modDatabase.$syConn.Exec("select fldtime,flditem,fldreportquali,flddetail,fldcomp,flduserid from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and fldtime>=&3 and fldtime<=&4 and (flditem=&5 or flditem=&6 or flditem=&7 or flditem=&8)", encid, "Notes", modDate.StartSqlDate(xdt), modDate.EndSqlDate(xdt), "Progress Note", "Clinicians Note", "Nurses Note", "Transfer Note")
+        res = modDatabase.$syConn.Exec("select fldtime,flditem,fldreportquali,flddetail,fldcomp,flduserid from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and fldtime>=&3 and fldtime<=&4 and (flditem=&5 or flditem=&6 or flditem=&7 or flditem=&8 or flditem=&9)", encid, "Notes", modDate.StartSqlDate(xdt), modDate.EndSqlDate(xdt), "Progress Note", "Doctor Order", "Clinicians Note", "Nurses Note", "Transfer Note")
       Else If sFormat = "Outpatient Notes" Then
         res = modDatabase.$syConn.Exec("select fldtime,flditem,fldreportquali,flddetail,fldcomp,flduserid from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and fldtime>=&3 and fldtime<=&4 and (flditem=&5 or flditem=&6)", encid, "Notes", modDate.StartSqlDate(xdt), modDate.EndSqlDate(xdt), "Initial Planning", "Expert Planning")
       Else If sFormat = "Discharge Notes" Then
@@ -1468,7 +1468,7 @@ Public Function ShowPatientLaboratoryReport(encid As String, unt As String) As S
 
 End
 
-Public Function ShowPatientLaboratoryImage(fldid As Long, encid As String) As String
+Public Function ShowPatientDiagnosticImage(sType As String, fldid As Long, encid As String) As String
 
   Dim $BillingReport As CReportHTML
   Dim res As Result
@@ -1479,9 +1479,13 @@ Public Function ShowPatientLaboratoryImage(fldid As Long, encid As String) As St
 
   $BillingReport = New CReportHTML([("Time"), ("Particulars"), ("Description"), ("Image")], "PatientReport", encid)
   $BillingReport.UserData.Add("REPORT", "Report")
-  $BillingReport.UserData.Add(modLabTest.GetTestnameFromTestID(fldid), "PARAM1")
+  If sType = "Laboratory" Then
+    $BillingReport.UserData.Add(modLabTest.GetTestnameFromTestID(fldid), "PARAM1")
+  Else
+    $BillingReport.UserData.Add("", "PARAM1")
+  Endif
 
-  res = modDatabase.$syConn.Exec("select fldtime,fldpic,fldtitle,flddetail,fldlink from tblpatserialimage where fldtestid=&1 and fldencounterval=&2 and fldcateg=&3 and fldmode=&4", fldid, encid, "IMAGE", "Laboratory")
+  res = modDatabase.$syConn.Exec("select fldtime,fldpic,fldtitle,flddetail,fldlink from tblpatserialimage where fldtestid=&1 and fldencounterval=&2 and fldcateg=&3 and fldmode=&4", fldid, encid, "IMAGE", sType)
   If res.Available Then
     For Each res
       tempFile = Temp() & ".jpg"

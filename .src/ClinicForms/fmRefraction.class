@@ -17,7 +17,9 @@ Private $numList As String[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10
 Private $encid As String
 Private $sExam As String
 Private $sType As String
+Private $PatientNum As String
 Private hDigForm As FmDiagnosticTab
+Private hPtForm As FmClinHistory
 
 Public Sub _new(encid As String, sExam As String, sType As String)
 
@@ -29,7 +31,9 @@ End
 
 Public Sub Form_Open()
 
+  $PatientNum = modPatient.GetPatientNoByEnc($encid)
   hDigForm = New FmDiagnosticTab($encid, pnlreport)
+  hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
   ' pctpowerod.Image = Image.Load("Images/power.png").Stretch(pctpowerod.Width, pctpowerod.Height)
   ' pctpoweros.Image = Image.Load("Images/power.png").Stretch(pctpoweros.Width, pctpoweros.Height)
   picteyeright.Image = Image.Load("Images/eye.png").Stretch(picteyeright.Width, picteyeright.Height)

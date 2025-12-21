@@ -11,9 +11,9 @@ Private $sVar As Variant[]
 Private $ShowNull As Boolean
 Private $sValue As String
 
-Public Sub Run(sDefault As Variant[], ShowNull As Boolean) As String
+Public Sub Run(sVariant As Variant[], ShowNull As Boolean) As String
 
-  $sVar = sDefault
+  $sVar = sVariant
   $ShowNull = ShowNull
   If Me.ShowModal() Then Return $sValue
 
@@ -82,21 +82,33 @@ Private Sub DIsplayTextForm()
         With aValueBox[i]
           .Expand = True
           .Height = 25
-          .Value = 0
+          If $sVar[i].Count = 3 Then
+            .Value = CFloat($sVar[i][2])
+          Else
+            .Value = 0
+          Endif
           .Tag = i
         End With
       Else If $sVar[i][1] = "MultiLine" Then
         With aAreaText[i]
           .Expand = True
           .Height = 100
-          .Text = ""
+          If $sVar[i].Count = 3 Then
+            .Text = $sVar[i][2]
+          Else
+            .Text = ""
+          Endif
           .Tag = i
         End With
       Else If $sVar[i][1] = "String" Then
         With aLineText[i]
           .Expand = True
           .Height = 25
-          .Text = ""
+          If $sVar[i].Count = 3 Then
+            .Text = $sVar[i][2]
+          Else
+            .Text = ""
+          Endif
           .Tag = i
         End With
       Endif

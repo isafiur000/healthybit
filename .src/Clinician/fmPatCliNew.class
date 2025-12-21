@@ -1523,6 +1523,7 @@ Public Sub GridView1_Click()
           If yqualival Then
             modClinSub.UpdateClinicQualiData(GridView1[GridView1.Row, 0].Text, yqualival[0], yqualival[1], "")
           Endif
+        Else If xType = "JSONCollection" Then
         Else If xType = "Date Time" Then
           xdate = GetDateValue(GridView1[GridView1.Row, 2].Text, ("Select Date Time"), Val(GridView1[GridView1.Row, 4].RichText))
           If xdate Then

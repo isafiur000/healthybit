@@ -11,6 +11,9 @@ Private $PatientNum As String
 Private $vidRoom As String
 Private $VidIndex As String
 
+Private $rData As Result
+Private $aMyFields As String[]
+
 Private hViewVital As FmVitalView
 Private hinputVital As FmVitalInput
 Private hPtForm As FmClinHistory
@@ -905,12 +908,14 @@ Public Sub TabPanel1_Click()
   If TabPanel1.Index = 0 Then
     hViewVital.RefreshValues()
   Else If TabPanel1.Index = 1 Then
+    ShowNoteTypeTime()
   Else If TabPanel1.Index = 2 Then
   Else If TabPanel1.Index = 3 Then
   Else If TabPanel1.Index = 4 Then
-    hOwnStockForm.RearrangeGrid()
   Else If TabPanel1.Index = 5 Then
+    hOwnStockForm.RearrangeGrid()
   Else If TabPanel1.Index = 6 Then
+  Else If TabPanel1.Index = 7 Then
   Endif
 
 End
@@ -1240,7 +1245,7 @@ Private Sub ShowEssentialExamRange()
 
 End
 
-Private Sub GetMarkAbnorm(valueBox1 As ValueBox, sRange As Float[])
+Private Sub GetMarkAbnorm(txtnoteid As ValueBox, sRange As Float[])
 
   Dim xmax As Float
   Dim xmin As Float
@@ -1250,25 +1255,25 @@ Private Sub GetMarkAbnorm(valueBox1 As ValueBox, sRange As Float[])
   xmax = sRange[1]
 
   abn = False
-  If valueBox1.Value Then
+  If txtnoteid.Value Then
     If xmin Then
-      If xmin > valueBox1.Value Then
+      If xmin > txtnoteid.Value Then
         abn = True
       Endif
     Endif
     If xmax Then
-      If xmax < valueBox1.Value Then
+      If xmax < txtnoteid.Value Then
         abn = True
       Endif
     Endif
   Endif
 
   If abn = True Then
-    valueBox1.Font.Bold = True
-    valueBox1.Foreground = Color.Red
+    txtnoteid.Font.Bold = True
+    txtnoteid.Foreground = Color.Red
   Else
-    valueBox1.Font.Bold = False
-    valueBox1.Foreground = Color.Default
+    txtnoteid.Font.Bold = False
+    txtnoteid.Foreground = Color.Default
   Endif
 
 End
@@ -3611,5 +3616,70 @@ End
 Public Sub txtmonval_GotFocus()
 
   txtmonval.SelectAll
+
+End
+
+''==================== Orders ======================
+Private Sub ShowNoteTypeTime()
+
+  Dim sql As String
+
+  sql = "select fldid,fldtime,flditem,fldreportquali,flduserid,fldtime,flddetail from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem=&3 ORDER BY fldtime DESC"
+  $rData = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Notes", "Doctor Order")
+  $aMyFields = New String[]
+  modGridView.ReadSmallData(grdnote, $rData, $aMyFields)
+
+  With grdnote
+    .Columns[0].Width = 1
+    .Columns[1].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 1
+    .Columns[3].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 1
+    .Columns[6].Width = 1
+
+    .Columns[1].Text = "DateTime"
+    .Columns[3].Text = "Impression"
+    .Columns[4].Text = "Doctor"
+  End With
+
+End
+
+Public Sub grdnote_Data(Row As Integer, Column As Integer)
+
+  $rData.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(grdnote, Row)
+  If Column = 1 Then
+    grdnote.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.GeneralDate)
+  Else
+    grdnote.Data.Text = $rData[$aMyFields[Column]]
+  Endif
+
+End
+
+Public Sub grdnote_Click()
+
+  If grdnote.Rows.Selection.Count Then
+    txtnoteid.Value = grdnote[grdnote.Row, 0].Text
+    txtimpression.Text = grdnote[grdnote.Row, 3].Text
+    txtnote.RichText = grdnote[grdnote.Row, 6].Text
+    lblnoteuser.Text = modGeneral.GetUserFullName(grdnote[grdnote.Row, 4].Text) & " [" & modReportVar.GetDateTimeReport(grdnote[grdnote.Row, 5].Text, gb.GeneralDate) & "]"
+  Endif
+
+End
+
+Public Sub btnotedit_Click()
+
+  Dim res As Result
+
+  If txtnoteid.Value Then
+    res = modDatabase.$myConn.Edit("tblexamgeneral", "fldid=&1", txtnoteid.Value)
+    res["fldreportquali"] = txtimpression.Text
+    res["xyz"] = False
+    res.Update()
+    ShowNoteTypeTime()
+    Balloon.Info(("Information saved"), btnotedit)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
 
 End

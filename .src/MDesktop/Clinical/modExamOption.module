@@ -488,6 +488,7 @@ Public Sub UpdateExamSelection(sid As Long, encid As String, sType As String, sE
         If yqualival Then
           modClinSub.UpdateClinicQualiData(sid, yqualival[0], yqualival[1], "")
         Endif
+      Else If xType = "JSONCollection" Then
       Else If xType = "Date Time" Then
         xdate = GetDateValue(sExam, ("Select Date Time"), Val(sValue))
         If xdate Then

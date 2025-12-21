@@ -735,7 +735,7 @@
       MoveScaled(1,36,119,56)
       Expand = True
       Arrangement = Arrange.Horizontal
-      Count = 7
+      Count = 8
       Index = 0
       Text = ("Report")
       { Panel14 Panel
@@ -744,6 +744,53 @@
         Arrangement = Arrange.Horizontal
       }
       Index = 1
+      Text = ("Orders")
+      { grdnote GridView
+        MoveScaled(0,1,44,44)
+        Mode = Select.Single
+        Header = GridView.Horizontal
+        AutoResize = False
+      }
+      { Panel12 Panel
+        MoveScaled(45,2,73,48)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        { Panel37 Panel
+          MoveScaled(0,1,72,3)
+          Arrangement = Arrange.Horizontal
+          { lbldtnote2 Label
+            MoveScaled(0,0,9,3)
+            Border = Border.Plain
+            Text = ("Response")
+          }
+          { txtimpression TextBox
+            MoveScaled(9,0,53,3)
+            Expand = True
+          }
+          { btnotedit ToolButton
+            MoveScaled(62,0,9,3)
+            Text = ("Edit")
+            Picture = Picture["icon:/small/edit"]
+          }
+        }
+        { txtnote TextHTML
+          MoveScaled(1,6,59,9)
+          Tag = "Auto"
+          Expand = True
+        }
+        { lblnoteuser Label
+          MoveScaled(1,22,64,3)
+          Border = Border.Plain
+        }
+        { Panel15 Panel
+          MoveScaled(0,27,37,4)
+          Visible = False
+          { txtnoteid ValueBox
+            MoveScaled(2,0,13,3)
+          }
+        }
+      }
+      Index = 2
       Text = ("Complaints")
       { Panel5 Panel
         MoveScaled(0,0,60,45)
@@ -842,31 +889,31 @@
           Border = Border.Plain
         }
       }
-      Index = 2
+      Index = 3
       Text = ("Vitals")
       { pnlvitals Panel
         MoveScaled(0,0,98,43)
         Expand = True
         Arrangement = Arrange.Horizontal
       }
-      Index = 3
+      Index = 4
       Text = ("Dosing")
       { pnldosecount Panel
-        MoveScaled(6,4,36,12)
-        Expand = True
-        Arrangement = Arrange.Vertical
-      }
-      Index = 4
-      Text = ("Inventory")
-      { pnlwardstock Panel
-        MoveScaled(2,8,67,21)
+        MoveScaled(43,10,36,12)
         Expand = True
         Arrangement = Arrange.Vertical
       }
       Index = 5
+      Text = ("Inventory")
+      { pnlwardstock Panel
+        MoveScaled(22,14,67,21)
+        Expand = True
+        Arrangement = Arrange.Vertical
+      }
+      Index = 6
       Text = ("Progress")
       { Panel8 Panel
-        MoveScaled(0,0,118,40)
+        MoveScaled(0,1,118,40)
         Expand = True
         Arrangement = Arrange.Horizontal
         { Panel34 Panel
@@ -1122,10 +1169,10 @@
           Index = 0
         }
       }
-      Index = 6
+      Index = 7
       Text = ("History")
       { pnlhistory Panel
-        MoveScaled(4,5,83,26)
+        MoveScaled(5,2,83,26)
         Expand = True
         Arrangement = Arrange.Vertical
       }

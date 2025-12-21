@@ -202,9 +202,9 @@ Private Function GetPictureDosing(dosid As Long) As String
   res = modDatabase.$myConn.Exec("select flddoseno,fldfromtime,fldtotime from tblnurdosing where fldid=&1", dosid)
   If res.Available Then
     If res["fldfromtime"] And If Not res["fldtotime"] Then
-      xx = "icon:/small/stop"
+      xx = "icon:/tiny/stop"
     Else If res["fldfromtime"] And If res["fldtotime"] Then
-      xx = "icon:/small/lock"
+      xx = "icon:/tiny/lock"
     Endif
   Endif
   Return xx
@@ -219,12 +219,12 @@ Private Function GetFluidAdminStatusCode(dosno As Long) As String
   res = modDatabase.$syConn.Exec("select fldid,fldfromtime,fldtotime from tblnurdosing where fldencounterval=&1 and flddoseno=&2 ORDER BY fldid DESC", $encid, dosno)
   If res.Available Then
     If res["fldfromtime"] And If Not res["fldtotime"] Then
-      xx = "icon:/small/stop"
+      xx = "icon:/tiny/stop"
     Else
-      xx = "icon:/small/next"
+      xx = "icon:/tiny/next"
     Endif
   Else
-    xx = "icon:/small/next"
+    xx = "icon:/tiny/next"
   Endif
   Return xx
 

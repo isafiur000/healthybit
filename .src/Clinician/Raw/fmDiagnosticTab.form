@@ -4,6 +4,11 @@
   MoveScaled(0,0,118.125,64)
   Expand = True
   Arrangement = Arrange.Vertical
+  { mnuhidetest Menu
+    { mnutestimage Menu
+      Text = ("Show Image")
+    }
+  }
   { Panel1 Panel
     MoveScaled(0,0,116,4)
     { Panel9 Panel
@@ -60,11 +65,11 @@
     { Panel4 Panel
       MoveScaled(1,0,19,3)
       Border = Border.Plain
-      { rbdaterepo RadioButton
+      { rbdate RadioButton
         MoveScaled(0,0,8,3)
         Text = ("Date")
       }
-      { rbnamerepo RadioButton
+      { rbname RadioButton
         MoveScaled(9,0,9,3)
         Text = ("Name")
         Value = True
@@ -83,12 +88,39 @@
     Expand = True
     Arrangement = Arrange.Horizontal
     { Panel7 Panel
-      MoveScaled(0,0,20,47)
+      MoveScaled(0,0,22,47)
       Arrangement = Arrange.Vertical
+      { Panel8 Panel
+        MoveScaled(0,1,22,3)
+        Border = Border.Plain
+        { rbasc RadioButton
+          MoveScaled(0.5,0,8,3)
+          Text = ("ASC")
+        }
+        { rbdesc RadioButton
+          MoveScaled(10,0,9,3)
+          Text = ("DESC")
+          Value = True
+        }
+      }
       { GridView1 GridView
-        MoveScaled(1,1,16,29)
+        MoveScaled(1,5,16,24)
         Expand = True
         Mode = Select.Single
+        AutoResize = False
+      }
+      { Panel10 Panel
+        MoveScaled(1,31,20,3)
+        Border = Border.Plain
+        { rbtext RadioButton
+          MoveScaled(0.5,0,8,3)
+          Text = ("Text")
+          Value = True
+        }
+        { rbgrid RadioButton
+          MoveScaled(10,0,9,3)
+          Text = ("Grid")
+        }
       }
     }
     { Panel6 Panel
@@ -107,6 +139,7 @@
         Expand = True
         Mode = Select.Single
         Header = GridView.Both
+        AutoResize = False
       }
     }
   }

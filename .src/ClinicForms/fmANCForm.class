@@ -4,6 +4,7 @@ Private $encid As String
 Private $sExam As String
 Private $sType As String
 Private $PatientNum As String
+Private hPtForm As FmClinHistory
 
 Private $ObsColumns As String[] = ["Date of Birth", "Gest. Age (wks)", "Complications during preg.", "Mode of delivery", "Complications in 3rd stage", "Puerperium", "Live/SB", "Gender", "Birth Wt. (gram)", "Outcome"]
 Private $ANCColumns As String[] = ["Date of Regd", "Complaints", "Fet. Move.", "Gest. Age", "Uterine Ht./SFH (cm)", "Presentation", "Relation of PP to pelvic brim", "FHS", "Weight (Kg)", "Blood Pressure", "Edema", "Urine Albumin", "Urine Sugar", "Treatment", "Remarks", "Doctor"]
@@ -79,6 +80,8 @@ Public Sub Form_Open()
     GetConsultParamIndex(True)
   Endif
   GetPatientOutComeVal()
+  hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
+  modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
 
   ShowRiskFactors()
   ShowObsDiagnosis()
@@ -135,10 +138,10 @@ Private Sub ShowPastHistory()
   Dim res As Result
   Dim sColl As Collection
 
-  res = modDatabase.$myConn.Exec("select flddetail,fldreportquali from tblexamgeneral where fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&1) and fldinput=&2 and flditem=&3 and fldsave=&4 and flddetail IS NOT NULL", $PatientNum, "History", "Past History", True)
+  res = modDatabase.$myConn.Exec("select flddetail,fldreportquali from tblexamgeneral where fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&1) and fldinput=&2 and flditem=&3 and fldsave=&4 and flddetail IS NOT NULL", $PatientNum, "History", "Obs Past History", True)
   If res.Available Then
     res.MoveLast
-    sColl = JSON.Decode(res["flddetail"])
+    Try sColl = JSON.Decode(res["flddetail"])
     If sColl And If sColl.Count Then
       txtpastHTN.Text = sColl["Hypertension"]
       txtpastThrombo.Text = sColl["Thromboembolism"]
@@ -172,7 +175,7 @@ Public Sub btnpasthistory_Click()
   sColl.Add(txtpastAsthama.Text, "Bronchial Asthama")
   sColl.Add(txtpastOther.Text, "Others")
 
-  modPatientGeneral.AddExamGeneralQualiData($encid, "History", "Past History", "", JSON.Encode(sColl), True)
+  modPatientGeneral.AddExamGeneralQualiData($encid, "History", "Obs Past History", "", JSON.Encode(sColl), True)
   Balloon.Info(("Information saved"), btnpasthistory)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -183,7 +186,7 @@ Private Sub ShowFamilyHistory()
   Dim res As Result
   Dim sColl As Collection
 
-  res = modDatabase.$myConn.Exec("select flddetail,fldreportquali from tblexamgeneral where fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&1) and fldinput=&2 and flditem=&3 and fldsave=&4 and flddetail IS NOT NULL", $PatientNum, "History", "Family History", True)
+  res = modDatabase.$myConn.Exec("select flddetail,fldreportquali from tblexamgeneral where fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&1) and fldinput=&2 and flditem=&3 and fldsave=&4 and flddetail IS NOT NULL", $PatientNum, "History", "Obs Family History", True)
   If res.Available Then
     res.MoveLast
     sColl = JSON.Decode(res["flddetail"])
@@ -209,7 +212,7 @@ Public Sub btnFamlHist_Click()
   sColl.Add(txtfamlMultPreg.Text, "Multiple Pregnancy")
   sColl.Add(txtfamlallergy.Text, "Allergy History")
 
-  modPatientGeneral.AddExamGeneralQualiData($encid, "History", "Family History", "", JSON.Encode(sColl), True)
+  modPatientGeneral.AddExamGeneralQualiData($encid, "History", "Obs Family History", "", JSON.Encode(sColl), True)
   Balloon.Info(("Information saved"), btnFamlHist)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -921,50 +924,51 @@ Public Sub ANCButton_Click()
 
   i = Last.Tag
   xhash = $encid & ":" & "ANCChart" & ":" & modMisc.GetWebIndexStr(modString.GetDateString(Now()))
-  If aANCFetalMove[i] And If aANCFetalMove[i].Text Then
-    modClinSub.AddClinicExam($encid, "", $ANCColumns[1], "No Selection", aANCFetalMove[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
-  Endif
+
   If aANCComplant[i] And If aANCComplant[i].Text Then
-    modClinSub.AddClinicExam($encid, "", $ANCColumns[4], "No Selection", aANCComplant[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[1], "JSONCollection", aANCComplant[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCFetalMove[i] And If aANCFetalMove[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[2], "JSONCollection", aANCFetalMove[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
   Endif
   If aANCGestAge[i] And If aANCGestAge[i].Text Then
-    modClinSub.AddClinicExam($encid, "", $ANCColumns[2], "No Selection", aANCGestAge[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[3], "JSONCollection", aANCGestAge[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
   Endif
   If aANCUterineHt[i] And If aANCUterineHt[i].Text Then
-    modClinSub.AddClinicExam($encid, "", $ANCColumns[3], "No Selection", aANCUterineHt[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[4], "JSONCollection", aANCUterineHt[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
   Endif
   If aANCPresent[i] And If aANCPresent[i].Text Then
-    modClinSub.AddClinicExam($encid, "", $ANCColumns[5], "No Selection", aANCPresent[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[5], "JSONCollection", aANCPresent[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
   Endif
   If aANCRelation[i] And If aANCRelation[i].Text Then
-    modClinSub.AddClinicExam($encid, "", $ANCColumns[6], "No Selection", aANCRelation[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[6], "JSONCollection", aANCRelation[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
   Endif
   If aANCFHS[i] And If aANCFHS[i].Text Then
-    modClinSub.AddClinicExam($encid, "", $ANCColumns[7], "No Selection", aANCFHS[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[7], "JSONCollection", aANCFHS[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
   Endif
   If aANCPatWeight[i] And If aANCPatWeight[i].Text Then
-    modClinSub.AddClinicExam($encid, "", $ANCColumns[8], "No Selection", aANCPatWeight[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[8], "JSONCollection", aANCPatWeight[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
   Endif
   If aANCBloodPress[i] And If aANCBloodPress[i].Text Then
-    modClinSub.AddClinicExam($encid, "", $ANCColumns[9], "No Selection", aANCBloodPress[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[9], "JSONCollection", aANCBloodPress[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
   Endif
   If aANCEdema[i] And If aANCEdema[i].Text Then
-    modClinSub.AddClinicExam($encid, "", $ANCColumns[10], "No Selection", aANCEdema[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[10], "JSONCollection", aANCEdema[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
   Endif
   If aANCUrineAlbum[i] And If aANCUrineAlbum[i].Text Then
-    modClinSub.AddClinicExam($encid, "", $ANCColumns[11], "No Selection", aANCUrineAlbum[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[11], "JSONCollection", aANCUrineAlbum[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
   Endif
   If aANCUrineSugar[i] And If aANCUrineSugar[i].Text Then
-    modClinSub.AddClinicExam($encid, "", $ANCColumns[12], "No Selection", aANCUrineSugar[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[12], "JSONCollection", aANCUrineSugar[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
   Endif
   If aANCMedicine[i] And If aANCMedicine[i].Text Then
-    modClinSub.AddClinicExam($encid, "", $ANCColumns[13], "No Selection", aANCMedicine[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[13], "JSONCollection", aANCMedicine[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
   Endif
   If aANCRemarks[i] And If aANCRemarks[i].Text Then
-    modClinSub.AddClinicExam($encid, "", $ANCColumns[14], "No Selection", aANCRemarks[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[14], "JSONCollection", aANCRemarks[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
   Endif
   If aANCDoctor[i] And If aANCDoctor[i].Text Then
-    modClinSub.AddClinicExam($encid, "", $ANCColumns[15], "No Selection", aANCDoctor[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[15], "JSONCollection", aANCDoctor[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
   Endif
 
   Balloon.Info(("Information saved"), aANCBtnSave[i])
@@ -1029,10 +1033,30 @@ Public Sub btnaddusg_Click()
   xVar.Add(["Gest Age(USG)", "String"])
   xVar.Add(["Gest Age(Date)", "String"])
   xVar.Add(["Description", "MultiLine"])
-  xval = GetInputs(xVar, True)
+  xval = GetJSONValue(xVar, True)
   If xval Then
-    modPatientGeneral.AddExamGeneralQualiData($encid, "Radiology", "Ultrasound", "", xval, True)
+    modPatientGeneral.AddExamGeneralQualiData($encid, "Radiology", "Ultrasound", "", xval, False)
     LoadGridView(GridView1, "Radiology", "Ultrasound")
+  Endif
+
+End
+
+Public Sub btneditusg_Click()
+
+  Dim xVar As Variant[]
+  Dim xval As String
+
+  If GridView1.Rows.Selection.Count Then
+    xVar = New Variant[]
+    xVar.Add(["Date", "String", GridView1[GridView1.Row, 1].Text])
+    xVar.Add(["Gest Age(USG)", "String", GridView1[GridView1.Row, 2].Text])
+    xVar.Add(["Gest Age(Date)", "String", GridView1[GridView1.Row, 3].Text])
+    xVar.Add(["Description", "MultiLine", GridView1[GridView1.Row, 4].Text])
+    xval = GetJSONValue(xVar, True)
+    If xval Then
+      UpdateGridData(GridView1[GridView1.Row, 0].Text, xval)
+      LoadGridView(GridView1, "Radiology", "Ultrasound")
+    Endif
   Endif
 
 End
@@ -1046,10 +1070,29 @@ Public Sub btnaddothers_Click()
   xVar.Add(["Date", "String"])
   xVar.Add(["Fetal Echo", "String"])
   xVar.Add(["Description", "MultiLine"])
-  xval = GetInputs(xVar, True)
+  xval = GetJSONValue(xVar, True)
   If xval Then
-    modPatientGeneral.AddExamGeneralQualiData($encid, "Radiology", "Echo", "", xval, True)
+    modPatientGeneral.AddExamGeneralQualiData($encid, "Radiology", "Echo", "", xval, False)
     LoadGridView(GridView2, "Radiology", "Echo")
+  Endif
+
+End
+
+Public Sub btneditothers_Click()
+
+  Dim xVar As Variant[]
+  Dim xval As String
+
+  If GridView2.Rows.Selection.Count Then
+    xVar = New Variant[]
+    xVar.Add(["Date", "String", GridView2[GridView2.Row, 1].Text])
+    xVar.Add(["Fetal Echo", "String", GridView2[GridView2.Row, 2].Text])
+    xVar.Add(["Description", "MultiLine", GridView2[GridView2.Row, 3].Text])
+    xval = GetJSONValue(xVar, True)
+    If xval Then
+      UpdateGridData(GridView2[GridView2.Row, 0].Text, xval)
+      LoadGridView(GridView2, "Radiology", "Echo")
+    Endif
   Endif
 
 End
@@ -1064,10 +1107,33 @@ Public Sub btnaddserology_Click()
   For Each xItem In $TestSerology
     xVar.Add([xItem, "String"])
   Next
-  xval = GetInputs(xVar, True)
+  xval = GetJSONValue(xVar, True)
   If xval Then
-    modPatientGeneral.AddExamGeneralQualiData($encid, "Laboratory", "Serology", "", xval, True)
+    modPatientGeneral.AddExamGeneralQualiData($encid, "Laboratory", "Serology", "", xval, False)
     LoadGridView(GridView6, "Laboratory", "Serology")
+  Endif
+
+End
+
+Public Sub btneditserology_Click()
+
+  Dim xVar As Variant[]
+  Dim xItem As String
+  Dim xval As String
+  Dim Colm As Integer
+
+  If GridView6.Rows.Selection.Count Then
+    xVar = New Variant[]
+    Colm = 1
+    For Each xItem In $TestSerology
+      xVar.Add([xItem, "String", GridView6[GridView6.Row, Colm].Text])
+      Colm = Colm + 1
+    Next
+    xval = GetJSONValue(xVar, True)
+    If xval Then
+      UpdateGridData(GridView6[GridView6.Row, 0].Text, xval)
+      LoadGridView(GridView6, "Laboratory", "Serology")
+    Endif
   Endif
 
 End
@@ -1082,10 +1148,33 @@ Public Sub btnaddvaccine_Click()
   For Each xItem In $Vaccines
     xVar.Add([xItem, "String"])
   Next
-  xval = GetInputs(xVar, True)
+  xval = GetJSONValue(xVar, True)
   If xval Then
-    modPatientGeneral.AddExamGeneralQualiData($encid, "Vaccine", "Vaccine", "", xval, True)
+    modPatientGeneral.AddExamGeneralQualiData($encid, "Vaccine", "Vaccine", "", xval, False)
     LoadGridView(GridView7, "Vaccine", "Vaccine")
+  Endif
+
+End
+
+Public Sub btneditvaccine_Click()
+
+  Dim xVar As Variant[]
+  Dim xItem As String
+  Dim xval As String
+  Dim Colm As Integer
+
+  If GridView7.Rows.Selection.Count Then
+    xVar = New Variant[]
+    Colm = 1
+    For Each xItem In $Vaccines
+      xVar.Add([xItem, "String", GridView7[GridView7.Row, Colm].Text])
+      Colm = Colm + 1
+    Next
+    xval = GetJSONValue(xVar, True)
+    If xval Then
+      UpdateGridData(GridView7[GridView7.Row, 0].Text, xval)
+      LoadGridView(GridView7, "Vaccine", "Vaccine")
+    Endif
   Endif
 
 End
@@ -1100,10 +1189,33 @@ Public Sub btnaddhemato_Click()
   For Each xItem In $TestHemato
     xVar.Add([xItem, "String"])
   Next
-  xval = GetInputs(xVar, True)
+  xval = GetJSONValue(xVar, True)
   If xval Then
-    modPatientGeneral.AddExamGeneralQualiData($encid, "Laboratory", "Hematology", "", xval, True)
+    modPatientGeneral.AddExamGeneralQualiData($encid, "Laboratory", "Hematology", "", xval, False)
     LoadGridView(GridView3, "Laboratory", "Hematology")
+  Endif
+
+End
+
+Public Sub btnedithematology_Click()
+
+  Dim xVar As Variant[]
+  Dim xItem As String
+  Dim xval As String
+  Dim Colm As Integer
+
+  If GridView3.Rows.Selection.Count Then
+    xVar = New Variant[]
+    Colm = 1
+    For Each xItem In $TestHemato
+      xVar.Add([xItem, "String", GridView3[GridView3.Row, Colm].Text])
+      Colm = Colm + 1
+    Next
+    xval = GetJSONValue(xVar, True)
+    If xval Then
+      UpdateGridData(GridView3[GridView3.Row, 0].Text, xval)
+      LoadGridView(GridView3, "Laboratory", "Hematology")
+    Endif
   Endif
 
 End
@@ -1118,10 +1230,33 @@ Public Sub btnadduring_Click()
   For Each xItem In $TestUrine
     xVar.Add([xItem, "String"])
   Next
-  xval = GetInputs(xVar, True)
+  xval = GetJSONValue(xVar, True)
   If xval Then
-    modPatientGeneral.AddExamGeneralQualiData($encid, "Laboratory", "Urine Test", "", xval, True)
+    modPatientGeneral.AddExamGeneralQualiData($encid, "Laboratory", "Urine Test", "", xval, False)
     LoadGridView(GridView4, "Laboratory", "Urine Test")
+  Endif
+
+End
+
+Public Sub btnediturine_Click()
+
+  Dim xVar As Variant[]
+  Dim xItem As String
+  Dim xval As String
+  Dim Colm As Integer
+
+  If GridView4.Rows.Selection.Count Then
+    xVar = New Variant[]
+    Colm = 1
+    For Each xItem In $TestUrine
+      xVar.Add([xItem, "String", GridView4[GridView4.Row, Colm].Text])
+      Colm = Colm + 1
+    Next
+    xval = GetJSONValue(xVar, True)
+    If xval Then
+      UpdateGridData(GridView4[GridView4.Row, 0].Text, xval)
+      LoadGridView(GridView4, "Laboratory", "Urine Test")
+    Endif
   Endif
 
 End
@@ -1136,10 +1271,47 @@ Public Sub btnaddbiochem_Click()
   For Each xItem In $TestBioChem
     xVar.Add([xItem, "String"])
   Next
-  xval = GetInputs(xVar, True)
+  xval = GetJSONValue(xVar, True)
   If xval Then
-    modPatientGeneral.AddExamGeneralQualiData($encid, "Laboratory", "Biochemistry", "", xval, True)
+    modPatientGeneral.AddExamGeneralQualiData($encid, "Laboratory", "Biochemistry", "", xval, False)
     LoadGridView(GridView5, "Laboratory", "Biochemistry")
+  Endif
+
+End
+
+Public Sub btneditbiochem_Click()
+
+  Dim xVar As Variant[]
+  Dim xItem As String
+  Dim xval As String
+  Dim Colm As Integer
+
+  If GridView5.Rows.Selection.Count Then
+    xVar = New Variant[]
+    Colm = 1
+    For Each xItem In $TestBioChem
+      xVar.Add([xItem, "String", GridView5[GridView5.Row, Colm].Text])
+      Colm = Colm + 1
+    Next
+    xval = GetJSONValue(xVar, True)
+    If xval Then
+      UpdateGridData(GridView5[GridView5.Row, 0].Text, xval)
+      LoadGridView(GridView5, "Laboratory", "Biochemistry")
+    Endif
+  Endif
+
+End
+
+Private Sub UpdateGridData(sIndex As Long, sDetail As String)
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Edit("tblexamgeneral", "fldid=&1", sIndex)
+  If res.Available Then
+    If res["fldencounterval"] = $encid Then
+      res["flddetail"] = sDetail
+      res.Update
+    Endif
   Endif
 
 End
@@ -1176,13 +1348,14 @@ Private Sub LoadGridView(xGridView As GridView, sCateg As String, xSection As St
   Endif
 
   xGridView.Clear()
-  xGridView.Columns.Count = xHeadLst.Count
-  res = modDatabase.$myConn.Exec("select flddetail,fldreportquali from tblexamgeneral where fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&1) and fldinput=&2 and flditem=&3 and fldsave=&4 and flddetail IS NOT NULL", $PatientNum, sCateg, xSection, True)
+  xGridView.Columns.Count = xHeadLst.Count + 1
+  res = modDatabase.$myConn.Exec("select fldid,flddetail,fldreportquali from tblexamgeneral where fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&1) and fldinput=&2 and flditem=&3 and fldsave=&4 and flddetail IS NOT NULL", $PatientNum, sCateg, xSection, True)
   If res.Available Then
     xGridView.Rows.Count = res.Count
     For Each res
+      xGridView[res.Index, 0].Text = res["fldid"]
       sColl = JSON.Decode(res["flddetail"])
-      i = 0
+      i = 1
       For Each xhead In xHeadLst
         xGridView[res.Index, i].Text = sColl[xhead]
         i = i + 1
@@ -1192,17 +1365,18 @@ Private Sub LoadGridView(xGridView As GridView, sCateg As String, xSection As St
     xGridView.Rows.Count = 0
   Endif
 
-  j = 0
+  xGridView.Columns[0].Width = 1
+  j = 1
   For Each xhead In xHeadLst
     xGridView.Columns[j].Text = xhead
     If sCateg = "Radiology" Then
-      If j = xHeadLst.Count - 1 Then
+      If j = xHeadLst.Count Then
         xGridView.Columns[j].Expand = True
       Else
         xGridView.Columns[j].Width = 100 * modBasic.$AppScaleFactor
       Endif
     Else
-      If j = 0 Then
+      If j = 1 Then
         xGridView.Columns[j].Width = 100 * modBasic.$AppScaleFactor
       Else
         xGridView.Columns[j].Expand = True
@@ -1518,5 +1692,66 @@ Private Function GetConsultDepartment(sMode As String, sIndex As Long, encid As 
     xval = ""
   Endif
   Return xval
+
+End
+
+''=============================== Diagnosis ========================================
+Public Sub btndismanual_Click()
+
+  Dim xx As String
+
+  If $encid Then
+    xx = InputBox(("Enter custom Provisional Diagnosis"), ("Provisional Diagnosis"), "")
+    If xx Then
+      modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, xx, "Other", "Other")
+      modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
+    Endif
+  Endif
+
+End
+
+Public Sub tbnsyndro_Click()
+
+  Dim sName As String[]
+
+  If $encid Then
+    sName = DiagnoObstetrics($encid, True)
+    If sName Then
+      If sName[1] And If sName[0] Then
+        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, sName[0], sName[1], sName[1])
+        modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub tbndisease_Click()
+
+  Dim sName As String[]
+
+  If $encid Then
+    If MMain.$Ayurveda = "Yes" Then
+      sName = AyurvedicDiagnosis(modAMISRep.$AyurvedicDiagnosis)
+    Else
+      If modBasic.$ClinICDPunchFormat = "GridView" Then
+        sName = ICDGridView("Select Diseases")
+      Else
+        sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, modBasic.$FixDiagnoGroupOPD, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
+      Endif
+    Endif
+    If sName Then
+      If sName[1] And If sName[0] Then
+        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, sName[0], sName[1], sName[2])
+        modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub chkalldiagno_Click()
+
+  modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
 
 End
