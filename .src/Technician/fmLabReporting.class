@@ -300,7 +300,7 @@ Private Sub FillReportList()
       Else If rbinvoice.Value = True Then
         str1 = "select distinct(fldbillno) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtime_sample>=&4 and fldtime_sample<=&5 and fldsampletype like &6 ORDER BY fldid ASC"
       Endif
-      $rData1 = modDatabase.$myConn.Exec(str1, "Sampled", True, xcomp, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)), cmbspecimen.Text)
+      $rData1 = modDatabase.$myConn.Exec(str1, "Sampled", True, xcomp, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), cmbspecimen.Text)
     Else
       If rbencounter.Value = True Then
         str1 = "select distinct(fldencounterval) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7 ORDER BY fldid ASC"
@@ -309,7 +309,7 @@ Private Sub FillReportList()
       Else If rbinvoice.Value = True Then
         str1 = "select distinct(fldbillno) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7 ORDER BY fldid ASC"
       Endif
-      $rData1 = modDatabase.$myConn.Exec(str1, "Sampled", True, xcomp, cmbcategory.Text, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)), cmbspecimen.Text)
+      $rData1 = modDatabase.$myConn.Exec(str1, "Sampled", True, xcomp, cmbcategory.Text, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), cmbspecimen.Text)
     Endif
 
   Else
@@ -638,52 +638,52 @@ Private Function ExecuteQuery(xFldList As String[], xShowAll As Boolean) As Resu
       If rbencounter.Value = True Then
         If xShowAll = False Then
           sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldencounterval=&1 and fldstatus=&2 and " & xstr & "&3 and fldtime_sample>=&4 and fldtime_sample<=&5 and fldsampletype like &6" & xload & modLabSub.GetLabRepoOrder("Test")
-          res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Sampled", xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+          res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Sampled", xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
         Else
           sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldencounterval=&1 and (fldstatus=&2 or fldstatus=&3) and " & xstr & "&4 and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7" & xload & modLabSub.GetLabRepoOrder("Test")                             ''
-          res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Sampled", "Reported", xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+          res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Sampled", "Reported", xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
         Endif
       Else If rbsample.Value = True Then
         If xShowAll = False Then
           sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldsampleid=&1 and fldstatus=&2 and fldencounterval=&3 and " & xstr & "&4 and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7" & xload & modLabSub.GetLabRepoOrder("Test")
-          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
         Else
           sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldsampleid=&1 and (fldstatus=&2 or fldstatus=&3) and fldencounterval=&4 and " & xstr & "&5 and fldtime_sample>=&6 and fldtime_sample<=&7 and fldsampletype like &8" & xload & modLabSub.GetLabRepoOrder("Test")                              ''
-          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", "Reported", $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", "Reported", $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
         Endif
       Else If rbinvoice.Value = True Then
         If xShowAll = False Then
           sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldbillno=&1 and fldstatus=&2 and fldencounterval=&3 and " & xstr & "&4 and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7" & xload & modLabSub.GetLabRepoOrder("Test")
-          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
         Else
           sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldbillno=&1 and (fldstatus=&2 or fldstatus=&3) and fldencounterval=&4 and " & xstr & "&5 and fldtime_sample>=&6 and fldtime_sample<=&7 and fldsampletype like &8" & xload & modLabSub.GetLabRepoOrder("Test")                               ''
-          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", "Reported", $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", "Reported", $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
         Endif
       Endif
     Else
       If rbencounter.Value = True Then
         If xShowAll = False Then
           sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldencounterval=&1 and fldstatus=&2 and fldtestid in(select fldtestid from tbltest where fldcategory like &3) and " & xstr & "&4 and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7" & xload & modLabSub.GetLabRepoOrder("Test")
-          res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Sampled", cmbcategory.Text, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+          res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Sampled", cmbcategory.Text, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
         Else
           sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldencounterval=&1 and (fldstatus=&2 or fldstatus=&3) and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and " & xstr & "&5 and fldtime_sample>=&6 and fldtime_sample<=&7 and fldsampletype like &8" & xload & modLabSub.GetLabRepoOrder("Test")                            ''
-          res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Sampled", "Reported", cmbcategory.Text, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+          res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Sampled", "Reported", cmbcategory.Text, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
         Endif
       Else If rbsample.Value = True Then
         If xShowAll = False Then
           sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldsampleid=&1 and fldstatus=&2 and fldtestid in(select fldtestid from tbltest where fldcategory like &3) and fldencounterval=&4 and " & xstr & "&5 and fldtime_sample>=&6 and fldtime_sample<=&7 and fldsampletype like &8" & xload & modLabSub.GetLabRepoOrder("Test")
-          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", cmbcategory.Text, $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", cmbcategory.Text, $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
         Else
           sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldsampleid=&1 and (fldstatus=&2 or fldstatus=&3) and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldencounterval=&5 and " & xstr & "&6 and fldtime_sample>=&7 and fldtime_sample<=&8 and fldsampletype like &9" & xload & modLabSub.GetLabRepoOrder("Test")                               ''
-          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", "Reported", cmbcategory.Text, $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", "Reported", cmbcategory.Text, $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
         Endif
       Else If rbinvoice.Value = True Then
         If xShowAll = False Then
           sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldbillno=&1 and fldstatus=&2 and fldtestid in(select fldtestid from tbltest where fldcategory like &3) and fldencounterval=&4 and " & xstr & "&5 and fldtime_sample>=&6 and fldtime_sample<=&7 and fldsampletype like &8" & xload & modLabSub.GetLabRepoOrder("Test")
-          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", cmbcategory.Text, $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", cmbcategory.Text, $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
         Else
           sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldbillno=&1 and (fldstatus=&2 or fldstatus=&3) and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldencounterval=&5 and " & xstr & "&6 and fldtime_sample>=&7 and fldtime_sample<=&8 and fldsampletype like &9" & xload & modLabSub.GetLabRepoOrder("Test")                               ''
-          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", "Reported", cmbcategory.Text, $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+          res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", "Reported", cmbcategory.Text, $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
         Endif
       Endif
     Endif
@@ -1416,24 +1416,24 @@ Private Function GroupExecuteQuery(xFldList As String[]) As Result
     If cmbcategory.Text = "%" Then
       If rbencounter.Value = True Then
         sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldencounterval=&1 and fldstatus=&2 and " & xstr & "&3 and fldtime_sample>=&4 and fldtime_sample<=&5 and fldsampletype like &6" & xload & modLabSub.GetLabRepoOrder("Test")
-        res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Sampled", xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+        res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Sampled", xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
       Else If rbsample.Value = True Then
         sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldsampleid=&1 and fldstatus=&2 and fldencounterval=&3 and " & xstr & "&4 and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7" & xload & modLabSub.GetLabRepoOrder("Test")
-        res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+        res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
       Else If rbinvoice.Value = True Then
         sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldbillno=&1 and fldstatus=&2 and fldencounterval=&3 and " & xstr & "&4 and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7" & xload & modLabSub.GetLabRepoOrder("Test")
-        res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+        res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
       Endif
     Else
       If rbencounter.Value = True Then
         sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldencounterval=&1 and fldstatus=&2 and fldtestid in(select fldtestid from tbltest where fldcategory like &3) and " & xstr & "&4 and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7" & xload & modLabSub.GetLabRepoOrder("Test")
-        res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Sampled", cmbcategory.Text, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+        res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Sampled", cmbcategory.Text, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
       Else If rbsample.Value = True Then
         sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldsampleid=&1 and fldstatus=&2 and fldtestid in(select fldtestid from tbltest where fldcategory like &3) and fldencounterval=&4 and " & xstr & "&5 and fldtime_sample>=&6 and fldtime_sample<=&7 and fldsampletype like &8" & xload & modLabSub.GetLabRepoOrder("Test")
-        res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", cmbcategory.Text, $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+        res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", cmbcategory.Text, $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
       Else If rbinvoice.Value = True Then
         sql = "select " & xFldList.Join(",") & " from " & $tblpatlabtest & " where fldbillno=&1 and fldstatus=&2 and fldtestid in(select fldtestid from tbltest where fldcategory like &3) and fldencounterval=&4 and " & xstr & "&5 and fldtime_sample>=&6 and fldtime_sample<=&7 and fldsampletype like &8" & xload & modLabSub.GetLabRepoOrder("Test")
-        res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", cmbcategory.Text, $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, txtdtrange.Value)), cmbspecimen.Text)
+        res = modDatabase.$myConn.Exec(sql, txtencid.Text, "Sampled", cmbcategory.Text, $encid, xcomp, modDate.StartSqlDate(dtselected.Value), modDate.EndSqlDate(DateAdd(dtselected.Value, gb.Day, CInt(txtdtrange.Value))), cmbspecimen.Text)
       Endif
     Endif
 

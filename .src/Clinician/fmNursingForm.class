@@ -179,12 +179,22 @@ Public Sub Form_KeyRelease()
   Else If Key.Code = Key["F"] And If Key.Control Then
     txtencid.Text = GetEncid()
 
+  Else If Key.Code = Key.F3 Then
+    TabPanel1.Index = 0
+  Else If Key.Code = Key.F4 Then
+    TabPanel1.Index = 1
   Else If Key.Code = Key.F5 Then
-    btnsavevitals_Click()
+    TabPanel1.Index = 2
   Else If Key.Code = Key.F6 Then
-    btnallergy_Click()
+    TabPanel1.Index = 3
   Else If Key.Code = Key.F7 Then
-    tbndisease_Click()
+    TabPanel1.Index = 4
+  Else If Key.Code = Key.F8 Then
+    TabPanel1.Index = 5
+  Else If Key.Code = Key.F9 Then
+    TabPanel1.Index = 6
+  Else If Key.Code = Key.F10 Then
+    TabPanel1.Index = 7
 
   Else If Key.Code = Key["X"] And If Key.Control Then
     Me.Close()
@@ -1245,7 +1255,7 @@ Private Sub ShowEssentialExamRange()
 
 End
 
-Private Sub GetMarkAbnorm(txtnoteid As ValueBox, sRange As Float[])
+Private Sub GetMarkAbnorm(txtnoteidx As ValueBox, sRange As Float[])
 
   Dim xmax As Float
   Dim xmin As Float
@@ -1255,25 +1265,25 @@ Private Sub GetMarkAbnorm(txtnoteid As ValueBox, sRange As Float[])
   xmax = sRange[1]
 
   abn = False
-  If txtnoteid.Value Then
+  If txtnoteidx.Value Then
     If xmin Then
-      If xmin > txtnoteid.Value Then
+      If xmin > txtnoteidx.Value Then
         abn = True
       Endif
     Endif
     If xmax Then
-      If xmax < txtnoteid.Value Then
+      If xmax < txtnoteidx.Value Then
         abn = True
       Endif
     Endif
   Endif
 
   If abn = True Then
-    txtnoteid.Font.Bold = True
-    txtnoteid.Foreground = Color.Red
+    txtnoteidx.Font.Bold = True
+    txtnoteidx.Foreground = Color.Red
   Else
-    txtnoteid.Font.Bold = False
-    txtnoteid.Foreground = Color.Default
+    txtnoteidx.Font.Bold = False
+    txtnoteidx.Foreground = Color.Default
   Endif
 
 End
@@ -2042,27 +2052,6 @@ Public Sub mnucompexam_Click()
 
 End
 
-Public Sub mnucomptest_Click()
-
-  Dim res As Result
-  Dim xx As String[]
-  Dim yy As String[]
-  Dim hForm As FmMultiChart
-
-  If txtencid.Text Then
-    yy = New String[]
-
-    res = modDatabase.$myConn.Exec("select distinct(fldtestid) as col from tblpatlabtest where fldencounterval=&1 and fldtest_type=&2 and (fldstatus=&3 or fldstatus=&4) and flvisible=&5", Trim(txtencid.Text), "Quantitative", "Reported", "Verified", "Visible")
-    xx = modControlSub.GetDirectFillresult(res)
-    If xx.Count Then
-      xx.Sort()
-      hForm = New FmMultiChart(Trim(txtencid.Text), yy, xx, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
-      modWorkSpace.Add(hForm)
-    Endif
-  Endif
-
-End
-
 Public Sub mnudrugdosing_Click()
 
   Dim xPath As String
@@ -2197,6 +2186,34 @@ Public Sub mnuadmission_Click()
         modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
       Endif
     Endif
+  Endif
+
+End
+
+''Progress
+Public Sub mnuipmonitoring_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowPatientPlanningReport(Trim(txtencid.Text), "IP Monitoring")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+''Activity
+Public Sub mnunurcheck_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.NursingCheckReport(Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
   Endif
 
 End
@@ -2493,6 +2510,7 @@ Public Sub mnuessenexam_Click()
 
   If txtencid.Text Then
     xx = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
+    yy = New String[]
     hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
   Endif
@@ -3639,7 +3657,7 @@ Private Sub ShowNoteTypeTime()
     .Columns[6].Width = 1
 
     .Columns[1].Text = "DateTime"
-    .Columns[3].Text = "Impression"
+    .Columns[3].Text = "Response"
     .Columns[4].Text = "Doctor"
   End With
 

@@ -96,11 +96,16 @@
   { mnucurrent Menu
     Text = ("Current")
     { mnucurvisitsumm Menu
-      Text = ("Visit Summary")
+      Text = ("Dept Summary")
     }
     { mnuallhistory Menu
       Text = ("History")
       Radio = True
+    }
+    { mnuplanningall Menu
+      Text = ("OPD Advices")
+    }
+    { Menu2 Menu
     }
     { mnuexamrepo Menu
       Text = ("Examination")
@@ -110,9 +115,6 @@
     }
     { mnuradio Menu
       Text = ("Radiology")
-    }
-    { mnuplanningall Menu
-      Text = ("OPD Advices")
     }
     { mnudrugdosing Menu
       Text = ("Drug Dosing")
@@ -241,24 +243,23 @@
     { mnuadmission Menu
       Text = ("Admission")
     }
-    { Menu3 Menu
-      Text = ("- - - Charts - - -")
-      Enabled = False
-    }
-    { mnureqexam Menu
-      Text = ("Monitoring")
-    }
-    { mnucompexam Menu
-      Text = ("Essen Exams")
-    }
-    { mnucomptest Menu
-      Text = ("Laboratory")
-    }
   }
   { mnucustform Menu
     Text = ("Charts")
-    { mnuessenexam Menu
-      Text = ("Essen Exams")
+    { mnuvitalsall Menu
+      Text = ("Vitals")
+      { mnuvitaltable Menu
+        Text = ("Tabular")
+      }
+      { mnucompexam Menu
+        Text = ("Graphical")
+      }
+      { mnuessenexam Menu
+        Text = ("Multi Chart")
+      }
+    }
+    { mnureqexam Menu
+      Text = ("Monitoring")
     }
     { mnucustform1 Menu
       Text = ("Form1")
@@ -606,7 +607,7 @@
           MoveScaled(0,0,61,3)
           Border = Border.Plain
           { tlbtndeldises ToolButton
-            MoveScaled(54,0,3,3)
+            MoveScaled(57,0,3,3)
             ToolTip = ("Delete Selected Diagnosis")
             Picture = Picture["icon:/small/cancel"]
           }
@@ -621,8 +622,15 @@
             Picture = Picture["icon:/small/add"]
           }
           { chkalldiagno CheckBox
-            MoveScaled(27,0,7,3)
+            MoveScaled(22,0,7,3)
             Text = ("All")
+          }
+          { btncopydiagnosis Button
+            MoveScaled(46,0,10,3)
+            Visible = False
+            ToolTip = ("Delete Selected Diagnosis")
+            Text = ("Copy")
+            Picture = Picture["icon:/32/copy"]
           }
         }
         { lsticdisease TreeView
@@ -675,20 +683,34 @@
         { txtpulse ValueBox
           MoveScaled(11,1,8.625,3)
         }
+        { txtresprate ValueBox
+          MoveScaled(32,1,8.625,3)
+        }
         { txtsystolicbp ValueBox
           MoveScaled(11,5,8.625,3)
         }
         { txtdiastolicbp ValueBox
           MoveScaled(32,5,8.625,3)
         }
-        { txtresprate ValueBox
-          MoveScaled(32,1,8.625,3)
-        }
         { txtoxysat ValueBox
           MoveScaled(11,9,8.625,3)
         }
         { txttemp ValueBox
           MoveScaled(32,9,8.625,3)
+        }
+        { btnsavevitals Button
+          MoveScaled(22,12.5,13.5,3)
+          Text = ("Save")
+          Picture = Picture["icon:/small/apply"]
+        }
+        { btntriage Button
+          MoveScaled(1,12.5,12,3)
+          Text = ("Triage")
+          Picture = Picture["icon:/small/color"]
+        }
+        { btnshowvital ToolButton
+          MoveScaled(37,12.5,3,3)
+          Picture = Picture["icon:/small/refresh"]
         }
         { Label5 Label
           MoveScaled(1,5,10,3)
@@ -719,20 +741,6 @@
           MoveScaled(1,9,10,3)
           Border = Border.Plain
           Text = ("S P O2")
-        }
-        { btnsavevitals Button
-          MoveScaled(22,13,13.5,3)
-          Text = ("Vitals [F5]")
-          Picture = Picture["icon:/small/apply"]
-        }
-        { btnshowvital ToolButton
-          MoveScaled(37,13,3,3)
-          Picture = Picture["icon:/small/refresh"]
-        }
-        { btntriage Button
-          MoveScaled(1,13,12,3)
-          Text = ("Triage")
-          Picture = Picture["icon:/small/color"]
         }
       }
     }
@@ -951,6 +959,7 @@
           }
           { lblhistoryhead Label
             MoveScaled(0,0.5,38,3)
+            Font = Font["Bold"]
             Border = Border.Plain
           }
           { btnhistory Button

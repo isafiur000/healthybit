@@ -33,6 +33,7 @@ Public Sub Form_Open()
   modBasic.LoadLargeLists()
   modBasic.CloudAISettings()
 
+  DiaplayCustMenu()
   modBasic.$BillTargetGenericLabel = ""
   modBasic.$BillTargetBrandLabel = ""
 
@@ -566,5 +567,92 @@ Public Sub mnucompmessage_Click()
 
   modWorkSpace.Remove(fmCompMessage)
   modWorkSpace.Add(fmCompMessage)
+
+End
+
+''---------------------------------------- CustomAccount Reports -------------------------------------
+Private Sub DiaplayCustMenu()
+
+  If modSettings.ShowSettingForReport("Pharmacist.CustomQuery1/Name") Then
+    mnucust1.Caption = modSettings.ShowSettingForReport("Pharmacist.CustomQuery1/Name")
+    mnucust1.Tag = "Pharmacist.CustomQuery1"
+    mnucust1.Enabled = True
+  Endif
+
+  If modSettings.ShowSettingForReport("Pharmacist.CustomQuery2/Name") Then
+    mnucust2.Caption = modSettings.ShowSettingForReport("Pharmacist.CustomQuery2/Name")
+    mnucust2.Tag = "Pharmacist.CustomQuery2"
+    mnucust2.Enabled = True
+  Endif
+
+  If modSettings.ShowSettingForReport("Pharmacist.CustomQuery3/Name") Then
+    mnucust3.Caption = modSettings.ShowSettingForReport("Pharmacist.CustomQuery3/Name")
+    mnucust3.Tag = "Pharmacist.CustomQuery3"
+    mnucust3.Enabled = True
+  Endif
+
+  If modSettings.ShowSettingForReport("Pharmacist.CustomQuery4/Name") Then
+    mnucust4.Caption = modSettings.ShowSettingForReport("Pharmacist.CustomQuery4/Name")
+    mnucust4.Tag = "Pharmacist.CustomQuery4"
+    mnucust4.Enabled = True
+  Endif
+
+  If modSettings.ShowSettingForReport("Pharmacist.CustomQuery5/Name") Then
+    mnucust5.Caption = modSettings.ShowSettingForReport("Pharmacist.CustomQuery5/Name")
+    mnucust5.Tag = "Pharmacist.CustomQuery5"
+    mnucust5.Enabled = True
+  Endif
+
+End
+
+Public Sub mnucust1_Click()
+
+  Dim hForm As FmCustQueryTable
+
+  hForm = New FmCustQueryTable(modDatabase.$syConn, mnucust1.Tag)
+  modWorkSpace.Add(hForm)
+
+End
+
+Public Sub mnucust2_Click()
+
+  Dim hForm As FmCustQueryTable
+
+  hForm = New FmCustQueryTable(modDatabase.$syConn, mnucust2.Tag)
+  modWorkSpace.Add(hForm)
+
+End
+
+Public Sub mnucust3_Click()
+
+  Dim hForm As FmCustQueryTable
+
+  hForm = New FmCustQueryTable(modDatabase.$syConn, mnucust3.Tag)
+  modWorkSpace.Add(hForm)
+
+End
+
+Public Sub mnucust4_Click()
+
+  Dim hForm As FmCustQueryTable
+
+  hForm = New FmCustQueryTable(modDatabase.$syConn, mnucust4.Tag)
+  modWorkSpace.Add(hForm)
+
+End
+
+Public Sub mnucust5_Click()
+
+  Dim hForm As FmCustQueryTable
+
+  hForm = New FmCustQueryTable(modDatabase.$syConn, mnucust5.Tag)
+  modWorkSpace.Add(hForm)
+
+End
+
+Public Sub mnucustsetting_Click()
+
+  fmCusAccReport.Close
+  fmCusAccReport.ShowModal
 
 End

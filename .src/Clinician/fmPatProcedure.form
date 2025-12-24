@@ -221,73 +221,102 @@
       { Panel44 Panel
         MoveScaled(0,0,50,47)
         Arrangement = Arrange.Vertical
+        { Panel32 Panel
+          MoveScaled(0,0,50,4)
+          { cmbprocedure TextBox
+            MoveScaled(0,0.5,41,3)
+            ReadOnly = True
+          }
+          { btnaddprocpast Button
+            MoveScaled(41,0.5,4,3)
+            Picture = Picture["icon:/small/add"]
+          }
+          { btndelprocpast Button
+            MoveScaled(45,0.5,4,3)
+            Picture = Picture["icon:/small/delete"]
+          }
+        }
+        { Panel11 Panel
+          MoveScaled(0,4,50,3.5)
+          { Label2 Label
+            MoveScaled(0,0,15,3)
+            Border = Border.Plain
+            Text = ("Final Procedure")
+          }
+          { btnaddprocnew Button
+            MoveScaled(39,0,10,3)
+            Text = ("New")
+            Picture = Picture["icon:/small/add"]
+          }
+          { cmbdisctype ComboBox
+            MoveScaled(16,0,22,3)
+          }
+        }
+        { GridView1 GridView
+          MoveScaled(1,9,45,9)
+          Expand = True
+          Mode = Select.Single
+          Header = GridView.Horizontal
+          AutoResize = False
+        }
         { Panel8 Panel
-          MoveScaled(0,0,49,21)
+          MoveScaled(0,19,49,14.5)
           { btnrefer ButtonBox
-            MoveScaled(11,5,36.625,3)
+            MoveScaled(11,0,36.625,3)
             Picture = Picture["icon:/small/people"]
             ReadOnly = True
           }
           { btnpayto ButtonBox
-            MoveScaled(11,9,36.625,3)
+            MoveScaled(11,3.5,36.625,3)
             Picture = Picture["icon:/small/people"]
             ReadOnly = True
           }
           { dtplan DateBox
-            MoveScaled(11,13,20,3)
+            MoveScaled(11,7,20,3)
             Mode = DateChooser.DateTime
           }
           { Label6 Label
-            MoveScaled(0,9,10,3)
+            MoveScaled(0,3.5,10,3)
             Border = Border.Plain
             Text = ("Payable")
           }
-          { Label2 Label
-            MoveScaled(0,1,10,3)
-            Border = Border.Plain
-            Text = ("Procedure")
-          }
           { Label4 Label
-            MoveScaled(0,13,10,3)
+            MoveScaled(0,7,10,3)
             Border = Border.Plain
             Text = ("Date")
           }
           { dtneplan ToolButton
-            MoveScaled(32,13,3,3)
+            MoveScaled(32,7,3,3)
             Picture = Picture["icon:/small/calendar"]
           }
-          { cmbprocedure TextBox
-            MoveScaled(11,1,36.625,3)
-            ReadOnly = True
-          }
           { Label1 Label
-            MoveScaled(0,5,10,3)
+            MoveScaled(0,0,10,3)
             Border = Border.Plain
             Text = ("Refer")
           }
           { cmbpertype ComboBox
-            MoveScaled(0.375,17,13,3)
+            MoveScaled(0,10.5,13,3)
             Sorted = True
           }
           { btnconperson ButtonBox
-            MoveScaled(14,17,30,3)
+            MoveScaled(14,10.5,30,3)
             Picture = Picture["icon:/small/people"]
             ReadOnly = True
           }
           { btnaddperson ToolButton
-            MoveScaled(45,17,3,3)
+            MoveScaled(45,10.5,3,3)
             Picture = Picture["icon:/small/add"]
           }
         }
         { grdperson GridView
-          MoveScaled(2,22,36,17)
+          MoveScaled(2,33,36,9)
           Expand = True
           Mode = Select.Single
           Header = GridView.Both
           AutoResize = False
         }
         { Panel61 Panel
-          MoveScaled(0,40,49,4)
+          MoveScaled(0,42,49,4)
           { txtbillmode TextBox
             MoveScaled(24,0.625,4,3)
             Visible = False

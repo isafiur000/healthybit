@@ -1,52 +1,51 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,93,61)
+  MoveScaled(0,0,97,58)
   Text = ("Item Grid")
   Resizable = False
-  Arrangement = Arrange.Vertical
+  Arrangement = Arrange.Horizontal
   Spacing = True
   Margin = True
-  { Panel1 Panel
-    MoveScaled(1,1,91,4)
-    Arrangement = Arrange.Horizontal
-    Spacing = True
-    { chkallcateg Button
-      MoveScaled(0,0.375,26,3)
-      Text = ("All Categories")
-      Picture = Picture["icon:/small/bookmark"]
-    }
-    { chkleftmain CheckBox
-      MoveScaled(27,0.375,3,3)
-    }
-    { txtname ButtonBox
-      MoveScaled(30,0.375,36,3)
-      ToolTip = ("Write few alphabets of disease name for quick sorting")
-      Expand = True
-      Picture = Picture["icon:/small/cancel"]
-    }
-    { btnok Button
-      MoveScaled(68,0.375,13,3)
-      Text = ("Save")
-      Picture = Picture["icon:/small/save"]
-    }
+  { ListBox1 ListBox
+    MoveScaled(1,1,26,54)
+    Sorted = True
   }
-  { Panel2 Panel
-    MoveScaled(1,5,91,55)
+  { Panel3 Panel
+    MoveScaled(28,1,68,55)
     Expand = True
-    Arrangement = Arrange.Horizontal
-    { ListBox1 ListBox
-      MoveScaled(0,0,26,54)
-      Sorted = True
+    Arrangement = Arrange.Vertical
+    Margin = True
+    { Panel1 Panel
+      MoveScaled(0,0,67,4)
+      Spacing = True
+      { chkleftmain CheckBox
+        MoveScaled(1,0.5,3,3)
+      }
+      { txtname ButtonBox
+        MoveScaled(4,0.5,27,3)
+        ToolTip = ("Write few alphabets of disease name for quick sorting")
+        Picture = Picture["icon:/small/cancel"]
+      }
+      { btnok Button
+        MoveScaled(53,0.5,13,3)
+        Text = ("Save")
+        Picture = Picture["icon:/small/save"]
+      }
     }
-    { GridView1 GridView
-      MoveScaled(26,0,60,54)
+    { Panel2 Panel
+      MoveScaled(0,4,67,45)
       Expand = True
-      Mode = Select.Single
-    }
-    { lstletter ListBox
-      MoveScaled(87,0,4,54)
-      Sorted = True
+      Arrangement = Arrange.Horizontal
+      { GridView1 GridView
+        MoveScaled(1,1,60,40)
+        Expand = True
+        Mode = Select.Single
+      }
+      { lstletter ListBox
+        MoveScaled(62,1,4,41)
+        Sorted = True
+      }
     }
   }
 }

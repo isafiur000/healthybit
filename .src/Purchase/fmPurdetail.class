@@ -87,7 +87,7 @@ Private Sub ShowGridView()
   Else
     sql = "select fldid,fldreference,fldpurtype,fldpurdate,fldbillno,fldcategory,fldcredit,flddebit,fldreference,fldreference,fldpurorder,fldcomp from tblpurchasebill where fldsuppname like &1 and lower(fldreference) like &2 and lower(fldbillno) like &3" & xstr
   Endif
-  $rData = modDatabase.$syConn.Exec(sql, $strTitle, LCase(txtsearch.Text) & "%", LCase(txtinvoice.Text) & "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)))
+  $rData = modDatabase.$syConn.Exec(sql, $strTitle, LCase(txtsearch.Text) & "%", LCase(txtinvoice.Text) & "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))))
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
 

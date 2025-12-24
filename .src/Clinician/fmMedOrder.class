@@ -326,7 +326,7 @@ Public Sub btnrepeat_Click()
   Dim sColl As Collection
   Dim xLst As Long[]
 
-  sColl = GetSetRegimen($encid)
+  sColl = GetSetRegimen($encid, $sBillMode)
   If sColl And If sColl.Count Then
     For Each xLst In sColl
       If sColl.Key = "New Regimen" Then

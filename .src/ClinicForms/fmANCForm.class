@@ -82,6 +82,10 @@ Public Sub Form_Open()
   GetPatientOutComeVal()
   hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
   modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
+  If modBasic.$LockDiagnosisList = "No" Then
+  Else
+    btndismanual.Enabled = False
+  Endif
 
   ShowRiskFactors()
   ShowObsDiagnosis()
@@ -1556,6 +1560,7 @@ Public Sub btnoutcome_Click()
     modDatabase.$myConn.Begin
     If rbadmission.Value = True Then
       xmode = "Admission"
+      modPatientGeneral.AddExamGeneralQualiData($encid, "Notes", "Doctor Order", "", txtcomment.RichText, False)
     Else If rbfollowup.Value = True Then
       xmode = "Follow Up"
       modPatientSub.UpdateCurrentStatus($encid, "Follow Up", dtfollowup.Value)

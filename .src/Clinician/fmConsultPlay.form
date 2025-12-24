@@ -1,14 +1,25 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,86,36)
+  MoveScaled(0,0,86,62)
   Text = ("Planned Consultations")
   Resizable = False
   Margin = True
   { GridView2 GridView
-    MoveScaled(1,1,83.75,34)
+    MoveScaled(1,4,84,21)
     Mode = Select.Single
     Header = GridView.Both
     AutoResize = False
+  }
+  { txtcomment TextHTML
+    MoveScaled(1,26,83,35)
+  }
+  { Panel1 Panel
+    MoveScaled(1,0,84,4)
+    { btnselect Button
+      MoveScaled(62,0.5,16,3)
+      Text = ("Select")
+      Default = True
+    }
   }
 }

@@ -3,7 +3,7 @@
 Public Sub Form_Open()
 
   cmbcategory.List = ["Nominal", "Ordinal", "Scale"] '["String", "Number"]
-  cmbvariable.List = modLongVar.$RegistVar
+  cmbvariable.List = modMedicine.GetAddColumnsList()
   UnivariateSetting()
 
 End

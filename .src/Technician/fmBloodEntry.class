@@ -149,26 +149,28 @@ Public Sub btnadd_Click()
     If rex.Available Then
       Message.Warning("Code Already Used", "OK")
     Else
-      For i = 1 To txtqty.Value
-        res = modDatabase.$myConn.Create("tblmedinventory")
-        res["fldcategory"] = $sType
-        res["fldcode"] = Trim(txtcode.Text) & "-" & CStr(i)
-        res["flditem"] = txtbloodcode.Text
-        res["fldencounterval"] = txtencid.Text
-        res["fldencname"] = txtencname.Text
-        res["fldcollect"] = dtcollection.Value
-        res["fldexpiry"] = dtexpiry.Value
-        res["fldstatus"] = "Active"
-        res["fldsave"] = True
-        res["flduserid"] = modBasic.$lbluser
-        res["fldtime"] = Now()
-        res["fldcomp"] = modBasic.$compID
-        res["fldcomment"] = txtcomment.Text
-        res["xyz"] = False
-        res.Update
-      Next
-      Balloon.Info(("Information saved"), btnadd)
-      Balloon.Delay = modBasic.$BalloonDelay
+      If dtcollection.Value And If dtexpiry.Value Then
+        For i = 1 To txtqty.Value
+          res = modDatabase.$myConn.Create("tblmedinventory")
+          res["fldcategory"] = $sType
+          res["fldcode"] = Trim(txtcode.Text) & "-" & CStr(i)
+          res["flditem"] = txtbloodcode.Text
+          res["fldencounterval"] = txtencid.Text
+          res["fldencname"] = txtencname.Text
+          res["fldcollect"] = dtcollection.Value
+          res["fldexpiry"] = dtexpiry.Value
+          res["fldstatus"] = "Active"
+          res["fldsave"] = True
+          res["flduserid"] = modBasic.$lbluser
+          res["fldtime"] = Now()
+          res["fldcomp"] = modBasic.$compID
+          res["fldcomment"] = txtcomment.Text
+          res["xyz"] = False
+          res.Update
+        Next
+        Balloon.Info(("Information saved"), btnadd)
+        Balloon.Delay = modBasic.$BalloonDelay
+      Endif
     Endif
   Endif
 

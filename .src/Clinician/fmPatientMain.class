@@ -558,6 +558,9 @@ Private Sub BasicInfoPatient()
   If txtencid.Text Then
     GetDefaultBillingmodes()
     cmbinpathistory.List = GetHistoryList()
+    If cmbinpathistory.List.Count Then
+      cmbinpathistory.Index = 0
+    Endif
     $NotesList = NoteTakingTypeList()
     cmbnote.List = $NotesList
     cmbnotetype.List = ["All Types", "Progress Note", "Doctor Order", "Clinicians Note", "Nurses Note", "Transfer Note", "Patient Note"]
@@ -2443,6 +2446,11 @@ Public Sub cmbnote_Click()
   txtnoteid.Value = 0
   txtnote.Text = ""
   btnoteadd.Enabled = True
+  If cmbnote.Text = "Doctor Order" Then
+    Panel37.Visible = False
+  Else
+    Panel37.Visible = True
+  Endif
 
 End
 
@@ -2466,6 +2474,7 @@ End
 Public Sub btnnoteshow_Click()
 
   If txtencid.Text Then
+    Panel37.Visible = True
     ShowNoteTypeTime()
   Endif
 
@@ -4473,14 +4482,27 @@ Public Sub mnusumcombined_Click()
 End
 
 ''------------------------------ Chart Menu ----------------------------------------
+Public Sub mnuvitaltable_Click()
+
+  Dim hForm As FmVitalTable
+
+  If txtencid.Text Then
+    hForm = New FmVitalTable(Trim(txtencid.Text))
+    hForm.ShowModal()
+  Endif
+
+End
+
 Public Sub mnucompexam_Click()
 
   Dim hForm As FmTPR
   Dim xList As String[]
 
-  xList = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
-  hForm = New FmTPR(Trim(txtencid.Text), xList)
-  hForm.ShowModal()
+  If txtencid.Text Then
+    xList = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
+    hForm = New FmTPR(Trim(txtencid.Text), xList)
+    hForm.ShowModal()
+  Endif
 
 End
 
@@ -4488,57 +4510,33 @@ Public Sub mnureqexam_Click()
 
   Dim hForm As FmTPR
 
-  hForm = New FmTPR(Trim(txtencid.Text), modPatPatho.GetMonitorList(Trim(txtencid.Text), "Exam", "Continue", "%"))
-  hForm.ShowModal()
-
-End
-
-Public Sub mnucomptest_Click()
-
-  Dim res As Result
-  Dim xx As String[]
-  Dim yy As String[]
-  Dim hForm As FmMultiChart
-
   If txtencid.Text Then
-    yy = New String[]
-
-    res = modDatabase.$myConn.Exec("select distinct(fldtestid) as col from tblpatlabtest where fldencounterval=&1 and fldtest_type=&2 and (fldstatus=&3 or fldstatus=&4) and flvisible=&5", Trim(txtencid.Text), "Quantitative", "Reported", "Verified", "Visible")
-    xx = modControlSub.GetDirectFillresult(res)
-    If xx.Count Then
-      hForm = New FmMultiChart(Trim(txtencid.Text), yy, xx, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
-      modWorkSpace.Add(hForm)
-    Endif
+    hForm = New FmTPR(Trim(txtencid.Text), modPatPatho.GetMonitorList(Trim(txtencid.Text), "Exam", "Continue", "%"))
+    hForm.ShowModal()
   Endif
 
 End
 
-Public Sub mnuchartdosing_Click()
+''------------------------------------- Report Menu -------------------------------------
+Public Sub mnucurvisitsumm_Click()
 
-  ''dosing chart
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modPatReportAll.GetOPDSummaryReportAllComp(Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
 
 End
 
-''------------------------------------- Report Menu -------------------------------------
 Public Sub mnucurarchive_Click()
 
   Dim xxx As String[]
 
   If txtencid.Text Then
     xxx = AddReports(Trim(txtencid.Text), False)
-  Endif
-
-End
-
-Public Sub mnunurcheck_Click()
-
-  Dim xPath As String
-
-  If txtencid.Text Then
-    Inc Application.Busy
-    xPath = modCHTMLPatient.NursingCheckReport(Trim(txtencid.Text))
-    Dec Application.Busy
-    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
   Endif
 
 End
@@ -4615,13 +4613,13 @@ Public Sub mnudiagnosis_Click()
 
 End
 
-Public Sub mnusymptoms_Click()
+Public Sub mnuplanningall_Click()
 
   Dim xPath As String
 
   If txtencid.Text Then
     Inc Application.Busy
-    xPath = modCHTMLPatient.ShowPatientSymptomReport(Trim(txtencid.Text))
+    xPath = modCHTMLPatient.ShowPatientNoteReport(Trim(txtencid.Text), "Outpatient Notes")
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
   Endif
@@ -4726,19 +4724,6 @@ Public Sub mnudosing_Click()
   If txtencid.Text Then
     Inc Application.Busy
     xPath = modCHTMLPatient.ShowNursingDosing(Trim(txtencid.Text))
-    Dec Application.Busy
-    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
-  Endif
-
-End
-
-Public Sub mnuipmonitoring_Click()
-
-  Dim xPath As String
-
-  If txtencid.Text Then
-    Inc Application.Busy
-    xPath = modCHTMLPatient.ShowPatientPlanningReport(Trim(txtencid.Text), "IP Monitoring")
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
   Endif
@@ -5192,6 +5177,7 @@ Public Sub mnuessenexam_Click()
 
   If txtencid.Text Then
     xx = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
+    yy = New String[]
     hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
   Endif

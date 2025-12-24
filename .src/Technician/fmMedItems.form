@@ -23,7 +23,7 @@
     }
   }
   { Panel1 Panel
-    MoveScaled(0,0,119,71)
+    MoveScaled(0,0,119,74)
     { Panel3 Panel
       MoveScaled(0,0,118,4)
       { btnpatrefresh Button
@@ -97,11 +97,26 @@
       }
     }
     { GridView1 GridView
-      MoveScaled(1,44,118,26)
+      MoveScaled(1,44,118,23)
       Expand = True
       Mode = Select.Single
       Header = GridView.Both
       AutoResize = False
+    }
+    { Panel4 Panel
+      MoveScaled(0,67,119,4)
+      { Panel5 Panel
+        MoveScaled(1,0.5,20,3)
+        { rbentry RadioButton
+          MoveScaled(0,0,9,3)
+          Text = ("Entry")
+          Value = True
+        }
+        { rbexpiry RadioButton
+          MoveScaled(10,0,9,3)
+          Text = ("Expiry")
+        }
+      }
     }
   }
 }

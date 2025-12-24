@@ -429,7 +429,7 @@ Private Sub ButtonControl()
 
   Dim xx As Boolean
 
-  xx = modPatient.EnableClinicForm(txtnow.Text)
+  xx = modPatient.EnableClinicForm($sTatus)
   Panel2.Enabled = xx
   If $UserRestrict Then
     UserAccessRestrict()

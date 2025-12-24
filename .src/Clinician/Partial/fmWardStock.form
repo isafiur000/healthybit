@@ -47,13 +47,41 @@
           MoveScaled(0,0.5,3,3)
         }
         { btnselect Button
-          MoveScaled(31,0.5,9,3)
+          MoveScaled(32,0.5,9,3)
           Tag = "Auto"
           Picture = Picture["icon:/small/right"]
         }
       }
+      { pnldose Panel
+        MoveScaled(0,10,42,4)
+        Visible = False
+        { Label1 Label
+          MoveScaled(0,0.5,5,3)
+          Border = Border.Plain
+          Text = ("Dose")
+        }
+        { txtdose ValueBox
+          MoveScaled(5,0.5,8,3)
+        }
+        { lblunit Label
+          MoveScaled(13,0.5,6,3)
+          Border = Border.Plain
+        }
+        { txtqty ValueBox
+          MoveScaled(25,0.5,6,3)
+        }
+        { btnselbreak Button
+          MoveScaled(32,0.5,9,3)
+          Tag = "Auto"
+          Picture = Picture["icon:/small/right"]
+        }
+        { txtbreakitem TextBox
+          MoveScaled(20,0.5,5,3)
+          Visible = False
+        }
+      }
       { GridView3 GridView
-        MoveScaled(3,10,25,31)
+        MoveScaled(3,19,25,25)
         Expand = True
         Mode = Select.Single
         Header = GridView.Horizontal

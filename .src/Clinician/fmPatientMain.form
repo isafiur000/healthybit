@@ -70,32 +70,47 @@
   }
   { mnucurrent Menu
     Text = ("Current")
+    { mnucurvisitsumm Menu
+      Text = ("Clin Summary")
+    }
+    { mnuhistreport Menu
+      Text = ("History")
+    }
+    { mnudiagnosis Menu
+      Text = ("Diagnosis")
+    }
+    { mnuplanningall Menu
+      Text = ("OPD Advice")
+    }
+    { mnucurindoor Menu
+      Text = ("Indoor")
+      { mnubedtransit Menu
+        Text = ("Transitions")
+      }
+      { mnuinputfood Menu
+        Text = ("PO Inputs")
+      }
+      { mnuclinote Menu
+        Text = ("IP Notes")
+      }
+      { mnuplan Menu
+        Text = ("SOAP Plan")
+      }
+      { mnudischnote Menu
+        Text = ("Discharge")
+      }
+    }
     { mnuexamboth Menu
       Text = ("Examination")
     }
-    { mnucompexam Menu
-      Text = ("VItals Chart")
-    }
-    { mnureqexam Menu
-      Text = ("Monitoring")
-    }
     { mnutestreport Menu
       Text = ("Laboratory")
-    }
-    { mnucomptest Menu
-      Text = ("Labs Chart")
     }
     { mnuradiorep Menu
       Text = ("Radiology")
     }
     { mnudosing Menu
       Text = ("Drug Dosing")
-    }
-    { mnucancelitem Menu
-      Text = ("Cancelled")
-    }
-    { mnumedreturn Menu
-      Text = ("Return Items")
     }
     { mnucomprep Menu
       Text = ("Selected")
@@ -244,6 +259,15 @@
         Text = ("Other Items")
       }
     }
+    { mnupharmacy Menu
+      Text = ("Pharmacy")
+      { mnucancelitem Menu
+        Text = ("Cancelled")
+      }
+      { mnumedreturn Menu
+        Text = ("Return Items")
+      }
+    }
     { mnubill Menu
       Text = ("Invoices")
     }
@@ -311,46 +335,22 @@
       Enabled = False
     }
   }
-  { mnuhistmain Menu
-    Text = ("Clinical")
-    { mnubedtransit Menu
-      Text = ("Transitions")
-    }
-    { mnusymptoms Menu
-      Text = ("Symptoms")
-    }
-    { mnuinputfood Menu
-      Text = ("PO Inputs")
-    }
-    { mnudiagnosis Menu
-      Text = ("Diagnosis")
-    }
-    { mnuhistreport Menu
-      Text = ("History")
-    }
-    { mnuclinote Menu
-      Text = ("IP Notes")
-    }
-    { mnudischnote Menu
-      Text = ("Discharge")
-    }
-    { mnuipmonitoring Menu
-      Text = ("Progress")
-    }
-    { mnuplan Menu
-      Text = ("Planning")
-    }
-    { mnuchartdosing Menu
-      Text = ("Dosing Record")
-    }
-    { mnunurcheck Menu
-      Text = ("Nur Activity")
-    }
-  }
   { mnucustform Menu
     Text = ("Charts")
-    { mnuessenexam Menu
-      Text = ("Essen Exams")
+    { mnuvitalsall Menu
+      Text = ("Vitals")
+      { mnuvitaltable Menu
+        Text = ("Tabular")
+      }
+      { mnucompexam Menu
+        Text = ("Graphical")
+      }
+      { mnuessenexam Menu
+        Text = ("Multi Chart")
+      }
+    }
+    { mnureqexam Menu
+      Text = ("Monitoring")
     }
     { mnucustform1 Menu
       Text = ("Form1")
@@ -1063,6 +1063,7 @@
           }
           { lblhistoryhead Label
             MoveScaled(0,0.5,36,3)
+            Font = Font["Bold"]
             Border = Border.Plain
           }
           { chkenabhistory CheckBox

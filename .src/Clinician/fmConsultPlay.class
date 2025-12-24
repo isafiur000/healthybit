@@ -16,6 +16,7 @@ Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
   CompleteGrid()
+  GridView2.SetFocus
 
 End
 
@@ -40,6 +41,7 @@ Private Sub CompleteGrid()
     .Columns[4].Width = 150 * modBasic.$AppWidthRatio
     .Columns[5].Width = 25 * modBasic.$AppWidthRatio
     .Columns[6].Width = 1
+    .Columns[7].Width = 1
 
     .Columns[1].Text = "DateTime"
     .Columns[3].Text = "Department"
@@ -68,27 +70,28 @@ End
 Public Sub GridView2_Click()
 
   If GridView2.Rows.Selection.Count
-    If GridView2[GridView2.Row, 6].Text = "tblconsult" Then
-      $sValue = CStr(GridView2[GridView2.Row, 0].Text) & "|" & "Consultation"
-    Else If GridView2[GridView2.Row, 6].Text = "tblopvisit" Then
-      $sValue = CStr(GridView2[GridView2.Row, 0].Text) & "|" & "OP Visit"
-    Endif
-    Me.Close(True)
+    txtcomment.RichText = GridView2[GridView2.Row, 6].Text
   Endif
 
 End
 
-Public Sub GridView2_KeyRelease()
+Public Sub GridView2_Select()
 
-  If Key.Code = Key.Return Or If Key.Code = Key.Enter Then
-    If GridView2.Rows.Selection.Count
-      If GridView2[GridView2.Row, 6].Text = "tblconsult" Then
-        $sValue = CStr(GridView2[GridView2.Row, 0].Text) & "|" & "Consultation"
-      Else If GridView2[GridView2.Row, 6].Text = "tblopvisit" Then
-        $sValue = CStr(GridView2[GridView2.Row, 0].Text) & "|" & "OP Visit"
-      Endif
-      Me.Close(True)
+  If GridView2.Rows.Selection.Count
+    txtcomment.RichText = GridView2[GridView2.Row, 6].Text
+  Endif
+
+End
+
+Public Sub btnselect_Click()
+
+  If GridView2.Rows.Selection.Count
+    If GridView2[GridView2.Row, 7].Text = "tblconsult" Then
+      $sValue = CStr(GridView2[GridView2.Row, 0].Text) & "|" & "Consultation"
+    Else If GridView2[GridView2.Row, 7].Text = "tblopvisit" Then
+      $sValue = CStr(GridView2[GridView2.Row, 0].Text) & "|" & "OP Visit"
     Endif
+    Me.Close(True)
   Endif
 
 End

@@ -11,6 +11,9 @@ Private $AlphaList As String[]
 Private $sLevel As String
 Private $PositionList As String[]
 
+Private $rData As Result
+Private $aMyFields As String[]
+
 Private hOwnStockForm As FmWardStock
 Private hPtForm As FmClinHistory
 Private hDigForm As FmDiagnosticTab
@@ -449,6 +452,12 @@ Private Sub BasicInfoPatient()
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnluseown)
 
     ButtonControl()
+    cmbdisctype.List = modBasic.$BillDiscountCash
+    If cmbdisctype.List.Count = 0 Then
+      cmbdisctype.Add($billModeProcedure)
+    Endif
+    cmbdisctype.Text = $billModeProcedure
+    ShowFInalProcedures()
   Endif
 
 End
@@ -761,6 +770,9 @@ End
 Public Sub btnsubChange_Click()
 
   Dim res As Result
+  Dim Row As Integer
+  Dim rex As Result
+  Dim xadv As String
 
   If $ProcIndex Then
     If cmbstatus.Text Then
@@ -776,11 +788,28 @@ Public Sub btnsubChange_Click()
         res["fldcomp"] = modBasic.$compID
         res["xyz"] = False
         res.Update()
-        ' Wait
-        ' If cmbstatus.Text = "Done" Then
-        '   btnaddperson.Enabled = False
-        '   SaveProcedureBilling($ProcIndex)
-        ' Endif
+        Wait
+
+        If cmbstatus.Text = "Done" Then
+          If GridView1.Rows.Count Then
+            If modBasic.$AutoBillAdvReceipt = "Enable" Then
+              xadv = modBillLock.AdvanceReceiptString("Advance Receipt")
+            Else
+              xadv = ""
+            Endif
+            For Row = 0 To GridView1.Rows.Count - 1
+              If GridView1[Row, 2].Text = "Punched" Then
+                rex = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1 and fldencounterval= &2 and fldstatus=&3", GridView1[Row, 0].Text, Trim(txtencid.Text), "Punched")
+                If rex.Available Then
+                  SavePartialEntry(rex, xadv)
+                Endif
+              Endif
+            Next
+          Endif
+
+          ' btnaddperson.Enabled = False
+          ' SaveProcedureBilling($ProcIndex)
+        Endif
       Endif
       modDatabase.$myConn.Commit
       Dec Application.Busy
@@ -794,6 +823,21 @@ Catch
   modDatabase.$myConn.Rollback
   Dec Application.Busy
   modHelpVariable.CreateErrorReport()
+
+End
+
+Private Sub SavePartialEntry(res As Result, Optional advReceipt As String)
+
+  res["fldstatus"] = "Done"
+  If advReceipt Then
+    res["fldextracol"] = advReceipt
+  Endif
+  res["fldsave"] = True
+  res["flduserid"] = modBasic.$lbluser
+  res["fldtime"] = Now()
+  res["fldcomp"] = modBasic.$compID
+  res["xyz"] = False
+  res.Update()
 
 End
 
@@ -1843,5 +1887,74 @@ Public Sub btnsaveclosure_Click()
       Balloon.Delay = modBasic.$BalloonDelay
     Endif
   Endif
+
+End
+
+''================== final procedure ======================
+Public Sub btnaddprocpast_Click()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval=&1 and flditemname=&2 and fldparent=&3", Trim(txtencid.Text), cmbprocedure.Text, 0)
+  If res.Available Then
+    res["fldparent"] = $ProcIndex
+    res.Update
+    ShowFInalProcedures()
+  Endif
+
+End
+
+Public Sub btndelprocpast_Click()
+
+End
+
+Public Sub btnaddprocnew_Click()
+
+  Dim xmode As String
+  Dim xList As String[]
+  Dim xitem As String
+  Dim xrefer As String
+  Dim xTarg As String
+
+  xrefer = modBillings.GetReferralUserSetting("Procedure", Trim(txtencid.Text))
+  xmode = modNonMedical.GetDiscBindBillMode(cmbdisctype.Text)
+  If xmode Then
+    xList = modNonMedical.GetServiceSectionArray("Procedures", xmode)
+    If xList And If xList.Count Then
+      xitem = GridViewGroup("Select Final Procedures", xList, False)
+      If xitem Then
+        xTarg = modNonMedical.GetBillingTargeDept(cmbprocedure.Text, "Procedure")
+        modBillings.GetAutoBillingEntry(Trim(txtencid.Text), cmbdisctype.Text, "Procedure", xitem, 1, "Punched", $ProcIndex, False, False, "", xrefer, xTarg)
+        ShowFInalProcedures()
+      Endif
+    Endif
+  Endif
+
+End
+
+Private Sub ShowFInalProcedures()
+
+  Dim sql As String
+
+  sql = "select fldid,flditemname,fldstatus from tblpatbilling where fldencounterval=&1 and flditemtype=&2 and fldparent=&3"
+  $rData = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Procedures", $ProcIndex)
+  $aMyFields = New String[]
+  modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
+
+  With GridView1
+    .Columns[0].Width = 1
+    .Columns[1].Width = 350 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[1].Text = "Particulars"
+    .Columns[2].Text = "Status"
+  End With
+
+End
+
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  $rData.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView1, Row)
+  GridView1.Data.Text = $rData[$aMyFields[Column]]
 
 End

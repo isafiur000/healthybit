@@ -13,6 +13,13 @@ Public Sub cmbtarget_Click()
 
 End
 
+Public Sub cmbtarget_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbtarget)
+  modFillContainer.RestrictComboToContent(cmbtarget)
+
+End
+
 Public Sub btnclear_Click()
 
   txtsubject.Text = ""

@@ -177,7 +177,11 @@ Private Sub FillPatDateGrid()
   If chkexpiry.Value = True Then
     sql = "select fldid,fldcode,flditem,fldreceiver,fldencname,fldcollect,fldexpiry,fldstatus,fldcomment,fldid from tblmedinventory where fldcategory=&1 and flditem like &2 and fldstatus like &3 and fldexpiry<&4"                                                                              ''
   Else
-    sql = "select fldid,fldcode,flditem,fldreceiver,fldencname,fldcollect,fldexpiry,fldstatus,fldcomment,fldid from tblmedinventory where fldcategory=&1 and flditem like &2 and fldstatus like &3"                                                                              ''
+    If rbentry.Value = True Then
+      sql = "select fldid,fldcode,flditem,fldreceiver,fldencname,fldcollect,fldexpiry,fldstatus,fldcomment,fldid from tblmedinventory where fldcategory=&1 and flditem like &2 and fldstatus like &3 ORDER BY fldtime"                                                                              ''
+    Else If rbexpiry.Value = True Then
+      sql = "select fldid,fldcode,flditem,fldreceiver,fldencname,fldcollect,fldexpiry,fldstatus,fldcomment,fldid from tblmedinventory where fldcategory=&1 and flditem like &2 and fldstatus like &3 ORDER BY fldexpiry"
+    Endif
   Endif
   $rData = modDatabase.$myConn.Exec(sql, $sType, cmbitem.Text, cmbstatus.Text, lbldate.Value)
   $aMyFields = New String[]

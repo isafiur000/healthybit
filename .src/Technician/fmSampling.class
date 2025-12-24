@@ -289,10 +289,10 @@ Private Sub FillSamplingSaved()
   If chklist.Value = True Then
     If cmbcategory.Text = "%" Then
       sql = "select distinct(fldencounterval) as fldencounterval,fldencounterval,fldencounterval,fldordcomp,fldencounterval,fldencounterval from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5) and fldtime>=&6 and fldtime<=&7 and flditemname like &8 and flditemqty>fldretqty and fldprint=&9 and " & xstr & "&{10}" & xsource                                               ''
-      $rData2 = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)), "%", False, xcomp)
+      $rData2 = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), "%", False, xcomp)
     Else
       sql = "select distinct(fldencounterval) as fldencounterval,fldencounterval,fldencounterval,fldordcomp,fldencounterval,fldencounterval from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5) and fldtime>=&6 and fldtime<=&7 and flditemname in(select fldgroupname from tblgrouptest where fldtestid in(select fldtestid from tbltest where fldcategory like &8)) and flditemqty>fldretqty and fldprint=&9 and " & xstr & "&{10}" & xsource                                                 ''
-      $rData2 = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)), cmbcategory.Text, False, xcomp)
+      $rData2 = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), cmbcategory.Text, False, xcomp)
     Endif
   Else
     If cmbcategory.Text = "%" Then
@@ -336,10 +336,10 @@ Private Sub FillSamplingEncounters()
   If chklist.Value = True Then
     If cmbcategory.Text = "%" Then
       sql = "select distinct(fldencounterval) as fldencounterval,fldencounterval,fldencounterval,fldordcomp,fldencounterval,fldencounterval from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5) and fldtime>=&6 and fldtime<=&7 and flditemname like &8 and flditemqty>fldretqty and fldbillno IS NOT NULL and " & xstr & "&9" & xsource                                                ''
-      $rData2 = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)), "%", xcomp)
+      $rData2 = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), "%", xcomp)
     Else
       sql = "select distinct(fldencounterval) as fldencounterval,fldencounterval,fldencounterval,fldordcomp,fldencounterval,fldencounterval from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5) and fldtime>=&6 and fldtime<=&7 and flditemname in(select fldgroupname from tblgrouptest where fldtestid in(select fldtestid from tbltest where fldcategory like &8)) and flditemqty>fldretqty and fldbillno IS NOT NULL and " & xstr & "&9" & xsource                                                 ''
-      $rData2 = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)), cmbcategory.Text, xcomp)
+      $rData2 = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), cmbcategory.Text, xcomp)
     Endif
   Else
     If cmbcategory.Text = "%" Then
@@ -383,10 +383,10 @@ Private Sub FillSamplingInvoices()
   If chklist.Value = True Then
     If cmbcategory.Text = "%" Then
       sql = "select distinct(fldbillno) as fldbillno,fldencounterval,fldencounterval,fldordcomp,fldencounterval,fldencounterval from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5) and fldtime>=&6 and fldtime<=&7 and flditemname like &8 and flditemqty>fldretqty and fldprint=&9 and " & xstr & "&{10}" & xsource                                                ''
-      $rData2 = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)), "%", True, xcomp)
+      $rData2 = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), "%", True, xcomp)
     Else
       sql = "select distinct(fldbillno) as fldbillno,fldencounterval,fldencounterval,fldordcomp,fldencounterval,fldencounterval from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5) and fldtime>=&6 and fldtime<=&7 and flditemname in(select fldgroupname from tblgrouptest where fldtestid in(select fldtestid from tbltest where fldcategory like &8)) and flditemqty>fldretqty and fldprint=&9 and " & xstr & "&{10}" & xsource                                              ''
-      $rData2 = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)), cmbcategory.Text, True, xcomp)
+      $rData2 = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), cmbcategory.Text, True, xcomp)
     Endif
   Else
     If cmbcategory.Text = "%" Then
@@ -637,7 +637,7 @@ Private Sub ShowEncSavedTests(encid As String)
     Else
       sql = "select flditemname,fldreason,fldid,fldencounterval,fldtime from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldencounterval=&3 and fldsave=&4 and (fldtarget=&5 or fldtarget=&6) and fldtime>=&7 and fldtime<=&8 and flditemname in(select fldgroupname from tblgrouptest where fldtestid in(select fldtestid from tbltest where fldcategory like &9)) and flditemqty>fldretqty and fldbillno IS NULL"
     Endif
-    res = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", encid, True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)), cmbcategory.Text)
+    res = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", encid, True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), cmbcategory.Text)
 
   Else
     If cmbcategory.Text = "%" Then
@@ -663,7 +663,7 @@ Private Sub ShowEncounterTests(encid As String)
     Else
       sql = "select flditemname,fldreason,fldid,fldencounterval,fldtime from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldencounterval=&3 and fldsave=&4 and (fldtarget=&5 or fldtarget=&6) and fldtime>=&7 and fldtime<=&8 and flditemname in(select fldgroupname from tblgrouptest where fldtestid in(select fldtestid from tbltest where fldcategory like &9)) and flditemqty>fldretqty and fldbillno IS NOT NULL"
     Endif
-    res = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", encid, True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)), cmbcategory.Text)
+    res = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", encid, True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), cmbcategory.Text)
 
   Else
     If cmbcategory.Text = "%" Then
@@ -689,7 +689,7 @@ Private Sub ShowInvoicsTests(xbillNo As String)
     Else
       sql = "select flditemname,fldreason,fldid,fldencounterval,fldtime from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldbillno=&3 and fldsave=&4 and (fldtarget=&5 or fldtarget=&6) and fldtime>=&7 and fldtime<=&8 and flditemname in(select fldgroupname from tblgrouptest where fldtestid in(select fldtestid from tbltest where fldcategory like &9)) and flditemqty>fldretqty"
     Endif
-    res = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", xbillNo, True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)), cmbcategory.Text)
+    res = modDatabase.$myConn.Exec(sql, "Diagnostic Tests", "Waiting", xbillNo, True, modBasic.$compID, "%", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), cmbcategory.Text)
 
   Else
     If cmbcategory.Text = "%" Then
@@ -2114,7 +2114,7 @@ Public Sub btnbulkwork_Click()
 
   If chklist.Value = True Then
     sql = "select distinct(fldsampleid) as col from " & $tblpatlabtest & " where fldstatus=&1 and fldcomp_sample=&2 and fldtestid in(select fldtestid from tbltest where fldcategory like &3) and fldtime_sample>=&4 and fldtime_sample<=&5"
-    res = modDatabase.$myConn.Exec(sql, "Sampled", modBasic.$compID, cmbcategory.Text, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)))
+    res = modDatabase.$myConn.Exec(sql, "Sampled", modBasic.$compID, cmbcategory.Text, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))))
   Else
     sql = "select distinct(fldsampleid) as col from " & $tblpatlabtest & " where fldstatus=&1 and fldcomp_sample=&2 and fldtestid in(select fldtestid from tbltest where fldcategory like &3)"
     res = modDatabase.$myConn.Exec(sql, "Sampled", modBasic.$compID, cmbcategory.Text)
@@ -2154,7 +2154,7 @@ Private Sub SampleBukWorkSheet(sCategory As String, sampleList As String[])
 
     If chklist.Value = True Then
       sql = "select fldid,fldchk,fldgroupid,fldtestid,fldsampletype,fldsampleid,fldtime_sample,flduserid_sample,fldtest_type,fldrefername,fldcomment,fldencounterval,fldtime_start,fldmethod from " & $tblpatlabtest & " where fldstatus=&1 and fldsampleid=&2 and fldcomp_sample=&3 and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldtime_sample>=&5 and fldtime_sample<=&6"
-      res = modDatabase.$myConn.Exec(sql, "Sampled", xsample, modBasic.$compID, sCategory, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, txtrange.Value)))
+      res = modDatabase.$myConn.Exec(sql, "Sampled", xsample, modBasic.$compID, sCategory, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))))
     Else
       sql = "select fldid,fldchk,fldgroupid,fldtestid,fldsampletype,fldsampleid,fldtime_sample,flduserid_sample,fldtest_type,fldrefername,fldcomment,fldencounterval,fldtime_start,fldmethod from " & $tblpatlabtest & " where fldstatus=&1 and fldsampleid=&2 and fldcomp_sample=&3 and fldtestid in(select fldtestid from tbltest where fldcategory like &4)"
       res = modDatabase.$myConn.Exec(sql, "Sampled", xsample, modBasic.$compID, sCategory)

@@ -5,6 +5,12 @@
   Tag = "SSF Upload"
   Text = ("SSF Upload")
   Resizable = False
+  { mnufile Menu
+    Text = ("File")
+    { mnuinvupload Menu
+      Text = ("Invoice Upload")
+    }
+  }
   { Panel1 Panel
     MoveScaled(1,1,117,73)
     { Panel3 Panel
@@ -52,8 +58,6 @@
       }
       { txttotal ValueBox
         MoveScaled(65,7.5,10,3)
-        Background = Color.SoftYellow
-        ReadOnly = True
       }
       { Label3 Label
         MoveScaled(0,0.625,5.5,3)
@@ -158,7 +162,7 @@
         Border = Border.Plain
         Text = ("Code")
       }
-      { txtgridnhsi TextBox
+      { txtssucode TextBox
         MoveScaled(30,0.5,18,3)
       }
       { Label11 Label
@@ -166,18 +170,13 @@
         Border = Border.Plain
         Text = ("Invoice")
       }
-      { txtgridclaim TextBox
-        MoveScaled(60,0.5,16,3)
+      { txtinvoice TextBox
+        MoveScaled(60,0.5,19.5,3)
         ReadOnly = True
       }
       { txtaccount TextBox
-        MoveScaled(77,0.5,4,3)
+        MoveScaled(80,0.5,4,3)
         Visible = False
-      }
-      { chkselall CheckBox
-        MoveScaled(81,0.5,12,3)
-        Visible = False
-        Text = ("Select All")
       }
       { btnclaimlink Button
         MoveScaled(107,0.5,9,3)
@@ -191,7 +190,7 @@
       }
     }
     { pnlbipanna Panel
-      MoveScaled(0,42,115,4)
+      MoveScaled(0,42,117,4)
       { cmbbippatask ComboBox
         MoveScaled(13,0.5,20,3)
       }
@@ -208,20 +207,16 @@
         ReadOnly = True
       }
       { Label17 Label
-        MoveScaled(70,0.5,10,3)
+        MoveScaled(92,0.5,10,3)
         Border = Border.Plain
         Text = ("Disease ID")
       }
-      { Label18 Label
-        MoveScaled(92,0.5,6,3)
-        Border = Border.Plain
-        Text = ("Price")
-      }
-      { txtprice ValueBox
-        MoveScaled(98,0.5,9,3)
-      }
       { txtdiseaseid TextBox
-        MoveScaled(80,0.5,9,3)
+        MoveScaled(102,0.5,13,3)
+      }
+      { chkeditamt CheckBox
+        MoveScaled(69,0.5,12,3)
+        Text = ("Edit AMT")
       }
     }
     { GridView2 GridView
@@ -248,7 +243,7 @@
         Text = ("Invoices")
       }
       { txtinvoicesel TextBox
-        MoveScaled(44,0.5,67,3)
+        MoveScaled(44,0.5,31.25,3)
         ReadOnly = True
       }
     }

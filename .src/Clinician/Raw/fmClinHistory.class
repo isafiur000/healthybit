@@ -2,6 +2,7 @@
 
 Private $patId As String
 Private $sType As String
+Private $hView As Object
 
 Private $xFinList As String[]
 Private $PatNum As String
@@ -16,6 +17,14 @@ Public Sub _new(patId As String, sType As String)
 End
 
 Public Sub Form_Open()
+
+  If modBasic.$WebViewApp = "webkit" Then
+    $hView = New WebView(Panel2) As "WebView1"
+  Else
+    $hView = New HtmlView(Panel2) As "WebView1"
+  Endif
+  $hView.Background = Color.White
+  $hView.Expand = True
 
   If $sType = "PatientID" Then
     WebContainer3.Visible = True
@@ -34,7 +43,7 @@ Public Sub Form_Open()
 
   If modBasic.$WebZoomValue Then
     Slider1.Value = modBasic.$WebZoomValue * 100
-    WebView1.Zoom = Slider1.Value / 100
+    $hView.Zoom = Slider1.Value / 100
   Endif
 
   If modGeneralMain.$RightAdView Then
@@ -47,7 +56,7 @@ End
 Public Sub Slider1_Change()
 
   Inc Application.Busy
-  WebView1.Zoom = Slider1.Value / 100
+  $hView.Zoom = Slider1.Value / 100
   Dec Application.Busy
 
 End
@@ -159,7 +168,11 @@ Private Sub ShowReportEncid(xList As String[])
     lbldate.Text = "DATE: " & Format(xdate, gb.ShortDate) & Space(1) & "(" & modDate.ConvertToLocaldate(xdate) & ")"
     If xList.Count Then
       xstring = GetSelectHistoryResultStr(xList, txtnewencid.Text)
-      WebView1.Html = xstring
+      If modBasic.$WebViewApp = "webkit" Then
+        $hView.SetHtml(xstring)
+      Else
+        $hView.Html = xstring
+      Endif
     Endif
   Endif
 
@@ -294,7 +307,11 @@ End
 Public Sub btnopenweb_Click()
 
   If modGeneralMain.$RightAdView Then
-    Try modGeneralMain.$RightAdView.SetHtml(WebView1.Html)
+    If modBasic.$WebViewApp = "webkit" Then
+      Try modGeneralMain.$RightAdView.SetHtml($hView.GetHtml())
+    Else
+      Try modGeneralMain.$RightAdView.SetHtml($hView.Html)
+    Endif
     Try modGeneralMain.$RightAdView.Refresh()
   Endif
 

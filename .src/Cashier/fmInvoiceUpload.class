@@ -28,7 +28,6 @@ Public Sub Form_Open()
   cmbnodiagno.List = ["Disable", "Enable"]
   dtfir.Value = Now()
   dtlast.Value = Now()
-  chkselall.Value = True
   modAccount.PasInvoiceSetting(cmbfiscal, False)
   LoadTableNames()
 
@@ -175,7 +174,7 @@ End
 
 Private Sub FillGridView()
 
-  Dim xList As String[] = ["fldbillno", "fldbankname", "fldencounterval", "fldencounterval", "fldencounterval", "fldprevdeposit", "fldbilltype"]
+  Dim xList As String[] = ["fldbillno", "fldbankname", "fldencounterval", "fldencounterval", "fldencounterval", "fldprevdeposit", "fldbilltype", "(flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt) as totamt", "fldtime"]
   Dim sql1 As String
   Dim sql2 As String
   Dim encid As String
@@ -213,32 +212,34 @@ Private Sub FillGridView()
   Endif
 
   If cmbsource.Text = "Invoice" Then
-    sql1 = "select " & xList.Join(",") & " from " & $tblpatbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5" & yregist & xrefno
-    sql2 = "select " & xList.Join(",") & " from tblpatbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5" & yregist & xrefno
+    sql1 = "select " & xList.Join(",") & " from " & $tblpatbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
+    sql2 = "select " & xList.Join(",") & " from tblpatbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
   Else If cmbsource.Text = "Receipt" Then
-    sql1 = "select " & xList.Join(",") & " from " & $tbltempbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5" & yregist & xrefno
-    sql2 = "select " & xList.Join(",") & " from tbltempbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5" & yregist & xrefno
+    sql1 = "select " & xList.Join(",") & " from " & $tbltempbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
+    sql2 = "select " & xList.Join(",") & " from tbltempbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
   Else
-    sql1 = "select " & xList.Join(",") & " from " & $tblpatbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5" & yregist & xrefno & " UNION select " & xList.Join(",") & " from " & $tbltempbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5" & yregist & xrefno
-    sql2 = "select " & xList.Join(",") & " from tblpatbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5" & yregist & xrefno & " UNION select " & xList.Join(",") & " from tbltempbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5" & yregist & xrefno
+    sql1 = "select " & xList.Join(",") & " from " & $tblpatbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno & " UNION select " & xList.Join(",") & " from " & $tbltempbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
+    sql2 = "select " & xList.Join(",") & " from tblpatbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno & " UNION select " & xList.Join(",") & " from tbltempbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
   Endif
 
   If cmbfiscal.Text = "Current" Then
-    $rData = modDatabase.$myConn.Exec(sql1, cmbaccount.Text, encid, "Credit", modDate.StartSqlDate(dtfir.value), modDate.EndSqlDate(dtlast.value))                  ''
+    $rData = modDatabase.$myConn.Exec(sql1, cmbaccount.Text, encid, "Credit", modDate.StartSqlDate(dtfir.value), modDate.EndSqlDate(dtlast.value), 0)                  ''
   Else
-    $rData = modDatabase.$myConn.Exec(sql1 & " UNION ALL " & sql2, cmbaccount.Text, encid, "Credit", modDate.StartSqlDate(dtfir.value), modDate.EndSqlDate(dtlast.value))                  ''
+    $rData = modDatabase.$myConn.Exec(sql1 & " UNION ALL " & sql2, cmbaccount.Text, encid, "Credit", modDate.StartSqlDate(dtfir.value), modDate.EndSqlDate(dtlast.value), 0)                  ''
   Endif
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
 
   With GridView1
-    .Columns[0].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[0].Width = 150 * modBasic.$AppWidthRatio
     .Columns[1].Width = 125 * modBasic.$AppWidthRatio
     .Columns[2].Width = 125 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 175 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 200 * modBasic.$AppWidthRatio
     .Columns[4].Width = 100 * modBasic.$AppWidthRatio
     .Columns[5].Width = 100 * modBasic.$AppWidthRatio
     .Columns[6].Width = 1
+    .Columns[7].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[8].Width = 1
 
     .Columns[0].Text = "Invoice"
     .Columns[1].Text = "Account"
@@ -246,6 +247,7 @@ Private Sub FillGridView()
     .Columns[3].Text = "Name"
     .Columns[4].Text = "Status"
     .Columns[5].Text = "State"
+    .Columns[7].Text = "Credit"
   End With
 
 End
@@ -287,59 +289,27 @@ Public Sub GridView1_Click()
   $RepoList = New String[]
   btnupload.Text = "Upload"
   txttotal.Value = 0
-  txttotal.Value = GetTotalSelectedAMT(GridView1.Row)
+  txttotal.Value = GridView1[GridView1.Row, 7].Text
 
   txtgridencid.Text = GridView1[GridView1.Row, 2].Text
   res = modDatabase.$myConn.Exec("select fldserviceid,fldidentify from tblsociallist where fldpatientval=&1", modPatient.GetPatientNoByEnc(GridView1[GridView1.Row, 2].Text))
   If res.Available And If res.Count = 1 Then
-    txtgridnhsi.Text = res["fldserviceid"]
+    txtssucode.Text = res["fldserviceid"]
     txtdiseaseid.Text = res["fldidentify"]
   Else
-    txtgridnhsi.Text = modPatient.GetPatientExtCOdebyEnc(GridView1[GridView1.Row, 2].Text)
+    txtssucode.Text = modPatient.GetPatientExtCOdebyEnc(GridView1[GridView1.Row, 2].Text)
   Endif
-  If txtgridnhsi.Text Then
+  If txtssucode.Text Then
     txtdiseaseid.ReadOnly = True
   Else
     txtdiseaseid.ReadOnly = False
   Endif
 
-  txtgridclaim.Text = GridView1[GridView1.Row, 0].Text
+  txtinvoice.Text = GridView1[GridView1.Row, 0].Text
   txtaccount.Text = GridView1[GridView1.Row, 1].Text
   cmbnodiagno.Text = ""
 
   SHowCreditGrid()
-
-End
-
-Private Function GetTotalSelectedAMT(Row As Integer) As Float
-
-  Dim res As Result
-  Dim xval As Float
-  Dim xsear As String
-
-  xval = 0
-  If cmbstate.Text = "Pending" Then
-    xsear = " and fldbillno not in(select fldbillno from tblbillupload)"
-  Else If cmbstate.Text = "Completed" Then
-    xsear = " and fldbillno in(select fldbillno from tblbillupload)"
-  Else
-    xsear = ""
-  Endif
-  If cmbsource.Text = "Invoice" Then
-    res = modDatabase.$myConn.Exec("select SUM(flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt) as xtot from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval=&2 and fldbilltype like &3 and fldbillno=&4" & xsear, GridView1[Row, 1].Text, GridView1[Row, 2].Text, "Credit", GridView1[Row, 0].Text)
-  Else If cmbsource.Text = "Receipt"
-    res = modDatabase.$myConn.Exec("select SUM(flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt) as xtot from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval=&2 and fldbilltype like &3 and fldbillno=&4" & xsear, GridView1[Row, 1].Text, GridView1[Row, 2].Text, "Credit", GridView1[Row, 0].Text)
-  Else
-    res = modDatabase.$myConn.Exec("select SUM(flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt) as xtot from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval=&2 and fldbilltype like &3 and fldbillno=&4" & xsear & " UNION ALL " & "select SUM(flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt) as xtot from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval=&2 and fldbilltype like &3 and fldbillno=&4" & xsear, GridView1[Row, 1].Text, GridView1[Row, 2].Text, "Credit", GridView1[Row, 0].Text)                  ''
-  Endif
-  If res.Available Then
-    For Each res
-      If res["xtot"] Then
-        xval = xval + res["xtot"]
-      Endif
-    Next
-  Endif
-  Return xval
 
 End
 
@@ -410,9 +380,9 @@ Private Sub SHowCreditGrid()
   Endif
 
   If cmbfiscal.Text = "Current" Then
-    $rData1 = modDatabase.$syConn.Exec(sql1, txtaccount.Text, modPatient.GetPatientNoByEnc(txtgridencid.Text), "Credit", txtgridclaim.Text)
+    $rData1 = modDatabase.$syConn.Exec(sql1, txtaccount.Text, modPatient.GetPatientNoByEnc(txtgridencid.Text), "Credit", txtinvoice.Text)
   Else
-    $rData1 = modDatabase.$syConn.Exec(sql1 & " UNION ALL " & sql2, txtaccount.Text, modPatient.GetPatientNoByEnc(txtgridencid.Text), "Credit", txtgridclaim.Text)
+    $rData1 = modDatabase.$syConn.Exec(sql1 & " UNION ALL " & sql2, txtaccount.Text, modPatient.GetPatientNoByEnc(txtgridencid.Text), "Credit", txtinvoice.Text)
   Endif
   $aMyFields1 = New String[]
   modGridView.ReadSmallData(GridView2, $rData1, $aMyFields1)
@@ -530,7 +500,7 @@ Private Function GetInvoiceData(sBillNo As String) As String
   Dim ShowTax As Boolean
   Dim ShowDisc As Boolean
 
-  res = modDatabase.$myConn.Exec("select fldbillno,fldencounterval,fldtaxamt,flddiscountamt,fldchequeno from " & $tblpatbilldetail & " where fldbillno=&1 and fldchequeno=&2", sBillNo, Trim(txtgridclaim.Text))
+  res = modDatabase.$myConn.Exec("select fldbillno,fldencounterval,fldtaxamt,flddiscountamt,fldchequeno from " & $tblpatbilldetail & " where fldbillno=&1 and fldchequeno=&2", sBillNo, Trim(txtinvoice.Text))
   If res.Available Then
     If res["fldtaxamt"] = 0 Then
       ShowTax = False
@@ -555,7 +525,7 @@ Private Function GetReceiptData(sBillNo As String) As String
   Dim res As Result
   Dim xPath As String
 
-  res = modDatabase.$myConn.Exec("select fldbillno,fldencounterval,fldtaxamt,flddiscountamt,fldchequeno from " & $tbltempbilldetail & " where fldbillno=&1 and fldchequeno=&2", sBillNo, Trim(txtgridclaim.Text))
+  res = modDatabase.$myConn.Exec("select fldbillno,fldencounterval,fldtaxamt,flddiscountamt,fldchequeno from " & $tbltempbilldetail & " where fldbillno=&1 and fldchequeno=&2", sBillNo, Trim(txtinvoice.Text))
   If res.Available Then
     xPath = modBILLFormat.GetReceiptCopyPDFPath(res["fldbillno"])
   Endif
@@ -592,21 +562,86 @@ Public Sub btngridclaim_Click()
   Dim hForm1 As BipannaTreatAPI
   Dim hForm2 As BippannaBillingAPI
   Dim xout As String
+  Dim sColl As Collection
 
-  If txtgridnhsi.Text And If txtdiseaseid.Text Then
-    Select cmbbippatask.Text
-      Case "Treatment", "Kidney Session"
-        hForm1 = New BipannaTreatAPI(cmbbippatask.Text, txtgridnhsi.Text, CInt(txtdiseaseid.Text), txtcategcode.Value, txtprice.Value)
-        xout = hForm1.GetUploadAPI()
-      Case "Billing"
-        hForm2 = New BippannaBillingAPI(txtgridnhsi.Text, CInt(txtdiseaseid.Text), txtgridclaim.Text)
-        xout = hForm2.GetUploadAPI()
-    End Select
+  If txtinvoice.Text And If txttotal.Value > 0 Then
+    If txtssucode.Text And If txtdiseaseid.Text Then
+      Select cmbbippatask.Text
+        Case "Treatment", "Kidney Session"
+          If chkeditamt.Value = True Then
+            hForm1 = New BipannaTreatAPI(cmbbippatask.Text, txtssucode.Text, CInt(txtdiseaseid.Text), txtcategcode.Value, txtinvoice.Text, txttotal.Value)
+          Else
+            hForm1 = New BipannaTreatAPI(cmbbippatask.Text, txtssucode.Text, CInt(txtdiseaseid.Text), txtcategcode.Value, txtinvoice.Text)
+          Endif
+          xout = hForm1.GetUploadAPI()
+        Case "Billing"
+          hForm2 = New BippannaBillingAPI(txtssucode.Text, CInt(txtdiseaseid.Text), txtinvoice.Text)
+          xout = hForm2.GetUploadAPI()
+      End Select
 
-    If xout Then
-      Message.Info(xout)
+      If xout Then
+        Try sColl = JSON.Decode(xout)
+        If sColl And If sColl["success"] = True Then
+          modAccount.InsertClaimInvoice(txtinvoice.Text)
+        Else
+          Message.Info(xout)
+        Endif
+      Endif
+
     Endif
-
   Endif
+
+End
+
+Private Sub ClearSubInputs()
+
+  txtgridencid.Text = ""
+  txtssucode.Text = ""
+  txtinvoice.Text = ""
+  cmbbippatask.Text = ""
+  cmbbippcategory.Text = ""
+  txtdiseaseid.Text = ""
+
+End
+
+Public Sub mnuinvupload_Click()
+
+  Dim Row As Integer
+  Dim res As Result
+  Dim hForm2 As BippannaBillingAPI
+  Dim xout As String
+  Dim sColl As Collection
+
+  For Row = 0 To GridView1.Rows.Count - 1
+    ClearSubInputs()
+    sColl = New Collection
+
+    txtgridencid.Text = GridView1[Row, 2].Text
+    res = modDatabase.$myConn.Exec("select fldserviceid,fldidentify from tblsociallist where fldpatientval=&1", modPatient.GetPatientNoByEnc(GridView1[Row, 2].Text))
+    If res.Available And If res.Count = 1 Then
+      txtssucode.Text = res["fldserviceid"]
+      txtdiseaseid.Text = res["fldidentify"]
+    Endif
+    txtinvoice.Text = GridView1[Row, 0].Text
+    txtaccount.Text = GridView1[Row, 1].Text
+
+    If txtinvoice.Text Then
+      If txtssucode.Text And If txtdiseaseid.Text Then
+        hForm2 = New BippannaBillingAPI(txtssucode.Text, CInt(txtdiseaseid.Text), txtinvoice.Text)
+        xout = hForm2.GetUploadAPI()
+
+        If xout Then
+          Try sColl = JSON.Decode(xout)
+          If sColl And If sColl["success"] = True Then
+            modAccount.InsertClaimInvoice(txtinvoice.Text)
+          Else
+            Message.Info(xout)
+          Endif
+        Endif
+      Endif
+    Endif
+    Wait
+
+  Next
 
 End

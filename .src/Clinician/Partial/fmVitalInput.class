@@ -70,12 +70,58 @@ Public Sub ListBox1_Click()
         txtquali.Enabled = True
         txtquali.Visible = True
         pnlquanti.Visible = False
-        FillComboBox()
+        If $sSysCons Then
+          FillComboBox(modFixClinic.GetExamIDFromSysConst($sSysCons))
+        Else
+          If sColl["OptionList"] Then
+            If $sOption = "Single Selection" Or If $sOption = "Dichotomous" Then
+              txtquali.List = JSON.Decode(sColl["OptionList"])
+            Endif
+          Else
+            If $sOption = "Dichotomous" Then
+              txtquali.List = ["Yes", "No"]
+            Endif
+          Endif
+        Endif
       Endif
       ShowExamGrid(sColl["ExamName"])
       Break
     Endif
   Next
+
+End
+
+Private Sub FillComboBox(xExamName As String)
+
+  Dim xscle As String[]
+
+  If txtquali.Count Then
+    txtquali.Clear()
+  Endif
+  txtquali.Text = ""
+  If xExamName Then
+    If $sOption = "Single Selection" Or If $sOption = "Dichotomous" Then
+      txtquali.List = modAllExam.SelectExamOptionList("Exam", xExamName)
+      If modBasic.$TabletModeEnable = "Yes" Then
+        txtquali.Popup()
+      Endif
+    Else If $sOption = "Clinical Scale" Then
+      xscle = modExamOption.GetClinScalePopUp("Exam", xExamName)
+      If xscle Then
+        txtexamval.Value = CFloat(xscle[0])
+        txtquali.Text = xscle[1]
+        txtexamval.Visible = True
+        txtquali.Visible = False
+      Endif
+    Else If $sOption = "Visual Input" Then
+      txtquali.Text = modExamOption.GetVisualDataExamVal(xExamName)
+    Else
+      If modBasic.$DisplayQualiArea = "Yes" Then
+        txtquali.Text = GetTextArea(xExamName, "")
+      Endif
+    Endif
+  Endif
+  txtquali.SetFocus
 
 End
 
@@ -218,40 +264,6 @@ Public Sub GridView1_Click()
 
   Endif
   GridView1.Row = Row
-
-End
-
-Private Sub FillComboBox()
-
-  Dim xscle As String[]
-
-  If txtquali.Count Then
-    txtquali.Clear()
-  Endif
-  txtquali.Text = ""
-  If lblexamname.Text Then
-    If $sOption = "Single Selection" Or If $sOption = "Dichotomous" Then
-      txtquali.List = modAllExam.SelectExamOptionList("Exam", lblexamname.Text)
-      If modBasic.$TabletModeEnable = "Yes" Then
-        txtquali.Popup()
-      Endif
-    Else If $sOption = "Clinical Scale" Then
-      xscle = modExamOption.GetClinScalePopUp("Exam", lblexamname.Text)
-      If xscle Then
-        txtexamval.Value = CFloat(xscle[0])
-        txtquali.Text = xscle[1]
-        txtexamval.Visible = True
-        txtquali.Visible = False
-      Endif
-    Else If $sOption = "Visual Input" Then
-      txtquali.Text = modExamOption.GetVisualDataExamVal(lblexamname.Text)
-    Else
-      If modBasic.$DisplayQualiArea = "Yes" Then
-        txtquali.Text = GetTextArea(lblexamname.Text, "")
-      Endif
-    Endif
-  Endif
-  txtquali.SetFocus
 
 End
 

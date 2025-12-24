@@ -4,8 +4,31 @@
   MoveScaled(0,0,86,39)
   Expand = True
   Arrangement = Arrange.Vertical
+  { Panel1 Panel
+    MoveScaled(0,0,84,4)
+    { Panel8 Panel
+      MoveScaled(1,0.5,33,3)
+      { rbdaily RadioButton
+        MoveScaled(0,0,10,3)
+        Text = ("Hourly")
+        Value = True
+      }
+      { rbmonthly RadioButton
+        MoveScaled(10,0,9,3)
+        Text = ("Daily")
+      }
+      { rbyearly RadioButton
+        MoveScaled(20,0,11,3)
+        Text = ("Monthly")
+      }
+    }
+    { btngridrefresh Button
+      MoveScaled(36,0.5,13,3)
+      Text = ("Refresh")
+    }
+  }
   { GridView2 GridView
-    MoveScaled(0,-3,82,33)
+    MoveScaled(0,5,82,33)
     Expand = True
     Mode = Select.Single
     Header = GridView.Horizontal

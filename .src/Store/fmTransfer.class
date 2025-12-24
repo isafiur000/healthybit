@@ -877,18 +877,57 @@ Public Sub btnsaveto_Click()
 
 End
 
-Private Sub SaveFinalTransfer()
+Private Sub AcceptStockRegular(xIndex As Long, sRef As String)
 
   Dim res As Result
   Dim res1 As Result
+
+  res = modDatabase.$myConn.Exec("select fldid,fldstockno,fldoldstockno,fldqty,fldfromcomp,fldtocomp,fldnetcost from tbltransfer where fldid=&1 and fldtocomp=&2 and fldsav=&3 and fldfromsav=&4 and fldtosav=&5 and fldfromcomp like &6 and fldlockcomp IS NULL", xIndex, modBasic.$compID, True, True, False, cmbcomprecv.Text)
+  If res.Available = True Then
+
+    If res["fldqty"] <= modStock.TotalQTYbyStockNo(res["fldoldstockno"]) Then
+      If res["fldnetcost"] Then
+        modStockSub.AddToExistEntryCost(res["fldstockno"], res["fldqty"], res["fldtocomp"], res["fldnetcost"]) ''add to new
+      Else
+        modStockSub.AddToExistEntry(res["fldstockno"], res["fldqty"], res["fldtocomp"]) ''add to new
+      Endif
+      modStockSub.AddToExistEntry(res["fldoldstockno"], (0 - res["fldqty"]), res["fldfromcomp"])  ''reduce from old
+      res1 = modDatabase.$myConn.Edit("tbltransfer", "fldid=&1", res["fldid"])
+      res1["fldtoentrytime"] = Now()
+      res1["fldtouser"] = modBasic.$lbluser
+      res1["fldtosav"] = True
+      res1["fldreference"] = sRef
+      res1["xyz"] = False
+      res1.Update()
+    Else
+      Balloon.Warning(("Insufficient stock"), btnsaveto)
+      Balloon.Delay = modBasic.$BalloonDelay
+    Endif
+
+  Endif  ''if result available
+
+End
+
+Private Sub SaveFinalTransfer()
+
   Dim ref As String
   Dim idLock As Boolean
   Dim xgo As Boolean
+  Dim Row As Integer
 
   If cmbcomprecv.Text Then
-    res = modDatabase.$myConn.Exec("select fldid,fldstockno,fldoldstockno,fldqty,fldfromcomp,fldtocomp,fldnetcost from tbltransfer where fldtocomp=&1 and fldsav=&2 and fldfromsav=&3 and fldtosav=&4 and fldfromcomp like &5 and fldlockcomp IS NULL", modBasic.$compID, True, True, False, cmbcomprecv.Text)
-    If res.Available = True Then
+    xgo = False
+    If chkselall.Value = True Then
+      If GridView2.Rows.Count Then
+        xgo = True
+      Endif
+    Else If chkselall.Value = False Then
+      If GridView2.Rows.Selection.Count Then
+        xgo = True
+      Endif
+    Endif
 
+    If xgo = True Then
       Inc Application.Busy
       idLock = modBillLock.LockTableForID("Reference")
       If idLock = True Then
@@ -896,44 +935,26 @@ Private Sub SaveFinalTransfer()
         modDatabase.$myConn.Begin
         ref = modBillLock.ReferenceString("Stock Transfer")
         If ref Then
-          For Each res
-            xgo = False
-            If chkselall.Value = True Then
-              xgo = True
-            Else If chkselall.Value = False Then
-              If GridView2.Rows[res.Index].Selected = True Then
-                xgo = True
+          If chkselall.Value = True Then
+            For Row = 0 To GridView2.Rows.Count - 1
+              AcceptStockRegular(GridView2[Row, 0].Text, ref)
+            Next
+          Else If chkselall.Value = False Then
+            For Row = 0 To GridView2.Rows.Count - 1
+              If GridView2.Rows[Row].Selected = True Then
+                AcceptStockRegular(GridView2[Row, 0].Text, ref)
               Endif
-            Endif
-            If xgo = True Then
-              If res["fldqty"] <= modStock.TotalQTYbyStockNo(res["fldoldstockno"]) Then
-                If res["fldnetcost"] Then
-                  modStockSub.AddToExistEntryCost(res["fldstockno"], res["fldqty"], res["fldtocomp"], res["fldnetcost"]) ''add to new
-                Else
-                  modStockSub.AddToExistEntry(res["fldstockno"], res["fldqty"], res["fldtocomp"]) ''add to new
-                Endif
-                modStockSub.AddToExistEntry(res["fldoldstockno"], (0 - res["fldqty"]), res["fldfromcomp"])  ''reduce from old
-                res1 = modDatabase.$myConn.Edit("tbltransfer", "fldid=&1", res["fldid"])
-                res1["fldtoentrytime"] = Now()
-                res1["fldtouser"] = modBasic.$lbluser
-                res1["fldtosav"] = True
-                res1["fldreference"] = ref
-                res1["xyz"] = False
-                res1.Update()
-              Else
-                Balloon.Warning(("Insufficient stock"), btnsaveto)
-                Balloon.Delay = modBasic.$BalloonDelay
-              Endif
-            Endif
-          Next
+            Next
+          Endif
+
         Endif  ''if ref no exist
         modDatabase.$myConn.Commit
 
         modBillLock.ReleaseLockTable("Reference")
       Endif  ''if locked
       Dec Application.Busy
+    Endif
 
-    Endif  ''if result available
   Endif
 
 Catch

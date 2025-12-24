@@ -4,8 +4,8 @@ Public Sub Form_Open()
 
   cmbtimerowtype.List = ["Nominal", "Ordinal", "Scale"]
   cmbtimecoltype.List = ["Nominal", "Ordinal", "Scale"]
-  cmbtimerow.List = modLongVar.$RegistVar
-  cmbtimecol.List = modLongVar.$RegistVar
+  cmbtimerow.List = modMedicine.GetAddColumnsList()
+  cmbtimecol.List = modMedicine.GetAddColumnsList()
 
   ShowTimeCustColumn()
 

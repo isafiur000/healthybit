@@ -27,18 +27,21 @@
         MoveScaled(63,0.625,12,3)
         ReadOnly = True
       }
-      { Label7 Label
-        MoveScaled(87,0.625,8,3)
-        Border = Border.Plain
-        Text = ("Bed No")
-      }
-      { txtlocation TextBox
-        MoveScaled(96,0.625,12,3)
-        ReadOnly = True
-      }
       { mnuexpo ToolButton
         MoveScaled(112,0.5,3,3)
         Picture = Picture["icon:/small/export"]
+      }
+      { Panel5 Panel
+        MoveScaled(88,0,22,4)
+        { rbchart RadioButton
+          MoveScaled(0,0.5,9.5,3)
+          Text = ("Chart")
+        }
+        { rbtable RadioButton
+          MoveScaled(11,0.5,9.5,3)
+          Text = ("Table")
+          Value = True
+        }
       }
     }
     { Panel2 Panel
@@ -85,10 +88,29 @@
       }
     }
     { ListContainer1 ScrollView
-      MoveScaled(1,17,65,54)
+      MoveScaled(1,17,50,54)
       Expand = True
       Arrangement = Arrange.Vertical
       Spacing = True
+    }
+    { Panel6 Panel
+      MoveScaled(53,16,57,49)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { GridView2 GridView
+        MoveScaled(3,1,40,16)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Both
+        AutoResize = False
+      }
+      { GridView1 GridView
+        MoveScaled(6,21,38,17)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Both
+        AutoResize = False
+      }
     }
   }
 }

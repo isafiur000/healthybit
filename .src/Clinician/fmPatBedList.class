@@ -149,7 +149,7 @@ Private Sub FillBedGrid()
         xorder = " ORDER BY FIELD(tblencounter.fldheight, '0', '65280', '16776960', '16711680') DESC"
       Endif
       sql = Subst("select &1 from &2", xFldList.Join(","), $sTable) & xunion & " where " & $sTable & "." & "fldconsulttime>=&1 and " & $sTable & "." & "fldconsulttime<=&2 and " & $sTable & "." & "fldstatus=&3 and " & $sTable & "." & "fldconsultname=&4" & xorder   ''
-      res = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(DateAdd(Now(), gb.Day, 0 - txtrange.Value)), modDate.EndSqlDate(Now()), "Planned", $sDept)
+      res = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(DateAdd(Now(), gb.Day, 0 - CInt(txtrange.Value))), modDate.EndSqlDate(Now()), "Planned", $sDept)
 
     Case "tbldepartmentbed"
       $Headers = ["TRG", "BEDNO", "ENCID", "NAME", "AGE/SEX", "DRUGS", "LABS", "RADIO", "EQUIP", "FLUID", "DEVICE"]

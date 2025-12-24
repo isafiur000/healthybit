@@ -21,8 +21,8 @@ Private Sub FillCurUser()
   Dim Column As Integer
   Dim fld As ResultField
 
-  sql = "select flduser,fldcomp,fldlogin,fldentrytime,fldhostip,fldhostname,fldhostuser,fldhostmac from tblsystemlog"
-  $rData = modDatabase.$myConn.Exec(sql)
+  sql = "select flduser,fldcomp,fldlogin,fldentrytime,fldhostip,fldhostname,fldhostuser,fldhostmac from tblsystemlog where lower(flddevicepath) like &1"
+  $rData = modDatabase.$myConn.Exec(sql, LCase(Application.Name) & "%")
 
   GridView1.Clear
   GridView1.Columns.Count = $rData.Fields.Count
@@ -72,7 +72,7 @@ End
 
 Public Sub mnuflush_Click()
 
-  modDatabase.$myConn.Delete("tblsystemlog", "flddevicepath like &1", Application.Name & "%")
+  modDatabase.$myConn.Delete("tblsystemlog", "lower(flddevicepath) like &1", LCase(Application.Name) & "%")
   FillCurUser()
 
 End

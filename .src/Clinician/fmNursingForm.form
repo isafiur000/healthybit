@@ -238,24 +238,23 @@
     { mnuadmission Menu
       Text = ("Admission")
     }
-    { Menu3 Menu
-      Text = ("- - - Charts - - -")
-      Enabled = False
+    { mnuipmonitoring Menu
+      Text = ("Progress")
     }
-    { mnureqexam Menu
-      Text = ("Monitoring")
-    }
-    { mnucompexam Menu
-      Text = ("Essen Exams")
-    }
-    { mnucomptest Menu
-      Text = ("Laboratory")
+    { mnunurcheck Menu
+      Text = ("Activity")
     }
   }
   { mnucustform Menu
     Text = ("Charts")
+    { mnucompexam Menu
+      Text = ("Vital Chart")
+    }
     { mnuessenexam Menu
       Text = ("Essen Exams")
+    }
+    { mnureqexam Menu
+      Text = ("Monitoring")
     }
     { mnucustform1 Menu
       Text = ("Form1")
@@ -609,20 +608,25 @@
         { txtpulse ValueBox
           MoveScaled(11,1,8.625,3)
         }
+        { txtresprate ValueBox
+          MoveScaled(32,1,8.625,3)
+        }
         { txtsystolicbp ValueBox
           MoveScaled(11,5,8.625,3)
         }
         { txtdiastolicbp ValueBox
           MoveScaled(32,5,8.625,3)
         }
-        { txtresprate ValueBox
-          MoveScaled(32,1,8.625,3)
-        }
         { txtoxysat ValueBox
           MoveScaled(11,9,8.625,3)
         }
         { txttemp ValueBox
           MoveScaled(32,9,8.625,3)
+        }
+        { btnsavevitals Button
+          MoveScaled(24,12.5,13.5,3)
+          Text = ("Save")
+          Picture = Picture["icon:/small/calculator"]
         }
         { Label5 Label
           MoveScaled(1,5,10,3)
@@ -653,11 +657,6 @@
           MoveScaled(1,9,10,3)
           Border = Border.Plain
           Text = ("S P O2")
-        }
-        { btnsavevitals Button
-          MoveScaled(24,12.5,13.5,3)
-          Text = ("Vitals [F5]")
-          Picture = Picture["icon:/small/calculator"]
         }
         { btntriage Button
           MoveScaled(1,12.5,11,3)
@@ -737,14 +736,14 @@
       Arrangement = Arrange.Horizontal
       Count = 8
       Index = 0
-      Text = ("Report")
+      Text = ("Report [F3]")
       { Panel14 Panel
         MoveScaled(0,0,98,43)
         Expand = True
         Arrangement = Arrange.Horizontal
       }
       Index = 1
-      Text = ("Orders")
+      Text = ("Orders [F4]")
       { grdnote GridView
         MoveScaled(0,1,44,44)
         Mode = Select.Single
@@ -791,7 +790,7 @@
         }
       }
       Index = 2
-      Text = ("Complaints")
+      Text = ("Complaints [F5]")
       { Panel5 Panel
         MoveScaled(0,0,60,45)
         Expand = True
@@ -890,28 +889,28 @@
         }
       }
       Index = 3
-      Text = ("Vitals")
+      Text = ("Vitals [F6]")
       { pnlvitals Panel
         MoveScaled(0,0,98,43)
         Expand = True
         Arrangement = Arrange.Horizontal
       }
       Index = 4
-      Text = ("Dosing")
+      Text = ("Dosing [F7]")
       { pnldosecount Panel
         MoveScaled(43,10,36,12)
         Expand = True
         Arrangement = Arrange.Vertical
       }
       Index = 5
-      Text = ("Inventory")
+      Text = ("Inventory [F8]")
       { pnlwardstock Panel
         MoveScaled(22,14,67,21)
         Expand = True
         Arrangement = Arrange.Vertical
       }
       Index = 6
-      Text = ("Progress")
+      Text = ("Progress [F9]")
       { Panel8 Panel
         MoveScaled(0,1,118,40)
         Expand = True
@@ -1170,7 +1169,7 @@
         }
       }
       Index = 7
-      Text = ("History")
+      Text = ("History [F10]")
       { pnlhistory Panel
         MoveScaled(5,2,83,26)
         Expand = True
