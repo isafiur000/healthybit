@@ -47,24 +47,47 @@ Private Sub ShowMessageGrid()
   Dim xstr As String
   Dim xorigin As String
 
-  If rbnew.Value = True Then
-    xstr = db.Subst(" and fldupsave=&1", False)
-  Else If rbold.Value = True Then
-    xstr = db.Subst(" and fldupsave=&1", True)
-  Endif
-
   If cmborigin.Text = "All Locations" Then
     xorigin = "%"
   Else
-    xorigin = cmborigin.Tex
+    xorigin = cmborigin.Text
   Endif
 
-  If chkdate.Value = True Then
-    sql = "select fldid,fldtime,fldreply,fldimportant,fldsubject,fldid,fldextension,fldmessage,flduserid,fldresponse,fldupuserid,fldreply,fldimportant,fldcomp from tblmessage where fldtarget=&1 and fldcomp like &2 and fldtime>=&3 and fldtime<=&4" & xstr & " ORDER BY fldtime DESC"                      ''
+  If rbsent.Value = True Then
+    xstr = db.Subst(" and fldsave=&1", True)
+    If chkdate.Value = True Then
+      sql = "select fldid,fldtime,fldreply,fldimportant,fldsubject,fldid,fldextension,fldmessage,flduserid,fldresponse,fldupuserid,fldreply,fldimportant,fldcomp from tblmessage where fldtarget like &1 and fldcomp=&2 and fldtime>=&3 and fldtime<=&4" & xstr & " ORDER BY fldtime DESC"                      ''
+      $rData = modDatabase.$myConn.Exec(sql, xorigin, modBasic.$compID, modDate.StartSqlDate(dtselect.Value), modDate.EndSqlDate(dtselect.Value))
+    Else
+      If modBasic.$SQLDateRange = "Disable" Then
+        sql = "select fldid,fldtime,fldreply,fldimportant,fldsubject,fldid,fldextension,fldmessage,flduserid,fldresponse,fldupuserid,fldreply,fldimportant,fldcomp from tblmessage where fldtarget like &1 and fldcomp=&2" & xstr & " ORDER BY fldtime DESC"
+        $rData = modDatabase.$myConn.Exec(sql, xorigin, modBasic.$compID, modDate.StartSqlDate(Now()), modDate.EndSqlDate(Now()))
+      Else
+        sql = "select fldid,fldtime,fldreply,fldimportant,fldsubject,fldid,fldextension,fldmessage,flduserid,fldresponse,fldupuserid,fldreply,fldimportant,fldcomp from tblmessage where fldtarget like &1 and fldcomp=&2 and fldtime>=&3 and fldtime<=&4" & xstr & " ORDER BY fldtime DESC"                      ''
+        $rData = modDatabase.$myConn.Exec(sql, xorigin, modBasic.$compID, modDate.StartSqlDate(DateAdd(dtselect.Value, gb.Day, 0 - 365)), modDate.EndSqlDate(dtselect.Value))
+      Endif
+    Endif
+
   Else
-    sql = "select fldid,fldtime,fldreply,fldimportant,fldsubject,fldid,fldextension,fldmessage,flduserid,fldresponse,fldupuserid,fldreply,fldimportant,fldcomp from tblmessage where fldtarget=&1 and fldcomp like &2" & xstr & " ORDER BY fldtime DESC"
+    If rbnew.Value = True Then
+      xstr = db.Subst(" and fldupsave=&1", False)
+    Else If rbold.Value = True Then
+      xstr = db.Subst(" and fldupsave=&1", True)
+    Endif
+    If chkdate.Value = True Then
+      sql = "select fldid,fldtime,fldreply,fldimportant,fldsubject,fldid,fldextension,fldmessage,flduserid,fldresponse,fldupuserid,fldreply,fldimportant,fldcomp from tblmessage where fldtarget=&1 and fldcomp like &2 and fldtime>=&3 and fldtime<=&4" & xstr & " ORDER BY fldtime DESC"                      ''
+      $rData = modDatabase.$myConn.Exec(sql, modBasic.$compID, xorigin, modDate.StartSqlDate(dtselect.Value), modDate.EndSqlDate(dtselect.Value))
+    Else
+      If modBasic.$SQLDateRange = "Disable" Then
+        sql = "select fldid,fldtime,fldreply,fldimportant,fldsubject,fldid,fldextension,fldmessage,flduserid,fldresponse,fldupuserid,fldreply,fldimportant,fldcomp from tblmessage where fldtarget=&1 and fldcomp like &2" & xstr & " ORDER BY fldtime DESC"
+        $rData = modDatabase.$myConn.Exec(sql, modBasic.$compID, xorigin, modDate.StartSqlDate(Now()), modDate.EndSqlDate(Now()))
+      Else
+        sql = "select fldid,fldtime,fldreply,fldimportant,fldsubject,fldid,fldextension,fldmessage,flduserid,fldresponse,fldupuserid,fldreply,fldimportant,fldcomp from tblmessage where fldtarget=&1 and fldcomp like &2 and fldtime>=&3 and fldtime<=&4" & xstr & " ORDER BY fldtime DESC"                      ''
+        $rData = modDatabase.$myConn.Exec(sql, modBasic.$compID, xorigin, modDate.StartSqlDate(DateAdd(dtselect.Value, gb.Day, 0 - 365)), modDate.EndSqlDate(dtselect.Value))
+      Endif
+    Endif
+
   Endif
-  $rData = modDatabase.$myConn.Exec(sql, modBasic.$compID, xorigin, modDate.StartSqlDate(Now()), modDate.EndSqlDate(Now()))
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
   With GridView1

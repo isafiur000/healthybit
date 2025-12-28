@@ -1054,7 +1054,7 @@ Public Sub mnuessenexam_Click()
   Dim hForm As FmMultiChart
 
   If GridView1.Rows.Selection.Count Then
-    xx = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
+    xx = modString.GetListFromCompareVariant(modTableCache.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
     hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, xx, yy, LabUnitForm())
     modWorkSpace.Add(hForm)
   Endif

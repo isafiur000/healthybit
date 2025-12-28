@@ -7,23 +7,27 @@
   { Panel1 Panel
     MoveScaled(0,0,84,4)
     { Panel8 Panel
-      MoveScaled(1,0.5,33,3)
-      { rbdaily RadioButton
-        MoveScaled(0,0,10,3)
+      MoveScaled(1,0.5,45,3)
+      { rbhourly RadioButton
+        MoveScaled(11,0,10,3)
         Text = ("Hourly")
         Value = True
       }
-      { rbmonthly RadioButton
-        MoveScaled(10,0,9,3)
+      { rbdaily RadioButton
+        MoveScaled(22,0,9,3)
         Text = ("Daily")
       }
-      { rbyearly RadioButton
-        MoveScaled(20,0,11,3)
+      { rbmonthly RadioButton
+        MoveScaled(32,0,11,3)
         Text = ("Monthly")
+      }
+      { rbminutes RadioButton
+        MoveScaled(0,0,10,3)
+        Text = ("Minute")
       }
     }
     { btngridrefresh Button
-      MoveScaled(36,0.5,13,3)
+      MoveScaled(49,0.5,13,3)
       Text = ("Refresh")
     }
   }

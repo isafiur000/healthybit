@@ -45,6 +45,7 @@
     }
     { mnucloudai Menu
       Text = ("AI Advice")
+      Picture = Picture["icon:/small/lamp"]
     }
   }
   { mnudataentry Menu
@@ -104,6 +105,9 @@
     }
     { mnuplanningall Menu
       Text = ("OPD Advices")
+    }
+    { mnuallprocedure Menu
+      Text = ("Procedures")
     }
     { Menu2 Menu
     }
@@ -246,20 +250,11 @@
   }
   { mnucustform Menu
     Text = ("Charts")
-    { mnuvitalsall Menu
-      Text = ("Vitals")
-      { mnuvitaltable Menu
-        Text = ("Tabular")
-      }
-      { mnucompexam Menu
-        Text = ("Graphical")
-      }
-      { mnuessenexam Menu
-        Text = ("Multi Chart")
-      }
+    { mnuvitaltable Menu
+      Text = ("Vital Chart")
     }
-    { mnureqexam Menu
-      Text = ("Monitoring")
+    { mnuessenexam Menu
+      Text = ("Essen Exams")
     }
     { mnucustform1 Menu
       Text = ("Form1")
@@ -418,26 +413,6 @@
     }
     { mnualgo5 Menu
       Text = ("Rule5")
-      Enabled = False
-    }
-    { mnualgo6 Menu
-      Text = ("Rule6")
-      Enabled = False
-    }
-    { mnualgo7 Menu
-      Text = ("Rule7")
-      Enabled = False
-    }
-    { mnualgo8 Menu
-      Text = ("Rule8")
-      Enabled = False
-    }
-    { mnualgo9 Menu
-      Text = ("Rule9")
-      Enabled = False
-    }
-    { mnualgo10 Menu
-      Text = ("Rule10")
       Enabled = False
     }
   }
@@ -809,7 +784,7 @@
       Enabled = False
       Expand = True
       Arrangement = Arrange.Horizontal
-      Count = 8
+      Count = 9
       Index = 0
       Text = ("Complaints [F3]")
       { Panel3 Panel
@@ -1371,6 +1346,13 @@
           Tag = "Auto"
           Expand = True
         }
+      }
+      Index = 8
+      Text = ("Archives")
+      { pnlarchivbe Panel
+        MoveScaled(4,2,83,26)
+        Expand = True
+        Arrangement = Arrange.Vertical
       }
       Index = 0
     }

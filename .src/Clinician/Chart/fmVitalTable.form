@@ -1,0 +1,55 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,105,67)
+  Text = ("Vital Examinations")
+  Arrangement = Arrange.Vertical
+  Margin = True
+  { TabPanel1 TabPanel
+    MoveScaled(0,0,100,63)
+    Expand = True
+    Arrangement = Arrange.Vertical
+    Count = 2
+    Index = 0
+    Text = ("Tabular")
+    { Panel1 Panel
+      MoveScaled(6,6,48,16)
+      Expand = True
+      Arrangement = Arrange.Vertical
+    }
+    Index = 1
+    Text = ("Graphical")
+    { Panel2 Panel
+      MoveScaled(0,0,84,4)
+      { btnrefresh Button
+        MoveScaled(29,0.5,18,3)
+        Text = ("Refresh")
+        Picture = Picture["icon:/small/refresh"]
+        Default = True
+      }
+      { Panel3 Panel
+        MoveScaled(0,0,26,4)
+        { rbvitals RadioButton
+          MoveScaled(1,0.5,10,3)
+          Text = ("Vitals")
+          Value = True
+        }
+        { rbmonitor RadioButton
+          MoveScaled(12,0.5,12,3)
+          Text = ("Others")
+        }
+      }
+    }
+    { ScrollView1 ScrollView
+      MoveScaled(0,5,82,48)
+      Expand = True
+      { drwchart DrawingArea
+        MoveScaled(1,1,75,44)
+        Background = Color.White
+        AutoResize = True
+        Cached = True
+      }
+    }
+    Index = 0
+  }
+}

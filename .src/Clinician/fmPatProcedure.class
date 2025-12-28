@@ -6,6 +6,7 @@ Private $ProcBill As Long
 Private $UserRestrict As String[]
 
 Private $sTatus As String
+Private $dtRegist As Date
 Private $PatientNum As String
 Private $AlphaList As String[]
 Private $sLevel As String
@@ -212,7 +213,8 @@ Private Sub GetEncounterValue()
             $sTatus = modPatient.CurrentAdmissionStatus(Trim(txtencid.Text))
             txtnow.Text = $sTatus
             txtbedno.Text = modPatient.GetLocationSetting(Trim(txtencid.Text), $sTatus)
-            txtpatdoa.Text = modReportVar.GetDateTimeReport(modPatient.GetRecordDate(Trim(txtencid.Text)), gb.GeneralDate)
+            $dtRegist = modPatient.GetRecordDate(Trim(txtencid.Text))
+            txtpatdoa.Text = modReportVar.GetDateTimeReport($dtRegist, gb.GeneralDate)
             txtpatweight.Value = modClinic.GetBodyWeight(Trim(txtencid.Text))
             btnipconsult.Tag = modPatient.GetAttendingConsultant(Trim(txtencid.Text))
             btnipconsult.Text = modGeneral.GetUserFullName(btnipconsult.Tag)
@@ -565,6 +567,32 @@ Public Sub rbmetric_Click()
 
 End
 
+Public Sub btnreportall_Click()
+
+  Dim xpath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xpath = modPatSurgery.ShowUniProcedureReport($ProcIndex, Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub btncomplrepo_Click()
+
+  Dim xpath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xpath = modPatSurgery.GetProcedureReportAll(Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
 Public Sub mnulabrequest_Click()
 
   Dim hForm As FmTestList
@@ -597,7 +625,13 @@ Public Sub mnuconsultreq_Click()
 
   If txtencid.Text Then
     If modNonMedical.AllowEntryWithDeposit(Trim(txtencid.Text), "Service") = True Then
-      hForm = New FmMiniConsult(Trim(txtencid.Text), $billModeService)
+      If modBasic.$AutoRegistNoBillHour Then
+        If DateDiff($dtRegist, Now(), gb.Hour) < CInt(modBasic.$AutoRegistNoBillHour) Then
+          hForm = New FmMiniConsult(Trim(txtencid.Text), $billModeService)
+        Endif
+      Else
+        hForm = New FmMiniConsult(Trim(txtencid.Text), $billModeService)
+      Endif
       hForm.ShowModal
     Endif
   Endif
@@ -719,7 +753,7 @@ Private Sub InitializeProcedures()
     If res.Available Then
       TabPanel1.Enabled = True
       cmbstatus.Clear()
-      If res!fldstatus = "Waiting" Then
+      If res["fldstatus"] = "Waiting" Then
         cmbstatus.List = ["Referred", "On Hold", "Cancelled", "Done"]
       Else
         cmbstatus.List = ["On Hold", "Done"]
@@ -763,6 +797,8 @@ Public Sub TabPanel1_Click()
   Else If TabPanel1.Index = 3 Then
     FillDosingGrid("Current")
   Else If TabPanel1.Index = 4 Then
+  Else If TabPanel1.Index = 5 Then
+    lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
   Endif
 
 End
@@ -1147,24 +1183,26 @@ Private Sub ShowComponentExams()
     TabPanel2.Enabled = True
     If rbpreproc.Value = True Then
       TabPanel2[3].Visible = False
-      hOwnStockForm.SetOwnDepartment("Pre-Operative Exam:" & CStr($ProcIndex))
+      hOwnStockForm.SetOwnDepartment("Pre-Operative:" & CStr($ProcIndex))
       hOwnStockForm.RearrangeGrid()
 
       GetExamList("Pre-Operative", gridVariable)
       FillExamtable("Pre-Operative Exam:" & CStr($ProcIndex), gridvalues)
 
+      pnlabs.Visible = False
       lblindication.Text = "Indication"
       cmbprocindication.Text = GetLastValueProc("fldreportquali", "Pre-Operative Indication")
       txtproccomment.RichText = GetLastValueProc("fldreport", "Pre-Operative Note")
 
     Else If rbonproced.Value = True Then
       TabPanel2[3].Visible = True
-      hOwnStockForm.SetOwnDepartment("Operative Exam:" & CStr($ProcIndex))
+      hOwnStockForm.SetOwnDepartment("Operative:" & CStr($ProcIndex))
       hOwnStockForm.RearrangeGrid()
 
       GetExamList("Operative", gridVariable)
       FillExamtable("Operative Exam:" & CStr($ProcIndex), gridvalues)
 
+      pnlabs.Visible = True
       lblindication.Text = "Indication"
       cmbprocindication.Text = GetLastValueProc("fldreportquali", "Operative Indication")
       txtproccomment.RichText = GetLastValueProc("fldreport", "Operation Note")
@@ -1182,18 +1220,20 @@ Private Sub ShowComponentExams()
       GetExamList("Anaesthesia", gridVariable)
       FillExamtable("Anaesthesia:" & CStr($ProcIndex), gridvalues)
 
+      pnlabs.Visible = False
       lblindication.Text = "Technique"
       cmbprocindication.Text = GetLastValueProc("fldreportquali", "Anaesthesia Technique")
       txtproccomment.RichText = GetLastValueProc("fldreport", "Anaesthesia Note")
 
     Else If rbpostproc.Value = True Then
       TabPanel2[3].Visible = False
-      hOwnStockForm.SetOwnDepartment("Post-Operative Exam:" & CStr($ProcIndex))
+      hOwnStockForm.SetOwnDepartment("Post-Operative:" & CStr($ProcIndex))
       hOwnStockForm.RearrangeGrid()
 
       GetExamList("Post-Operative", gridVariable)
       FillExamtable("Post-Operative Exam:" & CStr($ProcIndex), gridvalues)
 
+      pnlabs.Visible = False
       lblindication.Text = "Indication"
       cmbprocindication.Text = GetLastValueProc("fldreportquali", "Post-Operative Indication")
       txtproccomment.RichText = GetLastValueProc("fldreport", "Post-Operative Note")
@@ -1240,7 +1280,7 @@ Private Function GetLastValueProc(sFIeld As String, sCategory As String) As Stri
   res = modDatabase.$myConn.Exec(sql & " where flditemid=&1 and fldencounterval=&2 and fldchapter=&3", $ProcIndex, Trim(txtencid.Text), sCategory)
   If res.Available Then
     res.MoveLast
-    xx = res!col
+    xx = res["col"]
   Endif
   Return xx
 
@@ -1956,5 +1996,166 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   $rData.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView1, Row)
   GridView1.Data.Text = $rData[$aMyFields[Column]]
+
+End
+
+''----------------------- Outcome ------------------
+Public Sub btnplan_Click()
+
+  If txtencid.Text Then
+    If txtplan.Text Then
+      modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", "Doctor Order", "", txtplan.RichText, False)
+      Balloon.Info(("Information saved"), btnplan)
+      Balloon.Delay = modBasic.$BalloonDelay
+    Endif
+  Endif
+
+End
+
+Public Sub tlbtndelfinal_Click()
+
+  Dim res As Result
+
+  If txtencid.Text Then
+    If lsticdisease.Text Then
+      If Message.Question(("Are you sure?"), ("No"), ("Yes")) = 2 Then
+        res = modDatabase.$myConn.Edit("tblpatfindings", "fldcode=&1 and fldencounterval=&2 and fldtype=&3 and fldsave=&4", lsticdisease.Text, Trim(txtencid.Text), "Final Diagnosis", True)
+        res["fldsave"] = False
+        res["xyz"] = False
+        res.Update
+        lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
+        Balloon.Delete(("Information deleted"), tlbtndelfinal)
+        Balloon.Delay = modBasic.$BalloonDelay
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub tbnfinaldisease_Click()
+
+  Dim sName As String[]
+
+  If txtencid.Text Then
+    If modBasic.$FinalDiagnosisRule = "Obstetrics" Then
+      sName = DiagnoObstetrics(Trim(txtencid.Text), True)
+    Else
+      sName = GetSyndromes()
+    Endif
+
+    If sName Then
+      If sName[1] And If sName[0] Then
+        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1])
+        lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub btnfinalsyndro_Click()
+
+  Dim sName As String[]
+  Dim xGroup As String
+
+  If txtencid.Text Then
+    If MMain.$Ayurveda = "Yes" Then
+      sName = AyurvedicDiagnosis(modAMISRep.$AyurvedicDiagnosis)
+    Else
+      If modBasic.$ClinICDPunchFormat = "GridView" Then
+        sName = ICDGridView("Select Diseases")
+      Else
+        xGroup = modPathoSub.GetDiagnoGroupForService(txtbedno.Text)
+        If xGroup Then
+          sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, xGroup, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
+        Else
+          sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, modBasic.$FixDiagnoGroupOPD, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
+        Endif
+      Endif
+    Endif
+    If sName Then
+      If sName[1] And If sName[0] Then
+        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
+        lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub btnfinalcustom_Click()
+
+  Dim xx As String
+
+  If txtencid.Text Then
+    xx = InputBox(("Enter custom Final Diagnosis"), ("Final Diagnosis"), "")
+    If xx Then
+      modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
+      lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
+    Endif
+  Endif
+
+End
+
+''--------------- Image buttons ----
+Public Sub mnuscanfile_Click()
+
+  Dim hForm As FmScanForm
+
+  If txtencid.Text Then
+    hForm = New FmScanForm(Trim(txtencid.Text), "Scanned Images", "")
+    hForm.ShowModal
+  Endif
+
+End
+
+Public Sub mnupatimage_Click()
+
+  Dim hForm As FmPatImage
+
+  If txtencid.Text Then
+    hForm = New FmPatImage("IMAGE", Trim(txtencid.Text), "")
+    hForm.ShowModal
+  Endif
+
+End
+
+Public Sub mnudicom_Click()
+
+  Dim hForm As FmPatImage
+
+  If txtencid.Text Then
+    hForm = New FmPatImage("DICOM", Trim(txtencid.Text), "")
+    hForm.ShowModal
+  Endif
+
+End
+
+Public Sub mnuscreendraw_Click()
+
+  Dim sPath As String
+  Dim xxx As String[]
+  Dim xval As String
+
+  If txtencid.Text Then
+    xxx = CustomDraw()
+    If xxx Then
+      sPath = xxx[0]
+      If sPath Then
+        xval = modImage.SaveClinicScreenDraw(Trim(txtencid.Text), xxx[1], sPath)
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub mnupatvideos_Click()
+
+  Dim hForm8 As FmPatVideo
+
+  If txtencid.Text Then
+    hForm8 = New FmPatVideo("VIDEO", Trim(txtencid.Text), "")
+    hForm8.ShowModal
+  Endif
 
 End

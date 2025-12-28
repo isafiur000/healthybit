@@ -2638,7 +2638,7 @@ Public Function HMISRegister13(xdtfir As Date, xdtlast As Date, sLocaType As Str
           .Add(modHMISRepOld.GetDiagnosisTableEIGHT(res["fldencounterval"], "Provisional Diagnosis"))
           .Add(xmedList.Join("<br>"))
 
-          .Add(modPatPatho.PatSelectProcedureString(res["fldencounterval"], "Procedures", "Done"))
+          .Add(modPatSurgery.PatSelectProcedureString(res["fldencounterval"], "Procedures", "Done"))
           If xgenvio = "Yes" Then
             .Add("X")
           Else
@@ -2726,7 +2726,7 @@ Public Function HMISRegister81(xdtfir As Date, xdtlast As Date, sLocaType As Str
         .Add(res["fldadmitlocat"])
         .Add(modGeneral.GetDepartmentNameFromBed(res["fldcurrlocat"]))
 
-        .Add(modPatPatho.PatSelectProcedureString(res["fldencounterval"], "Procedures", "Done"))
+        .Add(modPatSurgery.PatSelectProcedureString(res["fldencounterval"], "Procedures", "Done"))
         If xlabLst And If xlabLst.Count Then
           .Add(xlabLst.Join("; "))
         Else

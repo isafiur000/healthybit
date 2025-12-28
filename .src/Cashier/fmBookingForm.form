@@ -14,26 +14,34 @@
       MoveScaled(65,1,28,3)
       Sorted = True
     }
-    { dtconsultdate DateBox
-      MoveScaled(13,5,19,3)
+    { dtnepyear TextBox
+      MoveScaled(32,5,7,3)
+      Text = ("2090")
     }
-    { txtnepcal MaskBox
-      MoveScaled(33,5,16,3)
-      Mask = "0000/00/00"
+    { dtnepmon TextBox
+      MoveScaled(39.5,5,5,3)
+      Text = ("12")
+    }
+    { dtnepday TextBox
+      MoveScaled(45,5,4,3)
+      Text = ("12")
     }
     { btnconsult ButtonBox
       MoveScaled(65,5,28,3)
       Picture = Picture["icon:/small/people"]
       ReadOnly = True
     }
-    { dtconsultime DateBox
-      MoveScaled(53,9,15,3)
-      Mode = DateChooser.TimeOnly
-    }
     { btnshowrefr Button
       MoveScaled(73,9,20,3)
       Text = ("Refresh")
       Picture = Picture["icon:/small/refresh"]
+    }
+    { dtconsultdate DateBox
+      MoveScaled(13,5,17,3)
+    }
+    { dtconsultime DateBox
+      MoveScaled(53,9,15,3)
+      Mode = DateChooser.TimeOnly
     }
     { cmbbillmode ComboBox
       MoveScaled(13,9,25,3)

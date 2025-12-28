@@ -30,7 +30,7 @@ End
 Public Sub rbfixed_Click()
 
   $ItemList = New String[]
-  $ItemList = modString.GetDualListFromVariant(modFixPatho.$SymptomMasterVar, "fldcategory", "fldsymptom", True)
+  $ItemList = modString.GetDualListFromVariant(modTableCache.$SymptomMasterVar, "fldcategory", "fldsymptom", True)
   $ItemListFlag = New String[]
   GetItemListData()
 
@@ -39,7 +39,7 @@ End
 Public Sub rbgroup_Click()
 
   $ItemList = New String[]
-  $ItemList = modString.GetDualListFromVariant(modFixPatho.$SymptomCompVar, "fldtype", "fldsymptom", True)
+  $ItemList = modString.GetDualListFromVariant(modTableCache.$SymptomCompVar, "fldtype", "fldsymptom", True)
   $ItemListFlag = $FlagLst
   GetItemListData()
 

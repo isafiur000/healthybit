@@ -1083,7 +1083,7 @@ Public Sub TableView1_Click()
       xxx = SelectListView("Select Procedure Components", abc, False)
       If xxx Then
         Inc Application.Busy
-        xpath = modCHTMLPatient.ShowUniProcedureReport(TableView1[TableView1.Row, 0].Text, Trim(txtencid.Text), xxx)
+        xpath = modPatSurgery.ShowUniProcedureReport(TableView1[TableView1.Row, 0].Text, Trim(txtencid.Text), xxx)
         Dec Application.Busy
         modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
       Endif

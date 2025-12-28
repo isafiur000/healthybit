@@ -92,6 +92,17 @@
   }
   { mnucurrent Menu
     Text = ("Current")
+    { mnuadmission Menu
+      Text = ("Admission")
+    }
+    { mnuipmonitoring Menu
+      Text = ("Progress")
+    }
+    { mnunurcheck Menu
+      Text = ("Activity")
+    }
+    { Menu2 Menu
+    }
     { mnuexamrepo Menu
       Text = ("Examination")
     }
@@ -220,6 +231,51 @@
       }
     }
   }
+  { mnuexpenseall Menu
+    Text = ("Expense")
+    { mnucategoryexpen Menu
+      Text = ("Category")
+      { mnumedbill Menu
+        Text = ("Medicines")
+      }
+      { mnusurgbill Menu
+        Text = ("Surgicals")
+      }
+      { mnuextrabill Menu
+        Text = ("Extra Items")
+      }
+      { mnubilltest Menu
+        Text = ("Laboratory")
+      }
+      { mnuradioexp Menu
+        Text = ("Radiology")
+      }
+      { mnubillproced Menu
+        Text = ("Procedures")
+      }
+      { mnubillservice Menu
+        Text = ("Gen Services")
+      }
+      { mnubillequip Menu
+        Text = ("Equipments")
+      }
+      { mnuother Menu
+        Text = ("Other Items")
+      }
+    }
+    { mnubill Menu
+      Text = ("Invoices")
+    }
+    { mnuexpense Menu
+      Text = ("Summary")
+    }
+    { mnunoninvoiced Menu
+      Text = ("Pending")
+    }
+    { mnusumcombined Menu
+      Text = ("Combined")
+    }
+  }
   { mnuoutcome Menu
     Text = ("Outcome")
     { mnuadmit Menu
@@ -233,28 +289,13 @@
       Text = ("Refer To")
     }
   }
-  { mnuhistmain Menu
-    Text = ("Clinical")
-    { mnuadmission Menu
-      Text = ("Admission")
-    }
-    { mnuipmonitoring Menu
-      Text = ("Progress")
-    }
-    { mnunurcheck Menu
-      Text = ("Activity")
-    }
-  }
   { mnucustform Menu
     Text = ("Charts")
     { mnucompexam Menu
-      Text = ("Vital Chart")
+      Text = ("Vitals Chart")
     }
     { mnuessenexam Menu
       Text = ("Essen Exams")
-    }
-    { mnureqexam Menu
-      Text = ("Monitoring")
     }
     { mnucustform1 Menu
       Text = ("Form1")
@@ -626,7 +667,7 @@
         { btnsavevitals Button
           MoveScaled(24,12.5,13.5,3)
           Text = ("Save")
-          Picture = Picture["icon:/small/calculator"]
+          Picture = Picture["icon:/small/apply"]
         }
         { Label5 Label
           MoveScaled(1,5,10,3)
@@ -734,7 +775,7 @@
       MoveScaled(1,36,119,56)
       Expand = True
       Arrangement = Arrange.Horizontal
-      Count = 8
+      Count = 9
       Index = 0
       Text = ("Report [F3]")
       { Panel14 Panel
@@ -1172,6 +1213,13 @@
       Text = ("History [F10]")
       { pnlhistory Panel
         MoveScaled(5,2,83,26)
+        Expand = True
+        Arrangement = Arrange.Vertical
+      }
+      Index = 8
+      Text = ("Archives")
+      { pnlarchivbe Panel
+        MoveScaled(0,0,83,26)
         Expand = True
         Arrangement = Arrange.Vertical
       }

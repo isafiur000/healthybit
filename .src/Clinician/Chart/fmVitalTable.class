@@ -2,22 +2,29 @@
 
 Private $encid As String
 Private $ExamList As String[]
+Private hViewVital As FmVitalView
 
-Public Sub _new(encid As String, sList As String[])
+Public Sub _new(encid As String)
 
   $encid = encid
-  $ExamList = sList
 
 End
 
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
+  hViewVital = New FmVitalView($encid, Panel1)
 
 End
 
+''============= chart============
 Public Sub btnrefresh_Click()
 
+  If rbvitals.Value = True Then
+    $ExamList = modString.GetListFromCompareVariant(modTableCache.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
+  Else If rbmonitor.Value = True Then
+    $ExamList = modPatPatho.GetMonitorList($encid, "Exam", "Continue", "%")
+  Endif
   drwchart.Clear()
   CreateTPRChart()
 

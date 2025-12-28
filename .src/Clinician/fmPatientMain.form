@@ -17,9 +17,6 @@
     { mnudevice Menu
       Text = ("Set Webcam")
     }
-    { mnuscanfile Menu
-      Text = ("Past Docs")
-    }
     { mnupatlock Menu
       Text = ("Lock Patient")
     }
@@ -46,6 +43,7 @@
     }
     { mnucloudai Menu
       Text = ("AI Advice")
+      Picture = Picture["icon:/small/lamp"]
     }
   }
   { mnuentry Menu
@@ -61,11 +59,14 @@
     { mnuimage Menu
       Text = ("Image Files")
     }
+    { mnudicomimage Menu
+      Text = ("Dicom Files")
+    }
     { mnuvideo Menu
       Text = ("Video Files")
     }
-    { mnudicomimage Menu
-      Text = ("Dicom Files")
+    { mnuscanfile Menu
+      Text = ("Scan Image")
     }
   }
   { mnucurrent Menu
@@ -81,6 +82,9 @@
     }
     { mnuplanningall Menu
       Text = ("OPD Advice")
+    }
+    { mnuallprocedure Menu
+      Text = ("Procedures")
     }
     { mnucurindoor Menu
       Text = ("Indoor")
@@ -275,7 +279,7 @@
       Text = ("Summary")
     }
     { mnunoninvoiced Menu
-      Text = ("Non-Invoiced")
+      Text = ("Pending")
     }
     { mnusumcombined Menu
       Text = ("Combined")
@@ -337,20 +341,11 @@
   }
   { mnucustform Menu
     Text = ("Charts")
-    { mnuvitalsall Menu
-      Text = ("Vitals")
-      { mnuvitaltable Menu
-        Text = ("Tabular")
-      }
-      { mnucompexam Menu
-        Text = ("Graphical")
-      }
-      { mnuessenexam Menu
-        Text = ("Multi Chart")
-      }
+    { mnuvitaltable Menu
+      Text = ("Vitals Chart")
     }
-    { mnureqexam Menu
-      Text = ("Monitoring")
+    { mnuessenexam Menu
+      Text = ("Essen Exams")
     }
     { mnucustform1 Menu
       Text = ("Form1")
@@ -697,46 +692,46 @@
       Arrangement = Arrange.Horizontal
       Spacing = True
       { Panel86 Panel
-        MoveScaled(0,0,39,9)
+        MoveScaled(0,0,39,10)
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel83 Panel
-          MoveScaled(0,0,39,3)
+          MoveScaled(0,0,39,3.5)
           Arrangement = Arrange.Horizontal
           Spacing = True
           { Label12 Label
-            MoveScaled(0,0,16.625,3)
+            MoveScaled(0,0.25,16.625,3)
             Expand = True
             Text = ("Prov Diagnosis")
           }
           { tlbtndelprov ToolButton
-            MoveScaled(20,0,3,3)
+            MoveScaled(20,0.25,3,3)
             ToolTip = ("Delete Selected Diagnosis")
             Picture = Picture["icon:/small/cancel"]
           }
           { btnregimprov ToolButton
-            MoveScaled(24,0,3,3)
+            MoveScaled(24,0.25,3,3)
             ToolTip = ("View Drug Regimen for Selected Diagnosis")
             Picture = Picture["icon:/small/info"]
           }
           { btnprovcustom ToolButton
-            MoveScaled(28,0,3,3)
+            MoveScaled(28,0.25,3,3)
             ToolTip = ("Free Typing of Diagnosis")
             Picture = Picture["icon:/small/add"]
           }
           { tbnprovdisease ToolButton
-            MoveScaled(31,0,3,3)
+            MoveScaled(31.5,0.25,3,3)
             ToolTip = ("Create Diagnosis Text")
             Picture = Picture["icon:/small/add"]
           }
           { btnprovsyndro ToolButton
-            MoveScaled(35,0,3,3)
+            MoveScaled(35,0.25,3,3)
             ToolTip = ("Select Diagnosis from List")
             Picture = Picture["icon:/small/add"]
           }
         }
         { lstsyndrome ListBox
-          MoveScaled(0,3,35,5)
+          MoveScaled(0,4,35,5)
           Expand = True
           ScrollBar = Scroll.Both
           Sorted = True
@@ -746,46 +741,46 @@
         MoveScaled(39,0,2,9)
       }
       { Panel87 Panel
-        MoveScaled(41,0,39,9)
+        MoveScaled(41,0,39,10)
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel84 Panel
-          MoveScaled(0,0,39,3)
+          MoveScaled(0,0,39,3.5)
           Arrangement = Arrange.Horizontal
           Spacing = True
           { Label13 Label
-            MoveScaled(0,0,16.625,3)
+            MoveScaled(0,0.25,16.625,3)
             Expand = True
             Text = ("Final Diagnosis")
           }
           { tlbtndelfinal ToolButton
-            MoveScaled(19,0,3,3)
+            MoveScaled(19,0.25,3,3)
             ToolTip = ("Delete Selected Diagnosis")
             Picture = Picture["icon:/small/cancel"]
           }
           { btnregimfinal ToolButton
-            MoveScaled(23,0,3,3)
+            MoveScaled(23,0.25,3,3)
             ToolTip = ("View Drug Regimen for Selected Diagnosis")
             Picture = Picture["icon:/small/info"]
           }
           { btnfinalcustom ToolButton
-            MoveScaled(27,0,3,3)
+            MoveScaled(27,0.25,3,3)
             ToolTip = ("Free Typing of Diagnosis")
             Picture = Picture["icon:/small/add"]
           }
           { tbnfinaldisease ToolButton
-            MoveScaled(30,0,3,3)
+            MoveScaled(30.5,0.25,3,3)
             ToolTip = ("Create Diagnosis Text")
             Picture = Picture["icon:/small/add"]
           }
           { btnfinalsyndro ToolButton
-            MoveScaled(34,0,3,3)
+            MoveScaled(34,0.25,3,3)
             ToolTip = ("Select Diagnosis from List")
             Picture = Picture["icon:/small/add"]
           }
         }
         { lsticdisease ListBox
-          MoveScaled(0,3,38,5)
+          MoveScaled(0,4,38,5)
           Expand = True
           ScrollBar = Scroll.Both
           Sorted = True
@@ -795,40 +790,40 @@
         MoveScaled(80,0,2,9)
       }
       { Panel88 Panel
-        MoveScaled(82,0,34.75,8.875)
+        MoveScaled(82,0,35,11)
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel85 Panel
-          MoveScaled(0,0,33.875,3)
+          MoveScaled(0,0,34.5,3.5)
           Arrangement = Arrange.Horizontal
           Spacing = True
           { Label11 Label
-            MoveScaled(0,0,12.25,3)
+            MoveScaled(0,0.25,12.25,3)
             Expand = True
             Text = ("Drug Allergy")
           }
           { chkallergy CheckBox
-            MoveScaled(13.375,0,9.375,2.5)
+            MoveScaled(13.375,0.25,9.375,2.5)
             Text = ("All Enc")
           }
           { tlbtndelallergy ToolButton
-            MoveScaled(23,0,3,3)
+            MoveScaled(24,0.25,3,3)
             ToolTip = ("Delete Allergic Drug")
             Picture = Picture["icon:/small/cancel"]
           }
           { btnallergymanual ToolButton
-            MoveScaled(26.625,0,3,3)
+            MoveScaled(27.5,0.25,3,3)
             ToolTip = ("Select Allergic Drugs")
             Picture = Picture["icon:/small/add"]
           }
           { btnallergy ToolButton
-            MoveScaled(30,0,3,3)
+            MoveScaled(31,0.25,3,3)
             ToolTip = ("Select Allergic Drugs")
             Picture = Picture["icon:/small/add"]
           }
         }
         { lstallergy ListBox
-          MoveScaled(0,3,33,5)
+          MoveScaled(0,4,33,5)
           Expand = True
           ScrollBar = Scroll.Both
           Sorted = True
@@ -895,7 +890,7 @@
       Enabled = False
       Expand = True
       Arrangement = Arrange.Horizontal
-      Count = 11
+      Count = 12
       Index = 0
       Text = ("Present[F1]")
       { Panel12 Panel
@@ -1571,7 +1566,7 @@
         }
       }
       Index = 6
-      Text = ("Routine[F7]")
+      Text = ("Medicine[F7]")
       { Panel43 Panel
         MoveScaled(0,0,118,39)
         Expand = True
@@ -1579,31 +1574,31 @@
         { Panel42 Panel
           MoveScaled(0,0,118,4)
           { btnmedexpo Button
-            MoveScaled(113,0.375,4,3)
+            MoveScaled(113,0.5,4,3)
             Picture = Picture["icon:/small/html"]
           }
           { btndrp Button
-            MoveScaled(27,0.375,13,3)
+            MoveScaled(53,0.5,13,3)
             Text = ("Review")
             Picture = Picture["icon:/small/important"]
           }
           { btncounsel Button
-            MoveScaled(14,0.375,13,3)
+            MoveScaled(40,0.5,13,3)
             Text = ("Drug Info")
             Picture = Picture["icon:/small/attach"]
           }
           { btndosinfo Button
-            MoveScaled(1,0.375,13,3)
+            MoveScaled(27,0.5,13,3)
             Text = ("Labels")
             Picture = Picture["icon:/small/help"]
           }
           { btnshowallmed ToggleButton
-            MoveScaled(85,0.375,13,3)
+            MoveScaled(90,0.5,12,3)
             Text = ("Show All")
             Picture = Picture["icon:/small/view-detail"]
           }
           { Panel72 Panel
-            MoveScaled(53,0.375,18,3)
+            MoveScaled(69,0.5,18,3)
             { rbvalue RadioButton
               MoveScaled(0,0,8,3)
               Text = ("Value")
@@ -1615,10 +1610,22 @@
             }
           }
           { btndosingroutine Button
-            MoveScaled(99,0.375,13,3)
+            MoveScaled(102,0.5,11,3)
             ToolTip = ("Dosing Record Entry")
             Text = ("Dosing")
             Picture = Picture["icon:/small/edit"]
+          }
+          { Panel36 Panel
+            MoveScaled(1,0.5,23,3)
+            { rbroutine RadioButton
+              MoveScaled(0,0,11,3)
+              Text = ("Routine")
+              Value = True
+            }
+            { rbprn RadioButton
+              MoveScaled(11,0,11.5,3)
+              Text = ("Stat/PRN")
+            }
           }
         }
         { grdmedicine GridView
@@ -1630,63 +1637,11 @@
         }
       }
       Index = 7
-      Text = ("Stat/PRN[F8]")
-      { Panel45 Panel
-        MoveScaled(0,0,118,39)
+      Text = ("Inventory[F8]")
+      { pnlwardstock Panel
+        MoveScaled(8,4,66,21)
         Expand = True
         Arrangement = Arrange.Vertical
-        { Panel44 Panel
-          MoveScaled(0,0,117,4)
-          { btndosingprn Button
-            MoveScaled(99,0.375,13,3)
-            ToolTip = ("Dosing Record Entry")
-            Text = ("Dosing")
-            Picture = Picture["icon:/small/edit"]
-          }
-          { btnprnexpo Button
-            MoveScaled(113,0.375,4,3)
-            Picture = Picture["icon:/small/html"]
-          }
-          { btnshowprn ToggleButton
-            MoveScaled(85,0.375,13,3)
-            Text = ("Show All")
-            Picture = Picture["icon:/small/view-detail"]
-          }
-          { btnlblstat Button
-            MoveScaled(1,0.375,13,3)
-            Text = ("Labels")
-            Picture = Picture["icon:/small/help"]
-          }
-          { btncounselstat Button
-            MoveScaled(14,0.375,13,3)
-            Text = ("Drug Info")
-            Picture = Picture["icon:/small/attach"]
-          }
-          { btndrpstat Button
-            MoveScaled(27,0.375,13,3)
-            Text = ("Review")
-            Picture = Picture["icon:/small/important"]
-          }
-          { Panel73 Panel
-            MoveScaled(51,0.375,18,3)
-            { rbvalueR RadioButton
-              MoveScaled(0,0,8,3)
-              Text = ("Value")
-              Value = True
-            }
-            { rblabelR RadioButton
-              MoveScaled(9,0,8,3)
-              Text = ("Label")
-            }
-          }
-        }
-        { grdmedprn GridView
-          MoveScaled(0,4,117,23)
-          Expand = True
-          Mode = Select.Single
-          Header = GridView.Both
-          AutoResize = False
-        }
       }
       Index = 8
       Text = ("Fluids[F9]")
@@ -1789,17 +1744,21 @@
             Text = ("Problem")
           }
           { txtproblem TextBox
-            MoveScaled(9,0.5,54,3)
+            MoveScaled(9,0.5,53,3)
             Expand = True
           }
           { btnplanadd Button
-            MoveScaled(66,0.5,11,3)
-            Text = Shortcut(("Add"), "A")
+            MoveScaled(63,0.5,10,3)
+            Text = ("Add")
             Picture = Picture["icon:/small/add"]
           }
           { btnplanedit Button
-            MoveScaled(77,0.5,5,3)
+            MoveScaled(73,0.5,4,3)
             Picture = Picture["icon:/small/edit"]
+          }
+          { btncsoaplear Button
+            MoveScaled(78,0.5,4,3)
+            Picture = Picture["icon:/small/clear"]
           }
         }
         { ScrollView1 ScrollView
@@ -1932,6 +1891,13 @@
       Text = ("History")
       { pnlhistory Panel
         MoveScaled(2,1,44,20)
+        Expand = True
+        Arrangement = Arrange.Vertical
+      }
+      Index = 11
+      Text = ("Archives")
+      { pnlarchivbe Panel
+        MoveScaled(8,2,44,20)
         Expand = True
         Arrangement = Arrange.Vertical
       }

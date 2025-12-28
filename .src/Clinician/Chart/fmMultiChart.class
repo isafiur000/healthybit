@@ -71,15 +71,25 @@ End
 Public Sub btnrefresh_Click()
 
   If rbchart.Value = True Then
+    rballday.Visible = True
+    rballvisit.Visible = True
+    rboneday.Text = "24 Hours"
+    rbtwoday.Text = "48 Hours"
+    rbthreeday.Text = "72 Hours"
+    rbweek.Text = "1 Week"
     Panel6.Visible = False
     ListContainer1.Visible = True
-
     LoadControls()
   Else If rbtable.Value = True Then
+    rballday.Visible = False
+    rballvisit.Visible = False
+    rboneday.Text = "Minute"
+    rbtwoday.Text = "Hourly"
+    rbthreeday.Text = "Daily"
+    rbweek.Text = "Monthly"
     Panel6.Visible = True
     ListContainer1.Visible = False
     LoadTablesExam()
-    LoadTableLabs()
   Endif
 
 End
@@ -91,50 +101,27 @@ Private Sub LoadTablesExam()
 
   Dim i As Integer
   Dim j As Integer
+  Dim k As Integer
 
   GridView2.Clear()
-  GridView2.Rows.Count = $examarr.Count
+  GridView2.Rows.Count = $examarr.Count + $labarr.Count
   If rboneday.Value = True Then
+    xfir = modDate.StartSqlTenMinute(DateAdd(Now(), gb.Minute, -240))
+    xlast = modDate.StartSqlTenMinute(DateAdd(Now(), gb.Minute, 10))
+    GridView2.Columns.Count = (DateDiff(xfir, xlast, gb.Minute) / 10) + 1
+  Else If rbtwoday.Value = True Then
     xfir = modDate.StartSqlHour(DateAdd(Now(), gb.Hour, -24))
     xlast = modDate.StartSqlHour(DateAdd(Now(), gb.Hour, 1))
     GridView2.Columns.Count = DateDiff(xfir, xlast, gb.Hour) + 1
-  Else If rbtwoday.Value = True Then
-    xfir = modDate.StartSqlHour(DateAdd(Now(), gb.Hour, -48))
-    xlast = modDate.StartSqlHour(DateAdd(Now(), gb.Hour, 1))
-    GridView2.Columns.Count = DateDiff(xfir, xlast, gb.Hour) + 1
   Else If rbthreeday.Value = True Then
-    xfir = modDate.StartSqlHour(DateAdd(Now(), gb.Hour, -72))
-    xlast = modDate.StartSqlHour(DateAdd(Now(), gb.Hour, 1))
-    GridView2.Columns.Count = DateDiff(xfir, xlast, gb.Hour) + 1
-  Else If rbweek.Value = True Then
-    xfir = modDate.StartSqlDate(DateAdd(Now(), gb.Day, -7))
+    xfir = modDate.StartSqlDate(DateAdd(Now(), gb.Day, -24))
     xlast = modDate.StartSqlDate(DateAdd(Now(), gb.Day, 1))
     GridView2.Columns.Count = DateDiff(xfir, xlast, gb.Day) + 1
-  Else
-    xfir = modDate.StartSqlMonth(DateAdd(Now(), gb.Month, -12))
+  Else If rbweek.Value = True Then
+    xfir = modDate.StartSqlMonth(DateAdd(Now(), gb.Month, -24))
     xlast = modDate.StartSqlMonth(DateAdd(Now(), gb.Month, 1))
     GridView2.Columns.Count = DateDiff(xfir, xlast, gb.Month) + 1
   Endif
-
-  For i = 0 To $examarr.Count - 1
-    For j = 0 To GridView2.Columns.Count - 1
-      If j = 0 Then
-        GridView2[i, j].Text = $examarr[i]
-      Else
-        If rboneday.Value = True Then
-          GridView2[i, j].Text = GetExamValueByDate($PatientNum, $examarr[i], DateAdd(xfir, gb.Hour, j))
-        Else If rbtwoday.Value = True Then
-          GridView2[i, j].Text = GetExamValueByDate($PatientNum, $examarr[i], DateAdd(xfir, gb.Hour, j))
-        Else If rbthreeday.Value = True Then
-          GridView2[i, j].Text = GetExamValueByDate($PatientNum, $examarr[i], DateAdd(xfir, gb.Hour, j))
-        Else If rbweek.Value = True Then
-          GridView2[i, j].Text = GetExamValueByDate($PatientNum, $examarr[i], DateAdd(xfir, gb.Day, j))
-        Else
-          GridView2[i, j].Text = GetExamValueByDate($PatientNum, $examarr[i], DateAdd(xfir, gb.Month, j))
-        Endif
-      Endif
-    Next
-  Next
 
   With GridView2
     .Rows.Height = modBasic.$AppGridRowHeight
@@ -145,20 +132,92 @@ Private Sub LoadTablesExam()
       Else
         .Columns[j].Width = 64 * modBasic.$AppWidthRatio
         If rboneday.Value = True Then
-          .Columns[j].Text = modReportVar.GetDateTimeReport(DateAdd(xfir, gb.Hour, j), gb.ShortTime)
+          .Columns[j].Text = modReportVar.GetDateTimeReport(DateAdd(xfir, gb.Minute, j * 10), gb.ShortTime)
         Else If rbtwoday.Value = True Then
           .Columns[j].Text = modReportVar.GetDateTimeReport(DateAdd(xfir, gb.Hour, j), gb.ShortTime)
         Else If rbthreeday.Value = True Then
-          .Columns[j].Text = modReportVar.GetDateTimeReport(DateAdd(xfir, gb.Hour, j), gb.ShortTime)
-        Else If rbweek.Value = True Then
           .Columns[j].Text = modDate.GetDateOnlyInFormatForAll(DateAdd(xfir, gb.Day, j), modBasic.$DateFormat, "DateOnly")
-        Else
+        Else If rbweek.Value = True Then
           .Columns[j].Text = modDate.GetDateOnlyInFormatForAll(DateAdd(xfir, gb.Month, j), modBasic.$DateFormat, "YearMonth")
         Endif
       Endif
     Next
   End With
+
+  For i = 0 To $examarr.Count - 1
+    For j = 0 To GridView2.Columns.Count - 1
+      If j = 0 Then
+        GridView2[i, j].Text = $examarr[i]
+      Else
+        If rboneday.Value = True Then
+          GridView2[i, j].Text = GetExamValueByDate($PatientNum, $examarr[i], DateAdd(xfir, gb.Minute, j * 10))
+        Else If rbtwoday.Value = True Then
+          GridView2[i, j].Text = GetExamValueByDate($PatientNum, $examarr[i], DateAdd(xfir, gb.Hour, j))
+        Else If rbthreeday.Value = True Then
+          GridView2[i, j].Text = GetExamValueByDate($PatientNum, $examarr[i], DateAdd(xfir, gb.Day, j))
+        Else If rbweek.Value = True Then
+          GridView2[i, j].Text = GetExamValueByDate($PatientNum, $examarr[i], DateAdd(xfir, gb.Month, j))
+        Endif
+      Endif
+    Next
+  Next
+
+  If $labarr.Count Then
+    For k = $examarr.Count To ($examarr.Count + $labarr.Count) - 1
+      For j = 0 To GridView2.Columns.Count - 1
+        If j = 0 Then
+          GridView2[k, j].Text = $labarr[k - $examarr.Count]
+        Else
+          If rboneday.Value = True Then
+            GridView2[k, j].Text = GetLabValueByDate($PatientNum, $labarr[k - $examarr.Count], DateAdd(xfir, gb.Minute, j * 10))
+          Else If rbtwoday.Value = True Then
+            GridView2[k, j].Text = GetLabValueByDate($PatientNum, $labarr[k - $examarr.Count], DateAdd(xfir, gb.Hour, j))
+          Else If rbthreeday.Value = True Then
+            GridView2[k, j].Text = GetLabValueByDate($PatientNum, $labarr[k - $examarr.Count], DateAdd(xfir, gb.Day, j))
+          Else If rbweek.Value = True Then
+            GridView2[k, j].Text = GetLabValueByDate($PatientNum, $labarr[k - $examarr.Count], DateAdd(xfir, gb.Month, j))
+          Endif
+        Endif
+      Next
+    Next
+  Endif
   GridView2.Scroll(GridView2.X + GridView2.Width, GridView2.Y)
+
+End
+
+Private Function GetLabValueByDate(patNo As String, xexam As String, xDate As Date) As String
+
+  Dim res As Result
+  Dim xx As String
+  Dim xfir As Date
+  Dim xlast As Date
+
+  If rboneday.Value = True Then
+    xfir = modDate.StartSqlTenMinute(xDate)
+    xlast = modDate.EndSqlTenMinute(xDate)
+  Else If rbtwoday.Value = True Then
+    xfir = modDate.StartSqlHour(xDate)
+    xlast = modDate.EndSqlHour(xDate)
+  Else If rbthreeday.Value = True Then
+    xfir = modDate.StartSqlDate(xDate)
+    xlast = modDate.EndSqlDate(xDate)
+  Else If rbweek.Value = True Then
+    xfir = modDate.StartSqlMonth(xDate)
+    xlast = modDate.EndSqlMonth(xDate)
+  Endif
+
+  res = modDatabase.$myConn.Exec("select tblpatlabtest.fldreportquali as fldreportquali,tblpatlabtest.fldreportquanti as fldreportquanti from tblpatlabtest inner join tblencounter on tblpatlabtest.fldencounterval=tblencounter.fldencounterval  where tblencounter.fldpatientval=&1 and tblpatlabtest.fldsave_report=&2 and tblpatlabtest.fldtestid=&3 and tblpatlabtest.fldtime_sample>=&4 and tblpatlabtest.fldtime_sample<=&5 ORDER BY tblpatlabtest.fldtime_sample", patNo, True, xexam, xfir, xlast)
+  If res.Available Then
+    res.MoveLast
+    If res["fldreportquanti"] Then
+      xx = CStr(res["fldreportquanti"])
+    Else
+      xx = res["fldreportquali"]
+    Endif
+  Else
+    xx = ""
+  Endif
+  Return xx
 
 End
 
@@ -170,25 +229,22 @@ Private Function GetExamValueByDate(patNo As String, xexam As String, xDate As D
   Dim xlast As Date
 
   If rboneday.Value = True Then
-    xfir = modDate.StartSqlHour(xDate)
-    xlast = modDate.EndSqlHour(xDate)
+    xfir = modDate.StartSqlTenMinute(xDate)
+    xlast = modDate.EndSqlTenMinute(xDate)
   Else If rbtwoday.Value = True Then
     xfir = modDate.StartSqlHour(xDate)
     xlast = modDate.EndSqlHour(xDate)
   Else If rbthreeday.Value = True Then
-    xfir = modDate.StartSqlHour(xDate)
-    xlast = modDate.EndSqlHour(xDate)
-  Else If rbweek.Value = True Then
     xfir = modDate.StartSqlDate(xDate)
     xlast = modDate.EndSqlDate(xDate)
-  Else
+  Else If rbweek.Value = True Then
     xfir = modDate.StartSqlMonth(xDate)
     xlast = modDate.EndSqlMonth(xDate)
   Endif
 
-  res = modDatabase.$myConn.Exec("select tblpatientexam.fldrepquali as fldrepquali,tblpatientexam.fldrepquanti as fldrepquanti from tblpatientexam inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval  where tblencounter.fldpatientval=&1 and tblpatientexam.fldsave=&2 and tblpatientexam.fldhead=&3 and tblpatientexam.fldtime>=&4 and tblpatientexam.fldtime<=&5", patNo, True, xexam, xfir, xlast)
+  res = modDatabase.$myConn.Exec("select tblpatientexam.fldrepquali as fldrepquali,tblpatientexam.fldrepquanti as fldrepquanti from tblpatientexam inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval  where tblencounter.fldpatientval=&1 and tblpatientexam.fldsave=&2 and tblpatientexam.fldhead=&3 and tblpatientexam.fldtime>=&4 and tblpatientexam.fldtime<=&5 ORDER BY tblpatientexam.fldtime", patNo, True, xexam, xfir, xlast)
   If res.Available Then
-    res.MoveFirst
+    res.MoveLast
     If res["fldrepquanti"] Then
       xx = CStr(res["fldrepquanti"])
     Else
@@ -198,10 +254,6 @@ Private Function GetExamValueByDate(patNo As String, xexam As String, xDate As D
     xx = ""
   Endif
   Return xx
-
-End
-
-Private Sub LoadTableLabs()
 
 End
 

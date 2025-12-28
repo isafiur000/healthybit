@@ -29,7 +29,7 @@ Public Sub Form_Open()
 
   dtconsultdate.Value = Now()
   dtconsultime.Value = Time()
-  txtnepcal.Text = modDate.ConvertToLocaldate(dtconsultdate.Value)
+  ConvertEngToNepDate(dtconsultdate.Value)
   btnyear.Text = "Year"
   btnmon.Text = "Mon"
 
@@ -62,6 +62,40 @@ Public Sub Form_KeyRelease()
   Else
     modGeneralmain.GoToNextControlTab()
   Endif
+
+End
+
+Private Sub ConvertEngToNepDate(sDate As Date)
+
+  Dim xx As String
+  Dim sAsx As String[]
+
+  xx = modDate.ConvertToLocaldate(sDate)
+  sAsx = Split(xx, "/")
+  dtnepyear.Text = sAsx[0]
+  dtnepmon.Text = sAsx[1]
+  dtnepday.Text = sAsx[2]
+
+End
+
+Private Function GetEngDate() As Date
+
+  Dim sdate As Date
+  Dim xx As String
+
+  If dtnepyear.Text And If dtnepmon.Text And If dtnepday.Text Then
+    xx = Trim(dtnepyear.Text) & "/" & Trim(dtnepmon.Text) & "/" & Trim(dtnepday.Text)
+    sdate = modDate.ConvertToEnglishdate(xx)
+  Else
+    sdate = ""
+  Endif
+  Return sdate
+
+End
+
+Public Sub dtnepyear_GotFocus()
+
+  dtnepyear.SelectAll()
 
 End
 
@@ -595,15 +629,27 @@ Public Sub btnhospcode_Click()
 End
 
 ''------------------------------------------- Reports------------------------------------
-Public Sub txtnepcal_Change()
+Public Sub dtnepyear_Change()
 
-  dtconsultdate.Value = modDate.ConvertToEnglishdate(txtnepcal.Text)
+  dtconsultdate.Value = GetEngDate()
+
+End
+
+Public Sub dtnepmon_Change()
+
+  dtconsultdate.Value = GetEngDate()
+
+End
+
+Public Sub dtnepday_Change()
+
+  dtconsultdate.Value = GetEngDate()
 
 End
 
 Public Sub dtconsultdate_Click()
 
-  txtnepcal.Text = modDate.ConvertToLocaldate(dtconsultdate.Value)
+  ConvertEngToNepDate(dtconsultdate.Value)
 
 End
 
@@ -868,7 +914,8 @@ Public Sub btnshowrefr_Click()
         btnOK.Enabled = False
       Else
         Panel2.Enabled = True
-        txtpatno.SetFocus
+        Panel2.SetFocus
+        ' txtpatno.SetFocus
       Endif
     Endif
     btnshowrefr.Picture = Picture["icon:/small/down"]

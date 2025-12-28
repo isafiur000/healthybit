@@ -4,6 +4,7 @@ Private $rData As Result
 Private $aMyFields As String[]
 
 Private $UserRestrict As String[]
+Private $PatientNum As String
 Private $Category As String
 Private $sDepart As String
 Private $secText As String
@@ -13,6 +14,8 @@ Private $sTatus As String
 Private $Grouping As String
 
 Private hDigForm As FmDiagnosticTab
+Private hPtForm As FmClinHistory
+Private hPtArchive As FmClinArchive
 
 Private $billModeTest As String
 Private $billModeRadio As String
@@ -223,6 +226,7 @@ Private Sub GetEncounterValue()
             dtdob.Value = modPatient.GetPatientBirthDay(Trim(txtencid.Text))
             modDateSub.GetAgeControlFromDate(dtdob.Value, txtpatage, cmbpatageunit)
 
+            $PatientNum = modPatient.GetPatientNoByEnc(Trim(txtencid.Text))
             $sTatus = modPatient.CurrentAdmissionStatus(Trim(txtencid.Text))
             txtnow.Text = $sTatus
             txtbedno.Text = modPatient.GetLocationSetting(Trim(txtencid.Text), $sTatus)
@@ -237,6 +241,8 @@ Private Sub GetEncounterValue()
             If modPatientSub.AllowEncIDHistory(Trim(txtencid.Text), modDatabase.$myConn) = True Then
               GetDefaultBillingmodes()
               hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
+              hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
+              hPtArchive = New FmClinArchive($PatientNum, pnlarchivbe)
               BlockDCButton()
               ButtonControl()
               txtencid.ReadOnly = True

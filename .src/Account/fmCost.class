@@ -16,6 +16,7 @@ End
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
+  Panel7.Width = Panel1.Width - (Panel4.Width + Panel6.Width)
   Me.Tag = $costcategory
 
   If MMain.$WebReport = "Multiple" Then
@@ -105,6 +106,18 @@ Public Sub cmblocation_Click()
   If cmblocation.Text Then
     cmbvalue.List = modDataRepo.GetRepoValueListType(cmblocation.Text)
   Endif
+
+End
+
+Public Sub rbactive_Click()
+
+  ShowCostGrid()
+
+End
+
+Public Sub rbinactive_Click()
+
+  ShowCostGrid()
 
 End
 
@@ -290,30 +303,20 @@ End
 Public Sub btnrefrmode_Click()
 
   Dim sql As String
+  Dim xstate As String
+
+  If rbactive.Value = True Then
+    xstate = "Active"
+  Else If rbinactive.Value = True Then
+    xstate = "Inactive"
+  Endif
 
   If cmbmode.Text Then
     txtsearch.Text = ""
     CLearBoxAll()
     $RepoStr = modDataRepo.GetWhereStringRepo(cmblocation.Text, cmbvalue.Text)
-    sql = "select flditemname,flditemunit,flditemcost,fldtarget,fldgroup,fldcode,fldstatus,fldbillitem,fldreport from tblservicecost where flditemtype=&1 and fldgroup like &2" & $RepoStr & " ORDER BY flditemname ASC"                                         ''
-    $rData = modDatabase.$myConn.Exec(sql, $type, cmbmode.Text)
-    $aMyFields = New String[]
-    modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
-    DisplayGridFormat()
-  Endif
-
-End
-
-Public Sub btnrefrstatus_Click()
-
-  Dim sql As String
-
-  If cmbstatus.Text Then
-    txtsearch.Text = ""
-    CLearBoxAll()
-    $RepoStr = modDataRepo.GetWhereStringRepo(cmblocation.Text, cmbvalue.Text)
-    sql = "select flditemname,flditemunit,flditemcost,fldtarget,fldgroup,fldcode,fldstatus,fldbillitem,fldreport from tblservicecost where flditemtype=&1 and fldstatus like &2" & $RepoStr & " ORDER BY flditemname ASC"                                         ''
-    $rData = modDatabase.$myConn.Exec(sql, $type, cmbstatus.Text)
+    sql = "select flditemname,flditemunit,flditemcost,fldtarget,fldgroup,fldcode,fldstatus,fldbillitem,fldreport from tblservicecost where flditemtype=&1 and fldgroup like &2 and fldstatus=&3" & $RepoStr & " ORDER BY flditemname ASC"                                         ''
+    $rData = modDatabase.$myConn.Exec(sql, $type, cmbmode.Text, xstate)
     $aMyFields = New String[]
     modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
     DisplayGridFormat()
@@ -324,14 +327,20 @@ End
 Private Sub ShowCostGrid()
 
   Dim sql As String
+  Dim xstate As String
 
+  If rbactive.Value = True Then
+    xstate = "Active"
+  Else If rbinactive.Value = True Then
+    xstate = "Inactive"
+  Endif
   $RepoStr = modDataRepo.GetWhereStringRepo(cmblocation.Text, cmbvalue.Text)
   If cmbgroupname.Text Then
-    sql = "select flditemname,flditemunit,flditemcost,fldtarget,fldgroup,fldcode,fldstatus,fldbillitem,fldreport from tblservicecost where flditemtype=&1 and lower(flditemname) like &2 and fldbillitem=&3" & $RepoStr & " ORDER BY flditemname ASC"                                         ''
-    $rData = modDatabase.$myConn.Exec(sql, $type, LCase(txtsearch.Text) & "%", cmbgroupname.Text)
+    sql = "select flditemname,flditemunit,flditemcost,fldtarget,fldgroup,fldcode,fldstatus,fldbillitem,fldreport from tblservicecost where flditemtype=&1 and lower(flditemname) like &2 and fldbillitem=&3 and fldstatus=&4" & $RepoStr & " ORDER BY flditemname ASC"                                         ''
+    $rData = modDatabase.$myConn.Exec(sql, $type, LCase(txtsearch.Text) & "%", cmbgroupname.Text, xstate)
   Else
-    sql = "select flditemname,flditemunit,flditemcost,fldtarget,fldgroup,fldcode,fldstatus,fldbillitem,fldreport from tblservicecost where flditemtype=&1 and lower(flditemname) like &2" & $RepoStr & " ORDER BY flditemname ASC"                                         ''
-    $rData = modDatabase.$myConn.Exec(sql, $type, LCase(txtsearch.Text) & "%")
+    sql = "select flditemname,flditemunit,flditemcost,fldtarget,fldgroup,fldcode,fldstatus,fldbillitem,fldreport from tblservicecost where flditemtype=&1 and lower(flditemname) like &2 and fldstatus=&3" & $RepoStr & " ORDER BY flditemname ASC"                                         ''
+    $rData = modDatabase.$myConn.Exec(sql, $type, LCase(txtsearch.Text) & "%", xstate)
   Endif
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
@@ -357,7 +366,7 @@ End
 Private Sub DisplayGridFormat()
 
   With GridView1
-    .Columns[0].Width = 250 * modBasic.$AppWidthRatio
+    .Columns[0].Width = 300 * modBasic.$AppWidthRatio
     .Columns[1].Width = 50 * modBasic.$AppWidthRatio
     .Columns[2].Width = 75 * modBasic.$AppWidthRatio
     .Columns[3].Width = 75 * modBasic.$AppWidthRatio

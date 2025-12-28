@@ -16,9 +16,9 @@ Private $aMyFields As String[]
 
 Private hViewVital As FmVitalView
 Private hinputVital As FmVitalInput
-Private hPtForm As FmClinHistory
 Private hOwnStockForm As FmWardStock
 Private hDoseCount As FmDosecount
+Private hPtForm As FmClinHistory
 
 Private $billReference As String
 Private $billModeTest As String
@@ -326,6 +326,8 @@ End
 
 Private Sub BasicInfoPatient()
 
+  Dim hPtArchive As FmClinArchive
+
   If txtencid.Text Then
     modRepository.$RepoDataStatus = False
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
@@ -343,12 +345,13 @@ Private Sub BasicInfoPatient()
     hDoseCount = New FmDosecount(Trim(txtencid.Text), pnldosecount)
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
     hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
+    hPtArchive = New FmClinArchive($PatientNum, pnlarchivbe)
 
     dtmonitor.Value = Now()
     lbldtmonitor.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), dtmonitor.Value)
     If modBasic.$ItemListFormat = "GridView" Then
     Else
-      cmbmonexam.List = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Nursing Examinations", True)
+      cmbmonexam.List = modString.GetListFromCompareVariant(modTableCache.$ExaminationCompVar, "fldexamid", "fldcategory", "Nursing Examinations", True)
     Endif
     ShowMonitoring()
 
@@ -954,7 +957,7 @@ Public Sub btnaddsymplist_Click()
   Dim hForm As FmMultiComplaints
 
   If modBasic.$SelectMultiSymptoms = "Yes" Then
-    xlist = modString.GetListFromVariant(modFixPatho.$SymptomCompVar, "fldsymptom", True)
+    xlist = modString.GetListFromVariant(modTableCache.$SymptomCompVar, "fldsymptom", True)
     If xlist.Count Then
       aList = GridListView("Select Presenting Complaints", xlist, Panel13, Panel9.Height)
       If aList And If aList.Count Then
@@ -981,13 +984,13 @@ Public Sub cmbsymptom_GotFocus()
   txtsympval.Tag = ""
   If modBasic.$ItemListFormat = "GridView" Then
     If modBasic.$ClinCategoryGrid = "Yes" Then
-      xlist = modString.GetDualListFromVariant(modFixPatho.$SymptomCompVar, "fldtype", "fldsymptom", True)
+      xlist = modString.GetDualListFromVariant(modTableCache.$SymptomCompVar, "fldtype", "fldsymptom", True)
       If xlist.Count Then
         cmbsymptom.Text = GridViewGroup("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), Panel13, grdchiefsymptom.Height + cmbsymptom.Height)
         txtsympval.SetFocus
       Endif
     Else
-      xlist = modString.GetListFromVariant(modFixPatho.$SymptomCompVar, "fldsymptom", True)
+      xlist = modString.GetListFromVariant(modTableCache.$SymptomCompVar, "fldsymptom", True)
       If xlist.Count Then
         cmbsymptom.Text = GridViewNew("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), Panel13, grdchiefsymptom.Height + cmbsymptom.Height)
         txtsympval.SetFocus
@@ -2032,23 +2035,184 @@ Public Sub mnupastdocsrepo_Click()
 
 End
 
-Public Sub mnureqexam_Click()
+''------------ Expense ---------------
+Public Sub mnumedbill_Click()
 
-  Dim hForm As FmTPR
+  Dim xPath As String
 
-  hForm = New FmTPR(Trim(txtencid.Text), modPatPatho.GetMonitorList(Trim(txtencid.Text), "Exam", "Continue", "%"))
-  hForm.ShowModal()
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLInvoice.ShowItemDispensedByPatient(modDatabase.$syConn, Trim(txtencid.Text), "Medicines")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnusurgbill_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLInvoice.ShowItemDispensedByPatient(modDatabase.$syConn, Trim(txtencid.Text), "Surgicals")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnuextrabill_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLInvoice.ShowItemDispensedByPatient(modDatabase.$syConn, Trim(txtencid.Text), "Extra Items")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnubilltest_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLInvoice.ShowItemDispensedByPatient(modDatabase.$syConn, Trim(txtencid.Text), "Diagnostic Tests")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnuradioexp_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLInvoice.ShowItemDispensedByPatient(modDatabase.$syConn, Trim(txtencid.Text), "Radio Diagnostics")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnubillproced_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLInvoice.ShowItemDispensedByPatient(modDatabase.$syConn, Trim(txtencid.Text), "Procedures")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnubillservice_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLInvoice.ShowItemDispensedByPatient(modDatabase.$syConn, Trim(txtencid.Text), "General Services")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnubillequip_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLInvoice.ShowItemDispensedByPatient(modDatabase.$syConn, Trim(txtencid.Text), "Equipment")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnuother_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLInvoice.ShowItemDispensedByPatient(modDatabase.$syConn, Trim(txtencid.Text), "Other Items")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnuexpense_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLInvoice.ShowTotalExpensebyPatient(modDatabase.$syConn, Trim(txtencid.Text), "Complete")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnubill_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLInvoice.ShowTotalInvoicebyPatient(Trim(txtencid.Text), "Complete")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnunoninvoiced_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLInvoice.ShowPendingExpensebyPatient(modDatabase.$syConn, Trim(txtencid.Text), "Complete", ["Credit", "Cash"])
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnusumcombined_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLInvoice.ShowCombinedInPatientExp(modDatabase.$syConn, Trim(txtencid.Text), "Complete", ["Credit", "Cash"])
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
 
 End
 
 Public Sub mnucompexam_Click()
 
-  Dim hForm As FmTPR
-  Dim xList As String[]
+  Dim hForm As FmVitalTable
 
-  xList = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
-  hForm = New FmTPR(Trim(txtencid.Text), xList)
-  hForm.ShowModal()
+  If txtencid.Text Then
+    hForm = New FmVitalTable(Trim(txtencid.Text))
+    hForm.ShowModal()
+  Endif
 
 End
 
@@ -2509,7 +2673,7 @@ Public Sub mnuessenexam_Click()
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
+    xx = modString.GetListFromCompareVariant(modTableCache.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
     yy = New String[]
     hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
@@ -3257,7 +3421,7 @@ Public Sub cmbmonexam_GotFocus()
   txtmonval.Value = 0
   txtmonval.Tag = ""
   If modBasic.$ItemListFormat = "GridView" Then
-    aList = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Nursing Examinations", True)
+    aList = modString.GetListFromCompareVariant(modTableCache.$ExaminationCompVar, "fldexamid", "fldcategory", "Nursing Examinations", True)
     If modBasic.$ClinCategoryGrid = "Yes" Then
       xlist = modFixClinic.GetExamWithCategory(aList)
       If xlist.Count Then

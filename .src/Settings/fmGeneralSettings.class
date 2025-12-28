@@ -43,6 +43,7 @@ Public Sub Form_Open()
   $TableList = modDBApp.FillDBTables(modDatabase.$myConn, True)
 
   cmbencrypdf.List = ["Yes", "No"]
+  cmbdaterange.List = ["Enable", "Disable"]
   cmbftpfolder.List = ["{PatientFileNo}", "{ContactNo}", "{E-Mail}", "{PatientCode}", "{LastInvReference}", "{LastClaimCode}"]
   cmbrepodb.List = ["sqlite3", "mysql"]
   cmbautorepo.List = ["Enable", "Disable"]
@@ -117,6 +118,7 @@ Public Sub GeneralSecurity()
   cmbenclock.Text = modGlobalSetting.ShowSettingFromDBAny("TableLock/EncounterLock", cmbtarget.Text)
   cmbschedule.Text = modGlobalSetting.ShowSettingFromDBAny("RemoteExec/ScheduleTask", cmbtarget.Text)
   cmbpatencrp.Text = modGlobalSetting.ShowSettingFromDBAny("PatientInfo/Encryption", cmbtarget.Text)
+  cmbdaterange.Text = modGlobalSetting.ShowSettingFromDBAny("SQLQuery/DateRange", cmbtarget.Text)
   ListBox1.List = modGlobalSetting.ShowTableSettingDB(cmbtarget.Text, "DisableSQLQuery")
 
   cmbrepodb.Text = modGlobalSetting.ShowSettingFromDBAny("Repository/Database", cmbtarget.Text)
@@ -189,6 +191,14 @@ Public Sub btnpatencryp_Click()
 
   modGlobalSetting.SaveSettingToDB("PatientInfo/Encryption", cmbpatencrp.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btnpatencryp)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btndaterange_Click()
+
+  modGlobalSetting.SaveSettingToDB("SQLQuery/DateRange", cmbdaterange.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btndaterange)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -945,6 +955,7 @@ Public Sub btnsettall_Click()
   xList.Add("TableLock/EncounterLock")
   xList.Add("RemoteExec/ScheduleTask")
   xList.Add("PatientInfo/Encryption")
+  xList.Add("SQLQuery/DateRange")
 
   xList.Add("Repository/Database")
   xList.Add("Repository/AutoSync")

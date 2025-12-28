@@ -11,9 +11,6 @@
     { mnukeywords Menu
       Text = ("Key Words")
     }
-    { mnuAIquery Menu
-      Text = ("AI Query")
-    }
     { mnuclearall Menu
       Text = ("Erase All")
     }
@@ -248,7 +245,7 @@
       }
     }
     { Panel12 Panel
-      MoveScaled(2,36,10,3)
+      MoveScaled(2,36,12.5,3)
       Arrangement = Arrange.Horizontal
       { btninserttext ToolButton
         MoveScaled(0,0,3,3)
@@ -260,8 +257,13 @@
         ToolTip = ("Add User ID to KeyList")
         Picture = Picture["icon:/tiny/user"]
       }
+      { btnaiexec ToolButton
+        MoveScaled(6,0,3,3)
+        ToolTip = ("Add User ID to KeyList")
+        Picture = Picture["icon:/tiny/exec"]
+      }
       { btnmenu MenuButton
-        MoveScaled(6,0,3.5,3)
+        MoveScaled(9,0,3.5,3)
         Picture = Picture["icon:/tiny/menu"]
         Menu = "mnufile"
       }

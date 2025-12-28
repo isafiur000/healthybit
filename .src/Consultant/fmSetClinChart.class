@@ -14,7 +14,7 @@ Public Sub Form_Open()
     cmbtarget.Enabled = True
   Endif
   cmbcategory.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldtitle) as col from tblclinchart"))
-  cmbtypex.List = ["Exam", "Test"]
+  cmbtypex.List = ["Date", "Exam", "Test"]
   cmbtypey.List = ["Exam", "Test"]
   cmbagegroup.List = modMedicine.AgeGroupListShortAll()
   cmbgender.List = ["Male", "Female", "Both Sex"]
@@ -61,6 +61,8 @@ Private Sub GetConstantList(sType As String) As String[]
     xList = modSysCons.SysExaminationList()
   Else If sType = "Test" Then
     xList = modSysCons.SysLabTestList()
+  Else
+    xList = New String[]
   Endif
 
   Return xList
@@ -109,6 +111,8 @@ Public Sub tbtnadd_Click()
       res["fldmaximum"] = txtmaximum.Value
       res.Update
       ShowGridView()
+      Balloon.Info(("Information saved"), tbtnadd)
+      Balloon.Delay = modBasic.$BalloonDelay
       txtitemx.Text = ""
       txtitemy.Text = ""
     Endif
@@ -147,5 +151,51 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   $rData.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView1, Row)
   GridView1.Data.Text = $rData[$aMyFields[Column]]
+
+End
+
+Public Sub GridView1_Click()
+
+  Dim res As Result
+
+  If GridView1.Rows.Selection.Count Then
+    res = modDatabase.$myConn.Exec("select fldtitle,fldcomp,fldptsex,fldagegroup,fldxtype,fldxvalue,fldytype,fldyvalue,fldformula,fldminimum,fldmaximum from tblclinchart where fldid=&1", GridView1[GridView1.Row, 0].Text)                    ''
+    If res.Available Then
+      cmbcategory.Text = res["fldtitle"]
+      cmbtarget.Text = res["fldcomp"]
+      cmbgender.Text = res["fldptsex"]
+      cmbagegroup.Text = res["fldagegroup"]
+      cmbtypex.Text = res["fldxtype"]
+      txtitemx.Text = res["fldxvalue"]
+      cmbtypey.Text = res["fldytype"]
+      txtitemy.Text = res["fldyvalue"]
+      txtformula.Text = res["fldformula"]
+      txtminimum.Value = res["fldminimum"]
+      txtmaximum.Value = res["fldmaximum"]
+    Endif
+  Endif
+
+End
+
+Public Sub btnedit_Click()
+
+  Dim res As Result
+
+  If GridView1.Rows.Selection.Count Then
+    res = modDatabase.$myConn.Edit("tblclinchart", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+    res["fldptsex"] = cmbgender.Text
+    res["fldagegroup"] = cmbagegroup.Text
+    res["fldxtype"] = cmbtypex.Text
+    res["fldxvalue"] = Trim(txtitemx.Text)
+    res["fldytype"] = cmbtypey.Text
+    res["fldyvalue"] = Trim(txtitemy.Text)
+    res["fldformula"] = Trim(txtformula.Text)
+    res["fldminimum"] = txtminimum.Value
+    res["fldmaximum"] = txtmaximum.Value
+    res.Update
+    ShowGridView()
+    Balloon.Info(("Information saved"), btnedit)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
 
 End

@@ -8,6 +8,7 @@ Private $rExamRes As Result
 Private $aExamFields As String[]
 
 Private $focus As Boolean
+Private $dtRegist As Date
 Private $sTatus As String
 Private $UserRestrict As String[]
 Private $dateReg As Date
@@ -19,6 +20,7 @@ Private $VidIndex As String
 Private hPtForm As FmClinHistory
 Private hDigForm As FmDiagnosticTab
 Private hOwnStockForm As FmWardStock
+Private hPtArchive As FmClinArchive
 
 Private $billReference As String
 Private $billModeTest As String
@@ -42,6 +44,8 @@ Private $SystBPRangeLimits As Float[]
 Private $RespRateRangeLimits As Float[]
 Private $OxySatRangeLimits As Float[]
 Private $TempeRangeLimits As Float[]
+
+Private $RuleChartLst As String[]
 
 Public Sub _new(encid As String, sIndex As Long, sMode As String, Focus As Boolean)
 
@@ -83,8 +87,8 @@ Public Sub Form_Open()
   cmburgency.List = ["Urgent", "Normal"]
   If modBasic.$ItemListFormat = "GridView" Then
   Else
-    cmbfinding.List = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Physician Examinations", True)
-    cmbsymptom.List = modString.GetListFromVariant(modFixPatho.$SymptomCompVar, "fldsymptom", True)
+    cmbfinding.List = modString.GetListFromCompareVariant(modTableCache.$ExaminationCompVar, "fldexamid", "fldcategory", "Physician Examinations", True)
+    cmbsymptom.List = modString.GetListFromVariant(modTableCache.$SymptomCompVar, "fldsymptom", True)
   Endif
   $UserRestrict = modBasic.$ClinicDisableCompo
 
@@ -438,7 +442,8 @@ Private Sub GetEncounterValue()
             If Not txtbedno.Text Then
               txtbedno.Text = modPatient.GetLocationSetting(Trim(txtencid.Text), $sTatus)
             Endif
-            txtpatdoa.Text = modReportVar.GetDateTimeReport(modPatient.GetRecordDate(Trim(txtencid.Text)), gb.GeneralDate)
+            $dtRegist = modPatient.GetRecordDate(Trim(txtencid.Text))
+            txtpatdoa.Text = modReportVar.GetDateTimeReport($dtRegist, gb.GeneralDate)
             txtpatweight.Value = modClinic.GetBodyWeight(Trim(txtencid.Text))
             btnconsult.Tag = modPatient.GetAttendingConsultant(Trim(txtencid.Text))
             btnconsult.Text = modGeneral.GetUserFullName(btnconsult.Tag)
@@ -451,6 +456,7 @@ Private Sub GetEncounterValue()
               BlockDCButton()
               BasicInfoPatient()
               txtencid.ReadOnly = True
+              SHowALgorithmList()
               modImage.ShowPhotoSplash("Patient", $PatientNum)
               modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
               txtgencomplaint.SetFocus
@@ -497,8 +503,9 @@ Private Sub BasicInfoPatient()
     GetPatientOutComeVal()
 
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
-    hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
+    hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
+    hPtArchive = New FmClinArchive($PatientNum, pnlarchivbe)
     modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
   Endif
 
@@ -821,7 +828,7 @@ Public Sub mnuscanfile_Click()
   Dim hForm As FmScanForm
 
   If txtencid.Text Then
-    hForm = New FmScanForm(Trim(txtencid.Text), "Past Documents", "")
+    hForm = New FmScanForm(Trim(txtencid.Text), "Scanned Images", "")
     hForm.ShowModal
   Endif
 
@@ -1206,7 +1213,7 @@ Public Sub cmbfinding_GotFocus()
         txtfinding.SetFocus
       Endif
     Else
-      xlist = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Physician Examinations", True)
+      xlist = modString.GetListFromCompareVariant(modTableCache.$ExaminationCompVar, "fldexamid", "fldcategory", "Physician Examinations", True)
       If xlist.Count Then
         cmbfinding.Text = GridViewNew("Select Clinical Findings", xlist, modMisc.LockBoolean(modBasic.$LockExamList), cmbfinding, GridView1.Height)
         txtfinding.SetFocus
@@ -1653,7 +1660,7 @@ Public Sub btnaddsymplist_Click()
   Dim hForm As FmMultiComplaints
 
   If modBasic.$SelectMultiSymptoms = "Yes" Then
-    xlist = modString.GetListFromVariant(modFixPatho.$SymptomCompVar, "fldsymptom", True)
+    xlist = modString.GetListFromVariant(modTableCache.$SymptomCompVar, "fldsymptom", True)
     If xlist.Count Then
       aList = GridListView("Select Presenting Complaints", xlist, Panel13, grdchiefsymptom.Height + cmbsymptom.Height + lblhistoryhead.Height + cmbfinding.Height + GridView1.Height)
       If aList And If aList.Count Then
@@ -1680,13 +1687,13 @@ Public Sub cmbsymptom_GotFocus()
   txtsympval.Tag = ""
   If modBasic.$ItemListFormat = "GridView" Then
     If modBasic.$ClinCategoryGrid = "Yes" Then
-      xlist = modString.GetDualListFromVariant(modFixPatho.$SymptomCompVar, "fldtype", "fldsymptom", True)
+      xlist = modString.GetDualListFromVariant(modTableCache.$SymptomCompVar, "fldtype", "fldsymptom", True)
       If xlist.Count Then
         cmbsymptom.Text = GridViewGroup("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), cmbsymptom, grdchiefsymptom.Height)
         txtsympval.SetFocus
       Endif
     Else
-      xlist = modString.GetListFromVariant(modFixPatho.$SymptomCompVar, "fldsymptom", True)
+      xlist = modString.GetListFromVariant(modTableCache.$SymptomCompVar, "fldsymptom", True)
       If xlist.Count Then
         cmbsymptom.Text = GridViewNew("Select Presenting Complaints", xlist, modMisc.LockBoolean(modBasic.$LockSymptomList), cmbsymptom, grdchiefsymptom.Height)
         txtsympval.SetFocus
@@ -2412,7 +2419,7 @@ Public Sub mnupatvideos_Click()
 
 End
 
-Public Sub mnuscreendraw_Click()
+Public Sub btnaddchart_Click()
 
   Dim sPath As String
   Dim xxx As String[]
@@ -2427,12 +2434,6 @@ Public Sub mnuscreendraw_Click()
       Endif
     Endif
   Endif
-
-End
-
-Public Sub btnaddchart_Click()
-
-  mnuscreendraw_Click()
 
 End
 
@@ -2554,7 +2555,13 @@ Public Sub mnuconsultplan_Click()
   Dim hForm As FmMiniConsult
 
   If txtencid.Text Then
-    hForm = New FmMiniConsult(Trim(txtencid.Text), $billModeService)
+    If modBasic.$AutoRegistNoBillHour Then
+      If DateDiff($dtRegist, Now(), gb.Hour) < CInt(modBasic.$AutoRegistNoBillHour) Then
+        hForm = New FmMiniConsult(Trim(txtencid.Text), $billModeService)
+      Endif
+    Else
+      hForm = New FmMiniConsult(Trim(txtencid.Text), $billModeService)
+    Endif
     hForm.ShowModal
   Endif
 
@@ -2791,6 +2798,19 @@ Public Sub mnuplanningall_Click()
 
 End
 
+Public Sub mnuallprocedure_Click()
+
+  Dim xpath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xpath = modPatSurgery.GetProcedureReportAll(Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
 Public Sub mnuexamrepo_Click()
 
   Dim xPath As String
@@ -2896,30 +2916,6 @@ Public Sub mnuvitaltable_Click()
 
   If txtencid.Text Then
     hForm = New FmVitalTable(Trim(txtencid.Text))
-    hForm.ShowModal()
-  Endif
-
-End
-
-Public Sub mnucompexam_Click()
-
-  Dim hForm As FmTPR
-  Dim xList As String[]
-
-  If txtencid.Text Then
-    xList = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
-    hForm = New FmTPR(Trim(txtencid.Text), xList)
-    hForm.ShowModal()
-  Endif
-
-End
-
-Public Sub mnureqexam_Click()
-
-  Dim hForm As FmTPR
-
-  If txtencid.Text Then
-    hForm = New FmTPR(Trim(txtencid.Text), modPatPatho.GetMonitorList(Trim(txtencid.Text), "Exam", "Continue", "%"))
     hForm.ShowModal()
   Endif
 
@@ -3372,7 +3368,7 @@ Public Sub mnuessenexam_Click()
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
+    xx = modString.GetListFromCompareVariant(modTableCache.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
     yy = New String[]
     hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
@@ -3698,86 +3694,52 @@ End
 ''------------------------ Algorithms ---------------------------------------------
 Private Sub SHowALgorithmList()
 
-  Dim xform1 As String
-  Dim xform2 As String
-  Dim xform3 As String
-  Dim xform4 As String
-  Dim xform5 As String
-  Dim xform6 As String
-  Dim xform7 As String
-  Dim xform8 As String
-  Dim xform9 As String
-  Dim xform10 As String
+  Dim asx1 As String[]
+  Dim asx2 As String[]
+  Dim asx3 As String[]
+  Dim asx4 As String[]
+  Dim asx5 As String[]
 
-  xform1 = modSettings.ShowSettingForReport("ClinAlgorithm1/AlgorithmName")
-  xform2 = modSettings.ShowSettingForReport("ClinAlgorithm2/AlgorithmName")
-  xform3 = modSettings.ShowSettingForReport("ClinAlgorithm3/AlgorithmName")
-  xform4 = modSettings.ShowSettingForReport("ClinAlgorithm4/AlgorithmName")
-  xform5 = modSettings.ShowSettingForReport("ClinAlgorithm5/AlgorithmName")
-  xform6 = modSettings.ShowSettingForReport("ClinAlgorithm6/AlgorithmName")
-  xform7 = modSettings.ShowSettingForReport("ClinAlgorithm7/AlgorithmName")
-  xform8 = modSettings.ShowSettingForReport("ClinAlgorithm8/AlgorithmName")
-  xform9 = modSettings.ShowSettingForReport("ClinAlgorithm9/AlgorithmName")
-  xform10 = modSettings.ShowSettingForReport("ClinAlgorithm10/AlgorithmName")
+  If txtencid.Text Then
+    $RuleChartLst = modClinChart.GetClinicalChartsList(Trim(txtencid.Text))
+    If $RuleChartLst And If $RuleChartLst.Count Then
 
-  If xform1 Then
-    mnualgo1.Caption = xform1
-    mnualgo1.Tag = "ClinAlgorithm1"
-    mnualgo1.Enabled = True
-  Endif
+      If $RuleChartLst.Count > 0 Then
+        asx1 = Split($RuleChartLst[0], "|")
+        mnualgo1.Caption = asx1[0]
+        mnualgo1.Tag = CLong(asx1[1])
+        mnualgo1.Enabled = True
+      Endif
 
-  If xform2 Then
-    mnualgo2.Caption = xform2
-    mnualgo2.Tag = "ClinAlgorithm2"
-    mnualgo2.Enabled = True
-  Endif
+      If $RuleChartLst.Count > 1 Then
+        asx2 = Split($RuleChartLst[1], "|")
+        mnualgo2.Caption = asx2[0]
+        mnualgo2.Tag = CLong(asx2[1])
+        mnualgo2.Enabled = True
+      Endif
 
-  If xform3 Then
-    mnualgo3.Caption = xform3
-    mnualgo3.Tag = "ClinAlgorithm3"
-    mnualgo3.Enabled = True
-  Endif
+      If $RuleChartLst.Count > 2 Then
+        asx3 = Split($RuleChartLst[2], "|")
+        mnualgo3.Caption = asx3[0]
+        mnualgo3.Tag = CLong(asx3[1])
+        mnualgo3.Enabled = True
+      Endif
 
-  If xform4 Then
-    mnualgo4.Caption = xform4
-    mnualgo4.Tag = "ClinAlgorithm4"
-    mnualgo4.Enabled = True
-  Endif
+      If $RuleChartLst.Count > 3 Then
+        asx4 = Split($RuleChartLst[3], "|")
+        mnualgo4.Caption = asx4[0]
+        mnualgo4.Tag = CLong(asx4[1])
+        mnualgo4.Enabled = True
+      Endif
 
-  If xform5 Then
-    mnualgo5.Caption = xform5
-    mnualgo5.Tag = "ClinAlgorithm5"
-    mnualgo5.Enabled = True
-  Endif
+      If $RuleChartLst.Count > 4 Then
+        asx5 = Split($RuleChartLst[4], "|")
+        mnualgo5.Caption = asx5[0]
+        mnualgo5.Tag = CLong(asx5[1])
+        mnualgo5.Enabled = True
+      Endif
 
-  If xform6 Then
-    mnualgo6.Caption = xform6
-    mnualgo6.Tag = "ClinAlgorithm6"
-    mnualgo6.Enabled = True
-  Endif
-
-  If xform7 Then
-    mnualgo7.Caption = xform7
-    mnualgo7.Tag = "ClinAlgorithm7"
-    mnualgo7.Enabled = True
-  Endif
-
-  If xform8 Then
-    mnualgo8.Caption = xform8
-    mnualgo8.Tag = "ClinAlgorithm8"
-    mnualgo8.Enabled = True
-  Endif
-
-  If xform9 Then
-    mnualgo9.Caption = xform9
-    mnualgo9.Tag = "ClinAlgorithm9"
-    mnualgo9.Enabled = True
-  Endif
-
-  If xform10 Then
-    mnualgo10.Caption = xform10
-    mnualgo10.Tag = "ClinAlgorithm10"
-    mnualgo10.Enabled = True
+    Endif
   Endif
 
 End
@@ -3787,8 +3749,7 @@ Public Sub mnualgo1_Click()
   Dim xval As Variant
 
   If txtencid.Text Then
-    xval = modSysCons.GetALgorithmValue(Trim(txtencid.Text), mnualgo1.Tag)
-    Message.Info(xval, ("OK"))
+    modClinChart.LoadRuleChart(Trim(txtencid.Text), mnualgo1.Tag, mnualgo1.Caption)
   Endif
 
 End
@@ -3798,8 +3759,7 @@ Public Sub mnualgo2_Click()
   Dim xval As Variant
 
   If txtencid.Text Then
-    xval = modSysCons.GetALgorithmValue(Trim(txtencid.Text), mnualgo2.Tag)
-    Message.Info(xval, ("OK"))
+    modClinChart.LoadRuleChart(Trim(txtencid.Text), mnualgo2.Tag, mnualgo2.Caption)
   Endif
 
 End
@@ -3809,8 +3769,7 @@ Public Sub mnualgo3_Click()
   Dim xval As Variant
 
   If txtencid.Text Then
-    xval = modSysCons.GetALgorithmValue(Trim(txtencid.Text), mnualgo3.Tag)
-    Message.Info(xval, ("OK"))
+    modClinChart.LoadRuleChart(Trim(txtencid.Text), mnualgo3.Tag, mnualgo3.Caption)
   Endif
 
 End
@@ -3820,8 +3779,7 @@ Public Sub mnualgo4_Click()
   Dim xval As Variant
 
   If txtencid.Text Then
-    xval = modSysCons.GetALgorithmValue(Trim(txtencid.Text), mnualgo4.Tag)
-    Message.Info(xval, ("OK"))
+    modClinChart.LoadRuleChart(Trim(txtencid.Text), mnualgo4.Tag, mnualgo4.Caption)
   Endif
 
 End
@@ -3831,63 +3789,7 @@ Public Sub mnualgo5_Click()
   Dim xval As Variant
 
   If txtencid.Text Then
-    xval = modSysCons.GetALgorithmValue(Trim(txtencid.Text), mnualgo5.Tag)
-    Message.Info(xval, ("OK"))
-  Endif
-
-End
-
-Public Sub mnualgo6_Click()
-
-  Dim xval As Variant
-
-  If txtencid.Text Then
-    xval = modSysCons.GetALgorithmValue(Trim(txtencid.Text), mnualgo6.Tag)
-    Message.Info(xval, ("OK"))
-  Endif
-
-End
-
-Public Sub mnualgo7_Click()
-
-  Dim xval As Variant
-
-  If txtencid.Text Then
-    xval = modSysCons.GetALgorithmValue(Trim(txtencid.Text), mnualgo7.Tag)
-    Message.Info(xval, ("OK"))
-  Endif
-
-End
-
-Public Sub mnualgo8_Click()
-
-  Dim xval As Variant
-
-  If txtencid.Text Then
-    xval = modSysCons.GetALgorithmValue(Trim(txtencid.Text), mnualgo8.Tag)
-    Message.Info(xval, ("OK"))
-  Endif
-
-End
-
-Public Sub mnualgo9_Click()
-
-  Dim xval As Variant
-
-  If txtencid.Text Then
-    xval = modSysCons.GetALgorithmValue(Trim(txtencid.Text), mnualgo9.Tag)
-    Message.Info(xval, ("OK"))
-  Endif
-
-End
-
-Public Sub mnualgo10_Click()
-
-  Dim xval As Variant
-
-  If txtencid.Text Then
-    xval = modSysCons.GetALgorithmValue(Trim(txtencid.Text), mnualgo10.Tag)
-    Message.Info(xval, ("OK"))
+    modClinChart.LoadRuleChart(Trim(txtencid.Text), mnualgo5.Tag, mnualgo5.Caption)
   Endif
 
 End

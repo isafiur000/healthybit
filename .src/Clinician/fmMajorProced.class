@@ -378,7 +378,7 @@ Public Sub mnureport_Click()
     xxx = SelectListView("Select Procedure Components", abc, False)
     If xxx Then
       Inc Application.Busy
-      xPath = modCHTMLPatient.ShowUniProcedureReport(GridView3[GridView3.Row, 0].Text, $encid, xxx)
+      xPath = modPatSurgery.ShowUniProcedureReport(GridView3[GridView3.Row, 0].Text, $encid, xxx)
       Dec Application.Busy
       modControlSub.OpenHTMLPreview($encid, xPath, "ReportSize")
     Endif

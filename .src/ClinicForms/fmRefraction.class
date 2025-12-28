@@ -20,6 +20,7 @@ Private $sType As String
 Private $PatientNum As String
 Private hDigForm As FmDiagnosticTab
 Private hPtForm As FmClinHistory
+Private hPtArchive As FmClinArchive
 
 Public Sub _new(encid As String, sExam As String, sType As String)
 
@@ -34,6 +35,7 @@ Public Sub Form_Open()
   $PatientNum = modPatient.GetPatientNoByEnc($encid)
   hDigForm = New FmDiagnosticTab($encid, pnlreport)
   hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
+  hPtArchive = New FmClinArchive($PatientNum, pnlarchivbe)
   ' pctpowerod.Image = Image.Load("Images/power.png").Stretch(pctpowerod.Width, pctpowerod.Height)
   ' pctpoweros.Image = Image.Load("Images/power.png").Stretch(pctpoweros.Width, pctpoweros.Height)
   picteyeright.Image = Image.Load("Images/eye.png").Stretch(picteyeright.Width, picteyeright.Height)

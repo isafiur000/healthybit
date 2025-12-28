@@ -1415,10 +1415,16 @@ End
 Public Sub btnIPform_Click()
 
   Dim hForm As FmPatientMain
+  Dim hForm1 As FmNursingForm
 
   If GridView1.Rows.Selection.Count Then
-    hForm = New FmPatientMain(GridView1[GridView1.Row, 4].Text, True)
-    modWorkSpace.Add(hForm)
+    If modGeneralMain.$HideFormList.Exist("Clinician Form") = True Then
+      hForm1 = New FmNursingForm(GridView1[GridView1.Row, 4].Text, True)
+      modWorkSpace.Add(hForm1)
+    Else
+      hForm = New FmPatientMain(GridView1[GridView1.Row, 4].Text, True)
+      modWorkSpace.Add(hForm)
+    Endif
   Endif
 
 End
@@ -1998,7 +2004,7 @@ Public Sub mnuessenexam_Click()
   Dim hForm As FmMultiChart
 
   If GridView1.Rows.Selection.Count Then
-    xx = modString.GetListFromCompareVariant(modFixPatho.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
+    xx = modString.GetListFromCompareVariant(modTableCache.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
     hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, xx, yy, LabUnitForm())
     modWorkSpace.Add(hForm)
   Endif
@@ -2901,5 +2907,39 @@ End
 Public Sub chkshowstatus_Click()
 
   modSettings.EnterCheckSetting(chkshowstatus, "BedOccupancy/ShowStatusIcons")
+
+End
+
+''--------- forms
+Public Sub mnunurseform_Click()
+
+  Dim hForm As FmNursingForm
+
+  If GridView1.Rows.Selection.Count Then
+    hForm = New FmNursingForm(GridView1[GridView1.Row, 4].Text, True)
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+Public Sub mnudelform_Click()
+
+  Dim hForm As FmDeliveryNew
+
+  If GridView1.Rows.Selection.Count Then
+    hForm = New FmDeliveryNew(GridView1[GridView1.Row, 4].Text, True)
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+Public Sub mnuexamform_Click()
+
+  Dim hForm As FmExamReporting
+
+  If GridView1.Rows.Selection.Count Then
+    hForm = New FmExamReporting(GridView1[GridView1.Row, 4].Text, True)
+    modWorkSpace.Add(hForm)
+  Endif
 
 End
