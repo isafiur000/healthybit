@@ -1713,7 +1713,7 @@ Public Sub btntriage_Click()
 
 End
 
-''------------------------------------ custom menus -----------------------------------
+''------------------------------- custom report menu --------------------------------------------
 Private Sub FillCustomMenu()
 
   Dim xform1 As String
@@ -1800,7 +1800,6 @@ Private Sub FillCustomMenu()
 
 End
 
-''''------------------------------- custom report menu ---------------------------------------------------
 Public Sub mnucust1_Click()
 
   Dim hCls As CReportCustom
@@ -1911,116 +1910,92 @@ Public Sub mnucust10_Click()
 
 End
 
-Private Sub FillCustomFormMenu()
+''====================== chart =============================
+Public Sub mnuessenexam_Click()
 
-  Dim xform1 As String
-  Dim xform2 As String
-  Dim xform3 As String
-  Dim xform4 As String
-  Dim xform5 As String
-  Dim xform6 As String
-  Dim xform7 As String
-  Dim xform8 As String
-  Dim xform9 As String
-  Dim xform10 As String
+  Dim hForm As FmMultiChart
 
-  xform1 = modSettings.ShowSettingForReport("CustomForm1/Form_Name")
-  xform2 = modSettings.ShowSettingForReport("CustomForm2/Form_Name")
-  xform3 = modSettings.ShowSettingForReport("CustomForm3/Form_Name")
-  xform4 = modSettings.ShowSettingForReport("CustomForm4/Form_Name")
-  xform5 = modSettings.ShowSettingForReport("CustomForm5/Form_Name")
-  xform6 = modSettings.ShowSettingForReport("CustomForm6/Form_Name")
-  xform7 = modSettings.ShowSettingForReport("CustomForm7/Form_Name")
-  xform8 = modSettings.ShowSettingForReport("CustomForm8/Form_Name")
-  xform9 = modSettings.ShowSettingForReport("CustomForm9/Form_Name")
-  xform10 = modSettings.ShowSettingForReport("CustomForm10/Form_Name")
-
-  If xform1 Then
-    mnucustform1.Caption = xform1
-    mnucustform1.Tag = "CustomForm1"
-    mnucustform1.Enabled = True
-  Endif
-
-  If xform2 Then
-    mnucustform2.Caption = xform2
-    mnucustform2.Tag = "CustomForm2"
-    mnucustform2.Enabled = True
-  Endif
-
-  If xform3 Then
-    mnucustform3.Caption = xform3
-    mnucustform3.Tag = "CustomForm3"
-    mnucustform3.Enabled = True
-  Endif
-
-  If xform4 Then
-    mnucustform4.Caption = xform4
-    mnucustform4.Tag = "CustomForm4"
-    mnucustform4.Enabled = True
-  Endif
-
-  If xform5 Then
-    mnucustform5.Caption = xform5
-    mnucustform5.Tag = "CustomForm5"
-    mnucustform5.Enabled = True
-  Endif
-
-  If xform6 Then
-    mnucustform6.Caption = xform6
-    mnucustform6.Tag = "CustomForm6"
-    mnucustform6.Enabled = True
-  Endif
-
-  If xform7 Then
-    mnucustform7.Caption = xform7
-    mnucustform7.Tag = "CustomForm7"
-    mnucustform7.Enabled = True
-  Endif
-
-  If xform8 Then
-    mnucustform8.Caption = xform8
-    mnucustform8.Tag = "CustomForm8"
-    mnucustform8.Enabled = True
-  Endif
-
-  If xform9 Then
-    mnucustform9.Caption = xform9
-    mnucustform9.Tag = "CustomForm9"
-    mnucustform9.Enabled = True
-  Endif
-
-  If xform10 Then
-    mnucustform10.Caption = xform10
-    mnucustform10.Tag = "CustomForm10"
-    mnucustform10.Enabled = True
+  If GridView1.Rows.Selection.Count Then
+    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, "Essential Examinations", LabUnitForm())
+    modWorkSpace.Add(hForm)
   Endif
 
 End
 
-Public Sub mnuessenexam_Click()
+Private Sub FillCustomFormMenu()
 
-  Dim xx As String[]
-  Dim yy As String[]
-  Dim hForm As FmMultiChart
+  Dim xList As String[]
 
-  If GridView1.Rows.Selection.Count Then
-    xx = modString.GetListFromCompareVariant(modTableCache.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
-    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, xx, yy, LabUnitForm())
-    modWorkSpace.Add(hForm)
+  xList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldtitle) as col from tbldepartchart where (fldcomp=&1 or fldcomp=&2)", modBasic.$compID, "%"))
+
+  If xList.Count > 0 Then
+    mnucustform1.Caption = xList[0]
+    mnucustform1.Tag = xList[0]
+    mnucustform1.Enabled = True
+  Endif
+
+  If xList.Count > 1 Then
+    mnucustform2.Caption = xList[1]
+    mnucustform2.Tag = xList[1]
+    mnucustform2.Enabled = True
+  Endif
+
+  If xList.Count > 2 Then
+    mnucustform3.Caption = xList[2]
+    mnucustform3.Tag = xList[2]
+    mnucustform3.Enabled = True
+  Endif
+
+  If xList.Count > 3 Then
+    mnucustform4.Caption = xList[3]
+    mnucustform4.Tag = xList[3]
+    mnucustform4.Enabled = True
+  Endif
+
+  If xList.Count > 4 Then
+    mnucustform5.Caption = xList[4]
+    mnucustform5.Tag = xList[4]
+    mnucustform5.Enabled = True
+  Endif
+
+  If xList.Count > 5 Then
+    mnucustform6.Caption = xList[5]
+    mnucustform6.Tag = xList[5]
+    mnucustform6.Enabled = True
+  Endif
+
+  If xList.Count > 6 Then
+    mnucustform7.Caption = xList[6]
+    mnucustform7.Tag = xList[6]
+    mnucustform7.Enabled = True
+  Endif
+
+  If xList.Count > 7 Then
+    mnucustform8.Caption = xList[7]
+    mnucustform8.Tag = xList[7]
+    mnucustform8.Enabled = True
+  Endif
+
+  If xList.Count > 8 Then
+    mnucustform9.Caption = xList[8]
+    mnucustform9.Tag = xList[8]
+    mnucustform9.Enabled = True
+  Endif
+
+  If xList.Count > 9 Then
+    mnucustform10.Caption = xList[9]
+    mnucustform10.Tag = xList[9]
+    mnucustform10.Enabled = True
   Endif
 
 End
 
 Public Sub mnucustform1_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If GridView1.Rows.Selection.Count Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform1.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform1.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, xx, yy, LabUnitForm())
+    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, mnucustform1.Tag, LabUnitForm())
     modWorkSpace.Add(hForm)
   Endif
 
@@ -2028,14 +2003,10 @@ End
 
 Public Sub mnucustform2_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If GridView1.Rows.Selection.Count Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform2.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform2.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, xx, yy, LabUnitForm())
+    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, mnucustform2.Tag, LabUnitForm())
     modWorkSpace.Add(hForm)
   Endif
 
@@ -2043,14 +2014,10 @@ End
 
 Public Sub mnucustform3_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If GridView1.Rows.Selection.Count Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform3.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform3.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, xx, yy, LabUnitForm())
+    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, mnucustform3.Tag, LabUnitForm())
     modWorkSpace.Add(hForm)
   Endif
 
@@ -2058,14 +2025,10 @@ End
 
 Public Sub mnucustform4_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If GridView1.Rows.Selection.Count Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform4.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform4.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, xx, yy, LabUnitForm())
+    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, mnucustform4.Tag, LabUnitForm())
     modWorkSpace.Add(hForm)
   Endif
 
@@ -2073,14 +2036,10 @@ End
 
 Public Sub mnucustform5_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If GridView1.Rows.Selection.Count Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform5.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform5.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, xx, yy, LabUnitForm())
+    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, mnucustform5.Tag, LabUnitForm())
     modWorkSpace.Add(hForm)
   Endif
 
@@ -2088,14 +2047,10 @@ End
 
 Public Sub mnucustform6_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If GridView1.Rows.Selection.Count Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform6.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform6.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, xx, yy, LabUnitForm())
+    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, mnucustform6.Tag, LabUnitForm())
     modWorkSpace.Add(hForm)
   Endif
 
@@ -2103,14 +2058,10 @@ End
 
 Public Sub mnucustform7_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If GridView1.Rows.Selection.Count Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform7.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform7.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, xx, yy, LabUnitForm())
+    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, mnucustform7.Tag, LabUnitForm())
     modWorkSpace.Add(hForm)
   Endif
 
@@ -2118,14 +2069,10 @@ End
 
 Public Sub mnucustform8_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If GridView1.Rows.Selection.Count Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform8.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform8.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, xx, yy, LabUnitForm())
+    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, mnucustform8.Tag, LabUnitForm())
     modWorkSpace.Add(hForm)
   Endif
 
@@ -2133,14 +2080,10 @@ End
 
 Public Sub mnucustform9_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If GridView1.Rows.Selection.Count Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform9.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform9.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, xx, yy, LabUnitForm())
+    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, mnucustform9.Tag, LabUnitForm())
     modWorkSpace.Add(hForm)
   Endif
 
@@ -2148,14 +2091,10 @@ End
 
 Public Sub mnucustform10_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If GridView1.Rows.Selection.Count Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform10.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform10.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, xx, yy, LabUnitForm())
+    hForm = New FmMultiChart(GridView1[GridView1.Row, 4].Text, mnucustform10.Tag, LabUnitForm())
     modWorkSpace.Add(hForm)
   Endif
 

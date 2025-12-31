@@ -62,14 +62,13 @@ Public Sub LoadRuleChart(encid As String, sIndex As Long, sTitle As String)
         xColl = New Collection
         Select res["fldxtype"]
           Case "Exam"
-            xitem = modFixClinic.GetExamIDFromSysConst(res["fldxvalue"])
-            If xitem Then
-              rsx = modDatabase.$myConn.Exec("select tblpatientexam.fldtime as fldtime,tblpatientexam.fldrepquanti as fldrepquanti from tblpatientexam inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblpatientexam.fldhead=&2 and tblpatientexam.fldsave=&3", xpatno, xitem, True)
+            If res["fldxvalue"] Then
+              rsx = modDatabase.$myConn.Exec("select tblpatientexam.fldtime as fldtime,tblpatientexam.fldrepquanti as fldrepquanti from tblpatientexam inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblpatientexam.fldsysconst=&2 and tblpatientexam.fldsave=&3", xpatno, res["fldxvalue"], True)
             Endif
           Case "Test"
             xitem = modFixLab.GetLabTestIDFromSysConst(res["fldxvalue"])
             If xitem Then
-              rsx = modDatabase.$myConn.Exec("select tblpatlabtest.fldtime_sample as fldtime,tblpatlabtest.fldreportquanti as fldrepquanti from tblpatlabtest inner join tblencounter on tblpatlabtest.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and fldtestid=&2 and fldsave_report=&3", xpatno, xitem, True)
+              rsx = modDatabase.$myConn.Exec("select tblpatlabtest.fldtime_sample as fldtime,tblpatlabtest.fldreportquanti as fldrepquanti from tblpatlabtest inner join tblencounter on tblpatlabtest.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblpatlabtest.fldtestid=&2 and tblpatlabtest.fldsave_report=&3", xpatno, xitem, True)
             Endif
         End Select
 
@@ -85,14 +84,13 @@ Public Sub LoadRuleChart(encid As String, sIndex As Long, sTitle As String)
         xdob = modPatient.GetPatientBirthDay(encid)
         Select res["fldytype"]
           Case "Exam"
-            yitem = modFixClinic.GetExamIDFromSysConst(res["fldyvalue"])
-            If yitem Then
-              rsy = modDatabase.$myConn.Exec("select tblpatientexam.fldtime as fldtime,tblpatientexam.fldrepquanti as fldrepquanti from tblpatientexam inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblpatientexam.fldhead=&2 and tblpatientexam.fldsave=&3", xpatno, yitem, True)                   ''
+            If res["fldyvalue"] Then
+              rsy = modDatabase.$myConn.Exec("select tblpatientexam.fldtime as fldtime,tblpatientexam.fldrepquanti as fldrepquanti from tblpatientexam inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblpatientexam.fldsysconst=&2 and tblpatientexam.fldsave=&3", xpatno, res["fldyvalue"], True)                   ''
             Endif
           Case "Test"
             yitem = modFixLab.GetLabTestIDFromSysConst(res["fldyvalue"])
             If yitem Then
-              rsy = modDatabase.$myConn.Exec("select tblpatlabtest.fldtime_sample as fldtime,tblpatlabtest.fldreportquanti as fldrepquanti from tblpatlabtest inner join tblencounter on tblpatlabtest.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and fldtestid=&2 and fldsave_report=&3", xpatno, yitem, True)
+              rsy = modDatabase.$myConn.Exec("select tblpatlabtest.fldtime_sample as fldtime,tblpatlabtest.fldreportquanti as fldrepquanti from tblpatlabtest inner join tblencounter on tblpatlabtest.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblpatlabtest.fldtestid=&2 and tblpatlabtest.fldsave_report=&3", xpatno, yitem, True)
             Endif
         End Select
         If rsy.Available Then
@@ -107,14 +105,13 @@ Public Sub LoadRuleChart(encid As String, sIndex As Long, sTitle As String)
         ycoll = New Collection
         Select res["fldytype"]
           Case "Exam"
-            yitem = modFixClinic.GetExamIDFromSysConst(res["fldyvalue"])
-            If yitem Then
-              rsy = modDatabase.$myConn.Exec("select tblpatientexam.fldtime as fldtime,tblpatientexam.fldrepquanti as fldrepquanti from tblpatientexam inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblpatientexam.fldhead=&2 and tblpatientexam.fldsave=&3", xpatno, yitem, True)                   ''
+            If res["fldyvalue"] Then
+              rsy = modDatabase.$myConn.Exec("select tblpatientexam.fldtime as fldtime,tblpatientexam.fldrepquanti as fldrepquanti from tblpatientexam inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblpatientexam.fldsysconst=&2 and tblpatientexam.fldsave=&3", xpatno, res["fldyvalue"], True)                   ''
             Endif
           Case "Test"
             yitem = modFixLab.GetLabTestIDFromSysConst(res["fldyvalue"])
             If yitem Then
-              rsy = modDatabase.$myConn.Exec("select tblpatlabtest.fldtime_sample as fldtime,tblpatlabtest.fldreportquanti as fldrepquanti from tblpatlabtest inner join tblencounter on tblpatlabtest.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and fldtestid=&2 and fldsave_report=&3", xpatno, yitem, True)
+              rsy = modDatabase.$myConn.Exec("select tblpatlabtest.fldtime_sample as fldtime,tblpatlabtest.fldreportquanti as fldrepquanti from tblpatlabtest inner join tblencounter on tblpatlabtest.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblpatlabtest.fldtestid=&2 and tblpatlabtest.fldsave_report=&3", xpatno, yitem, True)
             Endif
         End Select
         If rsy.Available Then

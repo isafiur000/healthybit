@@ -18,11 +18,10 @@ End
 
 Public Sub Form_Open()
 
-  cmbsource.List = ["All Categories", "Diagnostic Tests", "Radio Diagnostics", "General Reports", "Scanned Images", "Past Documents"]
-  cmbsource.Text = "Scanned Images"
   modAccount.PasInvoiceSetting(cmbfiscal, False)
   LoadTableNames()
 
+  rbarchive.Value = True
   ShowEncounterList()
 
 End
@@ -54,9 +53,32 @@ Public Sub cmbfiscal_Click()
 
 End
 
+Public Sub rbarchive_Click()
+
+  ShowEncounterList()
+
+End
+
+Public Sub rbsaved_Click()
+
+  ShowEncounterList()
+
+End
+
 Private Sub ShowEncounterList()
 
-  $rData = modDatabase.$myConn.Exec("select fldregdate,fldencounterval from tblencounter where fldpatientval=&1 and fldencounterval in(select fldencounterval from " & $tblpatreport & ") ORDER BY fldregdate DESC", $patId)
+  Dim sql As String
+
+  If rbarchive.Value = True Then
+    cmbsource.List = ["All Archives", "Diagnostic Tests", "Radio Diagnostics", "General Reports", "Scanned Images", "Past Documents"]
+    cmbsource.Text = "Scanned Images"
+    sql = "select t1.fldregdate as fldregdate,t2.fldencounterval as fldencounterval from tblencounter as t1 inner join " & $tblpatreport & " as t2 on t1.fldencounterval=t2.fldencounterval where t1.fldpatientval=&1 GROUP BY fldencounterval ORDER BY fldregdate DESC"
+  Else If rbsaved.Value = True Then
+    cmbsource.List = ["Patient Images", "Patient Videos"]
+    cmbsource.Text = "Patient Images"
+    sql = "select t1.fldregdate as fldregdate,t2.fldencounterval as fldencounterval from tblencounter as t1 inner join tblpatimagedata as t2 on t1.fldencounterval=t2.fldencounterval where t1.fldpatientval=&1 GROUP BY fldencounterval ORDER BY fldregdate DESC"
+  Endif
+  $rData = modDatabase.$myConn.Exec(sql, $patId)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields, -1)
   With GridView1
@@ -93,10 +115,20 @@ End
 
 Private Sub ShowDocuments(encid As String)
 
-  If cmbsource.Text = "All Categories" Then
-    $rData3 = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,flvisible,fldtime from " & $tblpatreport & " where fldencounterval like &1 and (flvisible=&2 or flvisible IS NULL)", encid, "Visible")
-  Else
-    $rData3 = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,flvisible,fldtime from " & $tblpatreport & " where fldencounterval like &1 and fldcateg like &2 and (flvisible=&3 or flvisible IS NULL)", encid, cmbsource.Text, "Visible")
+  If rbsaved.Value = True Then
+    If cmbsource.Text = "Patient Images" Then
+      $rData3 = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,fldkeyword,fldtime from tblpatimagedata where fldencounterval like &1 and fldcateg=&2", encid, "IMAGE")
+    Else If cmbsource.Text = "Patient Videos" Then
+      $rData3 = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,fldkeyword,fldtime from tblpatimagedata where fldencounterval like &1 and fldcateg=&2", encid, "VIDEO")
+    Endif
+
+  Else If rbarchive.Value = True Then
+    If cmbsource.Text = "All Archives" Then
+      $rData3 = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,flvisible,fldtime from " & $tblpatreport & " where fldencounterval like &1 and (flvisible=&2 or flvisible IS NULL)", encid, "Visible")
+    Else
+      $rData3 = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,flvisible,fldtime from " & $tblpatreport & " where fldencounterval like &1 and fldcateg like &2 and (flvisible=&3 or flvisible IS NULL)", encid, cmbsource.Text, "Visible")
+    Endif
+
   Endif
   $aMyFields3 = New String[]
   modGridView.ReadSmallData(GridView3, $rData3, $aMyFields3)
@@ -117,6 +149,8 @@ Private Sub ShowDocuments(encid As String)
     .Columns[3].Text = "Title"
     .Columns[4].Text = "Comment"
   End With
+
+  Try MediaView1.Stop()
 
 End
 
@@ -140,18 +174,59 @@ Public Sub GridView3_Click()
     lbldate.Text = "DATE: " & GridView3[GridView3.Row, 1].Text
     txttitle.Text = GridView3[GridView3.Row, 3].Text
     txtcomment.Text = GridView3[GridView3.Row, 4].Text
-    xFPath = modImage.GetBlobFileData(GridView3[GridView3.Row, 0].Text, $tblpatreport)
+    If rbsaved.Value = True Then
+      xFPath = modImage.GetBlobFileDataTable(GridView3[GridView3.Row, 0].Text, "tblpatimagedata")
+    Else If rbarchive.Value = True Then
+      xFPath = modImage.GetBlobFileData(GridView3[GridView3.Row, 0].Text, $tblpatreport)
+    Endif
     If Exist(xFPath) Then
-
-      Select Case Lower(File.Ext(xFPath))
-        Case "bmp", "jpg", "jpeg", "png", "gif", "svg", "tiff"
+      If rbsaved.Value = True Then
+        If cmbsource.Text = "Patient Images" Then
           DisplayImage(xFPath)
-        Case Else
-          DisplayPDF(xFPath)
-      End Select
+        Else If cmbsource.Text = "Patient Videos" Then
+          DisplayVideo(xFPath)
+        Endif
 
+      Else If rbarchive.Value = True Then
+        Select Case Lower(File.Ext(xFPath))
+          Case "bmp", "jpg", "jpeg", "png", "gif", "svg", "tiff"
+            DisplayImage(xFPath)
+          Case Else
+            DisplayPDF(xFPath)
+        End Select
+
+      Endif
     Endif
   Endif
+
+End
+
+Public Sub btnview_Click()
+
+  Dim xFPath As String
+
+  If GridView3.Rows.Selection.Count > 0 Then
+    If rbsaved.Value = True Then
+      xFPath = modImage.GetBlobFileDataTable(GridView3[GridView3.Row, 0].Text, "tblpatimagedata")
+    Else
+      xFPath = modImage.GetBlobFileData(GridView3[GridView3.Row, 0].Text, $tblpatreport)
+    Endif
+    If Exist(xFPath) Then
+      modDevice.DesktopOpenFile(xFPath)
+    Endif
+  Endif
+
+End
+
+Private Sub DisplayVideo(sPath As String)
+
+  PictureBox1.Visible = False
+  MediaView1.Visible = True
+  docviewleft.Visible = False
+  DocumentView1.Visible = False
+
+  MediaView1.URL = sPath
+  MediaView1.Play()
 
 End
 
@@ -160,6 +235,8 @@ Private Sub DisplayImage(sPath As String)
   PictureBox1.Visible = True
   docviewleft.Visible = False
   DocumentView1.Visible = False
+  MediaView1.Visible = False
+
   PictureBox1.Image = Image.Load(sPath)
   PictureBox1.Zoom = SliderBox1.Value / 100
   ' modImage.StretchtPictureToBox(PictureBox1, sPath)
@@ -169,8 +246,10 @@ End
 Private Sub DisplayPDF(sPath As String)
 
   PictureBox1.Visible = False
+  MediaView1.Visible = False
   docviewleft.Visible = True
   DocumentView1.Visible = True
+
   If $hPDF And If $hPDF.Count Then
     $hPDF.Close()
   Endif
@@ -226,18 +305,26 @@ Public Sub SliderBox1_Change()
 
 End
 
-Public Sub btnview_Click()
+Public Sub btnleft_Click()
 
-  Dim indexLst As Long[]
-  Dim fileList As String[]
-  Dim xFPath As String
-  Dim sPath As String
+  Dim aVal As Integer
 
-  If GridView3.Rows.Selection.Count > 0 Then
-    xFPath = modImage.GetBlobFileData(GridView3[GridView3.Row, 0].Text, $tblpatreport)
-    If Exist(xFPath) Then
-      modDevice.DesktopOpenFile(xFPath)
-    Endif
-  Endif
+  aVal = SliderBox1.Value
+  With PictureBox1
+    .Image = PictureBox1.Image.RotateLeft()
+    .Zoom = aVal / 100
+  End With
+
+End
+
+Public Sub btnright_Click()
+
+  Dim aVal As Integer
+
+  aVal = SliderBox1.Value
+  With PictureBox1
+    .Image = PictureBox1.Image.RotateRight()
+    .Zoom = aVal / 100
+  End With
 
 End

@@ -37,6 +37,7 @@ Public Sub ReadSmallMyData(GridView1 As GridView, $hres As MyResult, $aMyFields 
   Dim rxf As String
 
   GridView1.Clear
+  GridView1.Rows.Count = $hres.Count
   If $hres.Count Then
     GridView1.Columns.Count = $hres.Fields.Count
     For Each rxf In $hres.Fields
@@ -45,7 +46,6 @@ Public Sub ReadSmallMyData(GridView1 As GridView, $hres As MyResult, $aMyFields 
   Else
     GridView1.Columns.Count = $Columns
   Endif
-  GridView1.Rows.Count = $hres.Count
 
   GridView1.Rows.Height = modBasic.$AppGridRowHeight
 

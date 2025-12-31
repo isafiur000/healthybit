@@ -1,0 +1,80 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,112,53)
+  { mnuhidetree Menu
+    { mnudeltree Menu
+      Text = ("Delete")
+    }
+    { mnucommentree Menu
+      Text = ("Comment")
+    }
+  }
+  { Panel10 Panel
+    MoveScaled(1,1,18.5,51)
+    Arrangement = Arrange.Vertical
+    { cmbcategory ListBox
+      MoveScaled(0,0,16,30)
+      Tag = "Radiology Billing"
+      Expand = True
+      ScrollBar = Scroll.Both
+    }
+  }
+  { Panel12 Panel
+    MoveScaled(20,1,43,51)
+    Arrangement = Arrange.Vertical
+    { Panel11 Panel
+      MoveScaled(0,0,42,4)
+      { txtsearchtree ButtonBox
+        MoveScaled(4,0.5,14,3)
+        Picture = Picture["icon:/small/cancel"]
+      }
+      { btnselecttree Button
+        MoveScaled(30,0.5,11,3)
+        Tag = "Auto"
+        Picture = Picture["icon:/small/right"]
+      }
+      { chkleftTree CheckBox
+        MoveScaled(0,0.5,3,3)
+      }
+      { cmbdisctype ComboBox
+        MoveScaled(20,1,8,2)
+        Visible = False
+      }
+    }
+    { TreeView1 TreeView
+      MoveScaled(2,15,31,27)
+      Expand = True
+    }
+    { chknextvisitree CheckBox
+      MoveScaled(4,45,23,3)
+      Text = ("Plan for Next Visit")
+    }
+  }
+  { Panel7 Panel
+    MoveScaled(63,1,48,51)
+    Arrangement = Arrange.Vertical
+    { Panel6 Panel
+      MoveScaled(0,0,48,4)
+      { btnclose Button
+        MoveScaled(35,0.5,12,3)
+        Text = ("Close")
+        Picture = Picture["icon:/small/close"]
+      }
+      { txtlastsaledate2 TextBox
+        MoveScaled(0,0.5,16,3)
+        Font = Font["Bold"]
+        ReadOnly = True
+        Placeholder = ("Last Sales")
+      }
+    }
+    { GridView4 GridView
+      MoveScaled(3,23,40,25)
+      Expand = True
+      Mode = Select.Single
+      Header = GridView.Both
+      AutoResize = False
+      Resizable = False
+    }
+  }
+}

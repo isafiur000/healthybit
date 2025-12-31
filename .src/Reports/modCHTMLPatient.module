@@ -1469,8 +1469,9 @@ Public Function ShowPatientDiagnosticImage(sType As String, fldid As Long, encid
   Dim tempFile As String
   Dim hFile As Blob
   Dim aFile As String
+  Dim Row As Integer
 
-  $BillingReport = New CReportHTML([("Time"), ("Particulars"), ("Description"), ("Image")], "PatientReport", encid)
+  $BillingReport = New CReportHTML([("SNO"), ("Description"), ("Image")], "PatientReport", encid)
   $BillingReport.UserData.Add("REPORT", "Report")
   If sType = "Laboratory" Then
     $BillingReport.UserData.Add(modLabTest.GetTestnameFromTestID(fldid), "PARAM1")
@@ -1478,6 +1479,7 @@ Public Function ShowPatientDiagnosticImage(sType As String, fldid As Long, encid
     $BillingReport.UserData.Add("", "PARAM1")
   Endif
 
+  Row = 1
   res = modDatabase.$syConn.Exec("select fldtime,fldpic,fldtitle,flddetail,fldlink from tblpatserialimage where fldtestid=&1 and fldencounterval=&2 and fldcateg=&3 and fldmode=&4", fldid, encid, "IMAGE", sType)
   If res.Available Then
     For Each res
@@ -1495,9 +1497,8 @@ Public Function ShowPatientDiagnosticImage(sType As String, fldid As Long, encid
       Endif
 
       With asx
-        .Add(modReportVar.GetDateTimeReport(res["fldtime"], gb.GeneralDate))
-        .Add(res["fldtitle"])
-        .Add(res["flddetail"])
+        .Add(CStr(Row))
+        .Add(modString.TextToHTML(res["fldtitle"] & gb.NewLine & res["flddetail"] & "[" & modReportVar.GetDateTimeReport(res["fldtime"], gb.GeneralDate) & "]"))
         .Add(modString.GetImageForHTML(tempFile))
       End With
       $BillingReport.Add(asx)

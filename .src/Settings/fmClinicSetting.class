@@ -37,6 +37,7 @@ Public Sub Form_Open()
   cmbmedvisible.List = ["Allow", "Prevent"]
   cmbsympscale.List = modControlSub.GetDirectFillresult(modDatabase.$syConn.Exec("select fldexamid as col from tblexam where fldoption=&1 and fldstatus=&2", "Clinical Scale", "Active"))        ''
 
+  cmbradiotree.List = ["Both", "Credit", "RefOnly", "No"]
   cmbbedrelease.List = ["Enable", "Disable"]
   cmbbedfreeon.List = ["Discharge", "Clearance"]
   cmbconsultlist.List = ["Paid", "All"]
@@ -149,6 +150,8 @@ Private Sub ManageSettings()
     txtholdbed.Value = 0
   Endif
 
+  cmbradiotree.Text = modGlobalSetting.ShowSettingFromDBAny("IPClinic/ForceRadioTree", cmbtarget.Text)
+
 End
 
 Public Sub btntriage_Click()
@@ -203,6 +206,14 @@ Public Sub btnbedfreeon_Click()
 
   modGlobalSetting.SaveSettingToDB("IPClinic/BedReleaseEvent", cmbbedfreeon.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btnbedfreeon)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnradiotree_Click()
+
+  modGlobalSetting.SaveSettingToDB("IPClinic/ForceRadioTree", cmbradiotree.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnradiotree)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -783,6 +794,7 @@ Public Sub btnsettall_Click()
   xList.Add("IPClinic/MidBedRelease")
   xList.Add("IPClinic/BedReleaseEvent")
   xList.Add("IPClinic/BedHoldingDuration")
+  xList.Add("IPClinic/ForceRadioTree")
 
   xList.Add("IPClinic/TelemedicineRequest")
   xList.Add("IPClinic/TelemedicineServer")

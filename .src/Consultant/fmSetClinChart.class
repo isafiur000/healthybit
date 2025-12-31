@@ -96,26 +96,24 @@ Public Sub tbtnadd_Click()
   Dim res As Result
 
   If cmbtarget.Text And If cmbcategory.Text Then
-    If txtitemx.Text And If txtitemy.Text Then
-      res = modDatabase.$myConn.Create("tblclinchart")
-      res["fldtitle"] = Trim(cmbcategory.Text)
-      res["fldcomp"] = cmbtarget.Text
-      res["fldptsex"] = cmbgender.Text
-      res["fldagegroup"] = cmbagegroup.Text
-      res["fldxtype"] = cmbtypex.Text
-      res["fldxvalue"] = Trim(txtitemx.Text)
-      res["fldytype"] = cmbtypey.Text
-      res["fldyvalue"] = Trim(txtitemy.Text)
-      res["fldformula"] = Trim(txtformula.Text)
-      res["fldminimum"] = txtminimum.Value
-      res["fldmaximum"] = txtmaximum.Value
-      res.Update
-      ShowGridView()
-      Balloon.Info(("Information saved"), tbtnadd)
-      Balloon.Delay = modBasic.$BalloonDelay
-      txtitemx.Text = ""
-      txtitemy.Text = ""
-    Endif
+    res = modDatabase.$myConn.Create("tblclinchart")
+    res["fldtitle"] = Trim(cmbcategory.Text)
+    res["fldcomp"] = cmbtarget.Text
+    res["fldptsex"] = cmbgender.Text
+    res["fldagegroup"] = cmbagegroup.Text
+    res["fldxtype"] = cmbtypex.Text
+    res["fldxvalue"] = Trim(txtitemx.Text)
+    res["fldytype"] = cmbtypey.Text
+    res["fldyvalue"] = Trim(txtitemy.Text)
+    res["fldformula"] = Trim(txtformula.Text)
+    res["fldminimum"] = txtminimum.Value
+    res["fldmaximum"] = txtmaximum.Value
+    res.Update
+    ShowGridView()
+    Balloon.Info(("Information saved"), tbtnadd)
+    Balloon.Delay = modBasic.$BalloonDelay
+    txtitemx.Text = ""
+    txtitemy.Text = ""
   Endif
 
 End

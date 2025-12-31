@@ -435,13 +435,19 @@ End
 
 Public Sub btnaddone_Click()
 
+  Dim xList As String[]
   Dim Row As Integer
 
   If GridView3.Rows.Selection.Count Then
     If modMisc.AllowDiagnoBilling($encid) = True Then
       For Row = 0 To GridView3.Rows.Count - 1
         If GridView3[Row, 0].Picture = Picture["icons/checked.png"] Then
-          InsertClinicService(GridView3[Row, 2].Text, GridView3[Row, 1].Text, 1)
+
+          xList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(flditemname) as col from tblpatbilling where fldencounterval=&1 and flditemname in(select flditemname as col from tblservicecost where flditemtype=&2 and (fldtarget=&3 or fldtarget=&4))", $encid, "Procedures", "Major", "Intermediate"))
+          If modMisc.GetDuplicationAllow(xList, GridView3[Row, 1].Text, btnaddone) = True Then
+            InsertClinicService(GridView3[Row, 2].Text, GridView3[Row, 1].Text, 1)
+          Endif
+
           GridView3[Row, 0].Picture = Picture["icons/unchecked.png"]
         Endif
       Next

@@ -5809,3 +5809,15 @@ Catch
   modHelpVariable.CreateErrorReport()
 
 End
+
+Public Sub mnuaddradio_Click()
+
+  Dim hForm As FmAddRadio
+
+  If txtencid Then
+    hForm = New FmAddRadio(Trim(txtencid.Text), cmbdisctype.Text)
+    hForm.ShowModal
+    ShowNewEntry()
+  Endif
+
+End

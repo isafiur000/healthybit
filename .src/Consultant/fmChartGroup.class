@@ -1,0 +1,178 @@
+' Gambas class file
+
+Private $rData As Result
+Private $aMyFields As String[]
+
+Private $examList As String[]
+Private $TestList As String[]
+
+Public Sub Form_Open()
+
+  modGeneralMain.ArrangeFormCentre(Me, "False")
+  If modHelpVariable.$LogInCategory = "Clinician" Then
+    cmbtarget.Text = modBasic.$compID
+    cmbtarget.Enabled = False
+    btnrefresh_Click()
+  Else
+    cmbtarget.List = modBasic.$AllCompPerList
+    cmbtarget.Enabled = True
+  Endif
+  $examList = modMedicine.FillExamQualiOrQuantiCombo("%")
+  $TestList = modMedicine.FillLabTestCombo("%")
+  cmbcategory.List = ["Laboratory", "Examination"]
+
+End
+
+Public Sub Form_KeyRelease()
+
+  If Key.Code = Key.Esc Then
+    Me.Close
+  Else
+    modGeneralmain.GoToNextControlTab()
+  Endif
+
+End
+
+Public Sub btnaddexam_Click()
+
+  If cmbcategory.Text = "Examination" Then
+    cmbexamname.Text = GridViewNew("Select " & cmbcategory.Text, $examList, False)
+  Else If cmbcategory.Text = "Laboratory" Then
+    cmbexamname.Text = GridViewNew("Select " & cmbcategory.Text, $TestList, False)
+  Endif
+
+End
+
+Public Sub btnadcompo_Click()
+
+  If cmbcategory.Text = "Examination" Then
+    cmbexamname.Text = GridViewNew("Select subcomponent of " & cmbcategory.Text, modFixClinic.GetSubExamArray(cmbexamname.Text), False)
+  Else If cmbcategory.Text = "Laboratory" Then
+    cmbexamname.Text = GridViewNew("Select subcomponent of " & cmbcategory.Text, modFixLab.GetSubTestArray(cmbexamname.Text), False)
+  Endif
+
+End
+
+Public Sub btnOK_Click()
+
+  Dim res As Result
+  Dim xsyscos As String
+  Dim xoption As String
+
+  If cmbexamname.Text And If cmbtarget.Text And If cmbgroupname.Text Then
+    If cmbcategory.Text = "Examination" Then
+      xsyscos = modFixClinic.SysConstFromGetExamID(cmbexamname.Text)
+      xoption = modFixClinic.GetExamtOptionType(cmbexamname.Text)
+    Else If cmbcategory.Text = "Laboratory" Then
+      xsyscos = modFixLab.GetTestSysName(cmbexamname.Text)
+      xoption = modFixLab.GetLabTestOptionType(cmbexamname.Text)
+    Endif
+
+    res = modDatabase.$myConn.Create("tbldepartchart")
+    res["fldcomp"] = cmbtarget.Text
+    res["fldtitle"] = cmbgroupname.Text
+    res["fldcategory"] = cmbcategory.Text
+    res["fldexam"] = cmbexamname.Text
+    res["fldsubexam"] = cmbcomponent.Text
+    res["fldsysconst"] = xsyscos
+    res["fldoption"] = xoption
+    res["fldexamorder"] = txtorder.Value
+    res.Update
+    ShowDataGrid()
+  Endif
+
+End
+
+Public Sub btnCancel_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    modDatabase.$myConn.Delete("tbldepartchart", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+    ShowDataGrid()
+    Balloon.Delete(("Variable deleted"), btnCancel)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+End
+
+Public Sub btnedit_Click()
+
+  Dim res As Result
+  Dim xsyscos As String
+  Dim xoption As String
+
+  If GridView1.Rows.Selection.Count Then
+    If cmbexamname.Text And If cmbtarget.Text And If cmbgroupname.Text Then
+      res = modDatabase.$myConn.Edit("tbldepartchart", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+      If cmbcategory.Text = "Examination" Then
+        xsyscos = modFixClinic.SysConstFromGetExamID(cmbexamname.Text)
+        xoption = modFixClinic.GetExamtOptionType(cmbexamname.Text)
+      Else If cmbcategory.Text = "Laboratory" Then
+        xsyscos = modFixLab.GetTestSysName(cmbexamname.Text)
+        xoption = modFixLab.GetLabTestOptionType(cmbexamname.Text)
+      Endif
+
+      res["fldtitle"] = cmbgroupname.Text
+      res["fldcategory"] = cmbcategory.Text
+      res["fldexam"] = cmbexamname.Text
+      res["fldsubexam"] = cmbcomponent.Text
+      res["fldsysconst"] = xsyscos
+      res["fldoption"] = xoption
+      res["fldexamorder"] = txtorder.Value
+      res.Update
+      ShowDataGrid()
+    Endif
+  Endif
+
+End
+
+Public Sub btnrefresh_Click()
+
+  If cmbtarget.Text Then
+    ShowDataGrid()
+  Endif
+
+End
+
+Private Sub ShowDataGrid()
+
+  $rData = modDatabase.$myConn.Exec("select fldid,fldtitle,fldexam,fldsubexam,fldcategory,fldsysconst,fldoption,fldexamorder from tbldepartchart where fldcomp=&1 ORDER BY fldexamorder", cmbtarget.Text)
+  $aMyFields = New String[]
+  modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
+  With GridView1
+    .Columns[0].Width = 1
+    .Columns[1].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 250 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 1
+    .Columns[6].Width = 1
+    .Columns[7].Width = 50 * modBasic.$AppWidthRatio
+
+    .Columns[1].Text = "Title"
+    .Columns[2].Text = "Examination"
+    .Columns[3].Text = "Component"
+    .Columns[4].Text = "Type"
+    .Columns[7].Text = "Order"
+  End With
+
+End
+
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  $rData.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView1, Row)
+  GridView1.Data.Text = $rData[$aMyFields[Column]]
+  GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
+  GridView1.Data.WordWrap = True
+
+End
+
+Public Sub GridView1_Click()
+
+  cmbgroupname.Text = GridView1[GridView1.Row, 1].Text
+  cmbcategory.Text = GridView1[GridView1.Row, 4].Text
+  cmbexamname.Text = GridView1[GridView1.Row, 2].Text
+  cmbcomponent.Text = GridView1[GridView1.Row, 3].Text
+  txtorder.Value = GridView1[GridView1.Row, 7].Text
+
+End

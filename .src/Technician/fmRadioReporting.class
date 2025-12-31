@@ -1160,7 +1160,7 @@ Private Sub UpdateSampledTest()
   Dim res2 As Result
 
   If GridView4.Rows.Selection.Count > 0 Then
-    If Message.Question("Are you sure to alter the selected Test addition ?", ("No"), ("Yes")) = 2 Then
+    If Message.Question("Are you sure to alter selected Test addition ?", ("No"), ("Yes")) = 2 Then
       resx = modDatabase.$myConn.Edit("tblpatradiotest", "fldgroupid=&1 and fldstatus=&2", GridView4[GridView4.Row, 2].Text, "Sampled")
       If resx.Available Then
 
@@ -1235,19 +1235,6 @@ Catch
 End
 
 Public Sub btnaddin_Click()
-
-  If cmbformat.Text Then
-    If rbwaiting.Value = True Then
-      AddSampling(dtplan.Value, cmbformat.Text)
-    Else If rbadded.Value = True Then
-      UpdateSampledTest()
-    Endif
-  Endif
-  btnformatlist.Tag = ""
-
-End
-
-Public Sub mnuadd_Click()
 
   If cmbformat.Text Then
     If rbwaiting.Value = True Then
@@ -1527,11 +1514,11 @@ Private Sub FillSamplingEncounters()
   Endif
 
   If rbencrepo.Value = True Then
-    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval from " & xpreun & "tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                        ''
+    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldabnormal,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldmethod,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval from " & xpreun & "tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                        ''
   Else If rbinvoicrepo.Value = True Then
-    sql = "select tblpatradiotest.fldbillno as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval from " & xpreun & "tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder
+    sql = "select tblpatradiotest.fldbillno as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldabnormal,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldmethod,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval from " & xpreun & "tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder
   Else If rbindoorrepo.Value = True Then
-    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldmethod,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval from " & xpreun & "tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                      ''
+    sql = "select tblpatradiotest.fldencounterval as fldparent,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval,tblpatradiotest.fldtestid,tblpatradiotest.fldencounterval,tblpatradiotest.fldid,tblpatradiotest.fldnewdate,tblpatradiotest.fldsampletype,tblpatradiotest.fldabnormal,tblpatradiotest.fldbcounter,tblpatradiotest.fldnewdate,tblpatradiotest.fldmethod,tblpatradiotest.fldencounterval,tblpatradiotest.fldencounterval from " & xpreun & "tblpatradiotest" & xunion & " where tblpatradiotest.fldstatus=&1 and tblpatradiotest.fldsave_report=&2 and tblpatradiotest.fldcomp_report=&3" & xdate & xcateg & xsample & xsearch & xorder                                      ''
   Endif
   If rbpending.Value = True Then
     $rData2 = modDatabase.$myConn.Exec(sql, "Sampled", False, modBasic.$compID, modDate.StartSqlDate(dtsort.value), modDate.EndSqlDate(DateAdd(dtsort.Value, gb.Day, CInt(txtrangerepo.Value))), cmbcategory.Text, cmbrepocounter.Text & "%", LCase(Trim(txtsearch.Text)))
@@ -1556,21 +1543,22 @@ Private Sub FillSamplingEncounters()
     .Columns[6].Width = 1
     .Columns[7].Width = 1
     .Columns[8].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[9].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[9].Width = 25 * modBasic.$AppWidthRatio
     .Columns[10].Width = 100 * modBasic.$AppWidthRatio
     .Columns[11].Width = 150 * modBasic.$AppWidthRatio
     .Columns[12].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[13].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[13].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[14].Width = 125 * modBasic.$AppWidthRatio
 
     .Columns[2].Text = "Name"
     .Columns[4].Text = "TestName"
     .Columns[5].Text = "Location"
     .Columns[8].Text = "Format"
-    .Columns[9].Text = "Method"
     .Columns[10].Text = "Counter"
     .Columns[11].Text = "Planned"
-    .Columns[12].Text = "Contact"
-    .Columns[13].Text = "Scheme"
+    .Columns[12].Text = "Method"
+    .Columns[13].Text = "Contact"
+    .Columns[14].Text = "Scheme"
   End With
 
 End
@@ -1586,15 +1574,36 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
     GridView2.Data.Text = modPatient.GetPatientNameByEnc($rData2[$aMyFields2[Column]])
   Else If Column = 5 Then
     GridView2.Data.Text = modPatient.GetPatientWardName($rData2[$aMyFields2[Column]])
+  Else If Column = 9 Then
+    GridView2.Data.Picture = Picture[GetValueIcon($rData2[$aMyFields2[Column]])]
+    GridView2.Data.Text = ""
   Else If Column = 11 Then
     GridView2.Data.Text = modReportVar.GetDateTimeReport($rData2[$aMyFields2[Column]], gb.GeneralDate)
-  Else If Column = 12 Then
-    GridView2.Data.Text = modPatient.GetPatientContactByEnc($rData2[$aMyFields2[Column]])
   Else If Column = 13 Then
+    GridView2.Data.Text = modPatient.GetPatientContactByEnc($rData2[$aMyFields2[Column]])
+  Else If Column = 14 Then
     GridView2.Data.Text = modPatient.ShowDiscountCategEnc($rData2[$aMyFields2[Column]])
   Else
     GridView2.Data.Text = $rData2[$aMyFields2[Column]]
   Endif
+
+End
+
+Private Function GetValueIcon(sBool As Boolean) As String
+
+  Dim xpath As String
+
+  If rbpending.Value = True Then
+    If sBool = True Then
+      xpath = "icon:/tiny/info"
+    Else
+      xPath = ""
+    Endif
+  Else If rbreported.Value = True Then
+    xpath = modMisc.GetGridIcon(sBool)
+  Endif
+
+  Return xPath
 
 End
 

@@ -1,0 +1,375 @@
+' Gambas class file
+
+Private $encid As String
+Private $BillMode As String
+Private $sPackage As String
+Private $xFinClear As Boolean
+Private $PatientNum As String
+Private $xNHISCode As String
+
+Private $TestList As String[]
+Private $TestListFile As Variant[]
+Private $LabDepartList As String[]
+
+Public Sub _new(encid As String, DiscType As String)
+
+  $encid = encid
+  $sPackage = DiscType
+
+End
+
+Public Sub Form_Open()
+
+  modGeneralMain.ArrangeFormCentre(Me, "False")
+
+  cmbdisctype.Text = $sPackage
+  $PatientNum = modPatient.GetPatientNoByEnc($encid)
+  $xNHISCode = modPatient.GetPatientExtCOdebyEnc($encid)
+  $BillMode = modNonMedical.GetDiscBindBillMode($sPackage)
+  If Not $BillMode Then
+    $BillMode = modpatient.GetPatBillingMode($encid)
+  Endif
+  $xFinClear = modNonMedical.GetFinanceClearance($encid)
+  GetCategoryList()
+
+  $TestList = New String[]
+  If $xFinClear = True Then
+    btnselecttree.Enabled = False
+  Endif
+  cmbcategory.List = $LabDepartList
+  ShowGridTree()
+
+End
+
+Private Sub GetCategoryList()
+
+  Dim asx As String[]
+  Dim xList As String[]
+
+  xList = New String[]
+  xList.Add("All Sections")
+  asx = modMedicine.GetPathoCategoryList("Radio")
+  xList.Insert(asx)
+  $LabDepartList = xList
+
+End
+
+''-------------------- Tree View Request -----------------------
+Public Sub cmbcategory_Click()
+
+  If cmbcategory.Text Then
+    LoadActiveTestsList(cmbcategory.Text)
+    GetLabTreeView()
+    txtsearchtree.SetFocus
+  Endif
+
+End
+
+Private Sub LoadActiveTestsList(sDepart As String)
+
+  Dim res As Result
+  Dim sColl As Collection
+
+  $TestListFile = New Variant[]
+  If sDepart = "All Sections" Then
+    res = modDatabase.$myConn.Exec("select fldgroupname,fldtestid from tblgroupradio where fldgroupname in(select flditemname from tblservicecost where (fldgroup=&1 or fldgroup=&2) and fldstatus=&3) ORDER BY fldtestid", $BillMode, "%", "Active")
+  Else
+    res = modDatabase.$myConn.Exec("select fldgroupname,fldtestid from tblgroupradio where fldgroupname in(select flditemname from tblservicecost where (fldgroup=&1 or fldgroup=&2) and fldstatus=&3) and fldtestid in(select fldexamid from tblradio where fldcategory=&4) ORDER BY fldtestid", $BillMode, "%", "Active", sDepart)
+  Endif
+  If res.Available Then
+    For Each res
+      sColl = New Collection
+      sColl.Add(res["fldgroupname"], "fldgroupname")
+      sColl.Add(res["fldtestid"], "fldtestid")
+      $TestListFile.Add(sColl)
+    Next
+  Endif
+
+End
+
+Private Function GetUniqListFromVariant(sVar As Variant[], sKey As String) As String[]
+
+  Dim sColl As Collection
+  Dim xxx As String[]
+  Dim xList As String[]
+
+  xxx = New String[]
+  For Each sColl In sVar
+    xxx.Add(sColl[sKey])
+  Next
+  If xxx.Count Then
+    xList = modString.GetDistinctStringArray(xxx)
+  Else
+    xList = New String[]
+  Endif
+  Return xList
+
+End
+
+Private Function GetMatchingItemList(sWord As String, sVar As Variant[], sGiven As String, sTarget As String) As String[]
+
+  Dim sColl As Collection
+  Dim xxx As String[]
+  Dim xList As String[]
+
+  xxx = New String[]
+  For Each sColl In sVar
+    If sColl[sGiven] = sWord Then
+      xxx.Add(sColl[sTarget])
+    Endif
+  Next
+  If xxx.Count Then
+    xList = modString.GetDistinctStringArray(xxx)
+  Else
+    xList = New String[]
+  Endif
+  Return xList
+
+End
+
+Private Sub GetLabTreeView()
+
+  Dim pic1 As Picture
+  Dim pic2 As Picture
+
+  Dim aList As String[]
+  Dim bList As String[]
+  Dim bstr As String
+  Dim i As Integer
+
+  Dim yList As String[]
+  Dim ystr As String
+  Dim j As Integer
+
+  pic1 = Picture["icons/coll1.png"]
+  pic2 = Picture["icons/coll3.png"]
+
+  TreeView1.Clear()
+  aList = GetUniqListFromVariant($TestListFile, "fldtestid")
+  If chkleftTree.Value = True Then
+    bList = modString.SelectStringArrayToText(txtsearchtree.Text, modString.GetDistinctStringArray(aList), True)
+  Else
+    bList = modString.SelectStringArrayToText(txtsearchtree.Text, modString.GetDistinctStringArray(aList), False)
+  Endif
+  If bList.Count Then
+    i = 1
+    For Each bstr In bList
+      TreeView1.Add(CStr(i) & "@" & bstr, bstr, pic1)
+
+      yList = GetMatchingItemList(bstr, $TestListFile, "fldtestid", "fldgroupname")
+      If yList.Count Then
+        j = 1
+        For Each ystr In yList
+          TreeView1.Add(CStr(i) & "@" & CStr(j) & "@" & ystr, ystr, pic2, CStr(i) & "@" & bstr)
+          j = j + 1
+        Next
+      Endif
+
+      i = i + 1
+    Next
+  Endif
+
+End
+
+Public Sub txtsearchtree_Change()
+
+  GetLabTreeView()
+
+End
+
+Public Sub txtsearchtree_Click()
+
+  txtsearchtree.Text = ""
+
+End
+
+Public Sub txtsearchtree_KeyPress()
+
+  modGeneralMain.InputTextSearchKeyOnly()
+
+End
+
+Public Sub txtsearchtree_KeyRelease()
+
+  If Key.Code = Key.Down Then
+    TreeView1.SetFocus
+  Endif
+
+End
+
+Public Sub TreeView1_Click()
+
+  Dim xdate As Date
+
+  If TreeView1.Current.Picture = Picture["icons/coll1.png"] Then
+    modFillContainer.ExpandClickTreeView(TreeView1)
+
+  Else If TreeView1.Current.Picture = Picture["icons/coll3.png"] Then
+    xdate = modBillings.CheckLastSalesItemDate(TreeView1.Current.Text, $PatientNum, $xNHISCode, cmbdisctype.Text)
+    If xdate Then
+      txtlastsaledate2.Text = modReportVar.GetDateTimeReport(xdate, gb.MediumDate)
+      If DateDiff(xdate, Now(), gb.Month) <= 3 Then
+        txtlastsaledate2.Foreground = Color.Red
+      Else
+        txtlastsaledate2.Foreground = Color.Default
+      Endif
+    Else
+      txtlastsaledate2.Text = ""
+      txtlastsaledate2.Foreground = Color.Default
+    Endif
+
+  Endif
+
+End
+
+Public Sub TreeView1_KeyRelease()
+
+  If Key.Code = Key.Return Or If Key.Code = Key.Enter Or If Key.Code = Key.AltKey Then
+    TreeView1_Click()
+  Endif
+
+End
+
+Private Sub ShowGridTree()
+
+  Dim sql As String
+  Dim res As Result
+  Dim Column As Integer
+  Dim fld As ResultField
+
+  sql = "select fldid,flditemname,fldstatus,fldreason,fldordtime,fldtarget,fldextrarow,fldstatus from tblpatbilling where fldencounterval=&1 and flditemtype=&2 and fldsave=&3 and (fldstatus=&4 or fldstatus=&5)"
+  res = modDatabase.$myConn.Exec(sql, $encid, "Radio Diagnostics", False, "Punched", "Planned")
+  GridView4.Clear
+  GridView4.Columns.Count = res.Fields.Count
+  GridView4.Rows.Count = res.Count
+
+  For Each res
+    Column = 0
+    For Each fld In res.Fields
+      modGeneralMain.GridExplicitDecoration(GridView4, res.Index, Column)
+      If Column = 4 Then
+        GridView4[res.Index, Column].Text = modReportVar.GetDateTimeReport(res[fld.Name], gb.GeneralDate)
+      Else
+        GridView4[res.Index, Column].Text = res[fld.Name]
+      Endif
+      Column = Column + 1
+    Next
+  Next
+  GridView4.Row = 0
+
+  With GridView4
+    .Rows.Height = modBasic.$AppGridRowHeight
+    .Columns[0].Width = 1
+    .Columns[1].Width = 275 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 1
+    .Columns[4].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[6].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[7].Width = 75 * modBasic.$AppWidthRatio
+
+    .Columns[1].Text = "Particulars"
+    .Columns[2].Text = "Status"
+    .Columns[4].Text = "Date Time"
+    .Columns[5].Text = "Target"
+    .Columns[6].Text = "Test Name"
+    .Columns[7].Text = "Status"
+  End With
+
+End
+
+Public Sub btnselecttree_Click()
+
+  Dim xrefer As String
+  Dim xpayble As String
+
+  Dim acount As Integer
+  Dim xparent As String[]
+
+  acount = 0
+  xrefer = ""
+  xpayble = ""
+
+  If modMisc.AllowDiagnoBilling($encid) = True Then
+    If TreeView1.Current.Picture = Picture["icons/coll3.png"] Then   '
+
+      If modBasic.$AutoBillRadio = "Standard" Or If modBasic.$AutoBillRadio = "Full" Or If modBasic.$AutoBillRadio = "Partial" Then
+        xparent = Split(TreeView1.Current.ParentKey, "@")
+        modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", TreeView1.Current.Text, 1, "Punched", 0, False, False, xpayble, xrefer, "", xparent[1])
+        acount = acount + 1
+        TreeView1.Current.Picture = Picture["icons/coll2.png"]
+      Endif
+
+    Endif
+    ShowGridTree()
+  Else
+    Message.Warning("Diagnosis not provided", ("OK"))
+  Endif
+
+  If acount Then
+    txtsearchtree.Text = ""
+    Balloon.Info(("Request added"), btnselecttree)
+    Balloon.Delay = modBasic.$BalloonDelay
+    txtsearchtree.SetFocus
+  Endif
+
+End
+
+Public Sub GridView4_Menu()
+
+  mnuhidetree.Popup
+
+End
+
+Public Sub mnutargetree_Click()
+
+  Dim xx As String
+  Dim res As Result
+
+  If GridView4.Rows.Selection.Count > 0 Then
+    xx = InputCombo("Change Target", GridView4[GridView4.Row, 1].Text, modBasic.$AllCompList, GridView4[GridView4.Row, 5].Text, True)
+    If xx Then
+      res = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1", GridView4[GridView4.Row, 0].Text)
+      res["fldtarget"] = xx
+      res["xyz"] = False
+      res.Update
+      ShowGridTree()
+    Endif
+  Endif
+
+End
+
+Public Sub mnucommentree_Click()
+
+  Dim xx As String
+  Dim res As Result
+
+  If GridView4.Rows.Selection.Count > 0 Then
+    xx = GetTextArea(GridView4[GridView4.Row, 1].Text, GridView4[GridView4.Row, 3].Text)
+    If xx Then
+      res = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1", GridView4[GridView4.Row, 0].Text)
+      res["fldreason"] = xx
+      res["xyz"] = False
+      res.Update
+      ShowGridTree()
+    Endif
+  Endif
+
+End
+
+Public Sub mnudeltree_Click()
+
+  If GridView4.Rows.Selection.Count Then
+    If Message.Question("Are you sure ?", ("No"), ("Yes")) = 2 Then
+      modDatabase.$myConn.Delete("tblpatbilling", "fldid=&1 and fldsave=&2", GridView4[GridView4.Row, 0].Text, False)
+      ShowGridTree()
+    Endif
+  Endif
+
+End
+
+Public Sub btnclose_Click()
+
+  Me.Close()
+
+End

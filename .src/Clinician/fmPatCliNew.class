@@ -2092,42 +2092,42 @@ Public Sub btnsavevitals_Click()
     xsysbp = modFixClinic.GetExamIDFromSysConst("BloodPressure_Systolic")
     If xsysbp Then
       If txtsystolicbp.Value Then
-        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xsysbp, "", txtsystolicbp.Value, "Essential Examinations")
+        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xsysbp, "", txtsystolicbp.Value, "Essential Examinations", "BloodPressure_Systolic")
       Endif
     Endif
 
     xdiastobp = modFixClinic.GetExamIDFromSysConst("BloodPressure_Diastolic")
     If xdiastobp Then
       If txtdiastolicbp.Value Then
-        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xdiastobp, "", txtdiastolicbp.Value, "Essential Examinations")
+        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xdiastobp, "", txtdiastolicbp.Value, "Essential Examinations", "BloodPressure_Diastolic")
       Endif
     Endif
 
     xpulse = modFixClinic.GetExamIDFromSysConst("Pulse_Rate")
     If xpulse Then
       If txtpulse.Value Then
-        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xpulse, "", txtpulse.Value, "Essential Examinations")
+        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xpulse, "", txtpulse.Value, "Essential Examinations", "Pulse_Rate")
       Endif
     Endif
 
     xresprate = modFixClinic.GetExamIDFromSysConst("Respiration_Rate")
     If xresprate Then
       If txtresprate.Value Then
-        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xresprate, "", txtresprate.Value, "Essential Examinations")
+        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xresprate, "", txtresprate.Value, "Essential Examinations", "Respiration_Rate")
       Endif
     Endif
 
     xtemp = modFixClinic.GetExamIDFromSysConst("Temperature_System")
     If xtemp Then
       If txttemp.Value Then
-        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xtemp, "", txttemp.Value, "Essential Examinations")
+        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xtemp, "", txttemp.Value, "Essential Examinations", "Temperature_System")
       Endif
     Endif
 
     xoxysat = modFixClinic.GetExamIDFromSysConst("Oxygen_Saturation")
     If xoxysat Then
       If txtoxysat.Value Then
-        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xoxysat, "", txtoxysat.Value, "Essential Examinations")
+        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xoxysat, "", txtoxysat.Value, "Essential Examinations", "Oxygen_Saturation")
       Endif
     Endif
 
@@ -3146,111 +3146,6 @@ Private Sub FillCustomMenu()
 
 End
 
-Private Sub FillCustomFormMenu()
-
-  Dim xform1 As String
-  Dim xform2 As String
-  Dim xform3 As String
-  Dim xform4 As String
-  Dim xform5 As String
-  Dim xform6 As String
-  Dim xform7 As String
-  Dim xform8 As String
-  Dim xform9 As String
-  Dim xform10 As String
-
-  xform1 = modSettings.ShowSettingForReport("CustomForm1/Form_Name")
-  xform2 = modSettings.ShowSettingForReport("CustomForm2/Form_Name")
-  xform3 = modSettings.ShowSettingForReport("CustomForm3/Form_Name")
-  xform4 = modSettings.ShowSettingForReport("CustomForm4/Form_Name")
-  xform5 = modSettings.ShowSettingForReport("CustomForm5/Form_Name")
-  xform6 = modSettings.ShowSettingForReport("CustomForm6/Form_Name")
-  xform7 = modSettings.ShowSettingForReport("CustomForm7/Form_Name")
-  xform8 = modSettings.ShowSettingForReport("CustomForm8/Form_Name")
-  xform9 = modSettings.ShowSettingForReport("CustomForm9/Form_Name")
-  xform10 = modSettings.ShowSettingForReport("CustomForm10/Form_Name")
-
-  If xform1 Then
-    mnucustform1.Caption = xform1
-    mnucustform1.Tag = "CustomForm1"
-    mnucustform1.Enabled = True
-  Endif
-
-  If xform2 Then
-    mnucustform2.Caption = xform2
-    mnucustform2.Tag = "CustomForm2"
-    mnucustform2.Enabled = True
-  Endif
-
-  If xform3 Then
-    mnucustform3.Caption = xform3
-    mnucustform3.Tag = "CustomForm3"
-    mnucustform3.Enabled = True
-  Endif
-
-  If xform4 Then
-    mnucustform4.Caption = xform4
-    mnucustform4.Tag = "CustomForm4"
-    mnucustform4.Enabled = True
-  Endif
-
-  If xform5 Then
-    mnucustform5.Caption = xform5
-    mnucustform5.Tag = "CustomForm5"
-    mnucustform5.Enabled = True
-  Endif
-
-  If xform6 Then
-    mnucustform6.Caption = xform6
-    mnucustform6.Tag = "CustomForm6"
-    mnucustform6.Enabled = True
-  Endif
-
-  If xform7 Then
-    mnucustform7.Caption = xform7
-    mnucustform7.Tag = "CustomForm7"
-    mnucustform7.Enabled = True
-  Endif
-
-  If xform8 Then
-    mnucustform8.Caption = xform8
-    mnucustform8.Tag = "CustomForm8"
-    mnucustform8.Enabled = True
-  Endif
-
-  If xform9 Then
-    mnucustform9.Caption = xform9
-    mnucustform9.Tag = "CustomForm9"
-    mnucustform9.Enabled = True
-  Endif
-
-  If xform10 Then
-    mnucustform10.Caption = xform10
-    mnucustform10.Tag = "CustomForm10"
-    mnucustform10.Enabled = True
-  Endif
-
-End
-
-''''------------------------------- custom report menu ----------------------------
-Private Function GetReportIndex() As String
-
-  Dim xIndex As String
-
-  If txtclinIndex.Value And If txtclinmode.Text Then
-    If txtclinmode.Text = "Consultation" Then
-      xIndex = "Consultation|" & CStr(txtclinIndex.Value)
-    Else If txtclinmode.Text = "OP Visit" Then
-      xIndex = "OPVisit|" & CStr(txtclinIndex.Value)
-    Endif
-  Else
-    xIndex = ""
-  Endif
-
-  Return xIndex
-
-End
-
 Public Sub mnucust1_Click()
 
   Dim hCls As CReportCustom
@@ -3361,31 +3256,111 @@ Public Sub mnucust10_Click()
 
 End
 
+''''------------------------------- custom report menu ----------------------------
+Private Function GetReportIndex() As String
+
+  Dim xIndex As String
+
+  If txtclinIndex.Value And If txtclinmode.Text Then
+    If txtclinmode.Text = "Consultation" Then
+      xIndex = "Consultation|" & CStr(txtclinIndex.Value)
+    Else If txtclinmode.Text = "OP Visit" Then
+      xIndex = "OPVisit|" & CStr(txtclinIndex.Value)
+    Endif
+  Else
+    xIndex = ""
+  Endif
+
+  Return xIndex
+
+End
+
+''====================== chart ================================
 Public Sub mnuessenexam_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = modString.GetListFromCompareVariant(modTableCache.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
-    yy = New String[]
-    hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    hForm = New FmMultiChart(Trim(txtencid.Text), "Essential Examinations", modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+Private Sub FillCustomFormMenu()
+
+  Dim xList As String[]
+
+  xList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldtitle) as col from tbldepartchart where (fldcomp=&1 or fldcomp=&2)", modBasic.$compID, "%"))
+
+  If xList.Count > 0 Then
+    mnucustform1.Caption = xList[0]
+    mnucustform1.Tag = xList[0]
+    mnucustform1.Enabled = True
+  Endif
+
+  If xList.Count > 1 Then
+    mnucustform2.Caption = xList[1]
+    mnucustform2.Tag = xList[1]
+    mnucustform2.Enabled = True
+  Endif
+
+  If xList.Count > 2 Then
+    mnucustform3.Caption = xList[2]
+    mnucustform3.Tag = xList[2]
+    mnucustform3.Enabled = True
+  Endif
+
+  If xList.Count > 3 Then
+    mnucustform4.Caption = xList[3]
+    mnucustform4.Tag = xList[3]
+    mnucustform4.Enabled = True
+  Endif
+
+  If xList.Count > 4 Then
+    mnucustform5.Caption = xList[4]
+    mnucustform5.Tag = xList[4]
+    mnucustform5.Enabled = True
+  Endif
+
+  If xList.Count > 5 Then
+    mnucustform6.Caption = xList[5]
+    mnucustform6.Tag = xList[5]
+    mnucustform6.Enabled = True
+  Endif
+
+  If xList.Count > 6 Then
+    mnucustform7.Caption = xList[6]
+    mnucustform7.Tag = xList[6]
+    mnucustform7.Enabled = True
+  Endif
+
+  If xList.Count > 7 Then
+    mnucustform8.Caption = xList[7]
+    mnucustform8.Tag = xList[7]
+    mnucustform8.Enabled = True
+  Endif
+
+  If xList.Count > 8 Then
+    mnucustform9.Caption = xList[8]
+    mnucustform9.Tag = xList[8]
+    mnucustform9.Enabled = True
+  Endif
+
+  If xList.Count > 9 Then
+    mnucustform10.Caption = xList[9]
+    mnucustform10.Tag = xList[9]
+    mnucustform10.Enabled = True
   Endif
 
 End
 
 Public Sub mnucustform1_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform1.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform1.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform1.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
   Endif
 
@@ -3393,14 +3368,10 @@ End
 
 Public Sub mnucustform2_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform2.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform2.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform2.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
   Endif
 
@@ -3408,14 +3379,10 @@ End
 
 Public Sub mnucustform3_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform3.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform3.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform3.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
   Endif
 
@@ -3423,14 +3390,10 @@ End
 
 Public Sub mnucustform4_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform4.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform4.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform4.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
   Endif
 
@@ -3438,14 +3401,10 @@ End
 
 Public Sub mnucustform5_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform5.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform5.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform5.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
   Endif
 
@@ -3453,14 +3412,10 @@ End
 
 Public Sub mnucustform6_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform6.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform6.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform6.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
   Endif
 
@@ -3468,14 +3423,10 @@ End
 
 Public Sub mnucustform7_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform7.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform7.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform7.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
   Endif
 
@@ -3483,14 +3434,10 @@ End
 
 Public Sub mnucustform8_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform8.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform8.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform8.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
   Endif
 
@@ -3498,14 +3445,10 @@ End
 
 Public Sub mnucustform9_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform9.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform9.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform9.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
   Endif
 
@@ -3513,14 +3456,10 @@ End
 
 Public Sub mnucustform10_Click()
 
-  Dim xx As String[]
-  Dim yy As String[]
   Dim hForm As FmMultiChart
 
   If txtencid.Text Then
-    xx = Split(modSettings.ShowSettingForReport(mnucustform10.Tag & "/" & "Form_Exam"), ";")
-    yy = Split(modSettings.ShowSettingForReport(mnucustform10.Tag & "/" & "Form_Test"), ";")
-    hForm = New FmMultiChart(Trim(txtencid.Text), xx, yy, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform10.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
     modWorkSpace.Add(hForm)
   Endif
 
@@ -3746,8 +3685,6 @@ End
 
 Public Sub mnualgo1_Click()
 
-  Dim xval As Variant
-
   If txtencid.Text Then
     modClinChart.LoadRuleChart(Trim(txtencid.Text), mnualgo1.Tag, mnualgo1.Caption)
   Endif
@@ -3755,8 +3692,6 @@ Public Sub mnualgo1_Click()
 End
 
 Public Sub mnualgo2_Click()
-
-  Dim xval As Variant
 
   If txtencid.Text Then
     modClinChart.LoadRuleChart(Trim(txtencid.Text), mnualgo2.Tag, mnualgo2.Caption)
@@ -3766,8 +3701,6 @@ End
 
 Public Sub mnualgo3_Click()
 
-  Dim xval As Variant
-
   If txtencid.Text Then
     modClinChart.LoadRuleChart(Trim(txtencid.Text), mnualgo3.Tag, mnualgo3.Caption)
   Endif
@@ -3776,8 +3709,6 @@ End
 
 Public Sub mnualgo4_Click()
 
-  Dim xval As Variant
-
   If txtencid.Text Then
     modClinChart.LoadRuleChart(Trim(txtencid.Text), mnualgo4.Tag, mnualgo4.Caption)
   Endif
@@ -3785,8 +3716,6 @@ Public Sub mnualgo4_Click()
 End
 
 Public Sub mnualgo5_Click()
-
-  Dim xval As Variant
 
   If txtencid.Text Then
     modClinChart.LoadRuleChart(Trim(txtencid.Text), mnualgo5.Tag, mnualgo5.Caption)
@@ -4252,22 +4181,19 @@ End
 
 Public Sub rbimproved_Click()
 
-  lbloutcome.Visible = False
-  cmbrefer.Visible = False
-  dtfollowup.Visible = False
+  pnloutcome.Visible = False
 
 End
 
 Public Sub rblama_Click()
 
-  lbloutcome.Visible = False
-  cmbrefer.Visible = False
-  dtfollowup.Visible = False
+  pnloutcome.Visible = False
 
 End
 
 Public Sub rbadmission_Click()
 
+  pnloutcome.Visible = True
   lbloutcome.Visible = True
   lbloutcome.Text = "Admission To"
   cmbrefer.Visible = True
@@ -4278,6 +4204,7 @@ End
 
 Public Sub rbreferred_Click()
 
+  pnloutcome.Visible = True
   lbloutcome.Visible = True
   lbloutcome.Text = "Referred To"
   cmbrefer.Visible = True
@@ -4288,6 +4215,7 @@ End
 
 Public Sub rbfollowup_Click()
 
+  pnloutcome.Visible = True
   lbloutcome.Visible = True
   lbloutcome.Text = "Follow-up Date"
   cmbrefer.Visible = False
@@ -4297,6 +4225,7 @@ End
 
 Public Sub rbdeath_Click()
 
+  pnloutcome.Visible = True
   lbloutcome.Visible = True
   lbloutcome.Text = "Death Date Time"
   cmbrefer.Visible = False
@@ -4386,7 +4315,7 @@ Public Sub mnupatcomment_Click()
   If $PatientNum Then
     res = modDatabase.$myConn.Edit("tblpatientinfo", "fldpatientval=&1", $PatientNum)
     If res.Available Then
-      xval = MessageHtml($PatientNum, res["fldcomment"], ["OK"])
+      xval = GetTextArea($PatientNum, res["fldcomment"])
       If xval Then
         res["fldcomment"] = xval
         res.Update

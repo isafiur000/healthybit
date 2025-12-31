@@ -299,11 +299,6 @@ Public Sub GridView1_Click()
   Else
     txtssucode.Text = modPatient.GetPatientExtCOdebyEnc(GridView1[GridView1.Row, 2].Text)
   Endif
-  If txtssucode.Text Then
-    txtdiseaseid.ReadOnly = True
-  Else
-    txtdiseaseid.ReadOnly = False
-  Endif
 
   txtinvoice.Text = GridView1[GridView1.Row, 0].Text
   txtaccount.Text = GridView1[GridView1.Row, 1].Text

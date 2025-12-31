@@ -928,7 +928,7 @@ Public Sub btnsavetree_Click()
           SavePartialEntry(res, xadv)
         Endif
       Else If modBasic.$AutoBillTest = "Full" Then
-        If modNonMedical.AllowPreEntryWithDeposit($encid, "Test", res["fldditemamt"], res["fldbilltype"], btnsave) = True Then
+        If modNonMedical.AllowPreEntryWithDeposit($encid, "Test", res["fldditemamt"], res["fldbilltype"], btnsavetree) = True Then
           SavePartialEntry(res, xadv)
         Endif
       Else

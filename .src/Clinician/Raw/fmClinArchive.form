@@ -18,6 +18,18 @@
           MoveScaled(0,0.5,17,3)
         }
       }
+      { Panel8 Panel
+        MoveScaled(0,6,22,4)
+        { rbarchive RadioButton
+          MoveScaled(1,0.5,10,3)
+          Text = ("Archive")
+          Value = True
+        }
+        { rbsaved RadioButton
+          MoveScaled(11,0.5,10,3)
+          Text = ("Saved")
+        }
+      }
       { GridView1 GridView
         MoveScaled(1,12,19,33)
         Expand = True
@@ -53,62 +65,72 @@
       Expand = True
       Arrangement = Arrange.Vertical
       { Panel3 Panel
-        MoveScaled(0,0,70,3.5)
+        MoveScaled(0,1,71,3)
         Arrangement = Arrange.Horizontal
         { lbldate Label
           MoveScaled(0,0,29,3)
           Font = Font["Bold"]
           Border = Border.Plain
         }
+        { btnleft Button
+          MoveScaled(29,0,6,3)
+          Picture = Picture["icon:/small/rotate-left"]
+        }
         { SliderBox1 SliderBox
-          MoveScaled(30,0,26,3)
+          MoveScaled(35,0,28,3)
+          Expand = True
           MinValue = 1
           MaxValue = 1000
           Step = 10
           Value = 100
         }
-        { Panel10 Panel
-          MoveScaled(56,0,4,3)
-          Expand = True
+        { btnright Button
+          MoveScaled(63,0,6,3.5)
+          Picture = Picture["icon:/small/rotate-right"]
+        }
+      }
+      { Panel7 Panel
+        MoveScaled(0,7,71,4)
+        { Label1 Label
+          MoveScaled(0,0.5,5,3)
+          Border = Border.Plain
+          Text = ("Title")
+        }
+        { txttitle TextBox
+          MoveScaled(5,0.5,55,3)
+          ReadOnly = True
         }
         { btnview Button
-          MoveScaled(60,0,9,3)
+          MoveScaled(61,0.5,9,3)
           Text = ("Vew")
           Picture = Picture["icon:/small/preview"]
         }
       }
-      { Panel7 Panel
-        MoveScaled(0,4,71,3.5)
-        { txttitle TextBox
-          MoveScaled(5,0,64,3)
-          ReadOnly = True
-        }
-        { Label1 Label
-          MoveScaled(0,0,5,3)
-          Border = Border.Plain
-          Text = ("Title")
-        }
-      }
       { Panel6 Panel
-        MoveScaled(3,9,60,44)
+        MoveScaled(1,14,60,44)
         Expand = True
         Arrangement = Arrange.Horizontal
         Border = Border.Plain
         { docviewleft DocumentView
-          MoveScaled(3,0,1,40)
+          MoveScaled(1,0,1,40)
         }
         { DocumentView1 DocumentView
-          MoveScaled(9,0,19,39)
+          MoveScaled(3,0,15,39)
           Expand = True
         }
         { PictureBox1 ImageView
-          MoveScaled(30,1,25,39)
+          MoveScaled(19,0,16,38)
+          Visible = False
+          Expand = True
+        }
+        { MediaView1 MediaView
+          MoveScaled(36,2,21,34)
           Visible = False
           Expand = True
         }
       }
       { txtcomment TextArea
-        MoveScaled(1,54,67,6)
+        MoveScaled(1,60,67,5)
       }
     }
   }
