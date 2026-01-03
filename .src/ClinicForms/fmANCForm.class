@@ -7,7 +7,7 @@ Private $PatientNum As String
 Private hPtForm As FmClinHistory
 
 Private $ObsColumns As String[] = ["Date of Birth", "Gest. Age (wks)", "Complications during preg.", "Mode of delivery", "Complications in 3rd stage", "Puerperium", "Live/SB", "Gender", "Birth Wt. (gram)", "Outcome"]
-Private $ANCColumns As String[] = ["Date of Regd", "Complaints", "Fet. Move.", "Gest. Age", "Uterine Ht./SFH (cm)", "Presentation", "Relation of PP to pelvic brim", "FHS", "Weight (Kg)", "Blood Pressure", "Edema", "Urine Albumin", "Urine Sugar", "Treatment", "Remarks", "Doctor"]
+Private $ANCColumns As String[] = ["Date of Regd", "Complaints", "Fet. Move.", "Gest. Age", "Uterine Ht./SFH (cm)", "Presentation", "Relation of PP to pelvic brim", "FHS", "Weight (Kg)", "Blood Pressure", "Edema", "Urine Albumin", "Urine Sugar", "Treatment", "Remarks", "Doctor", "PS/PV"]
 
 Private $TestSerology As String[] = ["Date", "Blood Group/Rh", "VDRL/RPR", "HBsAg", "HIV", "HCV", "Others"]
 Private $Vaccines As String[] = ["Date", "Vaccine"]
@@ -53,6 +53,7 @@ Private aANCUrineSugar As New Object[25]
 Private aANCMedicine As New Object[25]
 Private aANCRemarks As New Object[25]
 Private aANCDoctor As New Object[25]
+Private aANCPSPV As New Object[25]
 Private aANCBtnSave As New Object[25]
 ' Private aANCBlankBox As New Object[25]
 
@@ -198,6 +199,7 @@ Private Sub ShowFamilyHistory()
       txtfamlHTN.Text = sColl["Hypertension"]
       txtfamlDM.Text = sColl["Diabetes Mellitus"]
       txtfamlTB.Text = sColl["Tuberculosis"]
+      txtfamthyroid.Text = sColl["Thyroid Disorder"]
       txtfamlMultPreg.Text = sColl["Multiple Pregnancy"]
       txtfamlallergy.Text = sColl["Allergy History"]
     Endif
@@ -213,6 +215,7 @@ Public Sub btnFamlHist_Click()
   sColl.Add(txtfamlHTN.Text, "Hypertension")
   sColl.Add(txtfamlDM.Text, "Diabetes Mellitus")
   sColl.Add(txtfamlTB.Text, "Tuberculosis")
+  sColl.Add(txtfamthyroid.Text, "Thyroid Disorder")
   sColl.Add(txtfamlMultPreg.Text, "Multiple Pregnancy")
   sColl.Add(txtfamlallergy.Text, "Allergy History")
 
@@ -330,16 +333,30 @@ Public Sub dtedd_Click()
 
 End
 
+Public Sub dteddscan_Click()
+
+  Dim xdate As Date
+
+  If Dialog.SelectDate() Then Return
+  xdate = Dialog.Date
+  If xdate Then
+    txteddscan.Text = modDate.ConvertToLocaldate(xdate)
+  Endif
+
+End
+
 Public Sub btnsavediagnosis_Click()
 
   Dim res As Result
   Dim xrefNo As String
   Dim xdtlmp As Date
   Dim xdtedd As Date
+  Dim xdtedscan As Date
   Dim xday As Integer
 
   xdtlmp = modDate.ConvertToEnglishdate(txtlmp.Text)
   xdtedd = modDate.ConvertToEnglishdate(txtedd.Text)
+
   If xdtlmp And If xdtedd Then
     xday = DateDiff(xdtlmp, Now(), gb.Day)
     If txtreference.Text Then
@@ -383,6 +400,8 @@ Public Sub btnsavediagnosis_Click()
         res["flddelref"] = xrefNo
         res["xyz"] = False
         res.Update
+
+        modClinSub.AddGeneralParametersQuali($encid, "EDD (Scan)", txteddscan.Text)
         modClinSub.AddGeneralParametersQuali($encid, "Menstrual Cycle", txtmenscycle.Text)
         modClinSub.AddGeneralParametersQuali($encid, "Contraception", txtcontracept.Text)
         modClinSub.AddGeneralParametersQuali($encid, "Married For", txtmarried.Text)
@@ -423,7 +442,9 @@ Private Sub ShowObsDiagnosis()
     res1 = modDatabase.$myConn.Exec("select fldrepquali from tblpatientexam where fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&1) and fldinput=&2 and fldhead=&3 and fldsave=&4 and fldrepquali IS NOT NULL", $PatientNum, "General Parameters", xparam, True)
     If res1.Available Then
       res1.MoveLast
-      If xparam = "Menstrual Cycle" Then
+      If xparam = "EDD (Scan)" Then
+        txteddscan.Text = res1["fldrepquali"]
+      Else If xparam = "Menstrual Cycle" Then
         txtmenscycle.Text = res1["fldrepquali"]
       Else If xparam = "Contraception" Then
         txtcontracept.Text = res1["fldrepquali"]
@@ -555,7 +576,7 @@ Private Sub SetObstetricControls()
       If sColl[$ObsColumns[6]] Then
         .Text = sColl[$ObsColumns[6]]
       Else
-        .List = ["Live", "SB"]
+        .List = ["Live", "SB", "Abortion"]
       Endif
       .Tag = i
     End With
@@ -704,7 +725,7 @@ Private Sub SetANCCharrt()
     Select j
       Case 2, 3, 4, 7, 8, 10, 11, 12
         aHeader[j].Width = 64 * modBasic.$AppScaleFactor
-      Case 1, 13, 14
+      Case 1, 13, 14, 16
         aHeader[j].Width = 175 * modBasic.$AppScaleFactor
       Case Else
         aHeader[j].Width = 100 * modBasic.$AppScaleFactor
@@ -729,6 +750,7 @@ Private Sub SetANCCharrt()
     aANCMedicine[i] = New TextBox(aANCRowAll[i])
     aANCRemarks[i] = New TextBox(aANCRowAll[i])
     aANCDoctor[i] = New TextBox(aANCRowAll[i])
+    aANCPSPV[i] = New TextBox(aANCRowAll[i])
     aANCBtnSave[i] = New Button(aANCRowAll[i]) As "ANCButton"
     ' aANCBlankBox[i] = New Separator(Frame2)
   Next
@@ -900,6 +922,14 @@ Private Sub SetANCChartControls()
       .Tag = i
     End With
 
+    ''16
+    With aANCPSPV[i]
+      .Height = 25 * modBasic.$AppScaleFactor
+      .Width = 175 * modBasic.$AppScaleFactor
+      .Text = sColl[$ANCColumns[16]]
+      .Tag = i
+    End With
+
     With aANCBtnSave[i]
       .Height = 25 * modBasic.$AppScaleFactor
       .Width = 75 * modBasic.$AppScaleFactor
@@ -973,6 +1003,9 @@ Public Sub ANCButton_Click()
   Endif
   If aANCDoctor[i] And If aANCDoctor[i].Text Then
     modClinSub.AddClinicExam($encid, "", $ANCColumns[15], "JSONCollection", aANCDoctor[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
+  Endif
+  If aANCPSPV[i] And If aANCPSPV[i].Text Then
+    modClinSub.AddClinicExam($encid, "", $ANCColumns[16], "JSONCollection", aANCPSPV[i].Text, 0, False, $sType, "", "ANC Chart", xhash)
   Endif
 
   Balloon.Info(("Information saved"), aANCBtnSave[i])
@@ -1563,10 +1596,8 @@ Public Sub btnoutcome_Click()
       modPatientGeneral.AddExamGeneralQualiData($encid, "Notes", "Doctor Order", "", txtcomment.RichText, False)
     Else If rbfollowup.Value = True Then
       xmode = "Follow Up"
-      modPatientSub.UpdateCurrentStatus($encid, "Follow Up", dtfollowup.Value)
     Else If rbreferred.Value = True Then
       xmode = "Referred"
-      modPatientSub.UpdateCurrentStatus($encid, "Refer(OPD)", cmbrefer.Text)
     Else If rblama.Value = True Then
       xmode = "LAMA"
       modPatientSub.UpdateCurrentStatus($encid, "LAMA(OPD)", "")
@@ -1579,9 +1610,25 @@ Public Sub btnoutcome_Click()
 
     If xmode Then
       If txtclinmode.Text = "Consultation" Then
-        modPatientSub.UpdateConsultData(txtclinIndex.Value, $encid, "Done", txtcomment.RichText, xmode)                       ''
+        If rbadmission.Value = True Then
+          modPatientSub.UpdateConsultData(txtclinIndex.Value, $encid, "Done", txtcomment.RichText, xmode, cmbrefer.Text)
+        Else If rbreferred.Value = True Then
+          modPatientSub.UpdateConsultData(txtclinIndex.Value, $encid, "Done", txtcomment.RichText, xmode, cmbrefer.Text)
+        Else If rbfollowup.Value = True Then
+          modPatientSub.UpdateConsultData(txtclinIndex.Value, $encid, "Done", txtcomment.RichText, xmode, "", dtfollowup.Value)
+        Else
+          modPatientSub.UpdateConsultData(txtclinIndex.Value, $encid, "Done", txtcomment.RichText, xmode)                       ''
+        Endif
       Else If txtclinmode.Text = "OP Visit" Then
-        modPatientSub.UpdateOPVisitData(txtclinIndex.Value, $encid, "Done", txtcomment.RichText, xmode)
+        If rbadmission.Value = True Then
+          modPatientSub.UpdateOPVisitData(txtclinIndex.Value, $encid, "Done", txtcomment.RichText, xmode, cmbrefer.Text)
+        Else If rbreferred.Value = True Then
+          modPatientSub.UpdateOPVisitData(txtclinIndex.Value, $encid, "Done", txtcomment.RichText, xmode, cmbrefer.Text)
+        Else If rbfollowup.Value = True Then
+          modPatientSub.UpdateOPVisitData(txtclinIndex.Value, $encid, "Done", txtcomment.RichText, xmode, "", dtfollowup.Value)
+        Else
+          modPatientSub.UpdateOPVisitData(txtclinIndex.Value, $encid, "Done", txtcomment.RichText, xmode)
+        Endif
       Endif
     Endif
     modDatabase.$myConn.Commit

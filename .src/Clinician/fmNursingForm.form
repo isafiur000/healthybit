@@ -758,7 +758,7 @@
       MoveScaled(1,36,119,56)
       Expand = True
       Arrangement = Arrange.Horizontal
-      Count = 9
+      Count = 10
       Index = 0
       Text = ("Report [F3]")
       { Panel14 Panel
@@ -768,7 +768,7 @@
       }
       Index = 1
       Text = ("Orders [F4]")
-      { grdnote GridView
+      { grdorder GridView
         MoveScaled(0,1,44,44)
         Mode = Select.Single
         Header = GridView.Horizontal
@@ -786,29 +786,29 @@
             Border = Border.Plain
             Text = ("Response")
           }
-          { txtimpression TextBox
+          { txtresponse TextBox
             MoveScaled(9,0,53,3)
             Expand = True
           }
-          { btnotedit ToolButton
+          { btnorderedit ToolButton
             MoveScaled(62,0,9,3)
             Text = ("Edit")
             Picture = Picture["icon:/small/edit"]
           }
         }
-        { txtnote TextHTML
+        { txtorder TextHTML
           MoveScaled(1,6,59,9)
           Tag = "Auto"
           Expand = True
         }
-        { lblnoteuser Label
+        { tblorderuser Label
           MoveScaled(1,22,64,3)
           Border = Border.Plain
         }
         { Panel15 Panel
           MoveScaled(0,27,37,4)
           Visible = False
-          { txtnoteid ValueBox
+          { txtorderid ValueBox
             MoveScaled(2,0,13,3)
           }
         }
@@ -934,9 +934,118 @@
         Arrangement = Arrange.Vertical
       }
       Index = 6
-      Text = ("Progress [F9]")
+      Text = ("Notes [F9]")
+      { Panel17 Panel
+        MoveScaled(0,0,40,39)
+        Arrangement = Arrange.Vertical
+        Border = Border.Plain
+        { Panel18 Panel
+          MoveScaled(0,0,40,3.5)
+          { lbldtnote Label
+            MoveScaled(15,0.375,12,3)
+            Border = Border.Plain
+          }
+          { dtnote DateBox
+            MoveScaled(0,0.375,15,3)
+          }
+          { chknoteall CheckBox
+            MoveScaled(28,0.375,10,4)
+            Text = ("All Date")
+          }
+        }
+        { Panel19 Panel
+          MoveScaled(0,7,40,4)
+          { Label1 Label
+            MoveScaled(0,0.5,6,3)
+            Border = Border.Plain
+            Text = ("Type")
+          }
+          { cmbnotetype ComboBox
+            MoveScaled(7,0.5,22,3)
+          }
+          { btnnoteshow Button
+            MoveScaled(30,0.5,9,3)
+            Text = ("Show")
+          }
+        }
+        { grdnote GridView
+          MoveScaled(0,12,34,17)
+          Expand = True
+          Mode = Select.Single
+          Header = GridView.Both
+          AutoResize = False
+        }
+      }
+      { Panel29 Panel
+        MoveScaled(40,0,1,39)
+        Arrangement = Arrange.Vertical
+      }
+      { Panel38 Panel
+        MoveScaled(41,0,76,39)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        { Panel20 Panel
+          MoveScaled(0,0,76,4)
+          { txtnoteid ValueBox
+            MoveScaled(56,0,3,3)
+            Visible = False
+          }
+          { btnoteadd Button
+            MoveScaled(60,0.375,11,3)
+            Text = Shortcut(("Add"), "A")
+            Picture = Picture["icon:/small/apply"]
+          }
+          { cmbnote ComboBox
+            MoveScaled(0.5,0.375,23.75,3)
+          }
+          { btnhelpnote ToolButton
+            MoveScaled(49,0.375,3,3)
+            Picture = Picture["icon:/small/exec"]
+          }
+          { dcthelpnote ToolButton
+            MoveScaled(45,0.375,3,3)
+            Picture = Picture["icon:/small/edit"]
+          }
+          { btntemplhelpnote ToolButton
+            MoveScaled(53,0.375,3,3)
+            Picture = Picture["icon:/small/attach"]
+          }
+          { btnotedit ToolButton
+            MoveScaled(72,0.375,3,3)
+            Picture = Picture["icon:/small/edit"]
+          }
+          { btnnotedef ToolButton
+            MoveScaled(41,0.375,3,3)
+            Picture = Picture["icon:/small/database"]
+          }
+        }
+        { Panel23 Panel
+          MoveScaled(1,4,75,3)
+          Arrangement = Arrange.Horizontal
+          { lbldtnote4 Label
+            MoveScaled(0,0,11,3)
+            Border = Border.Plain
+            Text = ("Summary")
+          }
+          { txtimpression TextBox
+            MoveScaled(11,0,59,3)
+            Expand = True
+          }
+        }
+        { txtnote TextHTML
+          MoveScaled(3,9,59,12)
+          Tag = "Auto"
+          Expand = True
+        }
+        { lblnoteuser Label
+          MoveScaled(0,25,75,3)
+          Border = Border.Plain
+        }
+      }
+      Index = 7
+      Text = ("Progress [F10]")
       { Panel8 Panel
-        MoveScaled(0,1,118,40)
+        MoveScaled(0,0,118,40)
         Expand = True
         Arrangement = Arrange.Horizontal
         { Panel34 Panel
@@ -1192,14 +1301,14 @@
           Index = 0
         }
       }
-      Index = 7
-      Text = ("History [F10]")
+      Index = 8
+      Text = ("History")
       { pnlhistory Panel
-        MoveScaled(5,2,83,26)
+        MoveScaled(12,5,83,26)
         Expand = True
         Arrangement = Arrange.Vertical
       }
-      Index = 8
+      Index = 9
       Text = ("Archives")
       { pnlarchivbe Panel
         MoveScaled(0,0,83,26)

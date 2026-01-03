@@ -551,6 +551,17 @@ Public Sub mnupharm_Click()
 
 End
 
+Public Sub mnuconsult_Click()
+
+  Dim hForm As FmMiniConsult
+
+  If txtencid.Text Then
+    hForm = New FmMiniConsult(Trim(txtencid.Text), $billModeService)
+    hForm.ShowModal
+  Endif
+
+End
+
 Public Sub mnubilling_Click()
 
   Dim hForm As FmMiniService

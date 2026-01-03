@@ -13,6 +13,8 @@ Private $VidIndex As String
 
 Private $rData As Result
 Private $aMyFields As String[]
+Private $rData1 As Result
+Private $aMyFields1 As String[]
 
 Private hViewVital As FmVitalView
 Private hinputVital As FmVitalInput
@@ -74,6 +76,10 @@ Public Sub Form_Open()
 
   cmbpatheightunit.List = ["cm", "inch", "foot"]
   cmbsympunit.List = modMedicine.$SymptomFrequency
+  cmbnote.List = ["Nurses Note", "Transfer Note"]
+  cmbnotetype.List = ["All Types", "Progress Note", "Clinicians Note", "Nurses Note", "Transfer Note"]
+  cmbnotetype.Text = "Nurses Note"
+
   $UserRestrict = modBasic.$ClinicDisableCompo
   xlocat = modSettings.ShowSettingFromFIle("ClinicForms/ImpressionList")
   If xlocat Then
@@ -924,14 +930,19 @@ Public Sub TabPanel1_Click()
   If TabPanel1.Index = 0 Then
     hViewVital.RefreshValues()
   Else If TabPanel1.Index = 1 Then
-    ShowNoteTypeTime()
+    ShowOrderTypeTime()
   Else If TabPanel1.Index = 2 Then
   Else If TabPanel1.Index = 3 Then
   Else If TabPanel1.Index = 4 Then
   Else If TabPanel1.Index = 5 Then
     hOwnStockForm.RearrangeGrid()
   Else If TabPanel1.Index = 6 Then
+    dtnote.Value = Now()
+    lbldtnote.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), Now())
+    ShowNoteTypeTime()
   Else If TabPanel1.Index = 7 Then
+  Else If TabPanel1.Index = 8 Then
+  Else If TabPanel1.Index = 9 Then
   Endif
 
 End
@@ -3665,16 +3676,16 @@ Public Sub txtmonval_GotFocus()
 End
 
 ''==================== Orders ======================
-Private Sub ShowNoteTypeTime()
+Private Sub ShowOrderTypeTime()
 
   Dim sql As String
 
   sql = "select fldid,fldtime,flditem,fldreportquali,flduserid,fldtime,flddetail from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem=&3 ORDER BY fldtime DESC"
-  $rData = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Notes", "Doctor Order")
-  $aMyFields = New String[]
-  modGridView.ReadSmallData(grdnote, $rData, $aMyFields)
+  $rData1 = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Notes", "Doctor Order")
+  $aMyFields1 = New String[]
+  modGridView.ReadSmallData(grdorder, $rData1, $aMyFields1)
 
-  With grdnote
+  With grdorder
     .Columns[0].Width = 1
     .Columns[1].Width = 150 * modBasic.$AppWidthRatio
     .Columns[2].Width = 1
@@ -3690,12 +3701,152 @@ Private Sub ShowNoteTypeTime()
 
 End
 
+Public Sub grdorder_Data(Row As Integer, Column As Integer)
+
+  $rData1.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(grdorder, Row)
+  If Column = 1 Then
+    grdorder.Data.Text = modReportVar.GetDateTimeReport($rData1[$aMyFields1[Column]], gb.GeneralDate)
+  Else
+    grdorder.Data.Text = $rData1[$aMyFields1[Column]]
+  Endif
+
+End
+
+Public Sub grdorder_Click()
+
+  If grdorder.Rows.Selection.Count Then
+    txtorderid.Value = grdorder[grdorder.Row, 0].Text
+    txtresponse.Text = grdorder[grdorder.Row, 3].Text
+    txtorder.RichText = grdorder[grdorder.Row, 6].Text
+    tblorderuser.Text = modGeneral.GetUserFullName(grdorder[grdorder.Row, 4].Text) & " [" & modReportVar.GetDateTimeReport(grdorder[grdorder.Row, 5].Text, gb.GeneralDate) & "]"
+  Endif
+
+End
+
+Public Sub btnorderedit_Click()
+
+  Dim res As Result
+
+  If txtorderid.Value Then
+    res = modDatabase.$myConn.Edit("tblexamgeneral", "fldid=&1", txtorderid.Value)
+    res["fldreportquali"] = txtresponse.Text
+    res["xyz"] = False
+    res.Update()
+    ShowOrderTypeTime()
+    Balloon.Info(("Information saved"), btnorderedit)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+End
+
+''===================== NOTES ================================
+Public Sub btnnotedef_Click()
+
+  If cmbnote.Text Then
+    txtnote.RichText = AddHistory("Discharge", Trim(txtencid.Text), cmbnote.Text)
+  Endif
+
+End
+
+Public Sub btnoteadd_Click()
+
+  If txtencid.Text Then
+    If cmbnote.Text Then
+
+      If txtnote.Text Then
+        modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", cmbnote.Text, txtimpression.Text, txtnote.RichText, False)
+        ShowNoteTypeTime()
+        Balloon.Info(("Information saved"), btnoteadd)
+        Balloon.Delay = modBasic.$BalloonDelay
+        txtnote.RichText = ""
+        txtimpression.Text = ""
+      Endif
+
+    Endif
+  Endif
+
+End
+
+Public Sub dcthelpnote_Click()
+
+  Dim xx As String
+
+  If cmbnote.Text Then
+    xx = GetRichTextArea(cmbnote.Text, txtnote.RichText)
+    If xx Then
+      txtnote.RichText = xx
+    Endif
+  Endif
+
+End
+
+Public Sub btntemplhelpnote_Click()
+
+  If cmbnote.Text Then
+    txtnote.RichText = txtnote.RichText & DictionaryVIew(cmbnote.Text)
+  Endif
+
+End
+
+Private Sub ShowNoteTypeTime()
+
+  Dim sql As String
+  Dim i As Integer
+  Dim sTypLst As String[]
+
+  If cmbnotetype.Text = "All Types" Then
+    sTypLst = ["Progress Note", "Clinicians Note", "Nurses Note", "Transfer Note"]
+  Else
+    sTypLst = [cmbnotetype.Text]
+  Endif
+
+  For i = 0 To sTypLst.Count - 1
+    sTypLst[i] = "'" & sTypLst[i] & "'"
+  Next
+
+  If chknoteall.Value Then
+    sql = "select fldid,fldtime,flditem,fldreportquali,flduserid,fldtime,flddetail from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem in(" & sTypLst.Join(",") & ") ORDER BY fldtime DESC"
+  Else
+    sql = "select fldid,fldtime,flditem,fldreportquali,flduserid,fldtime,flddetail from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem in(" & sTypLst.Join(",") & ") and fldtime>=&3 and fldtime<=&4 ORDER BY fldtime DESC"
+  Endif
+  $rData = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Notes", modDate.StartSqlDate(dtnote.Value), modDate.EndSqlDate(dtnote.Value))
+  $aMyFields = New String[]
+  modGridView.ReadSmallData(grdnote, $rData, $aMyFields)
+
+  With grdnote
+    .Columns[0].Width = 1
+    If $sTatus = "Admitted" Then
+      .Columns[1].Width = 100 * modBasic.$AppWidthRatio
+      .Columns[2].Width = 150 * modBasic.$AppWidthRatio
+      .Columns[1].Text = "DateTime"
+    Else
+      .Columns[1].Width = 1
+      .Columns[2].Width = 150 * modBasic.$AppWidthRatio
+    Endif
+
+    .Columns[3].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 1
+    .Columns[6].Width = 1
+
+    .Columns[2].Text = "Category"
+    .Columns[3].Text = "Impression"
+    .Columns[4].Text = "User"
+  End With
+
+End
+
 Public Sub grdnote_Data(Row As Integer, Column As Integer)
 
   $rData.MoveTo(Row)
   modGeneralMain.GridViewDecoration(grdnote, Row)
   If Column = 1 Then
-    grdnote.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.GeneralDate)
+    If chknoteall.Value Then
+      grdnote.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.GeneralDate)
+    Else
+      grdnote.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.MediumTime)
+    Endif
   Else
     grdnote.Data.Text = $rData[$aMyFields[Column]]
   Endif
@@ -3705,23 +3856,62 @@ End
 Public Sub grdnote_Click()
 
   If grdnote.Rows.Selection.Count Then
+    cmbnote.Text = grdnote[grdnote.Row, 2].Text
     txtnoteid.Value = grdnote[grdnote.Row, 0].Text
     txtimpression.Text = grdnote[grdnote.Row, 3].Text
     txtnote.RichText = grdnote[grdnote.Row, 6].Text
     lblnoteuser.Text = modGeneral.GetUserFullName(grdnote[grdnote.Row, 4].Text) & " [" & modReportVar.GetDateTimeReport(grdnote[grdnote.Row, 5].Text, gb.GeneralDate) & "]"
+    btnotedit.Enabled = True
+  Else
+    btnoteadd.Enabled = True
+  Endif
+
+End
+
+Public Sub cmbnote_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbnote)
+  modFillContainer.RestrictComboToContent(cmbnote)
+
+End
+
+Public Sub cmbnote_Click()
+
+  txtnoteid.Value = 0
+  txtnote.Text = ""
+  btnoteadd.Enabled = True
+
+End
+
+Public Sub dtnote_Click()
+
+  If txtencid.Text Then
+    lbldtnote.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), dtnote.Value)
+    ShowNoteTypeTime()
+  Endif
+
+End
+
+Public Sub chkallnote_Click()
+
+  If txtencid.Text Then
+    ShowNoteTypeTime()
+  Endif
+
+End
+
+Public Sub btnnoteshow_Click()
+
+  If txtencid.Text Then
+    ShowNoteTypeTime()
   Endif
 
 End
 
 Public Sub btnotedit_Click()
 
-  Dim res As Result
-
   If txtnoteid.Value Then
-    res = modDatabase.$myConn.Edit("tblexamgeneral", "fldid=&1", txtnoteid.Value)
-    res["fldreportquali"] = txtimpression.Text
-    res["xyz"] = False
-    res.Update()
+    modPatientGeneral.UpdateExamGeneralQualiData(txtnoteid.Value, cmbnote.Text, txtimpression.Text, txtnote.RichText)
     ShowNoteTypeTime()
     Balloon.Info(("Information saved"), btnotedit)
     Balloon.Delay = modBasic.$BalloonDelay

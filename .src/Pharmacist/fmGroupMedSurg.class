@@ -50,7 +50,7 @@ Public Sub btnrefresh_Click()
 
   If cmbgroup.Text And If cmbtarget.Text Then
     FillDosingGrid()
-    cmbroute.SetFocus
+    txtdoseday.SetFocus
   Endif
 
 End
@@ -59,7 +59,7 @@ Private Sub FillDosingGrid()
 
   Dim sql As String
 
-  sql = "select fldid,fldroute,flditem,flddose,flddoseunit,fldfreq,fldday,fldqty,fldstart,fldadvice from tblproductgroup where fldmedgroup=&1 and fldcomp=&2 ORDER BY fldid DESC"
+  sql = "select fldid,fldroute,flditem,flddose,flddoseunit,fldfreq,fldday,fldqty,fldstart,fldadvice,flddoseday from tblproductgroup where fldmedgroup=&1 and fldcomp=&2 ORDER BY fldid DESC"
   $rData = modDatabase.$myConn.Exec(sql, cmbgroup.Text, cmbtarget.Text)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
@@ -75,6 +75,7 @@ Private Sub FillDosingGrid()
     .Columns[7].Width = 50 * modBasic.$AppWidthRatio
     .Columns[8].Width = 50 * modBasic.$AppWidthRatio
     .Columns[9].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[10].Width = 50 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "Route"
     .Columns[2].Text = "Particulars"
@@ -85,6 +86,7 @@ Private Sub FillDosingGrid()
     .Columns[7].Text = "QTY"
     .Columns[8].Text = "Start"
     .Columns[9].Text = "Advice"
+    .Columns[10].Text = "Date"
   End With
 
 End
@@ -108,6 +110,7 @@ Public Sub GridView1_Click()
   txtqty.Value = GridView1[GridView1.Row, 7].Text
   txtstart.Value = GridView1[GridView1.Row, 8].Text
   txtadvice.Text = GridView1[GridView1.Row, 9].Text
+  txtdoseday.Value = GridView1[GridView1.Row, 10].Text
 
 End
 
@@ -175,6 +178,7 @@ Public Sub tbtnadd_Click()
       res = modDatabase.$myConn.Create("tblproductgroup")
       res["fldmedgroup"] = cmbgroup.Text
       res["fldcomp"] = cmbtarget.Text
+      res["flddoseday"] = txtdoseday.Value
       res["fldroute"] = cmbroute.Text
       res["flditem"] = cmbmedicine.Text
       res["flddose"] = txtdose.Value
@@ -212,6 +216,7 @@ Private Sub ClearAllContr()
   txtqty.Value = 0
   txtstart.Value = 0
   txtadvice.Text = ""
+  txtdoseday.Value = 0
 
 End
 
@@ -243,6 +248,7 @@ Public Sub btnedit_Click()
 
   If GridView1.Rows.Selection.Count > 0 Then
     res = modDatabase.$myConn.Edit("tblproductgroup", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+    res["flddoseday"] = txtdoseday.Value
     res["fldroute"] = cmbroute.Text
     res["flditem"] = cmbmedicine.Text
     res["flddose"] = txtdose.Value

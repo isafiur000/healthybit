@@ -15,12 +15,6 @@
       Visible = False
     }
   }
-  { mnurequest Menu
-    { mnuaddrequest Menu
-      Text = ("Add")
-      Shortcut = "Ctrl+A"
-    }
-  }
   { mnufile Menu
     Text = ("File")
     { mnuemail Menu
@@ -32,82 +26,59 @@
   }
   { Panel1 Panel
     MoveScaled(0,0,119.375,75)
-    { Panel6 Panel
-      MoveScaled(0,0,33,74)
-      Expand = True
-      Arrangement = Arrange.Vertical
-      { btnrefrreq Button
-        MoveScaled(1,1,31,3)
+    { Panel2 Panel
+      MoveScaled(0,0,117,4)
+      { dtnepfir ToolButton
+        MoveScaled(46,0.5,3,3)
+        Picture = Picture["icon:/small/calendar"]
+      }
+      { cmbselect ComboBox
+        MoveScaled(52,0.5,29,3)
+        Sorted = True
+      }
+      { btnrefresh Button
+        MoveScaled(87,0.5,13,3)
         Text = ("Refresh")
         Picture = Picture["icon:/small/refresh"]
       }
-      { Panel7 Panel
-        MoveScaled(1,4,32,5)
-        { dtplan DateBox
-          MoveScaled(9,1,22,3)
-          Mode = DateChooser.DateTime
-        }
-        { Label1 Label
-          MoveScaled(0,1,8,3)
-          Border = Border.Plain
-          Text = ("Plan For")
-        }
+      { btnsearch Button
+        MoveScaled(102,0.5,7,3)
+        Picture = Picture["icon:/small/find"]
       }
-      { GridView2 GridView
-        MoveScaled(1,9,31,58)
-        Expand = True
-        Mode = Select.Single
-        Header = GridView.Horizontal
-        AutoResize = False
+      { txtencid TextBox
+        MoveScaled(82,0.5,4,3)
+        Visible = False
+      }
+      { btnexport Button
+        MoveScaled(109,0.5,4,3)
+        Picture = Picture["icon:/small/html"]
+      }
+      { lbldate DateBox
+        MoveScaled(30,0.5,16,3)
+      }
+      { ppnlfollow Panel
+        MoveScaled(0,0,28,4)
+        { rbopd RadioButton
+          MoveScaled(1,0.5,8,3)
+          Text = ("OPD")
+          Value = True
+        }
+        { rbipd RadioButton
+          MoveScaled(10,0.5,8,3)
+          Text = ("IPD")
+        }
+        { rbother RadioButton
+          MoveScaled(18,0.5,9,3)
+          Text = ("Other")
+        }
       }
     }
-    { Panel4 Panel
-      MoveScaled(33,0,2,56)
+    { GridView1 GridView
+      MoveScaled(0,5,69,43)
       Expand = True
-      Arrangement = Arrange.Vertical
-    }
-    { Panel3 Panel
-      MoveScaled(35,0,84,75)
-      Expand = True
-      Arrangement = Arrange.Vertical
-      { Panel2 Panel
-        MoveScaled(0,0,83,5)
-        { dtnepfir ToolButton
-          MoveScaled(16,1,3,3)
-          Picture = Picture["icon:/small/calendar"]
-        }
-        { cmbselect ComboBox
-          MoveScaled(20,1,29,3)
-          Sorted = True
-        }
-        { btnrefresh Button
-          MoveScaled(59,1,13,3)
-          Text = ("Refresh")
-          Picture = Picture["icon:/small/refresh"]
-        }
-        { btnsearch Button
-          MoveScaled(72,1,7,3)
-          Picture = Picture["icon:/small/find"]
-        }
-        { txtencid TextBox
-          MoveScaled(50,1,4,3)
-          Visible = False
-        }
-        { btnexport Button
-          MoveScaled(79,1,4,3)
-          Picture = Picture["icon:/small/html"]
-        }
-        { lbldate DateBox
-          MoveScaled(0,1,16,3)
-        }
-      }
-      { GridView1 GridView
-        MoveScaled(0,5,83,69)
-        Expand = True
-        Mode = Select.Single
-        Header = GridView.Both
-        AutoResize = False
-      }
+      Mode = Select.Single
+      Header = GridView.Both
+      AutoResize = False
     }
   }
 }

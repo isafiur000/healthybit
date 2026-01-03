@@ -35,10 +35,22 @@ End
 
 Public Sub btnaddexam_Click()
 
+  txtsysconst.Text = ""
+  txtoption.Text = ""
   If cmbcategory.Text = "Examination" Then
     cmbexamname.Text = GridViewNew("Select " & cmbcategory.Text, $examList, False)
   Else If cmbcategory.Text = "Laboratory" Then
     cmbexamname.Text = GridViewNew("Select " & cmbcategory.Text, $TestList, False)
+  Endif
+
+  If cmbexamname.Text Then
+    If cmbcategory.Text = "Examination" Then
+      txtsysconst.Text = modFixClinic.SysConstFromGetExamID(cmbexamname.Text)
+      txtoption.Text = modFixClinic.GetExamtOptionType(cmbexamname.Text)
+    Else If cmbcategory.Text = "Laboratory" Then
+      txtsysconst.Text = modFixLab.GetTestSysName(cmbexamname.Text)
+      txtoption.Text = modFixLab.GetLabTestOptionType(cmbexamname.Text)
+    Endif
   Endif
 
 End
@@ -46,9 +58,17 @@ End
 Public Sub btnadcompo_Click()
 
   If cmbcategory.Text = "Examination" Then
-    cmbexamname.Text = GridViewNew("Select subcomponent of " & cmbcategory.Text, modFixClinic.GetSubExamArray(cmbexamname.Text), False)
+    If txtoption.Text = "Clinical Scale" Then
+      cmbcomponent.Text = GridViewNew("Select component of " & cmbcategory.Text, modAllExam.GetCLinicalScaleGroups("Exam", cmbexamname.Text), False)
+    Else
+      cmbcomponent.Text = GridViewNew("Select component of " & cmbcategory.Text, modFixClinic.GetSubExamArray(cmbexamname.Text), False)
+    Endif
   Else If cmbcategory.Text = "Laboratory" Then
-    cmbexamname.Text = GridViewNew("Select subcomponent of " & cmbcategory.Text, modFixLab.GetSubTestArray(cmbexamname.Text), False)
+    If txtoption.Text = "Clinical Scale" Then
+      cmbcomponent.Text = GridViewNew("Select component of " & cmbcategory.Text, modAllExam.GetCLinicalScaleGroups("Test", cmbexamname.Text), False)
+    Else
+      cmbcomponent.Text = GridViewNew("Select component of " & cmbcategory.Text, modFixLab.GetSubTestArray(cmbexamname.Text), False)
+    Endif
   Endif
 
 End
@@ -60,22 +80,14 @@ Public Sub btnOK_Click()
   Dim xoption As String
 
   If cmbexamname.Text And If cmbtarget.Text And If cmbgroupname.Text Then
-    If cmbcategory.Text = "Examination" Then
-      xsyscos = modFixClinic.SysConstFromGetExamID(cmbexamname.Text)
-      xoption = modFixClinic.GetExamtOptionType(cmbexamname.Text)
-    Else If cmbcategory.Text = "Laboratory" Then
-      xsyscos = modFixLab.GetTestSysName(cmbexamname.Text)
-      xoption = modFixLab.GetLabTestOptionType(cmbexamname.Text)
-    Endif
-
     res = modDatabase.$myConn.Create("tbldepartchart")
     res["fldcomp"] = cmbtarget.Text
     res["fldtitle"] = cmbgroupname.Text
     res["fldcategory"] = cmbcategory.Text
     res["fldexam"] = cmbexamname.Text
     res["fldsubexam"] = cmbcomponent.Text
-    res["fldsysconst"] = xsyscos
-    res["fldoption"] = xoption
+    res["fldsysconst"] = txtsysconst.Text
+    res["fldoption"] = txtoption.Text
     res["fldexamorder"] = txtorder.Value
     res.Update
     ShowDataGrid()
@@ -115,8 +127,8 @@ Public Sub btnedit_Click()
       res["fldcategory"] = cmbcategory.Text
       res["fldexam"] = cmbexamname.Text
       res["fldsubexam"] = cmbcomponent.Text
-      res["fldsysconst"] = xsyscos
-      res["fldoption"] = xoption
+      res["fldsysconst"] = txtsysconst.Text
+      res["fldoption"] = txtoption.Text
       res["fldexamorder"] = txtorder.Value
       res.Update
       ShowDataGrid()
@@ -173,6 +185,8 @@ Public Sub GridView1_Click()
   cmbcategory.Text = GridView1[GridView1.Row, 4].Text
   cmbexamname.Text = GridView1[GridView1.Row, 2].Text
   cmbcomponent.Text = GridView1[GridView1.Row, 3].Text
+  txtsysconst.Text = GridView1[GridView1.Row, 5].Text
+  txtoption.Text = GridView1[GridView1.Row, 6].Text
   txtorder.Value = GridView1[GridView1.Row, 7].Text
 
 End

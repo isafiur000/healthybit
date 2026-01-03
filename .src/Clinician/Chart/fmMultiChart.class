@@ -210,7 +210,11 @@ Private Sub LoadTablesExam()
   For i = 0 To $xParamVar.Count - 1
     For j = 0 To GridView2.Columns.Count - 1
       If j = 0 Then
-        GridView2[i, j].Text = $xParamVar[i]["Examination"]
+        If $xParamVar[i]["Component"] Then
+          GridView2[i, j].Text = $xParamVar[i]["Component"] & " [" & $xParamVar[i]["Examination"] & "]"
+        Else
+          GridView2[i, j].Text = $xParamVar[i]["Examination"]
+        Endif
       Else
 
         If $xParamVar[i]["Category"] = "Examination" Then
@@ -301,6 +305,7 @@ Private Function GetExamValueByDate(patNo As String, xColl As Collection, xDate 
   Dim xx As String
   Dim xfir As Date
   Dim xlast As Date
+  Dim aColl As Collection
 
   If rboneday.Value = True Then
     xfir = modDate.StartSqlTenMinute(xDate)
@@ -317,16 +322,35 @@ Private Function GetExamValueByDate(patNo As String, xColl As Collection, xDate 
   Endif
 
   If xColl["Component"] Then
-    res = modDatabase.$myConn.Exec("select tblpatientsubexam.fldreport as fldreport from (tblpatientsubexam inner join tblpatientexam  on (tblpatientexam.fldid=tblpatientsubexam.fldheadid and tblpatientexam.fldencounterval=tblpatientsubexam.fldencounterval)) inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval  where tblencounter.fldpatientval=&1 and tblpatientexam.fldsave=&2 and tblpatientexam.fldhead=&3 and tblpatientsubexam.fldsubtexam=&4 and tblpatientexam.fldtime>=&5 and tblpatientexam.fldtime<=&6 ORDER BY tblpatientexam.fldtime", patNo, True, xColl["Examination"], xColl["Component"], xfir, xlast)
-    If res.Available Then
-      res.MoveLast
-      If res["fldreport"] Then
-        xx = res["fldreport"]
+    If xColl["Option"] = "Clinical Scale" Then
+      res = modDatabase.$myConn.Exec("select tblpatientexam.fldrepquali as fldrepquali,tblpatientexam.fldrepquanti as fldrepquanti from tblpatientexam inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval  where tblencounter.fldpatientval=&1 and tblpatientexam.fldsave=&2 and tblpatientexam.fldhead=&3 and tblpatientexam.fldtime>=&4 and tblpatientexam.fldtime<=&5 ORDER BY tblpatientexam.fldtime", patNo, True, xColl["Examination"], xfir, xlast)
+      If res.Available Then
+        res.MoveLast
+        If res["fldrepquali"] Then
+          aColl = JSON.Decode(res["fldrepquali"])
+          If aColl Then
+            xx = aColl[xColl["Component"]]
+          Endif
+        Else
+          xx = ""
+        Endif
       Else
         xx = ""
       Endif
+
     Else
-      xx = ""
+      res = modDatabase.$myConn.Exec("select tblpatientsubexam.fldreport as fldreport from (tblpatientsubexam inner join tblpatientexam  on (tblpatientexam.fldid=tblpatientsubexam.fldheadid and tblpatientexam.fldencounterval=tblpatientsubexam.fldencounterval)) inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval  where tblencounter.fldpatientval=&1 and tblpatientexam.fldsave=&2 and tblpatientexam.fldhead=&3 and tblpatientsubexam.fldsubtexam=&4 and tblpatientexam.fldtime>=&5 and tblpatientexam.fldtime<=&6 ORDER BY tblpatientexam.fldtime", patNo, True, xColl["Examination"], xColl["Component"], xfir, xlast)
+      If res.Available Then
+        res.MoveLast
+        If res["fldreport"] Then
+          xx = res["fldreport"]
+        Else
+          xx = ""
+        Endif
+      Else
+        xx = ""
+      Endif
+
     Endif
 
   Else

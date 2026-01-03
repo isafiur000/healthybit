@@ -4,8 +4,6 @@ Private $sType As String
 Private $rData As Result
 Private $aMyFields As String[]
 
-Private $rData1 As Result
-Private $aMyFields1 As String[]
 Private $patMessage As String
 Private $clinMessage As String
 
@@ -17,25 +15,27 @@ End
 
 Public Sub Form_Open()
 
-  modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
-  Panel3.Width = Panel1.Width - (Panel6.Width + Panel4.Width)
+  modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
   Me.Title = $sType
   Me.Tag = $sType
-  dtplan.Value = Now()
   lbldate.Value = Date()
 
   If $sType = "Major Procedures" Then
+    ppnlfollow.Visible = False
     cmbselect.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select flditemname as col from tblservicecost where flditemtype=&1 and fldtarget like &2", "Procedures", "Major"))
     mnuprocalter.Visible = True
   Else If $sType = "Extra Procedures" Then
+    ppnlfollow.Visible = False
     cmbselect.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldprocname) as col from tblgroupproc"))
     mnuprocalter.Visible = True
   Else If $sType = "FollowUp List" Then
-    cmbselect.List = modGeneral.GetDepartmentsForOPDBoth()
-    Panel6.Visible = False
+    ppnlfollow.Visible = True
     mnuprocalter.Visible = False
+    rbopd.Value = True
+    rbopd_Click()
   Else If $sType = "Radiology List" Then
+    ppnlfollow.Visible = False
     cmbselect.List = modMedicine.FillRadioTestCombo("%")
     mnuprocalter.Visible = False
   Endif
@@ -58,147 +58,21 @@ Public Sub Form_Close()
 
 End
 
-''====================================== REQUEST GRID =========================
-Public Sub btnrefrreq_Click()
+Public Sub rbopd_Click()
 
-  FillRequestGrid()
-
-End
-
-Private Sub FillRequestGrid()
-
-  Dim sql As String
-
-  If $sType = "Major Procedures" Then
-    sql = "select fldid,fldencounterval,flditemname,fldsample,fldbillingmode,flditemqty,fldretqty,fldbillno,fldreason,fldrefer from tblpatbilling where flditemtype=&1 and fldsave=&2 and fldsample=&3 and fldparent=&4 and flditemqty>fldretqty and flditemname in(select flditemname from tblservicecost where fldtarget=&5) ORDER BY fldid DESC"
-    $rData1 = modDatabase.$myConn.Exec(sql, "Procedures", True, "Waiting", 0, "Major")
-  Else If $sType = "Extra Procedures" Then
-    sql = "select fldid,fldencounterval,flditemname,fldsample,fldbillingmode,flditemqty,fldretqty,fldbillno,fldreason,fldrefer from tblpatbilling where flditemtype=&1 and fldsave=&2 and fldsample=&3 and fldparent=&4 and flditemqty>fldretqty and flditemname in(select flditemname from tblservicecost where fldtarget=&5) ORDER BY fldid DESC"
-    $rData1 = modDatabase.$myConn.Exec(sql, "Procedures", True, "Waiting", 0, "Extra")
-  Else If $sType = "Radiology List" Then
-    sql = "select fldid,fldencounterval,flditemname,fldsample,fldbillingmode,flditemqty,fldretqty,fldbillno,fldreason,fldrefer from tblpatbilling where flditemtype=&1 and fldsave=&2 and fldsample=&3 and fldparent=&4 and flditemqty>fldretqty ORDER BY fldid DESC"
-    $rData1 = modDatabase.$myConn.Exec(sql, "Radio Diagnostics", True, "Waiting", 0)
-  Endif
-  $aMyFields1 = New String[]
-  modGridView.ReadSmallData(GridView2, $rData1, $aMyFields1)
-  RequestGrid()
+  cmbselect.List = modGeneral.GetDepartForConsultOnly()
 
 End
 
-Private Sub RequestGrid()
+Public Sub rbipd_Click()
 
-  With GridView2
-    .Columns[0].Width = 1
-    .Columns[1].Width = 125 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 200 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 1
-    .Columns[4].Width = 1
-    .Columns[5].Width = 1
-    .Columns[6].Width = 1
-    .Columns[7].Width = 1
-    .Columns[8].Width = 1
-    .Columns[9].Width = 1
-
-    .Columns[1].Text = "EncID"
-    .Columns[2].Text = "Particulars"
-  End With
+  cmbselect.List = modGeneral.GetDepartmentsForOPDBoth()
 
 End
 
-Public Sub GridView2_Data(Row As Integer, Column As Integer)
+Public Sub rbother_Click()
 
-  $rData1.MoveTo(Row)
-  modGeneralMain.GridViewDecoration(GridView2, Row)
-  GridView2.Data.Text = $rData1[$aMyFields1[Column]]
-  GridView2.Rows[Row].Height = Max(GridView2.Rows[Row].Height, GridView2.Data.Font.RichTextHeight(GridView2.Data.Text, GridView2.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView2.Rows.Height - GridView2.Font.Height))
-  GridView2.Data.WordWrap = True
-
-End
-
-Public Sub GridView2_Menu()
-
-  mnurequest.Popup
-
-End
-
-Public Sub mnuaddrequest_Click()
-
-  Dim xdat As Date
-  Dim res As Result
-  Dim xx As String
-  Dim xList As String[]
-  Dim i As Integer
-  '   Dim res1 As Result
-
-  xdat = dtplan.Value
-  If GridView2.Rows.Selection.Count > 0 Then
-    If $sType = "Major Procedures" Then
-      If GridView2[GridView2.Row, 3].Text = "Waiting" Then
-        If xdat Then
-
-          modDatabase.$myConn.Begin
-          For i = 1 To (GridView2[GridView2.Row, 5].Text - GridView2[GridView2.Row, 6].Text)
-            modPatientGeneral.AddProcedureData(GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 0].Text, "Procedures", GridView2[GridView2.Row, 2].Text, "Planned", GridView2[GridView2.Row, 4].Text, xdat, "Cleared", "")
-          Next
-          res = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1", GridView2[GridView2.Row, 0].Text)
-          res["fldsample"] = "Sampled"
-          res["xyz"] = False
-          res.Update
-          modDatabase.$myConn.Commit
-          FillRequestGrid()
-
-        Endif
-      Endif
-
-    Else If $sType = "Extra Procedures" Then
-      If GridView2[GridView2.Row, 3].Text = "Waiting" Then
-        If xdat Then
-
-          xList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldprocname as col from tblgroupproc where fldgroupname=&1", GridView2[GridView2.Row, 2].Text))
-          modDatabase.$myConn.Begin
-          For Each xx In xList
-            For i = 1 To (GridView2[GridView2.Row, 5].Text - GridView2[GridView2.Row, 6].Text)
-              modPatientGeneral.AddProcedureData(GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 0].Text, "Extra Procedures", xx, "Planned", GridView2[GridView2.Row, 4].Text, xdat, "Cleared", "")
-            Next
-          Next
-          res = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1", GridView2[GridView2.Row, 0].Text)
-          res["fldsample"] = "Sampled"
-          res["xyz"] = False
-          res.Update
-          modDatabase.$myConn.Commit
-          FillRequestGrid()
-
-        Endif
-      Endif
-
-    Else If $sType = "Radiology List" Then
-      ''DO NOT ADD FROM HERE. THIS COMP ID WILL BE SAVED FOR WORKING AND NOT SHOWN IN RADIO DEPT
-      ' If GridView2[GridView2.Row, 3].Text = "Waiting" Then
-      '   If xdat Then
-      '
-      '     res1 = modDatabase.$myConn.Exec("select fldtestid,fldtesttype,fldactive from tblgroupradio where fldgroupname=&1 and (fldptsex=&2 or fldptsex=&3)", GridView2[GridView2.Row, 2].Text, modPatient.GetPatientSex(GridView2[GridView2.Row, 1].Text), "Both Sex")
-      '     modDatabase.$myConn.Begin
-      '     For Each res1
-      '       For i = 1 To (GridView2[GridView2.Row, 5].Text - GridView2[GridView2.Row, 6].Text)
-      '         modRadioSub.InsertRadioTestOrder(GridView2[GridView2.Row, 1].Text, res1!fldtestid, res1!fldtesttype, res1!fldactive, GridView2[GridView2.Row, 0].Text, GridView2[GridView2.Row, 9].Text, GridView2[GridView2.Row, 7].Text, GridView2[GridView2.Row, 8].Text, xdat,"")
-      '       Next
-      '     Next
-      '     res = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1", GridView2[GridView2.Row, 0].Text)
-      '     res["fldsample"] = "Sampled"
-      '     res["xyz"] = False
-      '     res.Update
-      '     modDatabase.$myConn.Commit
-      '     FillRequestGrid()
-      '
-      '   Endif
-      ' Endif
-
-    Endif
-  Endif
-
-Catch
-  modDatabase.$myConn.Rollback
-  modHelpVariable.CreateErrorReport()
+  cmbselect.List = modGeneral.GetDepartForOPVisitOnly()
 
 End
 
@@ -220,7 +94,13 @@ Private Sub FillPatDateGrid()
     $rData = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(lbldate.Value), modDate.EndSqlDate(lbldate.Value), cmbselect.Text, "Sampled", False)
 
   Else If $sType = "FollowUp List" Then
-    sql = "select fldencounterval,fldfollowdate,fldfollowdate,fldcurrlocat,fldencounterval,fldencounterval,fldencounterval,fldencounterval,fldencounterval,fldfollowdate,fldpatientval,flduserid,fldencounterval from tblencounter where fldfollowdate>=&1 and fldfollowdate<=&2 and fldcurrlocat like &3"                                                                              ''
+    If rbopd.Value = True Then
+      sql = "select fldencounterval,fldfollowdate,fldfollowdate,fldconsultname,fldencounterval,fldencounterval,fldencounterval,fldencounterval,fldencounterval,fldfollowdate,fldencounterval,flduserid,fldencounterval from tblconsult where fldfollowdate>=&1 and fldfollowdate<=&2 and fldconsultname like &3"
+    Else If rbother.Value = True
+      sql = "select fldencounterval,fldfollowdate,fldfollowdate,fldconsultname,fldencounterval,fldencounterval,fldencounterval,fldencounterval,fldencounterval,fldfollowdate,fldencounterval,fldflaguser,fldencounterval from tblopvisit where fldfollowdate>=&1 and fldfollowdate<=&2 and fldconsultname like &3"
+    Else If rbipd.Value = True Then
+      sql = "select fldencounterval,fldfollowdate,fldfollowdate,fldcurrlocat,fldencounterval,fldencounterval,fldencounterval,fldencounterval,fldencounterval,fldfollowdate,fldpatientval,flduserid,fldencounterval from tblencounter where fldfollowdate>=&1 and fldfollowdate<=&2 and fldcurrlocat like &3"                                                                              ''
+    Endif
     $rData = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(lbldate.Value), modDate.EndSqlDate(lbldate.Value), cmbselect.Text)
   Endif
   $aMyFields = New String[]
@@ -237,14 +117,14 @@ Private Sub ResizeGrid()
     .Columns[2].Width = 75 * modBasic.$AppWidthRatio
     .Columns[3].Width = 150 * modBasic.$AppWidthRatio
     .Columns[4].Width = 125 * modBasic.$AppWidthRatio
-    .Columns[5].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 225 * modBasic.$AppWidthRatio
     .Columns[6].Width = 125 * modBasic.$AppWidthRatio
     .Columns[7].Width = 125 * modBasic.$AppWidthRatio
     .Columns[8].Width = 1
     .Columns[9].Width = 1
     .Columns[10].Width = 1
     .Columns[11].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[12].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[12].Width = 100 * modBasic.$AppWidthRatio
 
     .Columns[2].Text = "Time"
     .Columns[3].Text = "Particulars"

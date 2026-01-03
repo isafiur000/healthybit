@@ -6,7 +6,7 @@ Public Sub DesktopOpenFile(sFile As String)
   Dim xexec As String
   Dim arcmd As String[]
 
-  If Exist(sFile) Then
+  If sFile Then
     xscript = modBasic.$DefaultViewPath
     If xscript Then
       xexec = modBasic.$DefaultViewShell

@@ -271,62 +271,62 @@
       Text = ("Added Test [F6]")
       { Panel2 Panel
         MoveScaled(0,0,121,8)
-        { btnexpotree ToolButton
-          MoveScaled(117,4,3,3)
-          Picture = Picture["icon:/small/html"]
-        }
         { cmbcategory ComboBox
-          MoveScaled(49,0.5,26,3)
+          MoveScaled(10,4,26,3)
           Sorted = True
         }
         { chkdate CheckBox
-          MoveScaled(39,4,7,3)
+          MoveScaled(44,4,7,3)
           Text = ("Date")
         }
         { dtsort DateBox
-          MoveScaled(47,4,17,3)
+          MoveScaled(52,4,15,3)
         }
         { btnepsort ToolButton
-          MoveScaled(72,4,3,3)
+          MoveScaled(75,4,3,3)
           Picture = Picture["icon:/small/calendar"]
         }
         { cmbrepocounter ComboBox
-          MoveScaled(9,4,18.5,3)
+          MoveScaled(52,0.5,22,3)
         }
         { Label2 Label
-          MoveScaled(0.5,4,8.5,3)
+          MoveScaled(44,0.5,8.5,3)
           Border = Border.Plain
           Text = ("Counter")
         }
         { Label3 Label
-          MoveScaled(40,0.5,8,3)
+          MoveScaled(1,4,8,3)
           Border = Border.Plain
           Text = ("Section")
         }
         { btnrefresh Button
-          MoveScaled(104,4,12,3)
+          MoveScaled(100,4,12,3)
           Text = ("Refresh")
           Picture = Picture["icon:/small/refresh"]
           Default = True
         }
         { btnaddcounter ToolButton
-          MoveScaled(28,4,3,3)
+          MoveScaled(75,0.5,3,3)
           Picture = Picture["icon:/small/add"]
         }
         { txtrangerepo SpinBox
-          MoveScaled(65,4,6,3)
+          MoveScaled(68,4,6,3)
           MaxValue = 500
         }
         { Panel24 Panel
-          MoveScaled(0.5,0.5,27,3)
+          MoveScaled(0.5,0.5,35,3)
           { rbreported RadioButton
-            MoveScaled(13,0,12,3)
+            MoveScaled(22,0,12,3)
             Text = ("Reported")
           }
           { rbpending RadioButton
-            MoveScaled(0,0,12,3)
+            MoveScaled(0,0,11,3)
             Text = ("Pending")
             Value = True
+          }
+          { rbscanned RadioButton
+            MoveScaled(11,0,11,3)
+            Text = ("Scanned")
           }
         }
         { Panel25 Panel
@@ -346,7 +346,11 @@
           }
         }
         { txtsearch TextBox
-          MoveScaled(85,4,17,3)
+          MoveScaled(85,4,14,3)
+        }
+        { btnscan Button
+          MoveScaled(112,4,8,3)
+          Text = ("Scan")
         }
       }
       { GridView2 GridView
@@ -558,6 +562,10 @@
               MoveScaled(8,0,9,3)
               Text = ("Name")
             }
+          }
+          { btnexpotree ToolButton
+            MoveScaled(30,0,3,3)
+            Picture = Picture["icon:/small/html"]
           }
         }
         { txtcolor Label

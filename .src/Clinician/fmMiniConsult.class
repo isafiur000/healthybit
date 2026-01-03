@@ -314,8 +314,8 @@ End
 Private Sub CompleteGrid()
 
   Dim sql As String
-  Dim xFldList1 As String[] = ["fldid", "fldconsulttime", "fldencounterval", "fldconsultname", "fldoutcome"]
-  Dim xFldList2 As String[] = ["fldid", "fldconsulttime", "fldencounterval", "fldconsultname", "fldoutcome"]
+  Dim xFldList1 As String[] = ["fldid", "fldconsulttime", "fldencounterval", "fldconsultname", "fldoutcome", "fldpresummary", "fldsummary"]
+  Dim xFldList2 As String[] = ["fldid", "fldconsulttime", "fldencounterval", "fldconsultname", "fldoutcome", "fldpresummary", "fldsummary"]
 
   xFldList1.Add(Quote("tblconsult"))
   xFldList2.Add(Quote("tblopvisit"))
@@ -331,6 +331,8 @@ Private Sub CompleteGrid()
     .Columns[3].Width = 250 * modBasic.$AppWidthRatio
     .Columns[4].Width = 150 * modBasic.$AppWidthRatio
     .Columns[5].Width = 1
+    .Columns[6].Width = 1
+    .Columns[7].Width = 1
 
     .Columns[1].Text = "DateTime"
     .Columns[3].Text = "Consultation"
@@ -347,6 +349,19 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
     GridView2.Data.Text = modReportVar.GetDateTimeReport($rData2[$aMyFields2[Column]], gb.GeneralDate)
   Else
     GridView2.Data.Text = $rData2[$aMyFields2[Column]]
+  Endif
+
+End
+
+Public Sub GridView2_Click()
+
+  Dim xx As String
+
+  xx = ""
+  If GridView2.Rows.Selection.Count Then
+    xx = "<p><b>REQUEST : </b><br>" & GridView2[GridView2.Row, 5].Text & "</p>"
+    xx = xx & "<p><b>RESPONSE : </b><br>" & GridView2[GridView2.Row, 6].Text & "</p>"
+    HtmlView1.Html = xx
   Endif
 
 End

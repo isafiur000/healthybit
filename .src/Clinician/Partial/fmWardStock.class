@@ -223,6 +223,8 @@ Public Sub GridView3_Click()
   If GridView3.Column = 0 Then
     modGridView.CheckUncheckGridNoDB(GridView3, 0)
   Else
+    txtdose.Value = 0
+    txtqty.Value = 0
     If modBasic.$ClinFractQuantity = "Enable" Then
       txtbreakitem.Text = GridView3[GridView3.Row, 1].Text
       SHowBreakPanel(GridView3[GridView3.Row, 1].Text)
