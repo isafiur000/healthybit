@@ -46,7 +46,7 @@
   }
   { TabPanel1 TabPanel
     MoveScaled(0,9,112,56)
-    Count = 5
+    Count = 6
     Index = 0
     Text = ("Current [F1]")
     { grdmedicine GridView
@@ -234,17 +234,25 @@
       AutoResize = False
     }
     Index = 4
-    Text = ("Return [F5]")
+    Text = ("Protocols [F5]")
     { Panel1 Panel
       MoveScaled(1,0.375,110,4)
-      { btnreturn Button
-        MoveScaled(92,0.5,16,3)
-        Text = ("Return")
-        Picture = Picture["icon:/small/cut"]
+      { btnaddprotocol Button
+        MoveScaled(98,0.5,11,3)
+        Text = ("Add")
+        Picture = Picture["icon:/small/add"]
       }
     }
-    { GridView5 GridView
+    { GridView3 GridView
       MoveScaled(1,5,110,46)
+      Expand = True
+      Mode = Select.Single
+      Header = GridView.Both
+    }
+    Index = 5
+    Text = ("History")
+    { GridView5 GridView
+      MoveScaled(1,0,110,51)
       Expand = True
       Mode = Select.Single
       Header = GridView.Both

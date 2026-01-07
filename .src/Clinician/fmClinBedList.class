@@ -1531,7 +1531,7 @@ Public Sub btnmobexamall_Click()
   Dim hForm As FmEnterGroupExam
 
   If GridView1.Rows.Selection.Count Then
-    hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 4].Text, "Physician Examinations", "All")
+    hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 4].Text, "Physician Examinations", "All", modBasic.$compID)
     hForm.ShowModal
   Endif
 
@@ -1560,7 +1560,7 @@ Public Sub btnmobexam_Click()
           modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
       End Select
     Else
-      hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 4].Text, "Physician Examinations", "Group")
+      hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 4].Text, "Physician Examinations", "Group", modBasic.$compID)
       hForm.ShowModal
     Endif
   Endif

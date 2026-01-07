@@ -23,6 +23,8 @@ Private $rData1 As Result
 Private $aMyFields1 As String[]
 Private $rData2 As Result
 Private $aMyFields2 As String[]
+Private $rData3 As Result
+Private $aMyFields3 As String[]
 Private $rData5 As Result
 Private $NumForm As FmQuantiEntry
 Private $LastEncid As String
@@ -134,15 +136,8 @@ Public Sub Form_Open()
     chksave.Enabled = False
     pnlwardstock.Enabled = False
   Endif
-  modSysCons.ClearPatParameterCalc()
   ShowBasicParamStatus()
   $Ready = True
-
-End
-
-Public Sub Form_Close()
-
-  modSysCons.ClearPatParameterCalc()
 
 End
 
@@ -211,7 +206,7 @@ Public Sub Form_KeyRelease()
     btndoserefresh_Click()
   Else If Key.Code = Key.F5 Then
     TabPanel1.Index = 4
-    ShowOldEntry()
+    ShowPatProtocols()
   Else
     modGeneralmain.GoToNextControlTab()
   Endif
@@ -232,6 +227,8 @@ Public Sub TabPanel1_Click()
   Else If TabPanel1.Index = 3 Then
     btndoserefresh_Click()
   Else If TabPanel1.Index = 4 Then
+    ShowPatProtocols()
+  Else If TabPanel1.Index = 5 Then
     ShowOldEntry()
   Endif
 
@@ -326,7 +323,7 @@ Public Sub btnrepeat_Click()
   Dim sColl As Collection
   Dim xLst As Long[]
 
-  sColl = GetSetRegimen($encid, $sBillMode)
+  sColl = GetSetRegimen($encid)
   If sColl And If sColl.Count Then
     For Each xLst In sColl
       If sColl.Key = "New Regimen" Then
@@ -964,8 +961,8 @@ End
 
 Public Sub btngroup_Click()
 
-  Dim pList As String[]
-  Dim xgroup As String
+  Dim pList As Long[]
+  Dim xIndex As Long
 
   Dim res As Result
   Dim txprescriber As String
@@ -991,13 +988,11 @@ Public Sub btngroup_Click()
 
   If modMisc.AllowDiagnoBilling($encid) = True Then
 
-    pList = modMedicine.GetMedicineProcolsList()
-    xgroup = GridViewNew("Select Particulars", pList, False)
-    If xgroup Then
-
-      res = modDatabase.$myConn.Exec("select fldroute,flditem,flddose,flddoseunit,fldfreq,fldday,fldqty,fldstart,fldadvice from tblproductgroup where fldmedgroup=&1 and (fldcomp=&2 or fldcomp=&3)", xgroup, modBasic.$compID, "%")
-      If res.Available Then
-        For Each res
+    pList = GetSetProtocol($encid)
+    If pList And If pList.Count Then
+      For Each xIndex In pList
+        res = modDatabase.$myConn.Exec("select fldroute,flditem,flddose,flddoseunit,fldfreq,fldday,fldqty,fldstart,fldadvice from tblproductgroup where fldid=&1 and (fldcomp=&2 or fldcomp=&3)", xIndex, modBasic.$compID, "%")
+        If res.Available Then
 
           itemtype = modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"])
           CPharmFix = New CFixRatePharmacy(itemtype, res["flditem"], $sBillMode)
@@ -1050,10 +1045,8 @@ Public Sub btngroup_Click()
             End Select
           Endif
 
-        Next
-      Endif
-
-      BlankDosingBox()
+        Endif
+      Next
       FillDosingGrid()
     Endif
 
@@ -1751,10 +1744,10 @@ Public Sub grdmedicine_Data(Row As Integer, Column As Integer)
   modGeneralMain.GridViewDecoration(grdmedicine, Row)
   If rballdates.Value = True Then
     If Column = 0 Then
-      grdmedicine.Data.Text = modReportVar.GetDateTimeReport($rData2["fldstarttime"], gb.GeneralDate)
+      grdmedicine.Data.Text = modReportVar.GetDateTimeReport($rData2[$aMyFields2[Column]], gb.GeneralDate)
     Else If Column = 3 Then
       If rblabel.Value = True Then
-        grdmedicine.Data.Text = modPharmacy.GetMedicineDoseInFormat($rData2["fldid"], "Label")
+        grdmedicine.Data.Text = modPharmacy.GetMedicineDoseInFormat($rData2[$aMyFields2[Column]], "Label")
       Else
         grdmedicine.Data.Text = $rData2[$aMyFields2[Column]]
       Endif
@@ -1764,15 +1757,15 @@ Public Sub grdmedicine_Data(Row As Integer, Column As Integer)
 
   Else If rbcurrent.Value = True Then
     If Column = 1 Then
-      grdmedicine.Data.Text = modReportVar.GetDateTimeReport($rData2["fldstarttime"], gb.GeneralDate)
+      grdmedicine.Data.Text = modReportVar.GetDateTimeReport($rData2[$aMyFields2[Column]], gb.GeneralDate)
     Else If Column = 4 Then
       If rblabel.Value = True Then
-        grdmedicine.Data.Text = modPharmacy.GetMedicineDoseInFormat($rData2["fldid"], "Label")
+        grdmedicine.Data.Text = modPharmacy.GetMedicineDoseInFormat($rData2[$aMyFields2[Column]], "Label")
       Else
         grdmedicine.Data.Text = $rData2[$aMyFields2[Column]]
       Endif
     Else If Column = 8 Then
-      grdmedicine.Data.Text = modPharmacy.TotalDoseCount($rData2["fldid"])
+      grdmedicine.Data.Text = modPharmacy.TotalDoseCount($rData2[$aMyFields2[Column]])
     Else If Column = 11 Then
       grdmedicine.Data.Text = modGeneral.GetUserFullName($rData2[$aMyFields2[Column]])
     Else
@@ -1970,3 +1963,99 @@ End
 '   Endif
 '
 ' End
+
+''======================= Protocols =======================
+Public Sub btnaddprotocol_Click()
+
+  Dim xx As String
+  Dim xList As String[]
+  Dim res As Result
+
+  xList = modMedicine.GetMedicineProcolsList()
+  If xList And If xList.Count Then
+    xx = InputCombo("Select Protocol to Assign", "Drug Protocols", xList, "", True)
+    If xx Then
+      res = modDatabase.$myConn.Create("tblpatprotocols")
+      res["fldencounterval"] = $encid
+      res["fldprotocol"] = xx
+      res["fldstatus"] = "Active"
+      res["fldusage"] = ""
+      res["flduserid"] = modBasic.$lbluser
+      res["fldtime"] = Now()
+      res["fldcomp"] = modBasic.$compID
+      res["fldsave"] = True
+      res["xyz"] = False
+      res.Update
+      ShowPatProtocols()
+    Endif
+  Endif
+
+End
+
+Private Sub ShowPatProtocols()
+
+  Dim sql As String
+
+  sql = "select fldid,fldtime,fldprotocol,fldstatus,flduserid,fldusage from tblpatprotocols where fldencounterval=&1"
+  $rData3 = modDatabase.$myConn.Exec(sql, $encid)
+  $aMyFields3 = New String[]
+  modGridView.ReadSmallData(GridView3, $rData3, $aMyFields3)
+
+  With GridView3
+    .Columns[0].Width = 1
+    .Columns[1].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 250 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 300 * modBasic.$AppWidthRatio
+
+    .Columns[1].Text = "DateTime"
+    .Columns[2].Text = "Protocols"
+    .Columns[3].Text = "Status"
+    .Columns[4].Text = "Prescriber"
+    .Columns[5].Text = "Direction"
+  End With
+
+End
+
+Public Sub GridView3_Data(Row As Integer, Column As Integer)
+
+  $rData3.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView3, Row)
+  If Column = 1 Then
+    GridView3.Data.Text = modReportVar.GetDateTimeReport($rData3[$aMyFields3[Column]], gb.GeneralDate)
+  Else
+    GridView3.Data.Text = $rData3[$aMyFields3[Column]]
+  Endif
+
+End
+
+Public Sub GridView3_Click()
+
+  Dim Row As Integer
+  Dim xx As String
+  Dim res As Result
+
+  If GridView3.Rows.Selection.Count Then
+    Row = GridView3.Row
+    If GridView3.Column = 3 Then
+      xx = InputCombo("Alter Status of " & GridView3[GridView3.Row, 2].Text, "Alter Status", ["Active", "Inactive"], GridView3[GridView3.Row, 3].Text, True)
+      If xx Then
+        res = modDatabase.$myConn.Edit("tblpatprotocols", "fldid=&1 and fldencounterval=&2", GridView3[GridView3.Row, 0].Text, $encid)
+        res["fldstatus"] = xx
+        res.Update
+        ShowPatProtocols()
+      Endif
+    Else If GridView3.Column = 5 Then
+      xx = InputBox("Alter Directions for " & GridView3[GridView3.Row, 2].Text, "Alter Directions", GridView3[GridView3.Row, 5].Text)
+      If xx Then
+        res = modDatabase.$myConn.Edit("tblpatprotocols", "fldid=&1 and fldencounterval=&2", GridView3[GridView3.Row, 0].Text, $encid)
+        res["fldusage"] = xx
+        res.Update
+        ShowPatProtocols()
+      Endif
+    Endif
+    GridView3.Row = Row
+  Endif
+
+End

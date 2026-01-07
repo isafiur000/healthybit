@@ -2,7 +2,9 @@
 
 Private $rData As Result
 Private $aMyFields As String[]
+
 Private $encid As String
+Private $sComp As String
 Private $PatientNum As String
 Private $sVitalsVar As Variant[]
 
@@ -10,9 +12,10 @@ Private $sType As String
 Private $sSysCons As String
 Private $sOption As String
 
-Public Sub _new(encid As String)
+Public Sub _new(encid As String, sComp As String)
 
   $encid = encid
+  $sComp = sComp
 
 End
 
@@ -28,7 +31,7 @@ Public Sub Form_Open()
   txtcolor.Background = modPatient.GetPatientColorStatic($encid)
   chkchart.Value = False
   ScrollView1.Visible = False
-  $sVitalsVar = modPathoSub.GetAllEssentialExams($encid)
+  $sVitalsVar = modPathoSub.GetAllEssentialExams($encid, $sComp)
   ListBox1.List = modString.GetListFromVariant($sVitalsVar, "ExamName", True)
   rbdaily.Value = True
 

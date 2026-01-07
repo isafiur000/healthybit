@@ -187,24 +187,23 @@ End
 
 Public Sub btngroup_Click()
 
-  Dim xList As String[]
-  Dim xgroup As String
+  Dim xList As Long[]
+  Dim xIndex As Long
   Dim res As Result
 
   If cmbcomtaget.Text Then
     If cmbcomtaget.Text = modBasic.$compID Then
     Else
 
-      xList = modMedicine.GetMedicineProcolsList()
-      xgroup = GridViewNew("select Protocol", xList, False)
-      If xgroup Then
-        res = modDatabase.$myConn.Exec("select fldroute,flditem,flddose,flddoseunit,fldfreq,fldday,fldqty,fldstart,fldadvice from tblproductgroup where fldmedgroup=&1 and (fldcomp=&2 or fldcomp=&3)", xgroup, modBasic.$compID, "%")
-        If res.Available Then
-          For Each res
+      xList = GetSetProtocol("")
+      If xList And If xList.Count Then
+        For Each xIndex In xList
+          res = modDatabase.$myConn.Exec("select fldroute,flditem,flddose,flddoseunit,fldfreq,fldday,fldqty,fldstart,fldadvice from tblproductgroup where fldid=&1 and (fldcomp=&2 or fldcomp=&3)", xIndex, modBasic.$compID, "%")
+          If res.Available Then
             AddRequestStore(res["fldroute"], res["flditem"], res["fldqty"], "Normal")
-          Next
-          SHowGridView()
-        Endif
+          Endif
+        Next
+        SHowGridView()
       Endif
 
       ClearComboAll()

@@ -1,0 +1,74 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,102,47)
+  Text = ("Drug Protocols")
+  Arrangement = Arrange.Vertical
+  Margin = True
+  { Panel6 Panel
+    MoveScaled(0,3,100,36)
+    Expand = True
+    Arrangement = Arrange.Horizontal
+    { Panel4 Panel
+      MoveScaled(0,0,21,32)
+      Arrangement = Arrange.Vertical
+      { Panel5 Panel
+        MoveScaled(0,0,21,4)
+        { rbplan RadioButton
+          MoveScaled(0.5,0.5,11,3)
+          Text = ("Planned")
+          Value = True
+        }
+        { rbnew RadioButton
+          MoveScaled(11.5,0.5,8,3)
+          Text = ("New")
+        }
+      }
+      { lstcategory ListBox
+        MoveScaled(1,5,19,21)
+        Expand = True
+        ScrollBar = Scroll.Both
+      }
+    }
+    { Panel3 Panel
+      MoveScaled(21,2,1,27)
+    }
+    { Panel1 Panel
+      MoveScaled(23,2,75,25)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { Panel2 Panel
+        MoveScaled(0,0,75,4)
+        { Label1 Label
+          MoveScaled(0,0.5,7,3)
+          Border = Border.Plain
+          Text = ("Type")
+        }
+        { cmbdate ComboBox
+          MoveScaled(7,0.5,19.5,3)
+        }
+        { btnshow Button
+          MoveScaled(28,0.5,11,3)
+          Text = ("Refresh")
+        }
+        { btnsave Button
+          MoveScaled(52,0.5,11,3)
+          Text = ("Save")
+          Picture = Picture["icon:/small/apply"]
+        }
+        { btnclose Button
+          MoveScaled(63,0.5,11,3)
+          Text = ("Close")
+          Picture = Picture["icon:/small/close"]
+        }
+      }
+      { GridView2 GridView
+        MoveScaled(7,9,54,13)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Horizontal
+        AutoResize = False
+      }
+    }
+  }
+}

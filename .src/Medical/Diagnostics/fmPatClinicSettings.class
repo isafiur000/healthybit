@@ -12,7 +12,7 @@ Public Sub Form_Open()
   Me.Icon = Picture[modGeneralMain.$strLogo]
   cmbtype.List = ["Qualitative", "Quantitative"]
   cmbclass.List = ["Departmental", "Physician Examinations", "Diagnostic Examinations"]
-  cmbsubclass.List = modMedicine.FillClinicalSubClass("%")
+  cmbsubclass.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldsubclass) as col from tblstructexam"))
   cmboption.List = modMedicine.FillClinSepOptionCombo()
   cmbtable.List = ["tblstructexam", "tblstructexamoption"]
   cmbconstant.List = modSysCons.GetAllSysConstantsList()
@@ -193,7 +193,7 @@ Public Sub btnBrOK_Click()
       res["fldlock"] = False
       res.Update()
       FillClinGrid()
-      cmbsubclass.List = modMedicine.FillClinicalSubClass("%")
+      cmbsubclass.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldsubclass) as col from tblstructexam"))
       txthead.Text = ""
       txtexamcode.Text = ""
       cmbconstant.Text = ""

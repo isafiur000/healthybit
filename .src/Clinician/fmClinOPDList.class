@@ -13,6 +13,7 @@ Private $RepoStr As String
 Private $showList As String
 
 Private $sTable As String
+Private $sComp As String
 
 Public Sub _new(sTable As String)
 
@@ -224,6 +225,11 @@ End
 Public Sub btnrefresh_Click()
 
   If cmbdept.Text Then
+    If modBasic.$ClinMultiDeparts = "Enable" Then
+      $sComp = modGeneral.GetFixCompFromDept(cmbdept.Text)
+    Else
+      $sComp = modBasic.$compID
+    Endif
     Inc Application.Busy
     FillBedGrid()
     Dec Application.Busy
@@ -1042,9 +1048,9 @@ Public Sub btnIPform_Click()
         xval = MessageHtml("Pre Comment", xcomm, ["Proceed"])
       Endif
       If $sTable = "tblconsult" Then
-        hForm = New FmPatCliNew(GridView1[GridView1.Row, 2].Text, GridView1[GridView1.Row, 0].Text, "Consultation", True)
+        hForm = New FmPatCliNew(GridView1[GridView1.Row, 2].Text, GridView1[GridView1.Row, 0].Text, "Consultation", $sComp, True)
       Else If $sTable = "tblopvisit" Then
-        hForm = New FmPatCliNew(GridView1[GridView1.Row, 2].Text, GridView1[GridView1.Row, 0].Text, "OP Visit", True)
+        hForm = New FmPatCliNew(GridView1[GridView1.Row, 2].Text, GridView1[GridView1.Row, 0].Text, "OP Visit", $sComp, True)
       Endif
       modWorkSpace.Add(hForm)
 
@@ -1183,7 +1189,7 @@ Public Sub btnmobexamall_Click()
   Dim hForm As FmEnterGroupExam
 
   If GridView1.Rows.Selection.Count Then
-    hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 2].Text, "Physician Examinations", "All")
+    hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 2].Text, "Physician Examinations", "All", $sComp)
     hForm.ShowModal
   Endif
 
@@ -1191,13 +1197,15 @@ End
 
 Public Sub btnmobexam_Click()
 
+  Dim xClinOpd As String
   Dim hForm As FmEnterGroupExam
   Dim hForm1 As FmWardHistory
   Dim hForm2 As FmExamAttach
 
   If GridView1.Rows.Selection.Count Then
-    If modBasic.$ClinOPDExamination Then
-      Select modBasic.$ClinOPDExamination
+    xClinOpd = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/OPDExaminations", $sComp)
+    If xClinOpd Then
+      Select xClinOpd
         Case "Neurology Form"
           hForm2 = New FmExamAttach(GridView1[GridView1.Row, 2].Text, "Neurology", "Physician Examinations", True)
           modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm2)
@@ -1208,11 +1216,11 @@ Public Sub btnmobexam_Click()
           hForm2 = New FmExamAttach(GridView1[GridView1.Row, 2].Text, "ANC Visit", "Physician Examinations", True)
           modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm2)
         Case Else
-          hForm1 = New FmWardHistory(modBasic.$ClinOPDExamination, GridView1[GridView1.Row, 2].Text, "Physician Examinations")
+          hForm1 = New FmWardHistory(xClinOpd, GridView1[GridView1.Row, 2].Text, "Physician Examinations")
           modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
       End Select
     Else
-      hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 2].Text, "Physician Examinations", "Group")
+      hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 2].Text, "Physician Examinations", "Group", $sComp)
       hForm.ShowModal
     Endif
   Endif

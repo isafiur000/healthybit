@@ -76,8 +76,6 @@ End
 Public Sub btnOK_Click()
 
   Dim res As Result
-  Dim xsyscos As String
-  Dim xoption As String
 
   If cmbexamname.Text And If cmbtarget.Text And If cmbgroupname.Text Then
     res = modDatabase.$myConn.Create("tbldepartchart")

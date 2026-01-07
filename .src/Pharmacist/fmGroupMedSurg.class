@@ -16,9 +16,7 @@ Public Sub Form_Open()
   cmbroute.List = modMedicine.ComboRoute()
   cmbdoseunit.List = modMedicine.$MedicineUnitList
   cmbfreq.List = modMedicine.FrequencyCombo()
-  cmbgroup.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldmedgroup as col from tblmedgroup"))
-  cmbmode.List = modNonMedical.FillCashModeCombo()
-  cmbtestmode.List = ["Pre-Administration", "Post-Administration"]
+  cmbgroup.List = modMedicine.GetMedicineProcolsList()
 
 End
 
@@ -50,7 +48,7 @@ Public Sub btnrefresh_Click()
 
   If cmbgroup.Text And If cmbtarget.Text Then
     FillDosingGrid()
-    txtdoseday.SetFocus
+    cmbcategory.SetFocus
   Endif
 
 End
@@ -59,7 +57,7 @@ Private Sub FillDosingGrid()
 
   Dim sql As String
 
-  sql = "select fldid,fldroute,flditem,flddose,flddoseunit,fldfreq,fldday,fldqty,fldstart,fldadvice,flddoseday from tblproductgroup where fldmedgroup=&1 and fldcomp=&2 ORDER BY fldid DESC"
+  sql = "select fldid,fldroute,flditem,flddose,flddoseunit,fldfreq,fldday,fldqty,fldstart,fldadvice,fldcategory from tblproductgroup where fldmedgroup=&1 and fldcomp=&2 ORDER BY fldid DESC"
   $rData = modDatabase.$myConn.Exec(sql, cmbgroup.Text, cmbtarget.Text)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
@@ -75,7 +73,7 @@ Private Sub FillDosingGrid()
     .Columns[7].Width = 50 * modBasic.$AppWidthRatio
     .Columns[8].Width = 50 * modBasic.$AppWidthRatio
     .Columns[9].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[10].Width = 50 * modBasic.$AppWidthRatio
+    .Columns[10].Width = 100 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "Route"
     .Columns[2].Text = "Particulars"
@@ -86,7 +84,7 @@ Private Sub FillDosingGrid()
     .Columns[7].Text = "QTY"
     .Columns[8].Text = "Start"
     .Columns[9].Text = "Advice"
-    .Columns[10].Text = "Date"
+    .Columns[10].Text = "Type"
   End With
 
 End
@@ -110,17 +108,7 @@ Public Sub GridView1_Click()
   txtqty.Value = GridView1[GridView1.Row, 7].Text
   txtstart.Value = GridView1[GridView1.Row, 8].Text
   txtadvice.Text = GridView1[GridView1.Row, 9].Text
-  txtdoseday.Value = GridView1[GridView1.Row, 10].Text
-
-End
-
-Public Sub tbtngroup_Click()
-
-  Dim hForm As FmAddVariableGrid
-
-  hform = New FmAddVariableGrid("fldmedgroup", "tblmedgroup")
-  hform.ShowModal
-  cmbgroup.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldmedgroup as col from tblmedgroup"))
+  cmbcategory.Text = GridView1[GridView1.Row, 10].Text
 
 End
 
@@ -178,7 +166,7 @@ Public Sub tbtnadd_Click()
       res = modDatabase.$myConn.Create("tblproductgroup")
       res["fldmedgroup"] = cmbgroup.Text
       res["fldcomp"] = cmbtarget.Text
-      res["flddoseday"] = txtdoseday.Value
+      res["fldcategory"] = cmbcategory.Text
       res["fldroute"] = cmbroute.Text
       res["flditem"] = cmbmedicine.Text
       res["flddose"] = txtdose.Value
@@ -191,6 +179,7 @@ Public Sub tbtnadd_Click()
       res.Update
       ClearAllContr()
       FillDosingGrid()
+      cmbgroup.List = modMedicine.GetMedicineProcolsList()
       cmbroute.SetFocus
     Endif
   Endif
@@ -216,7 +205,6 @@ Private Sub ClearAllContr()
   txtqty.Value = 0
   txtstart.Value = 0
   txtadvice.Text = ""
-  txtdoseday.Value = 0
 
 End
 
@@ -248,7 +236,7 @@ Public Sub btnedit_Click()
 
   If GridView1.Rows.Selection.Count > 0 Then
     res = modDatabase.$myConn.Edit("tblproductgroup", "fldid=&1", GridView1[GridView1.Row, 0].Text)
-    res["flddoseday"] = txtdoseday.Value
+    res["fldcategory"] = cmbcategory.Text
     res["fldroute"] = cmbroute.Text
     res["flditem"] = cmbmedicine.Text
     res["flddose"] = txtdose.Value
@@ -313,39 +301,5 @@ Public Sub btnlist_Click()
   Endif
   Dec Application.Busy
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
-
-End
-
-''=================== LABORATORY ====================
-Public Sub cmbmode_KeyRelease()
-
-  modFillContainer.AutoFillComboBox(cmbmode)
-  modFillContainer.RestrictComboToContent(cmbmode)
-
-End
-
-Public Sub cmbmode_Click()
-
-  cmbtest.Clear()
-  If cmbmode.Text Then
-    cmbtest.List = modNonMedical.NonStockBillActiveItemArray("Diagnostic Tests", cmbmode.Text)
-  Endif
-
-End
-
-Public Sub cmbtest_GotFocus()
-
-  Dim xLst As String[]
-
-  If cmbmode.Text Then
-    If Not cmbtest.Text Then
-      If modBasic.$ItemListFormat = "GridView" Then
-        xLst = modNonMedical.NonStockBillingItemArray("Diagnostic Tests", cmbmode.Text)
-        If xLst.Count Then
-          cmbtest.Text = GridViewNew("Select Particulars", xLst, False, cmbtest)
-        Endif
-      Endif
-    Endif
-  Endif
 
 End

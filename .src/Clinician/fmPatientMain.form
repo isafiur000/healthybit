@@ -38,9 +38,6 @@
     { btnintake Menu
       Text = ("Nutrition Plan")
     }
-    { mnumonitor Menu
-      Text = ("Monitoring")
-    }
     { mnucloudai Menu
       Text = ("AI Advice")
       Picture = Picture["icon:/small/lamp"]
@@ -1155,15 +1152,19 @@
         { Panel17 Panel
           MoveScaled(0,0,47,4)
           { lbldtfind Label
-            MoveScaled(17,0.5,13,3)
+            MoveScaled(16,0.5,13,3)
             Border = Border.Plain
           }
           { btnallexam ToggleButton
-            MoveScaled(31,0.5,4,3)
+            MoveScaled(30,0.5,4,3)
             Picture = Picture["icon:/small/view-detail"]
           }
           { dtfind DateBox
-            MoveScaled(0.5,0.5,15.5,3)
+            MoveScaled(0.5,0.5,14,3)
+          }
+          { mnumonitor Button
+            MoveScaled(37,0.5,10,3)
+            Text = ("Monitor")
           }
         }
         { Panel60 Panel
@@ -1678,6 +1679,7 @@
         }
         { grdfluiddata GridView
           MoveScaled(0,21,118,12)
+          Expand = True
           Mode = Select.Single
           Header = GridView.Both
           AutoResize = False

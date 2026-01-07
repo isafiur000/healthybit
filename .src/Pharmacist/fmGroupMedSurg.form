@@ -23,10 +23,6 @@
     Border = Border.Plain
     Text = ("Group Name")
   }
-  { tbtngroup ToolButton
-    MoveScaled(50,1,3,3)
-    Picture = Picture["icon:/small/add"]
-  }
   { btnexpo Button
     MoveScaled(77,5,11,3)
     Text = ("Export")
@@ -36,121 +32,6 @@
     MoveScaled(77,1,11,3)
     Text = ("List")
     Picture = Picture["icon:/small/file"]
-  }
-  { TabPanel1 TabPanel
-    MoveScaled(1,9,87,52)
-    Count = 2
-    Index = 0
-    Text = ("Medicines")
-    { Frame1 Frame
-      MoveScaled(0,0,86,15)
-      Text = ("Components")
-      Alignment = Align.Left
-      { txtdoseday ValueBox
-        MoveScaled(7,3,7,3)
-      }
-      { cmbroute ComboBox
-        MoveScaled(15,3,11,3)
-      }
-      { cmbmedicine ComboBox
-        MoveScaled(27,3,58,3)
-        Sorted = True
-      }
-      { txtdose ValueBox
-        MoveScaled(7,7,7,3)
-      }
-      { cmbdoseunit ComboBox
-        MoveScaled(15,7,11,3)
-        Sorted = True
-      }
-      { cmbfreq ComboBox
-        MoveScaled(7,11,19,3)
-      }
-      { txtday ValueBox
-        MoveScaled(38,7,7,3)
-      }
-      { txtqty ValueBox
-        MoveScaled(57,7,7,3)
-      }
-      { txtadvice TextBox
-        MoveScaled(38,11,26,3)
-      }
-      { txtstart ValueBox
-        MoveScaled(79,7,6,3)
-      }
-      { tbtnadd Button
-        MoveScaled(69,11,12,3)
-        Text = ("Save")
-        Picture = Picture["icon:/small/add"]
-      }
-      { Label4 Label
-        MoveScaled(1,7,5.625,3)
-        Border = Border.Plain
-        Text = ("Dose")
-      }
-      { Label2 Label
-        MoveScaled(1,11,5.625,3)
-        Border = Border.Plain
-        Text = ("Freq")
-      }
-      { Label3 Label
-        MoveScaled(30,7,7,3)
-        Border = Border.Plain
-        Text = ("Days")
-      }
-      { Label5 Label
-        MoveScaled(50,7,6,3)
-        Border = Border.Plain
-        Text = ("QTY")
-      }
-      { Label6 Label
-        MoveScaled(69,7,9,3)
-        Border = Border.Plain
-        Text = ("Start (Hr)")
-      }
-      { Label7 Label
-        MoveScaled(30,11,7,3)
-        Border = Border.Plain
-        Text = ("Advice")
-      }
-      { btnedit ToolButton
-        MoveScaled(82,11,3,3)
-        Picture = Picture["icon:/small/edit"]
-      }
-      { Label9 Label
-        MoveScaled(1,3,5.625,3)
-        Border = Border.Plain
-        Text = ("Date")
-      }
-    }
-    { GridView1 GridView
-      MoveScaled(0,16,86,31)
-      Mode = Select.Single
-      Header = GridView.Both
-      AutoResize = False
-    }
-    Index = 1
-    Text = ("Laboratory")
-    { cmbmode ComboBox
-      MoveScaled(1,1,14,3)
-    }
-    { cmbtest ComboBox
-      MoveScaled(16,1,46,3)
-      Sorted = True
-    }
-    { cmbtestmode ComboBox
-      MoveScaled(63,1,17,3)
-    }
-    { btnaddtest Button
-      MoveScaled(81,1,4,3)
-      Picture = Picture["icon:/small/add"]
-    }
-    { GridView2 GridView
-      MoveScaled(1,5,85,42)
-      Mode = Select.Single
-      Header = GridView.Both
-    }
-    Index = 0
   }
   { Label8 Label
     MoveScaled(1,5,13,3)
@@ -165,5 +46,92 @@
     MoveScaled(34,5,12,3)
     Text = ("Show")
     Picture = Picture["icon:/small/refresh"]
+  }
+  { Frame1 Frame
+    MoveScaled(1,9,86,19)
+    Text = ("Components")
+    Alignment = Align.Left
+    { cmbroute ComboBox
+      MoveScaled(1,7,11,3)
+    }
+    { cmbmedicine ComboBox
+      MoveScaled(13,7,71,3)
+      Sorted = True
+    }
+    { txtdose ValueBox
+      MoveScaled(7,11,7,3)
+    }
+    { cmbdoseunit ComboBox
+      MoveScaled(15,11,11,3)
+      Sorted = True
+    }
+    { cmbfreq ComboBox
+      MoveScaled(7,15,19,3)
+    }
+    { txtday ValueBox
+      MoveScaled(38,11,7,3)
+    }
+    { txtqty ValueBox
+      MoveScaled(57,11,7,3)
+    }
+    { txtadvice TextBox
+      MoveScaled(38,15,47,3)
+    }
+    { txtstart ValueBox
+      MoveScaled(79,11,6,3)
+    }
+    { tbtnadd Button
+      MoveScaled(69,3,12,3)
+      Text = ("Save")
+      Picture = Picture["icon:/small/add"]
+    }
+    { Label4 Label
+      MoveScaled(1,11,5.625,3)
+      Border = Border.Plain
+      Text = ("Dose")
+    }
+    { Label2 Label
+      MoveScaled(1,15,5.625,3)
+      Border = Border.Plain
+      Text = ("Freq")
+    }
+    { Label3 Label
+      MoveScaled(30,11,7,3)
+      Border = Border.Plain
+      Text = ("Days")
+    }
+    { Label5 Label
+      MoveScaled(50,11,6,3)
+      Border = Border.Plain
+      Text = ("QTY")
+    }
+    { Label6 Label
+      MoveScaled(69,11,9,3)
+      Border = Border.Plain
+      Text = ("Start (Hr)")
+    }
+    { Label7 Label
+      MoveScaled(30,15,7,3)
+      Border = Border.Plain
+      Text = ("Advice")
+    }
+    { btnedit ToolButton
+      MoveScaled(82,3,3,3)
+      Picture = Picture["icon:/small/edit"]
+    }
+    { Label10 Label
+      MoveScaled(1,3,11,3)
+      Border = Border.Plain
+      Text = ("Category")
+    }
+    { cmbcategory ComboBox
+      MoveScaled(13,3,24,3)
+    }
+  }
+  { GridView1 GridView
+    MoveScaled(1,28,86,33)
+    Mode = Select.Single
+    Header = GridView.Both
+    AutoResize = False
   }
 }

@@ -566,7 +566,7 @@ Public Sub btnmobexam_Click()
   Dim hForm As FmEnterGroupExam
 
   If GridView1.Rows.Selection.Count Then
-    hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 1].Text, "Physician Examinations", "Group")
+    hForm = New FmEnterGroupExam(GridView1[GridView1.Row, 1].Text, "Physician Examinations", "Group", modBasic.$compID)
     hForm.ShowModal
   Endif
 

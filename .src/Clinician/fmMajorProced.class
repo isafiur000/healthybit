@@ -40,9 +40,6 @@ Public Sub Form_Open()
   cmbstatus.List = ["Planned", "Referred", "On Hold", "Cancelled"]
   cmbstatus.Text = "Planned"
   txtmode.Text = modNonMedical.GetDiscBindBillMode($sPackage)
-  If txtmode.Text Then
-    cmbprocedure.List = modString.GetListFromCompareVariant($ProcList, "flditemname", "fldgroup", txtmode.Text, False)
-  Endif
   SHowUnpaidGrid()
 
 End
@@ -81,9 +78,6 @@ Public Sub cmbdisctype_Click()
 
   If cmbdisctype.Text Then
     txtmode.Text = modNonMedical.GetDiscBindBillMode(cmbdisctype.Text)
-    If txtmode.Text Then
-      cmbprocedure.List = modString.GetListFromCompareVariant($ProcList, "flditemname", "fldgroup", txtmode.Text, False)
-    Endif
   Endif
 
 End
@@ -114,13 +108,6 @@ Public Sub cmbstatus_KeyRelease()
 
 End
 
-Public Sub cmbprocedure_KeyRelease()
-
-  modFillContainer.AutoFillComboBox(cmbprocedure)
-  modFillContainer.RestrictComboToContent(cmbprocedure)
-
-End
-
 Private Function GetProcedureList(sRatePlan As String, sSection As String) As String[]
 
   Dim xList As String[]
@@ -139,33 +126,27 @@ Private Function GetProcedureList(sRatePlan As String, sSection As String) As St
 
 End
 
-Public Sub cmbsection_Click()
+Public Sub btnproced_Click()
 
-  If cmbsection.Text = "All Sections" Then
-    cmbprocedure.List = modString.GetListFromCompareVariant($ProcList, "flditemname", "fldgroup", txtmode.Text, False)
-  Else
-    cmbprocedure.List = GetProcedureList(txtmode.Text, cmbsection.Text)
+  Dim xList As String[]
+
+  If Not cmbprocedure.Text Then
+    If cmbsection.Text = "All Sections" Then
+      xList = modString.GetListFromCompareVariant($ProcList, "flditemname", "fldgroup", txtmode.Text, False)
+    Else
+      xList = GetProcedureList(txtmode.Text, cmbsection.Text)
+    Endif
+    If xList.Count Then
+      xList.Sort()
+      cmbprocedure.Text = GridViewNew("Select Particulars", xList, False, cmbprocedure)
+    Endif
   Endif
 
 End
 
-Public Sub cmbprocedure_GotFocus()
+Public Sub btnclear_Click()
 
-  Dim xList As String[]
-
-  If cmbsection.Text = "All Sections" Then
-    xList = modString.GetListFromCompareVariant($ProcList, "flditemname", "fldgroup", txtmode.Text, False)
-  Else
-    xList = GetProcedureList(txtmode.Text, cmbsection.Text)
-  Endif
-  If Not cmbprocedure.Text Then
-    If modBasic.$ItemListFormat = "GridView" Then
-      If xList.Count Then
-        xList.Sort()
-        cmbprocedure.Text = GridViewNew("Select Particulars", xList, False, cmbprocedure)
-      Endif
-    Endif
-  Endif
+  cmbprocedure.Text = ""
 
 End
 

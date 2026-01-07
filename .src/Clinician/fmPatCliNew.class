@@ -1,6 +1,7 @@
 ' Gambas class file
 
 Public $PatientComp As String
+Private $sComp As String
 
 Private $rSympRes As Result
 Private $aSympFields As String[]
@@ -47,12 +48,17 @@ Private $TempeRangeLimits As Float[]
 
 Private $RuleChartLst As String[]
 
-Public Sub _new(encid As String, sIndex As Long, sMode As String, Focus As Boolean)
+Public Sub _new(encid As String, sIndex As Long, sMode As String, sComp As String, Focus As Boolean)
 
   If encid Then
     txtencid.Text = encid
     txtclinIndex.Value = sIndex
     txtclinmode.Text = sMode
+  Endif
+  If sComp Then
+    $sComp = sComp
+  Else
+    $sComp = modBasic.$compID
   Endif
   $focus = Focus
 
@@ -75,7 +81,7 @@ Public Sub Form_Open()
       pnltelemed.Enabled = False
   End Select
   modLabSub.DisplayDefaultTestUnit(rbsi, rbmetric)
-  $ExamLst = modMedicine.FillClinicalSubClass("Physician Examinations")
+  $ExamLst = modMedicine.FillClinicalSubClass("Physician Examinations", $sComp)
 
   FillCustomFormMenu()
   FillCustomMenu()
@@ -523,7 +529,7 @@ Private Function GetHistoryList() As String[]
 
   xList = New String[]
   xList.Add("History of Illness")
-  xnew = modMedicine.GetClinHistoryList($billReference, txtgender.Text)
+  xnew = modMedicine.GetClinHistoryList($billReference, $sComp, txtgender.Text)
   If xnew And If xnew.Count Then
     xList.Insert(xnew)
   Else
@@ -1338,13 +1344,15 @@ End
 
 Public Sub btnaddexamlist_Click()
 
+  Dim xClinOpd As String
   Dim hForm1 As FmWardHistory
   Dim hForm As FmEnterGroupExam
   Dim hForm2 As FmExamAttach
 
   If txtencid.Text Then
-    If modBasic.$ClinOPDExamination Then
-      Select modBasic.$ClinOPDExamination
+    xClinOpd = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/OPDExaminations", $sComp)
+    If xClinOpd Then
+      Select xClinOpd
         Case "Neurology Form"
           hForm2 = New FmExamAttach(Trim(txtencid.Text), "Neurology", "Physician Examinations", True)
           modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm2)
@@ -1354,11 +1362,11 @@ Public Sub btnaddexamlist_Click()
         Case "ANC Visit Form"
           hForm2 = New FmExamAttach(Trim(txtencid.Text), "ANC Visit", "Physician Examinations", True)
         Case Else
-          hForm1 = New FmWardHistory(modBasic.$ClinOPDExamination, Trim(txtencid.Text), "Physician Examinations")
+          hForm1 = New FmWardHistory(xClinOpd, Trim(txtencid.Text), "Physician Examinations")
           modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
       End Select
     Else
-      hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "Group")
+      hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "Group", $sComp)
       hForm.ShowModal
     Endif
     FillExamtable()
@@ -1372,7 +1380,7 @@ Public Sub btnaddexamlistall_Click()
   Dim hForm As FmEnterGroupExam
 
   If txtencid.Text Then
-    hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "All")
+    hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "All", $sComp)
     hForm.ShowModal
     FillExamtable()
     ShowEssentialExam()
@@ -1385,7 +1393,7 @@ Public Sub btnaddscales_Click()
   Dim hForm As FmEnterGroupExam
 
   If txtencid.Text Then
-    hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "Scales")
+    hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "Scales", $sComp)
     hForm.ShowModal
     FillExamtable()
     ShowEssentialExam()
@@ -2691,7 +2699,7 @@ Public Sub mnuvital_Click()
   Dim hForm As FmVital
 
   If txtencid.Text
-    hForm = New FmVital(Trim(txtencid.Text))
+    hForm = New FmVital(Trim(txtencid.Text), $sComp)
     hForm.ShowModal
     UpdateTriage()
   Endif
@@ -2703,7 +2711,7 @@ Public Sub btnabcexam_Click()
   Dim hForm As FmTriage
 
   If txtencid.Text
-    hForm = New FmTriage("ABC Examinations", Trim(txtencid.Text))
+    hForm = New FmTriage("ABC Examinations", Trim(txtencid.Text), $sComp)
     hForm.ShowModal
     UpdateTriage()
   Endif
@@ -2747,7 +2755,7 @@ Public Sub mnublank_Click()
 
   Dim hForm As FmPatCliNew
 
-  hForm = New FmPatCliNew("", 0, "", True)
+  hForm = New FmPatCliNew("", 0, "", "", True)
   Me.Close
   modWorkSpace.Add(hForm)
 
@@ -3295,7 +3303,7 @@ Private Sub FillCustomFormMenu()
 
   Dim xList As String[]
 
-  xList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldtitle) as col from tbldepartchart where (fldcomp=&1 or fldcomp=&2)", modBasic.$compID, "%"))
+  xList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldtitle) as col from tbldepartchart where (fldcomp=&1 or fldcomp=&2)", $sComp, "%"))
 
   If xList.Count > 0 Then
     mnucustform1.Caption = xList[0]
@@ -3644,7 +3652,7 @@ Private Sub SHowALgorithmList()
   Dim asx5 As String[]
 
   If txtencid.Text Then
-    $RuleChartLst = modClinChart.GetClinicalChartsList(Trim(txtencid.Text))
+    $RuleChartLst = modClinChart.GetClinicalChartsList(Trim(txtencid.Text), $sComp)
     If $RuleChartLst And If $RuleChartLst.Count Then
 
       If $RuleChartLst.Count > 0 Then

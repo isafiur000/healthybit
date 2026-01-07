@@ -535,7 +535,7 @@ Private Function GetHistoryList() As String[]
   xList = New String[]
   xList.Add("Cause of Admission")
   xList.Add("History of Illness")
-  xnew = modMedicine.GetClinHistoryList($billReference, txtgender.Text)
+  xnew = modMedicine.GetClinHistoryList($billReference, modBasic.$compID, txtgender.Text)
   If xnew And If xnew.Count Then
     xList.Insert(xnew)
   Else
@@ -1623,7 +1623,7 @@ Public Sub btnaddexamlistmain_Click()
           modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm1)
       End Select
     Else
-      hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "Group")
+      hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "Group", modBasic.$compID)
       hForm.ShowModal
     Endif
     FillExamtable()
@@ -1636,7 +1636,7 @@ Public Sub btnaddexamlistmainall_Click()
   Dim hForm As FmEnterGroupExam
 
   If txtencid.Text Then
-    hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "All")
+    hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "All", modBasic.$compID)
     hForm.ShowModal
     FillExamtable()
   Endif
@@ -1648,7 +1648,7 @@ Public Sub btnaddscales_Click()
   Dim hForm As FmEnterGroupExam
 
   If txtencid.Text Then
-    hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "Scales")
+    hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "Scales", modBasic.$compID)
     hForm.ShowModal
     FillExamtable()
   Endif
@@ -3710,7 +3710,7 @@ Public Sub mnuexam_Click()
   Dim hForm As FmVital
 
   If txtencid.Text
-    hForm = New FmVital(Trim(txtencid.Text))
+    hForm = New FmVital(Trim(txtencid.Text), modBasic.$compID)
     hForm.ShowModal
     txtcolor.Background = modPatient.GetPatientColor(Trim(txtencid.Text))
   Endif
@@ -3722,7 +3722,7 @@ Public Sub btnabcexam_Click()
   Dim hForm As FmTriage
 
   If txtencid.Text
-    hForm = New FmTriage("ABC Examinations", Trim(txtencid.Text))
+    hForm = New FmTriage("ABC Examinations", Trim(txtencid.Text), modBasic.$compID)
     hForm.ShowModal
     txtcolor.Background = modPatient.GetPatientColor(Trim(txtencid.Text))
   Endif
@@ -4011,7 +4011,7 @@ Public Sub mnudiscexam_Click()
   If txtencid.Text Then
     xList = modString.GetListFromCompareVariant(modTableCache.$ExaminationCompVar, "fldexamid", "fldcategory", "Discharge Examinations", True)
     If xList And If xList.Count Then
-      hForm = New FmTriage("Discharge Examinations", Trim(txtencid.Text))
+      hForm = New FmTriage("Discharge Examinations", Trim(txtencid.Text), modBasic.$compID)
       hForm.ShowModal
     Endif
   Endif

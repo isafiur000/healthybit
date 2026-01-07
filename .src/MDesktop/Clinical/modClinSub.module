@@ -542,7 +542,7 @@ Public Function FillQuantiExamChartHistory(sImgHt As Integer, encid As String, p
 End
 
 ''-----------------------------------------------------------------------------------------------------------
-Public Sub DrawClinicalCharts_SetA(drw As PictureBox, encid As String, strItem As String)
+Public Sub DrawClinicalCharts_SetA(drw As PictureBox, encid As String, strItem As String) As String
 
   Dim sql As String
   Dim res As Result
@@ -578,9 +578,10 @@ Public Sub DrawClinicalCharts_SetA(drw As PictureBox, encid As String, strItem A
 
     If pointsArr_x.Count And If pointsArr_y Then
       xPath = modChart.ClinicalChart(drw.Height, encid, pointsArr_x, pointsArr_y, 0, 0, 0)
-      drw.Picture = Picture.Load(xPath)
     Endif
   Endif
+
+  Return xPath
 
 End
 

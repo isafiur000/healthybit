@@ -192,7 +192,7 @@ Private Function GetSupplierEmail() As Variant[]
   Dim res As Result
 
   xxx = New Variant[]
-  res = modDatabase.$myConn.Exec("select fldsuppname,fldsuppemail from tblsupplie where fldactive=&1 GROUP BY fldsuppemail", "Active")
+  res = modDatabase.$myConn.Exec("select fldsuppname,fldsuppemail from tblsupplier where fldactive=&1 GROUP BY fldsuppemail", "Active")
   If res.Available Then
     For Each res
       xxx.Add([res["fldsuppemail"], res["fldsuppname"]])

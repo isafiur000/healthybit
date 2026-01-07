@@ -11,7 +11,7 @@ Public Sub Form_Open()
   $hCalcForm = New FmcustCalc("Exam", Panel1)
   hForm = New FmEvidence(Panel2)
 
-  lstdepartment.List = modMedicine.FillClinicalSubClass("%")
+  lstdepartment.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldsubclass) as col from tblstructexam"))
   cmbparam.List = modSysCons.SysParamList()
   cmbprovdiagno.List = ["Obstetrics", "Syndromes"]
   cmbfinaldiagno.List = ["Obstetrics", "Syndromes"]

@@ -43,6 +43,7 @@ Public Sub Form_Open()
   cmbconsultlist.List = ["Paid", "All"]
   cmbopvisitlist.List = ["Paid", "All"]
   cmbclinforms.List = ["Paid", "All"]
+  cmbmultidept.List = ["Enable", "Disable"]
 
   cmblockexam.List = ["Yes", "No"]
   cmblocksymptom.List = ["Yes", "No"]
@@ -231,6 +232,7 @@ Private Sub GeneralSettings()
   cmbconsultlist.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/ConsultationList", cmbtarget.Text)
   cmbopvisitlist.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/OPVisitList", cmbtarget.Text)
   cmbclinforms.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/PatientForms", cmbtarget.Text)
+  cmbmultidept.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/MultiDepartments", cmbtarget.Text)
 
 End
 
@@ -313,6 +315,14 @@ Public Sub btnclinforms_Click()
 
   modGlobalSetting.SaveSettingToDB("ClinicForms/PatientForms", cmbclinforms.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btnclinforms)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnmultidept_Click()
+
+  modGlobalSetting.SaveSettingToDB("ClinicForms/MultiDepartments", cmbmultidept.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnmultidept)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -761,6 +771,7 @@ Public Sub btnsettall_Click()
   xList.Add("ClinicForms/ConsultationList")
   xList.Add("ClinicForms/OPVisitList")
   xList.Add("ClinicForms/PatientForms")
+  xList.Add("ClinicForms/MultiDepartments")
 
   xList.Add("ClinicForms/ExamList_Lock")
   xList.Add("ClinicForms/SymptomList_Lock")

@@ -66,6 +66,7 @@ Public Sub ListBox1_Click()
   lblmedicine.Text = ListBox1.Current.Text
   If txtid.Value Then
     res = modDatabase.$myConn.Exec("select fldroute,flditem,flddose,fldfreq,flddays,fldstatus,flddirection,fldmixing from tblpatdosing where fldid=&1 and flditem=&2", txtid.Value, lblmedicine.Text)
+    btninjection.Tag = res["fldroute"]
     lblregimen.Text = res["fldroute"] & Space(2) & res["flddose"] & Space(1) & modMedConstant.GetMedicineDoseUnit(res["flditem"]) & " X " & res["fldfreq"] & " X " & res["flddays"] & " day(s)"
     lblregimen.Tag = res["fldfreq"]
     lblunit.Text = modPharmLabel.GetDosageFormForLabel(lblmedicine.Text, "Inpatient")
@@ -250,5 +251,21 @@ End
 Public Sub txtdose_GotFocus()
 
   txtdose.SelectAll
+
+End
+
+Public Sub btninjection_Click()
+
+  Dim res As Result
+  Dim hForm As FmInjection
+
+  If btninjection.Tag Then
+    res = modDatabase.$medConn.Exec("select fldlabel from tbllabel where flddrug=&1 and fldsubroute=&2", modMedConstant.GetDrugFromStockID(lblmedicine.Text), btninjection.Tag)
+    If res.Available Then
+      res.MoveFirst
+      hForm = New FmInjection(btninjection.Tag, res["fldlabel"])
+      hForm.ShowModal
+    Endif
+  Endif
 
 End

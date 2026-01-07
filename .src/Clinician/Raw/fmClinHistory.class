@@ -210,7 +210,7 @@ Public Sub btncopy_Click()
   If encid Then
     If modHelpVariable.$LogInCategory = "Clinician" Then
       If xform = "Clinician Form" Then
-        hForm = New FmPatCliNew(encid, 0, "", True)
+        hForm = New FmPatCliNew(encid, 0, "", "", True)
         modWorkSpace.Add(hForm)
       Else If xform = "InPatient Form" Then
         hForm1 = New FmPatientMain(encid, True)

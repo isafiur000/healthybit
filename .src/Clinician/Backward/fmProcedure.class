@@ -2719,7 +2719,7 @@ Public Sub mnuessent_Click()
   Dim hForm As FmVital
 
   If txtencid.Text
-    hForm = New FmVital(Trim(txtencid.Text))
+    hForm = New FmVital(Trim(txtencid.Text), modBasic.$compID)
     hForm.ShowModal
     hPatient.UpdateTriage()
   Endif

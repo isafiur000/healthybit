@@ -26,7 +26,7 @@ Public Sub Form_Open()
   Else If $strType = "Test" Then
     drwchart.Picture = Picture.Load(modLabSub.FillQuantiTestChart(drwchart.Height, $encid, $strItem, $unt))  ''
   Else If $strType = "SetA" Then
-    drwchart.Picture = Picture.Load(modClinSub.DrawClinicalCharts_SetA(drwchart.Height, $encid, $strItem))
+    drwchart.Picture = Picture.Load(modClinSub.DrawClinicalCharts_SetA(drwchart, $encid, $strItem))
   Endif
 
 End

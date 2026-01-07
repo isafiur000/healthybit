@@ -626,7 +626,7 @@ Public Sub mnugroupexam_Click()
   Dim hForm As FmEnterGroupExam
 
   If txtencid.Text Then
-    hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "Group")
+    hForm = New FmEnterGroupExam(Trim(txtencid.Text), "Physician Examinations", "Group", modBasic.$compID)
     hForm.ShowModal
   Endif
 

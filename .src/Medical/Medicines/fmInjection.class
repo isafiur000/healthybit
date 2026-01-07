@@ -16,6 +16,13 @@ End
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me)
+  If modHelpVariable.$LogInCategory = "Clinician" Then
+    pnladd.Visible = False
+    btndelrecons.Visible = False
+    tlbtnaddreconst.Visible = False
+    btndeldilut.Visible = False
+    tlbtnaddilute.Visible = False
+  Endif
   ShowInjectionProp()
 
 End

@@ -1,19 +1,5 @@
 ' Gambas module file
 
-Public $PatAge As Float
-Public $PatSex As String
-Public $PatWeight As Float
-Public $PatHeight As Float
-
-Public Sub ClearPatParameterCalc()
-
-  $PatAge = 0
-  $PatSex = ""
-  $PatWeight = 0
-  $PatHeight = 0
-
-End
-
 ' Public Sub SetPatParametersCalc(encid As String)
 '
 '   Dim xmsg As String
@@ -231,26 +217,10 @@ Public Function GetCalculationAValue(strParameter As String, encid As String) As
   Dim xwt As Float
   Dim xht As Float
 
-  If $PatSex Then
-    xsex = $PatSex
-  Else
-    xsex = modPatient.GetPatientSex(encid)
-  Endif
-  If $PatAge Then
-    xage = $PatAge
-  Else
-    xage = DateDiff(modPatient.GetPatientBirthDay(encid), Now(), gb.Year)
-  Endif
-  If $PatWeight Then
-    xwt = $PatWeight
-  Else
-    xwt = modClinic.GetBodyWeight(encid)
-  Endif
-  If $PatHeight Then
-    xht = $PatHeight
-  Else
-    xht = modClinic.GetPatientHeightinCm(encid)
-  Endif
+  xsex = modPatient.GetPatientSex(encid)
+  xage = DateDiff(modPatient.GetPatientBirthDay(encid), Now(), gb.Year)
+  xwt = modClinic.GetBodyWeight(encid)
+  xht = modClinic.GetPatientHeightinCm(encid)
 
   If xage And If xwt And If xht Then
     xx = GetCalculationForSetA(strParameter, xsex, xage, xwt, xht, 0)                      ''
@@ -270,26 +240,10 @@ Public Function GetCreatinineClearance(encid As String) As Float
   Dim xht As Float
   Dim xcreat As String
 
-  If $PatSex Then
-    xsex = $PatSex
-  Else
-    xsex = modPatient.GetPatientSex(encid)
-  Endif
-  If $PatAge Then
-    xage = $PatAge
-  Else
-    xage = DateDiff(modPatient.GetPatientBirthDay(encid), Now(), gb.Year)
-  Endif
-  If $PatWeight Then
-    xwt = $PatWeight
-  Else
-    xwt = modClinic.GetBodyWeight(encid)
-  Endif
-  If $PatHeight Then
-    xht = $PatHeight
-  Else
-    xht = modClinic.GetPatientHeightinCm(encid)
-  Endif
+  xsex = modPatient.GetPatientSex(encid)
+  xage = DateDiff(modPatient.GetPatientBirthDay(encid), Now(), gb.Year)
+  xwt = modClinic.GetBodyWeight(encid)
+  xht = modClinic.GetPatientHeightinCm(encid)
   xcreat = modLabTest.GetCurrTesValuePos("Last", encid, modFixLab.GetLabTestIDFromSysConst("Creatinine_Serum"), MMain.$defUnit)
 
   If xage And If xwt Then
