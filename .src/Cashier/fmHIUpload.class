@@ -38,6 +38,7 @@ Public Sub Form_Open()
   LoadTableNames()
   modSettings.ShowCheckBox(chkshow, "ClaimUpload/ShowOlder")
   LoadHIFormats()
+  rbsales.Value = True
 
 End
 
@@ -459,30 +460,36 @@ Private Sub SHowCreditGrid()
   xList2 = xList.Copy()
   xList2.Add(Quote("tblpatbilling"))
 
-  If chkshow.Value = True Then
-    If cmbsource.Text = "Invoice" Then
-      sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"                                                  ''
-      sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"                                                ''
-    Else If cmbsource.Text = "Receipt" Then
-      sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"
-      sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"
+  If rbsales.Value = True Then
+    If chkshow.Value = True Then
+      If cmbsource.Text = "Invoice" Then
+        sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"                                                  ''
+        sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"                                                ''
+      Else If cmbsource.Text = "Receipt" Then
+        sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"
+        sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"
+      Else
+        sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5 UNION ALL select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"
+        sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5 UNION ALL select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"
+      Endif
+
     Else
-      sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5 UNION ALL select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"
-      sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5 UNION ALL select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"
+      If cmbsource.Text = "Invoice" Then
+        sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5"                                                  ''
+        sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5"                                                ''
+      Else If cmbsource.Text = "Receipt" Then
+        sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5"
+        sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5"
+      Else
+        sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5 UNION ALL select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5"
+        sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5 UNION ALL select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5"
+      Endif
+
     Endif
 
-  Else
-    If cmbsource.Text = "Invoice" Then
-      sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5"                                                  ''
-      sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5"                                                ''
-    Else If cmbsource.Text = "Receipt" Then
-      sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5"
-      sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5"
-    Else
-      sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5 UNION ALL select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5"
-      sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5 UNION ALL select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&5"
-    Endif
-
+  Else If rbretn.Value = True Then
+    sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)<&5"                                                  ''
+    sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) and fldclaimid IS NULL GROUP BY flditemname HAVING SUM(flditemqty)<&5"
   Endif
 
   If cmbfiscal.Text = "Current" Then
@@ -539,6 +546,82 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
 End
 
 Public Sub btngridclaim_Click()
+
+  If GridView2.Rows.Count Then
+    If rbsales.Value = True Then
+      GetSalesClaim()
+    Else If rbretn.Value = True Then
+      GetReturnClaim()
+    Endif
+  Endif
+
+End
+
+Private Function GetHICategory(sCateg As String) As String
+
+  Dim xx As String
+
+  Select sCateg
+    Case "Diagnostic Tests", "Radio Diagnostics", "General Services", "Procedures", "Equipment", "Other Items"
+      xx = "service"
+    Case "Medicines", "Surgicals", "Extra Items"
+      xx = "item"
+  End Select
+
+  Return xx
+
+End
+
+Private Sub GetReturnClaim()
+
+  Dim xSNo As String[]
+  Dim xIndexLst As String[]
+  Dim asx As String[]
+  Dim aIndex As String
+
+  Dim Row As Integer
+  Dim xcateg As String
+  Dim hForm As CimisAPIReturn
+  Dim xout As String
+  Dim xcoll As Collection
+  Dim res As Result
+
+  xSNo = New String[]
+  xIndexLst = New String[]
+  If txtgridclaim.Text Then
+    xcateg = GetHICategory(GridView2[0, 10].Text)
+    If xcateg Then
+      For Row = 0 To GridView2.Rows.Count - 1
+        If GetHICategory(GridView2[Row, 10].Text) = xcateg Then
+          xSNo.Add(GridView2[Row, 1].Text)
+
+          asx = Split(GridView2[Row, 9].Text, ",")
+          xIndexLst.Insert(asx)
+        Endif
+      Next
+
+      hForm = New CimisAPIReturn(txtgridencid.Text, txtgridclaim.Text, xcateg, xSNo)
+      xout = hForm.GetAPIOutput()
+
+      Try xcoll = JSON.Decode(xout)
+      If xcoll["message"] Then
+        For Each aIndex In xIndexLst
+          res = modDatabase.$myConn.Edit($tblpatbilling, "fldid=&1", CLong(aIndex))
+          res["fldclaimstate"] = xcoll["deduction"]
+          res["fldclaimid"] = xcoll["message"]
+          res.Update
+        Next
+        SHowCreditGrid()
+      Else
+        Message.Warning(xout, ("OK"))
+      Endif
+
+    Endif
+  Endif
+
+End
+
+Private Sub GetSalesClaim()
 
   Dim hForm As CimisAPIClaim
   Dim xSNo As Variant[]

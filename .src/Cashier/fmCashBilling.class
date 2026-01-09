@@ -1902,11 +1902,6 @@ End
 
 Private Sub ShowNewEntry()
 
-  Dim xitem As Float
-  Dim xx As Float
-  Dim disc As Float
-  Dim tax As Float
-  Dim xCashCrd As Float
   Dim Column As Integer
   Dim fld As ResultField
 
@@ -1915,24 +1910,7 @@ Private Sub ShowNewEntry()
   GridView1.Columns.Count = $rData.Fields.Count
   GridView1.Rows.Count = $rData.Count
 
-  xitem = 0
-  tax = 0
-  disc = 0
-  xx = 0
-  xCashCrd = 0
   For Each $rData
-    xitem = xitem + $rData["flditemrate"] * $rData["flditemqty"]
-    tax = tax + $rData["fldtaxamt"]
-    disc = disc + $rData["flddiscamt"]
-    xx = xx + $rData["fldditemamt"]
-    If $rData["fldbilltype"] = "Cash" Then
-      xCashCrd = xCashCrd + $rData["fldditemamt"]
-    Else If $rData["fldbilltype"] = "Credit" Then
-      If $rData["fldcashincredit"] Then
-        xCashCrd = xCashCrd + ($rData["fldcashincredit"] / 100) * $rData["fldditemamt"]
-      Endif
-    Endif
-
     Column = 0
     For Each fld In $rData.Fields
       modGeneralMain.GridExplicitDecoration(GridView1, $rData.Index, Column)
@@ -1990,6 +1968,42 @@ Private Sub ShowNewEntry()
     .Columns[19].Width = 125 * modBasic.$AppWidthRatio
     .Columns[20].Width = 50 * modBasic.$AppWidthRatio
   End With
+
+  GetNewServiceTotal()
+
+End
+
+Private Sub GetNewServiceTotal()
+
+  Dim Row As Integer
+  Dim xitem As Float
+  Dim xx As Float
+  Dim disc As Float
+  Dim tax As Float
+  Dim xCashCrd As Float
+
+  xitem = 0
+  tax = 0
+  disc = 0
+  xx = 0
+  xCashCrd = 0
+  For Row = 0 To GridView1.Rows.Count - 1
+    If GridView1[Row, 13].Picture = Picture["icons/checked.png"] Then
+      $rData.MoveTo(Row)
+      xitem = xitem + $rData["flditemrate"] * $rData["flditemqty"]
+      tax = tax + $rData["fldtaxamt"]
+      disc = disc + $rData["flddiscamt"]
+      xx = xx + $rData["fldditemamt"]
+      If $rData["fldbilltype"] = "Cash" Then
+        xCashCrd = xCashCrd + $rData["fldditemamt"]
+      Else If $rData["fldbilltype"] = "Credit" Then
+        If $rData["fldcashincredit"] Then
+          xCashCrd = xCashCrd + ($rData["fldcashincredit"] / 100) * $rData["fldditemamt"]
+        Endif
+      Endif
+    Endif
+  Next
+
   txtsubtotalnew.Value = Round(xitem, -2)
   txttotaxnew.Value = Round(tax, -2)
   txtdiscnew.Value = Round(disc, -2)
@@ -2124,7 +2138,10 @@ Public Sub GridView1_Click()
     Endif
 
   Else If GridView1.Column = 13 Then
-    modGridView.CheckUncheckGridNoDB(GridView1, 13)
+    If chkqrscan.Value = False Then
+      modGridView.CheckUncheckGridNoDB(GridView1, 13)
+      GetNewServiceTotal()
+    Endif
 
   Else If GridView1.Column = 16 Then
     If modBasic.$BillAlterPackage = "Yes" Or If modBasic.$BillAlterPackage = "Partial" Then
@@ -3096,6 +3113,7 @@ End
 Public Sub chkqrscan_Click()
 
   Dim Row As Integer
+  Dim Xow As Integer
 
   If chkqrscan.Value = True Then
     $AdvPayment = "Advance"
@@ -3104,6 +3122,9 @@ Public Sub chkqrscan_Click()
   Endif
   For Row = 0 To GridView1.Rows.Count - 1
     GridView1[Row, 13].Picture = Picture["icons/checked.png"]
+  Next
+  For Xow = 0 To GridView3.Rows.Count - 1
+    GridView3[Xow, 8].Picture = Picture["icons/checked.png"]
   Next
   Message.Optional("<h1>Terms of Use of QR Scan Payment</h1><br>" & modLongVar.$AppLegalWarning, ("Accept"), ("Always Accept Terms of Use of QR Scan Payment"))
 
@@ -4493,7 +4514,7 @@ Public Sub FillDosingGrid()
   Else
     xcomp = modBasic.$compID
   Endif
-  sql = "select fldid,fldtime_order,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,fldlabel,flduserid_order,flddiscper,fldtaxper,fldstarttime,fldfixrate,flddirection,flduserid_order,fldcomp_order,flditemtype,flddisctype,fldbilltype,fldbillingmode,fldcashincredit from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldqtydisp>&3 and fldcomp_order like &4 ORDER BY fldid DESC"                                                   ''
+  sql = "select fldid,fldtime_order,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,fldid,flduserid_order,flddiscper,fldtaxper,fldstarttime,fldfixrate,flddirection,flduserid_order,fldcomp_order,flditemtype,flddisctype,fldbilltype,fldbillingmode,fldcashincredit from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldqtydisp>&3 and fldcomp_order like &4 ORDER BY fldid DESC"                                                   ''
   $rData3 = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), False, 0, xcomp)
 
   GridView3.Clear
@@ -4505,9 +4526,9 @@ Public Sub FillDosingGrid()
     For Each fld In $rData3.Fields
       modGeneralMain.GridExplicitDecoration(GridView3, $rData3.Index, Column)
       If Column = 1 Then
-        GridView3[$rData3.Index, Column].Text = modReportVar.GetDateTimeReport($rData3["fldtime_order"], gb.GeneralDate)
+        GridView3[$rData3.Index, Column].Text = modReportVar.GetDateTimeReport($rData3[fld.Name], gb.GeneralDate)
       Else If Column = 8 Then
-        GridView3[$rData3.Index, Column].Picture = Picture[modMisc.SetGridCheckIcon($rData3["fldlabel"])]
+        GridView3[$rData3.Index, Column].Picture = Picture["icons/checked.png"]
         GridView3[$rData3.Index, Column].Text = ""
       Else If Column = 15 Then
         GridView3[$rData3.Index, Column].Text = modGeneral.GetUserFullName($rData3[fld.Name])
@@ -4602,39 +4623,43 @@ Private Sub TotalDispensedAmount()
   xdisc = 0
   xCashCrd = 0
   For i = 0 To GridView3.Rows.Count - 1
-    If GridView3[i, 11].Text Then
-      taxper = GridView3[i, 11].Text
-    Else
-      taxper = 0
-    Endif
-    If GridView3[i, 10].Text Then
-      discper = GridView3[i, 10].Text
-    Else
-      discper = 0
-    Endif
-    xval = 0
-    If GridView3[i, 13].Text And If CFloat(GridView3[i, 13].Text) Then
-      xval = CFloat(GridView3[i, 13].Text) * CFloat(GridView3[i, 7].Text)
-    Else
-      xval = modStock.GetToDispenseCostOneComp(cmbmode.Text, GridView3[i, 3].Text, GetPharmTarget(GridView3[i, 2].Text), CFloat(GridView3[i, 6].Text), CFloat(GridView3[i, 7].Text))
-    Endif
+    If GridView3[i, 8].Picture = Picture["icons/checked.png"] Then
 
-    subtot = subtot + xval
-    xdisc = xdisc + (xval * (discper / 100))
-    xtax = xtax + (xval * (1 - discper / 100) * (taxper / 100))
-    amt = amt + (xval * (1 - discper / 100) * (1 + taxper / 100))
-
-    If GridView3[i, 19].Text = "Cash" Then
-      xCashCrd = xCashCrd + (xval * (1 - discper / 100) * (1 + taxper / 100))
-    Else If GridView3[i, 19].Text = "Credit" Then
-      If GridView3[i, 21].Text Then
-        xCrdForm = GridView3[i, 21].Text
+      If GridView3[i, 11].Text Then
+        taxper = GridView3[i, 11].Text
       Else
-        xCrdForm = 0
+        taxper = 0
       Endif
-      If xCrdForm Then
-        xCashCrd = xCashCrd + ((xCrdForm / 100) * xval * (1 - discper / 100) * (1 + taxper / 100))
+      If GridView3[i, 10].Text Then
+        discper = GridView3[i, 10].Text
+      Else
+        discper = 0
       Endif
+      xval = 0
+      If GridView3[i, 13].Text And If CFloat(GridView3[i, 13].Text) Then
+        xval = CFloat(GridView3[i, 13].Text) * CFloat(GridView3[i, 7].Text)
+      Else
+        xval = modStock.GetToDispenseCostOneComp(cmbmode.Text, GridView3[i, 3].Text, GetPharmTarget(GridView3[i, 2].Text), CFloat(GridView3[i, 6].Text), CFloat(GridView3[i, 7].Text))
+      Endif
+
+      subtot = subtot + xval
+      xdisc = xdisc + (xval * (discper / 100))
+      xtax = xtax + (xval * (1 - discper / 100) * (taxper / 100))
+      amt = amt + (xval * (1 - discper / 100) * (1 + taxper / 100))
+
+      If GridView3[i, 19].Text = "Cash" Then
+        xCashCrd = xCashCrd + (xval * (1 - discper / 100) * (1 + taxper / 100))
+      Else If GridView3[i, 19].Text = "Credit" Then
+        If GridView3[i, 21].Text Then
+          xCrdForm = GridView3[i, 21].Text
+        Else
+          xCrdForm = 0
+        Endif
+        If xCrdForm Then
+          xCashCrd = xCashCrd + ((xCrdForm / 100) * xval * (1 - discper / 100) * (1 + taxper / 100))
+        Endif
+      Endif
+
     Endif
   Next
 
@@ -4662,9 +4687,13 @@ Public Sub GridView3_Click()
   col = GridView3.Column
   row = GridView3.Row
   If GridView3.Column = 8 Then
-    If GridView3[GridView3.Row, 4].Text And If GridView3[GridView3.Row, 5].Text And If GridView3[GridView3.Row, 6].Text Then
-      modGridView.CheckUncheckGridWithDB(modDatabase.$myConn, GridView3, 8, "fldlabel", "fldid", "tblpatdosing", GridView3[GridView3.Row, 0].Text)
+    If chkqrscan.Value = False Then
+      modGridView.CheckUncheckGridNoDB(GridView3, 8)
+      TotalDispensedAmount()
     Endif
+    ' If GridView3[GridView3.Row, 4].Text And If GridView3[GridView3.Row, 5].Text And If GridView3[GridView3.Row, 6].Text Then
+    '   modGridView.CheckUncheckGridWithDB(modDatabase.$myConn, GridView3, 8, "fldlabel", "fldid", "tblpatdosing", GridView3[GridView3.Row, 0].Text)
+    ' Endif
 
   Else If GridView3.Column = 4 Then
     xval = InputValue(GridView3[GridView3.Row, 3].Text, ("Alter Unit Dose"), GridView3[GridView3.Row, 4].Text)

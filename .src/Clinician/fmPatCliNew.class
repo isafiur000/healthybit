@@ -2431,6 +2431,19 @@ Public Sub mnupatvideos_Click()
 
 End
 
+Public Sub mnuclinhistory_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.GetPatientClinicalHistory(Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
 Public Sub btnaddchart_Click()
 
   Dim sPath As String

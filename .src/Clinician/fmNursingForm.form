@@ -758,7 +758,7 @@
       MoveScaled(1,36,119,56)
       Expand = True
       Arrangement = Arrange.Horizontal
-      Count = 10
+      Count = 11
       Index = 0
       Text = ("Report [F3]")
       { Panel14 Panel
@@ -1043,7 +1043,121 @@
         }
       }
       Index = 7
-      Text = ("Progress [F10]")
+      Text = ("In/Out [F10]")
+      { Panel26 Panel
+        MoveScaled(0,0,74,34)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        { Panel24 Panel
+          MoveScaled(0,0,74,4)
+          { lbldtfluid Label
+            MoveScaled(15,0.375,10,3)
+            Border = Border.Plain
+          }
+          { dtfluid DateBox
+            MoveScaled(0,0.375,15,3)
+          }
+          { Label12 Label
+            MoveScaled(39,0.375,10,3)
+            Border = Border.Plain
+            Text = ("Intake")
+          }
+          { Panel25 Panel
+            MoveScaled(50,0.375,23,3)
+            { rbfood RadioButton
+              MoveScaled(0,0,9,3)
+              Text = ("Food")
+              Value = True
+            }
+            { rbmed RadioButton
+              MoveScaled(10,0,12,3)
+              Text = ("Medicine")
+            }
+          }
+          { btnallinout ToggleButton
+            MoveScaled(26,0.375,4,3)
+            Picture = Picture["icon:/small/view-detail"]
+          }
+        }
+        { grdintake GridView
+          MoveScaled(1,5,60,22)
+          Expand = True
+          Mode = Select.Single
+          Header = GridView.Both
+          AutoResize = False
+        }
+        { Panel27 Panel
+          MoveScaled(0,28,74,4)
+          { txtinfluid ValueBox
+            MoveScaled(10,1,16,3)
+          }
+          { Label14 Label
+            MoveScaled(33,1,10,3)
+            Border = Border.Plain
+            Text = ("Total (kCal)")
+          }
+          { txtincalori ValueBox
+            MoveScaled(44,1,16,3)
+          }
+          { tblfluidcalc ToolButton
+            MoveScaled(68,1,3,3)
+            Picture = Picture["icon:/small/question"]
+          }
+          { Label26 Label
+            MoveScaled(0,1,9,3)
+            Border = Border.Plain
+            Text = ("Total (mL)")
+          }
+        }
+      }
+      { Panel28 Panel
+        MoveScaled(74,1,2,32)
+        Arrangement = Arrange.Vertical
+      }
+      { Panel30 Panel
+        MoveScaled(76,0,41,32)
+        Arrangement = Arrange.Vertical
+        { Panel31 Panel
+          MoveScaled(0,0,40,4)
+          { Label28 Label
+            MoveScaled(0,0.375,13,3)
+            Border = Border.Plain
+            Text = ("Fluid Output")
+          }
+          { btnaddinput Button
+            MoveScaled(25,0.375,7.375,3)
+            ToolTip = ("Input Food Entry")
+            Text = ("In")
+            Picture = Picture["icon:/small/add"]
+          }
+          { btaddoutput Button
+            MoveScaled(32.375,0.375,7.375,3)
+            ToolTip = ("Output Fluid Entry")
+            Text = ("Out")
+            Picture = Picture["icon:/small/remove"]
+          }
+        }
+        { grdoutput GridView
+          MoveScaled(0,4,40,21)
+          Expand = True
+          Mode = Select.Single
+          Header = GridView.Both
+          AutoResize = False
+        }
+        { Panel32 Panel
+          MoveScaled(0,26,40,4)
+          { txtoutfluid ValueBox
+            MoveScaled(24,1,16,3)
+          }
+          { Label29 Label
+            MoveScaled(14,1,9,3)
+            Border = Border.Plain
+            Text = ("Total (mL)")
+          }
+        }
+      }
+      Index = 8
+      Text = ("Progress")
       { Panel8 Panel
         MoveScaled(0,0,118,40)
         Expand = True
@@ -1301,14 +1415,14 @@
           Index = 0
         }
       }
-      Index = 8
+      Index = 9
       Text = ("History")
       { pnlhistory Panel
-        MoveScaled(12,5,83,26)
+        MoveScaled(10,3,83,26)
         Expand = True
         Arrangement = Arrange.Vertical
       }
-      Index = 9
+      Index = 10
       Text = ("Archives")
       { pnlarchivbe Panel
         MoveScaled(0,0,83,26)

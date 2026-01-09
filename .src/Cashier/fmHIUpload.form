@@ -88,13 +88,12 @@
         Default = True
       }
       { btnupload Button
-        MoveScaled(97,7.5,16,3)
+        MoveScaled(97,7.5,12,3)
         Text = ("Upload")
         Picture = Picture["icon:/small/up"]
       }
       { txttotal ValueBox
-        MoveScaled(65,7.5,13,3)
-        Background = Color.SoftYellow
+        MoveScaled(104,4,9,3)
         ReadOnly = True
       }
       { Label3 Label
@@ -131,7 +130,7 @@
         Sorted = True
       }
       { Label6 Label
-        MoveScaled(58,7.5,6,3)
+        MoveScaled(97,4,6,3)
         Border = Border.Plain
         Text = ("TOTAL")
       }
@@ -153,8 +152,7 @@
         Text = ("Summary")
       }
       { btnclaimweb Button
-        MoveScaled(97,4,16,3)
-        Text = ("Page")
+        MoveScaled(110,7.5,3,3)
         Picture = Picture["icon:/small/internet"]
       }
       { cmbfiscal ComboBox
@@ -164,6 +162,18 @@
       { chkexitdate CheckBox
         MoveScaled(80,0.625,15.5,3)
         Text = ("Use Exit Date")
+      }
+      { Panel6 Panel
+        MoveScaled(58,7.5,20,3)
+        { rbretn RadioButton
+          MoveScaled(10,0,10,3)
+          Text = ("Return")
+        }
+        { rbsales RadioButton
+          MoveScaled(0.5,0,9,3)
+          Text = ("Sales")
+          Value = True
+        }
       }
     }
     { GridView1 GridView

@@ -69,6 +69,7 @@ Public Sub Form_Open()
   Endif
   $ExamLst = modMedicine.FillClinicalSubClass("Physician Examinations")
   $UserRestrict = modBasic.$ClinicDisableCompo
+  $OutFluid = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldfluid as col from tblbodyfluid"))
 
   FillCustomFormMenu()
   FillCustomMenu()
@@ -1057,7 +1058,6 @@ Public Sub TabStrip1_Click()
     Else If TabStrip1.Index = 5 Then ''in/out
       dtfluid.Value = Now()
       lbldtfluid.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), Now())
-      $OutFluid = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldfluid as col from tblbodyfluid"))
       rbfood.Value = True
       ShowIntakeFoodGrid()
       SHowOutputFluid()
@@ -2059,7 +2059,7 @@ Public Sub tlbtpregnancy_Click()
 
 End
 
-''------------------------------------------------------ fluid-------------------------------------------------------------------------
+''------------------------------------------------------ I/O-------------------------------------------------------------------------
 Public Sub btnaddinput_Click()
 
   Dim hForm As FmOralIntake

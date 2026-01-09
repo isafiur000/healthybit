@@ -197,3 +197,38 @@ Public Sub btnedit_Click()
   Endif
 
 End
+
+''Convert CSV to JSON
+Public Sub btnexeccsv_Click()
+
+  Dim xdelim As String
+  Dim xPath As String
+  Dim hCSV As CsvFile
+  Dim xcoll As Collection
+  Dim aColl As Collection
+  Dim xVar As Variant[]
+
+  If Dialog.OpenFile() Then Return
+  xPath = Dialog.Path
+  If Exist(xPath) Then
+    If txtdelim.Text Then
+      xdelim = Trim(txtdelim.Text)
+    Else
+      xdelim = ";"
+    Endif
+    xVar = New Variant[]
+    hCSV = New CsvFile(xPath, xdelim)
+    While hCSV.Eof = False
+      xcoll = hCSV.Read()
+      If xcoll And If xcoll.Count Then
+        aColl = New Collection
+        aColl.Add(CFloat(xcoll["x"]), "x")
+        aColl.Add(CFloat(xcoll["y"]), "y")
+        xVar.Add(aColl)
+      Endif
+    Wend
+    hCSV.Close()
+    txtformula.Text = JSON.Encode(xVar)
+  Endif
+
+End

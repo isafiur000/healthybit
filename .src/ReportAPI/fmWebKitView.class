@@ -119,7 +119,7 @@ Public Sub btnarchive_Click()
     xLink = Replace($sLink, "file://", "")
     Inc Application.Busy
     sPath = modPrint.ConvertHTMLToPDFString(xLink, "ReportSize")
-    sLongID = modImage.SavePatientFileGeneral($encid, sTitle, astr, sPath, False, modReportVar.$ReportHash)                       ''
+    sLongID = modImage.SavePatientFileGeneral($encid, sTitle, astr, sPath, modReportVar.$ReportHash)                       ''
     Dec Application.Busy
   Endif
 
@@ -144,7 +144,7 @@ Public Sub btnprintarch_Click()
     xLink = Replace($sLink, "file://", "")
     Inc Application.Busy
     sPath = modPrint.ConvertHTMLToPDFString(xLink, "ReportSize")
-    sLongID = modImage.SavePatientFileGeneral($encid, sTitle, astr, sPath, False, modReportVar.$ReportHash)                       ''
+    sLongID = modImage.SavePatientFileGeneral($encid, sTitle, astr, sPath, modReportVar.$ReportHash)                       ''
     Dec Application.Busy
     If txtprintcount.Value Then
       For i = 0 To txtprintcount.Value - 1

@@ -46,8 +46,8 @@ Public Sub Form_Open()
     mnucancel.Visible = True
     mnucancelall.Visible = True
     Me.Title = "Laboratory Verification"
-    Panel10.Visible = True
-    chkselall.Visible = True
+    ' Panel10.Visible = True
+    ' chkselall.Visible = True
     chkverifyall.Visible = True
   Else If modHelpVariable.$LogInCategory = "Technician" Then
     mnuverify.Visible = False
@@ -56,8 +56,8 @@ Public Sub Form_Open()
     mnucancelall.Visible = False
     mnusep.Visible = False
     Me.Title = "Laboratory Printing"
-    Panel10.Visible = False
-    chkselall.Visible = False
+    ' Panel10.Visible = False
+    ' chkselall.Visible = False
     chkverifyall.Visible = False
   Endif
 
@@ -2990,7 +2990,7 @@ Private Sub ShowVerifyGrid()
     Endif
   Endif
 
-  If chknew.Value And If chkprinted.Value Then
+  If chkverinew.Value And If chkveriprinted.Value Then
     If chkdate.Value = True Then
       If cmbcategory.Text = "%" Then
         If rbencounter.Value = True Then
@@ -3059,9 +3059,9 @@ Private Sub ShowVerifyGrid()
     Endif
 
   Else
-    If chknew.Value Then
+    If chkverinew.Value Then
       sprt = False
-    Else If chkprinted.Value Then
+    Else If chkveriprinted.Value Then
       sprt = True
     Endif
     If chkdate.Value = True Then

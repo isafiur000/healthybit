@@ -818,13 +818,13 @@ End
 
 Public Sub btnrecvformat_Click()
 
-  Dim xPath As String
-
-  If txtorderno.Text And If txtrecvno.Text Then
-    Inc Application.Busy
-    xPath = modMaLePaFormat.ReceiveOrderMaLePa(txtrecvno.Text, txtorderno.Text, txtsupprecv.Text)
-    Dec Application.Busy
-    modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
-  Endif
+  ' Dim xPath As String
+  '
+  ' If txtorderno.Text And If txtrecvno.Text Then
+  '   Inc Application.Busy
+  '   xPath = modMaLePaFormat.ReceiveOrderMaLePa(txtrecvno.Text, txtorderno.Text, txtsupprecv.Text)
+  '   Dec Application.Busy
+  '   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
+  ' Endif
 
 End

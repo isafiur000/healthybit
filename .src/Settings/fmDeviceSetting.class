@@ -960,6 +960,7 @@ Private Sub ShowIMISParam()
   txtimiseligURL.Text = modSettings.ShowSettingFromFIle("InsuranceMain/EligibleURL")
   txtimisrequesturl.Text = modSettings.ShowSettingFromFIle("InsuranceMain/ClaimURL")
   txtimisvalidateurl.Text = modSettings.ShowSettingFromFIle("InsuranceMain/ValidationURL")
+  txtimisreturnurl.Text = modSettings.ShowSettingFromFIle("InsuranceMain/ReturnURL")
 
   txtimishospuu.Text = modSettings.ShowSettingFromFIle("InsuranceMain/HospitalUUID")
   txtimisadminuu.Text = modSettings.ShowSettingFromFIle("InsuranceMain/ClaimAdminUUID")
@@ -992,6 +993,10 @@ End
 Public Sub txtimisvalidateurl_Click()
 
   txtimisvalidateurl.Text = "https://imis.hib.gov.np/api/api_fhir/cap-validation"
+
+End
+
+Public Sub txtimisreturnurl_Click()
 
 End
 
@@ -1069,6 +1074,15 @@ Public Sub btnimisvalidurl_Click()
   modSettings.SaveSettingsToFile("InsuranceMain/ValidationURL", txtimisvalidateurl.Text)
   modBasic.$IMISValidateURL = txtimisvalidateurl.Text
   Balloon.Info(("Information saved"), btnimisvalidurl)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnimisreturnurl_Click()
+
+  modSettings.SaveSettingsToFile("InsuranceMain/ReturnURL", txtimisreturnurl.Text)
+  modBasic.$IMISReturnURL = txtimisreturnurl.Text
+  Balloon.Info(("Information saved"), btnimisreturnurl)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
