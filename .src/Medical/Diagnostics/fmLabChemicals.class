@@ -73,7 +73,7 @@ Public Sub txtqty_GotFocus()
   If cmbroute.Text And If cmbmedicine.Text Then
     xx = modNonMedical.GetBillItemCategoryFromCombo(cmbroute.Text)
     If xx = "Medicines" Then
-      lblunit.Text = modPharmLabel.GetPackVolUnit(cmbmedicine.Text)
+      lblunit.Text = modMedConstant.GetPackVolUnit(cmbmedicine.Text)
     Else If xx = "Surgicals" Then
       lblunit.Text = "Unit"
     Else If xx = "Extra Items" Then

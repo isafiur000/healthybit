@@ -4,6 +4,7 @@ Public Sub Form_Open()
 
   Me.Center
   modGeneralMain.EnableCollectionCache()
+  modTableCache.InitializeTableCache()
   modBasic.LoadGeneralVariables()
   cmbvendor.List = modSupplier.FillVendorNameCombo("Active")
   dtentrydate.Value = Now()

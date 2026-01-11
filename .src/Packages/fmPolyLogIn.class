@@ -155,6 +155,7 @@ Public Sub btnOK_Click()
 
   modHelpVariable.ConnectionMain()
   modGeneralMain.EnableCollectionCache()
+  modTableCache.InitializeTableCache()
   If modHelpVariable.$DownloadAdvertise = "No" Then
   Else
     modScript.GetAdvertiseData()

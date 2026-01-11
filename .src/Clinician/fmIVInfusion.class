@@ -78,9 +78,7 @@ Public Sub grdfluid_Data(Row As Integer, Column As Integer)
 
   $rFludRes.MoveTo(Row)
   modGeneralMain.GridViewDecoration(grdfluid, Row)
-  If Column = 1 Then
-    grdfluid.Data.Text = modReportVar.GetDateTimeReport($rFludRes[$aFludFields[Column]], gb.GeneralDate)
-  Else If Column = 7 Then
+  If Column = 7 Then
     grdfluid.Data.Picture = Picture[GetFluidAdminStatusCode($rFludRes[$aFludFields[Column]])]
     grdfluid.Data.Text = ""
   Else

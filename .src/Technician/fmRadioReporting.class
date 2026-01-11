@@ -27,6 +27,7 @@ Public Sub Form_Open()
 
   Dim xoption As String
   Dim xoption1 As String
+  Dim xplandt As String
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Panel5.Width = Panel1.Width - (Panel3.Width + Panel6.Width)
@@ -39,6 +40,9 @@ Public Sub Form_Open()
   cmbcategorynew.Text = modSettings.ShowSettingFromFIle("Radiology/DefaultDepartment")
   cmbsourcedept.List = modGeneral.GetDepartmentAllList("%")
   modSettings.ShowCheckBox(chkall, "RadioReporting/ShowAll")
+  modSettings.ShowCheckBox(chkplandate, "RadioReporting/PlanDate")
+  dtplan.Enabled = chkplandate.Value
+  btndtplan.Enabled = chkplandate.Value
   dtsort.Value = Now()
   dtplan.Value = Now()
   xoption = modSettings.ShowSettingFromFIle("EntrySetting/Radiology_DateSelect")
@@ -203,6 +207,14 @@ End
 Public Sub cmbfiscal_Click()
 
   LoadTableNames()
+
+End
+
+Public Sub chkplandate_Click()
+
+  modSettings.EnterCheckSetting(chkplandate, "RadioReporting/PlanDate")
+  dtplan.Enabled = chkplandate.Value
+  btndtplan.Enabled = chkplandate.Value
 
 End
 
@@ -1238,7 +1250,11 @@ Public Sub btnaddin_Click()
 
   If cmbformat.Text Then
     If rbwaiting.Value = True Then
-      AddSampling(dtplan.Value, cmbformat.Text)
+      If chkplandate.Value = True Then
+        AddSampling(dtplan.Value, cmbformat.Text)
+      Else If chkplandate.Value = False Then
+        AddSampling(Now(), cmbformat.Text)
+      Endif
     Else If rbadded.Value = True Then
       UpdateSampledTest()
     Endif

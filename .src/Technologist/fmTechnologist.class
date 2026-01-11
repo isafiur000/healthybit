@@ -10,6 +10,12 @@ Public Sub Form_Open()
 
   modGeneralMain.GetFirstValues(ServerSocket1, ServerSocket2)
   modGeneralMain.LoadMainForms(Me, pnltop, pnlleft, Workspace1, pnlright, pnlbottom)
+  If modBasic.$LocalTableCaching = "Disable" Then
+  Else
+    ''table cache
+    modTableCache.LoadTestMasterData(modDatabase.$myConn)
+    modTableCache.LoadRadioMasterData(modDatabase.$myConn)
+  Endif
   DiaplayCustMenu()
   modBasic.LoadLabRadioList()
   modBasic.LabRadiologySeting()

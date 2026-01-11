@@ -13,6 +13,7 @@ Private Sub InitialProcedures()
   modHelpVariable.CreateWorkingDir(False)
   modHelpVariable.SetAppConfigFile()
   modGeneralMain.EnableCollectionCache()
+  modTableCache.InitializeTableCache()
 
   xlocal = modSettings.ShowSettingFromFIle("Application/Localization")
   If xlocal Then

@@ -34,6 +34,7 @@ Public Sub Form_Open()
   cmbftpupload.List = ["wput", "curl"]
   cmbAisupport.List = ["Speech-To-Text", "Text Generation"]
 
+  cmbtablecaching.List = ["Enable", "Disable"]
   cmbcurlcacert.List = ["Enable", "Disable"]
   cmbencprefix.List = ["Select", "Write"]
   cmbwindowsbar.List = ["Enable", "Disable"]
@@ -1062,6 +1063,7 @@ Private Sub ShowOptionSettings()
   modSettings.ShowCheckBox(chkdebugmsg, "GeneralSettings/DebuggingMessage_Enable")
 
   ''--- general
+  cmbtablecaching.Text = modSettings.ShowSettingFromFIle("GeneralSettings/LocalTableCaching")
   cmblocalrepo.Text = modSettings.ShowSettingFromFIle("GeneralSettings/LocalRepoUpload")
   cmbcurlcacert.Text = modSettings.ShowSettingFromFIle("GeneralSettings/cURLCACertificate")
   cmbcsvdelim.Text = modSettings.ShowSettingFromFIle("GeneralSettings/CSVDelimiter")
@@ -1116,6 +1118,15 @@ Public Sub btndebugmsg_Click()
   modSettings.EnterCheckSetting(chkdebugmsg, "GeneralSettings/DebuggingMessage_Enable")
   modBasic.$DebugMsg = chkdebugmsg.Value
   Balloon.Info(("Information saved"), btndebugmsg)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btntablecaching_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/LocalTableCaching", cmbtablecaching.Text)
+  modBasic.$LocalTableCaching = cmbtablecaching.Text
+  Balloon.Info(("Information saved"), btntablecaching)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
