@@ -10,6 +10,9 @@
       Text = ("Blank Form")
       Shortcut = "Ctrl+B"
     }
+    { mnureload Menu
+      Text = ("Reload Form")
+    }
     { mnuadmission Menu
       Text = ("Admission")
       Enabled = False
@@ -961,6 +964,10 @@
             Text = ("Save")
             Picture = Picture["icon:/small/apply"]
           }
+          { chkenabhistory CheckBox
+            MoveScaled(19,0,3,3)
+            Visible = False
+          }
         }
         { txtgencomplaint TextHTML
           MoveScaled(0,7,51,16)
@@ -1037,9 +1044,6 @@
             MoveScaled(0,0.5,36,3)
             Font = Font["Bold"]
             Border = Border.Plain
-          }
-          { chkenabhistory CheckBox
-            MoveScaled(87,0.5,3,3)
           }
         }
         { txthistory TextHTML

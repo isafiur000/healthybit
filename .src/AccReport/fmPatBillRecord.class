@@ -2901,14 +2901,51 @@ Public Sub mnuhdcscharity_Click()
 
 End
 
-Public Sub rbsummary_Click()
+Public Sub mnussfBooking_Click()
+
+  Dim Row As Integer
+
+  If cmbsearch.Text = "Booking" And If txtselect.Text = "Pending" Then
+    For Row = 0 To GridView1.Rows.Count - 1
+      GetSSFBookingLockRow(GridView1[Row, 2].Text, GridView1[Row, 3].Text)
+    Next
+  Endif
 
 End
 
-Public Sub rbbranch_Click()
+Private Sub GetSSFBookingLockRow(sInvoice As String, encid As String)
 
-End
+  Dim xNHISCode As String
+  Dim aForm As CssfAPIBooking
+  Dim xmsg As String
 
-Public Sub rbdepart_Click()
+  Dim res As Result
+  Dim invType As String
+  Dim sTable As String
+
+  invType = modBillLock.GetInvoiceFormatNo(sInvoice)
+  If invType = "Invoice" Then
+    sTable = "tblpatbilldetail"
+  Else If invType = "Receipt" Then
+    sTable = "tbltempbilldetail"
+  Endif
+
+  xNHISCode = modPatient.GetPatientExtCOdebyEnc(encid)
+  If xNHISCode Then
+    res = modDatabase.$myConn.Exec(Subst("select fldencounterval,fldbillno,fldchequeno,flduserid,flditemamt from &1", sTable) & " where fldbillno=&1 and fldencounterval=&2 and fldbankname in(select fldacledger from tbldiscount where (fldreference=&3 or fldreference=&4 or fldreference=&5 or fldreference=&6))", sInvoice, encid, "Accident SSF", "Medical SSF", "MedExtra SSF", "Critical SSF")
+    If res.Available And If res["flditemamt"] Then
+
+      aForm = New CssfAPIBooking(xNHISCode, encid, res["fldchequeno"], sInvoice, res["flditemamt"])
+      xmsg = aForm.GetAPIErrorOutput()
+      If xmsg Then
+        If xmsg = "Success" Then
+          modBillings.AddInvoiceBooking(sInvoice)
+        Else
+          Message.Warning("<h3>ERROR IN SSF BOOKING</h3>" & xmsg, "OK")
+        Endif
+      Endif
+
+    Endif
+  Endif
 
 End

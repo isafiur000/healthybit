@@ -18,10 +18,12 @@ Private $TestBioChem As String[] = ["Date", "FBS", "RBS", "GCT", "OGTT", "HbA1C"
 Private $RadioUSG As String[] = ["Date", "Gest Age(USG)", "Gest Age(Date)", "Description"]
 Private $RadioEcho As String[] = ["Date", "Fetal Echo", "Description"]
 Private $ObsVarData As Variant[]
+Private $ObsVarLst As Long[]
 Private $ANCVarData As Variant[]
 
 Private $ObsHistoryCount As Integer
 Private aObsRowAll As New Object[15]
+Private aObsIndex As New Object[15]
 Private aObsBirthDate As New Object[15]
 Private aObsGestAge As New Object[15]
 Private aObsComplPreg As New Object[15]
@@ -483,6 +485,7 @@ Private Sub SetObstHistory()
 
   For i = 0 To $ObsHistoryCount - 1
     aObsRowAll[i] = New HBox(Frame1)
+    aObsIndex[i] = New ValueBox(aObsRowAll[i])
     aObsBirthDate[i] = New MaskBox(aObsRowAll[i])
     aObsGestAge[i] = New TextBox(aObsRowAll[i])
     aObsComplPreg[i] = New TextBox(aObsRowAll[i])
@@ -513,6 +516,11 @@ Private Sub SetObstetricControls()
       .Spacing = True
       .Margin = True
       .Tag = i
+    End With
+
+    With aObsIndex[i]
+      .Value = $ObsVarLst[i]
+      .Visible = False
     End With
 
     ''0
@@ -611,11 +619,10 @@ Private Sub SetObstetricControls()
     With aObsBtnSave[i]
       .Height = 25 * modBasic.$AppScaleFactor
       .Width = 75 * modBasic.$AppScaleFactor
-      .Text = "Save"
-      If sColl.Count > 1 Then
-        .Visible = False
+      If aObsIndex[i].Value = 0 Then
+        .Text = "Save"
       Else
-        .Visible = True
+        .Text = "Edit"
       Endif
       .Tag = i
     End With
@@ -668,20 +675,24 @@ Public Sub ObsButton_Click()
   Endif
 
   If sColl.Count Then
-    modPatientGeneral.AddExamGeneralQualiData($encid, $sType, "Birth History", "", JSON.Encode(sColl), False)
-    Balloon.Info(("Information saved"), aObsBtnSave[i])
-    Balloon.Delay = modBasic.$BalloonDelay
+    If aObsIndex[i].Value = 0 Then
+      modPatientGeneral.AddExamGeneralQualiData($encid, $sType, "Birth History", "", JSON.Encode(sColl), False)
+      Balloon.Info(("Information saved"), aObsBtnSave[i])
+      Balloon.Delay = modBasic.$BalloonDelay
 
-    If pnlobsheader.Children.Count Then
-      pnlobsheader.Children.Clear()
-    Endif
-    If Frame1.Children.Count Then
-      Frame1.Children.Clear()
-    Endif
+      If pnlobsheader.Children.Count Then
+        pnlobsheader.Children.Clear()
+      Endif
+      If Frame1.Children.Count Then
+        Frame1.Children.Clear()
+      Endif
 
-    GetPastObstetrics()
-    $ObsHistoryCount = $ObsVarData.Count
-    SetObstHistory()
+      GetPastObstetrics()
+      $ObsHistoryCount = $ObsVarData.Count
+      SetObstHistory()
+    Else
+      modPatientGeneral.UpdateExamGeneralQualiData(aObsIndex[i].Value, $encid, "Birth History", "", JSON.Encode(sColl))
+    Endif
   Endif
 
 End
@@ -694,16 +705,19 @@ Private Sub GetPastObstetrics()
 
   xdate = DateAdd(Now(), gb.Year, -1)
   $ObsVarData = New Variant[]
-  res = modDatabase.$myConn.Exec("select flddetail from tblexamgeneral where fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&1) and fldinput=&2 and flditem=&3 and fldtime>&4", $PatientNum, $sType, "Birth History", xdate)
+  $ObsVarLst = New Long[]
+  res = modDatabase.$myConn.Exec("select fldid,flddetail from tblexamgeneral where fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&1) and fldinput=&2 and flditem=&3 and fldtime>&4", $PatientNum, $sType, "Birth History", xdate)
   If res.Available Then
     For Each res
       $ObsVarData.Add(JSON.Decode(res["flddetail"]))
+      $ObsVarLst.Add(res["fldid"])
     Next
   Endif
 
   sColl = New Collection
   sColl.Add("", "Date of Birth")
   $ObsVarData.Add(sColl)
+  $ObsVarLst.Add(0)
 
 End
 

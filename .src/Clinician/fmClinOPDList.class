@@ -114,6 +114,8 @@ Public Sub Form_Open()
   FillCustomFormMenu()
   FillExamMenu()
   modSettings.ShowCheckBox(chkdate, "OPDPatientList/SelectDate")
+  dtsort.Enabled = chkdate.Value
+  btnepsort.Enabled = chkdate.Value
   rbboth.Value = True
   rbdate.Value = True
   If cmbdept.Text Then
@@ -172,6 +174,11 @@ End
 
 Public Sub chkdate_Click()
 
+  dtsort.Enabled = chkdate.Value
+  btnepsort.Enabled = chkdate.Value
+  If chkdate.Value = False Then
+    dtsort.Value = Now()
+  Endif
   modSettings.EnterCheckSetting(chkdate, "OPDPatientList/SelectDate")
 
 End

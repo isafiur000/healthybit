@@ -13,10 +13,12 @@ Private $dtRegist As Date
 Private $sTatus As String
 Private $UserRestrict As String[]
 Private $dateReg As Date
-Private $ExamLst As String[]
 Private $PatientNum As String
 Private $vidRoom As String
 Private $VidIndex As String
+
+Private $ExamLst As String[]
+Private $RuleChartLst As String[]
 
 Private hPtForm As FmClinHistory
 Private hDigForm As FmDiagnosticTab
@@ -45,8 +47,6 @@ Private $SystBPRangeLimits As Float[]
 Private $RespRateRangeLimits As Float[]
 Private $OxySatRangeLimits As Float[]
 Private $TempeRangeLimits As Float[]
-
-Private $RuleChartLst As String[]
 
 Public Sub _new(encid As String, sIndex As Long, sMode As String, sComp As String, Focus As Boolean)
 
@@ -86,7 +86,6 @@ Public Sub Form_Open()
   FillCustomFormMenu()
   FillCustomMenu()
   FillStructExamMenu()
-  SHowALgorithmList()
 
   cmbpatheightunit.List = ["cm", "inch", "foot"]
   cmbsympunit.List = modMedicine.$SymptomFrequency
@@ -249,8 +248,16 @@ Public Sub Form_KeyRelease()
 
   Else If Key.Code = Key.F3 Then
     TabPanel1.Index = 0
+    If chkenabhistory.Value = True Then
+      btngencompln.Enabled = True
+    Endif
+    txtgencomplaint.SetFocus
   Else If Key.Code = Key.F4 Then
     TabPanel1.Index = 1
+    If chkenabhistory.Value = True Then
+      btnhistory.Enabled = True
+    Endif
+    txthistory.SetFocus
   Else If Key.Code = Key.F5 Then
     TabPanel1.Index = 2
   Else If Key.Code = Key.F6 Then
@@ -267,6 +274,10 @@ Public Sub Form_KeyRelease()
     TabPanel1.Index = 6
   Else If Key.Code = Key.F10 Then
     TabPanel1.Index = 7
+    If chkenabhistory.Value = True Then
+      btnplan.Enabled = True
+    Endif
+    txtplan.SetFocus
 
   Else If Key.Code = Key["X"] And If Key.Control Then
     Me.Close()
@@ -285,8 +296,14 @@ End
 Public Sub TabPanel1_Click()
 
   If TabPanel1.Index = 0 Then
+    If chkenabhistory.Value = True Then
+      btngencompln.Enabled = True
+    Endif
     txtgencomplaint.SetFocus
   Else If TabPanel1.Index = 1 Then
+    If chkenabhistory.Value = True Then
+      btnhistory.Enabled = True
+    Endif
     txthistory.SetFocus
   Else If TabPanel1.Index = 2 Then
   Else If TabPanel1.Index = 3 Then
@@ -299,6 +316,9 @@ Public Sub TabPanel1_Click()
     hOwnStockForm.RearrangeGrid()
   Else If TabPanel1.Index = 6 Then
   Else If TabPanel1.Index = 7 Then
+    If chkenabhistory.Value = True Then
+      btnplan.Enabled = True
+    Endif
     txtplan.SetFocus
   Endif
 
@@ -324,6 +344,7 @@ Public Sub btnshowvital_Click()
 
   If txtencid.Text Then
     ShowEssentialExam()
+    btnsavevitals.Enabled = True
   Endif
 
 End
@@ -868,6 +889,8 @@ Private Sub ButtonControl()
     xx = False
   Endif
 
+  chkenabhistory.Value = xx
+
   ''consultation
   mnuconsultplan.Enabled = xfinal
 
@@ -878,7 +901,6 @@ Private Sub ButtonControl()
   btngencompln.Enabled = xx
   ''history
   btnhistory.Enabled = xx
-  chkenabhistory.Enabled = xx
   btnplan.Enabled = xx
   ''Telemedicine
   btnquery.Enabled = xx
@@ -2145,6 +2167,7 @@ Public Sub btnsavevitals_Click()
 
     Balloon.Info(("Information saved"), btnsavevitals)
     Balloon.Delay = modBasic.$BalloonDelay
+    btnsavevitals.Enabled = False
   Endif
 
 End
@@ -2213,15 +2236,9 @@ End
 Public Sub cmbinpathistory_Click()
 
   ShowPatHistory()
-  If chkenabhistory.Enabled = True Then
+  If chkenabhistory.Value = True Then
     btnhistory.Enabled = True
   Endif
-
-End
-
-Public Sub chkenabhistory_Click()
-
-  btnhistory.Enabled = True
 
 End
 
@@ -2522,6 +2539,7 @@ Public Sub btnpharm_Click()
         hForm = New FmMedOrder(Trim(txtencid.Text), $sTatus, $billModePharmacy)
         hForm.ShowModal
       Endif
+      hOwnStockForm.RefreshList()
     Endif
   Endif
 
@@ -2771,6 +2789,19 @@ Public Sub mnublank_Click()
   hForm = New FmPatCliNew("", 0, "", "", True)
   Me.Close
   modWorkSpace.Add(hForm)
+
+End
+
+Public Sub mnureload_Click()
+
+  Dim hForm As FmPatCliNew
+
+  If txtencid.Text Then
+    modPatient.$PatProfileData.Remove(Trim(txtencid.Text))
+    hForm = New FmPatCliNew(Trim(txtencid.Text), txtclinIndex.Value, txtclinmode.Text, $sComp, $focus)
+    Me.Close
+    modWorkSpace.Add(hForm)
+  Endif
 
 End
 
@@ -3770,7 +3801,6 @@ Private Sub RestrictUserAccess()
   Endif
   If $UserRestrict.Exist("Patient History") Then
     btnhistory.Enabled = False
-    chkenabhistory.Enabled = False
   Endif
   If $UserRestrict.Exist("Clinical Findings") Then
     btnfinadd.Enabled = False

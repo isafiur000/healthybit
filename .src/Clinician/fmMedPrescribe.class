@@ -225,7 +225,7 @@ Public Sub cmbmedicine_GotFocus()
         If rbrand.Value = True Then
           cmbmedicine.Text = modMedConstant.ConvertBrandToGeneric(cmbroute.Text, cmbmedicine.Text)
         Endif
-        txtdosageform.Text = modPharmLabel.GetDosageFormFromStockID(cmbmedicine.Text)
+        txtdosageform.Text = modMedConstant.GetDosageFormFromStockID(cmbmedicine.Text)
       Endif
 
     Endif

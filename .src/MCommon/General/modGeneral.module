@@ -742,7 +742,6 @@ Public Function GetDepartCaption(sDept As String) As String
 
   Dim res As Result
   Dim bedno As String
-  Dim xx As String[]
 
   If modTableCache.$DepartmentVar.Exist(sDept) Then
     bedno = modTableCache.$DepartmentVar[sDept]["fldactive"]
@@ -771,7 +770,6 @@ Public Function GetDepartCoding(sDept As String) As String
 
   Dim res As Result
   Dim bedno As String
-  Dim xx As String[]
 
   If modTableCache.$DepartmentVar.Exist(sDept) Then
     bedno = modTableCache.$DepartmentVar[sDept]["flddeptcode"]

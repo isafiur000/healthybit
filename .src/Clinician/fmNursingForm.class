@@ -71,7 +71,6 @@ Public Sub Form_Open()
 
   FillCustomFormMenu()
   FillCustomMenu()
-  SHowALgorithmList()
 
   cmbpatheightunit.List = ["cm", "inch", "foot"]
   cmbsympunit.List = modMedicine.$SymptomFrequency
@@ -224,6 +223,7 @@ Public Sub btnshowvital_Click()
 
   If txtencid.Text Then
     ShowEssentialExam()
+    btnsavevitals.Enabled = True
   Endif
 
 End
@@ -1450,6 +1450,7 @@ Public Sub btnsavevitals_Click()
 
     Balloon.Info(("Information saved"), btnsavevitals)
     Balloon.Delay = modBasic.$BalloonDelay
+    btnsavevitals.Enabled = False
   Endif
 
 End
@@ -1546,6 +1547,7 @@ Public Sub btngencompln_Click()
     modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "History", "General Complaints", txtgencomplaint.KeyList.Join(";"), txtgencomplaint.RichText, xboolean)
     Balloon.Info(("Information saved"), btngencompln)
     Balloon.Delay = modBasic.$BalloonDelay
+    btngencompln.Enabled = False
   Endif
   modSettings.SaveSettingsToFile("OPDForm/Complaints", "General")
 
@@ -1733,6 +1735,7 @@ Public Sub btnpharm_Click()
         hForm = New FmMedOrder(Trim(txtencid.Text), $sTatus, $billModePharmacy)
         hForm.ShowModal
       Endif
+      hOwnStockForm.RefreshList()
     Endif
   Endif
 
@@ -3917,7 +3920,7 @@ End
 Public Sub btnotedit_Click()
 
   If txtnoteid.Value Then
-    modPatientGeneral.UpdateExamGeneralQualiData(txtnoteid.Value, cmbnote.Text, txtimpression.Text, txtnote.RichText)
+    modPatientGeneral.UpdateExamGeneralQualiData(txtnoteid.Value, Trim(txtencid.Text), cmbnote.Text, txtimpression.Text, txtnote.RichText)
     ShowNoteTypeTime()
     Balloon.Info(("Information saved"), btnotedit)
     Balloon.Delay = modBasic.$BalloonDelay
@@ -4152,7 +4155,7 @@ Public Sub grdintake_Click()
 
   yval = InputValue(grdintake[grdintake.Row, 3].Text, ("Edit Intake Value"), grdintake[grdintake.Row, 4].Text)
   If yval Then
-    modPatientGeneral.UpdateExamGeneralQuantiData(grdintake[grdintake.Row, 0].Text, grdintake[grdintake.Row, 3].Text, yval, "")
+    modPatientGeneral.UpdateExamGeneralQuantiData(grdintake[grdintake.Row, 0].Text, Trim(txtencid.Text), grdintake[grdintake.Row, 3].Text, yval, "")
     ShowIntakeFoodGrid()
   Endif
 
@@ -4164,7 +4167,7 @@ Public Sub grdoutput_Click()
 
   yval = InputValue(grdoutput[grdoutput.Row, 3].Text, ("Edit Output Value"), grdoutput[grdoutput.Row, 4].Text)
   If yval Then
-    modPatientGeneral.UpdateExamGeneralQuantiData(grdoutput[grdoutput.Row, 0].Text, grdoutput[grdoutput.Row, 3].Text, yval, "")
+    modPatientGeneral.UpdateExamGeneralQuantiData(grdoutput[grdoutput.Row, 0].Text, Trim(txtencid.Text), grdoutput[grdoutput.Row, 3].Text, yval, "")
     SHowOutputFluid()
   Endif
 

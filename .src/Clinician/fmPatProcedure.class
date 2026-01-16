@@ -12,6 +12,9 @@ Private $AlphaList As String[]
 Private $sLevel As String
 Private $PositionList As String[]
 
+Private $ExamLst As String[]
+Private $RuleChartLst As String[]
+
 Private $rData As Result
 Private $aMyFields As String[]
 
@@ -51,6 +54,7 @@ Public Sub Form_Open()
 
   dtplan.Value = Now()
   cmblabdepart.List = modMedicine.GetPathoCategoryList("Test")
+  $ExamLst = modMedicine.FillClinicalSubClass("Physician Examinations")
   $UserRestrict = modBasic.$ClinicDisableCompo
   $AlphaList = New String[]
   If modBasic.$PayableSettingVerify = "Enable" Then
@@ -72,6 +76,10 @@ Public Sub Form_Open()
     btnaddperson.Visible = False
     ' mnudelsurguser.Visible = False
   Endif
+
+  FillCustomFormMenu()
+  FillCustomMenu()
+  FillStructExamMenu()
 
   txtcomment.DictionaryPath = modBasic.$dictPathList
   txtproccomment.DictionaryPath = modBasic.$dictPathList
@@ -224,9 +232,11 @@ Private Sub GetEncounterValue()
             Wait
             If modPatientSub.AllowEncIDHistory(Trim(txtencid.Text), modDatabase.$myConn) = True Then
               BlockDCButton()
-              txtencid.ReadOnly = True
-              modImage.ShowPhotoSplash("Patient", modPatient.GetPatientNoByEnc(Trim(txtencid.Text)))
               BasicInfoPatient()
+              txtencid.ReadOnly = True
+              SHowALgorithmList()
+              modImage.ShowPhotoSplash("Patient", modPatient.GetPatientNoByEnc(Trim(txtencid.Text)))
+
               $focus = False
             Else
               Me.Enabled = False
@@ -531,6 +541,662 @@ Private Sub UserAccessRestrict()
   Endif
   If $UserRestrict.Exist("Body Height") Then
     btnaddheit.Enabled = False
+  Endif
+
+End
+
+''''------------------------------- custom report menu ---------------------------------------------------
+Private Sub FillCustomMenu()
+
+  Dim xform1 As String
+  Dim xform2 As String
+  Dim xform3 As String
+  Dim xform4 As String
+  Dim xform5 As String
+  Dim xform6 As String
+  Dim xform7 As String
+  Dim xform8 As String
+  Dim xform9 As String
+  Dim xform10 As String
+
+  xform1 = modSettings.ShowSettingFromFIle("CustomReport1/Name")
+  xform2 = modSettings.ShowSettingFromFIle("CustomReport2/Name")
+  xform3 = modSettings.ShowSettingFromFIle("CustomReport3/Name")
+  xform4 = modSettings.ShowSettingFromFIle("CustomReport4/Name")
+  xform5 = modSettings.ShowSettingFromFIle("CustomReport5/Name")
+  xform6 = modSettings.ShowSettingFromFIle("CustomReport6/Name")
+  xform7 = modSettings.ShowSettingFromFIle("CustomReport7/Name")
+  xform8 = modSettings.ShowSettingFromFIle("CustomReport8/Name")
+  xform9 = modSettings.ShowSettingFromFIle("CustomReport9/Name")
+  xform10 = modSettings.ShowSettingFromFIle("CustomReport10/Name")
+
+  If xform1 Then
+    mnucust1.Caption = xform1
+    mnucust1.Tag = "CustomReport1"
+    mnucust1.Enabled = True
+  Endif
+
+  If xform2 Then
+    mnucust2.Caption = xform2
+    mnucust2.Tag = "CustomReport2"
+    mnucust2.Enabled = True
+  Endif
+
+  If xform3 Then
+    mnucust3.Caption = xform3
+    mnucust3.Tag = "CustomReport3"
+    mnucust3.Enabled = True
+  Endif
+
+  If xform4 Then
+    mnucust4.Caption = xform4
+    mnucust4.Tag = "CustomReport4"
+    mnucust4.Enabled = True
+  Endif
+
+  If xform5 Then
+    mnucust5.Caption = xform5
+    mnucust5.Tag = "CustomReport5"
+    mnucust5.Enabled = True
+  Endif
+
+  If xform6 Then
+    mnucust6.Caption = xform6
+    mnucust6.Tag = "CustomReport6"
+    mnucust6.Enabled = True
+  Endif
+
+  If xform7 Then
+    mnucust7.Caption = xform7
+    mnucust7.Tag = "CustomReport7"
+    mnucust7.Enabled = True
+  Endif
+
+  If xform8 Then
+    mnucust8.Text = xform8
+    mnucust8.Tag = "CustomReport8"
+    mnucust8.Enabled = True
+  Endif
+
+  If xform9 Then
+    mnucust9.Caption = xform9
+    mnucust9.Tag = "CustomReport9"
+    mnucust9.Enabled = True
+  Endif
+
+  If xform10 Then
+    mnucust10.Caption = xform10
+    mnucust10.Tag = "CustomReport10"
+    mnucust10.Enabled = True
+  Endif
+
+End
+
+Public Sub mnucust1_Click()
+
+  Dim hCls As CReportCustom
+
+  If txtencid.Text Then
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust1.Tag, "ReportSize", MMain.$defUnit)
+    hCls.Preview()
+  Endif
+
+End
+
+Public Sub mnucust2_Click()
+
+  Dim hCls As CReportCustom
+
+  If txtencid.Text Then
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust2.Tag, "ReportSize", MMain.$defUnit)
+    hCls.Preview()
+  Endif
+
+End
+
+Public Sub mnucust3_Click()
+
+  Dim hCls As CReportCustom
+
+  If txtencid.Text Then
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust3.Tag, "ReportSize", MMain.$defUnit)
+    hCls.Preview()
+  Endif
+
+End
+
+Public Sub mnucust4_Click()
+
+  Dim hCls As CReportCustom
+
+  If txtencid.Text Then
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust4.Tag, "ReportSize", MMain.$defUnit)
+    hCls.Preview()
+  Endif
+
+End
+
+Public Sub mnucust5_Click()
+
+  Dim hCls As CReportCustom
+
+  If txtencid.Text Then
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust5.Tag, "ReportSize", MMain.$defUnit)
+    hCls.Preview()
+  Endif
+
+End
+
+Public Sub mnucust6_Click()
+
+  Dim hCls As CReportCustom
+
+  If txtencid.Text Then
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust6.Tag, "ReportSize", MMain.$defUnit)
+    hCls.Preview()
+  Endif
+
+End
+
+Public Sub mnucust7_Click()
+
+  Dim hCls As CReportCustom
+
+  If txtencid.Text Then
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust7.Tag, "ReportSize", MMain.$defUnit)
+    hCls.Preview()
+  Endif
+
+End
+
+Public Sub mnucust8_Click()
+
+  Dim hCls As CReportCustom
+
+  If txtencid.Text Then
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust8.Tag, "ReportSize", MMain.$defUnit)
+    hCls.Preview()
+  Endif
+
+End
+
+Public Sub mnucust9_Click()
+
+  Dim hCls As CReportCustom
+
+  If txtencid.Text Then
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust9.Tag, "ReportSize", MMain.$defUnit)
+    hCls.Preview()
+  Endif
+
+End
+
+Public Sub mnucust10_Click()
+
+  Dim hCls As CReportCustom
+
+  If txtencid.Text Then
+    hCls = New CReportCustom(Trim(txtencid.Text), mnucust10.Tag, "ReportSize", MMain.$defUnit)
+    hCls.Preview()
+  Endif
+
+End
+
+''==================== chart ====================
+Public Sub mnuvitaltable_Click()
+
+  Dim hForm As FmVitalTable
+
+  If txtencid.Text Then
+    hForm = New FmVitalTable(Trim(txtencid.Text))
+    hForm.ShowModal()
+  Endif
+
+End
+
+Public Sub mnuessenexam_Click()
+
+  Dim hForm As FmMultiChart
+
+  If txtencid.Text Then
+    hForm = New FmMultiChart(Trim(txtencid.Text), "Essential Examinations", modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+Private Sub FillCustomFormMenu()
+
+  Dim xList As String[]
+
+  xList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldtitle) as col from tbldepartchart where (fldcomp=&1 or fldcomp=&2)", modBasic.$compID, "%"))
+
+  If xList.Count > 0 Then
+    mnucustform1.Caption = xList[0]
+    mnucustform1.Tag = xList[0]
+    mnucustform1.Enabled = True
+  Endif
+
+  If xList.Count > 1 Then
+    mnucustform2.Caption = xList[1]
+    mnucustform2.Tag = xList[1]
+    mnucustform2.Enabled = True
+  Endif
+
+  If xList.Count > 2 Then
+    mnucustform3.Caption = xList[2]
+    mnucustform3.Tag = xList[2]
+    mnucustform3.Enabled = True
+  Endif
+
+  If xList.Count > 3 Then
+    mnucustform4.Caption = xList[3]
+    mnucustform4.Tag = xList[3]
+    mnucustform4.Enabled = True
+  Endif
+
+  If xList.Count > 4 Then
+    mnucustform5.Caption = xList[4]
+    mnucustform5.Tag = xList[4]
+    mnucustform5.Enabled = True
+  Endif
+
+  If xList.Count > 5 Then
+    mnucustform6.Caption = xList[5]
+    mnucustform6.Tag = xList[5]
+    mnucustform6.Enabled = True
+  Endif
+
+  If xList.Count > 6 Then
+    mnucustform7.Caption = xList[6]
+    mnucustform7.Tag = xList[6]
+    mnucustform7.Enabled = True
+  Endif
+
+  If xList.Count > 7 Then
+    mnucustform8.Caption = xList[7]
+    mnucustform8.Tag = xList[7]
+    mnucustform8.Enabled = True
+  Endif
+
+  If xList.Count > 8 Then
+    mnucustform9.Caption = xList[8]
+    mnucustform9.Tag = xList[8]
+    mnucustform9.Enabled = True
+  Endif
+
+  If xList.Count > 9 Then
+    mnucustform10.Caption = xList[9]
+    mnucustform10.Tag = xList[9]
+    mnucustform10.Enabled = True
+  Endif
+
+End
+
+Public Sub mnucustform1_Click()
+
+  Dim hForm As FmMultiChart
+
+  If txtencid.Text Then
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform1.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+Public Sub mnucustform2_Click()
+
+  Dim hForm As FmMultiChart
+
+  If txtencid.Text Then
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform2.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+Public Sub mnucustform3_Click()
+
+  Dim hForm As FmMultiChart
+
+  If txtencid.Text Then
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform3.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+Public Sub mnucustform4_Click()
+
+  Dim hForm As FmMultiChart
+
+  If txtencid.Text Then
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform4.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+Public Sub mnucustform5_Click()
+
+  Dim hForm As FmMultiChart
+
+  If txtencid.Text Then
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform5.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+Public Sub mnucustform6_Click()
+
+  Dim hForm As FmMultiChart
+
+  If txtencid.Text Then
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform6.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+Public Sub mnucustform7_Click()
+
+  Dim hForm As FmMultiChart
+
+  If txtencid.Text Then
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform7.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+Public Sub mnucustform8_Click()
+
+  Dim hForm As FmMultiChart
+
+  If txtencid.Text Then
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform8.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+Public Sub mnucustform9_Click()
+
+  Dim hForm As FmMultiChart
+
+  If txtencid.Text Then
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform9.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+Public Sub mnucustform10_Click()
+
+  Dim hForm As FmMultiChart
+
+  If txtencid.Text Then
+    hForm = New FmMultiChart(Trim(txtencid.Text), mnucustform10.Tag, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+''===================== Structured exams==========================
+Private Sub FillStructExamMenu()
+
+  If $ExamLst.Count > 0 Then
+    mnurec1.Text = $ExamLst[0]
+    mnurec1.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 1 Then
+    mnurec2.Text = $ExamLst[1]
+    mnurec2.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 2 Then
+    mnurec3.Text = $ExamLst[2]
+    mnurec3.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 3 Then
+    mnurec4.Text = $ExamLst[3]
+    mnurec4.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 4 Then
+    mnurec5.Text = $ExamLst[4]
+    mnurec5.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 5 Then
+    mnurec6.Text = $ExamLst[5]
+    mnurec6.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 6 Then
+    mnurec7.Text = $ExamLst[6]
+    mnurec7.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 7 Then
+    mnurec8.Text = $ExamLst[7]
+    mnurec8.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 8 Then
+    mnurec9.Text = $ExamLst[8]
+    mnurec9.Enabled = True
+  Endif
+
+  If $ExamLst.Count > 9 Then
+    mnurec10.Text = $ExamLst[9]
+    mnurec10.Enabled = True
+  Endif
+
+End
+
+Public Sub mnurec1_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec1.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec2_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec2.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec3_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec3.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec4_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec4.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec5_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec5.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec6_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec6.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec7_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec7.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec8_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec8.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec9_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec9.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+Public Sub mnurec10_Click()
+
+  Dim hForm As FmWardHistory
+
+  If txtencid.Text Then
+    hForm = New FmWardHistory(mnurec10.Text, Trim(txtencid.Text), "Physician Examinations")
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hForm)
+  Endif
+
+End
+
+''------------------------ Algorithms ---------------------------------------------
+Private Sub SHowALgorithmList()
+
+  Dim asx1 As String[]
+  Dim asx2 As String[]
+  Dim asx3 As String[]
+  Dim asx4 As String[]
+  Dim asx5 As String[]
+
+  If txtencid.Text Then
+    $RuleChartLst = modClinChart.GetClinicalChartsList(Trim(txtencid.Text))
+    If $RuleChartLst And If $RuleChartLst.Count Then
+
+      If $RuleChartLst.Count > 0 Then
+        asx1 = Split($RuleChartLst[0], "|")
+        mnualgo1.Caption = asx1[0]
+        mnualgo1.Tag = CLong(asx1[1])
+        mnualgo1.Enabled = True
+      Endif
+
+      If $RuleChartLst.Count > 1 Then
+        asx2 = Split($RuleChartLst[1], "|")
+        mnualgo2.Caption = asx2[0]
+        mnualgo2.Tag = CLong(asx2[1])
+        mnualgo2.Enabled = True
+      Endif
+
+      If $RuleChartLst.Count > 2 Then
+        asx3 = Split($RuleChartLst[2], "|")
+        mnualgo3.Caption = asx3[0]
+        mnualgo3.Tag = CLong(asx3[1])
+        mnualgo3.Enabled = True
+      Endif
+
+      If $RuleChartLst.Count > 3 Then
+        asx4 = Split($RuleChartLst[3], "|")
+        mnualgo4.Caption = asx4[0]
+        mnualgo4.Tag = CLong(asx4[1])
+        mnualgo4.Enabled = True
+      Endif
+
+      If $RuleChartLst.Count > 4 Then
+        asx5 = Split($RuleChartLst[4], "|")
+        mnualgo5.Caption = asx5[0]
+        mnualgo5.Tag = CLong(asx5[1])
+        mnualgo5.Enabled = True
+      Endif
+
+    Endif
+  Endif
+
+End
+
+Public Sub mnualgo1_Click()
+
+  If txtencid.Text Then
+    modClinChart.LoadRuleChart(Trim(txtencid.Text), mnualgo1.Tag, mnualgo1.Caption)
+  Endif
+
+End
+
+Public Sub mnualgo2_Click()
+
+  If txtencid.Text Then
+    modClinChart.LoadRuleChart(Trim(txtencid.Text), mnualgo2.Tag, mnualgo2.Caption)
+  Endif
+
+End
+
+Public Sub mnualgo3_Click()
+
+  If txtencid.Text Then
+    modClinChart.LoadRuleChart(Trim(txtencid.Text), mnualgo3.Tag, mnualgo3.Caption)
+  Endif
+
+End
+
+Public Sub mnualgo4_Click()
+
+  If txtencid.Text Then
+    modClinChart.LoadRuleChart(Trim(txtencid.Text), mnualgo4.Tag, mnualgo4.Caption)
+  Endif
+
+End
+
+Public Sub mnualgo5_Click()
+
+  If txtencid.Text Then
+    modClinChart.LoadRuleChart(Trim(txtencid.Text), mnualgo5.Tag, mnualgo5.Caption)
   Endif
 
 End
@@ -1659,6 +2325,7 @@ Public Sub btnorderpre_Click()
       hForm.ShowModal
     Endif
     FillDosingGrid("Current")
+    hOwnStockForm.RefreshList()
   Endif
 
 End

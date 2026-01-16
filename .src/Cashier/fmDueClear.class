@@ -16,10 +16,6 @@ Public Sub Form_Open()
   Me.Icon = Picture[modGeneralMain.$strLogo]
   $BillingOption = modBasic.$BillCashOption
   hPatient = New FmBillingEntry(Panel2)
-  If modBasic.$AppCachePatientDemographics = "Yes" Then
-  Else
-    modGeneralMain.RemovePatientCacheSelected("PatientData")
-  Endif
 
   cmbpaying.List = modBasic.$ACLedgerListCredit
   cmbledgerac.List = modBasic.$ACLedgerListCash

@@ -7,6 +7,10 @@ Private $aMyFields As String[]
 Private $rData1 As Result
 Private $aMyFields1 As String[]
 
+Private $SSQLFields As String[]
+Private $newColumn As String[]
+Private $ColCount As Integer
+
 Public Sub _new(sType As String)
 
   $sType = sType
@@ -18,13 +22,15 @@ Public Sub Form_Open()
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
   Me.Title = $sType & " Inventory"
-  lbldate.Value = Date()
+  dtexpiry.Value = Date()
   If $sType = "Blood" Then
     cmbitem.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select flditemcode as col from tblbloodstore"))
   Endif
   cmbitem.Text = "%"
-  cmbstatus.List = ["Active", "Transferred", "Administered", "Returned", "Rejected", "Expired"]
+  cmbstatus.List = ["Active", "Reserved", "Allocated", "Requested", "Transferred", "Administered", "Returned", "Rejected", "Expired"]
   cmbstatus.Text = "Active"
+
+  $SSQLFields = ["fldid", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "flditem", "fldtime_order", "fldcomp_order", "fldorder"]
   ShowBloodRequests()
 
 End
@@ -49,9 +55,18 @@ Public Sub Form_KeyRelease()
 
 End
 
+Public Sub mnuextcolumn_Click()
+
+  Dim hForm As FmAddNewColumn
+
+  hForm = New FmAddNewColumn(Me.Tag)
+  hForm.ShowModal
+
+End
+
 Public Sub chkexpiry_Click()
 
-  lbldate.Value = Now()
+  dtexpiry.Value = Now()
 
 End
 
@@ -79,23 +94,45 @@ Public Sub btnpatrefresh_Click()
 
 End
 
+Private Function GetSQLColumns() As String[]
+
+  Dim xFldList As String[]
+  Dim i As Integer
+
+  modCustPatient.FillNewCOlumnCollection(Me.Tag)
+  $newColumn = modCustPatient.CustomNewColumnsTitle(Me.Tag)
+  xFldList = $SSQLFields.Copy()
+  If $newColumn.Count Then
+    For i = 0 To $newColumn.Count - 1
+      xFldList.Add("fldencounterval")
+    Next
+  Endif
+  Return xFldList
+
+End
+
 Private Sub ShowBloodRequests()
 
   Dim sql As String
+  Dim xFldList As String[]
 
+  xFldList = GetSQLColumns()
   If chkseldate.Value = True Then
-    sql = "select fldid,fldencounterval,fldencounterval,fldencounterval,fldencounterval,fldencounterval,flditem,fldtime_order,fldcomp_order from tblpatmeditem where fldcategory=&1 and fldorder=&2 and fldtime_order>=&3 and fldtime_order<=&4"
+    sql = "select " & xFldList.Join(",") & " from tblpatmeditem where fldcategory=&1 and (fldorder=&2 or fldorder=&3) and fldtime_order>=&4 and fldtime_order<=&5"
   Else
-    sql = "select fldid,fldencounterval,fldencounterval,fldencounterval,fldencounterval,fldencounterval,flditem,fldtime_order,fldcomp_order from tblpatmeditem where fldcategory=&1 and fldorder=&2"
+    sql = "select " & xFldList.Join(",") & " from tblpatmeditem where fldcategory=&1 and (fldorder=&2 or fldorder=&3)"
   Endif
-  $rData1 = modDatabase.$myConn.Exec(sql, "Blood", "Requested", modDate.StartSqlDate(dtrequest.Value), modDate.EndSqlDate(dtrequest.Value))
+  $rData1 = modDatabase.$myConn.Exec(sql, $sType, "Requested", "Waiting", modDate.StartSqlDate(dtrequest.Value), modDate.EndSqlDate(dtrequest.Value))
   $aMyFields1 = New String[]
   modGridView.ReadSmallData(GridView2, $rData1, $aMyFields1)
+  $ColCount = $SSQLFields.Count
   ResizePatientGrid()
 
 End
 
 Private Sub ResizePatientGrid()
+
+  Dim i As Integer
 
   With GridView2
     .Columns[0].Width = 1
@@ -107,6 +144,7 @@ Private Sub ResizePatientGrid()
     .Columns[6].Width = 300 * modBasic.$AppWidthRatio
     .Columns[7].Width = 150 * modBasic.$AppWidthRatio
     .Columns[8].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[9].Width = 100 * modBasic.$AppWidthRatio
 
     .Columns[2].Text = "EncID"
     .Columns[3].Text = "Name"
@@ -115,6 +153,14 @@ Private Sub ResizePatientGrid()
     .Columns[6].Text = "Particulars"
     .Columns[7].Text = "Date"
     .Columns[8].Text = "Location"
+    .Columns[9].Text = "Status"
+
+    If $newColumn.Count Then
+      For i = 0 To $newColumn.Count - 1
+        .Columns[$ColCount + i].Text = $newColumn[i]
+        .Columns[$ColCount + i].Width = 150 * modBasic.$AppWidthRatio
+      Next
+    Endif
   End With
 
 End
@@ -135,7 +181,11 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
   Else If Column = 7 Then
     GridView2.Data.Text = modReportVar.GetDateTimeReport($rData1[$aMyFields1[Column]], gb.GeneralDate)
   Else
-    GridView2.Data.Text = $rData1[$aMyFields1[Column]]
+    If Column >= $ColCount Then
+      GridView2.Data.Text = modCustPatient.NewColValue(Me.Tag, $newColumn[Column - $ColCount], $rData1[$aMyFields1[Column]])
+    Else
+      GridView2.Data.Text = $rData1[$aMyFields1[Column]]
+    Endif
   Endif
 
 End
@@ -149,18 +199,18 @@ Public Sub GridView2_Click()
 End
 
 ''-------------------------- Inventory ---------------------------------
-Public Sub dtnepfir_Click()
+Public Sub dtnepexp_Click()
 
   Dim xx As String
 
-  xx = BSDateFormat(("Enter BS Date in yyyy/mm/dd format"), ("Date Converter"), modDate.ConvertToLocaldate(lbldate.Value))
+  xx = BSDateFormat(("Enter BS Date in yyyy/mm/dd format"), ("Date Converter"), modDate.ConvertToLocaldate(dtexpiry.Value))
   If xx Then
-    lbldate.Value = modDate.ConvertToEnglishdate(xx)
+    dtexpiry.Value = modDate.ConvertToEnglishdate(xx)
   Endif
 
 End
 
-Public Sub btnentry_Click()
+Public Sub mnublentry_Click()
 
   Dim hForm As FmBloodEntry
 
@@ -170,20 +220,80 @@ Public Sub btnentry_Click()
 
 End
 
+Public Sub mnuedit_Click()
+
+  Dim hForm As FmBloodEdit
+  Dim Row As Integer
+
+  If GridView1.Rows.Selection.Count > 0 Then
+    Row = GridView1.Row
+    hForm = New FmBloodEdit($sType, GridView1[GridView1.Row, 1].Text)
+    hForm.ShowModal
+    FillPatDateGrid()
+    GridView1.Row = Row
+  Endif
+
+End
+
+Public Sub mnuconsume_Click()
+
+  Dim hForm As FmPatConsume
+
+  If GridView1.Rows.Selection.Count > 0 Then
+    hForm = New FmPatConsume(GridView1[GridView1.Row, 1].Text)
+    hForm.ShowModal
+    FillPatDateGrid()
+  Endif
+
+End
+
+Public Sub btnexport_Click()
+
+  modCHTMLReport.ExportGridToHTML(GridView1, $sType & " Report", modReportVar.GetDateTimeReport(dtexpiry.Value, gb.MediumDate))
+
+End
+
+Public Sub btnsearch_Click()
+
+  Dim sql As String
+  Dim enc As String
+
+  If modBasic.$AutoEncPrefix Then
+    enc = InputBox(("Encounter ID of Patient"), ("Search Patient"), modBasic.$EncIdPrefix)
+  Else
+    enc = InputBox(("Encounter ID of Patient"), ("Search Patient"), "")
+  Endif
+  If enc Then
+    sql = "select fldid,fldcode,flditem,fldencounterval,fldencname,fldcollect,fldexpiry,fldstatus,fldcrossmatch,fldcomment,fldid from tblmedinventory where fldcategory=&1 and fldreceiver=&2"
+    $rData = modDatabase.$myConn.Exec(sql, $sType, enc)
+    $aMyFields = New String[]
+    modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
+    ResizeGrid()
+  Endif
+
+End
+
+Public Sub btnrefresh_Click()
+
+  FillPatDateGrid()
+  GridView1.SetFocus
+
+End
+
 Private Sub FillPatDateGrid()
 
   Dim sql As String
 
   If chkexpiry.Value = True Then
-    sql = "select fldid,fldcode,flditem,fldreceiver,fldencname,fldcollect,fldexpiry,fldstatus,fldcomment,fldid from tblmedinventory where fldcategory=&1 and flditem like &2 and fldstatus like &3 and fldexpiry<&4"                                                                              ''
+    sql = "select fldid,fldcode,flditem,fldreceiver,fldencname,fldcollect,fldexpiry,fldstatus,fldcrossmatch,fldcomment,fldid from tblmedinventory where fldcategory=&1 and flditem like &2 and fldstatus like &3 and fldexpiry<&4"                                                                              ''
   Else
     If rbentry.Value = True Then
-      sql = "select fldid,fldcode,flditem,fldreceiver,fldencname,fldcollect,fldexpiry,fldstatus,fldcomment,fldid from tblmedinventory where fldcategory=&1 and flditem like &2 and fldstatus like &3 ORDER BY fldtime"                                                                              ''
+      sql = "select fldid,fldcode,flditem,fldreceiver,fldencname,fldcollect,fldexpiry,fldstatus,fldcrossmatch,fldcomment,fldid from tblmedinventory where fldcategory=&1 and flditem like &2 and fldstatus like &3 ORDER BY fldtime"                                                                              ''
     Else If rbexpiry.Value = True Then
-      sql = "select fldid,fldcode,flditem,fldreceiver,fldencname,fldcollect,fldexpiry,fldstatus,fldcomment,fldid from tblmedinventory where fldcategory=&1 and flditem like &2 and fldstatus like &3 ORDER BY fldexpiry"
+      sql = "select fldid,fldcode,flditem,fldreceiver,fldencname,fldcollect,fldexpiry,fldstatus,fldcrossmatch,fldcomment,fldid from tblmedinventory where fldcategory=&1 and flditem like &2 and fldstatus like &3 ORDER BY fldexpiry"
     Endif
   Endif
-  $rData = modDatabase.$myConn.Exec(sql, $sType, cmbitem.Text, cmbstatus.Text, lbldate.Value)
+  $rData = modDatabase.$myConn.Exec(sql, $sType, cmbitem.Text, cmbstatus.Text, dtexpiry.Value)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
   ResizeGrid()
@@ -201,8 +311,9 @@ Private Sub ResizeGrid()
     .Columns[5].Width = 150 * modBasic.$AppWidthRatio
     .Columns[6].Width = 150 * modBasic.$AppWidthRatio
     .Columns[7].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[8].Width = 225 * modBasic.$AppWidthRatio
-    .Columns[9].Width = 1
+    .Columns[8].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[9].Width = 225 * modBasic.$AppWidthRatio
+    .Columns[10].Width = 1
 
     .Columns[1].Text = "Code"
     .Columns[2].Text = "Particulars"
@@ -211,7 +322,8 @@ Private Sub ResizeGrid()
     .Columns[5].Text = "CollectDate"
     .Columns[6].Text = "ExpiryDate"
     .Columns[7].Text = "Status"
-    .Columns[8].Text = "Comment"
+    .Columns[8].Text = "Cross match"
+    .Columns[9].Text = "Comment"
   End With
 
 End
@@ -233,11 +345,29 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
 
 End
 
-''-----------------------------  button and menu ------------------------------------------------
-Public Sub btnrefresh_Click()
+Public Sub GridView1_Menu()
 
-  FillPatDateGrid()
-  GridView1.SetFocus
+  mnuhide.Popup
+
+End
+
+Public Sub mnucrossmatch_Click()
+
+  Dim res As Result
+  Dim xx As String
+  Dim Row As Integer
+
+  If GridView1.Rows.Selection.Count Then
+    Row = GridView1.Row
+    xx = InputBox("Cross matching Report", GridView1[GridView1.Row, 1].Text, GridView1[GridView1.Row, 8].Text)
+    If xx Then
+      res = modDatabase.$myConn.Edit("tblmedinventory", "fldid=&1 and fldcategory=&2", GridView1[GridView1.Row, 10].Text, $sType)
+      res["fldcrossmatch"] = xx
+      res.Update
+      FillPatDateGrid()
+    Endif
+    GridView1.Row = Row
+  Endif
 
 End
 
@@ -245,106 +375,174 @@ Public Sub mnuprocalter_Click()
 
   Dim res As Result
   Dim xx As String
-  Dim row As Integer
-  Dim col As Integer
+  Dim Row As Integer
 
-  row = GridView1.Row
-  col = GridView1.Column
   If GridView1.Rows.Selection.Count Then
-    xx = InputCombo("Status of the selected item", GridView1[GridView1.Row, 1].Text, ["Active", "Returned", "Rejected", "Expired"], GridView1[GridView1.Row, 7].Text, True)
+    Row = GridView1.Row
+    xx = InputCombo("Status of the selected item", GridView1[GridView1.Row, 1].Text, ["Active", "Rejected", "Expired"], GridView1[GridView1.Row, 7].Text, True)
     If xx Then
-      res = modDatabase.$myConn.Edit("tblmedinventory", "fldid=&1 and fldcategory=&2 and (fldstatus<>&3 or fldstatus<>&4)", GridView1[GridView1.Row, 0].Text, $sType, "Transferred", "Administered")
+      res = modDatabase.$myConn.Edit("tblmedinventory", "fldid=&1 and fldcategory=&2 and (fldstatus<>&3 or fldstatus<>&4)", GridView1[GridView1.Row, 10].Text, $sType, "Transferred", "Administered")
       res["fldstatus"] = xx
       res["xyz"] = False
       res.Update
       FillPatDateGrid()
-      GridView1.Row = row
-      GridView1.Column = col
     Endif
-  Endif
-
-End
-
-Public Sub mnuconsume_Click()
-
-  Dim hForm As FmPatConsume
-
-  If GridView1.Rows.Selection.Count > 0 Then
-    hForm = New FmPatConsume(GridView1[GridView1.Row, 9].Text)
-    hForm.ShowModal
-    FillPatDateGrid()
-  Endif
-
-End
-
-Public Sub mnuedit_Click()
-
-  Dim hForm As FmBloodEdit
-  Dim Row As Integer
-
-  If GridView1.Rows.Selection.Count > 0 Then
-    Row = GridView1.Row
-    hForm = New FmBloodEdit($sType, GridView1[GridView1.Row, 1].Text)
-    hForm.ShowModal
-    FillPatDateGrid()
     GridView1.Row = Row
   Endif
 
 End
 
-Public Sub btnsearch_Click()
+''------------------------- reserve/Transfer --------------------------
+Public Sub btnreserve_Click()
 
-  Dim sql As String
-  Dim enc As String
+  Dim res1 As Result
+  Dim res2 As Result
+  Dim Row1 As Integer
+  Dim Row2 As Integer
 
-  If modBasic.$AutoEncPrefix Then
-    enc = InputBox(("Encounter ID of Patient"), ("Search Patient"), modBasic.$EncIdPrefix)
-  Else
-    enc = InputBox(("Encounter ID of Patient"), ("Search Patient"), "")
+  If GridView1.Rows.Selection.Count And If GridView2.Rows.Selection.Count Then
+    Row1 = GridView1.Row
+    Row2 = GridView2.Row
+
+    modDatabase.$myConn.Begin
+    res2 = modDatabase.$myConn.Edit("tblmedinventory", "fldid=&1 and fldcategory=&2 and fldstatus=&3", GridView1[GridView1.Row, 10].Text, $sType, "Active")
+    If res2.Available Then
+      res1 = modDatabase.$myConn.Edit("tblpatmeditem", "fldid=&1 and fldencounterval=&2 and fldorder=&3", GridView2[GridView2.Row, 0].Text, GridView2[GridView2.Row, 2].Text, "Requested")
+      If res1.Available Then
+        ''patient request
+        res1["fldcode"] = GridView1[GridView1.Row, 1].Text
+        res1["fldorder"] = "Waiting"
+        res1.Update
+        ''blood inventory
+        res2["fldreceiver"] = GridView2[GridView2.Row, 2].Text
+        res2["fldstatus"] = "Reserved"
+        res2["fldsave"] = False
+        res2["xyz"] = False
+        res2.Update
+        modDatabase.$myConn.Commit
+      Else
+        modDatabase.$myConn.Rollback
+      Endif
+    Else
+      modDatabase.$myConn.Rollback
+    Endif
+    FillPatDateGrid()
+    ShowBloodRequests()
+
+    GridView1.Row = Row1
+    GridView2.Row = Row2
   Endif
-  If enc Then
-    sql = "select fldid,fldcode,flditem,fldencounterval,fldencname,fldcollect,fldexpiry,fldstatus,fldcomment,fldid from tblmedinventory where fldcategory=&1 and fldreceiver=&2"
-    $rData = modDatabase.$myConn.Exec(sql, $sType, enc)
-    $aMyFields = New String[]
-    modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
-    ResizeGrid()
+
+Catch
+  modDatabase.$myConn.Rollback
+  modHelpVariable.CreateErrorReport()
+
+End
+
+Public Sub btnready_Click()
+
+  Dim res2 As Result
+  Dim Row As Integer
+
+  If GridView1.Rows.Selection.Count Then
+    Row = GridView1.Row
+    ''blood inventory
+    res2 = modDatabase.$myConn.Edit("tblmedinventory", "fldid=&1 and fldcategory=&2 and fldstatus=&3", GridView1[GridView1.Row, 10].Text, $sType, "Reserved")
+    If res2["fldcrossmatch"] Then
+      res2["fldstatus"] = "Allocated"
+      res2["fldsave"] = False
+      res2["xyz"] = False
+      res2.Update
+      FillPatDateGrid()
+    Else
+      Message.Warning("No Cross match Report", ("OK"))
+    Endif
+    GridView1.Row = Row
   Endif
 
 End
 
-Public Sub btnexport_Click()
+Public Sub btnunlock_Click()
 
-  modCHTMLReport.ExportGridToHTML(GridView1, $sType & " Report", modReportVar.GetDateTimeReport(lbldate.Value, gb.MediumDate))
+  Dim res1 As Result
+  Dim res2 As Result
+  Dim Row As Integer
+
+  If GridView1.Rows.Selection.Count Then
+    Row = GridView1.Row
+
+    modDatabase.$myConn.Begin
+    res2 = modDatabase.$myConn.Edit("tblmedinventory", "fldid=&1 and fldcategory=&2 and fldstatus=&3", GridView1[GridView1.Row, 10].Text, $sType, "Reserved")
+    If res2.Available Then
+      ''patient request
+      res1 = modDatabase.$myConn.Edit("tblpatmeditem", "fldcode=&1 and fldorder=&2", GridView1[GridView1.Row, 1].Text, "Waiting")
+      If res1.Available Then
+        res1["fldcode"] = ""
+        res1["fldorder"] = "Requested"
+        res1.Update
+        ''blood inventory
+        res2["fldreceiver"] = ""
+        res2["fldstatus"] = "Active"
+        res2["fldsave"] = False
+        res2["xyz"] = False
+        res2.Update
+        modDatabase.$myConn.Commit
+      Else
+        modDatabase.$myConn.Rollback
+      Endif
+    Else
+      modDatabase.$myConn.Rollback
+    Endif
+
+    FillPatDateGrid()
+    ShowBloodRequests()
+    GridView1.Row = Row
+  Endif
+
+Catch
+  modDatabase.$myConn.Rollback
+  modHelpVariable.CreateErrorReport()
 
 End
 
-''------------------------- Transfer --------------------------
 Public Sub btntransfer_Click()
 
   Dim res1 As Result
   Dim res2 As Result
+  Dim Row As Integer
 
-  If GridView1.Rows.Selection.Count And If GridView2.Rows.Selection.Count Then
+  If GridView1.Rows.Selection.Count Then
+    Row = GridView1.Row
+
     modDatabase.$myConn.Begin
-    res1 = modDatabase.$myConn.Edit("tblpatmeditem", "fldid=&1 and fldencounterval=&2 and fldorder=&3", GridView2[GridView2.Row, 0].Text, GridView2[GridView2.Row, 2].Text, "Requested")
-    res1["fldcode"] = GridView1[GridView1.Row, 1].Text
-    res1["fldorder"] = "Done"
-    res1["flduserid"] = modBasic.$lbluser
-    res1["fldtime"] = Now()
-    res1["fldcomp"] = modBasic.$compID
-    res1["fldsave"] = True
-    res1["xyz"] = False
-    res1.Update
+    res2 = modDatabase.$myConn.Edit("tblmedinventory", "fldid=&1 and fldcategory=&2 and (fldstatus=&3 or fldstatus=&4)", GridView1[GridView1.Row, 10].Text, $sType, "Allocated", "Requested")
+    If res2.Available Then
+      ''patient request
+      res1 = modDatabase.$myConn.Edit("tblpatmeditem", "fldcode=&1 and fldorder=&2", GridView1[GridView1.Row, 1].Text, "Waiting")
+      If res1.Available Then
+        res1["fldorder"] = "Done"
+        res1["flduserid"] = modBasic.$lbluser
+        res1["fldtime"] = Now()
+        res1["fldcomp"] = modBasic.$compID
+        res1["fldsave"] = True
+        res1["xyz"] = False
+        res1.Update
+        ''blood inventory
+        res2["fldstatus"] = "Transferred"
+        res2["fldsave"] = False
+        res2["xyz"] = False
+        res2.Update
+        modDatabase.$myConn.Commit
+      Else
+        modDatabase.$myConn.Rollback
+      Endif
+    Else
+      modDatabase.$myConn.Rollback
+    Endif
 
-    res2 = modDatabase.$myConn.Edit("tblmedinventory", "fldid=&1", GridView1[GridView1.Row, 9].Text)
-    res2["fldreceiver"] = GridView2[GridView2.Row, 2].Text
-    res2["fldstatus"] = "Transferred"
-    res2["fldsave"] = False
-    res2["xyz"] = False
-    res2.Update
-    modDatabase.$myConn.Commit
     FillPatDateGrid()
     ShowBloodRequests()
+    GridView1.Row = Row
   Endif
 
 Catch

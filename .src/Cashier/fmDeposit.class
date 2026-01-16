@@ -27,10 +27,6 @@ Public Sub Form_Open()
   Endif
   $DisplayMiniCalc = modBasic.$BillAfterPrintDisplay
   $InvoicePrintTime = modBasic.$BillPrintTime
-  If modBasic.$AppCachePatientDemographics = "Yes" Then
-  Else
-    modGeneralMain.RemovePatientCacheSelected("PatientData")
-  Endif
 
   If modBasic.$DiaryAutoInc = "Yes" Then
     btndiary.Enabled = False
@@ -287,6 +283,15 @@ Public Sub mnublnk_Click()
   Me.Close
   Wait
   modWorkSpace.Add(fmDeposit)
+
+End
+
+Public Sub mnureload_Click()
+
+  If txtencid.Text Then
+    modPatient.$PatProfileData.Remove(Trim(txtencid.Text))
+    btnshow_Click()
+  Endif
 
 End
 

@@ -3,13 +3,15 @@
 Private $sTatus As String
 Private $dtRegist As Date
 Private $OutFluid As String[]
-Private $ExamLst As String[]
 Private $focus As Boolean
 Private $UserRestrict As String[]
 Private $EBMDiagnosis As String
 Private $PatientNum As String
 Private $xFinClear As Boolean
 Private $NotesList As String[]
+
+Private $ExamLst As String[]
+Private $RuleChartLst As String[]
 
 Private $rData As Result
 Private $aMyFields As String[]
@@ -36,8 +38,6 @@ Private $billModeService As String
 Private $billModeOthers As String
 Private $billReference As String
 
-Private $RuleChartLst As String[]
-
 Public Sub _new(encid As String, Focus As Boolean)
 
   txtencid.Text = encid
@@ -58,6 +58,7 @@ Public Sub Form_Open()
   pnlplan.Height = 800 * modBasic.$AppHeightRatio
 
   cmbpatheightunit.List = ["cm", "inch", "foot"]
+  cmbhepatic.List = ["Impaired", "Normal"]
   cmbsympunit.List = modMedicine.$SymptomFrequency
   If modBasic.$ItemListFormat = "GridView" Then
   Else
@@ -74,7 +75,6 @@ Public Sub Form_Open()
   FillCustomFormMenu()
   FillCustomMenu()
   FillStructExamMenu()
-  SHowALgorithmList()
 
   SetHtmlTextOption(txtgencomplaint)
   SetHtmlTextOption(txthistory)
@@ -565,7 +565,18 @@ End
 
 Private Sub BasicInfoPatient()
 
+  Dim xipday As String
+
   If txtencid.Text Then
+    dtfind.Value = Now()
+    dtnote.Value = Now()
+    dtfluid.Value = Now()
+    dtplan.Value = Now()
+    xipday = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), Now())
+    lbldtfind.Text = xipday
+    lbldtnote.Text = xipday
+    lbldtfluid.Text = xipday
+
     GetDefaultBillingmodes()
     cmbinpathistory.List = GetHistoryList()
     If cmbinpathistory.List.Count Then
@@ -578,11 +589,19 @@ Private Sub BasicInfoPatient()
     lstallergy.List = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), chkallergy.Value)
     lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
     lstsyndrome.List = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", Trim(txtencid.Text))
-    ShowGeneralComplaints()
-    dtfind.Value = Now()
-    lbldtfind.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), Now())
+    cmbhepatic.Text = modClinic.GetHepaticStatus(Trim(txtencid.Text))
     ShowChiefSymptomData()
+    ShowGeneralComplaints()
     FillExamtable()
+    PregnancySettings()
+    ShowNoteTypeTime()
+    rbfood.Value = True
+    ShowIntakeFoodGrid()
+    SHowOutputFluid()
+    ShowProblemList()
+    rbvalue.Value = True
+    ShowMedicines("Current")
+    ShowMedFluids("Current")
     ButtonControl()
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
@@ -626,6 +645,7 @@ Private Sub ButtonControl()
   Dim xval As String
 
   xx = modPatient.EnableClinicForm(txtnow.Text)
+  chkenabhistory.Value = xx
   ''set consult
   btnconsult.Enabled = xx
   ''presenting complaints
@@ -635,7 +655,6 @@ Private Sub ButtonControl()
   btngencompln.Enabled = xx
   ''patient history
   btnhistory.Enabled = xx
-  chkenabhistory.Enabled = xx
   ''clinical findings
   btnfinadd.Enabled = xx
   GridView1.Enabled = xx
@@ -1042,35 +1061,31 @@ Public Sub TabStrip1_Click()
   If txtencid.Text Then
     If TabStrip1.Index = 0 Then  ''complaints
       ShowChiefSymptomData()
+      If chkenabhistory.Value = True Then
+        btngencompln.Enabled = True
+      Endif
+      txtgencomplaint.SetFocus
     Else If TabStrip1.Index = 1 Then  ''history
-
+      If chkenabhistory.Value = True Then
+        btnhistory.Enabled = True
+      Endif
+      txthistory.SetFocus
     Else If TabStrip1.Index = 2 Then ''exams
-      cmbhepatic.List = ["Impaired", "Normal"]
-      cmbhepatic.Text = modClinic.GetHepaticStatus(Trim(txtencid.Text))
-      FillExamtable()
-      PregnancySettings()
+
     Else If TabStrip1.Index = 3 Then ''report
 
     Else If TabStrip1.Index = 4 Then  ''notes
-      dtnote.Value = Now()
-      lbldtnote.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), Now())
-      ShowNoteTypeTime()
+
     Else If TabStrip1.Index = 5 Then ''in/out
-      dtfluid.Value = Now()
-      lbldtfluid.Text = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), Now())
-      rbfood.Value = True
-      ShowIntakeFoodGrid()
-      SHowOutputFluid()
+
     Else If TabStrip1.Index = 6 Then ''Routine
-      rbvalue.Value = True
-      ShowMedicines("Current")
+
     Else If TabStrip1.Index = 7 Then  ''PRN
       hOwnStockForm.RearrangeGrid()
     Else If TabStrip1.Index = 8 Then  ''Fluids
-      ShowMedFluids("Current")
+
     Else If TabStrip1.Index = 9 Then ''SOAP
-      dtplan.Value = Now()
-      ShowProblemList()
+
     Else If TabStrip1.Index = 9 Then ''History
     Endif
   Endif
@@ -1082,21 +1097,25 @@ Public Sub Form_KeyRelease()
   If Key.Code = Key.F1 Then
     If txtencid.Text Then
       TabStrip1.Index = 0
-      cmbsymptom.SetFocus
+      If chkenabhistory.Value = True Then
+        btngencompln.Enabled = True
+      Endif
+      txtgencomplaint.SetFocus
     Endif
   Else If Key.Code = Key.F2 Then
     If txtencid.Text Then
       TabStrip1.Index = 1
-      cmbfinding.SetFocus
+      If chkenabhistory.Value = True Then
+        btnhistory.Enabled = True
+      Endif
+      txthistory.SetFocus
     Endif
   Else If Key.Code = Key.F3 Then
     TabStrip1.Index = 2
-    dtfluid.SetFocus
   Else If Key.Code = Key.F4 Then
     TabStrip1.Index = 3
   Else If Key.Code = Key.F5 Then
     TabStrip1.Index = 4
-    cmbnote.SetFocus
   Else If Key.Code = Key.F6 Then
     TabStrip1.Index = 5
   Else If Key.Code = Key.F7 Then
@@ -1105,7 +1124,6 @@ Public Sub Form_KeyRelease()
     TabStrip1.Index = 7
   Else If Key.Code = Key.F9 Then
     TabStrip1.Index = 8
-    txtproblem.SetFocus
   Else If Key.Code = Key.F10 Then
     TabStrip1.Index = 9
   Else If Key.Code = Key.F11 Then
@@ -1176,6 +1194,7 @@ Public Sub btngencompln_Click()
     modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "History", "General Complaints", txtgencomplaint.KeyList.Join(";"), txtgencomplaint.RichText, xboolean)
     Balloon.Info(("Information saved"), btngencompln)
     Balloon.Delay = modBasic.$BalloonDelay
+    btngencompln.Enabled = False
   Endif
 
 End
@@ -1970,7 +1989,7 @@ End
 Public Sub cmbinpathistory_Click()
 
   ShowPatHistory()
-  If chkenabhistory.Enabled = True Then
+  If chkenabhistory.Value = True Then
     btnhistory.Enabled = True
   Endif
 
@@ -1981,12 +2000,6 @@ Public Sub btnhistorydef_Click()
   If cmbinpathistory.Text Then
     txthistory.RichText = AddHistory("History", Trim(txtencid.Text), cmbinpathistory.Text)
   Endif
-
-End
-
-Public Sub chkenabhistory_Click()
-
-  btnhistory.Enabled = True
 
 End
 
@@ -2286,7 +2299,7 @@ Public Sub grdintake_Click()
 
   yval = InputValue(grdintake[grdintake.Row, 3].Text, ("Edit Intake Value"), grdintake[grdintake.Row, 4].Text)
   If yval Then
-    modPatientGeneral.UpdateExamGeneralQuantiData(grdintake[grdintake.Row, 0].Text, grdintake[grdintake.Row, 3].Text, yval, "")
+    modPatientGeneral.UpdateExamGeneralQuantiData(grdintake[grdintake.Row, 0].Text, Trim(txtencid.Text), grdintake[grdintake.Row, 3].Text, yval, "")
     ShowIntakeFoodGrid()
   Endif
 
@@ -2298,7 +2311,7 @@ Public Sub grdoutput_Click()
 
   yval = InputValue(grdoutput[grdoutput.Row, 3].Text, ("Edit Output Value"), grdoutput[grdoutput.Row, 4].Text)
   If yval Then
-    modPatientGeneral.UpdateExamGeneralQuantiData(grdoutput[grdoutput.Row, 0].Text, grdoutput[grdoutput.Row, 3].Text, yval, "")
+    modPatientGeneral.UpdateExamGeneralQuantiData(grdoutput[grdoutput.Row, 0].Text, Trim(txtencid.Text), grdoutput[grdoutput.Row, 3].Text, yval, "")
     SHowOutputFluid()
   Endif
 
@@ -2492,7 +2505,7 @@ End
 Public Sub btnotedit_Click()
 
   If txtnoteid.Value Then
-    modPatientGeneral.UpdateExamGeneralQualiData(txtnoteid.Value, cmbnote.Text, txtimpression.Text, txtnote.RichText)
+    modPatientGeneral.UpdateExamGeneralQualiData(txtnoteid.Value, Trim(txtencid.Text), cmbnote.Text, txtimpression.Text, txtnote.RichText)
     ShowNoteTypeTime()
     Balloon.Info(("Information saved"), btnotedit)
     Balloon.Delay = modBasic.$BalloonDelay
@@ -2968,8 +2981,6 @@ Public Sub btncounsel_Click()
 
 End
 
-''------------------------------------------- Monitoring ----------------------------------------
-
 ''--------------------------- IV Fluids --------------------------------------------------------
 Public Sub btnshowallfluid_Click()
 
@@ -3384,6 +3395,19 @@ Public Sub mnublank_Click()
 
 End
 
+Public Sub mnureload_Click()
+
+  Dim hForm As FmPatientMain
+
+  If txtencid.Text Then
+    modPatient.$PatProfileData.Remove(Trim(txtencid.Text))
+    hForm = New FmPatientMain(Trim(txtencid.Text), True)
+    Me.Close
+    modWorkSpace.Add(hForm)
+  Endif
+
+End
+
 Public Sub mnuscanfile_Click()
 
   Dim hForm As FmScanForm
@@ -3477,6 +3501,7 @@ Public Sub btnpharm_Click()
         hForm = New FmMedOrder(Trim(txtencid.Text), $sTatus, $billModePharmacy)
         hForm.ShowModal
       Endif
+      hOwnStockForm.RefreshList()
     Endif
   Endif
 
@@ -5377,7 +5402,6 @@ Private Sub RestrictUserAccess()
   Endif
   If $UserRestrict.Exist("Patient History") Then
     btnhistory.Enabled = False
-    chkenabhistory.Enabled = False
   Endif
   If $UserRestrict.Exist("Clinical Findings") Then
     btnfinadd.Enabled = False

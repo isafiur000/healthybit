@@ -106,7 +106,7 @@ Public Function PurchaseEntryReport(ReferenceNo As String, txtcategory As String
         .Add(CStr(res.Index + 1))
         .Add(res["fldstockid"])
         If res["fldcategory"] = "Medicines" Then
-          .Add(modPharmLabel.GetPackVolString(res["fldstockid"]))
+          .Add(modMedConstant.GetPackVolString(res["fldstockid"]))
         Else
           .Add("")
         Endif
@@ -279,7 +279,7 @@ Public Function PurchaseRequestReport(xReferenceNo As String, txtsupplier As Str
         .Add(modStock.GetgenericText(res["fldstockid"], res["fldcategory"]))
         If res["fldcategory"] = "Medicines" Then
           .Add(modPharmLabel.GetMedicineNameOptionType(res["fldstockid"], "Brand"))
-          .Add(modPharmLabel.GetPackVolString(res["fldstockid"]))
+          .Add(modMedConstant.GetPackVolString(res["fldstockid"]))
         Else
           .Add("")
           .Add("")
@@ -375,7 +375,7 @@ Public Function StoreRequestReport(ReferenceNo As String, sFinal As Boolean) As 
         .Add(CStr(res.Index + 1))
         .Add(res["fldstockid"])
         If res["fldcategory"] = "Medicines" Then
-          .Add(modPharmLabel.GetPackVolString(res["fldstockid"]))
+          .Add(modMedConstant.GetPackVolString(res["fldstockid"]))
         Else
           .Add("")
         Endif
@@ -430,7 +430,7 @@ Public Function StoreRequestReportEstimate(ReferenceNo As String, sFinal As Bool
         .Add(CStr(res.Index + 1))
         .Add(res["fldstockid"])
         If res["fldcategory"] = "Medicines" Then
-          .Add(modPharmLabel.GetPackVolString(res["fldstockid"]))
+          .Add(modMedConstant.GetPackVolString(res["fldstockid"]))
         Else
           .Add("")
         Endif

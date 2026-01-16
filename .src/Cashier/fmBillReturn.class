@@ -24,10 +24,6 @@ Public Sub Form_Open()
   Me.Icon = Picture[modGeneralMain.$strLogo]
   $BillingOption = modBasic.$BillReturnOption
   hPatient1 = New FmBillingEntry(Panel4)
-  If modBasic.$AppCachePatientDemographics = "Yes" Then
-  Else
-    modGeneralMain.RemovePatientCacheSelected("PatientData")
-  Endif
 
   cmbroute.List = ["Test", "Service", "Procedure", "Equipment", "Radio", "Others", "All"]
   If modSettings.ShowSettingFromFIle("Billing/ReturnMode") = "Encounter" Then
@@ -1123,7 +1119,7 @@ Private Sub GetSSFBookingLock(sInvoice As String)
       If xmsg = "Success" Then
         modBillings.AddInvoiceBooking(sInvoice)
       Else
-        Message.Warning(xmsg, "OK")
+        Message.Warning("<h3>ERROR IN SSF BOOKING</h3>" & xmsg, "OK")
       Endif
     Endif
 

@@ -11,20 +11,23 @@
   { txtgroup ComboBox
     MoveScaled(17,5,23,3)
   }
+  { cmbcrossmatch ComboBox
+    MoveScaled(17,9,55,3)
+  }
   { txtstore TextBox
-    MoveScaled(17,9,23,3)
+    MoveScaled(17,13,23,3)
   }
   { txtshelf ValueBox
-    MoveScaled(17,13,10,3)
+    MoveScaled(17,17,10,3)
   }
   { btnadd Button
-    MoveScaled(49,13,12,3)
+    MoveScaled(49,17,12,3)
     Tag = "Auto"
     Text = Shortcut(("Add"), "A")
     Picture = Picture["icon:/small/add"]
   }
   { btndelete Button
-    MoveScaled(61,13,12,3)
+    MoveScaled(61,17,12,3)
     Text = ("Delete")
     Picture = Picture["icon:/small/edit"]
   }
@@ -38,17 +41,17 @@
     Picture = Picture["icon:/small/add"]
   }
   { Label2 Label
-    MoveScaled(1,9,15,3)
+    MoveScaled(1,13,15,3)
     Border = Border.Plain
     Text = ("Storage Temp")
   }
   { Label3 Label
-    MoveScaled(1,13,15,3)
+    MoveScaled(1,17,15,3)
     Border = Border.Plain
     Text = ("Shelf Life (day)")
   }
   { GridView1 GridView
-    MoveScaled(1,17,73,36)
+    MoveScaled(1,21,73,33)
     Mode = Select.Single
     Header = GridView.Both
     AutoResize = False
@@ -57,5 +60,10 @@
     MoveScaled(1,5,15,3)
     Border = Border.Plain
     Text = ("Blood Group")
+  }
+  { Label5 Label
+    MoveScaled(1,9,15,3)
+    Border = Border.Plain
+    Text = ("Cross Matching")
   }
 }

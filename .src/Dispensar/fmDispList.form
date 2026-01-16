@@ -20,39 +20,34 @@
       Expand = True
       Arrangement = Arrange.Vertical
       { Panel2 Panel
-        MoveScaled(0,0,37,15)
-        { btnrefresh ToolButton
-          MoveScaled(26,1,3,3)
-          ToolTip = ("Refresh Sampled List [Shortcut is Ctrl+R]")
-          Picture = Picture["icon:/small/refresh"]
-        }
-        { btnseartext ToolButton
-          MoveScaled(33,1,3,3)
-          Picture = Picture["icon:/small/find"]
-        }
+        MoveScaled(0,0,37,19)
         { Panel7 Panel
-          MoveScaled(1,11.5,35,3)
+          MoveScaled(0,0.5,35,3)
           { rbinpat RadioButton
-            MoveScaled(2,0,12,3)
-            Text = ("InPatient")
-            Value = True
+            MoveScaled(12,0,10,3)
+            Text = ("IPD")
           }
           { rboutpat RadioButton
-            MoveScaled(19,0,13,3)
-            Text = ("OutPatient")
+            MoveScaled(1,0,10,3)
+            Text = ("OPD")
+            Value = True
+          }
+          { rbexited RadioButton
+            MoveScaled(23,0,10,3)
+            Text = ("Exited")
           }
         }
         { Label1 Label
-          MoveScaled(1,4.5,8,3)
+          MoveScaled(1,4,8,3)
           Border = Border.Plain
           Text = ("Depart")
         }
         { cmbdepart ComboBox
-          MoveScaled(10,4.5,26,3)
+          MoveScaled(10,4,26,3)
           Sorted = True
         }
         { Panel11 Panel
-          MoveScaled(10,8,25,3)
+          MoveScaled(10,7.5,25,3)
           { dtselected DateBox
             MoveScaled(0,0,15,3)
           }
@@ -65,24 +60,41 @@
           }
         }
         { chkdate CheckBox
-          MoveScaled(1,8,8.125,3)
+          MoveScaled(1,7.5,8.125,3)
           Text = ("Date")
         }
         { Panel6 Panel
-          MoveScaled(1,1,24,3)
+          MoveScaled(1,11,25,3)
           { rbencid RadioButton
             MoveScaled(0,0,10,3)
             Text = ("Enc ID")
             Value = True
           }
           { rbinvoice RadioButton
-            MoveScaled(11,0,11,3)
+            MoveScaled(12,0,11,3)
             Text = ("Invoice")
           }
         }
+        { txtsearch TextBox
+          MoveScaled(1,15,17,3)
+        }
+        { btnrefresh Button
+          MoveScaled(28,15,8,3)
+          ToolTip = ("Refresh Sampled List [Shortcut is Ctrl+R]")
+          Picture = Picture["icon:/small/refresh"]
+        }
+        { btnseartext Button
+          MoveScaled(18,15,6,3)
+          Picture = Picture["icon:/small/find"]
+          Default = True
+        }
+        { chkpatno CheckBox
+          MoveScaled(27,11,9,3)
+          Text = ("PatNo")
+        }
       }
       { GridView1 GridView
-        MoveScaled(0,18,36,45)
+        MoveScaled(0,27,36,36)
         Expand = True
         Mode = Select.Single
         Header = GridView.Both

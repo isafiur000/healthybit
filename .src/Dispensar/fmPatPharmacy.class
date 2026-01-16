@@ -46,10 +46,6 @@ Public Sub Form_Open()
   $BillingOption = modBasic.$BillPharmSalesOption
   hPatient = New FmPatientProfile(Me.Name, Frame1)
   hPatient1 = New FmBillingEntry(Panel4)
-  If modBasic.$AppCachePatientDemographics = "Yes" Then
-  Else
-    modGeneralMain.RemovePatientCacheSelected("PatientData")
-  Endif
 
   $OPDRoute = modMedicine.AllComboRoute()
   cmbroute.List = $OPDRoute
@@ -306,7 +302,7 @@ Private Sub GetSSFBookingLock(sInvoice As String)
         If xmsg = "Success" Then
           modBillings.AddInvoiceBooking(sInvoice)
         Else
-          Message.Warning(xmsg, "OK")
+          Message.Warning("<h3>ERROR IN SSF BOOKING</h3>" & xmsg, "OK")
         Endif
       Endif
 
@@ -349,6 +345,17 @@ Public Sub mnublank_Click()
   Me.Close
   Wait
   modWorkSpace.Add(fmPatPharmacy)
+
+End
+
+Public Sub mnureload_Click()
+
+  If txtencid.Text Then
+    modPatient.$PatProfileData.Remove(Trim(txtencid.Text))
+    Me.Close
+    Wait
+    modWorkSpace.Add(fmPatPharmacy)
+  Endif
 
 End
 

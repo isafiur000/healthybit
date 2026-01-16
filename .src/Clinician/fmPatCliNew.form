@@ -10,8 +10,11 @@
       Text = ("Blank Form")
       Shortcut = "Ctrl+B"
     }
+    { mnureload Menu
+      Text = ("Reload Form")
+    }
     { mnuwaitconsult Menu
-      Text = ("Waiting")
+      Text = ("Waiting List")
     }
     { mnupatsearch Menu
       Text = ("Search")
@@ -717,6 +720,10 @@
           Border = Border.Plain
           Text = ("S P O2")
         }
+        { chkenabhistory CheckBox
+          MoveScaled(14,12,3,3)
+          Visible = False
+        }
       }
     }
     { Panel15 Panel
@@ -941,9 +948,6 @@
             MoveScaled(78,0.5,12,3)
             Text = ("Save")
             Picture = Picture["icon:/small/apply"]
-          }
-          { chkenabhistory CheckBox
-            MoveScaled(90,0.5,3,3)
           }
         }
         { txthistory TextHTML

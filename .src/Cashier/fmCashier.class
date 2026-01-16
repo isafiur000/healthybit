@@ -22,6 +22,7 @@ Public Sub Form_Open()
 
     modTableCache.LoadServiceCostData(modDatabase.$myConn)
     modTableCache.LoadMedicineMasterData(modDatabase.$myConn)
+    modTableCache.LoadSurgicalMasterData(modDatabase.$myConn)
     modTableCache.LoadStockEntryData(modDatabase.$myConn)
   Endif
   DiaplayCustMenu()

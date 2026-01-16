@@ -848,18 +848,18 @@ Public Sub mnudashboard_Click()
 
   Dim xPath As String
   Dim xdate As Date[]
-  Dim xList As String[]
+  Dim xval As String
 
   If cmbdept.Text Then
     xdate = DoubleDates("Select Dates", "IP Summary", [Now(), Now()])
     If xdate Then
       Inc Application.Busy
       If cmbdept.Text = "All" Then
-        xList = modBasic.$IPDDepartmentsAll
+        xval = "%"
       Else
-        xList = [cmbdept.Text]
+        xval = cmbdept.Text
       Endif
-      xPath = modCHTMLDate.GetIPEventsReport(modDatabase.$syConn, xdate[0], xdate[1], xList, cmblocation.Text, cmbvalue.Text)
+      xPath = modCHTMLDate.GetIPEventsReport(modDatabase.$syConn, xdate[0], xdate[1], xval, cmblocation.Text, cmbvalue.Text)
       Dec Application.Busy
       modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
     Endif
@@ -867,19 +867,34 @@ Public Sub mnudashboard_Click()
 
 End
 
+Public Sub mnusummall_Click()
+
+  Dim xPath As String
+  Dim xdate As Date[]
+
+  xdate = DoubleDates("Select Dates", "IP Summary", [Now(), Now()])
+  If xdate Then
+    Inc Application.Busy
+    xPath = modCHTMLDate.GetIPEventsSummary(modDatabase.$syConn, xdate[0], xdate[1], modBasic.$IPDDepartmentsAll, cmblocation.Text, cmbvalue.Text)
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
+  Endif
+
+End
+
 Public Sub mnutoday_Click()
 
   Dim xPath As String
-  Dim xList As String[]
+  Dim xval As String
 
   If cmbdept.Text Then
     Inc Application.Busy
     If cmbdept.Text = "All" Then
-      xList = modBasic.$IPDDepartmentsAll
+      xval = "%"
     Else
-      xList = [cmbdept.Text]
+      xval = cmbdept.Text
     Endif
-    xPath = modCHTMLDate.GetIPEventsReport(modDatabase.$syConn, Now(), Now(), xList, cmblocation.Text, cmbvalue.Text)
+    xPath = modCHTMLDate.GetIPEventsReport(modDatabase.$syConn, Now(), Now(), xval, cmblocation.Text, cmbvalue.Text)
     Dec Application.Busy
     modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
   Endif
@@ -902,7 +917,7 @@ Public Sub mnudeptwise_Click()
   Dim xPath As String
 
   Inc Application.Busy
-  xPath = modCHTMLPatSummary.ShowBedOccupancyReport("Current")
+  xPath = modCHTMLPatSummary.ShowWardOccupancyReport("Current")
   Dec Application.Busy
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
 
@@ -913,7 +928,7 @@ Public Sub mnudeptout_Click()
   Dim xPath As String
 
   Inc Application.Busy
-  xPath = modCHTMLPatSummary.ShowBedOccupancyReport("Outstanding")
+  xPath = modCHTMLPatSummary.ShowWardOccupancyReport("Outstanding")
   Dec Application.Busy
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
 
@@ -935,7 +950,7 @@ Public Sub mnuconsultwise_Click()
   Dim xPath As String
 
   Inc Application.Busy
-  xPath = modCHTMLPatSummary.ShowBedOccupConsultReport("Current")
+  xPath = modCHTMLPatSummary.ShowWardOccupConsultReport("Current")
   Dec Application.Busy
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
 
@@ -946,7 +961,7 @@ Public Sub mnuconsultout_Click()
   Dim xPath As String
 
   Inc Application.Busy
-  xPath = modCHTMLPatSummary.ShowBedOccupConsultReport("Outstanding")
+  xPath = modCHTMLPatSummary.ShowWardOccupConsultReport("Outstanding")
   Dec Application.Busy
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
 
@@ -968,7 +983,7 @@ Public Sub mnupackwise_Click()
   Dim xPath As String
 
   Inc Application.Busy
-  xPath = modCHTMLPatSummary.ShowBedOccupPackageDetail("Current")
+  xPath = modCHTMLPatSummary.ShowWardOccupPackageDetail("Current")
   Dec Application.Busy
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
 
@@ -979,7 +994,7 @@ Public Sub mnupackout_Click()
   Dim xPath As String
 
   Inc Application.Busy
-  xPath = modCHTMLPatSummary.ShowBedOccupPackageDetail("Outstanding")
+  xPath = modCHTMLPatSummary.ShowWardOccupPackageDetail("Outstanding")
   Dec Application.Busy
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
 

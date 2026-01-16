@@ -458,7 +458,7 @@ Public Sub GridView1_Click()
           strLst = SubChoose(opt, sType, GridView1[GridView1.Row, 1].Text)
           If strLst Then
             For Each xx In strLst
-              modPatientGeneral.UpdateExamGeneralQualiData(GridView1[GridView1.Row, 0].Text, GridView1[GridView1.Row, 1].Text, xx, "")
+              modPatientGeneral.UpdateExamGeneralQualiData(GridView1[GridView1.Row, 0].Text, $encid, GridView1[GridView1.Row, 1].Text, xx, "")
             Next
           Endif
 
@@ -466,31 +466,31 @@ Public Sub GridView1_Click()
           opt = modFixPatho.GetDemographicOptionList(GridView1[GridView1.Row, 1].Text, sType)
           strLst = SubChoose(opt, "Multiple Selection", GridView1[GridView1.Row, 1].Text)
           If strLst Then
-            modPatientGeneral.UpdateExamGeneralQualiData(GridView1[GridView1.Row, 0].Text, GridView1[GridView1.Row, 1].Text, strLst.Join(";"), "")
+            modPatientGeneral.UpdateExamGeneralQualiData(GridView1[GridView1.Row, 0].Text, $encid, GridView1[GridView1.Row, 1].Text, strLst.Join(";"), "")
           Endif
 
         Else If sType = "Quantitative" Then
           yy = GetQuantiValues("Demographics", $encid, GridView1[GridView1.Row, 1].Text, 0, 0, CFloat(GridView1[GridView1.Row, 2].Text))
           If yy Then
-            modPatientGeneral.UpdateExamGeneralQuantiData(GridView1[GridView1.Row, 0].Text, GridView1[GridView1.Row, 1].Text, yy[0], "")
+            modPatientGeneral.UpdateExamGeneralQuantiData(GridView1[GridView1.Row, 0].Text, $encid, GridView1[GridView1.Row, 1].Text, yy[0], "")
           Endif
 
         Else If sType = "Date Time" Then
           xdate = GetDateValue(GridView1[GridView1.Row, 1].Text, "Date Value", Val(GridView1[GridView1.Row, 2].Text))
           If xdate Then
-            modPatientGeneral.UpdateExamGeneralQualiData(GridView1[GridView1.Row, 0].Text, GridView1[GridView1.Row, 1].Text, modDate.DateStringForExam(xdate), "")
+            modPatientGeneral.UpdateExamGeneralQualiData(GridView1[GridView1.Row, 0].Text, $encid, GridView1[GridView1.Row, 1].Text, modDate.DateStringForExam(xdate), "")
           Endif
 
         Else If sType = "BS Date" Then
           xdate = GetDateValue(GridView1[GridView1.Row, 1].Text, "Date Value", modDate.ConvertToEnglishdate(GridView1[GridView1.Row, 2].Text))
           If xdate Then
-            modPatientGeneral.UpdateExamGeneralQualiData(GridView1[GridView1.Row, 0].Text, GridView1[GridView1.Row, 1].Text, modDate.ConvertToLocaldate(xdate), "")
+            modPatientGeneral.UpdateExamGeneralQualiData(GridView1[GridView1.Row, 0].Text, $encid, GridView1[GridView1.Row, 1].Text, modDate.ConvertToLocaldate(xdate), "")
           Endif
 
         Else
           xx = GetTextArea(GridView1[GridView1.Row, 1].Text, GridView1[GridView1.Row, 2].Text)
           If xx Then
-            modPatientGeneral.UpdateExamGeneralQualiData(GridView1[GridView1.Row, 0].Text, GridView1[GridView1.Row, 1].Text, xx, "")
+            modPatientGeneral.UpdateExamGeneralQualiData(GridView1[GridView1.Row, 0].Text, $encid, GridView1[GridView1.Row, 1].Text, xx, "")
           Endif
         Endif
 

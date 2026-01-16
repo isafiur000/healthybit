@@ -1341,8 +1341,8 @@ Private Sub SaveOwnDispensing(sID As Long, sStatus As String)
   xpayble = modBillings.GetPayableUserSetting("Pharmacy", $encid)
 
   xerr = ""
-  sql1 = "select fldid,fldtime,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,fldlabel,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit from tblpatdosing where fldid=&1 and fldcurval=&2"                                                   ''
-  res1 = modDatabase.$myConn.Exec(sql1, sID, "Continue")
+  sql1 = "select fldid,fldtime,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,fldlabel,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit from tblpatdosing where fldid=&1 and fldsave_order=&2 and fldcurval=&3"                                                   ''
+  res1 = modDatabase.$myConn.Exec(sql1, sID, False, "Continue")
   If res1.Available = True Then
 
     'get tax and discount percentages
@@ -2012,8 +2012,8 @@ Private Sub ShowPatProtocols()
 
   Dim sql As String
 
-  sql = "select fldid,fldtime,fldprotocol,fldstatus,flduserid,fldusage from tblpatprotocols where fldencounterval=&1"
-  $rData3 = modDatabase.$myConn.Exec(sql, $encid)
+  sql = "select fldid,fldtime,fldprotocol,fldstatus,flduserid,fldusage from tblpatprotocols where fldencounterval=&1 and (fldstatus=&2 or fldstatus=&3)"
+  $rData3 = modDatabase.$myConn.Exec(sql, $encid, "Active", "Inactive")
   $aMyFields3 = New String[]
   modGridView.ReadSmallData(GridView3, $rData3, $aMyFields3)
 
@@ -2072,6 +2072,21 @@ Public Sub GridView3_Click()
       Endif
     Endif
     GridView3.Row = Row
+  Endif
+
+End
+
+Public Sub btnprotdel_Click()
+
+  Dim res As Result
+
+  If GridView3.Rows.Selection.Count Then
+    If Message.Question("Are you sure ?", ("No"), ("Yes")) = 2 Then
+      res = modDatabase.$myConn.Edit("tblpatprotocols", "fldid=&1 and fldencounterval=&2", GridView3[GridView3.Row, 0].Text, $encid)
+      res["fldstatus"] = "Cancelled"
+      res.Update
+      ShowPatProtocols()
+    Endif
   Endif
 
 End

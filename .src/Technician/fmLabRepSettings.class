@@ -35,10 +35,6 @@ Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
-  If modBasic.$AppCachePatientDemographics = "Yes" Then
-  Else
-    modGeneralMain.RemovePatientCacheSelected("PatientData")
-  Endif
 
   If modHelpVariable.$LogInCategory = "Technologist" Then
     mnuverify.Visible = True
