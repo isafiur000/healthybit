@@ -80,6 +80,9 @@ Public Sub btnsend_Click()
     res.Update()
     Dec Application.Busy
 
+    If chknotify.Value = True Then
+      modControl.SendCompIDNotofication(cmbtarget.Text, "New Message from " & modBasic.$compID, txtsubject.Text)
+    Endif
     Balloon.Info(("Data saved"), btnsend)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif

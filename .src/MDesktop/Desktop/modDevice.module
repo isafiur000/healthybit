@@ -291,14 +291,12 @@ Public Sub TransferTextSocket(sHost As String, sPort As String, xline As String)
   Dim MySock As Socket
 
   MySock = New Socket As "MySock"
-  MySock.Host = sHost
-  MySock.Port = sPort
+  MySock.Connect(sHost, sPort)
   modBasic.DebugString("Connect to Port " & sPort & " on Host " & sHost)
-  MySock.Connect()
 
-  While (MySock.Status <> 7) And (MySock.Status > 0)
+  Do While (MySock.Status <> Net.Connected) And (MySock.Status > 0)
     Wait 0.1
-  Wend
+  Loop
 
   Write #MySock, xline, Len(xline)
   Close #MySock

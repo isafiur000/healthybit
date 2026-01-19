@@ -1239,7 +1239,7 @@ Public Sub btnmobprogress_Click()
   Dim hForm As FmBloodReq
 
   If GridView1.Rows.Selection.Count Then
-    hForm = New FmBloodReq(GridView1[GridView1.Row, 2].Text)
+    hForm = New FmBloodReq(GridView1[GridView1.Row, 2].Text, modNonMedical.DefaultBillingScheme(GridView1[GridView1.Row, 2].Text, modBasic.$compID))
     hForm.ShowModal
   Endif
 

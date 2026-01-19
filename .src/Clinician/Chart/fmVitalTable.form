@@ -20,9 +20,9 @@
     Index = 1
     Text = ("Graphical")
     { Panel2 Panel
-      MoveScaled(0,0,84,4)
+      MoveScaled(0,0,99,4)
       { btnrefresh Button
-        MoveScaled(29,0.5,18,3)
+        MoveScaled(29,0.5,12,3)
         Text = ("Refresh")
         Picture = Picture["icon:/small/refresh"]
         Default = True
@@ -39,13 +39,42 @@
           Text = ("Others")
         }
       }
+      { Label1 Label
+        MoveScaled(74,0.5,5,3)
+        Border = Border.Plain
+        Text = ("Min")
+      }
+      { Label2 Label
+        MoveScaled(87,0.5,5,3)
+        Border = Border.Plain
+        Text = ("Max")
+      }
+      { txtmin SpinBox
+        MoveScaled(79,0.5,6,3)
+        MinValue = 1
+        MaxValue = 1000
+        Value = 1
+      }
+      { txtmax SpinBox
+        MoveScaled(92,0.5,6,3)
+        MinValue = 1
+        MaxValue = 1000
+        Value = 400
+      }
+      { SliderBox1 SliderBox
+        MoveScaled(46,0.5,24,3)
+        MinValue = 1
+        Value = 25
+      }
     }
     { ScrollView1 ScrollView
       MoveScaled(0,5,82,48)
       Expand = True
+      Arrangement = Arrange.Vertical
       { drwchart DrawingArea
         MoveScaled(1,1,75,44)
         Background = Color.White
+        Expand = True
         AutoResize = True
         Cached = True
       }

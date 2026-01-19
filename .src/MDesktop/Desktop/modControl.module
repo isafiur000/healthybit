@@ -241,3 +241,14 @@ Catch
   Message.Warning(Error.Text, ("OK"))
 
 End
+
+Public Sub SendCompIDNotofication(xcomp As String, xtitle As String, xnotice As String)
+
+  Dim xuserList As String[]
+
+  xuserList = modGeneral.FillCurrentUseronJob(xcomp)
+  If xuserList Then
+    modControl.SendLabAlert(xuserList, "UserNotice", " [" & xtitle & "]" & xnotice & "@" & modBasic.$lbluser)
+  Endif
+
+End

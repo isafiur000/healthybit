@@ -16,23 +16,16 @@ End
 Public Sub btnsend_Click()
 
   Dim xx As String
-  Dim xuserList As String[]
 
   If txtnotice.Text Then
     If cmbcomp.Text Then
 
       If chkall.Value = True Then
         For Each xx In cmbcomp.List
-          xuserList = modGeneral.FillCurrentUseronJob(xx)
-          If xuserList Then
-            modControl.SendLabAlert(xuserList, "UserNotice", " [" & txttitle.Text & "]" & txtnotice.Text & "@" & modBasic.$lbluser)
-          Endif
+          modControl.SendCompIDNotofication(xx, txttitle.Text, txtnotice.Text)
         Next
       Else
-        xuserList = modGeneral.FillCurrentUseronJob(cmbcomp.Text)
-        If xuserList Then
-          modControl.SendLabAlert(xuserList, "UserNotice", " [" & txttitle.Text & "]" & txtnotice.Text & "@" & modBasic.$lbluser)
-        Endif
+        modControl.SendCompIDNotofication(cmbcomp.Text, txttitle.Text, txtnotice.Text)
       Endif
 
       txtnotice.Text = ""

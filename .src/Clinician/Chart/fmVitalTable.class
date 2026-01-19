@@ -69,15 +69,6 @@ Private Sub CreateTPRChart()
   Dim xdate As Date
   Dim xhr As String
 
-  ''find out parameters
-  firdate = DateAdd(Now(), gb.Hour, -36)
-  xhr = modSettings.ShowSettingFromFIle("ClinicalChart/HourDifference")
-  If xhr Then
-    xdf = CInt(xhr) / 60
-  Else
-    xdf = 0.25
-  Endif
-
   xadmis = modPatient.GetAdmissionDate($encid)
   If xadmis Then
     xdate = xadmis
@@ -85,8 +76,18 @@ Private Sub CreateTPRChart()
     xdate = modPatient.GetRecordDate($encid)
   Endif
 
-  maxobs = 1
-  minobs = 400
+  ''find out parameters
+  firdate = DateAdd(Now(), gb.Hour, -36)
+  xdf = SliderBox1.Value / 100
+  ' xhr = modSettings.ShowSettingFromFIle("ClinicalChart/HourDifference")
+  ' If xhr Then
+  '   xdf = CInt(xhr) / 60
+  ' Else
+  '   xdf = 0.25
+  ' Endif
+
+  maxobs = txtmin.Value
+  minobs = txtmax.Value
 
   mul = (drwchart.Height - 30) / (maxobs - minobs)
   nul = 15

@@ -10,7 +10,7 @@
     MoveScaled(0,0,90,65.5)
     { TabPanel1 TabPanel
       MoveScaled(1,9,88,56)
-      Count = 2
+      Count = 3
       Index = 0
       Text = ("Received")
       { GridView2 GridView
@@ -20,30 +20,28 @@
       }
       { Panel2 Panel
         MoveScaled(0,0,88,4)
-        { btnrequest Button
-          MoveScaled(59,0.5,13,3)
-          Text = ("Request")
-          Picture = Picture["icon:/small/apply"]
-        }
         { btnreturn Button
           MoveScaled(74,0.5,13,3)
           Text = ("Return")
           Picture = Picture["icon:/small/cancel"]
         }
-        { Panel3 Panel
-          MoveScaled(0,0.5,25,3)
-          { rbready RadioButton
-            MoveScaled(1,0,10,3)
-            Text = ("Ready")
-          }
-          { rbpresent RadioButton
-            MoveScaled(12,0,12,3)
-            Text = ("Available")
-            Value = True
-          }
-        }
       }
       Index = 1
+      Text = ("Pending")
+      { GridView3 GridView
+        MoveScaled(1,4,86,47)
+        Mode = Select.Single
+        Header = GridView.Both
+      }
+      { Panel4 Panel
+        MoveScaled(0,0,88,4)
+        { btnrequest Button
+          MoveScaled(73,0.5,13,3)
+          Text = ("Request")
+          Picture = Picture["icon:/small/apply"]
+        }
+      }
+      Index = 2
       Text = ("New Request")
       { cmbitem ComboBox
         MoveScaled(12,1,42,3)
@@ -89,13 +87,18 @@
         Text = ("Category")
       }
       { lblcode Label
-        MoveScaled(23,5,47,3)
+        MoveScaled(23,5,31,3)
         Visible = False
         Border = Border.Plain
       }
       { btnshow Button
         MoveScaled(81,1,5,3)
         Picture = Picture["icon:/small/refresh"]
+      }
+      { lblcost Label
+        MoveScaled(56,5,13,3)
+        Visible = False
+        Border = Border.Plain
       }
       Index = 0
     }
