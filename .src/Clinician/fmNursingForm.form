@@ -1051,32 +1051,26 @@
         { Panel24 Panel
           MoveScaled(0,0,74,4)
           { lbldtfluid Label
-            MoveScaled(15,0.375,10,3)
+            MoveScaled(33,0.5,10,3)
             Border = Border.Plain
           }
           { dtfluid DateBox
-            MoveScaled(0,0.375,15,3)
+            MoveScaled(18,0.5,15,3)
           }
           { Label12 Label
-            MoveScaled(39,0.375,10,3)
+            MoveScaled(0,0.5,10,3)
             Border = Border.Plain
             Text = ("Intake")
           }
-          { Panel25 Panel
-            MoveScaled(50,0.375,23,3)
-            { rbfood RadioButton
-              MoveScaled(0,0,9,3)
-              Text = ("Food")
-              Value = True
-            }
-            { rbmed RadioButton
-              MoveScaled(10,0,12,3)
-              Text = ("Medicine")
-            }
-          }
           { btnallinout ToggleButton
-            MoveScaled(26,0.375,4,3)
+            MoveScaled(44,0.5,4,3)
             Picture = Picture["icon:/small/view-detail"]
+          }
+          { btnaddinput Button
+            MoveScaled(65,0.5,7.375,3)
+            ToolTip = ("Input Food Entry")
+            Text = ("In")
+            Picture = Picture["icon:/small/add"]
           }
         }
         { grdintake GridView
@@ -1123,12 +1117,6 @@
             MoveScaled(0,0.375,13,3)
             Border = Border.Plain
             Text = ("Fluid Output")
-          }
-          { btnaddinput Button
-            MoveScaled(25,0.375,7.375,3)
-            ToolTip = ("Input Food Entry")
-            Text = ("In")
-            Picture = Picture["icon:/small/add"]
           }
           { btaddoutput Button
             MoveScaled(32.375,0.375,7.375,3)

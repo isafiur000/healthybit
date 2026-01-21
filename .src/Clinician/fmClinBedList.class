@@ -2815,7 +2815,7 @@ Private Function AddMedicineRequest(encid As String, sStatus As String) As Integ
   If res.Available Then
     For Each res
 
-      rex = modDatabase.$myConn.Exec("select fldid from tblpatdosing where fldencounterval=&1 and fldstarttime>=&2 and fldstarttime<=&3 and flditemtype=&4 and fldcurval=&5 and flddays=&6", encid, modDate.StartSqlDate(Now()), modDate.EndSqlDate(Now()), "Medicines", "Continue", 0)
+      rex = modDatabase.$myConn.Exec("select fldid from tblpatdosing where fldencounterval=&1 and fldstarttime>=&2 and fldstarttime<=&3 and flditemtype=&4 and fldcurval=&5 and flddays=&6 and flditem=&7", encid, modDate.StartSqlDate(Now()), modDate.EndSqlDate(Now()), "Medicines", "Continue", 0, res["flditem"])
       If rex.Available = False Then
 
         itemtype = modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"])

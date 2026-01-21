@@ -1047,6 +1047,7 @@ Public Sub btndiary_Click()
 
     If xgo = True Then
       modPatientSub.UpdatePatFile($PatientNum, Trim(txtfileno.Text))
+      modPatientSub.RemovePatientCache($PatientNum)
       Balloon.Info(("Information Updated"), btndiary)
       Balloon.Delay = modBasic.$BalloonDelay
     Endif

@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,94,56)
+  MoveScaled(0,0,101,60)
   Tag = "Billing Rules"
   Text = ("Billing Rules")
   Resizable = False
@@ -25,7 +25,7 @@
     Border = Border.Plain
   }
   { IconPanel1 IconPanel
-    MoveScaled(1,5,92,50)
+    MoveScaled(1,5,99,54)
     Enabled = False
     Count = 10
     Index = 0
@@ -638,15 +638,15 @@
     Index = 5
     Text = ("Bill Punching")
     { Label21 Label
-      MoveScaled(1,1,16.625,3)
+      MoveScaled(1,5,16.625,3)
       Border = Border.Plain
       Text = ("Group Items")
     }
     { cmbgroupentry ComboBox
-      MoveScaled(18,1,14,3)
+      MoveScaled(18,5,14,3)
     }
     { btngroupentry Button
-      MoveScaled(33,1,5,3)
+      MoveScaled(33,5,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label27 Label
@@ -675,15 +675,15 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label59 Label
-      MoveScaled(1,5,16.625,3)
+      MoveScaled(1,1,16.625,3)
       Border = Border.Plain
       Text = ("Duplicate Entry")
     }
     { cmbduplicate ComboBox
-      MoveScaled(18,5,14,3)
+      MoveScaled(18,1,14,3)
     }
     { btnduplicate Button
-      MoveScaled(33,5,5,3)
+      MoveScaled(33,1,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label69 Label
@@ -787,8 +787,20 @@
       Picture = Picture["icon:/small/apply"]
     }
     { btndupliexcept Button
-      MoveScaled(41,5,10,3)
+      MoveScaled(41,1,10,3)
       Text = ("Exception")
+    }
+    { Label104 Label
+      MoveScaled(1,49,16.625,3)
+      Border = Border.Plain
+      Text = ("Billing Alert")
+    }
+    { cmbbillalert ComboBox
+      MoveScaled(18,49,14,3)
+    }
+    { btnbillalert Button
+      MoveScaled(33,49,5,3)
+      Picture = Picture["icon:/small/apply"]
     }
     Index = 6
     Text = ("Restrictions")
@@ -1300,12 +1312,12 @@
     Index = 0
   }
   { btnsettall Button
-    MoveScaled(81,1,12,3)
+    MoveScaled(88,1,12,3)
     Text = ("Settings")
     Picture = Picture["icon:/small/edit"]
   }
   { btnreport Button
-    MoveScaled(68,1,12,3)
+    MoveScaled(75,1,12,3)
     Text = ("Report")
     Picture = Picture["icon:/small/edit"]
   }

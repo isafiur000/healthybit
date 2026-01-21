@@ -1445,32 +1445,26 @@
         { Panel22 Panel
           MoveScaled(0,0,74,4)
           { lbldtfluid Label
-            MoveScaled(15,0.375,10,3)
+            MoveScaled(34,0.375,10,3)
             Border = Border.Plain
           }
           { dtfluid DateBox
-            MoveScaled(0,0.375,15,3)
+            MoveScaled(19,0.375,15,3)
           }
           { Label7 Label
-            MoveScaled(39,0.375,10,3)
+            MoveScaled(1,0.375,10,3)
             Border = Border.Plain
             Text = ("Intake")
           }
-          { Panel3 Panel
-            MoveScaled(50,0.375,23,3)
-            { rbfood RadioButton
-              MoveScaled(0,0,9,3)
-              Text = ("Food")
-              Value = True
-            }
-            { rbmed RadioButton
-              MoveScaled(10,0,12,3)
-              Text = ("Medicine")
-            }
-          }
           { btnallinout ToggleButton
-            MoveScaled(26,0.375,4,3)
+            MoveScaled(45,0.375,4,3)
             Picture = Picture["icon:/small/view-detail"]
+          }
+          { btnaddinput Button
+            MoveScaled(65,0.375,7.375,3)
+            ToolTip = ("Input Food Entry")
+            Text = ("In")
+            Picture = Picture["icon:/small/add"]
           }
         }
         { grdintake GridView
@@ -1483,22 +1477,22 @@
         { Panel23 Panel
           MoveScaled(0,28,74,4)
           { txtinfluid ValueBox
-            MoveScaled(10,1,16,3)
+            MoveScaled(10,0.5,16,3)
           }
           { Label8 Label
-            MoveScaled(33,1,10,3)
+            MoveScaled(33,0.5,10,3)
             Border = Border.Plain
             Text = ("Total (kCal)")
           }
           { txtincalori ValueBox
-            MoveScaled(44,1,16,3)
+            MoveScaled(44,0.5,16,3)
           }
           { tblfluidcalc ToolButton
             MoveScaled(68,1,3,3)
             Picture = Picture["icon:/small/question"]
           }
           { Label5 Label
-            MoveScaled(0,1,9,3)
+            MoveScaled(0,0.5,9,3)
             Border = Border.Plain
             Text = ("Total (mL)")
           }
@@ -1518,12 +1512,6 @@
             Border = Border.Plain
             Text = ("Fluid Output")
           }
-          { btnaddinput Button
-            MoveScaled(25,0.375,7.375,3)
-            ToolTip = ("Input Food Entry")
-            Text = ("In")
-            Picture = Picture["icon:/small/add"]
-          }
           { btaddoutput Button
             MoveScaled(32.375,0.375,7.375,3)
             ToolTip = ("Output Fluid Entry")
@@ -1541,10 +1529,10 @@
         { Panel25 Panel
           MoveScaled(0,26,40,4)
           { txtoutfluid ValueBox
-            MoveScaled(24,1,16,3)
+            MoveScaled(24,0.5,16,3)
           }
           { Label4 Label
-            MoveScaled(14,1,9,3)
+            MoveScaled(14,0.5,9,3)
             Border = Border.Plain
             Text = ("Total (mL)")
           }

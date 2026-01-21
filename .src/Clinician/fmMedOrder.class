@@ -1993,9 +1993,11 @@ Public Sub btnaddprotocol_Click()
     If xx Then
       res = modDatabase.$myConn.Create("tblpatprotocols")
       res["fldencounterval"] = $encid
+      res["fldpatientval"] = $PatientNum
       res["fldprotocol"] = xx
       res["fldstatus"] = "Active"
       res["fldusage"] = ""
+      res["fldfuture"] = chknewvisit.Value
       res["flduserid"] = modBasic.$lbluser
       res["fldtime"] = Now()
       res["fldcomp"] = modBasic.$compID
@@ -2010,10 +2012,12 @@ End
 
 Private Sub ShowPatProtocols()
 
-  Dim sql As String
+  Dim sql1 As String
+  Dim sql2 As String
 
-  sql = "select fldid,fldtime,fldprotocol,fldstatus,flduserid,fldusage from tblpatprotocols where fldencounterval=&1 and (fldstatus=&2 or fldstatus=&3)"
-  $rData3 = modDatabase.$myConn.Exec(sql, $encid, "Active", "Inactive")
+  sql1 = "select fldid,fldtime,fldprotocol,fldstatus,fldfuture,flduserid,fldusage from tblpatprotocols where fldencounterval=&1 and (fldstatus=&2 or fldstatus=&3)"
+  sql2 = "select fldid,fldtime,fldprotocol,fldstatus,fldfuture,flduserid,fldusage from tblpatprotocols where fldpatientval=&4 and (fldstatus=&2 or fldstatus=&3) and fldfuture=&5"
+  $rData3 = modDatabase.$myConn.Exec(sql1 & " UNION " & sql2, $encid, "Active", "Inactive", $PatientNum, True)
   $aMyFields3 = New String[]
   modGridView.ReadSmallData(GridView3, $rData3, $aMyFields3)
 
@@ -2022,14 +2026,15 @@ Private Sub ShowPatProtocols()
     .Columns[1].Width = 150 * modBasic.$AppWidthRatio
     .Columns[2].Width = 250 * modBasic.$AppWidthRatio
     .Columns[3].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[5].Width = 300 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 25 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[6].Width = 300 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "DateTime"
     .Columns[2].Text = "Protocols"
     .Columns[3].Text = "Status"
-    .Columns[4].Text = "Prescriber"
-    .Columns[5].Text = "Direction"
+    .Columns[5].Text = "Prescriber"
+    .Columns[6].Text = "Direction"
   End With
 
 End
@@ -2040,6 +2045,9 @@ Public Sub GridView3_Data(Row As Integer, Column As Integer)
   modGeneralMain.GridViewDecoration(GridView3, Row)
   If Column = 1 Then
     GridView3.Data.Text = modReportVar.GetDateTimeReport($rData3[$aMyFields3[Column]], gb.GeneralDate)
+  Else If Column = 4 Then
+    GridView3.Data.Picture = Picture[modMisc.SetGridCheckIcon($rData3[$aMyFields3[Column]])]
+    GridView3.Data.Text = ""
   Else
     GridView3.Data.Text = $rData3[$aMyFields3[Column]]
   Endif
@@ -2062,8 +2070,8 @@ Public Sub GridView3_Click()
         res.Update
         ShowPatProtocols()
       Endif
-    Else If GridView3.Column = 5 Then
-      xx = InputBox("Alter Directions for " & GridView3[GridView3.Row, 2].Text, "Alter Directions", GridView3[GridView3.Row, 5].Text)
+    Else If GridView3.Column = 6 Then
+      xx = InputBox("Alter Directions for " & GridView3[GridView3.Row, 2].Text, "Alter Directions", GridView3[GridView3.Row, 6].Text)
       If xx Then
         res = modDatabase.$myConn.Edit("tblpatprotocols", "fldid=&1 and fldencounterval=&2", GridView3[GridView3.Row, 0].Text, $encid)
         res["fldusage"] = xx
@@ -2083,8 +2091,12 @@ Public Sub btnprotdel_Click()
   If GridView3.Rows.Selection.Count Then
     If Message.Question("Are you sure ?", ("No"), ("Yes")) = 2 Then
       res = modDatabase.$myConn.Edit("tblpatprotocols", "fldid=&1 and fldencounterval=&2", GridView3[GridView3.Row, 0].Text, $encid)
-      res["fldstatus"] = "Cancelled"
-      res.Update
+      If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
+        modDatabase.$myConn.Delete("tblpatprotocols", "fldid=&1 and fldencounterval=&2", GridView3[GridView3.Row, 0].Text, $encid)
+      Else
+        res["fldstatus"] = "Cancelled"
+        res.Update
+      Endif
       ShowPatProtocols()
     Endif
   Endif

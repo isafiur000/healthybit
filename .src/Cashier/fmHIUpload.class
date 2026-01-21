@@ -306,7 +306,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   Else If Column = 9 Then
     GridView1.Data.Text = modReportVar.GetDateTimeReport(modClaim.GetHIClaimTime($rData[$aMyFields[Column]]), gb.GeneralDate)
   Else If Column = 10 Then
-    GridView1.Data.Text = modPatient.GetPatientNHSIbyCode($rData[$aMyFields[Column]], modDatabase.$myConn)
+    GridView1.Data.Text = modNonMedical.GetPatientNHSIbyCode($rData[$aMyFields[Column]], modDatabase.$myConn)
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]
   Endif
@@ -337,7 +337,7 @@ Public Sub GridView1_Click()
   txttotal.Value = GetTotalSelectedAMT(GridView1.Row)
 
   txtgridencid.Text = GridView1[GridView1.Row, 2].Text
-  txtgridnhsi.Text = modPatient.GetPatientNHSIbyCode(GridView1[GridView1.Row, 0].Text)
+  txtgridnhsi.Text = modNonMedical.GetPatientNHSIbyCode(GridView1[GridView1.Row, 0].Text)
   If Not txtgridnhsi.Text Then
     txtgridnhsi.Text = modPatient.GetPatientExtCOdebyEnc(GridView1[GridView1.Row, 2].Text)
   Endif
@@ -936,7 +936,7 @@ Public Sub mnubulkclaim_Click()
     For Row = 0 To GridView1.Rows.Count - 1
       ClearSubInputs()
       txtgridencid.Text = GridView1[Row, 2].Text
-      txtgridnhsi.Text = modPatient.GetPatientNHSIbyCode(GridView1[Row, 0].Text)
+      txtgridnhsi.Text = modNonMedical.GetPatientNHSIbyCode(GridView1[Row, 0].Text)
       If Not txtgridnhsi.Text Then
         txtgridnhsi.Text = modPatient.GetPatientExtCOdebyEnc(GridView1[Row, 2].Text)
       Endif
