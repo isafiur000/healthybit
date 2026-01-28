@@ -1184,7 +1184,7 @@ Public Sub btnadvice_Click()
   If GridView1.Rows.Selection.Count Then
     xval = GetRichTextArea("Clinician Advice", modPatPatho.ShowSelectedNotes(GridView1[GridView1.Row, 2].Text, "Initial Planning"))
     If xval Then
-      modPatientGeneral.AddExamGeneralQualiData(GridView1[GridView1.Row, 2].Text, "Notes", "Initial Planning", "", xval, xboolean)
+      modPatientGeneral.AddPatientParagraph(GridView1[GridView1.Row, 2].Text, "Notes", "Initial Planning", "", xval, xboolean)
       btnoutcome.Enabled = True
     Endif
   Endif

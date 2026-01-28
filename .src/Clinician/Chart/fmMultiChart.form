@@ -9,22 +9,22 @@
     { Panel4 Panel
       MoveScaled(0,1,119,4)
       { Label2 Label
-        MoveScaled(0,0.625,9,3)
+        MoveScaled(0,0.625,6,3)
         Border = Border.Plain
         Text = ("Name")
       }
       { txtpatientname TextBox
-        MoveScaled(10,0.625,34,3)
+        MoveScaled(7,0.625,34,3)
         Font = Font["Bold"]
         ReadOnly = True
       }
       { Label4 Label
-        MoveScaled(54,0.625,8,3)
+        MoveScaled(45,0.625,7,3)
         Border = Border.Plain
         Text = ("Gender")
       }
       { txtgender TextBox
-        MoveScaled(63,0.625,12,3)
+        MoveScaled(53,0.625,12,3)
         ReadOnly = True
       }
       { mnuexpo ToolButton
@@ -42,6 +42,10 @@
           Text = ("Table")
           Value = True
         }
+      }
+      { chkcomment CheckBox
+        MoveScaled(68,0.625,14,3)
+        Text = ("Comment")
       }
     }
     { Panel2 Panel
@@ -87,22 +91,31 @@
         }
       }
     }
-    { ListContainer1 ScrollView
-      MoveScaled(1,17,50,54)
+    { Panel7 Panel
+      MoveScaled(1,17,108,46)
       Expand = True
-      Arrangement = Arrange.Vertical
-      Spacing = True
-    }
-    { Panel6 Panel
-      MoveScaled(53,16,57,49)
-      Expand = True
-      Arrangement = Arrange.Vertical
-      { GridView2 GridView
-        MoveScaled(3,1,40,16)
+      Arrangement = Arrange.Horizontal
+      { ListContainer1 ScrollView
+        MoveScaled(0,0,32,42)
         Expand = True
-        Mode = Select.Single
-        Header = GridView.Both
-        AutoResize = False
+        Arrangement = Arrange.Vertical
+        Spacing = True
+      }
+      { Panel6 Panel
+        MoveScaled(33,0,40,41)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        { GridView2 GridView
+          MoveScaled(1,1,36,28)
+          Expand = True
+          Mode = Select.Single
+          Header = GridView.Both
+          AutoResize = False
+        }
+      }
+      { pnlgridentry Panel
+        MoveScaled(73,1,31.25,42)
+        Arrangement = Arrange.Vertical
       }
     }
   }

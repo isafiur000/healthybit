@@ -15,7 +15,6 @@ Public Sub Form_Open()
   modGeneralMain.ArrangeFormCentre(Me, "False")
   ShowDepartment()
   rbuser.Value = True
-  rbconuser.Value = True
 
 End
 
@@ -81,11 +80,14 @@ End
 ''send order to catch image
 Public Sub CreateNewSock()
 
+  Dim sHost As String
+  Dim sPort As String
+
+  sHost = modGeneral.GetCurrentIPonMac(GridView1[GridView1.Row, 6].Text)
+  sPort = modAppSupport.GetTransferPort(modGeneral.GetCurrentUseronMac(GridView1[GridView1.Row, 6].Text))
   MySock = New Socket As "MySock"
-  MySock.Host = modGeneral.GetCurrentIPonMac(GridView1[GridView1.Row, 6].Text)
-  MySock.Port = modAppSupport.GetTransferPort(modGeneral.GetCurrentUseronMac(GridView1[GridView1.Row, 6].Text))
+  MySock.Connect(sHost, sPort)
   modBasic.DebugString("Connect to Port " & CStr(MySock.Port) & " on Host " & MySock.Host)
-  MySock.Connect()
 
 End
 
@@ -159,13 +161,8 @@ Private Sub FillContactInfo()
 
   Dim sql As String
 
-  If rbconpatient.Value = True Then
-    sql = "select fldencounterval,fldencounterval,fldencounterval,fldencounterval,fldencounterval from tblencounter where fldadmission=&1"                               ''
-    $rData1 = modDatabase.$syConn.Exec(sql, "Admitted")
-  Else If rbconuser.Value = True Then
-    sql = "select fldptcode,CONCAT(fldptnamefir,' ',fldptnamelast),CONCAT(fldptaddvill,' ', fldptadddist),fldptcontact,fldemail from tblstafflist"
-    $rData1 = modDatabase.$syConn.Exec(sql)
-  Endif
+  sql = "select fldptcode,CONCAT(fldptnamefir,' ',fldptnamelast),CONCAT(fldptaddvill,' ', fldptadddist),fldptcontact,fldemail from tblstafflist"
+  $rData1 = modDatabase.$syConn.Exec(sql)
   $aMyFields1 = New String[]
   modGridView.ReadSmallData(GridView2, $rData1, $aMyFields1)
   With GridView2
@@ -188,21 +185,7 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
 
   $rData1.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView2, Row)
-  If rbconpatient.Value = True Then
-    If Column = 1 Then
-      GridView2.Data.Text = modPatient.GetPatientNameByEnc($rData1[$aMyFields1[Column]])
-    Else If Column = 2 Then
-      GridView2.Data.Text = modPatient.GetPatientAddressByEnc($rData1[$aMyFields1[Column]])
-    Else If Column = 3 Then
-      GridView2.Data.Text = modPatient.GetPatientContactByEnc($rData1[$aMyFields1[Column]])
-    Else If Column = 4
-      GridView2.Data.Text = modPatient.GetPatientEmail($rData1[$aMyFields1[Column]])
-    Else
-      GridView2.Data.Text = $rData1[$aMyFields1[Column]]
-    Endif
-  Else If rbconuser.Value = True Then
-    GridView2.Data.Text = $rData1[$aMyFields1[Column]]
-  Endif
+  GridView2.Data.Text = $rData1[$aMyFields1[Column]]
 
 End
 

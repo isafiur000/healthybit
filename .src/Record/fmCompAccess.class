@@ -22,13 +22,14 @@ Public Sub Form_Open()
   Dim xList As String[]
 
   modGeneralMain.ArrangeFormCentre(Me)
-  xList = modGeneral.CompList()
-  cmbcomp.List = xList
+  cmbcomp.List = modGeneral.CompList()
   txtname.List = modGeneral.GetDepartmentAllList("%")
   txtname.Text = ""
+  xList = New String[]
+  xList.Add("%")
+  xList.Insert(modGeneral.CompList())
   cmbselcomp.List = xList
-  cmbselcomp.Add("%")
-  cmbselcomp.Text = "%"
+  cmbselcomp.Index = 0
   txtiptype.List = ["Fixed", "Dynamic"]
 
   If $sType = "Admin" Then
@@ -74,6 +75,12 @@ Public Sub chkpass_Click()
 
 End
 
+Public Sub cmbselcomp_Click()
+
+  ShowGridAccess()
+
+End
+
 Public Sub btnrefresh_Click()
 
   ShowGridAccess()
@@ -90,12 +97,12 @@ Private Sub ShowGridAccess()
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
 
   With GridView1
-    .Columns[0].Width = 125 * modBasic.$AppWidthRatio
-    .Columns[1].Width = 110 * modBasic.$AppWidthRatio
+    .Columns[0].Width = 140 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 125 * modBasic.$AppWidthRatio
     .Columns[2].Width = 150 * modBasic.$AppWidthRatio
     .Columns[3].Width = 100 * modBasic.$AppWidthRatio
     .Columns[4].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[5].Width = 120 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 125 * modBasic.$AppWidthRatio
     .Columns[6].Width = 75 * modBasic.$AppWidthRatio
     .Columns[7].Width = 75 * modBasic.$AppWidthRatio
     .Columns[8].Width = 1
@@ -249,10 +256,8 @@ End
 Public Sub CreateNewSock()
 
   MySock = New Socket As "MySock"
-  MySock.Host = lblip.Text
-  MySock.Port = modAppSupport.GetTransferPort(lbluser.Text)
+  MySock.Connect(lblip.Text, modAppSupport.GetTransferPort(lbluser.Text))
   modBasic.DebugString("Connect to Port " & CStr(MySock.Port) & " on Host " & MySock.Host)
-  MySock.Connect()
 
 End
 

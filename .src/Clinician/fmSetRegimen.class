@@ -74,6 +74,7 @@ Public Sub TabPanel1_Click()
 
   $ItemList = New String[]
   If TabPanel1.Index = 0 Then
+    lstcategory.Index = 0
     ShowNewRegimen()
     lstletter2.List = modString.GetFirstLetterArray($ItemList)
   Else If TabPanel1.Index = 1 Then
@@ -354,6 +355,7 @@ Private Sub SetCategoryList()
     xList.Insert(modControlSub.GetDirectFillresult(res))
   Endif
   lstcategory.List = xList
+  lstcategory.Index = 0
 
 End
 

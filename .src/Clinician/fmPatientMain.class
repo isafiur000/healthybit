@@ -559,7 +559,7 @@ Private Sub PregnancySettings()
     tlbtpregnancy.Enabled = False
   Else
     cmbpregnancy.List = ["1st trimester", "2nd trimester", "3rd trimester", "Breast feeding", "Non Pregnant"]
-    cmbpregnancy.Text = modClinic.GetPregnancyStatus(Trim(txtencid.Text))
+    cmbpregnancy.Text = modPatient.GetPregnancyStatus(Trim(txtencid.Text))
     cmbpregnancy.Enabled = True
   Endif
 
@@ -1192,7 +1192,7 @@ Public Sub btngencompln_Click()
   Endif
 
   If txtgencomplaint.Text Then
-    modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "History", "General Complaints", txtgencomplaint.KeyList.Join(";"), txtgencomplaint.RichText, xboolean)
+    modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "History", "General Complaints", txtgencomplaint.KeyList.Join(";"), txtgencomplaint.RichText, xboolean)
     Balloon.Info(("Information saved"), btngencompln)
     Balloon.Delay = modBasic.$BalloonDelay
     btngencompln.Enabled = False
@@ -2017,9 +2017,9 @@ Public Sub btnhistory_Click()
   If cmbinpathistory.Text Then
     If txthistory.Text Then
       If cmbinpathistory.Text = "Initial Planning" Or If cmbinpathistory.Text = "Expert Planning" Then
-        modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
+        modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "Notes", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
       Else
-        modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "History", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
+        modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "History", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
       Endif
       Balloon.Info(("Information saved"), btnhistory)
       Balloon.Delay = modBasic.$BalloonDelay
@@ -2066,7 +2066,8 @@ End
 Public Sub tlbtpregnancy_Click()
 
   If txtencid.Text And If cmbpregnancy.Text Then
-    modClinSub.AddGeneralParametersQuali(Trim(txtencid.Text), "Pregnancy Status", cmbpregnancy.Text)
+    modPatientSub.UpdatePregnancyStatus(Trim(txtencid.Text), cmbpregnancy.Text)
+    modPatient.$PatProfileData.Remove(Trim(txtencid.Text))
     Balloon.Info(("Information saved"), tlbtpregnancy)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
@@ -2316,7 +2317,7 @@ Public Sub btnoteadd_Click()
       If cmbnote.Text = "Patient Note" Then
       Else
         If txtnote.Text Then
-          modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", cmbnote.Text, txtimpression.Text, txtnote.RichText, False)
+          modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "Notes", cmbnote.Text, txtimpression.Text, txtnote.RichText, False)
           ShowNoteTypeTime()
           Balloon.Info(("Information saved"), btnoteadd)
           Balloon.Delay = modBasic.$BalloonDelay
@@ -2352,7 +2353,10 @@ End
 
 Private Sub ShowNoteTypeTime()
 
-  Dim sql As String
+  Dim xFldLst1 As String[]
+  Dim xFldLst2 As String[]
+  Dim sql1 As String
+  Dim sql2 As String
   Dim i As Integer
   Dim sTypLst As String[]
 
@@ -2372,12 +2376,18 @@ Private Sub ShowNoteTypeTime()
     sTypLst[i] = "'" & sTypLst[i] & "'"
   Next
 
+  xFldLst1 = ["fldid", "fldtime", "flditem", "fldreportquali", "flduserid", "flddetail"]
+  xFldLst1.Add(Quote("tblexamgeneral"))
+  xFldLst2 = ["fldid", "fldtime", "flditem", "fldreportquali", "flduserid", "flddetail"]
+  xFldLst2.Add(Quote("tblpatientnotes"))
   If chknoteall.Value Then
-    sql = "select fldid,fldtime,flditem,fldreportquali,flduserid,fldtime,flddetail from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem in(" & sTypLst.Join(",") & ") ORDER BY fldtime DESC"
+    sql1 = "select " & xFldLst1.Join(",") & " from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem in(" & sTypLst.Join(",") & ")"
+    sql2 = "select " & xFldLst2.Join(",") & " from tblpatientnotes where fldencounterval=&1 and fldinput=&2 and flditem in(" & sTypLst.Join(",") & ")"
   Else
-    sql = "select fldid,fldtime,flditem,fldreportquali,flduserid,fldtime,flddetail from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem in(" & sTypLst.Join(",") & ") and fldtime>=&3 and fldtime<=&4 ORDER BY fldtime DESC"
+    sql1 = "select " & xFldLst1.Join(",") & " from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem in(" & sTypLst.Join(",") & ") and fldtime>=&3 and fldtime<=&4"
+    sql2 = "select " & xFldLst2.Join(",") & " from tblpatientnotes where fldencounterval=&1 and fldinput=&2 and flditem in(" & sTypLst.Join(",") & ") and fldtime>=&3 and fldtime<=&4"
   Endif
-  $rData = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Notes", modDate.StartSqlDate(dtnote.Value), modDate.EndSqlDate(dtnote.Value))
+  $rData = modDatabase.$myConn.Exec(sql1 & " UNION ALL " & sql2 & " ORDER BY fldtime DESC", Trim(txtencid.Text), "Notes", modDate.StartSqlDate(dtnote.Value), modDate.EndSqlDate(dtnote.Value))
   $aMyFields = New String[]
   modGridView.ReadSmallData(grdnote, $rData, $aMyFields)
 
@@ -2425,9 +2435,10 @@ Public Sub grdnote_Click()
   If grdnote.Rows.Selection.Count Then
     cmbnote.Text = grdnote[grdnote.Row, 2].Text
     txtnoteid.Value = grdnote[grdnote.Row, 0].Text
+    txtnotetable.Text = grdnote[grdnote.Row, 6].Text
     txtimpression.Text = grdnote[grdnote.Row, 3].Text
-    txtnote.RichText = grdnote[grdnote.Row, 6].Text
-    lblnoteuser.Text = modGeneral.GetUserFullName(grdnote[grdnote.Row, 4].Text) & " [" & modReportVar.GetDateTimeReport(grdnote[grdnote.Row, 5].Text, gb.GeneralDate) & "]"
+    txtnote.RichText = grdnote[grdnote.Row, 5].Text
+    lblnoteuser.Text = modGeneral.GetUserFullName(grdnote[grdnote.Row, 4].Text) & " [" & grdnote[grdnote.Row, 1].Text & "]"
     If $NotesList.Exist(grdnote[grdnote.Row, 2].Text) Then
       btnotedit.Enabled = True
     Else
@@ -2488,7 +2499,11 @@ End
 Public Sub btnotedit_Click()
 
   If txtnoteid.Value Then
-    modPatientGeneral.UpdateExamGeneralQualiData(txtnoteid.Value, Trim(txtencid.Text), cmbnote.Text, txtimpression.Text, txtnote.RichText)
+    If txtnotetable.Text = "tblexamgeneral" Then
+      modPatientGeneral.UpdateExamGeneralQualiData(txtnoteid.Value, Trim(txtencid.Text), cmbnote.Text, txtimpression.Text, txtnote.RichText)
+    Else If txtnotetable.Text = "tblpatientnotes" Then
+      modPatientGeneral.UpdatePatNoteQualiData(txtnoteid.Value, Trim(txtencid.Text), cmbnote.Text, txtimpression.Text, txtnote.RichText)
+    Endif
     ShowNoteTypeTime()
     Balloon.Info(("Information saved"), btnotedit)
     Balloon.Delay = modBasic.$BalloonDelay
@@ -2908,6 +2923,7 @@ Public Sub btndrp_Click()
   Dim opt As Long[]
   Dim sql As String
   Dim res As Result
+  Dim cForm As CMedError
 
   If btnshowallmed.Value = False Then
     sql = "select fldid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval=&6"                    ''
@@ -2921,7 +2937,8 @@ Public Sub btndrp_Click()
     For Each res
       opt.Add(res["fldid"])
     Next
-    modMedError.ShowMedicationReviewMultipleDosID(Trim(txtencid.Text), opt, "Report")
+    cForm = New CMedError
+    cForm.ShowMedicationReviewMultipleDosID(Trim(txtencid.Text), opt, "Report")
   Endif
 
 End
@@ -3154,6 +3171,7 @@ Public Sub btnfluidcompat_Click()
   Dim res As Result
   Dim opt As String[]
   Dim xval As String
+  Dim cForm As CMedError
 
   If grdfluid.Rows.Selection.Count > 0 Then
     opt = New String[]
@@ -3174,7 +3192,8 @@ Public Sub btnfluidcompat_Click()
         Endif
       Next
     Endif
-    modMedError.ShowMedCompatibleSingleDosID(grdfluid[grdfluid.Row, 0].Text, opt, "Message Box")
+    cForm = New CMedError
+    cForm.ShowMedCompatibleSingleDosID(grdfluid[grdfluid.Row, 0].Text, opt, "Message Box")
   Endif
 
 End
@@ -3830,6 +3849,10 @@ Public Sub mnudischarge_Click()
             modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "Discharged", xx)
             modDatabase.$myConn.Commit
             Dec Application.Busy
+            If modBasic.$AutoDeskNotice = "Disable" Then
+            Else
+              modDevice.GetNotification("Discharged", "<b>" & txtpatientname.Text & "</b> with Encounter ID : " & txtencid.Text)
+            Endif
             If xmsg Then
               Message.Warning(xmsg, "OK")
             Endif
@@ -3872,6 +3895,10 @@ Public Sub mnustartlama_Click()
             modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "LAMA", xx)
             modDatabase.$myConn.Commit
             Dec Application.Busy
+            If modBasic.$AutoDeskNotice = "Disable" Then
+            Else
+              modDevice.GetNotification("LAMA", "<b>" & txtpatientname.Text & "</b> with Encounter ID : " & txtencid.Text)
+            Endif
             If xmsg Then
               Message.Warning(xmsg, "OK")
             Endif
@@ -3916,6 +3943,10 @@ Public Sub mnurefer_Click()
             modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "Refer", xrefer)
             modDatabase.$myConn.Commit
             Dec Application.Busy
+            If modBasic.$AutoDeskNotice = "Disable" Then
+            Else
+              modDevice.GetNotification("Refer", "<b>" & txtpatientname.Text & "</b> with Encounter ID : " & txtencid.Text)
+            Endif
             If xmsg Then
               Message.Warning(xmsg, "OK")
             Endif
@@ -3964,6 +3995,10 @@ Public Sub mnustartdeath_Click()
             modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "Death", xx)
             modDatabase.$myConn.Commit
             Dec Application.Busy
+            If modBasic.$AutoDeskNotice = "Disable" Then
+            Else
+              modDevice.GetNotification("Death", "<b>" & txtpatientname.Text & "</b> with Encounter ID : " & txtencid.Text)
+            Endif
             If xmsg Then
               Message.Warning(xmsg, "OK")
             Endif
@@ -3996,6 +4031,10 @@ Public Sub mnuabsconder_Click()
         modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "Absconder", "")
         modDatabase.$myConn.Commit
         Dec Application.Busy
+        If modBasic.$AutoDeskNotice = "Disable" Then
+        Else
+          modDevice.GetNotification("Absconder", "<b>" & txtpatientname.Text & "</b> with Encounter ID : " & txtencid.Text)
+        Endif
         If xmsg Then
           Message.Warning(xmsg, "OK")
         Endif

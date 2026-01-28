@@ -15,8 +15,15 @@
     { Panel2 Panel
       MoveScaled(0,0,33.875,47.875)
       Arrangement = Arrange.Vertical
+      { Label4 Label
+        MoveScaled(0,1,31,3)
+        Font = Font["Bold"]
+        Alignment = Align.Center
+        Border = Border.Plain
+        Text = ("Medicine Administration")
+      }
       { ListBox1 ListView
-        MoveScaled(2,2,24,24)
+        MoveScaled(2,9,24,24)
         Expand = True
         Sorted = True
       }
@@ -35,7 +42,7 @@
       }
     }
     { Panel8 Panel
-      MoveScaled(35,1,73,43)
+      MoveScaled(35,1,73,49)
       Expand = True
       Arrangement = Arrange.Vertical
       { Panel4 Panel
@@ -51,9 +58,37 @@
           MoveScaled(45,0,3.5,3.5)
           Picture = Picture["icon:/small/info"]
         }
+        { chkdisp CheckBox
+          MoveScaled(61,0.5,10,3)
+          Visible = False
+        }
+      }
+      { pnlocal Panel
+        MoveScaled(0,4,72,4)
+        Visible = False
+        { chkuselocal CheckBox
+          MoveScaled(0.5,0.5,18,3)
+          Text = ("From Local Stock")
+        }
+        { cmbdisctype ComboBox
+          MoveScaled(20,0.5,23,3)
+        }
+        { Label2 Label
+          MoveScaled(45,0.5,5,3)
+          Border = Border.Plain
+          Text = ("QTY")
+        }
+        { txttransqty ValueBox
+          MoveScaled(51,0.5,7,3)
+          ReadOnly = True
+        }
+        { btnreceive Button
+          MoveScaled(60,0.5,11,3)
+          Text = ("Transfer")
+        }
       }
       { Panel5 Panel
-        MoveScaled(0,4,71.875,4)
+        MoveScaled(0,12,71.875,4)
         { lblregimen Label
           MoveScaled(9,0.5,32,3)
           Border = Border.Plain
@@ -68,7 +103,6 @@
         }
         { btnsave Button
           MoveScaled(61,0.5,10,3.25)
-          Enabled = False
           Tag = "Auto"
           Text = ("Save")
           Picture = Picture["icon:/small/add"]
@@ -80,24 +114,26 @@
         }
       }
       { txtdirection TextArea
-        MoveScaled(0,8,71,4)
+        MoveScaled(0,16,71,5)
+        Visible = False
         ReadOnly = True
         Wrap = True
       }
       { txtmixture TextArea
-        MoveScaled(0,12,71,4)
+        MoveScaled(0,21,71,5)
+        Visible = False
         ReadOnly = True
         Wrap = True
       }
       { GridView1 GridView
-        MoveScaled(1,18,66,14)
+        MoveScaled(1,27,66,14)
         Expand = True
         Mode = Select.Single
         Header = GridView.Both
         AutoResize = False
       }
       { Panel7 Panel
-        MoveScaled(0,36,71.875,3.875)
+        MoveScaled(0,44,71.875,3.875)
         { txtcounttoday ValueBox
           MoveScaled(11,0.5,6,3)
           ReadOnly = True

@@ -112,6 +112,7 @@ Public Sub TabPanel1_Click()
     ShowGrid()
   Else If TabPanel1.Index = 2 Then
     cmbcategory.List = $LabDepartList
+    cmbcategory.Index = 0
     ShowGridTree()
   Else If TabPanel1.Index = 3 Then
     lsttestname.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldtestid) as col from tblpatradiotest where fldencounterval=&1", $encid))
@@ -383,6 +384,7 @@ Public Sub rblabs_Click()
 
   cmbtestgroup.Clear()
   cmbtestgroup.List = $LabDepartList
+  cmbtestgroup.Index = 0
 
 End
 
@@ -596,10 +598,10 @@ Public Sub btnselect_Click()
       If ListView1[CStr(i)].Picture = Picture["icons/checked.png"] Then     '
 
         If modBasic.$AutoBillRadio = "Standard" Or If modBasic.$AutoBillRadio = "Full" Or If modBasic.$AutoBillRadio = "Partial" Then
-          If modMisc.GetDuplicationAllow(xList, ListView1[CStr(i)].Text, btnselect) = True Then
-            If chknextvisit.Value = True Then
-              modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", ListView1[CStr(i)].Text, 1, "Planned", 0, False, False, xpayble, xrefer, cmbtarget.Text, "")
-            Else
+          If chknextvisit.Value = True Then
+            modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", ListView1[CStr(i)].Text, 1, "Planned", 0, False, False, xpayble, xrefer, cmbtarget.Text, "")
+          Else
+            If modMisc.GetDuplicationAllow(xList, ListView1[CStr(i)].Text, btnselect) = True Then
               modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", ListView1[CStr(i)].Text, 1, "Punched", 0, False, False, xpayble, xrefer, cmbtarget.Text, "")
             Endif
             acount = acount + 1
@@ -726,11 +728,11 @@ Public Sub btnsave_Click()
     For Each res
 
       If modBasic.$AutoBillRadio = "Standard" Then
-        If modNonMedical.AllowPreCheckDeposit($encid, res["fldditemamt"], res["fldbilltype"]) = True Then
+        If modNonMedical.AllowPreCheckDeposit($encid, "Radio", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsave) = True Then
           SavePartialEntry(res, xadv)
         Endif
       Else If modBasic.$AutoBillRadio = "Full" Then
-        If modNonMedical.AllowPreEntryWithDeposit($encid, "Radio", res["fldditemamt"], res["fldbilltype"], btnsave) = True Then
+        If modNonMedical.AllowPreEntryWithDeposit($encid, "Radio", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsave) = True Then
           SavePartialEntry(res, xadv)
         Endif
       Else
@@ -1070,11 +1072,11 @@ Public Sub btnselecttree_Click()
     If TreeView1.Current.Picture = Picture["icons/coll3.png"] Then   '
 
       If modBasic.$AutoBillRadio = "Standard" Or If modBasic.$AutoBillRadio = "Full" Or If modBasic.$AutoBillRadio = "Partial" Then
-        If modMisc.GetDuplicationAllow(xList, TreeView1.Current.Text, btnselecttree) = True Then
-          xparent = Split(TreeView1.Current.ParentKey, "@")
-          If chknextvisit.Value = True Then
-            modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", TreeView1.Current.Text, 1, "Planned", 0, False, False, xpayble, xrefer, cmbtarget.Text, xparent[1])
-          Else
+        xparent = Split(TreeView1.Current.ParentKey, "@")
+        If chknextvisit.Value = True Then
+          modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", TreeView1.Current.Text, 1, "Planned", 0, False, False, xpayble, xrefer, cmbtarget.Text, xparent[1])
+        Else
+          If modMisc.GetDuplicationAllow(xList, TreeView1.Current.Text, btnselecttree) = True Then
             modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", TreeView1.Current.Text, 1, "Punched", 0, False, False, xpayble, xrefer, cmbtarget.Text, xparent[1])
           Endif
           acount = acount + 1
@@ -1114,11 +1116,11 @@ Public Sub btnsavetree_Click()
     For Each res
 
       If modBasic.$AutoBillRadio = "Standard" Then
-        If modNonMedical.AllowPreCheckDeposit($encid, res["fldditemamt"], res["fldbilltype"]) = True Then
+        If modNonMedical.AllowPreCheckDeposit($encid, "Radio", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsavetree) = True Then
           SavePartialEntry(res, xadv)
         Endif
       Else If modBasic.$AutoBillRadio = "Full" Then
-        If modNonMedical.AllowPreEntryWithDeposit($encid, "Radio", res["fldditemamt"], res["fldbilltype"], btnsavetree) = True Then
+        If modNonMedical.AllowPreEntryWithDeposit($encid, "Radio", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsavetree) = True Then
           SavePartialEntry(res, xadv)
         Endif
       Else

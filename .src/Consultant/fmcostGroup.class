@@ -11,7 +11,7 @@ Public Sub Form_Open()
   If modHelpVariable.$LogInCategory = "Clinician" Then
     cmbtarget.Enabled = False
   Endif
-  cmbtype.List = ["Test", "Radio"]
+  cmbtype.List = ["Test", "Service", "Procedure", "Equipment", "Radio", "Others"]
   cmbgroup.List = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select distinct(fldgroup) as col from tblcostgroup"))
 
 End

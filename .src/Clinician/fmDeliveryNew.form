@@ -59,6 +59,18 @@
       Text = ("Essen Exams")
     }
   }
+  { mnumedicine Menu
+    Text = ("Medicine")
+    { mnupharmrequest Menu
+      Text = ("Request")
+    }
+    { mnumeddosing Menu
+      Text = ("Dosing")
+    }
+    { mnuivinfusion Menu
+      Text = ("Infusion")
+    }
+  }
   { mnureportall Menu
     Text = ("View")
     { mnulabrepo Menu
@@ -388,7 +400,7 @@
       Enabled = False
       Expand = True
       Arrangement = Arrange.Horizontal
-      Count = 8
+      Count = 7
       Index = 0
       Text = ("New Delivery[F1]")
       { Panel5 Panel
@@ -887,50 +899,9 @@
         AutoResize = False
       }
       Index = 6
-      Text = ("Pharmacy [F7]")
-      { Panel17 Panel
-        MoveScaled(0,0,118,50)
-        Expand = True
-        Arrangement = Arrange.Vertical
-        { Panel16 Panel
-          MoveScaled(0,0,117,5)
-          { btndoserecord Button
-            MoveScaled(68,0.625,14,3)
-            Text = ("Dosing")
-            Picture = Picture["icon:/small/add"]
-          }
-          { btnshowallmed ToggleButton
-            MoveScaled(97,0.625,16,3)
-            Text = ("Show All")
-            Picture = Picture["icon:/small/view-detail"]
-          }
-          { btnmedexpo Button
-            MoveScaled(113,0.625,4,3)
-            Picture = Picture["icon:/small/html"]
-          }
-          { btnaddmed Button
-            MoveScaled(54,0.625,14,3)
-            Text = ("Request")
-            Picture = Picture["icon:/small/add"]
-          }
-          { btnivinfusion Button
-            MoveScaled(82,0.625,14,3)
-            Text = ("Infusion")
-            Picture = Picture["icon:/small/add"]
-          }
-        }
-        { GridView5 GridView
-          MoveScaled(1,7,100,32)
-          Expand = True
-          Mode = Select.Single
-          Header = GridView.Both
-          AutoResize = False
-        }
-      }
-      Index = 7
-      Text = ("Inventory[F8]")
+      Text = ("InventoryF7]")
       { pnlwardstock Panel
-        MoveScaled(24,2,56,34)
+        MoveScaled(0,0,56,34)
         Expand = True
         Arrangement = Arrange.Vertical
       }

@@ -506,10 +506,9 @@ Private Sub ButtonControl()
   btnbabydob.Enabled = xx
   btnbabyconsult.Enabled = xx
   ''item used
-  btnaddmed.Enabled = xx
-  btndoserecord.Enabled = xx
-  btnivinfusion.Enabled = xx
-  GridView5.Enabled = xx
+  mnupharmrequest.Enabled = xx
+  mnumeddosing.Enabled = xx
+  mnuivinfusion.Enabled = xx
   ''compli
   grdtreecompl.Enabled = xx
   grdcompl.Enabled = xx
@@ -605,9 +604,6 @@ Public Sub Form_KeyRelease()
     ShowClinicTable()
   Else If Key.Code = Key.F7 Then
     TabPanel1.Index = 6
-    FillDosingGrid("Current")
-  Else If Key.Code = Key.F8 Then
-    TabPanel1.Index = 7
     hOwnStockForm.RearrangeGrid()
   Else
     modGeneralmain.GoToNextControlTab()
@@ -637,8 +633,6 @@ Public Sub TabPanel1_Click()
     LoadTreeData3()
     ShowClinicTable()
   Else If TabPanel1.Index = 6 Then
-    FillDosingGrid("Current")
-  Else If TabPanel1.Index = 7 Then
     hOwnStockForm.RearrangeGrid()
   Endif
 
@@ -1169,9 +1163,10 @@ Public Sub btnaddbaby_Click()
               res2["fldgestation"] = DateDiff(res2["fldlast"], dtdelivery.Value, gb.Day)
               res2.Update
             Endif
-            modClinSub.AddGeneralParametersQuali(Trim(txtencid.Text), "Pregnancy Status", "Breast feeding")
+            modPatientSub.UpdatePregnancyStatus(Trim(txtencid.Text), "Breast feeding")
             modDatabase.$myConn.Commit
             NewDeliveryGrid()
+            modPatient.$PatProfileData.Remove(Trim(txtencid.Text))
             Balloon.Info(("Information saved"), btnaddbaby)
             Balloon.Delay = modBasic.$BalloonDelay
 
@@ -1438,6 +1433,8 @@ Private Function AddBabyDetail(sex As String, dob As Date) As String
 
           res1["fldregistid"] = modPatient.GetPatientHMISRegVal($patNo)
           res1["fldadmitid"] = ""
+          res1["fldmarker"] = ""
+          res1["fldpassword"] = ""
           res1["xyz"] = False
           res1.Update()
           modPatientSub.EnterPatientImpDate($benc, "Recorded", "")
@@ -2101,7 +2098,7 @@ Public Sub btntransbaby_Click()
 End
 
 ''------------------------------------------- pharmacy ----------------------------------
-Public Sub btnaddmed_Click()
+Public Sub mnupharmrequest_Click()
 
   Dim hForm As FmMedOrder
 
@@ -2112,131 +2109,30 @@ Public Sub btnaddmed_Click()
         hForm = New FmMedOrder(Trim(txtencid.Text), txtnow.Text, $billModePharmacy)
         hForm.ShowModal
       Endif
-      FillDosingGrid("Current")
       hOwnStockForm.RefreshList()
     Endif
   Endif
 
 End
 
-Public Sub btndoserecord_Click()
+Public Sub mnumeddosing_Click()
 
   Dim hForm As FmDoseMobile
 
   If txtencid.Text Then
     hForm = New FmDoseMobile(Trim(txtencid.Text))
     hForm.ShowModal
-    FillDosingGrid("Current")
   Endif
 
 End
 
-Public Sub btnivinfusion_Click()
+Public Sub mnuivinfusion_Click()
 
   Dim hForm As FmIVInfusion
 
   If txtencid.Text Then
     hForm = New FmIVInfusion(Trim(txtencid.Text))
     hForm.ShowModal
-    FillDosingGrid("Current")
-  Endif
-
-End
-
-Private Sub FillDosingGrid(strType As String)
-
-  Dim sql As String
-  Dim Column As Integer
-  Dim fld As ResultField
-  Dim res As Result
-
-  If strType = "Current" Then
-    sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,(fldqtydisp-fldqtyret) as qty,fldlabel,fldcurval from tblpatdosing where fldencounterval=&1 and fldcomp_order=&2 and fldsave_order=&3 and flditemtype=&4"                                                   ''
-    res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), modBasic.$compID, True, "Medicines")
-  Else If strType = "All" Then
-    sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,(fldqtydisp-fldqtyret) as qty,fldlabel,fldcurval from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3"                                                   ''
-    res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), True, "Medicines")
-  Endif
-
-  GridView5.Clear
-  GridView5.Columns.Count = res.Fields.Count
-  GridView5.Rows.Count = res.Count
-
-  With GridView5
-    .Rows.Height = modBasic.$AppGridRowHeight
-    .Columns[0].Width = 1
-    .Columns[1].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 300 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[5].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[6].Width = 40 * modBasic.$AppWidthRatio
-    .Columns[7].Width = 40 * modBasic.$AppWidthRatio
-    .Columns[8].Width = 1
-    .Columns[9].Width = 75 * modBasic.$AppWidthRatio
-
-    .Columns[1].Text = "StartDate"
-    .Columns[2].Text = "Route"
-    .Columns[3].Text = "Particulars"
-    .Columns[4].Text = "Dose"
-    .Columns[5].Text = "Freq"
-    .Columns[6].Text = "Days"
-    .Columns[7].Text = "QTY"
-    .Columns[9].Text = "Status"
-  End With
-
-  For Each res
-    Column = 0
-    For Each fld In res.Fields
-      modGeneralMain.GridExplicitDecoration(GridView5, res.Index, Column)
-      If Column = 1 Then
-        GridView5[res.Index, Column].Text = modReportVar.GetDateTimeReport(res["fldstarttime"], gb.GeneralDate)
-      Else
-        GridView5[res.Index, Column].Text = res[fld.Name]
-      Endif
-      GridView5.Rows[res.Index].Height = Max(GridView5.Rows[res.Index].Height, GridView5[res.Index, Column].Font.RichTextHeight(GridView5[res.Index, Column].Text, GridView5.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView5.Rows.Height - GridView5.Font.Height))
-      GridView5[res.Index, Column].WordWrap = True
-
-      Column = Column + 1
-    Next
-  Next
-  GridView5.Row = 0
-
-End
-
-Public Sub btnshowallmed_Click()
-
-  If txtencid.Text Then
-    If btnshowallmed.Value = True Then
-      FillDosingGrid("All")
-    Else If btnshowallmed.Value = False Then
-      FillDosingGrid("Current")
-    Endif
-  Endif
-
-End
-
-Public Sub btnmedexpo_Click()
-
-  modCHTMLReport.ExportGridToHTML(GridView5, "ITEMS USED: " & "Delivery", modReportVar.GetDateTimeReport(Now(), gb.GeneralDate))
-
-End
-
-Public Sub GridView5_Click()
-
-  Dim xx As String[] = ["Continue", "Completed", "Discontinue", "On Hold", "Change", "ReWrite", "Cancelled", "Wasted"]
-  Dim res As Result
-  Dim xval As String
-
-  If GridView5.Column = 9 Then
-    xval = InputCombo(GridView5[GridView5.Row, 3].Text, ("Select Current Status"), xx, GridView5[GridView5.Row, 9].Text, True)
-    If xval Then
-      res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", GridView5[GridView5.Row, 0].Text)
-      res["fldcurval"] = xval
-      res["xyz"] = False
-      res.Update()
-      FillDosingGrid("Current")
-    Endif
   Endif
 
 End
@@ -2809,9 +2705,8 @@ Private Sub UserAccessRestrict()
     btnbabyconsult.Enabled = False
   Endif
   If $UserRestrict.Exist("Delivery Item Used") Then
-    btnaddmed.Enabled = False
-    btndoserecord.Enabled = False
-    GridView5.Enabled = False
+    mnupharmrequest.Enabled = False
+    mnumeddosing.Enabled = False
   Endif
 
   If $UserRestrict.Exist("Bed Assignment") Then
@@ -2847,10 +2742,10 @@ Private Sub UserAccessRestrict()
   Endif
 
   If $UserRestrict.Exist("Medicine Dosing") Then
-    btndoserecord.Enabled = False
+    mnumeddosing.Enabled = False
   Endif
   If $UserRestrict.Exist("IV Infusion") Then
-    btnivinfusion.Enabled = False
+    mnuivinfusion.Enabled = False
   Endif
 
 End

@@ -576,7 +576,7 @@ Public Sub BasicInfoPatient()
     SHowDiagnosis()
     modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
     If modPharmacy.DisableEncounterForReview(Trim(txtencid.Text)) = True Then
-      $ShowReview = "No"
+      $ShowReview = "None"
     Endif
     ShowOldEntry()
     FillDosingGrid()
@@ -1371,35 +1371,37 @@ Public Sub cmbfreq_LostFocus()
   Dim Row As Integer
   Dim xval As String
   Dim xcount As Integer
+  Dim cForm As CMedError
 
   If $HideErr = False Then
-
     If txtdose.Value And If cmbfreq.Text Then
-      If $ShowReview = "Yes" Then
-        opt = New String[]
-        For Row = 0 To GridView1.Rows.Count - 1
-          If GridView1[Row, 2].Text = "suture" Or If GridView1[Row, 2].Text = "msurg" Or If GridView1[Row, 2].Text = "ortho" Or If GridView1[Row, 2].Text = "extra" Or If GridView1[Row, 2].Text = "topical" Then
-          Else
-            xval = modMedConstant.GetDrugFromStockID(GridView1[Row, 3].Text)
-            If opt.Count = 0 Then
-              opt.Add(xval)
-            Else
-              If opt.Exist(xval) = False Then
-                opt.Add(xval)
+
+      Select cmbroute.Text
+        Case "suture", "msurg", "ortho", "extra", "topical"
+          ''do nothing
+        Case Else
+          If $ShowReview And If $ShowReview <> "None" Then
+            opt = New String[]
+            For Row = 0 To GridView1.Rows.Count - 1
+              If GridView1[Row, 2].Text = "suture" Or If GridView1[Row, 2].Text = "msurg" Or If GridView1[Row, 2].Text = "ortho" Or If GridView1[Row, 2].Text = "extra" Or If GridView1[Row, 2].Text = "topical" Then
+              Else
+                xval = modMedConstant.GetDrugFromStockID(GridView1[Row, 3].Text)
+                If opt.Count = 0 Then
+                  opt.Add(xval)
+                Else
+                  If opt.Exist(xval) = False Then
+                    opt.Add(xval)
+                  Endif
+                Endif
               Endif
-            Endif
-
+            Next
+            $HideErr = True
+            cForm = New CMedError
+            xcount = cForm.ShowMedicationReviewPunching(Trim(txtencid.Text), cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, opt, $ShowReview)
           Endif
-        Next
+      End Select
 
-        If cmbroute.Text = "suture" Or If cmbroute.Text = "msurg" Or If cmbroute.Text = "ortho" Or If cmbroute.Text = "extra" Or If cmbroute.Text = "topical" Then
-        Else
-          $HideErr = True
-          xcount = modMedError.ShowMedicationReviewPunching(Trim(txtencid.Text), cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, opt, "Message Box")
-        Endif
-      Endif
     Endif
-
   Endif
 
 End
@@ -1543,7 +1545,7 @@ Public Sub chksave_KeyRelease()
 
 End
 
-Private Sub AllowLockCheckPunching() As Boolean
+Private Function AllowLockCheckPunching() As Boolean
 
   Dim xallow As Boolean
   Dim dtlast As Date
@@ -2484,6 +2486,7 @@ Public Sub mnureviewsingle_Click()
   Dim opt As String[]
   Dim Row As Integer
   Dim xval As String
+  Dim cForm As CMedError
 
   If GridView1.Rows.Selection.Count > 0 Then
     If GridView1.Rows.Count > 0 Then
@@ -2502,8 +2505,8 @@ Public Sub mnureviewsingle_Click()
 
         Endif
       Next
-
-      modMedError.ShowMedicationReviewSingleDosID(GridView1[GridView1.Row, 0].Text, opt, "Report")
+      cForm = New CMedError
+      cForm.ShowMedicationReviewSingleDosID(GridView1[GridView1.Row, 0].Text, opt, "Report")
     Endif
   Endif
 
@@ -2513,6 +2516,7 @@ Public Sub mnurevall_Click()
 
   Dim opt As Long[]
   Dim Row As Integer
+  Dim cForm As CMedError
 
   If GridView1.Rows.Count > 0 Then
     opt = New Long[]
@@ -2522,7 +2526,8 @@ Public Sub mnurevall_Click()
         opt.Add(GridView1[Row, 0].Text)
       Endif
     Next
-    modMedError.ShowMedicationReviewMultipleDosID(Trim(txtencid.Text), opt, "Report")
+    cForm = New CMedError
+    cForm.ShowMedicationReviewMultipleDosID(Trim(txtencid.Text), opt, "Report")
   Endif
 
 End

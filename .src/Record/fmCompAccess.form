@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,100,62)
+  MoveScaled(0,0,105,62)
   Text = ("Computer Access")
   Resizable = False
   { mnuhide Menu
@@ -53,13 +53,13 @@
     }
   }
   { GridView1 GridView
-    MoveScaled(1,5,98,39)
+    MoveScaled(17,5,87,39)
     Mode = Select.Single
     Header = GridView.Both
     AutoResize = False
   }
   { Panel1 Panel
-    MoveScaled(1,45,98,16)
+    MoveScaled(1,45,103,16)
     { txtuser TextBox
       MoveScaled(49,0,21,3)
     }
@@ -175,39 +175,35 @@
     }
   }
   { Panel2 Panel
-    MoveScaled(0,1,99,3)
-    { Label12 Label
-      MoveScaled(1,0,9,3)
-      Border = Border.Plain
-      Text = ("Comp ID")
-    }
-    { cmbselcomp ComboBox
-      MoveScaled(11,0,14,3)
-    }
-    { btnrefresh ToolButton
-      MoveScaled(53,0,3,3)
-      Picture = Picture["icon:/small/refresh"]
-    }
+    MoveScaled(17,1,87,3)
     { txtmacsearch TextBox
-      MoveScaled(34,0,16,3)
+      MoveScaled(7,0,16,3)
     }
     { Label13 Label
-      MoveScaled(28,0,6,3)
+      MoveScaled(1,0,6,3)
       Border = Border.Plain
       Text = ("MAC")
     }
     { MenuButton1 MenuButton
-      MoveScaled(79,0,14,3)
+      MoveScaled(66,0,14,3)
       Text = ("Activity")
       Picture = Picture["icon:/small/menu"]
     }
     { btnfullrep Button
-      MoveScaled(94,0,4,3)
+      MoveScaled(81,0,4,3)
       Picture = Picture["icon:/small/html"]
+    }
+    { btnrefresh Button
+      MoveScaled(25,0,11,3)
+      Text = ("Show")
+      Picture = Picture["icon:/small/refresh"]
     }
   }
   { chkxfor CheckBox
-    MoveScaled(63,1,14,3)
+    MoveScaled(66,1,14,3)
     Text = ("X Forward")
+  }
+  { cmbselcomp ListBox
+    MoveScaled(1,1,15,42)
   }
 }

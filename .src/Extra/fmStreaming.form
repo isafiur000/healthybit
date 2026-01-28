@@ -52,22 +52,6 @@
       Header = GridView.Both
       AutoResize = False
     }
-    { Label2 Label
-      MoveScaled(1,1,15,3)
-      Text = ("Target Category")
-      Border = Border.Plain
-    }
-    { Panel2 Panel
-      MoveScaled(17,1,23,3)
-      { rbconuser RadioButton
-        MoveScaled(0,0,10,3)
-        Text = ("Users")
-      }
-      { rbconpatient RadioButton
-        MoveScaled(11,0,11,3)
-        Text = ("Patients")
-      }
-    }
     Index = 2
     Text = ("Streaming")
     { GridView1 GridView
@@ -82,14 +66,15 @@
     }
     { Label1 Label
       MoveScaled(1,1,15,3)
-      Text = ("Target Category")
       Border = Border.Plain
+      Text = ("Target Category")
     }
     { Panel1 Panel
       MoveScaled(17,1,23,3)
       { rbuser RadioButton
         MoveScaled(0,0,10,3)
         Text = ("Users")
+        Value = True
       }
       { rbpatient RadioButton
         MoveScaled(11,0,11,3)

@@ -44,7 +44,7 @@ Public Sub btnsaveall_Click()
   If $encid Then
     If cmbnote.Text Then
       If txtnote.Text Then
-        modPatientGeneral.AddExamGeneralQualiData($encid, "Notes", cmbnote.Text, txtimpression.Text, txtnote.RichText, False)               ''
+        modPatientGeneral.AddPatientParagraph($encid, "Notes", cmbnote.Text, txtimpression.Text, txtnote.RichText, False)               ''
         Balloon.Info(("Information saved"), btnsaveall)
         Balloon.Delay = modBasic.$BalloonDelay
         txtnote.RichText = ""
@@ -77,7 +77,8 @@ End
 
 Private Sub SHowNotesGrid()
 
-  Dim sql As String
+  Dim sql1 As String
+  Dim sql2 As String
   Dim xType As String
 
   If rbprogress.Value = True Then
@@ -90,8 +91,9 @@ Private Sub SHowNotesGrid()
     xType = "Transfer Note"
   Endif
 
-  sql = "select fldtime,flddetail,fldreportquali,flduserid from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem=&3 ORDER BY fldtime DESC"
-  $rData = modDatabase.$myConn.Exec(sql, $encid, "Notes", xType)
+  sql1 = "select fldtime,flddetail,fldreportquali,flduserid,fldtime from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem=&3"
+  sql2 = "select fldtime,flddetail,fldreportquali,flduserid,fldtime from tblpatientnotes where fldencounterval=&1 and fldinput=&2 and flditem=&3"
+  $rData = modDatabase.$myConn.Exec(sql1 & " UNION ALL " & sql2 & " ORDER BY fldtime DESC", $encid, "Notes", xType)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
 

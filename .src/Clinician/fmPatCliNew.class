@@ -2254,7 +2254,7 @@ Public Sub btnhistory_Click()
 
   If cmbinpathistory.Text Then
     If txthistory.Text Then
-      modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "History", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
+      modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "History", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
       Balloon.Info(("Information saved"), btnhistory)
       Balloon.Delay = modBasic.$BalloonDelay
       btnhistory.Enabled = False
@@ -2327,7 +2327,7 @@ Public Sub btnplan_Click()
   Endif
 
   If txtplan.Text Then
-    modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", "Initial Planning", txtplan.KeyList.Join(";"), txtplan.RichText, xboolean)
+    modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "Notes", "Initial Planning", txtplan.KeyList.Join(";"), txtplan.RichText, xboolean)
     btnoutcome.Enabled = True
     Balloon.Info(("Information saved"), btnplan)
     Balloon.Delay = modBasic.$BalloonDelay
@@ -2383,7 +2383,7 @@ Public Sub btngencompln_Click()
   Endif
 
   If txtgencomplaint.Text Then
-    modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "History", "General Complaints", txtgencomplaint.KeyList.Join(";"), txtgencomplaint.RichText, xboolean)
+    modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "History", "General Complaints", txtgencomplaint.KeyList.Join(";"), txtgencomplaint.RichText, xboolean)
     Balloon.Info(("Information saved"), btngencompln)
     Balloon.Delay = modBasic.$BalloonDelay
     btngencompln.Enabled = False
@@ -4178,7 +4178,7 @@ Public Sub btngetfeed_Click()
   Endif
 
   If txtfeedback.Text Then
-    modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", "Expert Planning", txtfeedback.KeyList.Join(";"), txtfeedback.RichText, xboolean)
+    modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "Notes", "Expert Planning", txtfeedback.KeyList.Join(";"), txtfeedback.RichText, xboolean)
     Balloon.Info(("Information saved"), btngetfeed)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
@@ -4297,7 +4297,7 @@ Public Sub btnoutcome_Click()
     modDatabase.$myConn.Begin
     If rbadmission.Value = True Then
       xmode = "Admission"
-      modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", "Doctor Order", "", txtcomment.RichText, False)
+      modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "Notes", "Doctor Order", "", txtcomment.RichText, False)
     Else If rbfollowup.Value = True Then
       xmode = "Follow Up"
     Else If rbreferred.Value = True Then
@@ -4316,6 +4316,7 @@ Public Sub btnoutcome_Click()
       If txtclinmode.Text = "Consultation" Then
         If rbadmission.Value = True Then
           modPatientSub.UpdateConsultData(txtclinIndex.Value, Trim(txtencid.Text), "Done", txtcomment.RichText, xmode, cmbrefer.Text)
+          modPatientSub.EmergencyAdmission(Trim(txtencid.Text))
         Else If rbreferred.Value = True Then
           modPatientSub.UpdateConsultData(txtclinIndex.Value, Trim(txtencid.Text), "Done", txtcomment.RichText, xmode, cmbrefer.Text)
         Else If rbfollowup.Value = True Then
@@ -4332,6 +4333,14 @@ Public Sub btnoutcome_Click()
           modPatientSub.UpdateOPVisitData(txtclinIndex.Value, Trim(txtencid.Text), "Done", txtcomment.RichText, xmode, "", dtfollowup.Value)
         Else
           modPatientSub.UpdateOPVisitData(txtclinIndex.Value, Trim(txtencid.Text), "Done", txtcomment.RichText, xmode)
+        Endif
+      Endif
+      If modBasic.$AutoDeskNotice = "Disable" Then
+      Else
+        If xmode = "Improved" Then
+          modDevice.GetNotification("Discharged", "<b>" & txtpatientname.Text & "</b> with Encounter ID : " & txtencid.Text)
+        Else
+          modDevice.GetNotification(xmode, "<b>" & txtpatientname.Text & "</b> with Encounter ID : " & txtencid.Text)
         Endif
       Endif
     Endif

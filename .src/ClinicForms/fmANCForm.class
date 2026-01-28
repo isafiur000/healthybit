@@ -59,8 +59,6 @@ Private aANCPSPV As New Object[25]
 Private aANCBtnSave As New Object[25]
 ' Private aANCBlankBox As New Object[25]
 
-''usg
-
 Public Sub _new(encid As String, sExam As String, sType As String)
 
   $encid = encid
@@ -407,8 +405,10 @@ Public Sub btnsavediagnosis_Click()
         modClinSub.AddGeneralParametersQuali($encid, "Contraception", txtcontracept.Text)
         modClinSub.AddGeneralParametersQuali($encid, "Married For", txtmarried.Text)
         modClinSub.AddGeneralParametersQuali($encid, "Quickening", txtquicken.Text)
+        modPatientSub.UpdatePregnancyStatus($encid, GetTrimesterLabel(xday))
         modDatabase.$myConn.Commit
         txtreference.Text = xrefNo
+        modPatient.$PatProfileData.Remove($encid)
         Balloon.Info(("Information saved"), btnsavediagnosis)
         Balloon.Delay = modBasic.$BalloonDelay
       Else
@@ -417,6 +417,21 @@ Public Sub btnsavediagnosis_Click()
 
     Endif
   Endif
+
+End
+
+Private Function GetTrimesterLabel(sDay As Integer) As String
+
+  Dim xx As String
+
+  If sDay < 84 Then
+    xx = "1st trimester"
+  Else If sDay >= 84 And If sDay < 189 Then
+    xx = "2nd trimester"
+  Else If sDay >= 189 Then
+    xx = "3rd trimester"
+  Endif
+  Return xx
 
 End
 
@@ -1479,7 +1494,7 @@ Public Sub btnplan_Click()
   Endif
 
   If txtplan.Text Then
-    modPatientGeneral.AddExamGeneralQualiData($encid, "Notes", "Initial Planning", txtplan.KeyList.Join(";"), txtplan.RichText, xboolean)
+    modPatientGeneral.AddPatientParagraph($encid, "Notes", "Initial Planning", txtplan.KeyList.Join(";"), txtplan.RichText, xboolean)
     btnoutcome.Enabled = True
     Balloon.Info(("Information saved"), btnplan)
     Balloon.Delay = modBasic.$BalloonDelay
@@ -1606,7 +1621,7 @@ Public Sub btnoutcome_Click()
     modDatabase.$myConn.Begin
     If rbadmission.Value = True Then
       xmode = "Admission"
-      modPatientGeneral.AddExamGeneralQualiData($encid, "Notes", "Doctor Order", "", txtcomment.RichText, False)
+      modPatientGeneral.AddPatientParagraph($encid, "Notes", "Doctor Order", "", txtcomment.RichText, False)
     Else If rbfollowup.Value = True Then
       xmode = "Follow Up"
     Else If rbreferred.Value = True Then

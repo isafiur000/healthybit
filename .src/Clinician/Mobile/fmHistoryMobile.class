@@ -15,7 +15,7 @@ Public Sub Form_Open()
   txtname.Text = modPatient.GetPatientNameByEnc($encid)
   $sGender = modPatient.GetPatientSex($encid)
   $billReference = modNonMedical.GetFixedReference($encid)
-  txtgencomplaint.RichText = modPatPatho.ShowSelectedHistoryValue($encid, "General Complaints")
+  ' txtgencomplaint.RichText = modPatPatho.ShowSelectedHistory($encid, "General Complaints")
   txthistorylabel.List = GetHistoryList()
   txtgencomplaint.SetFocus
 
@@ -83,7 +83,7 @@ Public Sub btngencompln_Click()
   Endif
 
   If txtgencomplaint.Text Then
-    modPatientGeneral.AddExamGeneralQualiData($encid, "History", "General Complaints", txtgencomplaint.KeyList.Join(";"), txtgencomplaint.RichText, xboolean)
+    modPatientGeneral.AddPatientParagraph($encid, "History", "General Complaints", txtgencomplaint.KeyList.Join(";"), txtgencomplaint.RichText, xboolean)
     Balloon.Info(("Information saved"), btngencompln)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
@@ -111,7 +111,7 @@ Public Sub tlbtnhistory_Click()
 
   If txthistorylabel.Text Then
     If txthistory.Text Then
-      modPatientGeneral.AddExamGeneralQualiData($encid, "History", txthistorylabel.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
+      modPatientGeneral.AddPatientParagraph($encid, "History", txthistorylabel.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
       Balloon.Info(("Information saved"), tlbtnhistory)
       Balloon.Delay = modBasic.$BalloonDelay
     Endif
@@ -122,7 +122,7 @@ End
 Public Sub txthistorylabel_Click()
 
   If txthistorylabel.Text Then
-    txthistory.RichText = modPatPatho.ShowSelectedHistoryValue($encid, txthistorylabel.Text)
+    ' txthistory.RichText = modPatPatho.ShowSelectedHistory($encid, txthistorylabel.Text)
   Endif
 
 End

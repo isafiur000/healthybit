@@ -33,6 +33,7 @@ Public Sub Form_Open()
   cmbreportpopup.List = ["Standard", "CSV File"]
   cmbftpupload.List = ["wput", "curl"]
   cmbAisupport.List = ["Speech-To-Text", "Text Generation"]
+  cmbshownotice.List = ["Enable", "Disable"]
 
   cmbtablecaching.List = ["Enable", "Disable"]
   cmbcurlcacert.List = ["Enable", "Disable"]
@@ -1051,6 +1052,7 @@ Private Sub ShowOptionSettings()
   modSettings.ShowCheckBox(chktooltip, "GeneralSettings/DisableToolTip")
   modSettings.ShowCheckBox(cmbencsuffix, "GeneralSettings/AutoEncounterSuffix")
   modSettings.ShowCheckBox(chkreadnotice, "GeneralSettings/ReadNotification")
+  cmbshownotice.Text = modSettings.ShowSettingFromFIle("GeneralSettings/DesktopNotification")
   xuser = modSettings.ShowSettingFromFIle("GeneralSettings/GlobalUser")
   If xuser = modBasic.$lbluser Then
     chkglobal.Value = True
@@ -1150,6 +1152,15 @@ Public Sub btnencsuffix_Click()
     modBasic.$AutoEncSuffix = "No"
   Endif
   Balloon.Info(("Information saved"), btnencsuffix)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnshownotice_Click()
+
+  modSettings.SaveSettingsToFile("GeneralSettings/DesktopNotification", cmbshownotice.Text)
+  modBasic.$AutoDeskNotice = cmbshownotice.Text
+  Balloon.Info(("Information saved"), btnshownotice)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

@@ -44,7 +44,7 @@ Public Function GetNeurologyReport(encid As String, sExamName As String, sHash A
       .Add(CStr(i))
       .Add(xexam)
       If xexam = "Presenting Complaints" Then
-        .Add(modPatPatho.ShowSelectedHistoryValue(encid, "General Complaints"))
+        .Add(modPatPatho.ShowSelectedHistory(encid, "General Complaints"))
       Else
         .Add(sColl[xexam])
       Endif

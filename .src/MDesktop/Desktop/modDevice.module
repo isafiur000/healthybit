@@ -199,49 +199,48 @@ Public Sub SendDataToSerialPort(sText As String)
 End
 
 '''------------------- Notify OSD -----------------------------
-Public Sub DesktopNotification(sLine As String)
+Public Sub GetNotification(xTitle As String, sBody As String, Optional sIcon As String)
 
-  Dim sicon As String
-  Dim xmusic As String
-  Dim xtitle As String
-  Dim xnotice As String
-  Dim xusertime As String[]
   Dim arcmd As String[]
 
   If System.Exist("notify-send") Then
-    xusertime = Split(sLine, "@")
-    xtitle = modString.GetSelectedTextBetween(sLine, "[", "]")
-    xnotice = modString.GetSelectedTextBetween(sLine, "]", "@")
-
-    xmusic = modBasic.$InfoMusic
-    If xmusic Then
-      Music.Load(xmusic)
-      If modBasic.$InfoMusicVol Then
-        Music.Volume = modBasic.$InfoMusicVol
-      Endif
-      Music.Play
-    Endif
-
-    If xusertime[1] Then
-      sicon = modImage.DisplayPersonImageData("Staff", modGeneral.GetMainUserCode(xusertime[1]))
-      If sicon Then
-        arcmd = ["notify-send", "-i", sicon, xtitle, xnotice]
-      Else
-        arcmd = ["notify-send", xtitle, xnotice]
-      Endif
+    If sicon Then
+      arcmd = ["notify-send", "-h", "STRING:sound-name:message-new-instant", "-i", sIcon, xTitle, sBody]
     Else
-      arcmd = ["notify-send", xtitle, xnotice]
+      arcmd = ["notify-send", "-h", "STRING:sound-name:message-new-instant", xTitle, sBody]
     Endif
     modBasic.DebugString("Execute " & arcmd.Join(Space(1)))
     Exec arcmd Wait
 
     If modBasic.$AutoReadNotice = "Yes" Then
       SpeakString(xtitle)
-      SpeakString(xnotice)
     Endif
-
   Else
     modApplSub.InstallSelectedApplication(["libnotify-bin"])
+  Endif
+
+End
+
+Public Sub DesktopNotification(sLine As String)
+
+  Dim sicon As String
+  Dim xtitle As String
+  Dim xnotice As String
+  Dim xusertime As String[]
+
+  xusertime = Split(sLine, "@")
+  xtitle = modString.GetSelectedTextBetween(sLine, "[", "]")
+  xnotice = modString.GetSelectedTextBetween(sLine, "]", "@")
+
+  If xusertime[1] Then
+    sicon = modImage.DisplayPersonImageData("Staff", modGeneral.GetMainUserCode(xusertime[1]))
+    If sicon Then
+      GetNotification(xtitle, xnotice, sicon)
+    Else
+      GetNotification(xtitle, xnotice, sicon)
+    Endif
+  Else
+    GetNotification(xtitle, xnotice, sicon)
   Endif
 
 End

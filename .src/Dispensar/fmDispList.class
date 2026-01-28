@@ -63,7 +63,6 @@ Public Sub Form_Open()
   If $xStatus = "Requested" Then
     rbencid.Value = True
     Panel6.Enabled = False
-    mnulabel.Visible = False
   Else If $xStatus = "Dispensed" Then
     mnuremove.Visible = False
   Endif
@@ -702,28 +701,6 @@ Public Sub mnuremove_Click()
 
 End
 
-Public Sub mnulabel_Click()
-
-  Dim res As Result
-  Dim hClabel As CLabelSize
-
-  If GridView2.Rows.Selection.Count > 0 Then
-    If GridView2[GridView2.Row, 12].Text = "Medicines" Then
-      res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", GridView2[GridView2.Row, 0].Text)
-      res["fldlevel"] = "Dispensed"
-      res["xyz"] = False
-      res.Update()
-
-      If chkprintlabel.Value = True Then
-        hClabel = New CLabelSize(GridView2[GridView2.Row, 0].Text, "Outpatient")
-        modPrint.PrintPopUp(CStr(GridView2[GridView2.Row, 0].Text), hClabel.LabelPath(), "LabelSize")
-      Endif
-      FillDispenstable(txtindex.Text)
-    Endif
-  Endif
-
-End
-
 Public Sub btnclaerall_Click()
 
   If $xStatus = "Dispensed" Then
@@ -811,6 +788,7 @@ Public Sub btnreview_Click()
 
   Dim Row As Integer
   Dim opt As Long[]
+  Dim cForm As CMedError
 
   If GridView2.Rows.Count Then
     opt = New Long[]
@@ -819,7 +797,8 @@ Public Sub btnreview_Click()
         opt.Add(GridView2[Row, 0].Text)
       Endif
     Next
-    modMedError.ShowMedicationReviewMultipleDosID($encid, opt, "Report")
+    cForm = New CMedError
+    cForm.ShowMedicationReviewMultipleDosID($encid, opt, "Report")
   Endif
 
 End
@@ -845,6 +824,7 @@ Private Sub PharmacySave()
   Dim tax As Float
   Dim disc As Float
   Dim xrate As Float
+  Dim xtot As Float
   Dim xitem As String
 
   Dim res2 As Result
@@ -901,7 +881,28 @@ Private Sub PharmacySave()
           Else
             xrate = modStock.GetCurrentSellingPrice(res1["flditem"], modBasic.$compID)
           Endif
-          xallow = modNonMedical.AllowPharmProceedPreBill($encid, res1["flddisctype"], res1["fldqtydisp"], xrate, res1["flddiscper"], res1["fldbilltype"], xCshCrd, res1["fldroute"], res1["flditem"])
+
+          ' xallow = modNonMedical.AllowPharmProceedPreBill($encid, res1["flddisctype"], res1["fldqtydisp"], xrate, res1["flddiscper"], res1["fldbilltype"], xCshCrd, res1["fldroute"], res1["flditem"])
+          xallow = False
+          If modBasic.$AutoBillPharmacy = "Standard" Then
+            xtot = modNonMedical.GetCashBillAmount(xrate, res1["fldqtydisp"], res1["fldbilltype"], disc, tax, xCshCrd)
+            If modNonMedical.AllowPreCheckDeposit($encid, "Pharmacy", res1["flditem"], xtot, res1["fldbilltype"], btnclaerall) = True Then
+              xallow = True
+            Endif
+          Else If modBasic.$AutoBillPharmacy = "Full" Then
+            xtot = modNonMedical.GetCashBillAmount(xrate, res1["fldqtydisp"], res1["fldbilltype"], disc, tax, xCshCrd)
+            If modNonMedical.AllowPreEntryWithDeposit($encid, "Pharmacy", res1["flditem"], xtot, res1["fldbilltype"], btnclaerall) = True Then
+              xallow = True
+            Endif
+          Else
+            If modBasic.$AutoBillSaveZero = "Yes" And If xrate = 0 Then
+              xallow = True
+            Else If modBasic.$AutoBillSaveZero = "Yes" And If res1["flddiscper"] = 100 Then
+              xallow = True
+            Else If modBasic.$AutoBillSaveFullCredit = "Yes" And If res1["fldbilltype"] = "Credit" And If xCshCrd = 0 Then
+              xallow = True
+            Endif
+          Endif
           If xallow = True Then
 
             If modNonMedical.GetFixedReferenceScheme(res1["flddisctype"]) = "Claim Code" Then
@@ -987,7 +988,7 @@ Private Sub PharmacySave()
       Next
       Dec Application.Busy
       If xerr Then
-        Balloon.Warning("<b>Over Set Discount/Credit Limit:</b>" & gb.NewLine & xerr, GridView1)
+        Balloon.Warning("<b>Over Set Discount/Credit Limit:</b>" & gb.NewLine & xerr, btnclaerall)
       Endif
 
     Endif

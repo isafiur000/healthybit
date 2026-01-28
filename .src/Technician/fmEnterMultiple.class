@@ -206,9 +206,8 @@ Private Sub DIsplayTextForm()
       ''create abnormal checkbox
       If $xData[i][3] = "Drug Sensitivity" Or If $xData[i][3] = "WHO Sensitivity" Then
         With aDelButton[i]
-          .Width = 75 * AppFactor
+          .Width = 25 * AppFactor
           .Height = 25 * AppFactor
-          .Text = "Del"
           .Picture = Picture["icon:/small/cancel"]
           .Tag = i
         End With

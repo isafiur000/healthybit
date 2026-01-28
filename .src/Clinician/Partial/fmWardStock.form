@@ -19,7 +19,7 @@
           Text = ("Current")
           Value = True
         }
-        { rbcash RadioButton
+        { rbprot RadioButton
           MoveScaled(0.5,4,13,3)
           Text = ("Protocols")
         }
@@ -40,6 +40,17 @@
     { Panel4 Panel
       MoveScaled(15,1,42,46)
       Arrangement = Arrange.Vertical
+      { Panel7 Panel
+        MoveScaled(0,1,41,4)
+        { Label2 Label
+          MoveScaled(0,0.5,8,3)
+          Border = Border.Plain
+          Text = ("Scheme")
+        }
+        { cmbdisctype ComboBox
+          MoveScaled(8.5,0.5,22,3)
+        }
+      }
       { Panel5 Panel
         MoveScaled(0,6,42,4)
         { txtsearch ButtonBox
@@ -102,16 +113,17 @@
       { Panel3 Panel
         MoveScaled(0,0,55,4)
         { btnsave Button
-          MoveScaled(43,0.5,11,3)
+          MoveScaled(40,0.5,11,3)
           Text = Shortcut(("Save"), "S")
           Picture = Picture["icon:/small/apply"]
         }
         { chksaveall CheckBox
-          MoveScaled(34,0.5,7,3)
+          MoveScaled(31,0.5,7,3)
           Text = ("All")
         }
-        { cmbdisctype ComboBox
-          MoveScaled(0.5,0.5,22,3)
+        { chkcomplete CheckBox
+          MoveScaled(0,0.5,14,3)
+          Text = ("Stat Dose")
         }
       }
       { GridView4 GridView

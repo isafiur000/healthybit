@@ -21,7 +21,7 @@ Public Sub Form_Open()
     tlbtpregnancy.Enabled = False
   Else
     cmbpregnancy.List = ["1st trimester", "2nd trimester", "3rd trimester", "Breast feeding", "Non Pregnant"]
-    cmbpregnancy.Text = modClinic.GetPregnancyStatus($encid)
+    cmbpregnancy.Text = modPatient.GetPregnancyStatus($encid)
     cmbpregnancy.Enabled = True
   Endif
   $CreatName = CreatinineName()
@@ -57,7 +57,7 @@ End
 Public Sub tlbtpregnancy_Click()
 
   If $encid And If cmbpregnancy.Text Then
-    modClinSub.AddGeneralParametersQuali($encid, "Pregnancy Status", cmbpregnancy.Text)
+    modPatientSub.UpdatePregnancyStatus($encid, cmbpregnancy.Text)
     Balloon.Info(("Information saved"), tlbtpregnancy)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif

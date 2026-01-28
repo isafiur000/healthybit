@@ -21,6 +21,7 @@ Private $aMyFields As String[]
 Private hOwnStockForm As FmWardStock
 Private hPtForm As FmClinHistory
 Private hDigForm As FmDiagnosticTab
+Private hPtArchive As FmClinArchive
 
 Private $billReference As String
 Private $billModeTest As String
@@ -462,6 +463,7 @@ Private Sub BasicInfoPatient()
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
     hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnluseown)
+    hPtArchive = New FmClinArchive($PatientNum, pnlarchivbe)
 
     ButtonControl()
     cmbdisctype.List = modBasic.$BillDiscountCash
@@ -2671,7 +2673,7 @@ Public Sub btnplan_Click()
 
   If txtencid.Text Then
     If txtplan.Text Then
-      modPatientGeneral.AddExamGeneralQualiData(Trim(txtencid.Text), "Notes", "Doctor Order", "", txtplan.RichText, False)
+      modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "Notes", "Doctor Order", "", txtplan.RichText, False)
       Balloon.Info(("Information saved"), btnplan)
       Balloon.Delay = modBasic.$BalloonDelay
     Endif

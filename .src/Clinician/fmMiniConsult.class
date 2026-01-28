@@ -57,7 +57,7 @@ Public Sub Form_Open()
   If $xFinClear = True Then
     btnsubOK.Enabled = False
   Endif
-  cmbdisctype.SetFocus
+  txtsearch.SetFocus
 
 End
 
@@ -164,6 +164,7 @@ End
 Public Sub cmbconsult_Click()
 
   txtdepart.Text = cmbconsult.Text
+  txtfixcomp.Text = modGeneral.GetFixCompFromDept(txtdepart.Text)
   dtconsult.Value = Now()
   txtpresummary.RichText = ""
   btnconsult.Tag = ""
@@ -174,6 +175,7 @@ End
 Public Sub btnsubOK_Click()
 
   Dim billItem As String
+  Dim xquery As String
 
   Dim xrefer As String
   Dim xpayble As String
@@ -217,6 +219,14 @@ Public Sub btnsubOK_Click()
             Endif
           Endif
         Endif
+
+        If chknotify.Value = True Then
+          If txtfixcomp.Text Then
+            xquery = modString.ConvertRichTextToPlain(txtpresummary.RichText)
+            modControl.SendCompIDNotofication(txtfixcomp.Text, "Consultation Request from " & modBasic.$compID, "Name: <b>" & txtpatientname.Text & "</b> For <b>" & txtdepart.Text & "</b> REQUEST: " & xquery)
+          Endif
+        Endif
+
       Endif
       FillLabtable()
       Dec Application.Busy

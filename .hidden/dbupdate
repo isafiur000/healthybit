@@ -1231,6 +1231,14 @@ ALTER TABLE tblbloodstore ADD fldcost VARCHAR( 250 ) NULL
 ALTER TABLE tblpatprotocols ADD fldpatientval VARCHAR( 150 ) NULL
 ALTER TABLE tblpatprotocols ADD fldfuture BOOLEAN NULL
 
+ALTER TABLE tblencounter ADD COLUMN fldmarker VARCHAR( 250 ) NULL
+
+ALTER TABLE tbldepartchart ADD fldtype VARCHAR( 50 ) NULL
+UPDATE tbldepartchart SET fldtype='Quantitative' WHERE fldtype IS NULL
+
+ALTER TABLE tbldepartchart ADD fldcomment VARCHAR( 250 ) NULL
+ALTER TABLE tbldepartchart ADD fldselection VARCHAR( 250 ) NULL
+
 
 
 

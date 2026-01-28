@@ -453,11 +453,24 @@ Public Sub btnready_Click()
       res2["fldsave"] = False
       res2["xyz"] = False
       res2.Update
+      SendNotification(GridView1[GridView1.Row, 1].Text)
       FillPatDateGrid()
     Else
       Message.Warning("No Cross match Report", ("OK"))
     Endif
     GridView1.Row = Row
+  Endif
+
+End
+
+Private Sub SendNotification(sCode As String)
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Exec("select fldencounterval,flditem,fldcomp_order from tblpatmeditem where fldcode=&1 and fldorder=&2", sCode, "Waiting")
+  If res.Available Then
+    res.MoveLast
+    modControl.SendCompIDNotofication(res["fldcomp_order"], "Blood Allocated to " & modPatient.GetPatientNameByEnc(res["fldencounterval"]), res["flditem"] & " is approved for transfer to Location: " & modPatient.GetPatientLocation(res["fldencounterval"]))
   Endif
 
 End

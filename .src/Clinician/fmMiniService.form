@@ -7,103 +7,198 @@
   { Panel1 Panel
     MoveScaled(0,0,112,67)
     { TabPanel1 TabPanel
-      MoveScaled(1,9,110,57)
-      Arrangement = Arrange.Horizontal
+      MoveScaled(1,4,110,62)
+      Arrangement = Arrange.Vertical
       Spacing = True
-      Count = 2
+      Count = 3
       Index = 0
       Text = ("Requested")
-      { Panel6 Panel
-        MoveScaled(0,0,17,52)
-        Arrangement = Arrange.Vertical
-        { Panel7 Panel
-          MoveScaled(0,0,17,15)
-          { rbcategory RadioButton
-            MoveScaled(0.5,0.5,16,3.5)
-            Text = ("Category")
-            Value = True
-          }
-          { rbsection RadioButton
-            MoveScaled(0.5,4,16,3.5)
-            Text = ("Section")
-          }
-          { rbgroup RadioButton
-            MoveScaled(0.5,7.5,16,3.5)
-            Text = ("Groups")
-          }
-          { rbcashpack RadioButton
-            MoveScaled(0.5,11,16,3.5)
-            Text = ("Packages")
-          }
+      { Panel14 Panel
+        MoveScaled(0,0,110.875,3.5)
+        { cmbdiscservice ComboBox
+          MoveScaled(10,0.5,22,3)
         }
-        { cmbsection ListBox
-          MoveScaled(0,21,17,19)
-          Expand = True
-          ScrollBar = Scroll.Both
-          Sorted = True
+        { Label1 Label
+          MoveScaled(39,0.5,10,3)
+          Border = Border.Plain
+          Text = ("Procedure")
+        }
+        { cmbdiscprocedure ComboBox
+          MoveScaled(49.5,0.5,22,3)
+        }
+        { Label4 Label
+          MoveScaled(78,0.5,9,3)
+          Border = Border.Plain
+          Text = ("Others")
+        }
+        { cmbdiscother ComboBox
+          MoveScaled(87.5,0.5,22,3)
+        }
+        { Label3 Label
+          MoveScaled(0,0.5,9,3)
+          Border = Border.Plain
+          Text = ("Services")
         }
       }
-      { Panel3 Panel
-        MoveScaled(18,0,39,52)
-        Arrangement = Arrange.Vertical
-        { Panel4 Panel
-          MoveScaled(0,2,39,4)
-          { txtsearch ButtonBox
-            MoveScaled(4,0.375,15,3)
-            Picture = Picture["icon:/small/cancel"]
-          }
-          { chkleftmain CheckBox
-            MoveScaled(0.625,0.375,3,3)
-          }
-          { btnaddone Button
-            MoveScaled(30,0.375,8,3)
-            Picture = Picture["icon:/small/right"]
-          }
-          { chkall CheckBox
-            MoveScaled(21,0.5,7,3)
-            Enabled = False
-            Text = ("All")
-          }
-        }
-        { GridView3 GridView
-          MoveScaled(1,7,31,21)
-          Expand = True
-          Mode = Select.Single
-        }
-      }
-      { Panel2 Panel
-        MoveScaled(58,0,50,52)
+      { Panel13 Panel
+        MoveScaled(0,7,109,48)
         Expand = True
-        Arrangement = Arrange.Vertical
-        { Panel5 Panel
-          MoveScaled(0,1,50,4)
-          { btnsave Button
-            MoveScaled(36,0.5,13,3)
-            Text = ("Save")
-            Picture = Picture["icon:/small/apply"]
+        Arrangement = Arrange.Horizontal
+        { Panel6 Panel
+          MoveScaled(0,0,17,44)
+          Arrangement = Arrange.Vertical
+          { Panel7 Panel
+            MoveScaled(0,0,17,15)
+            { rbcategory RadioButton
+              MoveScaled(0.5,0.5,16,3.5)
+              Text = ("Category")
+              Value = True
+            }
+            { rbsection RadioButton
+              MoveScaled(0.5,4,16,3.5)
+              Text = ("Section")
+            }
+            { rbgroup RadioButton
+              MoveScaled(0.5,7.5,16,3.5)
+              Text = ("Groups")
+            }
+            { rbcashpack RadioButton
+              MoveScaled(0.5,11,16,3.5)
+              Text = ("Packages")
+            }
           }
-          { txtlastsaledate TextBox
-            MoveScaled(0,0.5,18,3)
-            Font = Font["Bold"]
-            ReadOnly = True
-            Placeholder = ("Last Sales")
+          { cmbsection ListBox
+            MoveScaled(0,21,17,19)
+            Expand = True
+            ScrollBar = Scroll.Both
+            Sorted = True
           }
         }
-        { GridView1 GridView
-          MoveScaled(2,7,35,38)
+        { Panel3 Panel
+          MoveScaled(18,0,39,44)
+          Arrangement = Arrange.Vertical
+          { Panel4 Panel
+            MoveScaled(0,2,39,4)
+            { txtsearch ButtonBox
+              MoveScaled(4,0.375,15,3)
+              Picture = Picture["icon:/small/cancel"]
+            }
+            { chkleftmain CheckBox
+              MoveScaled(0.625,0.375,3,3)
+            }
+            { btnaddone Button
+              MoveScaled(30,0.375,8,3)
+              Picture = Picture["icon:/small/right"]
+            }
+            { chkall CheckBox
+              MoveScaled(21,0.5,7,3)
+              Enabled = False
+              Text = ("All")
+            }
+          }
+          { GridView3 GridView
+            MoveScaled(1,7,31,21)
+            Expand = True
+            Mode = Select.Single
+          }
+          { Panel16 Panel
+            MoveScaled(0,28,37,4)
+            { chknextvisit CheckBox
+              MoveScaled(0.5,0.5,20.5,3)
+              Text = ("Plan for Next Visit")
+            }
+          }
+        }
+        { Panel2 Panel
+          MoveScaled(58,0,50,45)
           Expand = True
-          Mode = Select.Single
-          Header = GridView.Both
-          AutoResize = False
+          Arrangement = Arrange.Vertical
+          { Panel5 Panel
+            MoveScaled(0,1,50,4)
+            { btnsave Button
+              MoveScaled(36,0.5,13,3)
+              Text = ("Save")
+              Picture = Picture["icon:/small/apply"]
+            }
+            { txtlastsaledate TextBox
+              MoveScaled(0,0.5,18,3)
+              Font = Font["Bold"]
+              ReadOnly = True
+              Placeholder = ("Last Sales")
+            }
+          }
+          { GridView1 GridView
+            MoveScaled(2,7,35,33)
+            Expand = True
+            Mode = Select.Single
+            Header = GridView.Both
+            AutoResize = False
+          }
         }
       }
       Index = 1
       Text = ("Completed")
       { GridView2 GridView
         MoveScaled(1,1,108,51)
+        Expand = True
         Mode = Select.Single
         Header = GridView.Both
         AutoResize = False
+      }
+      Index = 2
+      Text = ("Packages")
+      { Panel10 Panel
+        MoveScaled(0,4,109.875,45.875)
+        Expand = True
+        Arrangement = Arrange.Horizontal
+        { Panel8 Panel
+          MoveScaled(0,0,23,43)
+          Arrangement = Arrange.Vertical
+          { Panel15 Panel
+            MoveScaled(0,0,23,4)
+            { txtgrpsearch TextBox
+              MoveScaled(0.5,0.5,11,3)
+            }
+            { btnaddgrp Button
+              MoveScaled(13.5,0.5,9,3)
+              Text = ("Add")
+              Picture = Picture["icon:/small/add"]
+            }
+          }
+          { lstgroup ListBox
+            MoveScaled(1,8,20,17)
+            Expand = True
+          }
+          { Panel11 Panel
+            MoveScaled(0,27,22,4)
+            { chknextvisitgrp CheckBox
+              MoveScaled(0.5,0.5,20.5,3)
+              Text = ("Plan for Next Visit")
+            }
+          }
+        }
+        { Panel9 Panel
+          MoveScaled(25,0,84,41)
+          Expand = True
+          Arrangement = Arrange.Vertical
+          { Panel12 Panel
+            MoveScaled(0,0,84,4)
+            { btnsavegroup Button
+              MoveScaled(63,0.5,14,3)
+              Text = ("Save")
+            }
+            { btngrpdelete ToolButton
+              MoveScaled(79,0.5,4,3)
+              Picture = Picture["icon:/small/delete"]
+            }
+          }
+          { GridView4 GridView
+            MoveScaled(0,8,82,22)
+            Expand = True
+            Mode = Select.Single
+            Header = GridView.Both
+          }
+        }
       }
       Index = 0
     }
@@ -112,18 +207,10 @@
       Border = Border.Plain
       Text = ("Name")
     }
-    { Label3 Label
-      MoveScaled(1,5,9,3)
-      Border = Border.Plain
-      Text = ("Services")
-    }
     { txtpatientname TextBox
       MoveScaled(11,1,36,3)
       Font = Font["Bold"]
       ReadOnly = True
-    }
-    { cmbdiscservice ComboBox
-      MoveScaled(11,5,22,3)
     }
     { Label20 Label
       MoveScaled(71,1,9,3)
@@ -138,22 +225,6 @@
     { btnsms ToolButton
       MoveScaled(108,1,3,3)
       Picture = Picture["icon:/small/phone"]
-    }
-    { cmbdiscprocedure ComboBox
-      MoveScaled(51,5,22,3)
-    }
-    { Label1 Label
-      MoveScaled(40,5,10,3)
-      Border = Border.Plain
-      Text = ("Procedure")
-    }
-    { cmbdiscother ComboBox
-      MoveScaled(89,5,22,3)
-    }
-    { Label4 Label
-      MoveScaled(79,5,9,3)
-      Border = Border.Plain
-      Text = ("Others")
     }
     { txtrefservice TextBox
       MoveScaled(48,1,6,3)

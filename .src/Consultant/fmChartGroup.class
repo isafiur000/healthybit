@@ -17,9 +17,10 @@ Public Sub Form_Open()
     cmbtarget.List = modBasic.$AllCompPerList
     cmbtarget.Enabled = True
   Endif
+  cmbdatatype.List = ["Qualitative", "Quantitative"]
+  cmbcategory.List = ["Laboratory", "Examination"]
   $examList = modMedicine.FillExamQualiOrQuantiCombo("%")
   $TestList = modMedicine.FillLabTestCombo("%")
-  cmbcategory.List = ["Laboratory", "Examination"]
 
 End
 
@@ -33,10 +34,25 @@ Public Sub Form_KeyRelease()
 
 End
 
+Public Sub cmbdatatype_Click()
+
+  If cmbdatatype.Text Then
+    cmboptions.Text = ""
+    If cmbdatatype.Text = "Quantitative" Then
+      cmboptions.List = New String[]
+    Else If cmbdatatype.Text = "Qualitative" Then
+      cmboptions.List = ["Single Selection", "Dichotomous", "Qualitative"]
+    Endif
+  Endif
+
+End
+
 Public Sub btnaddexam_Click()
 
+  cmbdatatype.Text = ""
   txtsysconst.Text = ""
-  txtoption.Text = ""
+  cmboptions.Text = ""
+  txtselectopt.Text = ""
   If cmbcategory.Text = "Examination" Then
     cmbexamname.Text = GridViewNew("Select " & cmbcategory.Text, $examList, False)
   Else If cmbcategory.Text = "Laboratory" Then
@@ -45,12 +61,18 @@ Public Sub btnaddexam_Click()
 
   If cmbexamname.Text Then
     If cmbcategory.Text = "Examination" Then
+      cmbdatatype.Text = modFixClinic.GetExaminationType(cmbexamname.Text)
       txtsysconst.Text = modFixClinic.SysConstFromGetExamID(cmbexamname.Text)
-      txtoption.Text = modFixClinic.GetExamtOptionType(cmbexamname.Text)
+      cmboptions.Text = modFixClinic.GetExamtOptionType(cmbexamname.Text)
     Else If cmbcategory.Text = "Laboratory" Then
+      cmbdatatype.Text = modFixLab.GetLabTestType(cmbexamname.Text)
       txtsysconst.Text = modFixLab.GetTestSysName(cmbexamname.Text)
-      txtoption.Text = modFixLab.GetLabTestOptionType(cmbexamname.Text)
+      cmboptions.Text = modFixLab.GetLabTestOptionType(cmbexamname.Text)
     Endif
+    cmbdatatype.Enabled = False
+    txtsysconst.Enabled = False
+    cmboptions.Enabled = False
+    txtselectopt.Enabled = False
   Endif
 
 End
@@ -58,18 +80,36 @@ End
 Public Sub btnadcompo_Click()
 
   If cmbcategory.Text = "Examination" Then
-    If txtoption.Text = "Clinical Scale" Then
+    If cmboptions.Text = "Clinical Scale" Then
       cmbcomponent.Text = GridViewNew("Select component of " & cmbcategory.Text, modAllExam.GetCLinicalScaleGroups("Exam", cmbexamname.Text), False)
     Else
       cmbcomponent.Text = GridViewNew("Select component of " & cmbcategory.Text, modFixClinic.GetSubExamArray(cmbexamname.Text), False)
     Endif
   Else If cmbcategory.Text = "Laboratory" Then
-    If txtoption.Text = "Clinical Scale" Then
+    If cmboptions.Text = "Clinical Scale" Then
       cmbcomponent.Text = GridViewNew("Select component of " & cmbcategory.Text, modAllExam.GetCLinicalScaleGroups("Test", cmbexamname.Text), False)
     Else
       cmbcomponent.Text = GridViewNew("Select component of " & cmbcategory.Text, modFixLab.GetSubTestArray(cmbexamname.Text), False)
     Endif
   Endif
+
+End
+
+Private Sub ClearControls()
+
+  cmbdatatype.Enabled = True
+  txtsysconst.Enabled = True
+  cmboptions.Enabled = True
+  txtselectopt.Enabled = True
+
+  cmbexamname.Text = ""
+  cmbcomponent.Text = ""
+  cmbdatatype.Text = ""
+  txtsysconst.Text = ""
+  cmboptions.Text = ""
+  txtcomment.Text = ""
+  txtselectopt.Text = ""
+  txtorder.Value = 0
 
 End
 
@@ -82,13 +122,17 @@ Public Sub btnOK_Click()
     res["fldcomp"] = cmbtarget.Text
     res["fldtitle"] = cmbgroupname.Text
     res["fldcategory"] = cmbcategory.Text
-    res["fldexam"] = cmbexamname.Text
+    res["fldexam"] = Trim(cmbexamname.Text)
     res["fldsubexam"] = cmbcomponent.Text
+    res["fldcomment"] = Trim(txtcomment.Text)
+    res["fldtype"] = cmbdatatype.Text
     res["fldsysconst"] = txtsysconst.Text
-    res["fldoption"] = txtoption.Text
+    res["fldoption"] = cmboptions.Text
+    res["fldselection"] = txtselectopt.Text
     res["fldexamorder"] = txtorder.Value
     res.Update
     ShowDataGrid()
+    ClearControls()
   Endif
 
 End
@@ -98,6 +142,7 @@ Public Sub btnCancel_Click()
   If GridView1.Rows.Selection.Count Then
     modDatabase.$myConn.Delete("tbldepartchart", "fldid=&1", GridView1[GridView1.Row, 0].Text)
     ShowDataGrid()
+    ClearControls()
     Balloon.Delete(("Variable deleted"), btnCancel)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
@@ -107,26 +152,19 @@ End
 Public Sub btnedit_Click()
 
   Dim res As Result
-  Dim xsyscos As String
-  Dim xoption As String
 
   If GridView1.Rows.Selection.Count Then
     If cmbexamname.Text And If cmbtarget.Text And If cmbgroupname.Text Then
       res = modDatabase.$myConn.Edit("tbldepartchart", "fldid=&1", GridView1[GridView1.Row, 0].Text)
-      If cmbcategory.Text = "Examination" Then
-        xsyscos = modFixClinic.SysConstFromGetExamID(cmbexamname.Text)
-        xoption = modFixClinic.GetExamtOptionType(cmbexamname.Text)
-      Else If cmbcategory.Text = "Laboratory" Then
-        xsyscos = modFixLab.GetTestSysName(cmbexamname.Text)
-        xoption = modFixLab.GetLabTestOptionType(cmbexamname.Text)
-      Endif
-
       res["fldtitle"] = cmbgroupname.Text
       res["fldcategory"] = cmbcategory.Text
-      res["fldexam"] = cmbexamname.Text
+      res["fldexam"] = Trim(cmbexamname.Text)
       res["fldsubexam"] = cmbcomponent.Text
+      res["fldcomment"] = Trim(txtcomment.Text)
+      res["fldtype"] = cmbdatatype.Text
       res["fldsysconst"] = txtsysconst.Text
-      res["fldoption"] = txtoption.Text
+      res["fldoption"] = cmboptions.Text
+      res["fldselection"] = txtselectopt.Text
       res["fldexamorder"] = txtorder.Value
       res.Update
       ShowDataGrid()
@@ -145,7 +183,7 @@ End
 
 Private Sub ShowDataGrid()
 
-  $rData = modDatabase.$myConn.Exec("select fldid,fldtitle,fldexam,fldsubexam,fldcategory,fldsysconst,fldoption,fldexamorder from tbldepartchart where fldcomp=&1 ORDER BY fldexamorder", cmbtarget.Text)
+  $rData = modDatabase.$myConn.Exec("select fldid,fldtitle,fldexam,fldsubexam,fldcategory,fldsysconst,fldoption,fldexamorder,fldtype,fldcomment,fldselection from tbldepartchart where fldcomp=&1 ORDER BY fldexamorder", cmbtarget.Text)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
   With GridView1
@@ -157,6 +195,9 @@ Private Sub ShowDataGrid()
     .Columns[5].Width = 1
     .Columns[6].Width = 1
     .Columns[7].Width = 50 * modBasic.$AppWidthRatio
+    .Columns[8].Width = 1
+    .Columns[9].Width = 1
+    .Columns[10].Width = 1
 
     .Columns[1].Text = "Title"
     .Columns[2].Text = "Examination"
@@ -184,7 +225,10 @@ Public Sub GridView1_Click()
   cmbexamname.Text = GridView1[GridView1.Row, 2].Text
   cmbcomponent.Text = GridView1[GridView1.Row, 3].Text
   txtsysconst.Text = GridView1[GridView1.Row, 5].Text
-  txtoption.Text = GridView1[GridView1.Row, 6].Text
+  cmboptions.Text = GridView1[GridView1.Row, 6].Text
   txtorder.Value = GridView1[GridView1.Row, 7].Text
+  cmbdatatype.Text = GridView1[GridView1.Row, 8].Text
+  txtcomment.Text = GridView1[GridView1.Row, 9].Text
+  txtselectopt.Text = GridView1[GridView1.Row, 10].Text
 
 End

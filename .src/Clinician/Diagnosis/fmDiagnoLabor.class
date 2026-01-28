@@ -315,9 +315,10 @@ Public Sub btnsave_Click()
           res["flddelref"] = xrefNo
           res["xyz"] = False
           res.Update
-          modClinSub.AddGeneralParametersQuali($encid, "Pregnancy Status", GetTrimesterLabel(xday))
+          modPatientSub.UpdatePregnancyStatus($encid, GetTrimesterLabel(xday))
           modDatabase.$myConn.Commit
           txtreference.Text = xrefNo
+          modPatient.$PatProfileData.Remove($encid)
           xclose = True
         Else
           modDatabase.$myConn.Rollback

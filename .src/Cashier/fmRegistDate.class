@@ -986,6 +986,8 @@ Private Sub WalletBilling()
 
                 res["fldregistid"] = modPatient.GetPatientHMISRegVal(xpatno)
                 res["fldadmitid"] = ""
+                res["fldmarker"] = ""
+                res["fldpassword"] = ""
                 res["xyz"] = False
                 res.Update()
               Endif
@@ -1173,6 +1175,8 @@ Private Sub SaveRegistrationData(sPatNo As String, sColl As Collection, sBillMod
 
       res["fldregistid"] = modPatient.GetPatientHMISRegVal(sPatNo)
       res["fldadmitid"] = ""
+      res["fldmarker"] = ""
+      res["fldpassword"] = ""
       res["xyz"] = False
       res.Update()
     Endif

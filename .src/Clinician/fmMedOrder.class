@@ -118,8 +118,11 @@ Public Sub Form_Open()
   SetNarcoticsPrescriber()
 
   $ShowReview = modBasic.$MedErrorEnable
+  If Not $ShowReview Then
+    $ShowReview = "Notification"
+  Endif
   If modPharmacy.DisableEncounterForReview($encid) = True Then
-    $ShowReview = "No"
+    $ShowReview = "None"
   Endif
 
   $AlphaList = New String[]
@@ -159,7 +162,7 @@ Private Sub ShowBasicParamStatus()
 
   Dim xmsg As String
 
-  If $ShowReview = "No" Then
+  If $ShowReview = "None" Then
   Else
 
     xmsg = ""
@@ -224,6 +227,7 @@ Public Sub TabPanel1_Click()
     txtstart.SetFocus
   Else If TabPanel1.Index = 2 Then
     hOwnStockForm.RearrangeGrid()
+    hOwnStockForm.RefreshList()
   Else If TabPanel1.Index = 3 Then
     btndoserefresh_Click()
   Else If TabPanel1.Index = 4 Then
@@ -286,6 +290,30 @@ Private Sub ShowBillingParam(sDisctype As String)
 End
 
 ''------------------------------ Request ---------------------------------
+Private Sub SendNotification(sRoute As String, sItem As String, xqty As Float)
+
+  Dim xtarg As String
+
+  Select sRoute
+    Case "msurg"
+      xtarg = modBasic.$BillTargetSurgical
+    Case "suture"
+      xtarg = modBasic.$BillTargetSutures
+    Case "ortho"
+      xtarg = modBasic.$BillTargetOrthopedics
+    Case "extra"
+      xtarg = modBasic.$BillTargetExtras
+    Case Else
+      xtarg = modBasic.$BillTargetMedicine
+  End Select
+
+  If chknotice.Value = True Then
+    If xtarg Then
+      modControl.SendCompIDNotofication(xtarg, "Pharmacy Order from " & modBasic.$compID, "<b>" & txtpatientname.Text & "</b> Encounter ID : " & $encid & " Particulars : <b>" & sItem & "</b> QTY : " & CStr(xqty))
+    Endif
+  Endif
+
+End
 
 Public Sub chkout_Click()
 
@@ -416,6 +444,7 @@ Private Sub AddNewRegimen(itmList As Long[])
                   modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["fldbrandid"], res["flddose"], res["fldfreq"], res["fldday"], res["fldqty"], $status, "", "", txtstart.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldusage"], False, xcurVal)
                 Endif
             End Select
+            SendNotification(res["fldroute"], res["fldbrandid"], res["fldqty"])
           Endif
 
         Endif
@@ -510,6 +539,7 @@ Private Sub AddPastRegimens(itmList As Long[])
                   modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtydisp"], $status, "", "", txtstart.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["flddirection"], False, xcurVal)
                 Endif
             End Select
+            SendNotification(res["fldroute"], res["flditem"], res["fldqtydisp"])
           Endif
 
         Endif
@@ -799,35 +829,38 @@ Public Sub cmbfreq_LostFocus()
   Dim Row As Integer
   Dim xval As String
   Dim xcount As Integer
+  Dim cForm As CMedError
 
   If $HideErr = False Then
-
     If txtdose.Value And If cmbfreq.Text Then
-      If $ShowReview = "No" Then
-      Else
-        opt = New String[]
-        For Row = 0 To GridView1.Rows.Count - 1
-          If GridView1[Row, 2].Text = "suture" Or If GridView1[Row, 2].Text = "msurg" Or If GridView1[Row, 2].Text = "ortho" Or If GridView1[Row, 2].Text = "extra" Or If GridView1[Row, 2].Text = "topical" Then
+
+      Select cmbroute.Text
+        Case "suture", "msurg", "ortho", "extra", "topical"
+          ''do nothing
+        Case Else
+          If $ShowReview = "None" Then
           Else
-            xval = modMedConstant.GetDrugFromStockID(GridView1[Row, 3].Text)
-            If opt.Count = 0 Then
-              opt.Add(xval)
-            Else
-              If opt.Exist(xval) = False Then
-                opt.Add(xval)
+            opt = New String[]
+            For Row = 0 To GridView1.Rows.Count - 1
+              If GridView1[Row, 2].Text = "suture" Or If GridView1[Row, 2].Text = "msurg" Or If GridView1[Row, 2].Text = "ortho" Or If GridView1[Row, 2].Text = "extra" Or If GridView1[Row, 2].Text = "topical" Then
+              Else
+                xval = modMedConstant.GetDrugFromStockID(GridView1[Row, 3].Text)
+                If opt.Count = 0 Then
+                  opt.Add(xval)
+                Else
+                  If opt.Exist(xval) = False Then
+                    opt.Add(xval)
+                  Endif
+                Endif
               Endif
-            Endif
+            Next
+            $HideErr = True
+            cForm = New CMedError
+            xcount = cForm.ShowMedicationReviewPunching($encid, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, opt, $ShowReview)
           Endif
-        Next
+      End Select
 
-        If cmbroute.Text = "suture" Or If cmbroute.Text = "msurg" Or If cmbroute.Text = "ortho" Or If cmbroute.Text = "extra" Or If cmbroute.Text = "topical" Then
-        Else
-          $HideErr = True
-          xcount = modMedError.ShowMedicationReviewPunching($encid, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, opt, "Message Box")
-        Endif
-      Endif
     Endif
-
   Endif
 
 End
@@ -965,6 +998,7 @@ Private Sub EnterDosingRecord()
       Endif
     Endif
 
+    SendNotification(cmbroute.Text, cmbmedicine.Text, txtqty.Value)
     BlankDosingBox()
     FillDosingGrid()
   Endif
@@ -1036,8 +1070,10 @@ Public Sub btngroup_Click()
             Select res["fldroute"]
               Case "suture", "msurg", "ortho"
                 modPharmSub.InsertNonMedDosingEntry("Surgicals", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["fldqty"], $status, res["fldstart"], xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldadvice"], False, xcurVal)
+                SendNotification(res["fldroute"], res["flditem"], res["fldqty"])
               Case "extra"
                 modPharmSub.InsertNonMedDosingEntry("Extra Items", $encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], res["fldqty"], $status, res["fldstart"], xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldadvice"], False, xcurVal)
+                SendNotification(res["fldroute"], res["flditem"], res["fldqty"])
               Case Else
                 xdose = modMedDosing.GetDoseInMg(res["flddose"], res["flddoseunit"], $encid)
                 If xdose Then
@@ -1057,6 +1093,7 @@ Public Sub btngroup_Click()
                   Else
                     modPharmSub.InsertDosingEntry($encid, $xBillType, $sBillMode, cmbdisctype.Text, $LedgerAC, res["fldroute"], res["flditem"], xdose, res["fldfreq"], res["fldday"], res["fldqty"], $status, "", "", res["fldstart"], xtax, xdisc, xfixname, xfixrate, "Request", $Dept, res["fldadvice"], False, xcurVal)
                   Endif
+                  SendNotification(res["fldroute"], res["flditem"], res["fldqty"])
                 Endif
             End Select
           Endif
@@ -1324,6 +1361,7 @@ Private Sub SaveOwnDispensing(sID As Long, sStatus As String)
   Dim tax As Float
   Dim disc As Float
   Dim xrate As Float
+  Dim xtot As Float
   Dim xitem As String
 
   Dim qtynew As Float
@@ -1341,8 +1379,8 @@ Private Sub SaveOwnDispensing(sID As Long, sStatus As String)
   xpayble = modBillings.GetPayableUserSetting("Pharmacy", $encid)
 
   xerr = ""
-  sql1 = "select fldid,fldtime,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,fldlabel,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit from tblpatdosing where fldid=&1 and fldsave_order=&2 and fldcurval=&3"                                                   ''
-  res1 = modDatabase.$myConn.Exec(sql1, sID, False, "Continue")
+  sql1 = "select fldid,fldtime,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,fldlabel,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit from tblpatdosing where fldid=&1 and fldsave_order=&2 and fldcurval=&3 and fldencounterval=&4"                                                   ''
+  res1 = modDatabase.$myConn.Exec(sql1, sID, False, "Continue", $encid)
   If res1.Available = True Then
 
     'get tax and discount percentages
@@ -1368,7 +1406,28 @@ Private Sub SaveOwnDispensing(sID As Long, sStatus As String)
     Else
       xrate = modStock.GetCurrentSellingPrice(res1["flditem"], modBasic.$compID)
     Endif
-    xallow = modNonMedical.AllowPharmProceedPreBill($encid, $DiscPackage, res1["fldqtydisp"], xrate, res1["flddiscper"], res1["fldbilltype"], xCshCrd, res1["fldroute"], res1["flditem"])
+
+    ' xallow = modNonMedical.AllowPharmProceedPreBill($encid, $DiscPackage, res1["fldqtydisp"], xrate, res1["flddiscper"], res1["fldbilltype"], xCshCrd, res1["fldroute"], res1["flditem"])
+    xallow = False
+    If modBasic.$AutoBillPharmacy = "Standard" Then
+      xtot = modNonMedical.GetCashBillAmount(xrate, res1["fldqtydisp"], res1["fldbilltype"], disc, tax, xCshCrd)
+      If modNonMedical.AllowPreCheckDeposit($encid, "Pharmacy", res1["flditem"], xtot, res1["fldbilltype"], btndispown) = True Then
+        xallow = True
+      Endif
+    Else If modBasic.$AutoBillPharmacy = "Full" Then
+      xtot = modNonMedical.GetCashBillAmount(xrate, res1["fldqtydisp"], res1["fldbilltype"], disc, tax, xCshCrd)
+      If modNonMedical.AllowPreEntryWithDeposit($encid, "Pharmacy", res1["flditem"], xtot, res1["fldbilltype"], btndispown) = True Then
+        xallow = True
+      Endif
+    Else
+      If modBasic.$AutoBillSaveZero = "Yes" And If xrate = 0 Then
+        xallow = True
+      Else If modBasic.$AutoBillSaveZero = "Yes" And If res1["flddiscper"] = 100 Then
+        xallow = True
+      Else If modBasic.$AutoBillSaveFullCredit = "Yes" And If res1["fldbilltype"] = "Credit" And If xCshCrd = 0 Then
+        xallow = True
+      Endif
+    Endif
     If xallow = True Then
 
       Inc Application.Busy
@@ -1493,6 +1552,7 @@ Public Sub mnureview_Click()
   Dim opt As String[]
   Dim Row As Integer
   Dim xval As String
+  Dim cForm As CMedError
 
   If GridView1.Rows.Selection.Count > 0 Then
     If GridView1.Rows.Count > 0 Then
@@ -1511,8 +1571,8 @@ Public Sub mnureview_Click()
 
         Endif
       Next
-
-      modMedError.ShowMedicationReviewSingleDosID(GridView1[GridView1.Row, 0].Text, opt, "Report")
+      cForm = New CMedError
+      cForm.ShowMedicationReviewSingleDosID(GridView1[GridView1.Row, 0].Text, opt, "Report")
     Endif
   Endif
 
@@ -1535,6 +1595,7 @@ Public Sub btnreview_Click()
 
   Dim opt As Long[]
   Dim Row As Integer
+  Dim cForm As CMedError
 
   If GridView1.Rows.Count > 0 Then
     opt = New Long[]
@@ -1544,7 +1605,8 @@ Public Sub btnreview_Click()
         opt.Add(GridView1[Row, 0].Text)
       Endif
     Next
-    modMedError.ShowMedicationReviewMultipleDosID($encid, opt, "Report")
+    cForm = New CMedError
+    cForm.ShowMedicationReviewMultipleDosID($encid, opt, "Report")
   Endif
 
 End

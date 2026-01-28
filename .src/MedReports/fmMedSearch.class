@@ -1706,8 +1706,11 @@ End
 
 Public Sub mnumedaudit_Click()
 
+  Dim cForm As CMedError
+
   modBasic.MedicineDoseSetting()
-  modMedError.MedicalAuditReport(dtfir.Value, dtlast.Value)
+  cForm = New CMedError
+  cForm.MedicalAuditReport(dtfir.Value, dtlast.Value)
 
 End
 

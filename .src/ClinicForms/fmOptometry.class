@@ -198,7 +198,7 @@ Public Sub btnsave_Click()
 
   ''General Complaints
   If TextArea1.Text Then
-    modPatientGeneral.AddExamGeneralQualiData($encid, "History", "General Complaints", "", TextArea1.Text, xboolean)
+    modPatientGeneral.AddPatientParagraph($encid, "History", "General Complaints", "", TextArea1.Text, xboolean)
   Endif
 
   ''Left/Right Examinations

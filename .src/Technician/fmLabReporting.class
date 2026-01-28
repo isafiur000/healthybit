@@ -403,7 +403,10 @@ Public Sub GridView1_Click()
     xstatus = modPatient.CurrentAdmissionStatus($encid)
     txtlocation.Text = modPatient.GetLocationSetting($encid, xstatus)
     txtcolor.Background = modPatient.GetPatientColor($encid)
-    txtpatlock.Text = modPatient.GetPatientLockMacAdd($encid)
+    txtlocation.Tag = modPatient.GetPatientCurrDepartment($encid)
+    If txtlocation.Tag Then
+      txtpatlock.Text = modGeneral.GetFixCompFromDept(txtlocation.Tag)
+    Endif
     If chklist.Value = True Then
       dtselected.Value = dtlisted.Value
       txtdtrange.Value = txtrange.Value
@@ -516,7 +519,10 @@ Public Sub btnshow_Click()
     xstatus = modPatient.CurrentAdmissionStatus($encid)
     txtlocation.Text = modPatient.GetLocationSetting($encid, xstatus)
     txtcolor.Background = modPatient.GetPatientColor($encid)
-    txtpatlock.Text = modPatient.GetPatientLockMacAdd($encid)
+    txtlocation.Tag = modPatient.GetPatientCurrDepartment($encid)
+    If txtlocation.Tag Then
+      txtpatlock.Text = modGeneral.GetFixCompFromDept(txtlocation.Tag)
+    Endif
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", $encid)
     If modPatientSub.AllowEncIDHistory($encid, modDatabase.$myConn) = True Then
       modImage.ShowPhotoSplash("Patient", $patNo)
@@ -1027,7 +1033,7 @@ Private Sub EnterTextData()
         Endif
       Endif
     Endif
-    hForm2 = New FmLabQuantiVal(TableView1[TableView1.Row, 0].Text, TableView1[TableView1.Row, 2].Text, defVal, xunit, TableView1[TableView1.Row, 9].Text, MACLabNotification(), $tblpatlabtest)
+    hForm2 = New FmLabQuantiVal(TableView1[TableView1.Row, 0].Text, TableView1[TableView1.Row, 2].Text, defVal, xunit, TableView1[TableView1.Row, 9].Text, CompLabNotification(), $tblpatlabtest)
     hForm2.ShowModal
 
   Endif
@@ -1123,10 +1129,10 @@ Public Sub mnuremote_Click()
 
 End
 
-Public Function MACLabNotification() As String
+Public Function CompLabNotification() As String
 
   Dim xall As Boolean
-  Dim xmac As String
+  Dim xcomp As String
 
   If chkinfall.Value Then
     xall = True
@@ -1147,12 +1153,12 @@ Public Function MACLabNotification() As String
   Endif
 
   If xall = True Then
-    xmac = txtpatlock.Text
+    xcomp = txtpatlock.Text
   Else
-    xmac = ""
+    xcomp = ""
   Endif
 
-  Return xmac
+  Return xcomp
 
 End
 

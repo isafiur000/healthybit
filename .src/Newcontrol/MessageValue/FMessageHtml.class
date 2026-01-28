@@ -1,20 +1,30 @@
 ' Gambas class file
 
+Private sButton As String[]
 Private $sValue As String
 
-Public Sub Run(sTitle As String, sMessage As String, Optional sButton As String[]) As String
+Public Sub Run(sTitle As String, sMessage As String, Optional xButton As String[]) As String
 
   Me.Title = sTitle
+  sButton = xButton
   TextLabel1.Text = sMessage
+
+  If Me.ShowModal() Then Return $sValue
+
+End
+
+Public Sub Form_Open()
 
   If sButton Then
     If sButton.Count = 1 Then
       Button3.Text = sButton[0]
+      Button3.Font.Bold = True
       Button3.SetFocus
     Else If sButton.Count = 2 Then
       Button3.Text = sButton[0]
       Button2.Text = sButton[1]
       Button2.Visible = True
+      Button2.Font.Bold = True
       Button2.SetFocus
     Else If sButton.Count = 3 Then
       Button3.Text = sButton[0]
@@ -22,12 +32,10 @@ Public Sub Run(sTitle As String, sMessage As String, Optional sButton As String[
       Button1.Text = sButton[2]
       Button2.Visible = True
       Button1.Visible = True
+      Button1.Font.Bold = True
       Button1.SetFocus
     Endif
-  Else
-    Button3.SetFocus
   Endif
-  If Me.ShowModal() Then Return $sValue
 
 End
 

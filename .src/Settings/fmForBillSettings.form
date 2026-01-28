@@ -387,57 +387,57 @@
     Index = 3
     Text = ("Billing Access")
     { Label2 Label
-      MoveScaled(38,2,15,3)
+      MoveScaled(38,1,15,3)
       Border = Border.Plain
       Text = ("Pharm Sales")
     }
     { Label6 Label
-      MoveScaled(1,2,15,3)
+      MoveScaled(1,1,15,3)
       Border = Border.Plain
       Text = ("Cashier Billing")
     }
     { cmbphmsale ComboBox
-      MoveScaled(54,2,15,3)
+      MoveScaled(54,1,15,3)
       ToolTip = ("Select if Invoice generation is allowed with Pharmacy sales")
     }
     { cmbcasbill ComboBox
-      MoveScaled(17,2,15,3)
+      MoveScaled(17,1,15,3)
       ToolTip = ("Select if Invoice generation is allowed with Counter Billing")
     }
     { Label1 Label
-      MoveScaled(38,6,15,3)
+      MoveScaled(38,5,15,3)
       Border = Border.Plain
       Text = ("Pharm Return")
     }
     { Label10 Label
-      MoveScaled(1,6,15,3)
+      MoveScaled(1,5,15,3)
       Border = Border.Plain
       Text = ("Cashier Return")
     }
     { cmbphmret ComboBox
-      MoveScaled(54,6,15,3)
+      MoveScaled(54,5,15,3)
       ToolTip = ("Select if Invoice generation is allowed with Pharmacy Return")
     }
     { cmbcasretn ComboBox
-      MoveScaled(17,6,15,3)
+      MoveScaled(17,5,15,3)
       ToolTip = ("Select if Invoice generation is allowed with Counter Return")
     }
     { btnbillav Button
-      MoveScaled(55,10,14,3)
+      MoveScaled(55,9,14,3)
       Text = ("Update")
       Picture = Picture["icon:/small/apply"]
     }
     { Label17 Label
-      MoveScaled(1,10,15,3)
+      MoveScaled(1,9,15,3)
       Border = Border.Plain
       Text = ("Deposit Billing")
     }
     { cmbdeposit ComboBox
-      MoveScaled(17,10,15,3)
+      MoveScaled(17,9,15,3)
       ToolTip = ("Select if Invoice generation is allowed with Deposit")
     }
     { Frame2 Frame
-      MoveScaled(0,38,74,11)
+      MoveScaled(0,42,74,11)
       Text = ("Cash Handover Form")
       Alignment = Align.Left
       { Label47 Label
@@ -490,7 +490,7 @@
       }
     }
     { Frame3 Frame
-      MoveScaled(0,17,74,11)
+      MoveScaled(0,27,74,11)
       Text = ("Discharge Billing")
       Alignment = Align.Left
       { Label68 Label
@@ -528,6 +528,35 @@
       }
       { btnlimitcheck ToolButton
         MoveScaled(31,7,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+    }
+    { Frame5 Frame
+      MoveScaled(1,16,73,7)
+      Text = ("Disable Billing Entry")
+      Alignment = Align.Left
+      { Label105 Label
+        MoveScaled(0,3,13,3)
+        Border = Border.Plain
+        Text = ("Service Items")
+      }
+      { cmbserventry ComboBox
+        MoveScaled(14,3,13,3)
+      }
+      { btnservfentry ToolButton
+        MoveScaled(28,3,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { Label106 Label
+        MoveScaled(38,3,13,3)
+        Border = Border.Plain
+        Text = ("Pharmacy")
+      }
+      { cmbpharmentry ComboBox
+        MoveScaled(52,3,13,3)
+      }
+      { btnpharmentry ToolButton
+        MoveScaled(66,3,3,3)
         Picture = Picture["icon:/small/apply"]
       }
     }

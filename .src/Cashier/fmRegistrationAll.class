@@ -544,6 +544,8 @@ Private Sub SaveRegistrationData()
 
             res["fldregistid"] = modPatient.GetPatientHMISRegVal(Trim(txtpatno.Text))
             res["fldadmitid"] = ""
+            res["fldmarker"] = ""
+            res["fldpassword"] = ""
             res["xyz"] = False
             res.Update()
           Endif

@@ -1,106 +1,138 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,70,64)
+  MoveScaled(0,0,75,75)
   Text = ("Examination Groups")
   Resizable = False
-  { Label5 Label
-    MoveScaled(1,1,14,3)
-    Border = Border.Plain
-    Text = ("Target:")
+  { cmbgroupname ComboBox
+    MoveScaled(13,5,33,3)
+  }
+  { cmbcategory ComboBox
+    MoveScaled(13,9,15,3)
+    Sorted = True
+  }
+  { btncategory ToolButton
+    MoveScaled(29,9,3.25,3.25)
+    Picture = Picture["icon:/small/refresh"]
+  }
+  { cmbexamname TextBox
+    MoveScaled(13,13,53,3)
+  }
+  { cmbcomponent TextBox
+    MoveScaled(13,17,53,3)
+  }
+  { txtcomment TextBox
+    MoveScaled(13,21,25,3)
+  }
+  { txtsysconst TextBox
+    MoveScaled(53,21,21,3)
+  }
+  { cmbdatatype ComboBox
+    MoveScaled(13,25,25,3)
+  }
+  { cmboptions ComboBox
+    MoveScaled(53,25,21,3)
+  }
+  { txtselectopt TextBox
+    MoveScaled(13,29,61,3)
+  }
+  { txtorder ValueBox
+    MoveScaled(13,33,8,3)
+  }
+  { btnOK Button
+    MoveScaled(42,33,13,3)
+    Text = Shortcut(("Add"), "A")
+    Picture = Picture["icon:/small/add"]
+  }
+  { btnedit Button
+    MoveScaled(55,33,13,3)
+    Text = ("Edit")
+    Picture = Picture["icon:/small/edit"]
+  }
+  { btnCancel Button
+    MoveScaled(69,33,5,3)
+    Picture = Picture["icon:/small/cancel"]
   }
   { cmbtarget ComboBox
-    MoveScaled(16,1,15,3)
+    MoveScaled(13,1,15,3)
     ToolTip = ("Select target Department ID")
     Sorted = True
+  }
+  { btnrefresh ToolButton
+    MoveScaled(29,1,3.25,3.25)
+    Picture = Picture["icon:/small/refresh"]
+  }
+  { btnaddexam ToolButton
+    MoveScaled(67,13,3,3)
+    Picture = Picture["icon:/small/add"]
+  }
+  { btnadcompo ToolButton
+    MoveScaled(67,17,3,3)
+    Picture = Picture["icon:/small/add"]
+  }
+  { Label5 Label
+    MoveScaled(1,1,11,3)
+    Border = Border.Plain
+    Text = ("Target:")
   }
   { lblcomp Label
     MoveScaled(39,1,30,3)
     Border = Border.Plain
   }
   { Label1 Label
-    MoveScaled(1,5,14,3)
+    MoveScaled(1,5,11,3)
     Border = Border.Plain
     Text = ("Title")
   }
-  { cmbgroupname ComboBox
-    MoveScaled(16,5,33,3)
-  }
-  { btnrefresh ToolButton
-    MoveScaled(32,1,3.25,3.25)
-    Picture = Picture["icon:/small/refresh"]
-  }
   { Label2 Label
-    MoveScaled(1,13,14,3)
+    MoveScaled(1,13,11,3)
     Border = Border.Plain
-    Text = ("Examination")
-  }
-  { btnOK Button
-    MoveScaled(36,21,13,3)
-    Text = Shortcut(("Add"), "A")
-    Picture = Picture["icon:/small/add"]
-  }
-  { btnCancel Button
-    MoveScaled(63,21,5,3)
-    Picture = Picture["icon:/small/cancel"]
+    Text = ("Exam Name")
   }
   { GridView1 GridView
-    MoveScaled(1,25,68,38)
+    MoveScaled(1,37,73,37)
     Mode = Select.Single
     Header = GridView.Both
     AutoResize = False
   }
   { Label3 Label
-    MoveScaled(1,9,14,3)
+    MoveScaled(1,9,11,3)
     Border = Border.Plain
     Text = ("Category")
   }
-  { cmbcategory ComboBox
-    MoveScaled(16,9,15,3)
-    Sorted = True
-  }
-  { btncategory ToolButton
-    MoveScaled(32,9,3.25,3.25)
-    Picture = Picture["icon:/small/refresh"]
-  }
   { Label4 Label
-    MoveScaled(1,17,14,3)
+    MoveScaled(1,17,11,3)
     Border = Border.Plain
     Text = ("Component")
   }
   { Label6 Label
-    MoveScaled(1,21,14,3)
+    MoveScaled(1,33,11,3)
     Border = Border.Plain
     Text = ("Order")
   }
-  { cmbexamname TextBox
-    MoveScaled(16,13,49,3)
+  { Label7 Label
+    MoveScaled(1,21,11,3)
+    Border = Border.Plain
+    Text = ("Comment")
   }
-  { cmbcomponent TextBox
-    MoveScaled(16,17,49,3)
+  { Label8 Label
+    MoveScaled(1,29,11,3)
+    Border = Border.Plain
+    Text = ("Options")
   }
-  { btnaddexam ToolButton
-    MoveScaled(66,13,3,3)
-    Picture = Picture["icon:/small/add"]
+  { Label9 Label
+    MoveScaled(41,21,11,3)
+    Border = Border.Plain
+    Text = ("Constant")
   }
-  { btnadcompo ToolButton
-    MoveScaled(66,17,3,3)
-    Picture = Picture["icon:/small/add"]
+  { Label10 Label
+    MoveScaled(1,25,11,3)
+    Border = Border.Plain
+    Text = ("Data Type")
   }
-  { txtorder ValueBox
-    MoveScaled(16,21,8,3)
-  }
-  { btnedit Button
-    MoveScaled(49,21,13,3)
-    Text = ("Edit")
-    Picture = Picture["icon:/small/edit"]
-  }
-  { txtsysconst TextBox
-    MoveScaled(39,9,11,3)
-    Visible = False
-  }
-  { txtoption TextBox
-    MoveScaled(54,9,11,3)
-    Visible = False
+  { Label11 Label
+    MoveScaled(41,25,11,3)
+    Border = Border.Plain
+    Text = ("Option Type")
   }
 }

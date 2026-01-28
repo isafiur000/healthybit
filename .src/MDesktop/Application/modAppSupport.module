@@ -381,10 +381,8 @@ Public Sub SendMessageTo(ToUser As String, ToUserIP As String, txtsubject As Str
   If Exist(sPath) Then Kill sPath
   File.Save(sPath, "")
   MySock = New Socket As "MySock"
-  MySock.Host = ToUserIP
-  MySock.Port = modAppSupport.GetTransferPort(ToUser)
+  MySock.Connect(ToUserIP, modAppSupport.GetTransferPort(ToUser))
   modBasic.DebugString("Connect to Port " & CStr(MySock.Port) & " on Host " & MySock.Host)
-  MySock.Connect()
 
   SaveSettingsToTransferFile("Message/To", ToUser)
   SaveSettingsToTransferFile("Message/From", modBasic.$lbluser)
