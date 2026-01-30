@@ -128,6 +128,8 @@ End
 Public Sub btnrefresh_Click()
 
   TabStrip1.Index = 0
+  modMisc.GetDateRangeSetting(dtfir, dtlast)
+
   Inc Application.Busy
   If chkimage.Value Or If chkdicom.Value Then
     If chkimage.Value And If chkdicom.Value Then

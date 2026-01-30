@@ -14,25 +14,25 @@
         Text = ("Name")
       }
       { txtpatientname TextBox
-        MoveScaled(7,0.625,34,3)
+        MoveScaled(6,0.625,34,3)
         Font = Font["Bold"]
         ReadOnly = True
       }
       { Label4 Label
-        MoveScaled(45,0.625,7,3)
+        MoveScaled(42,0.625,7,3)
         Border = Border.Plain
         Text = ("Gender")
       }
       { txtgender TextBox
-        MoveScaled(53,0.625,12,3)
+        MoveScaled(49,0.625,12,3)
         ReadOnly = True
       }
       { mnuexpo ToolButton
-        MoveScaled(112,0.5,3,3)
+        MoveScaled(115,0.5,3,3)
         Picture = Picture["icon:/small/export"]
       }
       { Panel5 Panel
-        MoveScaled(88,0,22,4)
+        MoveScaled(91,0,22,4)
         { rbchart RadioButton
           MoveScaled(0,0.5,9.5,3)
           Text = ("Chart")
@@ -44,8 +44,14 @@
         }
       }
       { chkcomment CheckBox
-        MoveScaled(68,0.625,14,3)
+        MoveScaled(64,0.5,14,3)
         Text = ("Comment")
+      }
+      { spncolumn SpinBox
+        MoveScaled(79,0.5,6,3)
+        MinValue = 6
+        MaxValue = 48
+        Value = 12
       }
     }
     { Panel2 Panel
@@ -113,9 +119,14 @@
           AutoResize = False
         }
       }
-      { pnlgridentry Panel
-        MoveScaled(73,1,31.25,42)
+      { ScrollView1 ScrollView
+        MoveScaled(78,0,27,41)
         Arrangement = Arrange.Vertical
+        { pnlgridentry Panel
+          MoveScaled(0,0,26,37)
+          Arrangement = Arrange.Vertical
+          Margin = True
+        }
       }
     }
   }

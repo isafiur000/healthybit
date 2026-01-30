@@ -15,12 +15,11 @@ Private $ClinicianLst As String[]
 Private $patHeight As Float
 Private $actualWt As Float
 
-Public Sub _new(encid As String, DiscPackage As String, sStatus As String, clinList As String[])
+Public Sub _new(encid As String, sStatus As String, DiscPackage As String)
 
   $encid = encid
   $DiscPackage = DiscPackage
   $status = sStatus
-  $ClinicianLst = clinList
 
 End
 
@@ -37,6 +36,7 @@ Public Sub Form_Open()
     cmbroute.List = modMedicine.ClinicalRoute()
   Endif
   cmbfreq.List = modMedicine.FrequencyCombo()
+  $ClinicianLst = New String[]
 
   ShowBillingParam($DiscPackage)
   GetCalculations()
@@ -518,24 +518,6 @@ End
 Public Sub txtstarthour_GotFocus()
 
   txtstarthour.SelectAll()
-
-End
-
-Public Sub dtending_GotFocus()
-
-  ScrollView1.EnsureVisible(dtending.X, dtending.Y, dtending.Width, dtending.Height)
-
-End
-
-Public Sub txtdilution_GotFocus()
-
-  ScrollView1.EnsureVisible(txtdilution.X, txtdilution.Y, txtdilution.Width, txtdilution.Height)
-
-End
-
-Public Sub txtdirection_GotFocus()
-
-  ScrollView1.EnsureVisible(txtdirection.X, txtdirection.Y, txtdirection.Width, txtdirection.Height)
 
 End
 

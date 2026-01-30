@@ -22,9 +22,9 @@ End
 Public Sub Form_Open()
 
   Dim xstatus As String
+  Dim xoption As String
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
-
   cmbdisctype.List = modBasic.$BillDiscountCash
   If cmbdisctype.List.Count = 0 Then
     cmbdisctype.Add($sPackage)
@@ -43,6 +43,13 @@ Public Sub Form_Open()
   $deptGroup = modSettings.ShowSettingFromFIle("RegistrationForm/DefaultDeptGroup")
   rbconsult.Value = True
   GetDepartmentList()
+
+  xoption = modSettings.ShowSettingFromFIle("RemoteNotification/ConsultationRequest")
+  If xoption = "Yes" Then
+    chknotify.Value = True
+  Else If xoption = "No" Then
+    chknotify.Value = False
+  Endif
 
   btnconsult.Tag = modBillings.GetPayableUserSetting("Service", $encid)
   If btnconsult.Tag Then
@@ -66,6 +73,12 @@ Public Sub Form_KeyRelease()
   If Key.Code = Key.Esc Then
     Me.Close
   Endif
+
+End
+
+Public Sub chknotify_Click()
+
+  modSettings.EnterCheckSetting(chknotify, "RemoteNotification/ConsultationRequest")
 
 End
 

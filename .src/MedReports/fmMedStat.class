@@ -724,6 +724,8 @@ Public Sub btnrefresh_Click()
   $cataVar = New Collection
 
   TabStrip1.Index = 0
+  modMisc.GetDateRangeSetting(dtfir, dtlast)
+
   If chkexcoutlier.Value = True Then
     $chartLimit = InputDoubleVal(("Select Limits for Frequency Chart"), ["Lower Value", "Upper Value"], [0, 0])
   Endif

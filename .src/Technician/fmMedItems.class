@@ -19,6 +19,8 @@ End
 
 Public Sub Form_Open()
 
+  Dim xoption As String
+
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
   Me.Title = $sType & " Inventory"
@@ -29,6 +31,13 @@ Public Sub Form_Open()
   cmbitem.Text = "%"
   cmbstatus.List = ["Active", "Reserved", "Allocated", "Requested", "Transferred", "Administered", "Returned", "Rejected", "Expired"]
   cmbstatus.Text = "Active"
+
+  xoption = modSettings.ShowSettingFromFIle("RemoteNotification/BloodRequest")
+  If xoption = "Yes" Then
+    chknotify.Value = True
+  Else If xoption = "No" Then
+    chknotify.Value = False
+  Endif
 
   $SSQLFields = ["fldid", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "flditem", "fldtime_order", "fldcomp_order", "fldorder"]
   ShowBloodRequests()
@@ -52,6 +61,12 @@ Public Sub Form_KeyRelease()
   If Key.Code = Key["R"] And If Key.Control Then
     btnrefresh_Click()
   Endif
+
+End
+
+Public Sub chknotify_Click()
+
+  modSettings.EnterCheckSetting(chknotify, "RemoteNotification/BloodRequest")
 
 End
 
@@ -453,7 +468,9 @@ Public Sub btnready_Click()
       res2["fldsave"] = False
       res2["xyz"] = False
       res2.Update
-      SendNotification(GridView1[GridView1.Row, 1].Text)
+      If chknotify.Value = True Then
+        SendNotification(GridView1[GridView1.Row, 1].Text)
+      Endif
       FillPatDateGrid()
     Else
       Message.Warning("No Cross match Report", ("OK"))

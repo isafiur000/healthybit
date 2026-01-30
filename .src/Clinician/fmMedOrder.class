@@ -11,6 +11,7 @@ Private $xNHISCode As String
 Private $Ready As Boolean
 Private $NarcoDoctor As String
 Private $NarcoRegd As String
+Private $medForm As FmMedPrescribe
 
 Private $PatAge As Float
 Private $PatSex As String
@@ -53,6 +54,7 @@ Public Sub Form_Open()
 
   Dim mfglist As String
   Dim xbirthDate As Date
+  Dim xoption As String
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
   Select $status
@@ -63,6 +65,8 @@ Public Sub Form_Open()
   End Select
   hOwnStockForm = New FmWardStock($encid, $status, $DiscPackage, pnlwardstock)
   hOwnStockForm.SetOwnDepartment($Dept)
+
+  $medForm = New FmMedPrescribe($encid, $status, $DiscPackage, pnlcpoe)
 
   cmbdisctype.List = modBasic.$BillDiscountCash
   If cmbdisctype.List.Count = 0 Then
@@ -81,6 +85,13 @@ Public Sub Form_Open()
   $ClinicianLst = modGeneral.GetClinicianCodeList()
   modStockSub.DisplayDefaultDispensingMode(rbrand, rbgeneric)
   modSettings.ShowCheckBox(chkout, "OutOfStock/Dispensing")
+
+  xoption = modSettings.ShowSettingFromFIle("RemoteNotification/PharmacyRequest")
+  If xoption = "Yes" Then
+    chknotice.Value = True
+  Else If xoption = "No" Then
+    chknotice.Value = False
+  Endif
 
   mfglist = modSettings.ShowSettingFromFIle("PharmacyForm/AdviceList")
   If mfglist Then
@@ -141,6 +152,12 @@ Public Sub Form_Open()
   Endif
   ShowBasicParamStatus()
   $Ready = True
+
+End
+
+Public Sub chknotice_Click()
+
+  modSettings.EnterCheckSetting(chknotice, "RemoteNotification/PharmacyRequest")
 
 End
 
@@ -1712,36 +1729,25 @@ Private Sub ShowAllMedicines()
 
   Dim sql1 As String
   Dim sql2 As String
+  Dim xFields As String[]
 
   If rblabel.Value = True Then
-    sql1 = "select fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and flddays>&4"
-    sql2 = "select fldstarttime,fldroute,flditem,fldid,fldfreq,COUNT(fldid),fldcurval from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and flddays=&4 GROUP BY flditem,flddose,fldfreq"
+    xFields = ["fldid", "fldsave_order", "fldstarttime", "fldroute", "flditem", "fldid", "fldfreq", "flddays", "fldcurval", "fldid", "fldstarttime", "fldstatus", "flduserid_order"]
   Else
-    sql1 = "select fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and flddays>&4"                    ''
-    sql2 = "select fldstarttime,fldroute,flditem,flddose,fldfreq,COUNT(fldid),fldcurval from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and flddays=&4 GROUP BY flditem,flddose,fldfreq"
+    xFields = ["fldid", "fldsave_order", "fldstarttime", "fldroute", "flditem", "fldid", "fldfreq", "COUNT(fldid)", "fldcurval", "fldid", "fldstarttime", "fldstatus", "flduserid_order"]
+  Endif
+  If rblabel.Value = True Then
+    sql1 = "select " & xFields.Join(",") & " from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and flddays>&4"
+    sql2 = "select " & xFields.Join(",") & " from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and flddays=&4 GROUP BY flditem,flddose,fldfreq"
+  Else
+    sql1 = "select " & xFields.Join(",") & " from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and flddays>&4"                    ''
+    sql2 = "select " & xFields.Join(",") & " from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and flddays=&4 GROUP BY flditem,flddose,fldfreq"
   Endif
   $rData2 = modDatabase.$myConn.Exec(sql1 & " UNION ALL " & sql2, $encid, True, "Medicines", 0)
 
   $aMyFields2 = New String[]
   modGridView.ReadSmallData(grdmedicine, $rData2, $aMyFields2)
-
-  With grdmedicine
-    .Columns[0].Width = 125 * modBasic.$AppWidthRatio
-    .Columns[1].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 275 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 50 * modBasic.$AppWidthRatio
-    .Columns[5].Width = 50 * modBasic.$AppWidthRatio
-    .Columns[6].Width = 100 * modBasic.$AppWidthRatio
-
-    .Columns[0].Text = "StartDate"
-    .Columns[1].Text = "Route"
-    .Columns[2].Text = "Medicine"
-    .Columns[3].Text = "Dose"
-    .Columns[4].Text = "Freq"
-    .Columns[5].Text = "Days"
-    .Columns[6].Text = "Status"
-  End With
+  ResizeGrid()
 
 End
 
@@ -1750,35 +1756,37 @@ Private Sub ShowRunningMedicine(xCurrent As String)
   Dim sql As String
   Dim asx As String[] = ["Completed", "Discontinue", "Change", "ReWrite", "Cancelled", "Wasted"]
   Dim i As Integer
+  Dim xFields As String[]
 
   For i = 0 To asx.Count - 1
     asx[i] = "'" & asx[i] & "'"
   Next
 
+  xFields = ["fldid", "fldsave_order", "fldstarttime", "fldroute", "flditem", "fldid", "fldfreq", "flddays", "fldcurval", "fldid", "fldstarttime", "fldstatus", "flduserid_order"]
   Select xCurrent
     Case "Continue", "On Hold"
       If rblabel.Value = True Then
-        sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval=&6 ORDER BY fldid DESC"
+        sql = "select " & xFields.Join(",") & " from tblpatdosing where fldencounterval=&1 and fldstarttime<=&2 and DATE_ADD(fldstarttime, INTERVAL flddays DAY)>=&3 and flditemtype=&4 and fldcurval=&5 ORDER BY fldid DESC"
       Else
-        sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval=&6 ORDER BY fldid DESC"                    ''
+        sql = "select " & xFields.Join(",") & " from tblpatdosing where fldencounterval=&1 and fldstarttime<=&2 and DATE_ADD(fldstarttime, INTERVAL flddays DAY)>=&3 and flditemtype=&4 and fldcurval=&5 ORDER BY fldid DESC"                    ''
       Endif
-      $rData2 = modDatabase.$myConn.Exec(sql, $encid, True, Now(), DateAdd(Now(), gb.Hour, -3), "Medicines", xCurrent)
+      $rData2 = modDatabase.$myConn.Exec(sql, $encid, Now(), DateAdd(Now(), gb.Hour, -3), "Medicines", xCurrent)
 
     Case "Removed"
       If rblabel.Value = True Then
-        sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval in(" & asx.Join(",") & ") ORDER BY fldid DESC"
+        sql = "select " & xFields.Join(",") & " from tblpatdosing where fldencounterval=&1 and fldstarttime<=&2 and DATE_ADD(fldstarttime, INTERVAL flddays DAY)>=&3 and flditemtype=&4 and fldcurval in(" & asx.Join(",") & ") ORDER BY fldid DESC"
       Else
-        sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval in(" & asx.Join(",") & ") ORDER BY fldid DESC"                    ''
+        sql = "select " & xFields.Join(",") & " from tblpatdosing where fldencounterval=&1 and fldstarttime<=&2 and DATE_ADD(fldstarttime, INTERVAL flddays DAY)>=&3 and flditemtype=&4 and fldcurval in(" & asx.Join(",") & ") ORDER BY fldid DESC"                    ''
       Endif
-      $rData2 = modDatabase.$myConn.Exec(sql, $encid, True, Now(), DateAdd(Now(), gb.Hour, -3), "Medicines", xCurrent)
+      $rData2 = modDatabase.$myConn.Exec(sql, $encid, Now(), DateAdd(Now(), gb.Hour, -3), "Medicines")
 
     Case "All Types"
       If rblabel.Value = True Then
-        sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 ORDER BY fldid DESC"
+        sql = "select " & xFields.Join(",") & " from tblpatdosing where fldencounterval=&1 and fldstarttime<=&2 and DATE_ADD(fldstarttime, INTERVAL flddays DAY)>=&3 and flditemtype=&4 ORDER BY fldid DESC"
       Else
-        sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus,flduserid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 ORDER BY fldid DESC"                    ''
+        sql = "select " & xFields.Join(",") & " from tblpatdosing where fldencounterval=&1 and fldstarttime<=&2 and DATE_ADD(fldstarttime, INTERVAL flddays DAY)>=&3 and flditemtype=&4 ORDER BY fldid DESC"                    ''
       Endif
-      $rData2 = modDatabase.$myConn.Exec(sql, $encid, True, Now(), DateAdd(Now(), gb.Hour, -3), "Medicines")
+      $rData2 = modDatabase.$myConn.Exec(sql, $encid, Now(), DateAdd(Now(), gb.Hour, -3), "Medicines")
 
   End Select
   $aMyFields2 = New String[]
@@ -1791,27 +1799,38 @@ Private Sub ResizeGrid()
 
   With grdmedicine
     .Columns[0].Width = 1
-    .Columns[1].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 275 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[5].Width = 50 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 25 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 275 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 75 * modBasic.$AppWidthRatio
     .Columns[6].Width = 50 * modBasic.$AppWidthRatio
-    .Columns[7].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[8].Width = 50 * modBasic.$AppWidthRatio
-    .Columns[9].Width = 1
-    .Columns[10].Width = 1
-    .Columns[11].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[7].Width = 50 * modBasic.$AppWidthRatio
+    .Columns[8].Width = 100 * modBasic.$AppWidthRatio
+    If rballdates.Value = True Then
+      .Columns[9].Width = 1
+      .Columns[10].Width = 1
+      .Columns[11].Width = 1
+      .Columns[12].Width = 1
+    Else
+      .Columns[9].Width = 50 * modBasic.$AppWidthRatio
+      .Columns[10].Width = 1
+      .Columns[11].Width = 1
+      .Columns[12].Width = 125 * modBasic.$AppWidthRatio
+    Endif
 
-    .Columns[1].Text = "StartDate"
-    .Columns[2].Text = "Route"
-    .Columns[3].Text = "Medicine"
-    .Columns[4].Text = "Dose"
-    .Columns[5].Text = "Freq"
-    .Columns[6].Text = "Days"
-    .Columns[7].Text = "Status"
-    .Columns[8].Text = "N"
-    .Columns[11].Text = "Disp By"
+    .Columns[2].Text = "StartDate"
+    .Columns[3].Text = "Route"
+    .Columns[4].Text = "Medicine"
+    .Columns[5].Text = "Dose"
+    .Columns[6].Text = "Freq"
+    .Columns[7].Text = "Days"
+    .Columns[8].Text = "Status"
+    If rballdates.Value = True Then
+    Else
+      .Columns[9].Text = "N"
+      .Columns[12].Text = "Order"
+    Endif
   End With
 
 End
@@ -1820,39 +1839,43 @@ Public Sub grdmedicine_Data(Row As Integer, Column As Integer)
 
   $rData2.MoveTo(Row)
   modGeneralMain.GridViewDecoration(grdmedicine, Row)
-  If rballdates.Value = True Then
-    If Column = 0 Then
-      grdmedicine.Data.Text = modReportVar.GetDateTimeReport($rData2[$aMyFields2[Column]], gb.GeneralDate)
-    Else If Column = 3 Then
-      If rblabel.Value = True Then
-        grdmedicine.Data.Text = modPharmacy.GetMedicineDoseInFormat($rData2[$aMyFields2[Column]], "Label")
-      Else
-        grdmedicine.Data.Text = $rData2[$aMyFields2[Column]]
-      Endif
+  If Column = 1 Then
+    If rballdates.Value = True Then
+      grdmedicine.Data.Text = ""
+    Else
+      grdmedicine.Data.Picture = Picture[GetMedStatus($rData2[$aMyFields2[Column]])]
+      grdmedicine.Data.Text = ""
+    Endif
+  Else If Column = 2 Then
+    grdmedicine.Data.Text = modReportVar.GetDateTimeReport($rData2[$aMyFields2[Column]], gb.GeneralDate)
+  Else If Column = 4 Then
+    If rblabel.Value = True Then
+      grdmedicine.Data.Text = modPharmacy.GetMedicineDoseInFormat($rData2[$aMyFields2[Column]], "Label")
     Else
       grdmedicine.Data.Text = $rData2[$aMyFields2[Column]]
     Endif
-
-  Else If rbcurrent.Value = True Then
-    If Column = 1 Then
-      grdmedicine.Data.Text = modReportVar.GetDateTimeReport($rData2[$aMyFields2[Column]], gb.GeneralDate)
-    Else If Column = 4 Then
-      If rblabel.Value = True Then
-        grdmedicine.Data.Text = modPharmacy.GetMedicineDoseInFormat($rData2[$aMyFields2[Column]], "Label")
-      Else
-        grdmedicine.Data.Text = $rData2[$aMyFields2[Column]]
-      Endif
-    Else If Column = 8 Then
-      grdmedicine.Data.Text = modPharmacy.TotalDoseCount($rData2[$aMyFields2[Column]])
-    Else If Column = 11 Then
-      grdmedicine.Data.Text = modGeneral.GetUserFullName($rData2[$aMyFields2[Column]])
-    Else
-      grdmedicine.Data.Text = $rData2[$aMyFields2[Column]]
-    Endif
-
+  Else If Column = 9 Then
+    grdmedicine.Data.Text = modPharmacy.TotalDoseCount($rData2[$aMyFields2[Column]])
+  Else If Column = 12 Then
+    grdmedicine.Data.Text = modGeneral.GetUserFullName($rData2[$aMyFields2[Column]])
+  Else
+    grdmedicine.Data.Text = $rData2[$aMyFields2[Column]]
   Endif
   grdmedicine.Rows[Row].Height = Max(grdmedicine.Rows[Row].Height, grdmedicine.Data.Font.RichTextHeight(grdmedicine.Data.Text, grdmedicine.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (grdmedicine.Rows.Height - grdmedicine.Font.Height))
   grdmedicine.Data.WordWrap = True
+
+End
+
+Private Function GetMedStatus(sBool As Boolean) As String
+
+  Dim xx As String
+
+  If sBool = False Then
+    xx = "icons/coll5.png"
+  Else
+    xx = ""
+  Endif
+  Return xx
 
 End
 
@@ -2028,19 +2051,6 @@ Private Sub ShowOldEntry()
   End With
 
 End
-
-''------------- New format -------------
-' Public Sub btnmedicine_Click()
-'
-'   Dim hForm As FmMedPrescribe
-'
-'   If cmbdisctype.Text Then
-'     hForm = New FmMedPrescribe($encid, cmbdisctype.Text, $status, $ClinicianLst)
-'     hForm.ShowModal
-'     FillDosingGrid()
-'   Endif
-'
-' End
 
 ''======================= Protocols =======================
 Public Sub btnaddprotocol_Click()

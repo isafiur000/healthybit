@@ -432,6 +432,8 @@ Public Sub cmdrepo_Click()
   Dim xList As String[]
 
   TabStrip1.Index = 0
+  modMisc.GetDateRangeSetting(dtfir, dtlast)
+
   Inc Application.Busy
   xFldList = GetSQLColumns()
   If rbsel.Value = True Then

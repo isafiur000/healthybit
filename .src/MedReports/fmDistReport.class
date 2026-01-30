@@ -54,6 +54,8 @@ End
 
 Public Sub btnrefresh_Click()
 
+  modMisc.GetDateRangeSetting(dtfir, dtlast)
+
   Inc Application.Busy
   ProgressBar1.Value = 0
   If cmbcategory.Text = "Consultation Summary" Then

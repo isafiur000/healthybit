@@ -167,6 +167,8 @@ End
 
 Public Sub chkok_Click()
 
+  modMisc.GetDateRangeSetting(dtfir, dtlast)
+
   Inc Application.Busy
   FillGridView()
   Dec Application.Busy

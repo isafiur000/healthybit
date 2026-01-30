@@ -13,7 +13,15 @@ End
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
+  modGeneralMain.ShowFormSizeParam(Me)
   hViewVital = New FmVitalView($encid, Panel1)
+
+End
+
+Public Sub Form_Close()
+
+  modGeneralMain.SaveFormArrangement(Me)
+  modGeneralMain.SaveFormSizeParam(Me)
 
 End
 
@@ -248,45 +256,43 @@ Private Function ColorList(i As Integer) As Integer
   Else If i = 3 Then
     xx = Color.Orange
   Else If i = 4 Then
-    xx = Color.Cyan
+    xx = Color.Yellow
   Else If i = 5 Then
-    xx = Color.Gray
+    xx = Color.Red
   Else If i = 6 Then
-    xx = Color.Magenta
+    xx = Color.Violet
   Else If i = 7 Then
-    xx = Color.Orange
-  Else If i = 8 Then
-    xx = Color.Pink
-  Else If i = 9 Then
-    xx = Color.Red
-  Else If i = 10 Then
-    xx = Color.Violet
-  Else If i = 11 Then
-    xx = Color.Yellow
-  Else If i = 12 Then
-    xx = Color.Black
-  Else If i = 13 Then
-    xx = Color.Blue
-  Else If i = 14 Then
-    xx = Color.Green
-  Else If i = 15 Then
-    xx = Color.Orange
-  Else If i = 16 Then
     xx = Color.Cyan
-  Else If i = 17 Then
+  Else If i = 8 Then
     xx = Color.Gray
-  Else If i = 18 Then
+  Else If i = 9 Then
     xx = Color.Magenta
-  Else If i = 19 Then
-    xx = Color.Orange
-  Else If i = 20 Then
+  Else If i = 10 Then
     xx = Color.Pink
-  Else If i = 21 Then
-    xx = Color.Red
-  Else If i = 22 Then
-    xx = Color.Violet
-  Else If i = 23 Then
+
+  Else If i = 11 Then
+    xx = Color.Black
+  Else If i = 12 Then
+    xx = Color.Blue
+  Else If i = 13 Then
+    xx = Color.Green
+  Else If i = 14 Then
+    xx = Color.Orange
+  Else If i = 15 Then
     xx = Color.Yellow
+  Else If i = 16 Then
+    xx = Color.Red
+  Else If i = 17 Then
+    xx = Color.Violet
+  Else If i = 18 Then
+    xx = Color.Cyan
+  Else If i = 19 Then
+    xx = Color.Gray
+  Else If i = 20 Then
+    xx = Color.Magenta
+  Else If i = 21 Then
+    xx = Color.Pink
+
   Endif
 
   Return xx

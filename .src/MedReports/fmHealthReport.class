@@ -75,6 +75,8 @@ Public Sub btngenerate_Click()
 
   Dim xPath As String
 
+  modMisc.GetDateRangeSetting(dtfir, dtlast)
+
   Inc Application.Busy
   If cmbcolumn.Text = "Age Group" Or If cmbcolumn.Text = "Age Group (Gender)" Then
     xPath = modRHTMLHealth.SummarySelectedAgeEncounter(modDatabase.$syConn, dtfir.Value, dtlast.Value, cmbrow.Text, cmbcolumn.Text, cmbpackage.Text, cmbcomp.Text, cmbvisit.Text, cmbstatus.Text, cmblocation.Text, cmbvalue.Text)

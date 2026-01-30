@@ -362,8 +362,10 @@ Public Sub btnfilldata_Click()
   Dim xitem As String
   Dim xFldList As String[]
 
-  Inc Application.Busy
   TabStrip1.Index = 0
+  modMisc.GetDateRangeSetting(dtfir, dtlast)
+
+  Inc Application.Busy
   xFldList = GetSQLColumns()
   If rbsel.Value = True Then
     If chkcustom.Value = True Then

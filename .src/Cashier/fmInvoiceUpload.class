@@ -166,6 +166,8 @@ End
 
 Public Sub chkok_Click()
 
+  modMisc.GetDateRangeSetting(dtfir, dtlast)
+
   Inc Application.Busy
   FillGridView()
   Dec Application.Busy
@@ -284,7 +286,9 @@ End
 
 Public Sub GridView1_Click()
 
+  Dim rsx As Result
   Dim res As Result
+  Dim xpatNo As String
 
   $RepoList = New String[]
   btnupload.Text = "Upload"
@@ -292,12 +296,19 @@ Public Sub GridView1_Click()
   txttotal.Value = GridView1[GridView1.Row, 7].Text
 
   txtgridencid.Text = GridView1[GridView1.Row, 2].Text
-  res = modDatabase.$myConn.Exec("select fldserviceid,fldidentify from tblsociallist where fldpatientval=&1", modPatient.GetPatientNoByEnc(GridView1[GridView1.Row, 2].Text))
-  If res.Available And If res.Count = 1 Then
-    txtssucode.Text = res["fldserviceid"]
-    txtdiseaseid.Text = res["fldidentify"]
+  xpatNo = modPatient.GetPatientNoByEnc(GridView1[GridView1.Row, 2].Text)
+  rsx = modDatabase.$myConn.Exec("select fldserviceid,fldidentify from tblsociallist where fldpatientval=&1 and flddisctype=&2", xpatNo, cmbaccount.Text)
+  If rsx.Available Then
+    txtssucode.Text = rsx["fldserviceid"]
+    txtdiseaseid.Text = rsx["fldidentify"]
   Else
-    txtssucode.Text = modPatient.GetPatientExtCOdebyEnc(GridView1[GridView1.Row, 2].Text)
+    res = modDatabase.$myConn.Exec("select fldserviceid,fldidentify from tblsociallist where fldpatientval=&1", xpatNo)
+    If res.Available And If res.Count = 1 Then
+      txtssucode.Text = res["fldserviceid"]
+      txtdiseaseid.Text = res["fldidentify"]
+    Else
+      txtssucode.Text = modPatient.GetPatientExtCOdebyEnc(GridView1[GridView1.Row, 2].Text)
+    Endif
   Endif
 
   txtinvoice.Text = GridView1[GridView1.Row, 0].Text

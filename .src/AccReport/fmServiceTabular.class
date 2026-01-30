@@ -75,6 +75,7 @@ Public Sub btngenerate_Click()
 
   Dim xPath As String
 
+  modMisc.GetDateRangeSetting(dtfir, dtlast)
   If cmbcolumn.Text Then
     Inc Application.Busy
     xPath = modRHTMLSummary.SummaryServiceAccTabular(modDatabase.$syConn, dtfir.Value, dtlast.Value, cmbcolumn.Text, cmbitemtype.Text, GetInvoiced(), cmblocation.Text, cmbvalue.Text)                                                                       ''

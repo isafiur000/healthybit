@@ -294,6 +294,8 @@ Public Sub btnshow_Click()
     aCon = modDatabase.$syConn
   Endif
 
+  modMisc.GetDateRangeSetting(dtfir, dtlast)
+
   GetFieldList()
   If rbselect.Value = True Then
     If lstitem.Selection.Count Then

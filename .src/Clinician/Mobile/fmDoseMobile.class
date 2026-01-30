@@ -82,14 +82,16 @@ End
 Private Sub LoadControlsWeb()
 
   Dim i As Integer
-  Dim sql As String
+  Dim sql1 As String
+  Dim sql2 As String
   Dim xunit As String
   Dim xtime As Date
 
   i = 0
   $sColl = New Collection
-  sql = "select fldid,fldroute,flditem,flddose,fldfreq,flddays,fldstatus,fldstarttime,fldendtime,flddosecount,flddirection from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and fldroute<>&5 and flditemtype=&6 and fldcurval=&7"
-  $rData = modDatabase.$myConn.Exec(sql, $encid, True, Now(), DateAdd(Now(), gb.Hour, -3), "fluid", "Medicines", "Continue")
+  sql1 = "select fldid,fldroute,flditem,flddose,fldfreq,flddays,fldstatus,fldstarttime,fldendtime,flddosecount,flddirection,fldsave_order from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and fldroute<>&5 and flditemtype=&6 and fldcurval=&7"
+  sql2 = "select fldid,fldroute,flditem,flddose,fldfreq,flddays,fldstatus,fldstarttime,fldendtime,flddosecount,flddirection,fldsave_order from tblpatdosing where fldencounterval=&1 and fldsave_order=&8 and fldstarttime<=&3 and DATE_ADD(fldstarttime, INTERVAL flddays DAY)>=&4 and fldroute<>&5 and flditemtype=&6 and fldcurval=&7"
+  $rData = modDatabase.$myConn.Exec(sql1 & " UNION " & sql2, $encid, True, Now(), DateAdd(Now(), gb.Hour, -3), "fluid", "Medicines", "Continue", False)
   If $rData.Available Then
 
     For Each $rData
@@ -126,6 +128,9 @@ Private Sub LoadControlsWeb()
           With aNameLabel[i]
             .Height = 25 * AppFactor
             .Text = "<b>" & $rData["flditem"] & "</b>"
+            If $rData["fldsave_order"] = False Then
+              .Foreground = Color.Red
+            Endif
             .Tag = i
           End With
 
@@ -169,6 +174,7 @@ Private Sub LoadControlsWeb()
           With aQuantiBox[i]
             .Width = 75 * AppFactor
             .Height = 25 * AppFactor
+            .Enabled = $rData["fldsave_order"]
             .Tag = i
           End With
           xunit = modPharmLabel.GetDosageFormForLabel($rData["flditem"], "Inpatient")

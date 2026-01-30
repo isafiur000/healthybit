@@ -148,7 +148,7 @@ Private Sub SetOptions()
     rbweek.Text = "1 Week"
     ListContainer1.Visible = True
     Panel6.Visible = False
-    pnlgridentry.Visible = False
+    ScrollView1.Visible = False
 
   Else If rbtable.Value = True Then
     rballday.Visible = False
@@ -159,7 +159,7 @@ Private Sub SetOptions()
     rbweek.Text = "Monthly"
     ListContainer1.Visible = False
     Panel6.Visible = True
-    pnlgridentry.Visible = True
+    ScrollView1.Visible = True
 
   Endif
 
@@ -184,23 +184,25 @@ Private Sub LoadTablesExam()
 
   Dim i As Integer
   Dim j As Integer
+  Dim xdiff As Integer
 
+  xdiff = 0 - spncolumn.Value
   GridView2.Clear()
   GridView2.Rows.Count = $xParamVar.Count
   If rboneday.Value = True Then
-    xfir = modDate.StartSqlTenMinute(DateAdd(Now(), gb.Minute, -240))
+    xfir = modDate.StartSqlTenMinute(DateAdd(Now(), gb.Minute, xdiff * 10))
     xlast = modDate.StartSqlTenMinute(DateAdd(Now(), gb.Minute, 10))
     xcolm = (DateDiff(xfir, xlast, gb.Minute) / 10)
   Else If rbtwoday.Value = True Then
-    xfir = modDate.StartSqlHour(DateAdd(Now(), gb.Hour, -24))
+    xfir = modDate.StartSqlHour(DateAdd(Now(), gb.Hour, xdiff))
     xlast = modDate.StartSqlHour(DateAdd(Now(), gb.Hour, 1))
     xcolm = DateDiff(xfir, xlast, gb.Hour)
   Else If rbthreeday.Value = True Then
-    xfir = modDate.StartSqlDate(DateAdd(Now(), gb.Day, -24))
+    xfir = modDate.StartSqlDate(DateAdd(Now(), gb.Day, xdiff))
     xlast = modDate.StartSqlDate(DateAdd(Now(), gb.Day, 1))
     xcolm = DateDiff(xfir, xlast, gb.Day)
   Else If rbweek.Value = True Then
-    xfir = modDate.StartSqlMonth(DateAdd(Now(), gb.Month, -24))
+    xfir = modDate.StartSqlMonth(DateAdd(Now(), gb.Month, xdiff))
     xlast = modDate.StartSqlMonth(DateAdd(Now(), gb.Month, 1))
     xcolm = DateDiff(xfir, xlast, gb.Month)
   Endif
@@ -413,8 +415,8 @@ Private Sub GetDataEntry()
     If $xParamVar[i]["Component"] Then
     Else
       If $xParamVar[i]["Category"] = "Examination" Then
+        bObj1[i] = New TextLabel(pnlgridentry) As "ExamLabelGroup"
         bObHBox[i] = New HBox(pnlgridentry)
-        bObj1[i] = New TextLabel(bObHBox[i]) As "ExamLabelGroup"
         If $xParamVar[i]["Type"] = "Quantitative" Then
           bObVal[i] = New ValueBox(bObHBox[i])
           bObButt[i] = New ToolButton(bObHBox[i]) As "SaveExam"
@@ -434,21 +436,24 @@ End
 Private Sub ShowEntryControls()
 
   Dim i As Integer
+  Dim xcount As Integer
 
+  xcount = 0
   For i = 0 To $xParamVar.Count - 1
     If $xParamVar[i]["Component"] Then
     Else
       If $xParamVar[i]["Category"] = "Examination" Then
 
+        With bObj1[i]
+          .Height = 24 * AppFactor
+          ' .Width = pnlgridentry.Width
+          .Text = $xParamVar[i]["Examination"]
+          .Tag = i
+        End With
+
         With bObHBox[i]
           .Height = 24 * AppFactor
           .Tag = $xParamVar[i]["Constant"]
-        End With
-
-        With bObj1[i]
-          .Expand = True
-          .Text = $xParamVar[i]["Examination"]
-          .Tag = i
         End With
 
         If $xParamVar[i]["Type"] = "Quantitative" Then
@@ -464,7 +469,8 @@ Private Sub ShowEntryControls()
 
         Else
           With bObBox[i]
-            .Width = 100 * AppFactor
+            .Expand = True
+            ' .Width = 200 * AppFactor
             .List = Split($xParamVar[i]["OptionValues"], ";")
             .Tag = i
           End With
@@ -480,9 +486,12 @@ Private Sub ShowEntryControls()
           .Height = 15 * AppFactor
         End With
 
+        xcount = xcount + 1
       Endif
     Endif
   Next
+
+  pnlgridentry.Height = xcount * (24 + 24 + 20) * AppFactor
 
 End
 
@@ -517,8 +526,6 @@ End
 Private Sub LoadControls()
 
   Dim i As Integer
-  Dim j As Integer
-  Dim sColl As Collection
 
   If ListContainer1.Children.Count Then
     ListContainer1.Children.Clear()

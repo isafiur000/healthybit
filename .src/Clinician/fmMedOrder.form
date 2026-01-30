@@ -46,7 +46,7 @@
   }
   { TabPanel1 TabPanel
     MoveScaled(0,9,112,56)
-    Count = 6
+    Count = 7
     Index = 0
     Text = ("Current [F1]")
     { grdmedicine GridView
@@ -269,6 +269,16 @@
       Mode = Select.Single
       Header = GridView.Both
     }
+    Index = 6
+    Text = ("CPOE")
+    { ScrollView1 ScrollView
+      MoveScaled(1,1,110,50)
+      { pnlcpoe Panel
+        MoveScaled(0,0,74,35)
+        Arrangement = Arrange.Vertical
+        AutoResize = True
+      }
+    }
     Index = 0
   }
   { Panel3 Panel
@@ -316,6 +326,5 @@
   { chknotice CheckBox
     MoveScaled(41,5,11,3)
     Text = ("Notify")
-    Value = CheckBox.True
   }
 }
