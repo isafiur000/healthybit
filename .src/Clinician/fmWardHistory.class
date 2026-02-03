@@ -323,6 +323,7 @@ Private Sub BlockDCButton()
   dtdob.Enabled = xx
   btnpic.Enabled = xx
   btnconsult.Enabled = xx
+  btnpharm.Enabled = xx
 
 End
 
@@ -1277,10 +1278,16 @@ End
 Public Sub btnpacs_Click()
 
   Dim hForm As FmPacsFind
+  Dim hForm1 As FmWebKitNormal
 
   If txtencid.Text Then
-    hForm = New FmPacsFind(Trim(txtencid.Text), "Visit")
-    hForm.ShowModal
+    If modBasic.$RadioPACSForm = "Embedded" Then
+      hForm1 = New FmWebKitNormal("", Trim(txtencid.Text), "PACS")
+      modWorkSpace.Add(hForm1)
+    Else
+      hForm = New FmPacsFind(Trim(txtencid.Text), "Visit")
+      hForm.ShowModal
+    Endif
   Endif
 
 End

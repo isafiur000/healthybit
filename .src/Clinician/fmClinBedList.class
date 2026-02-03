@@ -1649,10 +1649,16 @@ End
 Public Sub btnmobpacs_Click()
 
   Dim hForm As FmPacsFind
+  Dim hForm1 As FmWebKitNormal
 
   If GridView1.Rows.Selection.Count Then
-    hForm = New FmPacsFind(GridView1[GridView1.Row, 4].Text, "Visit")
-    hForm.ShowModal
+    If modBasic.$RadioPACSForm = "Embedded" Then
+      hForm1 = New FmWebKitNormal("", GridView1[GridView1.Row, 4].Text, "PACS")
+      modWorkSpace.Add(hForm1)
+    Else
+      hForm = New FmPacsFind(GridView1[GridView1.Row, 4].Text, "Visit")
+      hForm.ShowModal
+    Endif
   Endif
 
 End
@@ -2822,11 +2828,14 @@ Private Function AddMedicineRequest(encid As String, sStatus As String) As Integ
 
       rex = modDatabase.$myConn.Exec("select fldid from tblpatdosing where fldencounterval=&1 and fldstarttime>=&2 and fldstarttime<=&3 and flditemtype=&4 and fldcurval=&5 and flddays=&6 and flditem=&7", encid, modDate.StartSqlDate(Now()), modDate.EndSqlDate(Now()), "Medicines", "Continue", 0, res["flditem"])
       If rex.Available = False Then
-
         itemtype = modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"])
-        CPharmFix = New CFixRatePharmacy(itemtype, res["flditem"], res["fldbillingmode"])
-        xfixrate = CPharmFix.GetFixRate()
-        xfixname = CPharmFix.GetFixItem()
+
+        If modBasic.$BillPharmFixedModes.Exist(res["fldbillingmode"]) = True Then
+          CPharmFix = New CFixRatePharmacy(itemtype, res["flditem"], res["fldbillingmode"])
+          xfixrate = CPharmFix.GetFixRate()
+          xfixname = CPharmFix.GetFixItem()
+        Endif
+
         itemmode = res["fldbillingmode"]
         xtax = modNonMedical.ShowTaxValues(itemtype, res["flditem"])
         xdisc = modNonMedical.DiscPercentForCategoryValue(encid, res["flddisctype"], itemtype, res["flditem"], itemmode)

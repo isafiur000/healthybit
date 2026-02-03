@@ -464,6 +464,10 @@ Private Sub ButtonControl()
   xx = modPatient.EnableClinicForm(txtnow.Text)
   TreeView1.Enabled = xx
   GridView1.Enabled = xx
+  btnlabs.Enabled = xx
+  btnpharm.Enabled = xx
+  btnradio.Enabled = xx
+  btngenservice.Enabled = xx
   If $UserRestrict Then
     UserAccessRestrict()
   Endif

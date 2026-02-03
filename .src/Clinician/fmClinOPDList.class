@@ -1285,10 +1285,16 @@ End
 Public Sub btnmobpacs_Click()
 
   Dim hForm As FmPacsFind
+  Dim hForm1 As FmWebKitNormal
 
   If GridView1.Rows.Selection.Count Then
-    hForm = New FmPacsFind(GridView1[GridView1.Row, 2].Text, "Visit")
-    hForm.ShowModal
+    If modBasic.$RadioPACSForm = "Embedded" Then
+      hForm1 = New FmWebKitNormal("", GridView1[GridView1.Row, 2].Text, "PACS")
+      modWorkSpace.Add(hForm1)
+    Else
+      hForm = New FmPacsFind(GridView1[GridView1.Row, 2].Text, "Visit")
+      hForm.ShowModal
+    Endif
   Endif
 
 End

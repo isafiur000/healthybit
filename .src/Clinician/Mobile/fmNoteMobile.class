@@ -91,8 +91,8 @@ Private Sub SHowNotesGrid()
     xType = "Transfer Note"
   Endif
 
-  sql1 = "select fldtime,flddetail,fldreportquali,flduserid,fldtime from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem=&3"
-  sql2 = "select fldtime,flddetail,fldreportquali,flduserid,fldtime from tblpatientnotes where fldencounterval=&1 and fldinput=&2 and flditem=&3"
+  sql1 = "select fldtime,flddetail,fldreportquali,flduserid from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem=&3"
+  sql2 = "select fldtime,flddetail,fldreportquali,flduserid from tblpatientnotes where fldencounterval=&1 and fldinput=&2 and flditem=&3"
   $rData = modDatabase.$myConn.Exec(sql1 & " UNION ALL " & sql2 & " ORDER BY fldtime DESC", $encid, "Notes", xType)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)

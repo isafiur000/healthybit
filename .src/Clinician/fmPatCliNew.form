@@ -91,7 +91,7 @@
       Text = ("Follow Up")
     }
     { mnupatcomment Menu
-      Text = ("Comment")
+      Text = ("Ln Med Rec")
     }
   }
   { mnucurrent Menu
@@ -1328,26 +1328,30 @@
             Border = Border.Plain
             Text = ("Follow Up Date")
           }
+          { txtclinmode TextBox
+            MoveScaled(46,0,5,3)
+            Visible = False
+          }
         }
         { pnlsaveoutcome Panel
-          MoveScaled(0,19,53,4)
+          MoveScaled(0,19,56,4)
           { btnnotice Button
             MoveScaled(1,0.5,11,3)
             Text = ("Notice")
           }
           { btnoutcome Button
-            MoveScaled(26,0.5,13,3)
+            MoveScaled(29,0.5,13,3)
             Text = ("Save")
             Picture = Picture["icon:/small/apply"]
           }
           { btnopreport Button
-            MoveScaled(39,0.5,13,3)
+            MoveScaled(42,0.5,13,3)
             Text = ("Report")
             Picture = Picture["icon:/small/html"]
           }
-          { txtclinmode TextBox
-            MoveScaled(12,0.5,6,3)
-            Visible = False
+          { chkarchive CheckBox
+            MoveScaled(15,0.5,10,3)
+            Text = ("Archive")
           }
         }
         { txtcomment TextHTML

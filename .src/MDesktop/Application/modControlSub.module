@@ -186,6 +186,36 @@ Public Sub DisplayReportExport(sPath As String) As String
 
 End
 
+''for PACS
+Public Sub OpenBrowserNormal(sPath As String, encid As String, sType As String)
+
+  Dim hFormKit As FmWebKitNormal
+  Dim sTarget As String
+
+  If InStr(sPath, "http://") Then
+    sTarget = sPath
+  Else If InStr(sPath, "https://") Then
+    sTarget = sPath
+  Else If InStr(sPath, "file://") Then
+    sTarget = sPath
+  Else
+    sTarget = "file://" & sPath
+  Endif
+
+  If modBasic.$browserFormat = "External" Then                                             ''
+    modDevice.DesktopOpenFile(sTarget)
+  Else If modBasic.$browserFormat = "RightPanel" Then
+    modGeneralMain.$RightAdView.Url = sTarget
+    modGeneralMain.$RightPanelPathList.Add(sTarget)
+    modGeneralMain.$RightPanelPointer = 0
+    modGeneralMain.$RightAdView.Refresh()
+  Else
+    hFormKit = New FmWebKitNormal(sTarget, encid, sType)
+    modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Add(hFormKit)
+  Endif
+
+End
+
 ''do not open pop up form (use for html created from other apps like PSPP)
 Public Sub OpenBrowser(sPath As String)
 

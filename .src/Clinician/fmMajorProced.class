@@ -207,39 +207,39 @@ Public Sub btnsaveproc_Click()
   Dim res As Result
   Dim xadv As String
 
-  Inc Application.Busy
-  res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval=&1 and flditemtype=&2 and fldsave=&3 and fldstatus=&4 and fldordcomp=&5 and (fldtarget=&6 or fldtarget=&7)", $encid, "Procedures", False, "Punched", modBasic.$compID, "Major", "Intermediate")                 ''
-  If res.Available Then
-    If modBasic.$AutoBillAdvReceipt = "Enable" Then
-      xadv = modBillLock.AdvanceReceiptString("Advance Receipt")
-    Else
-      xadv = ""
-    Endif
-
-    For Each res
-
-      If modBasic.$AutoBillProcedure = "Standard" Then
-        If modNonMedical.AllowPreCheckDeposit($encid, "Procedure", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsaveproc) = True Then
-          SavePartialEntry(res, xadv)
-        Endif
-      Else If modBasic.$AutoBillProcedure = "Full" Then
-        If modNonMedical.AllowPreEntryWithDeposit($encid, "Procedure", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsaveproc) = True Then
-          SavePartialEntry(res, xadv)
-        Endif
+  If Message.Question("Are you sure to lock deposit for this procedure?", ("No"), ("Yes")) = 2 Then
+    Inc Application.Busy
+    res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval=&1 and flditemtype=&2 and fldsave=&3 and fldstatus=&4 and fldordcomp=&5 and (fldtarget=&6 or fldtarget=&7)", $encid, "Procedures", False, "Punched", modBasic.$compID, "Major", "Intermediate")                 ''
+    If res.Available Then
+      If modBasic.$AutoBillAdvReceipt = "Enable" Then
+        xadv = modBillLock.AdvanceReceiptString("Advance Receipt")
       Else
-        If modBasic.$AutoBillSaveZero = "Yes" And If res["flditemrate"] = 0 Then
-          SavePartialEntry(res, xadv)
-        Else If modBasic.$AutoBillSaveZero = "Yes" And If res["flddiscper"] = 100 Then
-          SavePartialEntry(res, xadv)
-        Else If modBasic.$AutoBillSaveFullCredit = "Yes" And If res["fldbilltype"] = "Credit" And If res["fldcashincredit"] = 0 Then
-          SavePartialEntry(res, xadv)
-        Endif
+        xadv = ""
       Endif
 
-    Next
+      For Each res
+        If modBasic.$AutoBillProcedure = "Standard" Then
+          If modNonMedical.AllowPreCheckDeposit($encid, "Procedure", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsaveproc) = True Then
+            SavePartialEntry(res, xadv)
+          Endif
+        Else If modBasic.$AutoBillProcedure = "Full" Then
+          If modNonMedical.AllowPreEntryWithDeposit($encid, "Procedure", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsaveproc) = True Then
+            SavePartialEntry(res, xadv)
+          Endif
+        Else
+          If modBasic.$AutoBillSaveZero = "Yes" And If res["flditemrate"] = 0 Then
+            SavePartialEntry(res, xadv)
+          Else If modBasic.$AutoBillSaveZero = "Yes" And If res["flddiscper"] = 100 Then
+            SavePartialEntry(res, xadv)
+          Else If modBasic.$AutoBillSaveFullCredit = "Yes" And If res["fldbilltype"] = "Credit" And If res["fldcashincredit"] = 0 Then
+            SavePartialEntry(res, xadv)
+          Endif
+        Endif
+      Next
+    Endif
+    Dec Application.Busy
+    SHowUnpaidGrid()
   Endif
-  Dec Application.Busy
-  SHowUnpaidGrid()
 
 End
 

@@ -1,0 +1,93 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,120.625,75)
+  Expand = True
+  Text = ("Report View")
+  Arrangement = Arrange.Fill
+  { Panel1 Panel
+    MoveScaled(0,0,120,74)
+    Expand = True
+    Arrangement = Arrange.Vertical
+    { Panel2 Panel
+      MoveScaled(0,1,118,3)
+      { Slider1 SliderBox
+        MoveScaled(82,0,35,3)
+        MinValue = 1
+        MaxValue = 1000
+        Step = 10
+        Value = 100
+      }
+      { txtprintcount ValueBox
+        MoveScaled(1,0,4,3)
+        Text = ("1")
+      }
+      { btnarchive Button
+        MoveScaled(19,0,12,3)
+        Enabled = False
+        ToolTip = ("Shortcut: CTRL + A")
+        Text = ("Archive")
+        Picture = Picture["icon:/small/save"]
+      }
+      { btnclose Button
+        MoveScaled(32,0,12,3)
+        ToolTip = ("Shortcut: CTRL + X")
+        Text = ("Close")
+        Picture = Picture["icon:/small/close"]
+      }
+      { btnsource Button
+        MoveScaled(6,0,12,3)
+        Enabled = False
+        Text = ("PACS")
+        Picture = Picture["icon:/small/database"]
+      }
+    }
+    { Panel3 Panel
+      MoveScaled(1,7,105,58)
+      Expand = True
+      Arrangement = Arrange.Horizontal
+      { SidePanel1 SidePanel
+        MoveScaled(1,1,39,55)
+        Arrangement = Arrange.Vertical
+        Orientation = Align.Left
+        Border = True
+        Separator = True
+        Hidden = True
+        { Panel4 Panel
+          MoveScaled(0,0,38,28)
+          Expand = True
+          Arrangement = Arrange.Horizontal
+          Spacing = True
+          { cmbserver ListBox
+            MoveScaled(0,0,11,28)
+          }
+          { GridView1 GridView
+            MoveScaled(17,2,15,17)
+            Expand = True
+            Mode = Select.Single
+            AutoResize = False
+          }
+        }
+        { Panel5 Panel
+          MoveScaled(-1,28,39,4)
+          { btnwebview Button
+            MoveScaled(25,0.5,13,3)
+            Text = ("Load")
+            Picture = Picture["icon:/small/refresh"]
+          }
+        }
+        { GridView2 GridView
+          MoveScaled(5,35,28,17)
+          Expand = True
+          Mode = Select.Single
+          Header = GridView.Vertical
+          AutoResize = False
+        }
+      }
+      { WebView1 WebView
+        MoveScaled(53,5,49,32)
+        Expand = True
+      }
+    }
+  }
+}

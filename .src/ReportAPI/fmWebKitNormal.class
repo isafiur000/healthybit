@@ -1,26 +1,90 @@
 ' Gambas class file
 
-Private $encNo As String
+Private $sLink As String
+Private $encid As String
 Private $sType As String
-Private $sIndex As Long
 
 Private $encList As String[]
-Private $encid As String
 Private $sFind As String
 Private $sGet As String
 Private $ssL As String
 Private xGridData As Variant[]
 
-Public Sub _new(encid As String, sType As String)
+Public Sub _new(sLink As String, encid As String, sType As String)
 
-  $encNo = encid
+  $sLink = sLink
+  $encid = encid
   $sType = sType
 
 End
 
 Public Sub Form_Open()
 
-  modGeneralMain.ArrangeFormCentre(Me, "False")
+  If $sLink Then
+    SidePanel1.Hidden = True
+    Inc Application.Busy
+    WebView1.Url = $sLink
+    If modBasic.$WebZoomValue Then
+      Slider1.Value = modBasic.$WebZoomValue * 100
+      WebView1.Zoom = Slider1.Value / 100
+    Endif
+    Dec Application.Busy
+  Else
+    SidePanel1.Hidden = False
+  Endif
+
+  If $sType = "PACS" Then
+    btnsource.Enabled = True
+    LoadPacsNodes()
+  Endif
+
+End
+
+Public Sub WebView1_Load()
+
+  WebView1.Enabled = True
+
+End
+
+Public Sub Slider1_Change()
+
+  Inc Application.Busy
+  WebView1.Zoom = Slider1.Value / 100
+  Dec Application.Busy
+
+End
+
+Public Sub btnarchive_Click()
+
+  If SidePanel1.Hidden = True Then
+    SidePanel1.Hidden = False
+  Else If SidePanel1.Hidden = False Then
+    SidePanel1.Hidden = True
+  Endif
+
+End
+
+Public Sub btnclose_Click()
+
+  Me.Close()
+
+End
+
+Public Sub Form_KeyRelease()
+
+  If Key.Control And If Key.Code = Key["X"] Then
+    Me.Close()
+  Else If Key.Control And If Key.Code = Key["P"] Then
+
+  Else If Key.Control And If Key.Code = Key["A"] Then
+    btnarchive_Click()
+  Endif
+
+End
+
+''======================== PACS ==========================
+Private Sub LoadPacsNodes()
+
   cmbserver.List = modMisc.GetPacsServerList()
   If MMain.$SISHAppMode = "HIS" Then
     cmbserver.Add("REPO")
@@ -32,32 +96,17 @@ Public Sub Form_Open()
 
 End
 
-Private Function GetEncounterList() As String[]
+Public Sub btnsource_Click()
 
-  Dim xxx As String[]
-
-  Dim xpatno As String
-
-  xpatno = modPatient.GetPatientNoByEnc($encNo)
-  If cmbserver.Text = "REPO" Then
-    Inc Application.Busy
-    modRepository.TransferMinRemoConn(xpatno)
-    xxx = modPatient.GetEncListFromEncSetting($encNo, modRepository.$RepoCon)
-    Dec Application.Busy
-  Else
-    xxx = modPatient.GetEncListFromEncSetting($encNo)
+  If SidePanel1.Hidden = True Then
+    SidePanel1.Hidden = False
+  Else If SidePanel1.Hidden = False Then
+    SidePanel1.Hidden = True
   Endif
-  Return xxx
 
 End
 
 Public Sub cmbserver_Click()
-
-  ShowPacsData()
-
-End
-
-Public Sub btnrefresh_Click()
 
   ShowPacsData()
 
@@ -101,22 +150,13 @@ Private Sub ShowPacsData()
       $ssL = modSettings.ShowSettingFromFIle(cmbserver.Text & "/" & "UseSSL")
     Endif
 
-    If modPACS.$sNode Then
-      lblip.Text = modPACS.$sNode
-    Else
-      lblip.Text = modPACS.$sHost
-    Endif
-    If $sType = "Visit" Then
-      $encList = [$encNo]
-    Else If $sType = "History" Then
-      $encList = GetEncounterList()
-    Else
-      $encList = [$encNo]
-      $sIndex = CStr($sType)
-      If $sIndex Then
-        btnselect.Enabled = True
-      Endif
-    Endif
+    ' If modPACS.$sNode Then
+    '   lblip.Text = modPACS.$sNode
+    ' Else
+    '   lblip.Text = modPACS.$sHost
+    ' Endif
+
+    $encList = [$encid]
     If modPACS.$sHost And If modPACS.$sAET And If modPACS.$sPPort Then
       FillStudyData()
     Endif
@@ -124,13 +164,6 @@ Private Sub ShowPacsData()
 
 End
 
-Public Sub btncopy_Click()
-
-  Clipboard.Copy(txtstudycode.Text & "@" & modPACS.$sHost & ":" & modPACS.$sPPort)
-
-End
-
-''=============================== First Grid ============================
 Private Function GetStudyData() As Variant[]
 
   Dim Row As Integer
@@ -236,16 +269,16 @@ Private Sub ResizeFirstGrid()
 
   With GridView1
     .Rows.Height = 1.25 * modBasic.$AppGridRowHeight
-    .Columns[0].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[1].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[0].Width = 1
+    .Columns[1].Width = 1
     .Columns[2].Width = 1
     .Columns[3].Width = 175 * modBasic.$AppWidthRatio
     .Columns[4].Width = 50 * modBasic.$AppWidthRatio
     .Columns[5].Width = 1
     .Columns[6].Width = 250 * modBasic.$AppWidthRatio ''StudyUID
 
-    .Columns[0].Text = "Date"
-    .Columns[1].Text = "EncID"
+    ' .Columns[0].Text = "Date"
+    ' .Columns[1].Text = "EncID"
     .Columns[3].Text = "Name"
     .Columns[4].Text = "Sex"
     .Columns[6].Text = "StudyInstanceUID"
@@ -254,63 +287,15 @@ Private Sub ResizeFirstGrid()
 
 End
 
-Public Sub btnsavestudy_Click()
-
-  Dim xdir As String
-
-  If GridView1.Rows.Selection.Count Then
-    If Dialog.SelectDirectory() Then Return
-    xdir = Dialog.Path
-    Inc Application.Busy
-    modPACS.DicomStudyDownload(xdir, $sFind, $sGet, $encid, GridView1[GridView1.Row, 6].Text)
-    Dec Application.Busy
-  Endif
-
-End
-
-Public Sub btnexecstudy_Click()
-
-  Dim xdir As String
-  Dim xdown As String
-  Dim xshow As String
-  Dim arcmd As String[]
-
-  If GridView1.Rows.Selection.Count Then
-    xdir = File.Dir(Temp())
-    xdown = xdir &/ modString.GetNowString() & "down"
-    xshow = xdir &/ modString.GetNowString() & "show"
-    If Exist(xdown) Then
-      Shell "rm -r " & xdown Wait
-    Endif
-    Mkdir xdown
-    If Exist(xshow) Then
-      Shell "rm -r " & xshow Wait
-    Endif
-    Mkdir xshow
-
-    If Exist("/opt/weasis/bin/Weasis") Then
-      Inc Application.Busy
-      modPACS.DicomStudyDownload(xdown, $sFind, $sGet, $encid, GridView1[GridView1.Row, 6].Text)
-      Dec Application.Busy
-      modDevAll.GetZipExtract(xdown &/ GridView1[GridView1.Row, 6].Text, xshow)
-      arcmd = ["/opt/weasis/bin/Weasis", xshow]
-      modBasic.DebugAPIString("Execute " & arcmd.Join(Space(1)))
-      Exec arcmd Wait
-    Endif
-  Endif
-
-End
-
-''========================== Second Grid ==============================
 Public Sub GridView1_Click()
 
   Dim Row As Integer
   Dim xcoll As Collection
   Dim aList As Variant[]
 
+  ' $encid = GridView1[GridView1.Row, 1].Text
+  ' txtstudycode.Text = GridView1[GridView1.Row, 6].Text
   GridView2.Clear
-  $encid = GridView1[GridView1.Row, 1].Text
-  txtstudycode.Text = GridView1[GridView1.Row, 6].Text
   GridView2.Columns.Count = 4
   If $sFind = "Orthanc" Then
     xcoll = modPACS.GetOrthancValueJSON("studies", GridView1[GridView1.Row, 6].Text)
@@ -320,7 +305,6 @@ Public Sub GridView1_Click()
       For Row = 0 To aList.Count - 1
         GridView2[Row, 0].Text = ""
         GridView2[Row, 1].Text = GridView1[GridView1.Row, 6].Text
-        GridView2[Row, 2].Picture = Picture["icon:/tiny/attach"]
         GridView2[Row, 2].Text = ""
         GridView2[Row, 3].Text = aList[Row]
       Next
@@ -333,7 +317,6 @@ Public Sub GridView1_Click()
       For Row = 0 To aList.Count - 1
         GridView2[Row, 0].Text = aList[Row]["00080060"]["Value"][0]
         GridView2[Row, 1].Text = GridView1[GridView1.Row, 6].Text
-        GridView2[Row, 2].Picture = Picture["icon:/tiny/attach"]
         GridView2[Row, 2].Text = ""
         GridView2[Row, 3].Text = aList[Row]["0020000E"]["Value"][0]
       Next
@@ -346,7 +329,6 @@ Public Sub GridView1_Click()
       For Row = 0 To aList.Count - 1
         GridView2[Row, 0].Text = aList[Row]["Modality"]  ''GetDicomValue(FileList[Row], "Modality")
         GridView2[Row, 1].Text = GridView1[GridView1.Row, 6].Text
-        GridView2[Row, 2].Picture = Picture["icon:/tiny/attach"]
         GridView2[Row, 2].Text = ""
         GridView2[Row, 3].Text = aList[Row]["SeriesInstanceUID"]  'GetDicomValue(FileList[Row], "SeriesInstanceUID")
       Next
@@ -361,57 +343,15 @@ Private Sub ResizeSecondGridView()
 
   With GridView2
     .Rows.Height = modBasic.$AppGridRowHeight
-    .Columns[0].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[0].Width = 1
     .Columns[1].Width = 1 ''Study UID
-    .Columns[2].Width = 25 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 1
     .Columns[3].Width = 500 * modBasic.$AppWidthRatio ''series UID
 
-    .Columns[0].Text = "Modality"
+    ' .Columns[0].Text = "Modality"
     .Columns[3].Text = "SeriesInstanceUID"
   End With
   GridView2.Row = 0
-
-End
-
-Public Sub GridView2_Click()
-
-  Dim hForm As FmPACSInstance
-
-  If GridView2.Column = 2 Then
-    If cmbserver.Text Then
-      hForm = New FmPACSInstance(cmbserver.Text, $encid, GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 3].Text)
-      hForm.ShowModal
-    Endif
-  Endif
-
-End
-
-Public Sub btnsave_Click()
-
-  Dim xdir As String
-  Dim xVar As Variant[]
-
-  If GridView2.Rows.Selection.Count Then
-    If Dialog.SelectDirectory() Then Return
-    xdir = Dialog.Path
-    Inc Application.Busy
-    If $sGet = "Orthanc" And If chkanonym.Value = False Then
-      modPACS.DicomSeriesDownload(xdir, $sFind, $encid, GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 3].Text)
-    Else
-      xVar = modPACS.GetDicomDIR($sFind, xdir &/ GridView2[GridView2.Row, 3].Text, $encid, GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 3].Text, chkanonym.Value)                ''
-    Endif
-    Dec Application.Busy
-  Endif
-
-End
-
-Public Sub btndesktop_Click()
-
-  If GridView2.Rows.Selection.Count Then
-    Inc Application.Busy
-    modPACS.DicomSeriesAppView($sFind, $encid, GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 3].Text, chkanonym.Value)
-    Dec Application.Busy
-  Endif
 
 End
 
@@ -421,32 +361,7 @@ Public Sub btnwebview_Click()
 
   If GridView2.Rows.Selection.Count Then
     xLink = modPACS.DicomSeriesWebView($sFind, $encid, GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 3].Text)
-    modControlSub.OpenBrowserNormal(xLink, $encNo, "PACS")
-  Endif
-
-End
-
-Public Sub Form_Close()
-
-  MMain.InitialAppMode()
-
-End
-
-Public Sub btnselect_Click()
-
-  Dim res As Result
-
-  If GridView2.Rows.Selection.Count Then
-    res = modDatabase.$myConn.Edit("tblpatradiotest", "fldid=&1", $sIndex)
-    If res.Available Then
-      res["fldpacstudy"] = GridView2[GridView2.Row, 1].Text
-      res["fldpacseries"] = GridView2[GridView2.Row, 3].Text
-      res["fldpacsform"] = $sFind
-      res.Update
-      Balloon.Info(("Information updated"), btnselect)
-      Balloon.Delay = modBasic.$BalloonDelay
-    Endif
-
+    WebView1.Url = xLink
   Endif
 
 End

@@ -19,27 +19,38 @@
   { cmbtarget ComboBox
     MoveScaled(15,5,18,3)
   }
+  { btnrefresh Button
+    MoveScaled(34,5,11,3)
+    Text = ("Show")
+    Picture = Picture["icon:/small/refresh"]
+  }
   { cmbtype ComboBox
     MoveScaled(15,9,18,3)
+  }
+  { btnlist ToolButton
+    MoveScaled(34,9,4,3)
+    Picture = Picture["icon:/small/refresh"]
   }
   { cmbtest ComboBox
     MoveScaled(15,13,53,3)
     Sorted = True
   }
+  { txtqty ValueBox
+    MoveScaled(15,17,7,3)
+  }
   { btnBrOK Button
-    MoveScaled(45,17,11.5,3.25)
+    MoveScaled(44,17,11.5,3.25)
     Text = Shortcut(("Save"), "S")
     Picture = Picture["icon:/small/add"]
   }
-  { btnexport Button
-    MoveScaled(57,17,11.25,3.25)
-    Text = ("Export")
-    Picture = Picture["icon:/small/file"]
-  }
   { btnadd2 Button
-    MoveScaled(1,17,11.25,3)
+    MoveScaled(56,17,11.25,3)
     Text = ("List")
     Picture = Picture["icon:/small/file"]
+  }
+  { btnexport Button
+    MoveScaled(67,17,5,3)
+    Picture = Picture["icon:/small/html"]
   }
   { GridView1 GridView
     MoveScaled(1,21,71,36)
@@ -71,13 +82,9 @@
     MoveScaled(46,5,23,3)
     Border = Border.Plain
   }
-  { btnrefresh Button
-    MoveScaled(34,5,11,3)
-    Text = ("Show")
-    Picture = Picture["icon:/small/refresh"]
-  }
-  { btnlist ToolButton
-    MoveScaled(34,9,4,3)
-    Picture = Picture["icon:/small/text-list-order"]
+  { Label5 Label
+    MoveScaled(1,17,13.375,3)
+    Border = Border.Plain
+    Text = ("Quantity")
   }
 }

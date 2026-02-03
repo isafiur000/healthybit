@@ -17,6 +17,7 @@ Public Sub Form_Open()
   cmbgroupreport.List = ["Yes", "No"]
   cmbquickmulti.List = ["Yes", "No"]
   cmbarchive.List = ["Identification", "SampleID", "Section", "Section+SampleID"]
+  cmbpacsforn.List = ["Modal", "Embedded"]
 
   cmbremote.List = ["SMS", "EMail", "SMS+EMail"]
   cmbuprepo.List = ["Enable", "Disable"]
@@ -122,6 +123,7 @@ End
 Private Sub GeneralSetting()
 
   txtreferlist.Text = modSettings.ShowSettingFromFIle("Laboratory/ReferralList")
+  cmbpacsforn.Text = modSettings.ShowSettingFromFIle("Radiology/PACSForm")
 
   cmbquickmulti.Text = modSettings.ShowSettingFromFIle("Laboratory/QuickMultiForm")
   cmbgroupreport.Text = modSettings.ShowSettingFromFIle("Laboratory/ReportingInGroup")
@@ -145,6 +147,15 @@ Public Sub btnarchive_Click()
   modSettings.SaveSettingsToFile("Laboratory/ArchivingComment", cmbarchive.Text)
   modBasic.$LabArchComment = cmbarchive.Text
   Balloon.Info(("Information saved"), btnarchive)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnpacsform_Click()
+
+  modSettings.SaveSettingsToFile("Radiology/PACSForm", cmbpacsforn.Text)
+  modBasic.$RadioPACSForm = cmbpacsforn.Text
+  Balloon.Info(("Information saved"), btnpacsform)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

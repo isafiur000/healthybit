@@ -168,7 +168,9 @@ Public Sub btnedit_Click()
     If Not res["fldptcode"] Then
       res["fldptcode"] = Trim(txtextcode.Text)
     Endif
-    res["fldcomment"] = Trim(txtcomment.Text)
+    If Not res["fldcomment"] Then
+      res["fldcomment"] = Trim(txtcomment.Text)
+    Endif
     res["xyz"] = False
     res.Update
     Balloon.Info(("Information saved"), btnedit)

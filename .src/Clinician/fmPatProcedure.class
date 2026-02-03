@@ -1382,10 +1382,16 @@ End
 Public Sub btnpacs_Click()
 
   Dim hForm As FmPacsFind
+  Dim hForm1 As FmWebKitNormal
 
   If txtencid.Text Then
-    hForm = New FmPacsFind(Trim(txtencid.Text), "Visit")
-    hForm.ShowModal
+    If modBasic.$RadioPACSForm = "Embedded" Then
+      hForm1 = New FmWebKitNormal("", Trim(txtencid.Text), "PACS")
+      modWorkSpace.Add(hForm1)
+    Else
+      hForm = New FmPacsFind(Trim(txtencid.Text), "Visit")
+      hForm.ShowModal
+    Endif
   Endif
 
 End
@@ -1502,11 +1508,9 @@ Public Sub btnsubChange_Click()
               xadv = ""
             Endif
             For Row = 0 To GridView1.Rows.Count - 1
-              If GridView1[Row, 2].Text = "Punched" Then
-                rex = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1 and fldencounterval= &2 and fldstatus=&3", GridView1[Row, 0].Text, Trim(txtencid.Text), "Punched")
-                If rex.Available Then
-                  SavePartialEntry(rex, xadv)
-                Endif
+              rex = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1 and fldencounterval= &2 and fldstatus=&3", GridView1[Row, 0].Text, Trim(txtencid.Text), "Punched")
+              If rex.Available Then
+                SavePartialEntry(rex, xadv)
               Endif
             Next
           Endif

@@ -187,6 +187,7 @@ Public Sub IconPanel1_Click()
     cmbeditax.List = ["Percent", "Amount"]
     cmbwarncredit.List = ["Yes", "No"]
     cmbbillalert.List = ["Patient No", "Patient Code", "Data Repo", "None"]
+    cmbnoregimen.List = ["Enable", "Disable"]
     cmbautopayble.List = $xList
     cmbautocalc.List = ["Calculator", "InvoiceInfo", "BlankForm"]
     cmbdefitemtype.List = ["All", "Test", "Service", "Procedure", "Equipment", "Radio", "Others", "Package", "Group", "No Change"]
@@ -523,6 +524,7 @@ Private Sub GeneralBillSetting()
   cmbwarncredit.Text = modSettings.ShowSettingFromFIle("BillingSettings/PastCreditsDisplay")
 
   cmbbillalert.Text = modSettings.ShowSettingFromFIle("HistoryAlert/PatientCode")
+  cmbnoregimen.Text = modSettings.ShowSettingFromFIle("MedicineSetting/DisableDoseRegimen")
 
 End
 
@@ -531,6 +533,15 @@ Public Sub btnbillalert_Click()
   modSettings.SaveSettingsToFile("HistoryAlert/PatientCode", cmbbillalert.Text)
   modBasic.$SalesHistoryAlert = cmbbillalert.Text
   Balloon.Info(("Information saved"), btnbillalert)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnnoregimen_Click()
+
+  modSettings.SaveSettingsToFile("MedicineSetting/DisableDoseRegimen", cmbnoregimen.Text)
+  modBasic.$MedNoRegimen = cmbnoregimen.Text
+  Balloon.Info(("Information saved"), btnnoregimen)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

@@ -701,9 +701,9 @@ End
 
 Public Sub cmbsymptom_KeyRelease()
 
-  modFillContainer.AutoFillComboBox(cmbsymptom)
   If modBasic.$LockSymptomList = "No" Then
   Else
+    modFillContainer.AutoFillComboBox(cmbsymptom)
     modFillContainer.RestrictComboToContent(cmbsymptom)
   Endif
 

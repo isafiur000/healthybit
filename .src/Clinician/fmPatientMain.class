@@ -646,6 +646,14 @@ Private Sub ButtonControl()
   Dim xval As String
 
   xx = modPatient.EnableClinicForm(txtnow.Text)
+
+  If xx = False Then
+    If $sTatus = "Cleared" Then
+      btnpharm.Enabled = False
+      btnoteadd.Enabled = False
+    Endif
+  Endif
+
   chkenabhistory.Value = xx
   ''set consult
   btnconsult.Enabled = xx
@@ -1262,9 +1270,9 @@ End
 
 Public Sub cmbsymptom_KeyRelease()
 
-  modFillContainer.AutoFillComboBox(cmbsymptom)
   If modBasic.$LockSymptomList = "No" Then
   Else
+    modFillContainer.AutoFillComboBox(cmbsymptom)
     modFillContainer.RestrictComboToContent(cmbsymptom)
   Endif
 
@@ -1513,9 +1521,9 @@ End
 
 Public Sub cmbfinding_KeyRelease()
 
-  modFillContainer.AutoFillComboBox(cmbfinding)
   If modBasic.$LockExamList = "No" Then
   Else
+    modFillContainer.AutoFillComboBox(cmbfinding)
     modFillContainer.RestrictComboToContent(cmbfinding)
   Endif
 
@@ -3691,10 +3699,16 @@ End
 Public Sub btnpacs_Click()
 
   Dim hForm As FmPacsFind
+  Dim hForm1 As FmWebKitNormal
 
   If txtencid.Text Then
-    hForm = New FmPacsFind(Trim(txtencid.Text), "Visit")
-    hForm.ShowModal
+    If modBasic.$RadioPACSForm = "Embedded" Then
+      hForm1 = New FmWebKitNormal("", Trim(txtencid.Text), "PACS")
+      modWorkSpace.Add(hForm1)
+    Else
+      hForm = New FmPacsFind(Trim(txtencid.Text), "Visit")
+      hForm.ShowModal
+    Endif
   Endif
 
 End

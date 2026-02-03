@@ -26,6 +26,8 @@ Private $unt As String
 Private AppFactor As Float
 Private $UserRestrict As String[]
 Private $PatientNum As String
+Private $status As String
+Private $input As Boolean
 
 Public Sub _new(encid As String, sTitle As String, unt As String)
 
@@ -39,15 +41,14 @@ End
 
 Public Sub Form_Open()
 
-  Dim xstatus As String
-
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
   txtpatientname.Text = modPatient.GetPatientNameByEnc($encid)
   $PatientNum = modPatient.GetPatientNoByEnc($encid)
   txtgender.Text = modPatient.GetPatientSex($encid)
-  xstatus = modPatient.CurrentAdmissionStatus($encid)
-  $xalllow = modPatient.EnableClinicForm(xstatus)
+  $status = modPatient.CurrentAdmissionStatus($encid)
+  $xalllow = modPatient.EnableClinicForm($status)
+  $input = modPatient.EnableClinicForm($status)
   $UserRestrict = modBasic.$ClinicDisableCompo
 
   modBasic.LoadClinicalChartSetting()
@@ -419,10 +420,14 @@ Private Sub GetDataEntry()
         bObHBox[i] = New HBox(pnlgridentry)
         If $xParamVar[i]["Type"] = "Quantitative" Then
           bObVal[i] = New ValueBox(bObHBox[i])
-          bObButt[i] = New ToolButton(bObHBox[i]) As "SaveExam"
+          If $input = True Then
+            bObButt[i] = New ToolButton(bObHBox[i]) As "SaveExam"
+          Endif
         Else
           bObBox[i] = New ComboBox(bObHBox[i])
-          bObButt[i] = New ToolButton(bObHBox[i]) As "SaveExam"
+          If $input = True Then
+            bObButt[i] = New ToolButton(bObHBox[i]) As "SaveExam"
+          Endif
         Endif
         bsepLine[i] = New Separator(pnlgridentry)
       Endif
@@ -461,11 +466,13 @@ Private Sub ShowEntryControls()
             .Width = 100 * AppFactor
             .Tag = i
           End With
-          With bObButt[i]
-            .Width = 25 * AppFactor
-            .Picture = Picture["icon:/small/apply"]
-            .Tag = i
-          End With
+          If $input = True Then
+            With bObButt[i]
+              .Width = 25 * AppFactor
+              .Picture = Picture["icon:/small/apply"]
+              .Tag = i
+            End With
+          Endif
 
         Else
           With bObBox[i]
@@ -474,11 +481,13 @@ Private Sub ShowEntryControls()
             .List = Split($xParamVar[i]["OptionValues"], ";")
             .Tag = i
           End With
-          With bObButt[i]
-            .Width = 25 * AppFactor
-            .Picture = Picture["icon:/small/apply"]
-            .Tag = i
-          End With
+          If $input = True Then
+            With bObButt[i]
+              .Width = 25 * AppFactor
+              .Picture = Picture["icon:/small/apply"]
+              .Tag = i
+            End With
+          Endif
 
         Endif
 
@@ -543,7 +552,9 @@ Private Sub LoadControls()
             If $xParamVar[i]["Component"] Then
             Else
               aObVal[i] = New ValueBox(aObHBox[i])
-              aObButt[i] = New ToolButton(aObHBox[i]) As "SaveButton"
+              If $input = True Then
+                aObButt[i] = New ToolButton(aObHBox[i]) As "SaveButton"
+              Endif
             Endif
           Endif
           aObjx[i] = New ScrollView(aPanel[i]) As "ScrollGroup"
@@ -553,7 +564,9 @@ Private Sub LoadControls()
             If $xParamVar[i]["Component"] Then
             Else
               aObBox[i] = New ComboBox(aObHBox[i])
-              aObButt[i] = New ToolButton(aObHBox[i]) As "SaveButton"
+              If $input = True Then
+                aObButt[i] = New ToolButton(aObHBox[i]) As "SaveButton"
+              Endif
             Endif
           Endif
           aObk[i] = New ListBox(aPanel[i]) As "ListGroup"
@@ -616,14 +629,16 @@ Private Sub FillCHartItems(sHt As Integer)
                 .Top = 0
                 .Tag = i
               End With
-              With aObButt[i]
-                .Left = 300 * AppFactor
-                .Width = 50 * AppFactor
-                .Height = 25 * AppFactor
-                .Top = 0
-                .Picture = Picture["icon:/small/apply"]
-                .Tag = i
-              End With
+              If $input = True Then
+                With aObButt[i]
+                  .Left = 300 * AppFactor
+                  .Width = 50 * AppFactor
+                  .Height = 25 * AppFactor
+                  .Top = 0
+                  .Picture = Picture["icon:/small/apply"]
+                  .Tag = i
+                End With
+              Endif
             Endif
           Endif
 
@@ -663,14 +678,16 @@ Private Sub FillCHartItems(sHt As Integer)
                 .List = Split($xParamVar[i]["OptionValues"], ";")
                 .Tag = i
               End With
-              With aObButt[i]
-                .Left = 300 * AppFactor
-                .Width = 50 * AppFactor
-                .Height = 25 * AppFactor
-                .Top = 0
-                .Picture = Picture["icon:/small/apply"]
-                .Tag = i
-              End With
+              If $input = True Then
+                With aObButt[i]
+                  .Left = 300 * AppFactor
+                  .Width = 50 * AppFactor
+                  .Height = 25 * AppFactor
+                  .Top = 0
+                  .Picture = Picture["icon:/small/apply"]
+                  .Tag = i
+                End With
+              Endif
             Endif
           Endif
 

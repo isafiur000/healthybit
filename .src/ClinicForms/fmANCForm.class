@@ -1726,24 +1726,6 @@ Public Sub btnnotice_Click()
 
 End
 
-Public Sub mnupatcomment_Click()
-
-  Dim res As Result
-  Dim xval As String
-
-  If $PatientNum Then
-    res = modDatabase.$myConn.Edit("tblpatientinfo", "fldpatientval=&1", $PatientNum)
-    If res.Available Then
-      xval = GetTextArea($PatientNum, res["fldcomment"])
-      If xval Then
-        res["fldcomment"] = xval
-        res.Update
-      Endif
-    Endif
-  Endif
-
-End
-
 Private Sub GetPatientOutComeVal()
 
   Dim res As Result

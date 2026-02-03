@@ -68,6 +68,7 @@ Public Sub Form_Open()
 
   Dim hFmQuan1 As FmQuantiEntry
   Dim hFmQuan2 As FmQuantiEntry
+  Dim xoption As String
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
@@ -96,6 +97,12 @@ Public Sub Form_Open()
     cmbsymptom.List = modString.GetListFromVariant(modTableCache.$SymptomCompVar, "fldsymptom", True)
   Endif
   $UserRestrict = modBasic.$ClinicDisableCompo
+  xoption = modSettings.ShowSettingFromFIle("ClinicForm/ArchiveSummary")
+  If xoption = "Yes" Then
+    chkarchive.Value = True
+  Else If xoption = "No" Then
+    chkarchive.Value = False
+  Endif
 
   If modBasic.$ClinConsultTelemed = "Remote" Then
     btnshowexpert.Visible = True
@@ -889,11 +896,12 @@ Private Sub ButtonControl()
     xx = False
   Endif
 
-  chkenabhistory.Value = xx
-
   ''consultation
   mnuconsultplan.Enabled = xfinal
 
+  chkenabhistory.Value = xx
+  btnsaveAll.Enabled = xx
+  btnpharm.Enabled = xx
   ''complaints
   btnsympadd.Enabled = xx
   btnaddsymplist.Enabled = xx
@@ -1257,9 +1265,9 @@ End
 
 Public Sub cmbfinding_KeyRelease()
 
-  modFillContainer.AutoFillComboBox(cmbfinding)
   If modBasic.$LockExamList = "No" Then
   Else
+    modFillContainer.AutoFillComboBox(cmbfinding)
     modFillContainer.RestrictComboToContent(cmbfinding)
   Endif
 
@@ -1739,9 +1747,9 @@ End
 
 Public Sub cmbsymptom_KeyRelease()
 
-  modFillContainer.AutoFillComboBox(cmbsymptom)
   If modBasic.$LockSymptomList = "No" Then
   Else
+    modFillContainer.AutoFillComboBox(cmbsymptom)
     modFillContainer.RestrictComboToContent(cmbsymptom)
   Endif
 
@@ -2418,10 +2426,16 @@ End
 Public Sub mnupacsimage_Click()
 
   Dim hForm As FmPacsFind
+  Dim hForm1 As FmWebKitNormal
 
   If txtencid.Text Then
-    hForm = New FmPacsFind(Trim(txtencid.Text), "Visit")
-    hForm.ShowModal
+    If modBasic.$RadioPACSForm = "Embedded" Then
+      hForm1 = New FmWebKitNormal("", Trim(txtencid.Text), "PACS")
+      modWorkSpace.Add(hForm1)
+    Else
+      hForm = New FmPacsFind(Trim(txtencid.Text), "Visit")
+      hForm.ShowModal
+    Endif
   Endif
 
 End
@@ -4288,6 +4302,12 @@ Public Sub rbdeath_Click()
 
 End
 
+Public Sub chkarchive_Click()
+
+  modSettings.EnterCheckSetting(chkarchive, "ClinicForm/ArchiveSummary")
+
+End
+
 Public Sub btnoutcome_Click()
 
   Dim xmode As String
@@ -4396,6 +4416,8 @@ Public Sub mnupatcomment_Click()
       xval = GetTextArea($PatientNum, res["fldcomment"])
       If xval Then
         res["fldcomment"] = xval
+        res["fldupuser"] = modBasic.$lbluser
+        res["flduptime"] = Now()
         res.Update
       Endif
     Endif
