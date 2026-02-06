@@ -1,6 +1,7 @@
 ' Gambas class file
 
 Private $ProcIndex As Long
+Private $BillIndex As Long
 Private $focus As Boolean
 Private $ProcBill As Long
 Private $UserRestrict As String[]
@@ -38,10 +39,11 @@ Private $xBillType As String
 
 Private $LabMode As String
 
-Public Sub _new(encid As String, sIndex As Long, Focus As Boolean)
+Public Sub _new(encid As String, sIndex As Long, billIndex As Long, Focus As Boolean)
 
   txtencid.Text = encid
   $ProcIndex = sIndex
+  $BillIndex = billIndex
   $focus = Focus
 
 End
@@ -1442,12 +1444,19 @@ Private Sub InitializeProcedures()
       txtcomment.RichText = res["flddetail"]
       txtbillmode.Text = res["fldbillingmode"]
 
-      res1 = modDatabase.$myConn.Exec("select fldpayto,fldrefer from tblpatbilling where fldencounterval=&1 and flditemtype=&2 and fldparent=&3", Trim(txtencid.Text), "Procedures", $ProcIndex)
+      res1 = modDatabase.$myConn.Exec("select fldpayto,fldrefer,fldstatus,fldparent from tblpatbilling where fldencounterval=&1 and fldid=&2", Trim(txtencid.Text), $BillIndex)
       If res1.Available Then
         btnrefer.Tag = res1["fldrefer"]
         btnrefer.Text = modGeneral.GetUserFullName(btnrefer.Tag)
         btnpayto.Tag = res1["fldpayto"]
         btnpayto.Text = modGeneral.GetUserFullName(btnpayto.Tag)
+        If res1["fldstatus"] = "Cancelled" Then
+          Panel32.Enabled = False
+        Else If res1["fldparent"] Then
+          Panel32.Enabled = False
+        Else
+          Panel32.Enabled = True
+        Endif
       Endif
 
       $PositionList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldusertype) as col from tblprocedureshare where flditemtype=&1 and fldbillingmode like &2 and (flditemname like &3 or flditemname=&4) and fldactive=&5", "Procedures", txtbillmode.Text, res["flditem"], "%", "Active"))
@@ -1498,29 +1507,30 @@ Public Sub btnsubChange_Click()
         res["fldcomp"] = modBasic.$compID
         res["xyz"] = False
         res.Update()
-        Wait
+      Endif
+      Wait
 
-        If cmbstatus.Text = "Done" Then
-          If GridView1.Rows.Count Then
-            If modBasic.$AutoBillAdvReceipt = "Enable" Then
-              xadv = modBillLock.AdvanceReceiptString("Advance Receipt")
-            Else
-              xadv = ""
-            Endif
-            For Row = 0 To GridView1.Rows.Count - 1
-              rex = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1 and fldencounterval= &2 and fldstatus=&3", GridView1[Row, 0].Text, Trim(txtencid.Text), "Punched")
-              If rex.Available Then
-                SavePartialEntry(rex, xadv)
-              Endif
-            Next
+      If cmbstatus.Text = "Done" Then
+        If GridView1.Rows.Count Then
+          If modBasic.$AutoBillAdvReceipt = "Enable" Then
+            xadv = modBillLock.AdvanceReceiptString("Advance Receipt")
+          Else
+            xadv = ""
           Endif
-
-          ' btnaddperson.Enabled = False
-          ' SaveProcedureBilling($ProcIndex)
+          For Row = 0 To GridView1.Rows.Count - 1
+            rex = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1 and fldencounterval= &2 and fldstatus=&3", GridView1[Row, 0].Text, Trim(txtencid.Text), "Punched")
+            If rex.Available Then
+              SavePartialEntry(rex, xadv)
+            Endif
+          Next
         Endif
+
+        ' btnaddperson.Enabled = False
+        ' SaveProcedureBilling($ProcIndex)
       Endif
       modDatabase.$myConn.Commit
       Dec Application.Busy
+      ShowFInalProcedures()
       Balloon.Info(("Information updated"), btnsubChange)
       Balloon.Delay = modBasic.$BalloonDelay
 
@@ -1540,6 +1550,7 @@ Private Sub SavePartialEntry(res As Result, Optional advReceipt As String)
   If advReceipt Then
     res["fldextracol"] = advReceipt
   Endif
+  res["fldsample"] = "Sampled"
   res["fldsave"] = True
   res["flduserid"] = modBasic.$lbluser
   res["fldtime"] = Now()
@@ -2608,16 +2619,29 @@ Public Sub btnaddprocpast_Click()
 
   Dim res As Result
 
-  res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval=&1 and flditemname=&2 and fldparent=&3", Trim(txtencid.Text), cmbprocedure.Text, 0)
+  res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval=&1 and fldid=&2 and fldparent=&3 and fldstatus=&4", Trim(txtencid.Text), $BillIndex, 0, "Punched")
   If res.Available Then
     res["fldparent"] = $ProcIndex
     res.Update
     ShowFInalProcedures()
+    Balloon.Info(("Information updated"), btnaddprocpast)
+    Balloon.Delay = modBasic.$BalloonDelay
   Endif
 
 End
 
 Public Sub btndelprocpast_Click()
+
+  Dim rex As Result
+
+  rex = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1 and fldencounterval= &2 and fldstatus=&3", $BillIndex, Trim(txtencid.Text), "Punched")
+  If rex.Available Then
+    rex["fldstatus"] = "Cancelled"
+    rex.Update
+    ShowFInalProcedures()
+    Balloon.Info(("Information updated"), btndelprocpast)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
 
 End
 

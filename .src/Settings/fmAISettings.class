@@ -1,0 +1,146 @@
+' Gambas class file
+
+Public Sub Form_Open()
+
+  cmbAIgenurl.List = ["https://api.groq.com/openai/v1/chat/completions"]
+  cmbAItranscurl.List = ["https://api.groq.com/openai/v1/audio/transcriptions"]
+  cmbAItransmodel.List = ["whisper-large-v3-turbo", "whisper-large-v3"]
+
+  DisplayCloudAI()
+
+End
+
+''------------------------- Cloud AI -------------------
+Private Sub DisplayCloudAI()
+
+  cmbAIgenurl.Text = modSettings.ShowSettingFromFIle("CloudAI/GenerativeAPI_URL")
+  cmbAItranscurl.Text = modSettings.ShowSettingFromFIle("CloudAI/TranscriptionAPI_URL")
+
+  cmbAIgenmodel.Text = modSettings.ShowSettingFromFIle("CloudAI/GenerativeModel")
+  cmbAItransmodel.Text = modSettings.ShowSettingFromFIle("CloudAI/TranscriptionModel")
+
+  txtAIkey.Text = modSettings.ShowSettingFromFIle("CloudAI/API_Key")
+  txtAIqueryclin.Text = modSettings.ShowSettingFromFIle("CloudAI/Clinic_QueryList")
+  txtAIquerydrug.Text = modSettings.ShowSettingFromFIle("CloudAI/Medicine_QueryList")
+
+End
+
+Public Sub btnfillAImodel_Click()
+
+  cmbAIgenmodel.Clear()
+  If cmbAIgenurl.Text = "https://api.groq.com/openai/v1/chat/completions" Then
+    If txtAIkey.Text Then
+      cmbAIgenmodel.List = modCloudAI.GetGroqModelList(txtAIkey.Text)
+    Else
+      cmbAIgenmodel.List = modCloudAI.$GroqCloudModels
+    Endif
+  Endif
+
+End
+
+Public Sub btnAIregister_Click()
+
+  If cmbAIgenurl.Text = "https://api.groq.com/openai/v1/chat/completions" Then
+    modDevice.DesktopOpenFile("https://console.groq.com/keys")
+  Endif
+
+End
+
+Public Sub txtAIqueryclin_Click()
+
+  If Dialog.OpenFile() Then Return
+  txtAIqueryclin.Text = Dialog.Path
+
+End
+
+Public Sub txtAIquerydrug_Click()
+
+  If Dialog.OpenFile() Then Return
+  txtAIquerydrug.Text = Dialog.Path
+
+End
+
+Public Sub btnAIgenurl_Click()
+
+  modSettings.SaveSettingsToFile("CloudAI/GenerativeAPI_URL", cmbAIgenurl.Text)
+  modBasic.$CloudAIURL_Gen = cmbAIgenurl.Text
+  Balloon.Info(("Information saved"), btnAIgenurl)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnAItranscurl_Click()
+
+  modSettings.SaveSettingsToFile("CloudAI/TranscriptionAPI_URL", cmbAItranscurl.Text)
+  modBasic.$CloudAIURL_Trans = cmbAItranscurl.Text
+  Balloon.Info(("Information saved"), btnAItranscurl)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnAIgenmodel_Click()
+
+  modSettings.SaveSettingsToFile("CloudAI/GenerativeModel", cmbAIgenmodel.Text)
+  modBasic.$CloudAIModel_Gen = cmbAIgenmodel.Text
+  Balloon.Info(("Information saved"), btnAIgenmodel)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnAItransmodel_Click()
+
+  modSettings.SaveSettingsToFile("CloudAI/TranscriptionModel", cmbAItransmodel.Text)
+  modBasic.$CloudAIModel_Trans = cmbAItransmodel.Text
+  Balloon.Info(("Information saved"), btnAItransmodel)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnAIkey_Click()
+
+  modSettings.SaveSettingsToFile("CloudAI/API_Key", Trim(txtAIkey.Text))
+  modBasic.$CloudAIKey = Trim(txtAIkey.Text)
+  Balloon.Info(("Information saved"), btnAIkey)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnAIqueryclin_Click()
+
+  modSettings.SaveSettingsToFile("CloudAI/Clinic_QueryList", txtAIqueryclin.Text)
+  modBasic.CloudAISettings()
+  Balloon.Info(("Information saved"), btnAIqueryclin)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnAIquerydrug_Click()
+
+  modSettings.SaveSettingsToFile("CloudAI/Medicine_QueryList", txtAIquerydrug.Text)
+  modBasic.CloudAISettings()
+  Balloon.Info(("Information saved"), btnAIquerydrug)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnaddAIqueryclin_Click()
+
+  Dim xx As String
+
+  xx = InputBox("QUestion for Clinical Query", "AI Output", "")
+  If xx Then
+    modBasic.$CloudAIClinQuery.Add(Trim(xx))
+  Endif
+
+End
+
+Public Sub btnaddAIquerydrug_Click()
+
+  Dim xx As String
+
+  xx = InputBox("QUestion for Drug Query", "AI Output", "")
+  If xx Then
+    modBasic.$CloudAIDrugQuery.Add(Trim(xx))
+  Endif
+
+End

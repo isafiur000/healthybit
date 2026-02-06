@@ -624,63 +624,15 @@
         }
       }
       { Panel2 Panel
-        MoveScaled(74,0,3,16)
+        MoveScaled(74,0,2,16)
       }
       { Frame2 Panel
-        MoveScaled(77,0,42,16)
+        MoveScaled(76,0,43,16)
         Border = Border.Plain
-        { txtpulse ValueBox
-          MoveScaled(11,1,8.625,3)
-        }
-        { txtresprate ValueBox
-          MoveScaled(32,1,8.625,3)
-        }
-        { txtsystolicbp ValueBox
-          MoveScaled(11,5,8.625,3)
-        }
-        { txtdiastolicbp ValueBox
-          MoveScaled(32,5,8.625,3)
-        }
-        { txtoxysat ValueBox
-          MoveScaled(11,9,8.625,3)
-        }
-        { txttemp ValueBox
-          MoveScaled(32,9,8.625,3)
-        }
         { btnsavevitals Button
           MoveScaled(24,12.5,13.5,3)
           Text = ("Save")
           Picture = Picture["icon:/small/apply"]
-        }
-        { Label5 Label
-          MoveScaled(1,5,10,3)
-          Border = Border.Plain
-          Text = ("Syst BP")
-        }
-        { Label6 Label
-          MoveScaled(22,5,10,3)
-          Border = Border.Plain
-          Text = ("Diast BP")
-        }
-        { Label7 Label
-          MoveScaled(22,9,10,3)
-          Border = Border.Plain
-          Text = ("Temp")
-        }
-        { Label8 Label
-          MoveScaled(1,1,10,3)
-          Border = Border.Plain
-          Text = ("Pulse Rate")
-        }
-        { Label3 Label
-          MoveScaled(22,1,10,3)
-          Border = Border.Plain
-          Text = ("Resp Rate")
-        }
-        { Label11 Label
-          MoveScaled(1,9,10,3)
-          Border = Border.Plain
-          Text = ("S P O2")
         }
         { btntriage Button
           MoveScaled(1,12.5,11,3)
@@ -695,6 +647,78 @@
           MoveScaled(12.5,12.5,11,3)
           Text = ("ABC")
           Picture = Picture["icon:/small/text"]
+        }
+        { Label8 Label
+          MoveScaled(0,1,10,3)
+          Border = Border.Plain
+          Text = ("Pulse Rate")
+        }
+        { txtpulse ValueBox
+          MoveScaled(10,1,7,3)
+        }
+        { btnpulseinfo ToolButton
+          MoveScaled(17,1,3,3)
+          Picture = Picture["icon:/small/info"]
+        }
+        { Label5 Label
+          MoveScaled(0,5,10,3)
+          Border = Border.Plain
+          Text = ("Syst BP")
+        }
+        { txtsystolicbp ValueBox
+          MoveScaled(10,5,7,3)
+        }
+        { btnsystolicinfo ToolButton
+          MoveScaled(17,5,3,3)
+          Picture = Picture["icon:/small/info"]
+        }
+        { Label11 Label
+          MoveScaled(0,9,10,3)
+          Border = Border.Plain
+          Text = ("S P O2")
+        }
+        { txtoxysat ValueBox
+          MoveScaled(10,9,7,3)
+        }
+        { btnoxygeninfo ToolButton
+          MoveScaled(17,9,3,3)
+          Picture = Picture["icon:/small/info"]
+        }
+        { Label3 Label
+          MoveScaled(22,1,10,3)
+          Border = Border.Plain
+          Text = ("Resp Rate")
+        }
+        { txtresprate ValueBox
+          MoveScaled(32,1,7,3)
+        }
+        { btnrespinfo ToolButton
+          MoveScaled(39,1,3,3)
+          Picture = Picture["icon:/small/info"]
+        }
+        { btndiastolicinfo ToolButton
+          MoveScaled(39,5,3,3)
+          Picture = Picture["icon:/small/info"]
+        }
+        { txtdiastolicbp ValueBox
+          MoveScaled(32,5,7,3)
+        }
+        { Label6 Label
+          MoveScaled(22,5,10,3)
+          Border = Border.Plain
+          Text = ("Diast BP")
+        }
+        { Label7 Label
+          MoveScaled(22,9,10,3)
+          Border = Border.Plain
+          Text = ("Temp")
+        }
+        { txttemp ValueBox
+          MoveScaled(32,9,7,3)
+        }
+        { btntempinfo ToolButton
+          MoveScaled(39,9,3,3)
+          Picture = Picture["icon:/small/info"]
         }
       }
     }

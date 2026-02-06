@@ -10,6 +10,7 @@ Public Sub Form_Open()
   Dim OBSwatchall As Observer
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
+  Panel2.Width = Panel1.Width - (Panel6.Width + Panel3.Width)
   If modBasic.$FocusBackColor Then
     For Each xcont In Me.Controls
       OBSwatchall = New Observer(xcont) As "WatchAll"
@@ -138,6 +139,8 @@ Private Sub MakeAllBlank()
   dtdiscount.Value = ""
   txtcreditgiven.Value = 0
   txtdiscgiven.Value = 0
+  txtremarks.Text = ""
+  txtcomment.Text = ""
 
 End
 
@@ -161,14 +164,15 @@ Private Sub FillStaffGrid()
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
 
   With GridView1
-    .Columns[0].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[1].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[0].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 125 * modBasic.$AppWidthRatio
     .Columns[3].Width = 100 * modBasic.$AppWidthRatio
     .Columns[4].Width = 100 * modBasic.$AppWidthRatio
+
     .Columns[0].Text = "ServiceID"
-    .Columns[2].Text = "Name"
-    .Columns[3].Text = "SurName"
+    .Columns[1].Text = "Name"
+    .Columns[2].Text = "SurName"
     .Columns[3].Text = "Category"
     .Columns[4].Text = "SSU Code"
   End With
@@ -227,7 +231,8 @@ Public Sub btnOK_Click()
       res["flddisclimit"] = txtdisclimit.Value
       res["fldcreditdate"] = dtcredit.Value
       res["flddiscdate"] = dtdiscount.Value
-      res["fldremark"] = ""
+      res["fldremark"] = txtremarks.Text
+      res["fldcomment"] = txtcomment.Text
       res["fldtime"] = Now()
       res["xyz"] = False
 
@@ -281,7 +286,8 @@ Public Sub btnChange_Click()
     res["fldcreditdate"] = dtcredit.Value
     res["flddiscdate"] = dtdiscount.Value
 
-    res["fldremark"] = ""
+    res["fldremark"] = txtremarks.Text
+    res["fldcomment"] = txtcomment.Text
     res["fldtime"] = Now()
     res["xyz"] = False
 
@@ -310,7 +316,7 @@ Private Sub SHowGridData(patcode As String)
 
   Dim res As Result
 
-  res = modDatabase.$myConn.Exec("select fldcategory,fldserviceid,fldptnamefir,fldptnamelast,fldptsex,fldptaddvill,fldptaddward,fldptadddist,fldptcontact,fldptbirday,fldemail,fldptguardian,fldrelation,fldjoindate,fldenddate,fldactivity,fldpatientval,flddisctype,fldstatus,fldcitizen,fldidentify,fldscheme,fldservice,fldreferhosp,fldreferdist,fldreferdate,fldsocialmode,fldcreditlim,flddisclimit,fldcreditdate,flddiscdate,fldremark from tblsociallist where fldptcode=&1", patcode)                                                   ''
+  res = modDatabase.$myConn.Exec("select fldcategory,fldserviceid,fldptnamefir,fldptnamelast,fldptsex,fldptaddvill,fldptaddward,fldptadddist,fldptcontact,fldptbirday,fldemail,fldptguardian,fldrelation,fldjoindate,fldenddate,fldactivity,fldpatientval,flddisctype,fldstatus,fldcitizen,fldidentify,fldscheme,fldservice,fldreferhosp,fldreferdist,fldreferdate,fldsocialmode,fldcreditlim,flddisclimit,fldcreditdate,flddiscdate,fldremark,fldcomment from tblsociallist where fldptcode=&1", patcode)                                                   ''
   If res.Available Then
     cmbcategory.Text = res["fldcategory"]
     txtservid.Text = res["fldserviceid"]
@@ -345,7 +351,8 @@ Private Sub SHowGridData(patcode As String)
     dtcredit.Value = res["fldcreditdate"]
     dtdiscount.Value = res["flddiscdate"]
 
-    ' txtremarks.Text = res["fldremark"]
+    txtremarks.Text = res["fldremark"]
+    txtcomment.Text = res["fldcomment"]
     txtcreditgiven.Value = modNonMedical.GeCreditUsedCurYear(res["fldpatientval"], res["flddisctype"], res["fldcreditdate"], res["fldenddate"])
     txtdiscgiven.Value = modNonMedical.GetDiscUsedCurYear(res["fldpatientval"], res["flddisctype"], res["fldcreditdate"], res["fldenddate"])
   Endif

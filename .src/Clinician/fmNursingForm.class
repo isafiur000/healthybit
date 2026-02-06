@@ -1323,49 +1323,61 @@ End
 
 Private Sub ShowEssentialExam()
 
-  Dim xsystolic As Variant
-  Dim xdiastolic As Variant
-  Dim xpulse As Variant
-  Dim xtemp As Variant
-  Dim xresprate As Variant
-  Dim xoxysat As Variant
+  Dim xsystolic As Variant[]
+  Dim xdiastolic As Variant[]
+  Dim xpulse As Variant[]
+  Dim xtemp As Variant[]
+  Dim xresprate As Variant[]
+  Dim xoxysat As Variant[]
 
-  xsystolic = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), $SystBPName)
-  xdiastolic = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), $DiastBPName)
-  xpulse = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), $PulseName)
-  xtemp = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), $TempeName)
-  xresprate = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), $RespRateName)
-  xoxysat = modClinic.GetCurrExamValueFromID("Last", Trim(txtencid.Text), $OxySatName)
+  xsystolic = modClinic.GetCurrQuantiExamValueFromID("Last", Trim(txtencid.Text), $SystBPName)
+  xdiastolic = modClinic.GetCurrQuantiExamValueFromID("Last", Trim(txtencid.Text), $DiastBPName)
+  xpulse = modClinic.GetCurrQuantiExamValueFromID("Last", Trim(txtencid.Text), $PulseName)
+  xtemp = modClinic.GetCurrQuantiExamValueFromID("Last", Trim(txtencid.Text), $TempeName)
+  xresprate = modClinic.GetCurrQuantiExamValueFromID("Last", Trim(txtencid.Text), $RespRateName)
+  xoxysat = modClinic.GetCurrQuantiExamValueFromID("Last", Trim(txtencid.Text), $OxySatName)
 
   If xsystolic Then
-    txtsystolicbp.Value = xsystolic
+    txtsystolicbp.Value = xsystolic[0]
+    btnsystolicinfo.Tag = xsystolic[1]
   Else
     txtsystolicbp.Value = 0
+    btnsystolicinfo.Tag = ""
   Endif
   If xdiastolic Then
-    txtdiastolicbp.Value = xdiastolic
+    txtdiastolicbp.Value = xdiastolic[0]
+    btndiastolicinfo.Tag = xdiastolic[1]
   Else
     txtdiastolicbp.Value = 0
+    btndiastolicinfo.Tag = ""
   Endif
   If xpulse Then
-    txtpulse.Value = xpulse
+    txtpulse.Value = xpulse[0]
+    btnpulseinfo.Tag = xpulse[1]
   Else
     txtpulse.Value = 0
+    btnpulseinfo.Tag = ""
   Endif
   If xtemp Then
-    txttemp.Value = xtemp
+    txttemp.Value = xtemp[0]
+    btntempinfo.Tag = xtemp[1]
   Else
     txttemp.Value = 0
+    btntempinfo.Tag = ""
   Endif
   If xresprate Then
-    txtresprate.Value = xresprate
+    txtresprate.Value = xresprate[0]
+    btnrespinfo.Tag = xresprate[1]
   Else
     txtresprate.Value = 0
+    btnrespinfo.Tag = ""
   Endif
   If xoxysat Then
-    txtoxysat.Value = xoxysat
+    txtoxysat.Value = xoxysat[0]
+    btnoxygeninfo.Tag = xoxysat[1]
   Else
     txtoxysat.Value = 0
+    btnoxygeninfo.Tag = ""
   Endif
 
 End
@@ -1373,36 +1385,78 @@ End
 Public Sub txtpulse_Change()
 
   GetMarkAbnorm(txtpulse, $PulseRangeLimits)
+  btnpulseinfo.Tag = ""
 
 End
 
 Public Sub txtsystolicbp_Change()
 
   GetMarkAbnorm(txtsystolicbp, $SystBPRangeLimits)
+  btnsystolicinfo.Tag = ""
 
 End
 
 Public Sub txtdiastolicbp_Change()
 
   GetMarkAbnorm(txtdiastolicbp, $DiastBPRangeLimits)
+  btndiastolicinfo.Tag = ""
 
 End
 
 Public Sub txtresprate_Change()
 
   GetMarkAbnorm(txtresprate, $RespRateRangeLimits)
+  btnrespinfo.Tag = ""
 
 End
 
 Public Sub txtoxysat_Change()
 
   GetMarkAbnorm(txtoxysat, $OxySatRangeLimits)
+  btnoxygeninfo.Tag = ""
 
 End
 
 Public Sub txttemp_Change()
 
   GetMarkAbnorm(txttemp, $TempeRangeLimits)
+  btntempinfo.Tag = ""
+
+End
+
+Public Sub btnpulseinfo_Click()
+
+  btnpulseinfo.Tag = InputBox("Pulse Rate", "Add Comment", btnpulseinfo.Tag)
+
+End
+
+Public Sub btnrespinfo_Click()
+
+  btnrespinfo.Tag = InputBox("Respiration Rate", "Add Comment", btnrespinfo.Tag)
+
+End
+
+Public Sub btnsystolicinfo_Click()
+
+  btnsystolicinfo.Tag = InputBox("Systolic BP", "Add Comment", btnsystolicinfo.Tag)
+
+End
+
+Public Sub btndiastolicinfo_Click()
+
+  btndiastolicinfo.Tag = InputBox("Diastolic BP", "Add Comment", btndiastolicinfo.Tag)
+
+End
+
+Public Sub btnoxygeninfo_Click()
+
+  btnoxygeninfo.Tag = InputBox("Oxygen Saturation", "Add Comment", btnoxygeninfo.Tag)
+
+End
+
+Public Sub btntempinfo_Click()
+
+  btntempinfo.Tag = InputBox("Temperature", "Add Comment", btntempinfo.Tag)
 
 End
 
@@ -1419,42 +1473,42 @@ Public Sub btnsavevitals_Click()
     xsysbp = modFixClinic.GetExamIDFromSysConst("BloodPressure_Systolic")
     If xsysbp Then
       If txtsystolicbp.Value Then
-        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xsysbp, "", txtsystolicbp.Value, "Essential Examinations", "BloodPressure_Systolic")
+        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xsysbp, "", txtsystolicbp.Value, "Essential Examinations", "BloodPressure_Systolic", btnsystolicinfo.Tag)
       Endif
     Endif
 
     xdiastobp = modFixClinic.GetExamIDFromSysConst("BloodPressure_Diastolic")
     If xdiastobp Then
       If txtdiastolicbp.Value Then
-        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xdiastobp, "", txtdiastolicbp.Value, "Essential Examinations", "BloodPressure_Diastolic")
+        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xdiastobp, "", txtdiastolicbp.Value, "Essential Examinations", "BloodPressure_Diastolic", btndiastolicinfo.Tag)
       Endif
     Endif
 
     xpulse = modFixClinic.GetExamIDFromSysConst("Pulse_Rate")
     If xpulse Then
       If txtpulse.Value Then
-        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xpulse, "", txtpulse.Value, "Essential Examinations", "Pulse_Rate")
+        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xpulse, "", txtpulse.Value, "Essential Examinations", "Pulse_Rate", btnpulseinfo.Tag)
       Endif
     Endif
 
     xresprate = modFixClinic.GetExamIDFromSysConst("Respiration_Rate")
     If xresprate Then
       If txtresprate.Value Then
-        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xresprate, "", txtresprate.Value, "Essential Examinations", "Respiration_Rate")
+        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xresprate, "", txtresprate.Value, "Essential Examinations", "Respiration_Rate", btnrespinfo.Tag)
       Endif
     Endif
 
     xtemp = modFixClinic.GetExamIDFromSysConst("Temperature_System")
     If xtemp Then
       If txttemp.Value Then
-        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xtemp, "", txttemp.Value, "Essential Examinations", "Temperature_System")
+        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xtemp, "", txttemp.Value, "Essential Examinations", "Temperature_System", btntempinfo.Tag)
       Endif
     Endif
 
     xoxysat = modFixClinic.GetExamIDFromSysConst("Oxygen_Saturation")
     If xoxysat Then
       If txtoxysat.Value Then
-        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xoxysat, "", txtoxysat.Value, "Essential Examinations", "Oxygen_Saturation")
+        modClinSub.AddQuantiDataCheck(Trim(txtencid.Text), "", xoxysat, "", txtoxysat.Value, "Essential Examinations", "Oxygen_Saturation", btnoxygeninfo.Tag)
       Endif
     Endif
 

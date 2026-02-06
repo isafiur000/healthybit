@@ -600,9 +600,9 @@ Private Sub ShowPlanProcedures()
   Endif
 
   If chkalldate.Value = True Then
-    sql = "select fldid,fldencounterval,fldnewdate,fldnewdate,fldstatus,flditem,flduserid,fldencounterval,fldencounterval,fldencounterval,fldencounterval,fldreportquali from tblpatgeneral where fldinput=&3 and flditem like &4 and fldreportquali=&5" & xsection & xencid & " ORDER BY fldnewdate"
+    sql = "select fldid,fldencounterval,fldnewdate,fldnewdate,fldstatus,flditem,flduserid,fldencounterval,fldencounterval,fldencounterval,fldencounterval,fldreportquali,fldgroupid from tblpatgeneral where fldinput=&3 and flditem like &4 and fldreportquali=&5" & xsection & xencid & " ORDER BY fldnewdate"
   Else
-    sql = "select fldid,fldencounterval,fldnewdate,fldnewdate,fldstatus,flditem,flduserid,fldencounterval,fldencounterval,fldencounterval,fldencounterval,fldreportquali from tblpatgeneral where fldnewdate>=&1 and fldnewdate<=&2 and fldinput=&3 and flditem like &4 and fldreportquali=&5" & xsection & xencid & " ORDER BY fldnewdate"
+    sql = "select fldid,fldencounterval,fldnewdate,fldnewdate,fldstatus,flditem,flduserid,fldencounterval,fldencounterval,fldencounterval,fldencounterval,fldreportquali,fldgroupid from tblpatgeneral where fldnewdate>=&1 and fldnewdate<=&2 and fldinput=&3 and flditem like &4 and fldreportquali=&5" & xsection & xencid & " ORDER BY fldnewdate"
   Endif
   $rData = modDatabase.$myConn.Exec(sql, modDate.StartSqlDate(dtprocedure.Value), modDate.EndSqlDate(dtprocedure.Value), "Procedures", cmbprocedure.Text, cmbstatus.Text, cmbaddprocteam.Text)
   $aMyFields = New String[]
@@ -626,6 +626,7 @@ Private Sub ShowPlanProcedures()
     .Columns[9].Width = 150 * modBasic.$AppWidthRatio  ''age/sex
     .Columns[10].Width = 125 * modBasic.$AppWidthRatio  ''contact
     .Columns[11].Width = 75 * modBasic.$AppWidthRatio ''Time
+    .Columns[12].Width = 1
 
     .Columns[3].Text = "Time"
     .Columns[4].Text = "Section"
@@ -748,7 +749,7 @@ Public Sub btnform_Click()
   If GridView1.Rows.Selection.Count Then
     Select GridView1[GridView1.Row, 11].Text
       Case "Planned", "Done"
-        hForm = New FmPatProcedure(GridView1[GridView1.Row, 7].Text, GridView1[GridView1.Row, 0].Text, True)
+        hForm = New FmPatProcedure(GridView1[GridView1.Row, 7].Text, GridView1[GridView1.Row, 0].Text, GridView1[GridView1.Row, 12].Text, True)
         modWorkSpace.Add(hForm)
     End Select
   Endif

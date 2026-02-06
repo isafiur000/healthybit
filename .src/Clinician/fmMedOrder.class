@@ -1876,7 +1876,7 @@ Private Sub ShowOldEntry()
 
   Dim sql As String
 
-  sql = "select fldid,fldtime,flditemtype,flditemno,flditemname,flditemrate,flditemqty,flddiscper,fldditemamt,fldcomp,fldbilltype,flddisctype,fldacledger,fldbillno,fldextracol from tblpatbilling where fldencounterval=&1 and fldsave=&2 and (flditemtype=&3 or flditemtype=&4 or flditemtype=&5) and flditemqty>&6 and fldretqty=&6"                         ''
+  sql = "select fldid,fldtime,flditemtype,flditemno,flditemname,flditemrate,flditemqty,flddiscper,fldditemamt,fldcomp,fldparent,flddisctype,fldbilltype,fldbillno,fldextracol from tblpatbilling where fldencounterval=&1 and fldsave=&2 and (flditemtype=&3 or flditemtype=&4 or flditemtype=&5) and flditemqty>&6 and fldretqty=&6"                         ''
   $rData5 = modDatabase.$myConn.Exec(sql, $encid, True, "Medicines", "Surgicals", "Extra Items", 0)
   $aMyFields5 = New String[]
   modGridView.ReadSmallData(GridView5, $rData5, $aMyFields5)
@@ -1889,9 +1889,9 @@ Private Sub ShowOldEntry()
     .Columns[7].Text = "Disc %"
     .Columns[8].Text = "Total"
     .Columns[9].Text = "Comp"
-    .Columns[10].Text = "Mode"
+    .Columns[10].Text = "Dosing"
     .Columns[11].Text = "Package"
-    .Columns[12].Text = "Account"
+    .Columns[12].Text = "Mode"
     .Columns[13].Text = "Invoice"
     .Columns[14].Text = "AdvRec"
 
@@ -1907,7 +1907,7 @@ Private Sub ShowOldEntry()
     .Columns[9].Width = 100 * modBasic.$AppWidthRatio
     .Columns[10].Width = 75 * modBasic.$AppWidthRatio
     .Columns[11].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[12].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[12].Width = 75 * modBasic.$AppWidthRatio
     .Columns[13].Width = 125 * modBasic.$AppWidthRatio
     .Columns[14].Width = 125 * modBasic.$AppWidthRatio
   End With
@@ -1920,6 +1920,8 @@ Public Sub GridView5_Data(Row As Integer, Column As Integer)
   modGeneralMain.GridViewDecoration(GridView5, Row)
   If Column = 1 Then
     GridView5.Data.Text = modReportVar.GetDateTimeReport($rData5[$aMyFields5[Column]], gb.GeneralDate)
+  Else If Column = 10 Then
+    GridView5.Data.Text = modPharmacy.TotalDoseCount($rData5[$aMyFields5[Column]])
   Else
     GridView5.Data.Text = $rData5[$aMyFields5[Column]]
   Endif
@@ -1962,7 +1964,6 @@ Public Sub mnureturn_Click()
 
   Dim sql As String
   Dim res As Result
-  Dim xmsg As String
 
   Dim xbatch As Integer
   Dim qty As Float
@@ -1977,7 +1978,7 @@ Public Sub mnureturn_Click()
     Else
       If GridView5[GridView5.Row, 14].Text And GridView5[GridView5.Row, 9].Text = modBasic.$compID Then
 
-        sql = "select fldid,fldencounterval,flditemno,flditemtype,flditemname,flditemrate,flditemqty,fldtaxper,flddiscper,fldparent,fldextracol,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit from tblpatbilling where fldid=&1 and fldsave=&2 and flditemqty>&3 and fldretqty=&3 and fldparent NOT IN(select flddoseno from tblnurdosing)"                         ''
+        sql = "select fldid,fldencounterval,flditemno,flditemtype,flditemname,flditemrate,flditemqty,fldtaxper,flddiscper,fldparent,fldextracol,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit from tblpatbilling where fldid=&1 and fldsave=&2 and flditemqty>&3 and fldretqty=&3"                         ''
         res = modDatabase.$myConn.Exec(sql, GridView5[GridView5.Row, 0].Text, True, 0)
         If res.Available Then
           If txtreason.Text Then
@@ -2049,7 +2050,6 @@ Private Sub ShowReturnGrid()
   Dim res As Result
   Dim Column As Integer
   Dim fld As ResultField
-  Dim xstatus As String
 
   sql = "select fldid,fldordtime,flditemtype,flditemno,flditemname,flditemrate,flditemqty,fldtaxper,flddiscper,fldditemamt as tot,fldorduserid,fldbilltype,flddisctype,fldacledger from tblpatbilling where fldencounterval=&1 and fldretbill like &2 and fldsave=&3 and fldprint=&4 and fldordcomp=&5 and fldstatus=&6 and flditemqty<&7 and (flditemtype=&8 or flditemtype=&9 or flditemtype=&{10})"
   res = modDatabase.$myConn.Exec(sql, $encid, "ARC%", False, False, modBasic.$compID, "Punched", 0, "Medicines", "Surgicals", "Extra Items")
@@ -2141,7 +2141,6 @@ Private Sub PharmacyReturn(xIndex As Long)
   Dim res2 As Result
   Dim res3 As Result
   Dim qtynew As Float
-  Dim xx As Float
   Dim xgo As Boolean
   Dim aqty As Integer
 

@@ -11,6 +11,7 @@ Public Sub Form_Open()
   Dim OBSwatchall As Observer
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
+  Panel2.Width = Panel1.Width - (Panel6.Width + Panel3.Width)
   If modBasic.$FocusBackColor Then
     For Each xcont In Me.Controls
       OBSwatchall = New Observer(xcont) As "WatchAll"
@@ -180,14 +181,15 @@ End
 Private Sub SetLeftGrid()
 
   With GridView1
-    .Columns[0].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[1].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[0].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 125 * modBasic.$AppWidthRatio
     .Columns[3].Width = 100 * modBasic.$AppWidthRatio
     .Columns[4].Width = 100 * modBasic.$AppWidthRatio
+
     .Columns[0].Text = "ServiceID"
-    .Columns[2].Text = "Name"
-    .Columns[3].Text = "SurName"
+    .Columns[1].Text = "Name"
+    .Columns[2].Text = "SurName"
     .Columns[3].Text = "Category"
     .Columns[4].Text = "Staff ID"
   End With
