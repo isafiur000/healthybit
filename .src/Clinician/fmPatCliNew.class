@@ -4442,6 +4442,10 @@ Public Sub btnoutcome_Click()
     btnoutcome.Enabled = False
     Balloon.Info(("Information saved"), btnoutcome)
     Balloon.Delay = modBasic.$BalloonDelay
+
+    If chkarchive.Value = True Then
+      ArchiveSummary()
+    Endif
   Endif
 
 Catch
@@ -4454,6 +4458,17 @@ End
 Public Sub btnopreport_Click()
 
   mnuopd_Click()
+
+End
+
+Private Sub ArchiveSummary()
+
+  Dim xPath As String
+
+  Inc Application.Busy
+  xPath = modPatReportAll.ShowAllCompleteReport(Trim(txtencid.Text), LabUnitForm())
+  Dec Application.Busy
+  modPrint.HTMLViewDOcument(xPath, Trim(txtencid.Text), "Backup")
 
 End
 

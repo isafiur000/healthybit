@@ -820,6 +820,7 @@ Private Sub BlankDosingBox()
   txtlastdispdate.Foreground = Color.Default
   txttotalqty.Value = 0
   lbldose.Text = ""
+  MessageView1.Close()
 
 End
 
@@ -1354,7 +1355,7 @@ Public Sub cmbfreq_LostFocus()
   Dim opt As String[]
   Dim Row As Integer
   Dim xval As String
-  Dim xcount As Integer
+  Dim xcount As String
   Dim cForm As CMedError
 
   If $HideErr = False Then
@@ -1364,24 +1365,34 @@ Public Sub cmbfreq_LostFocus()
         Case "suture", "msurg", "ortho", "extra", "topical"
           ''do nothing
         Case Else
-          If $ShowReview And If $ShowReview <> "None" Then
-            opt = New String[]
-            For Row = 0 To GridView1.Rows.Count - 1
-              If GridView1[Row, 2].Text = "suture" Or If GridView1[Row, 2].Text = "msurg" Or If GridView1[Row, 2].Text = "ortho" Or If GridView1[Row, 2].Text = "extra" Or If GridView1[Row, 2].Text = "topical" Then
-              Else
-                xval = modMedConstant.GetDrugFromStockID(GridView1[Row, 3].Text)
-                If opt.Count = 0 Then
-                  opt.Add(xval)
-                Else
-                  If opt.Exist(xval) = False Then
-                    opt.Add(xval)
-                  Endif
-                Endif
+          If $ShowReview Then
+            If $ShowReview = "None" Then
+            Else
+              opt = New String[]
+              For Row = 0 To GridView1.Rows.Count - 1
+                Select GridView1[Row, 2].Text
+                  Case "suture", "msurg", "ortho", "extra", "topical"
+                  Case Else
+                    xval = modMedConstant.GetDrugFromStockID(GridView1[Row, 3].Text)
+                    If opt.Count = 0 Then
+                      opt.Add(xval)
+                    Else
+                      If opt.Exist(xval) = False Then
+                        opt.Add(xval)
+                      Endif
+                    Endif
+                End Select
+              Next
+              $HideErr = True
+              cForm = New CMedError
+              Inc Application.Busy
+              xcount = cForm.ShowMedicationReviewPunching(Trim(txtencid.Text), cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, opt)
+              Dec Application.Busy
+              If xcount Then
+                MessageView1.Close()
+                MessageView1.Open(xcount, Picture["icon:/small/info"])
               Endif
-            Next
-            $HideErr = True
-            cForm = New CMedError
-            xcount = cForm.ShowMedicationReviewPunching(Trim(txtencid.Text), cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, opt, $ShowReview)
+            Endif
           Endif
       End Select
 
@@ -2463,6 +2474,7 @@ Public Sub mnureviewsingle_Click()
   Dim Row As Integer
   Dim xval As String
   Dim cForm As CMedError
+  Dim xPath As String
 
   If GridView1.Rows.Selection.Count > 0 Then
     If GridView1.Rows.Count > 0 Then
@@ -2482,7 +2494,10 @@ Public Sub mnureviewsingle_Click()
         Endif
       Next
       cForm = New CMedError
-      cForm.ShowMedicationReviewSingleDosID(GridView1[GridView1.Row, 0].Text, opt, "Report")
+      Inc Application.Busy
+      xPath = cForm.ShowMedicationReviewSingleDosIDReport(GridView1[GridView1.Row, 0].Text, opt)
+      Dec Application.Busy
+      modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
     Endif
   Endif
 
@@ -2493,6 +2508,7 @@ Public Sub mnurevall_Click()
   Dim opt As Long[]
   Dim Row As Integer
   Dim cForm As CMedError
+  Dim xPath As String
 
   If GridView1.Rows.Count > 0 Then
     opt = New Long[]
@@ -2503,7 +2519,10 @@ Public Sub mnurevall_Click()
       Endif
     Next
     cForm = New CMedError
-    cForm.ShowMedicationReviewMultipleDosID(Trim(txtencid.Text), opt, "Report")
+    Inc Application.Busy
+    xPath = cForm.ShowMedicationReviewMultipleDosIDReport(Trim(txtencid.Text), opt)
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
   Endif
 
 End

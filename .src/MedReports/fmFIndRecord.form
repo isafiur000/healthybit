@@ -124,24 +124,31 @@
       Arrangement = Arrange.Vertical
     }
     { Panel6 Panel
-      MoveScaled(29,1,81,71)
+      MoveScaled(29,1,82,71)
       Expand = True
       Arrangement = Arrange.Vertical
-      { Panel5 Panel
-        MoveScaled(0,0,81,28.5)
+      { Panel9 Panel
+        MoveScaled(0,0,80.875,8.875)
+        Arrangement = Arrange.Horizontal
         { chkselect CheckBox
-          MoveScaled(0,1,2.5,2)
-        }
-        { Label2 Label
-          MoveScaled(3,1,9,3)
-          Border = Border.Plain
+          MoveScaled(0,0,11,6)
           Text = ("SELECT")
         }
+        { txtselect TextArea
+          MoveScaled(13,0,67,8)
+          Expand = True
+          Wrap = True
+          ScrollBar = Scroll.Vertical
+        }
+      }
+      { Panel5 Panel
+        MoveScaled(0,10,82,16)
+        Arrangement = Arrange.Horizontal
         { chkwhere CheckBox
-          MoveScaled(0,11,2.5,2)
+          MoveScaled(0,3,2.5,2)
         }
         { TabStrip1 TabPanel
-          MoveScaled(3,10,77,14)
+          MoveScaled(3,1,77,14)
           Enabled = False
           Count = 2
           Index = 0
@@ -209,39 +216,34 @@
           }
           Index = 0
         }
-        { Frame1 Panel
-          MoveScaled(0,24,80,4)
-          { Panel7 Panel
-            MoveScaled(49,0.5,31,3)
-            Enabled = False
-            { cmbsortype ComboBox
-              MoveScaled(21,0,9,3)
-            }
-            { cmbsortfield ComboBox
-              MoveScaled(0,0,21,3)
-            }
+      }
+      { Frame1 Panel
+        MoveScaled(0,35,80,4)
+        { Panel7 Panel
+          MoveScaled(49,0.5,31,3)
+          Enabled = False
+          { cmbsortype ComboBox
+            MoveScaled(21,0,9,3)
           }
-          { chksort CheckBox
-            MoveScaled(37,0.5,12,3)
-            Text = ("ORDER BY")
-          }
-          { chkgroup CheckBox
-            MoveScaled(0,0.5,12.5,3)
-            Text = ("GROUP BY")
-          }
-          { cmbgroupfield ComboBox
-            MoveScaled(13,0.5,21,3)
-            Enabled = False
+          { cmbsortfield ComboBox
+            MoveScaled(0,0,21,3)
           }
         }
-        { txtselect TextArea
-          MoveScaled(13,1,67,8)
-          Wrap = True
-          ScrollBar = Scroll.Vertical
+        { chksort CheckBox
+          MoveScaled(37,0.5,12,3)
+          Text = ("ORDER BY")
+        }
+        { chkgroup CheckBox
+          MoveScaled(0,0.5,12.5,3)
+          Text = ("GROUP BY")
+        }
+        { cmbgroupfield ComboBox
+          MoveScaled(13,0.5,21,3)
+          Enabled = False
         }
       }
       { GridView1 GridView
-        MoveScaled(0,32,79,38)
+        MoveScaled(0,40,79,30)
         Expand = True
         Mode = Select.Single
         Header = GridView.Both

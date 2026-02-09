@@ -1709,10 +1709,14 @@ End
 Public Sub mnumedaudit_Click()
 
   Dim cForm As CMedError
+  Dim xPath As String
 
   modBasic.MedicineDoseSetting()
   cForm = New CMedError
-  cForm.MedicalAuditReport(dtfir.Value, dtlast.Value)
+  Inc Application.Busy
+  xPath = cForm.MedicalAuditReport(dtfir.Value, dtlast.Value)
+  Dec Application.Busy
+  modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
 
 End
 
