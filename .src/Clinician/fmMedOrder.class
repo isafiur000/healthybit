@@ -941,7 +941,7 @@ Public Sub txtqty_GotFocus()
     If Not xday Then
       txtday.SetFocus
     Else
-      txtqty.Value = Ceil(modMedConstant.GetQuantityDosing(cmbmedicine.Text, txtdose.Value, cmbfreq.Text, xday))
+      txtqty.Value = Ceil(modMedConstant.GetQuantityDosing(cmbmedicine.Text, txtdose.Value, cmbfreq.Text, xday, modBasic.$SalesQTYPack))
     Endif
   Endif
   txtqty.SelectAll

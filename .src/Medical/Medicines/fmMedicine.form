@@ -329,36 +329,47 @@
           Sorted = True
         }
         { cmbpreservative TextBox
-          MoveScaled(14,21,30,3)
+          MoveScaled(14,21,26,3)
+        }
+        { cmbnarcotic ComboBox
+          MoveScaled(14,25,26,3)
+          Sorted = True
+        }
+        { txtbranddetail TextArea
+          MoveScaled(0,33,44,7)
+          Wrap = True
+          ScrollBar = Scroll.Vertical
         }
         { txtminstock ValueBox
-          MoveScaled(64,5,15,3)
+          MoveScaled(63,5,15,3)
         }
         { txtmaxstock ValueBox
-          MoveScaled(64,9,15,3)
+          MoveScaled(63,9,15,3)
           ToolTip = ("Put -1 to disable the selected item in purchase entry form")
         }
         { txtleadtime ValueBox
-          MoveScaled(64,13,15,3)
+          MoveScaled(63,13,15,3)
         }
         { cmbtaxgroup ComboBox
-          MoveScaled(64,17,15,3)
-          Sorted = True
-        }
-        { cmbnarcotic ComboBox
-          MoveScaled(64,21,15,3)
+          MoveScaled(63,17,15,3)
           Sorted = True
         }
         { cmbtabbreak ComboBox
-          MoveScaled(64,25,15,3)
+          MoveScaled(63,21,15,3)
           Sorted = True
         }
         { cmblabelprint ComboBox
-          MoveScaled(64,29,15,3)
+          MoveScaled(63,25,15,3)
           Sorted = True
         }
+        { txtpacksize ValueBox
+          MoveScaled(63,29,15,3)
+        }
+        { txtdispensize ValueBox
+          MoveScaled(63,33,15,3)
+        }
         { cmbcurrentuse ComboBox
-          MoveScaled(64,37,15,3)
+          MoveScaled(63,37,15,3)
           Sorted = True
         }
         { btnBrOK Button
@@ -392,12 +403,12 @@
           ReadOnly = True
         }
         { Label35 Label
-          MoveScaled(47,1,16,3)
+          MoveScaled(47,1,15,3)
           Border = Border.Plain
           Text = ("Current Stock")
         }
         { lblcurrstock Label
-          MoveScaled(64,1,15,3)
+          MoveScaled(63,1,15,3)
           Border = Border.Plain
         }
         { Label32 Label
@@ -410,7 +421,7 @@
           Picture = Picture["icon:/small/add"]
         }
         { Label36 Label
-          MoveScaled(47,5,16,3)
+          MoveScaled(47,5,15,3)
           Border = Border.Plain
           Text = ("Minimum Stock")
         }
@@ -420,7 +431,7 @@
           Text = ("Standard")
         }
         { Label37 Label
-          MoveScaled(47,9,16,3)
+          MoveScaled(47,9,15,3)
           Border = Border.Plain
           Text = ("Maximum Sales")
         }
@@ -430,7 +441,7 @@
           Text = ("Manufacturer")
         }
         { Label38 Label
-          MoveScaled(47,13,16,3)
+          MoveScaled(47,13,15,3)
           Border = Border.Plain
           Text = ("Lead Time (Days)")
         }
@@ -440,37 +451,32 @@
           Text = ("Preservatives")
         }
         { Label40 Label
-          MoveScaled(47,21,16,3)
+          MoveScaled(0,25,13.375,3)
           Border = Border.Plain
           Text = ("Narcotic Type")
         }
         { Label44 Label
-          MoveScaled(0,25,13.375,3)
+          MoveScaled(0,29,13.375,3)
           Border = Border.Plain
           Text = ("Description")
         }
         { Label41 Label
-          MoveScaled(47,25,16,3)
+          MoveScaled(47,21,15,3)
           Border = Border.Plain
           Text = ("Breakable")
         }
         { Label42 Label
-          MoveScaled(47,29,16,3)
+          MoveScaled(47,25,15,3)
           Border = Border.Plain
           Text = ("Disp Label")
         }
         { Label43 Label
-          MoveScaled(47,37,16,3)
+          MoveScaled(47,37,15,3)
           Border = Border.Plain
           Text = ("Current Status")
         }
-        { txtbranddetail TextArea
-          MoveScaled(0,29,44,11)
-          Wrap = True
-          ScrollBar = Scroll.Vertical
-        }
         { Label4 Label
-          MoveScaled(47,17,16,3)
+          MoveScaled(47,17,15,3)
           Border = Border.Plain
           Text = ("Tax Group")
         }
@@ -480,16 +486,18 @@
           Picture = Picture["icon:/small/edit"]
         }
         { Label5 Label
-          MoveScaled(47,33,16,3)
+          MoveScaled(47,29,15,3)
           Border = Border.Plain
           Text = ("Fix Pack Size")
-        }
-        { txtpacksize ValueBox
-          MoveScaled(64,33,15,3)
         }
         { btnaddmfg ToolButton
           MoveScaled(41,17,3,3)
           Picture = Picture["icon:/small/add"]
+        }
+        { Label8 Label
+          MoveScaled(47,33,15,3)
+          Border = Border.Plain
+          Text = ("Dispense Size")
         }
       }
       { Panel10 Panel

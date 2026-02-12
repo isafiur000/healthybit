@@ -2770,102 +2770,6 @@ Public Sub mnuexpocolumn_Click()
 
 End
 
-Public Sub btnautopharm_Click()
-
-  Dim Row As Integer
-  Dim xcopy As Integer
-  Dim xcont As Integer
-
-  Inc Application.Busy
-  xcont = 0
-  For Row = 0 To GridView1.Rows.Count - 1
-    xcopy = AddMedicineRequest(GridView1[Row, 4].Text, "Admitted")
-    If xcopy Then
-      xcont = xcont + 1
-    Endif
-  Next
-  Dec Application.Busy
-  btnautopharm.Enabled = False
-  Message.Info("Medicine Request copied for " & CStr(xcont) & " Patients", "OK")
-
-End
-
-Private Function AddMedicineRequest(encid As String, sStatus As String) As Integer
-
-  Dim sql As String
-  Dim res As Result
-  Dim rex As Result
-  Dim xcount As Integer
-
-  Dim txprescriber As String
-  Dim txpresno As String
-
-  Dim xtax As Float
-  Dim xdisc As Float
-  Dim itemtype As String
-  Dim xfixrate As Float
-  Dim xfixname As String
-  Dim itemmode As String
-  Dim xcurVal As String
-  Dim xnarcotic As String[]
-  Dim xyest As Date
-  Dim CPharmFix As CFixRatePharmacy
-
-  If modBasic.$DispRequestStatus = "Reserve" Then
-    xcurVal = "Reserve"
-  Else
-    xcurVal = "Continue"
-  Endif
-  xyest = DateAdd(Now(), gb.Day, -1)
-  xcount = 0
-
-  ' sql = "select flditemtype,fldroute,flditem,flddose,fldfreq,flddays,flddirection,fldqtydisp,fldbillingmode,flddisctype,fldacledger,fldbilltype from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval=&6 and flddays=&7 and fldroute=&8"
-  ' res = modDatabase.$myConn.Exec(sql, encid, True, modDate.StartSqlDate(Now()), modDate.StartSqlDate(Now()), "Medicines", "Continue", 1, sRoute)
-  sql = "select flditemtype,fldroute,flditem,flddose,fldfreq,flddays,flddirection,fldqtydisp,fldprescriber,fldregno,fldbillingmode,flddisctype,fldacledger,fldbilltype from tblpatdosing where fldencounterval=&1 and fldstarttime>=&2 and fldstarttime<=&3 and flditemtype=&4 and fldcurval=&5 and flddays=&6"
-  res = modDatabase.$myConn.Exec(sql, encid, modDate.StartSqlDate(xyest), modDate.EndSqlDate(xyest), "Medicines", "Continue", 0)
-  If res.Available Then
-    For Each res
-
-      rex = modDatabase.$myConn.Exec("select fldid from tblpatdosing where fldencounterval=&1 and fldstarttime>=&2 and fldstarttime<=&3 and flditemtype=&4 and fldcurval=&5 and flddays=&6 and flditem=&7", encid, modDate.StartSqlDate(Now()), modDate.EndSqlDate(Now()), "Medicines", "Continue", 0, res["flditem"])
-      If rex.Available = False Then
-        itemtype = modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"])
-
-        If modBasic.$BillPharmFixedModes.Exist(res["fldbillingmode"]) = True Then
-          CPharmFix = New CFixRatePharmacy(itemtype, res["flditem"], res["fldbillingmode"])
-          xfixrate = CPharmFix.GetFixRate()
-          xfixname = CPharmFix.GetFixItem()
-        Endif
-
-        itemmode = res["fldbillingmode"]
-        xtax = modNonMedical.ShowTaxValues(itemtype, res["flditem"])
-        xdisc = modNonMedical.DiscPercentForCategoryValue(encid, res["flddisctype"], itemtype, res["flditem"], itemmode)
-        If modMedConstant.GetNarcoticType(res["flditem"]) = "Yes" Then
-          If res["fldprescriber"] And If res["fldregno"] Then
-            txprescriber = res["fldprescriber"]
-            txpresno = res["fldregno"]
-          Else
-            xnarcotic = DualGridValue(("Select Narcotic Prescriber"), $ClinicianLst, False)
-            If xnarcotic Then
-              txprescriber = xnarcotic[1]
-              txpresno = xnarcotic[0]
-            Endif
-          Endif
-          If txprescriber And If txpresno Then
-            modPharmSub.InsertDosingEntry(encid, res["fldbilltype"], res["fldbillingmode"], res["flddisctype"], res["fldacledger"], res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtydisp"], sStatus, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", "IPD", res["flddirection"], False, xcurVal)                     '
-          Endif
-        Else
-          modPharmSub.InsertDosingEntry(encid, res["fldbilltype"], res["fldbillingmode"], res["flddisctype"], res["fldacledger"], res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtydisp"], sStatus, "", "", 0, xtax, xdisc, xfixname, xfixrate, "Request", "IPD", res["flddirection"], False, xcurVal)                     '
-        Endif
-        xcount = xcount + 1
-      Endif
-
-    Next
-  Endif
-
-  Return xcount
-
-End
-
 Public Sub chkshowdepart_Click()
 
   modSettings.EnterCheckSetting(chkshowdepart, "BedOccupancy/ShowParameters")
@@ -2908,6 +2812,203 @@ Public Sub mnuexamform_Click()
   If GridView1.Rows.Selection.Count Then
     hForm = New FmExamReporting(GridView1[GridView1.Row, 4].Text, True)
     modWorkSpace.Add(hForm)
+  Endif
+
+End
+
+''================ Pharmacy Orders ================
+Public Sub btnautopharm_Click()
+
+  Dim Row As Integer
+  Dim xcopy As Integer
+  Dim xcont As Integer
+
+  Inc Application.Busy
+  xcont = 0
+  For Row = 0 To GridView1.Rows.Count - 1
+    xcopy = AddMedicineRequest(GridView1[Row, 4].Text, "Admitted")
+    If xcopy Then
+      xcont = xcont + 1
+    Endif
+  Next
+  Dec Application.Busy
+  btnautopharm.Enabled = False
+  Message.Info("Medicine Request copied for " & CStr(xcont) & " Patients", "OK")
+
+End
+
+Private Function AddMedicineRequest(encid As String, sStatus As String) As Integer
+
+  Dim sql As String
+  Dim res As Result
+  Dim rex As Result
+  Dim xcount As Integer
+  Dim xnewqty As Float
+
+  Dim txprescriber As String
+  Dim txpresno As String
+
+  Dim xtax As Float
+  Dim xdisc As Float
+  Dim itemtype As String
+  Dim xfixrate As Float
+  Dim xfixname As String
+  Dim itemmode As String
+  Dim xcurVal As String
+  Dim xnarcotic As String[]
+  Dim xyest As Date
+  Dim CPharmFix As CFixRatePharmacy
+
+  If modBasic.$DispRequestStatus = "Reserve" Then
+    xcurVal = "Reserve"
+  Else
+    xcurVal = "Continue"
+  Endif
+  xyest = DateAdd(Now(), gb.Day, -1)
+  xcount = 0
+
+  ' sql = "select flditemtype,fldroute,flditem,flddose,fldfreq,flddays,flddirection,fldqtydisp,fldbillingmode,flddisctype,fldacledger,fldbilltype from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval=&6 and flddays=&7 and fldroute=&8"
+  ' res = modDatabase.$myConn.Exec(sql, encid, True, modDate.StartSqlDate(Now()), modDate.StartSqlDate(Now()), "Medicines", "Continue", 1, sRoute)
+  sql = "select fldid,flditemtype,fldroute,flditem,flddose,fldfreq,flddays,flddirection,fldqtydisp,fldprescriber,fldregno,fldbillingmode,flddisctype,fldacledger,fldbilltype from tblpatdosing where fldencounterval=&1 and fldstarttime>=&2 and fldstarttime<=&3 and flditemtype=&4 and fldcurval=&5 and flddays=&6"
+  res = modDatabase.$myConn.Exec(sql, encid, modDate.StartSqlDate(xyest), modDate.EndSqlDate(xyest), "Medicines", "Continue", 0)
+  If res.Available Then
+    For Each res
+      xnewqty = 0
+      If AllowNewMedicineEntry(encid, res["flditem"]) = False Then
+        xnewqty = modMedConstant.GetQuantityDosing(res["flditem"], res["flddose"], res["fldfreq"], 1, "Disable")
+        If xnewqty Then
+          GetSplitPastRecordWithQTYIndoor(encid, res["flditem"], xnewqty)
+        Endif
+      Else
+
+        rex = modDatabase.$myConn.Exec("select fldid from tblpatdosing where fldencounterval=&1 and fldstarttime>=&2 and fldstarttime<=&3 and flditemtype=&4 and fldcurval=&5 and flddays=&6 and flditem=&7", encid, modDate.StartSqlDate(Now()), modDate.EndSqlDate(Now()), "Medicines", "Continue", 0, res["flditem"])
+        If rex.Available = False Then
+          itemtype = modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"])
+
+          If modBasic.$BillPharmFixedModes.Exist(res["fldbillingmode"]) = True Then
+            CPharmFix = New CFixRatePharmacy(itemtype, res["flditem"], res["fldbillingmode"])
+            xfixrate = CPharmFix.GetFixRate()
+            xfixname = CPharmFix.GetFixItem()
+          Endif
+
+          itemmode = res["fldbillingmode"]
+          xtax = modNonMedical.ShowTaxValues(itemtype, res["flditem"])
+          xdisc = modNonMedical.DiscPercentForCategoryValue(encid, res["flddisctype"], itemtype, res["flditem"], itemmode)
+          If modMedConstant.GetNarcoticType(res["flditem"]) = "Yes" Then
+            If res["fldprescriber"] And If res["fldregno"] Then
+              txprescriber = res["fldprescriber"]
+              txpresno = res["fldregno"]
+            Else
+              xnarcotic = DualGridValue(("Select Narcotic Prescriber"), $ClinicianLst, False)
+              If xnarcotic Then
+                txprescriber = xnarcotic[1]
+                txpresno = xnarcotic[0]
+              Endif
+            Endif
+            If txprescriber And If txpresno Then
+              modPharmSub.InsertDosingEntry(encid, res["fldbilltype"], res["fldbillingmode"], res["flddisctype"], res["fldacledger"], res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtydisp"], sStatus, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", "IPD", res["flddirection"], False, xcurVal)                     '
+            Endif
+          Else
+            modPharmSub.InsertDosingEntry(encid, res["fldbilltype"], res["fldbillingmode"], res["flddisctype"], res["fldacledger"], res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtydisp"], sStatus, "", "", 0, xtax, xdisc, xfixname, xfixrate, "Request", "IPD", res["flddirection"], False, xcurVal)                     '
+          Endif
+          xcount = xcount + 1
+        Endif
+
+      Endif
+    Next
+  Endif
+
+  Return xcount
+
+End
+
+Private Function AllowNewMedicineEntry(encid As String, xItem As String) As Boolean
+
+  Dim rsx As Result
+  Dim xorder As Float
+  Dim xdisp As Float
+  Dim xallow As Boolean
+
+  xorder = 0
+  xdisp = 0
+  xallow = True
+  rsx = modDatabase.$myConn.Exec("select fldroute,flditem,flddose,fldfreq,flddays,(fldqtydisp-fldqtyret) as fldqtydisp from tblpatdosing where fldencounterval=&1 and flditem=&2", encid, xItem)
+  If rsx.Available Then
+    For Each rsx
+      If rsx["flddays"] Then
+        xorder = xorder + modMedConstant.GetQuantityDosing(xItem, rsx["flddose"], rsx["fldfreq"], rsx["flddays"], "Disable")
+      Else
+        xorder = xorder + modMedConstant.GetQuantityDosing(xItem, rsx["flddose"], rsx["fldfreq"], 1, "Disable")
+      Endif
+      xdisp = xdisp + rsx["fldqtydisp"]
+    Next
+    If xdisp >= xorder Then
+      xallow = False
+    Endif
+  Endif
+
+  Return xallow
+
+End
+
+Private Sub GetSplitPastRecordWithQTYIndoor(encid As String, xItem As String, xQty As Float)
+
+  Dim res As Result
+  Dim xnewqty As Float
+  Dim xfixqty As Float
+  Dim xdiff As Float
+
+  xnewqty = xQty
+  res = modDatabase.$myConn.Exec("select fldid,flditem,flddose,fldfreq,fldqtydisp from tblpatdosing where fldencounterval=&1 and flditem=&2 and fldqtyret=&3 and flddose>&3 and flddays=&3 and fldsave_order=&4", encid, xItem, 0, True)
+  If res.Available Then
+    For Each res
+
+      If xnewqty > 0 Then
+        xfixqty = modMedConstant.GetQuantityDosing(res["flditem"], res["flddose"], res["fldfreq"], 1, "Disable")
+        xdiff = res["fldqtydisp"] - xfixqty
+        If xdiff > 0 Then
+          If xdiff > xnewqty Then
+            GetSplitRecordWithQTYIndoor(res["fldid"], xnewqty)
+            xnewqty = 0
+            Break
+          Else If xdiff <= xnewqty Then
+            GetSplitRecordWithQTYIndoor(res["fldid"], xdiff)
+            xnewqty = xnewqty - xdiff
+          Endif
+        Endif
+      Endif
+
+    Next
+  Endif
+
+End
+
+Private Sub GetSplitRecordWithQTYIndoor(xIndex As Long, newqty As Float)
+
+  Dim rs As Result
+  Dim hField As ResultField
+  Dim res As Result
+
+  rs = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1 and fldqtyret=&2", xIndex, 0)
+  If rs.Available Then
+    If newqty < rs["fldqtydisp"] Then
+      res = modDatabase.$myConn.Create("tblpatdosing")
+      For Each hField In rs.Fields
+        If hField.Name = "fldqtydisp" Then
+          res[hField.Name] = newqty
+        Else If hField.Name = "fldstarttime" Then
+          res[hField.Name] = DateAdd(rs["fldstarttime"], gb.Day, 1)
+        Else If hField.Name = "fldendtime" Then
+          res[hField.Name] = DateAdd(rs["fldendtime"], gb.Day, 1)
+        Else
+          res[hField.Name] = rs[hField.Name]
+        Endif
+      Next
+      res.Update
+
+      rs["fldqtydisp"] = rs["fldqtydisp"] - newqty
+      rs.Update
+    Endif
   Endif
 
 End

@@ -2619,7 +2619,7 @@ Public Sub btnaddprocpast_Click()
 
   Dim res As Result
 
-  res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval=&1 and fldid=&2 and fldparent=&3 and fldstatus=&4", Trim(txtencid.Text), $BillIndex, 0, "Punched")
+  res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval=&1 and fldid=&2 and fldparent=&3 and (fldstatus=&4 or fldstatus=&5)", Trim(txtencid.Text), $BillIndex, 0, "Punched", "Done")
   If res.Available Then
     res["fldparent"] = $ProcIndex
     res.Update
