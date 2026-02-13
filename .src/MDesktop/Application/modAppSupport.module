@@ -199,10 +199,12 @@ End
 
 Public Sub PlayMediaFile()
 
+  Dim xPath As String
+
   If Dialog.OpenFile() Then Return
-  modBasic.$mediaPath = Dialog.Path
+  xPath = Dialog.Path
   If modBasic.$MultiMediaFormat = "Embedded" Then
-    fmMediaPlay.MediaView1.URL = modBasic.$mediaPath
+    fmMediaPlay.MediaView1.URL = xPath
     fmMediaPlay.Enabled = True
   Else
     modDevice.DesktopOpenFile(Dialog.Path)

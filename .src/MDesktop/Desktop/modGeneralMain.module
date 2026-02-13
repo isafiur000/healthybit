@@ -79,10 +79,7 @@ Public Sub GetFirstValues(SvrSock As ServerSocket, SvrTrans As ServerSocket)
   SetActiveForms()
   modDevice.CamOnStart()
   If modBasic.$MultiMediaFormat = "Embedded" Then
-    If modBasic.$mediaPath And If Exist(modBasic.$mediaPath) Then
-      fmMediaPlay.MediaView1.URL = modBasic.$mediaPath
-      fmMediaPlay.Enabled = True
-    Endif
+    fmMediaPlay.Enabled = True
   Endif
   modAppSupport.OpenPortForListening(SvrSock)
   modAppSupport.GetMessaging(SvrTrans)
@@ -359,21 +356,21 @@ Public Sub LoadMainForms(frm As Form, pnltop As Panel, pnlleft As Panel, wrkoffi
     $LeftAdView.Background = Color.Transparent
   Endif
 
-  'left media player
-  If modBasic.$MultiMediaFormat = "Embedded" Then
-    xMpanel = New Panel(pnlleft)
-    xMpanel.Width = xleftlen
-    xMpanel.Height = xleftlen - 10 * modBasic.$AppScaleFactor
-    ' xMpanel.Background = Color.LightGray
-
-    xMwork = New Workspace(xMpanel)
-    xMwork.Top = 0
-    xMwork.Left = 0
-    xMwork.Width = xleftlen
-    xMwork.Height = xMpanel.Height + (40 * modBasic.$AppScaleFactor)  ''last one to force media to reduce space at bottom
-    xMwork.Orientation = Align.Bottom
-    xMwork.Add(fmMediaPlay)
-  Endif
+  ' 'left media player
+  ' If modBasic.$MultiMediaFormat = "Embedded" Then
+  '   xMpanel = New Panel(pnlleft)
+  '   xMpanel.Width = xleftlen
+  '   xMpanel.Height = xleftlen - 10 * modBasic.$AppScaleFactor
+  '   ' xMpanel.Background = Color.LightGray
+  '
+  '   xMwork = New Workspace(xMpanel)
+  '   xMwork.Top = 0
+  '   xMwork.Left = 0
+  '   xMwork.Width = xleftlen
+  '   xMwork.Height = xMpanel.Height + (40 * modBasic.$AppScaleFactor)  ''last one to force media to reduce space at bottom
+  '   xMwork.Orientation = Align.Bottom
+  '   xMwork.Add(fmMediaPlay)
+  ' Endif
 
   'right webview
   xadright = modBasic.$FormRightAdv
@@ -405,6 +402,26 @@ Public Sub LoadMainForms(frm As Form, pnltop As Panel, pnlleft As Panel, wrkoffi
     $RightAdView.Background = Color.Transparent
 
     $xslider.Value = $RightAdView.Zoom * 100
+  Endif
+
+  'right media player
+  If modBasic.$MultiMediaFormat = "Embedded" Then
+    xMpanel = New Panel(pnlright)
+    xMpanel.Width = pnlright.Width
+    If $DeskHeight > 2 * (pnlright.Width - 100 * modBasic.$AppScaleFactor) Then
+      xMpanel.Height = Max((pnlright.Width - 100 * modBasic.$AppScaleFactor), 200 * modBasic.$AppScaleFactor)
+    Else
+      xMpanel.Height = 0.5 * $DeskHeight
+    Endif
+    ' xMpanel.Background = Color.LightGray
+
+    xMwork = New Workspace(xMpanel)
+    xMwork.Top = 0
+    xMwork.Left = 0
+    xMwork.Width = pnlright.Width
+    xMwork.Height = xMpanel.Height + (40 * modBasic.$AppScaleFactor)  ''last one to force media to reduce space at bottom
+    xMwork.Orientation = Align.Bottom
+    xMwork.Add(fmMediaPlay)
   Endif
 
   ''set advertisement panel URL

@@ -527,7 +527,6 @@ Private Sub GeneralSetting()
   Endif
   txtdict.Text = modSettings.ShowSettingFromFIle("AppSetting/Dictionary")
   txtgrammer.Text = modSettings.ShowSettingFromFIle("AppSetting/SpellChecker")
-  txtmediapath.Text = modSettings.ShowSettingFromFIle("AppSetting/MediaPath")
 
   If modSettings.ShowSettingFromFIle("AppSetting/LockTime") Then
     txtlock.Value = CFloat(modSettings.ShowSettingFromFIle("AppSetting/LockTime"))
@@ -609,29 +608,6 @@ Public Sub btngrammer_Click()
 
 End
 
-''media path
-Public Sub txtmediapath_Click()
-
-  If Dialog.OpenFile() Then Return
-  txtmediapath.Text = Dialog.Path
-
-End
-
-Public Sub btnmediapath_Click()
-
-  modSettings.SaveSettingsToFile("AppSetting/MediaPath", txtmediapath.Text)
-  If Exist(txtmediapath.Text) Then
-    modBasic.$mediaPath = txtmediapath.Text
-    If modBasic.$MultiMediaFormat = "Embedded" Then
-      fmMediaPlay.MediaView1.URL = modBasic.$mediaPath
-      fmMediaPlay.Enabled = True
-    Endif
-  Endif
-  Balloon.Info(("Information saved"), btnmediapath)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
 'select item view mode
 Public Sub btnmedview_Click()
 
@@ -672,6 +648,9 @@ Public Sub btnmultimed_Click()
 
   modSettings.SaveSettingsToFile("AppSetting/MediaPlayerFormat", cmbmultimed.Text)
   modBasic.$MultiMediaFormat = cmbmultimed.Text
+  If modBasic.$MultiMediaFormat = "Embedded" Then
+    fmMediaPlay.Enabled = True
+  Endif
   Balloon.Info(("Information saved"), btnmultimed)
   Balloon.Delay = modBasic.$BalloonDelay
 
