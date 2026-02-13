@@ -312,6 +312,7 @@ Public Sub btnrefresh_Click()
     Endif
 
     SHowTotalMsg(Trim(txtuser.Text))
+    btnadd.Enabled = True
     ShowCOllection()
   Endif
   txtreceivamt.SetFocus
@@ -430,6 +431,7 @@ Public Sub btnadd_Click()
           res["fldstatus"] = "Waiting"
           res["fldsave"] = False
           res.Update
+          btnadd.Enabled = False
           ShowCOllection()
           txtreceivamt.Value = 0
           cmbshift.Text = ""
