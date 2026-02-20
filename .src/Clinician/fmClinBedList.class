@@ -1693,12 +1693,14 @@ Public Sub btnmobbill_Click()
   Dim xservmode As String
   Dim xprocmode As String
   Dim xothermode As String
+  Dim xpharmmode As String
 
   If GridView1.Rows.Selection.Count Then
     xservmode = modNonMedical.GetAutoIPBillingPack("Service", GridView1[GridView1.Row, 4].Text)
     xprocmode = modNonMedical.GetAutoIPBillingPack("Procedure", GridView1[GridView1.Row, 4].Text)
     xothermode = modNonMedical.GetAutoIPBillingPack("Others", GridView1[GridView1.Row, 4].Text)
-    hForm14 = New FmMiniService(GridView1[GridView1.Row, 4].Text, xservmode, xprocmode, xothermode)
+    xpharmmode = modNonMedical.GetAutoIPBillingPack("Pharmacy", GridView1[GridView1.Row, 4].Text)
+    hForm14 = New FmMiniService(GridView1[GridView1.Row, 4].Text, xservmode, xprocmode, xothermode, xpharmmode)
     hForm14.ShowModal
   Endif
 
@@ -2869,7 +2871,7 @@ Private Function AddMedicineRequest(encid As String, sStatus As String) As Integ
 
   ' sql = "select flditemtype,fldroute,flditem,flddose,fldfreq,flddays,flddirection,fldqtydisp,fldbillingmode,flddisctype,fldacledger,fldbilltype from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval=&6 and flddays=&7 and fldroute=&8"
   ' res = modDatabase.$myConn.Exec(sql, encid, True, modDate.StartSqlDate(Now()), modDate.StartSqlDate(Now()), "Medicines", "Continue", 1, sRoute)
-  sql = "select fldid,flditemtype,fldroute,flditem,flddose,fldfreq,flddays,flddirection,fldqtydisp,fldprescriber,fldregno,fldbillingmode,flddisctype,fldacledger,fldbilltype from tblpatdosing where fldencounterval=&1 and fldstarttime>=&2 and fldstarttime<=&3 and flditemtype=&4 and fldcurval=&5 and flddays=&6"
+  sql = "select fldid,flditemtype,fldroute,flditem,flddose,fldfreq,flddays,flddirection,fldqtydisp,fldprescriber,fldregno,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldstarttime,fldendtime from tblpatdosing where fldencounterval=&1 and fldstarttime>=&2 and fldstarttime<=&3 and flditemtype=&4 and fldcurval=&5 and flddays=&6"
   res = modDatabase.$myConn.Exec(sql, encid, modDate.StartSqlDate(xyest), modDate.EndSqlDate(xyest), "Medicines", "Continue", 0)
   If res.Available Then
     For Each res
@@ -2877,7 +2879,7 @@ Private Function AddMedicineRequest(encid As String, sStatus As String) As Integ
       If AllowNewMedicineEntry(encid, res["flditem"]) = False Then
         xnewqty = modMedConstant.GetQuantityDosing(res["flditem"], res["flddose"], res["fldfreq"], 1, "Disable")
         If xnewqty Then
-          GetSplitPastRecordWithQTYIndoor(encid, res["flditem"], xnewqty)
+          GetSplitPastRecordWithQTYIndoor(encid, res["flditem"], xnewqty, res["fldstarttime"], res["fldendtime"])
         Endif
       Else
 
@@ -2951,7 +2953,7 @@ Private Function AllowNewMedicineEntry(encid As String, xItem As String) As Bool
 
 End
 
-Private Sub GetSplitPastRecordWithQTYIndoor(encid As String, xItem As String, xQty As Float)
+Private Sub GetSplitPastRecordWithQTYIndoor(encid As String, xItem As String, xQty As Float, xstart As Date, xend As Date)
 
   Dim res As Result
   Dim xnewqty As Float
@@ -2959,7 +2961,7 @@ Private Sub GetSplitPastRecordWithQTYIndoor(encid As String, xItem As String, xQ
   Dim xdiff As Float
 
   xnewqty = xQty
-  res = modDatabase.$myConn.Exec("select fldid,flditem,flddose,fldfreq,fldqtydisp from tblpatdosing where fldencounterval=&1 and flditem=&2 and fldqtyret=&3 and flddose>&3 and flddays=&3 and fldsave_order=&4", encid, xItem, 0, True)
+  res = modDatabase.$myConn.Exec("select fldid,flditem,flddose,fldfreq,fldqtydisp,fldstarttime,fldendtime from tblpatdosing where fldencounterval=&1 and flditem=&2 and fldqtyret=&3 and flddose>&3 and flddays=&3 and fldsave_order=&4", encid, xItem, 0, True)
   If res.Available Then
     For Each res
 
@@ -2968,47 +2970,17 @@ Private Sub GetSplitPastRecordWithQTYIndoor(encid As String, xItem As String, xQ
         xdiff = res["fldqtydisp"] - xfixqty
         If xdiff > 0 Then
           If xdiff > xnewqty Then
-            GetSplitRecordWithQTYIndoor(res["fldid"], xnewqty)
+            modPharmSub.GetSplitRecordWithQTYIndoor(encid, res["fldid"], xnewqty, DateAdd(xstart, gb.Day, 1), DateAdd(xend, gb.Day, 1))
             xnewqty = 0
             Break
           Else If xdiff <= xnewqty Then
-            GetSplitRecordWithQTYIndoor(res["fldid"], xdiff)
+            modPharmSub.GetSplitRecordWithQTYIndoor(encid, res["fldid"], xdiff, DateAdd(xstart, gb.Day, 1), DateAdd(xend, gb.Day, 1))
             xnewqty = xnewqty - xdiff
           Endif
         Endif
       Endif
 
     Next
-  Endif
-
-End
-
-Private Sub GetSplitRecordWithQTYIndoor(xIndex As Long, newqty As Float)
-
-  Dim rs As Result
-  Dim hField As ResultField
-  Dim res As Result
-
-  rs = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1 and fldqtyret=&2", xIndex, 0)
-  If rs.Available Then
-    If newqty < rs["fldqtydisp"] Then
-      res = modDatabase.$myConn.Create("tblpatdosing")
-      For Each hField In rs.Fields
-        If hField.Name = "fldqtydisp" Then
-          res[hField.Name] = newqty
-        Else If hField.Name = "fldstarttime" Then
-          res[hField.Name] = DateAdd(rs["fldstarttime"], gb.Day, 1)
-        Else If hField.Name = "fldendtime" Then
-          res[hField.Name] = DateAdd(rs["fldendtime"], gb.Day, 1)
-        Else
-          res[hField.Name] = rs[hField.Name]
-        Endif
-      Next
-      res.Update
-
-      rs["fldqtydisp"] = rs["fldqtydisp"] - newqty
-      rs.Update
-    Endif
   Endif
 
 End

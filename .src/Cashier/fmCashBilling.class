@@ -5044,7 +5044,7 @@ Public Sub mnusplitqty_Click()
   If GridView3.Rows.Selection.Count > 0 Then
     xval = InputValue("Quantity for new Record", "Split Record", 0)
     If xval Then
-      modPharmSub.GetSplitRecordWithQTY(GridView3[GridView3.Row, 0].Text, xval)
+      modPharmSub.GetSplitRecordWithQTY(Trim(txtencid.Text), GridView3[GridView3.Row, 0].Text, xval)
       FillDosingGrid()
     Endif
   Endif

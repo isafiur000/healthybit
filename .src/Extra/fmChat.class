@@ -20,7 +20,7 @@ Public Sub _new(userid As String, newIP As String, sType As String)
   If $sType = "conn" Then
     Me.Title = "Client:"
     MySocket = New Socket As "MySocket"
-    MySock.Connect(newIP, modAppSupport.GetSelectedPort(userid))
+    MySocket.Connect(newIP, modAppSupport.GetSelectedPort(userid))
   Else If $sType = "acc" Then
     Me.Title = "Server:"
     MySocket = modAppSupport.FindServerSocket(modHelpVariable.$LogInCategory).Accept()

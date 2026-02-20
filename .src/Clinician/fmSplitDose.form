@@ -1,0 +1,65 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,64,35)
+  Resizable = False
+  Arrangement = Arrange.Vertical
+  AutoResize = True
+  Spacing = True
+  Margin = True
+  { txtname TextLabel
+    MoveScaled(1,1,62,5)
+    AutoResize = True
+    Border = Border.Plain
+  }
+  { Panel1 Panel
+    MoveScaled(1,7,62,26)
+    { dtstart DateBox
+      MoveScaled(24,1,32,4)
+      Mode = DateChooser.DateTime
+    }
+    { txtdose ValueBox
+      MoveScaled(24,6,13,4)
+    }
+    { cmbfreq ComboBox
+      MoveScaled(24,11,32,4)
+    }
+    { txtdays ValueBox
+      MoveScaled(24,16,13,4)
+    }
+    { btnsave Button
+      MoveScaled(46,21,15,4)
+      Text = ("Add")
+      Picture = Picture["icon:/small/add"]
+    }
+    { Label2 Label
+      MoveScaled(1,21,22,4)
+      Border = Border.Plain
+      Text = ("Available Quantity")
+    }
+    { Label3 Label
+      MoveScaled(1,6,22,4)
+      Border = Border.Plain
+      Text = ("Unit Dose")
+    }
+    { Label4 Label
+      MoveScaled(1,11,22,4)
+      Border = Border.Plain
+      Text = ("Frequency")
+    }
+    { Label5 Label
+      MoveScaled(1,16,22,4)
+      Border = Border.Plain
+      Text = ("Duration (Days)")
+    }
+    { txtqty ValueBox
+      MoveScaled(24,21,13,4)
+      ReadOnly = True
+    }
+    { Label1 Label
+      MoveScaled(1,1,22,4)
+      Border = Border.Plain
+      Text = ("Dose Start")
+    }
+  }
+}

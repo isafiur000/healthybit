@@ -31,6 +31,14 @@
       Text = ("Delete")
     }
   }
+  { mnufirst Menu
+    { mnuadddays Menu
+      Text = ("Add Duration")
+    }
+    { mnusplit Menu
+      Text = ("Split Entry")
+    }
+  }
   { Panel14 Panel
     MoveScaled(0,0,111.875,7.875)
     { Label5 Label
@@ -137,7 +145,7 @@
         }
         { rballdates RadioButton
           MoveScaled(0,0,12,3)
-          Text = ("All Dates")
+          Text = ("Summary")
         }
       }
     }
@@ -146,6 +154,7 @@
       Expand = True
       Mode = Select.Single
       Header = GridView.Both
+      AutoResize = False
     }
     Index = 1
     Text = ("Request [F2]")

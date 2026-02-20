@@ -1330,7 +1330,7 @@ Public Sub btnmobbill_Click()
 
   If GridView1.Rows.Selection.Count Then
     xmode = modNonMedical.DefaultBillingScheme(GridView1[GridView1.Row, 2].Text, modBasic.$compID)
-    hForm14 = New FmMiniService(GridView1[GridView1.Row, 2].Text, xmode, xmode, xmode)
+    hForm14 = New FmMiniService(GridView1[GridView1.Row, 2].Text, xmode, xmode, xmode, xmode)
     hForm14.ShowModal
   Endif
 
@@ -1847,7 +1847,7 @@ Public Sub mnuallhistory_Click()
 
   If GridView1.Rows.Selection.Count Then
     Inc Application.Busy
-    xPath = modPatReports.ShowPatientHistoryReport(GridView1[GridView1.Row, 2].Text)
+    xPath = modCHTMLPatient.ShowPatientHistoryReport(GridView1[GridView1.Row, 2].Text)
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(GridView1[GridView1.Row, 2].Text, xPath, "ReportSize")
   Endif
@@ -1860,7 +1860,7 @@ Public Sub mnuplanningall_Click()
 
   If GridView1.Rows.Selection.Count Then
     Inc Application.Busy
-    xPath = modPatReports.ShowPatientNoteReport(GridView1[GridView1.Row, 2].Text, "Outpatient Notes")
+    xPath = modCHTMLPatient.ShowPatientNoteReport(GridView1[GridView1.Row, 2].Text, "Outpatient Notes")
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(GridView1[GridView1.Row, 2].Text, xPath, "ReportSize")
   Endif

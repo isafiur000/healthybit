@@ -2735,7 +2735,7 @@ Public Sub mnugenservice_Click()
 
   If txtencid.Text Then
     If modNonMedical.AllowEntryWithDeposit(Trim(txtencid.Text), "Service") = True Then
-      hForm = New FmMiniService(Trim(txtencid.Text), $billModeService, $billModeProcedure, $billModeOthers)
+      hForm = New FmMiniService(Trim(txtencid.Text), $billModeService, $billModeProcedure, $billModeOthers, $billModePharmacy)
       hForm.ShowModal
     Endif
   Endif
@@ -4407,7 +4407,7 @@ Public Sub btnoutcome_Click()
       If txtclinmode.Text = "Consultation" Then
         If rbadmission.Value = True Then
           modPatientSub.UpdateConsultData(txtclinIndex.Value, Trim(txtencid.Text), "Done", txtcomment.RichText, xmode, cmbrefer.Text)
-          modPatientSub.EmergencyAdmission(Trim(txtencid.Text))
+          ' modPatientSub.EmergencyAdmission(Trim(txtencid.Text))
         Else If rbreferred.Value = True Then
           modPatientSub.UpdateConsultData(txtclinIndex.Value, Trim(txtencid.Text), "Done", txtcomment.RichText, xmode, cmbrefer.Text)
         Else If rbfollowup.Value = True Then
@@ -4505,6 +4505,7 @@ Public Sub mnupatcomment_Click()
         res["fldupuser"] = modBasic.$lbluser
         res["flduptime"] = Now()
         res.Update
+        modPatient.$PatProfileData.Remove(Trim(txtencid.Text))
       Endif
     Endif
   Endif

@@ -1911,7 +1911,7 @@ Public Sub mnugenservice_Click()
 
   If txtencid.Text Then
     If modNonMedical.AllowEntryWithDeposit(Trim(txtencid.Text), "Service") = True Then
-      hForm = New FmMiniService(Trim(txtencid.Text), $billModeService, $billModeProcedure, $billModeOthers)
+      hForm = New FmMiniService(Trim(txtencid.Text), $billModeService, $billModeProcedure, $billModeOthers, $billModePharmacy)
       hForm.ShowModal
     Endif
   Endif
@@ -3758,10 +3758,18 @@ End
 ''==================== Orders ======================
 Private Sub ShowOrderTypeTime()
 
-  Dim sql As String
+  Dim xFldLst1 As String[]
+  Dim xFldLst2 As String[]
+  Dim sql1 As String
+  Dim sql2 As String
 
-  sql = "select fldid,fldtime,flditem,fldreportquali,flduserid,fldtime,flddetail from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem=&3 ORDER BY fldtime DESC"
-  $rData1 = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), "Notes", "Doctor Order")
+  xFldLst1 = ["fldid", "fldtime", "flditem", "fldreportquali", "flduserid", "flddetail"]
+  xFldLst1.Add(Quote("tblexamgeneral"))
+  xFldLst2 = ["fldid", "fldtime", "flditem", "fldreportquali", "flduserid", "flddetail"]
+  xFldLst2.Add(Quote("tblpatientnotes"))
+  sql1 = "select " & xFldLst1.Join(",") & " from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem=&3"
+  sql2 = "select " & xFldLst2.Join(",") & " from tblpatientnotes where fldencounterval=&1 and fldinput=&2 and flditem=&3"
+  $rData1 = modDatabase.$myConn.Exec(sql1 & " UNION ALL " & sql2 & " ORDER BY fldtime DESC", Trim(txtencid.Text), "Notes", "Doctor Order")
   $aMyFields1 = New String[]
   modGridView.ReadSmallData(grdorder, $rData1, $aMyFields1)
 
@@ -3797,9 +3805,10 @@ Public Sub grdorder_Click()
 
   If grdorder.Rows.Selection.Count Then
     txtorderid.Value = grdorder[grdorder.Row, 0].Text
+    txtnotetabledoc.Text = grdorder[grdorder.Row, 6].Text
     txtresponse.Text = grdorder[grdorder.Row, 3].Text
-    txtorder.RichText = grdorder[grdorder.Row, 6].Text
-    tblorderuser.Text = modGeneral.GetUserFullName(grdorder[grdorder.Row, 4].Text) & " [" & modReportVar.GetDateTimeReport(grdorder[grdorder.Row, 5].Text, gb.GeneralDate) & "]"
+    txtorder.RichText = grdorder[grdorder.Row, 5].Text
+    tblorderuser.Text = modGeneral.GetUserFullName(grdorder[grdorder.Row, 4].Text) & " [" & grdorder[grdorder.Row, 1].Text & "]"
   Endif
 
 End
@@ -3809,7 +3818,11 @@ Public Sub btnorderedit_Click()
   Dim res As Result
 
   If txtorderid.Value Then
-    res = modDatabase.$myConn.Edit("tblexamgeneral", "fldid=&1", txtorderid.Value)
+    If txtnotetabledoc.Text = "tblexamgeneral" Then
+      res = modDatabase.$myConn.Edit("tblexamgeneral", "fldid=&1 and fldencounterval=&2", txtorderid.Value, Trim(txtencid.Text))
+    Else If txtnotetabledoc.Text = "tblpatientnotes" Then
+      res = modDatabase.$myConn.Edit("tblpatientnotes", "fldid=&1 and fldencounterval=&2", txtorderid.Value, Trim(txtencid.Text))
+    Endif
     res["fldreportquali"] = txtresponse.Text
     res["xyz"] = False
     res.Update()

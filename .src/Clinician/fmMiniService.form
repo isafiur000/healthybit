@@ -10,7 +10,7 @@
       MoveScaled(1,4,110,62)
       Arrangement = Arrange.Vertical
       Spacing = True
-      Count = 3
+      Count = 4
       Index = 0
       Text = ("Requested")
       { Panel14 Panel
@@ -146,9 +146,97 @@
         AutoResize = False
       }
       Index = 2
+      Text = ("Pharmacy")
+      { Panel18 Panel
+        MoveScaled(2,4,99,34)
+        Expand = True
+        Arrangement = Arrange.Horizontal
+        { Panel19 Panel
+          MoveScaled(0,0,15,31.25)
+          Arrangement = Arrange.Vertical
+          { Panel20 Panel
+            MoveScaled(0,0,15,8)
+            { rbroute RadioButton
+              MoveScaled(0.5,0.5,10,3)
+              Text = ("Current")
+              Value = True
+            }
+            { rbprot RadioButton
+              MoveScaled(0.5,4,13,3)
+              Text = ("Protocols")
+            }
+          }
+          { cmbgroup ListBox
+            MoveScaled(0,14,13,11)
+            Expand = True
+            ScrollBar = Scroll.Both
+          }
+        }
+        { Panel22 Panel
+          MoveScaled(15,0,42,31.25)
+          Arrangement = Arrange.Vertical
+          { Panel23 Panel
+            MoveScaled(0,1,41,4)
+            { Label5 Label
+              MoveScaled(0,0.5,8,3)
+              Border = Border.Plain
+              Text = ("Scheme")
+            }
+            { cmbdiscpharmacy ComboBox
+              MoveScaled(8,0.5,22,3)
+            }
+          }
+          { Panel24 Panel
+            MoveScaled(0,6,42,4)
+            { txtsearch2 ButtonBox
+              MoveScaled(3.5,0.5,14,3)
+              Picture = Picture["icon:/small/cancel"]
+            }
+            { chkall2 CheckBox
+              MoveScaled(22,0.5,6,3)
+              Text = ("All")
+            }
+            { chkleftmain2 CheckBox
+              MoveScaled(0,0.5,3,3)
+            }
+            { btnselect Button
+              MoveScaled(32,0.5,9,3)
+              Tag = "Auto"
+              Picture = Picture["icon:/small/right"]
+            }
+          }
+          { GridView6 GridView
+            MoveScaled(2,11,25,15)
+            Expand = True
+            Mode = Select.Single
+            Header = GridView.Horizontal
+            AutoResize = False
+          }
+          { Panel21 Panel
+            MoveScaled(0,26,37,4)
+            { chknextvisit2 CheckBox
+              MoveScaled(0.5,0.5,20.5,3)
+              Text = ("Plan for Next Visit")
+            }
+          }
+        }
+        { Panel17 Panel
+          MoveScaled(57,1,39,31.25)
+          Expand = True
+          Arrangement = Arrange.Vertical
+          { GridView7 GridView
+            MoveScaled(1,2,36,18)
+            Expand = True
+            Mode = Select.Single
+            Header = GridView.Horizontal
+            AutoResize = False
+          }
+        }
+      }
+      Index = 3
       Text = ("Packages")
       { Panel10 Panel
-        MoveScaled(0,4,109.875,45.875)
+        MoveScaled(1,1,109.875,45.875)
         Expand = True
         Arrangement = Arrange.Horizontal
         { Panel8 Panel

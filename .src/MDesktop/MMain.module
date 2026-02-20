@@ -185,7 +185,7 @@ Public Sub Application_Error()
     ' WebForm.PrintLog(Format(Now(), "yyyy-mm-dd hh:nn:ss:uu") & ": " & Application.Name & ": v" & Application.Version & ": " & "Error Text: " & Error.Text & " [" & Error.Where & "]")
     If MMain.$IsGUIApp = True Then
       Error Format(Now(), "yyyy-mm-dd hh:nn:ss:uu") & ": " & Application.Name & ": v" & Application.Version & ": " & "Error Text: " & Error.Text & " [" & Error.Where & "]"
-      Message.Warning(("Application Error") & gb.NewLine & ("Please restart your application."), ("OK"))
+      Message.Warning((Application.Name & ": v" & Application.Version & ": " & "Application Error") & gb.NewLine & ("Please restart your application."), ("OK"))
     Else
       modHelpVariable.PrintLog(Format(Now(), "yyyy-mm-dd hh:nn:ss:uu") & ": " & Application.Name & ": v" & Application.Version & ": " & "Error Text: " & Error.Text & " [" & Error.Where & "]")
     Endif
@@ -197,7 +197,7 @@ Public Sub Application_Error()
       ' WebForm.PrintLog(Format(Now(), "yyyy-mm-dd hh:nn:ss:uu") & ": " & Application.Name & ": v" & Application.Version & ": " & "Error Text: " & db.Error)
       If MMain.$IsGUIApp = True Then
         Error Format(Now(), "yyyy-mm-dd hh:nn:ss:uu") & ": " & Application.Name & ": v" & Application.Version & ": " & "Error Text: " & db.Error
-        Message.Warning(("Database Error") & gb.NewLine & ("Please restart your application."), ("OK"))
+        Message.Warning((Application.Name & ": v" & Application.Version & ": " & "Database Error") & gb.NewLine & ("Please restart your application."), ("OK"))
       Else
         modHelpVariable.PrintLog(Format(Now(), "yyyy-mm-dd hh:nn:ss:uu") & ": " & Application.Name & ": v" & Application.Version & ": " & "Error Text: " & db.Error)
       Endif

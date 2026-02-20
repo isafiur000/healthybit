@@ -21,6 +21,16 @@ Private Sub FillDefaultDB(cmbserver As ComboBox, txtserver As TextBox, txtdbase 
 
 End
 
+Private Sub FillFileDB(cmbserver As ComboBox, txtserver As TextBox, txtdbase As TextBox, txtuser As TextBox, txtpass As TextBox)
+
+  cmbserver.Text = "sqlite3"
+  txtserver.Text = "/usr/share" &/ Application.Name
+  txtdbase.Text = "current"
+  txtuser.Text = ""
+  txtpass.Text = ""
+
+End
+
 Public Sub chkcurA_Click()
 
   FillDefaultDB(cmbtypeA, txtserverA, txtdbA, txtuserA, txtpassA)
@@ -30,6 +40,18 @@ End
 Public Sub chkcurB_Click()
 
   FillDefaultDB(cmbtypeB, txtserverB, txtdbB, txtuserB, txtpassB)
+
+End
+
+Public Sub chkcurA2_Click()
+
+  FillFileDB(cmbtypeA, txtserverA, txtdbA, txtuserA, txtpassA)
+
+End
+
+Public Sub chkcurB2_Click()
+
+  FillFileDB(cmbtypeB, txtserverB, txtdbB, txtuserB, txtpassB)
 
 End
 

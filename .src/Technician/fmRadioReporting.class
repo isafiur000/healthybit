@@ -976,12 +976,14 @@ Public Sub btnservbill_Click()
   Dim xservmode As String
   Dim xprocmode As String
   Dim xothermode As String
+  Dim xpharmmode As String
 
   If GridView4.Rows.Selection.Count Then
     xservmode = modNonMedical.GetAutoIPBillingPack("Service", GridView4[GridView4.Row, 3].Text)
     xprocmode = modNonMedical.GetAutoIPBillingPack("Procedure", GridView4[GridView4.Row, 3].Text)
     xothermode = modNonMedical.GetAutoIPBillingPack("Others", GridView4[GridView4.Row, 3].Text)
-    hForm14 = New FmMiniService(GridView4[GridView4.Row, 3].Text, xservmode, xprocmode, xothermode)
+    xpharmmode = modNonMedical.GetAutoIPBillingPack("Pharmacy", GridView4[GridView4.Row, 3].Text)
+    hForm14 = New FmMiniService(GridView4[GridView4.Row, 3].Text, xservmode, xprocmode, xothermode, xpharmmode)
     hForm14.ShowModal
   Endif
 
@@ -1826,12 +1828,14 @@ Public Sub btnpatbill_Click()
   Dim xservmode As String
   Dim xprocmode As String
   Dim xothermode As String
+  Dim xpharmmode As String
 
   If txtencid.Text Then
     xservmode = modNonMedical.GetAutoIPBillingPack("Service", Trim(txtencid.Text))
     xprocmode = modNonMedical.GetAutoIPBillingPack("Procedure", Trim(txtencid.Text))
     xothermode = modNonMedical.GetAutoIPBillingPack("Others", Trim(txtencid.Text))
-    hForm14 = New FmMiniService(Trim(txtencid.Text), xservmode, xprocmode, xothermode)
+    xpharmmode = modNonMedical.GetAutoIPBillingPack("Pharmacy", Trim(txtencid.Text))
+    hForm14 = New FmMiniService(Trim(txtencid.Text), xservmode, xprocmode, xothermode, xpharmmode)
     hForm14.ShowModal
   Endif
 
