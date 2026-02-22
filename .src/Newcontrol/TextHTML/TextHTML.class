@@ -15,6 +15,7 @@ Property UserList As Variant[]
 Property RichMode As Boolean
 
 Event SetFocus
+Event Change
 
 Private $hForm1 As FTextEdit1
 Private $hForm As FTextEdit
@@ -27,6 +28,12 @@ Public Sub _new()
   Else
     $hForm = New FTextEdit(Me)
   Endif
+
+End
+
+Public Sub _Change()
+
+  Raise Change
 
 End
 

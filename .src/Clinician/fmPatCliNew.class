@@ -48,6 +48,8 @@ Private $RespRateRangeLimits As Float[]
 Private $OxySatRangeLimits As Float[]
 Private $TempeRangeLimits As Float[]
 
+Private $HistoryChange As Boolean
+
 Public Sub _new(encid As String, sIndex As Long, sMode As String, sComp As String, Focus As Boolean)
 
   If encid Then
@@ -2308,15 +2310,32 @@ Private Sub ShowPatHistory()
       txthistory.RichText = ""
       lblhistoryuser.Text = ""
     Endif
+    $HistoryChange = False
   Endif
 
 End
 
 Public Sub cmbinpathistory_Click()
 
-  ShowPatHistory()
-  If chkenabhistory.Value = True Then
-    btnhistory.Enabled = True
+  If $HistoryChange = True And If txthistory.Text Then
+    cmbinpathistory.Index = cmbinpathistory.Find(lblhistoryhead.Text)
+
+  Else
+    ShowPatHistory()
+    If chkenabhistory.Value = True Then
+      btnhistory.Enabled = True
+    Endif
+    txthistory.SetFocus
+  Endif
+
+End
+
+Public Sub txthistory_Change()
+
+  If txthistory.Text Then
+    $HistoryChange = True
+  Else
+    $HistoryChange = True
   Endif
 
 End
@@ -2337,6 +2356,7 @@ Public Sub btnhistory_Click()
       Balloon.Info(("Information saved"), btnhistory)
       Balloon.Delay = modBasic.$BalloonDelay
       btnhistory.Enabled = False
+      $HistoryChange = False
     Endif
   Endif
 

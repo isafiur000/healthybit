@@ -187,7 +187,9 @@ Private Sub GetSelectHistoryResultStr(xList As String[], encid As String) As Str
     If modPatientSub.GetPatPassCheck(modDatabase.$myConn, $PatNum) = True Then
       If xList Then
         sUnit = modLabSub.GetTestUnitFromButton(rbsi, rbmetric)
+        Inc Application.Busy
         xstring = modPatReportAll.ShowCompleteReport(encid, xList, sUnit, True)
+        Dec Application.Busy
       Endif
     Else
       xstring = "You do not have permission to view"

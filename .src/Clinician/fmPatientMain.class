@@ -40,6 +40,8 @@ Private $billModeService As String
 Private $billModeOthers As String
 Private $billReference As String
 
+Private $HistoryChange As Boolean
+
 Public Sub _new(encid As String, Focus As Boolean)
 
   txtencid.Text = encid
@@ -1991,23 +1993,32 @@ Private Sub ShowPatHistory()
       txthistory.RichText = ""
       lblhistoryuser.Text = ""
     Endif
+    $HistoryChange = False
   Endif
 
 End
 
 Public Sub cmbinpathistory_Click()
 
-  ShowPatHistory()
-  If chkenabhistory.Value = True Then
-    btnhistory.Enabled = True
+  If $HistoryChange = True And If txthistory.Text Then
+    cmbinpathistory.Index = cmbinpathistory.Find(lblhistoryhead.Text)
+
+  Else
+    ShowPatHistory()
+    If chkenabhistory.Value = True Then
+      btnhistory.Enabled = True
+    Endif
+    txthistory.SetFocus
   Endif
 
 End
 
-Public Sub btnhistorydef_Click()
+Public Sub txthistory_Change()
 
-  If cmbinpathistory.Text Then
-    txthistory.RichText = AddHistory("History", Trim(txtencid.Text), cmbinpathistory.Text)
+  If txthistory.Text Then
+    $HistoryChange = True
+  Else
+    $HistoryChange = True
   Endif
 
 End
@@ -2032,7 +2043,16 @@ Public Sub btnhistory_Click()
       Balloon.Info(("Information saved"), btnhistory)
       Balloon.Delay = modBasic.$BalloonDelay
       btnhistory.Enabled = False
+      $HistoryChange = False
     Endif
+  Endif
+
+End
+
+Public Sub btnhistorydef_Click()
+
+  If cmbinpathistory.Text Then
+    txthistory.RichText = AddHistory("History", Trim(txtencid.Text), cmbinpathistory.Text)
   Endif
 
 End

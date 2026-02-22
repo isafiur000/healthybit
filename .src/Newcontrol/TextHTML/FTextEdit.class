@@ -24,6 +24,18 @@ Public Sub Form_Open()
 
 End
 
+Private Sub GetParent() As TextHTML
+
+  Return Me.Parent
+
+End
+
+Public Sub TextEdit1_Change()
+
+  GetParent()._Change()
+
+End
+
 ''=================== Procedures ===========================
 Public Function GetHTMLText() As String
 
