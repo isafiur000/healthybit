@@ -517,3 +517,24 @@ Public Sub btnrepototal_Click()
   Endif
 
 End
+
+Public Sub btnreturn_Click()
+
+  Dim xx As Date[]
+  Dim xPath As String
+
+  If $suppName Then
+    xx = DoubleDates(("Select Stock Return Dates"), $suppName, [Date(), Date()])
+    If xx Then
+      Inc Application.Busy
+      If chkall.Value = True Then
+        xPath = modHTMLStock.ShowTotalStockReturnReport("%", xx[0], xx[1], GetSelCompList())
+      Else
+        xPath = modHTMLStock.ShowTotalStockReturnReport($suppName, xx[0], xx[1], GetSelCompList())
+      Endif
+      Dec Application.Busy
+      modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
+    Endif
+  Endif
+
+End

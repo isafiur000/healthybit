@@ -770,6 +770,8 @@ End
 ''-----------bar code
 Private Sub SampleBarCodeSet()
 
+  txtbloodpath.Text = modSettings.ShowSettingFromFIle("BloodBank/BagTemplate")
+
   cmbbarcode.Text = modSettings.ShowSettingFromFIle("SampleBarcode/DataContent")
   cmbbarprint.Text = modSettings.ShowSettingFromFIle("SampleBarcode/Separation")
   txtbarpath.Text = modSettings.ShowSettingFromFIle("SampleBarcode/Templete")
@@ -790,6 +792,49 @@ Private Sub SampleBarCodeSet()
   Endif
   cmbmultipdf.Text = modSettings.ShowSettingFromFIle("SampleBarcode/PDF_MultiPage")
   cmbbase64img.Text = modSettings.ShowSettingFromFIle("SampleBarcode/UseBase64Image")
+
+End
+
+Public Sub btnblooddefault_Click()
+
+  txtbloodpath.Text = modHelpVariable.$htmlDirectory &/ "bloodbag.tpl"
+
+End
+
+Public Sub btnbloodhelp_Click()
+
+  Dim xx As String
+
+  xx = "You can design Barcode containing HTML file using following variables" & gb.NewLine
+  xx = xx & "{BloodBagCode} For Blood Bag ID" & gb.NewLine
+  xx = xx & "{BloodBagBarCodePath} For ID Barcode" & gb.NewLine
+  xx = xx & "{BloodName} For Blood Type" & gb.NewLine
+  xx = xx & "{BloodDonor} For Donor Name" & gb.NewLine
+  xx = xx & "{CollectionDate} For Collection Date" & gb.NewLine
+  xx = xx & "{ExpiryDate} For Expiry Date" & gb.NewLine
+  xx = xx & "{BloodComment} For Order Comment" & gb.NewLine
+  xx = xx & "{CrossMatching} For Cross Matching" & gb.NewLine
+  xx = xx & "{BloodBagStatus} For Order Status" & gb.NewLine
+  xx = xx & "{BloodEntryUser} For Entry User" & gb.NewLine
+  xx = xx & "{BloodEntryDate} For Entry Date" & gb.NewLine
+  xx = xx & "{BloodEntryComp} For Entry Comp"
+  Message.Info(xx, ("OK"))
+
+End
+
+Public Sub txtbloodpath_Click()
+
+  If Dialog.OpenFile() Then Return
+  txtbloodpath.Text = Dialog.Path
+
+End
+
+Public Sub btnbloodpath_Click()
+
+  modSettings.SaveSettingsToFile("BloodBank/BagTemplate", txtbloodpath.Text)
+  modBasic.$LabBloodBagPath = txtbloodpath.Text
+  Balloon.Info(("Information saved"), btnbloodpath)
+  Balloon.Delay = modBasic.$BalloonDelay
 
 End
 

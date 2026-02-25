@@ -273,7 +273,7 @@ Private Sub SHowContinuePlan(encid As String)
 
   Dim sql As String
 
-  sql = "select fldid,fldcategory,flditem,flddose,fldid,fldid,flddosetime,fldstatus,flddosetime,fldencounterval from tblextradosing where fldstatus=&1 and flddosetime>=&2 and flddosetime<=&3 and fldsave=&4 and fldencounterval=&5 and fldtype=&6"
+  sql = "select fldid,fldcategory,flditem,flddose,fldid,fldid,flddosetime,fldstatus,flddosetime,fldencounterval,fldcomment from tblextradosing where fldstatus=&1 and flddosetime>=&2 and flddosetime<=&3 and fldsave=&4 and fldencounterval=&5 and fldtype=&6"
   If rbwaiting.Value = True Then
     $rData2 = modDatabase.$myConn.Exec(sql, "Planned", modDate.StartSqlDate(dttodaysave.value), modDate.EndSqlDate(dttodaysave.value), False, encid, "Input Food/Fluid")
   Else If rbapproved.Value = True Then
@@ -297,12 +297,14 @@ Private Sub SHowContinuePlan(encid As String)
     .Columns[7].Width = 75 * modBasic.$AppWidthRatio
     .Columns[8].Width = 100 * modBasic.$AppWidthRatio
     .Columns[9].Width = 1
+    .Columns[10].Width = 200 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "Type"
     .Columns[2].Text = "Particulars"
     .Columns[3].Text = "Dose"
     .Columns[7].Text = "Status"
     .Columns[8].Text = "Time"
+    .Columns[10].Text = "Comment"
   End With
   GetNutritionCalculation()
 

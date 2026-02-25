@@ -307,7 +307,7 @@
       Index = 1
       Text = ("Brand Information")
       { Panel6 Panel
-        MoveScaled(1,0,79,45)
+        MoveScaled(1,0,79,49)
         { txtbrandname TextBox
           MoveScaled(14,1,26,3)
         }
@@ -332,11 +332,11 @@
           MoveScaled(14,21,26,3)
         }
         { cmbnarcotic ComboBox
-          MoveScaled(14,25,26,3)
+          MoveScaled(63,33,15,3)
           Sorted = True
         }
         { txtbranddetail TextArea
-          MoveScaled(0,33,44,7)
+          MoveScaled(0,29,44,11)
           Wrap = True
           ScrollBar = Scroll.Vertical
         }
@@ -366,25 +366,25 @@
           MoveScaled(63,29,15,3)
         }
         { txtdispensize ValueBox
-          MoveScaled(63,33,15,3)
+          MoveScaled(63,37,15,3)
         }
         { cmbcurrentuse ComboBox
-          MoveScaled(63,37,15,3)
+          MoveScaled(63,41,15,3)
           Sorted = True
         }
         { btnBrOK Button
-          MoveScaled(47,41,10,3)
+          MoveScaled(47,45,10,3)
           Tag = "Auto"
           Text = ("Add")
           Picture = Picture["icon:/small/apply"]
         }
         { btnBrChange Button
-          MoveScaled(57,41,10.625,3)
+          MoveScaled(57,45,10.625,3)
           Text = ("Edit")
           Picture = Picture["icon:/small/edit"]
         }
         { btnBrCancel Button
-          MoveScaled(68,41,10.625,3)
+          MoveScaled(68,45,10.625,3)
           Text = ("Delete")
           Picture = Picture["icon:/small/cancel"]
         }
@@ -399,7 +399,7 @@
           Text = ("Pack Volume")
         }
         { txtbrandid TextBox
-          MoveScaled(0,41,44,3)
+          MoveScaled(0,45,44,3)
           ReadOnly = True
         }
         { Label35 Label
@@ -451,12 +451,12 @@
           Text = ("Preservatives")
         }
         { Label40 Label
-          MoveScaled(0,25,13.375,3)
+          MoveScaled(47,33,15,3)
           Border = Border.Plain
           Text = ("Narcotic Type")
         }
         { Label44 Label
-          MoveScaled(0,29,13.375,3)
+          MoveScaled(0,25,13.375,3)
           Border = Border.Plain
           Text = ("Description")
         }
@@ -471,7 +471,7 @@
           Text = ("Disp Label")
         }
         { Label43 Label
-          MoveScaled(47,37,15,3)
+          MoveScaled(47,41,15,3)
           Border = Border.Plain
           Text = ("Current Status")
         }
@@ -495,17 +495,29 @@
           Picture = Picture["icon:/small/add"]
         }
         { Label8 Label
-          MoveScaled(47,33,15,3)
+          MoveScaled(47,37,15,3)
           Border = Border.Plain
           Text = ("Dispense Size")
         }
+        { Label9 Label
+          MoveScaled(0,41,13,3)
+          Border = Border.Plain
+          Text = ("Disable Order")
+        }
+        { cmbcomporder ComboBox
+          MoveScaled(14,41,22,3)
+        }
+        { btndisableuser ToolButton
+          MoveScaled(37,41,3,3)
+          Picture = Picture["icon:/small/add"]
+        }
       }
       { Panel10 Panel
-        MoveScaled(1,46,79,19)
+        MoveScaled(1,51,79,14)
         Expand = True
         Arrangement = Arrange.Vertical
         { tblbrand TableView
-          MoveScaled(0,0,79,15)
+          MoveScaled(0,0,79,12)
           Expand = True
           Header = GridView.Both
           ScrollBar = Scroll.Vertical

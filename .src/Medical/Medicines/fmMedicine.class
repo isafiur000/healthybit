@@ -20,6 +20,7 @@ Public Sub Form_Open()
 
   txtpatientinfo.DictionaryPath = modBasic.$dictPathList
   cmbtaxgroup.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldgroup as col from tbltaxgroup"))
+  cmbcomporder.List = modBasic.$AllCompList
 
   txtspinval.Value = 0
   FillUnitCombo()
@@ -972,5 +973,18 @@ Public Sub btnexpotree_Click()
   xPath = modCHTMLReport.CreateHTMLReportFromTree(TreeView1, 3, "Medicine Coding", modReportVar.GetDateTimeReport(Now(), gb.GeneralDate))
   Dec Application.Busy
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
+
+End
+
+Public Sub btndisableuser_Click()
+
+  Dim xType As String
+  Dim hForm As FmSettingList
+
+  If txtbrandid.Text And If cmbcomporder.Text Then
+    xType = "DisableClinOrder/" & txtbrandid.Text
+    hForm = New FmSettingList("Disable Clinician Order", "User List", xType, cmbcomporder.Text)
+    hForm.ShowModal
+  Endif
 
 End

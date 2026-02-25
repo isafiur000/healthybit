@@ -10,7 +10,11 @@ Private $LabelType As String
 
 Private $encid As String
 Private $DiscPackage As String
+Private xYear As Integer
 Private $ClinicianLst As String[]
+
+Private $NarcoDoctor As String
+Private $NarcoRegd As String
 
 Private $patHeight As Float
 Private $actualWt As Float
@@ -25,7 +29,11 @@ End
 
 Public Sub Form_Open()
 
+  Dim xbirthDate As Date
+
   Me.Center
+  xbirthDate = modPatient.GetPatientBirthDay($encid)
+  xYear = DateDiff(xbirthDate, Now(), gb.Year)
   cmbdosingwt.List = ["Actual Body Weight", "Ideal Body Weight"]
   cmbdosingwt.Text = "Actual Body Weight"
   cmbtarget.List = modMedicine.$MedicineUnitList
@@ -37,6 +45,7 @@ Public Sub Form_Open()
   Endif
   cmbfreq.List = modMedicine.FrequencyCombo()
   $ClinicianLst = New String[]
+  SetNarcoticsPrescriber()
 
   ShowBillingParam($DiscPackage)
   GetCalculations()
@@ -45,14 +54,29 @@ Public Sub Form_Open()
   Else
     $LabelType = "Outpatient"
   Endif
+  GetFuluidList()
   FillDosingGrid()
   ClearAllControl()
+  cmbroute.SetFocus
 
 End
 
 Public Sub Form_KeyRelease()
 
-  modGeneralmain.GoToNextControlTab()
+  ' modGeneralmain.GoToNextControlTab()
+
+End
+
+Private Sub GetFuluidList()
+
+  Dim res As Result
+
+  If chkout.Value = True Then
+    res = modStock.ItemListForPurchaseBillMode("fluid", GetBrandGenerricType(), $sBillMode)
+  Else
+    res = modStock.FillMedicinesPrescribingComboResult("fluid", GetBrandGenerricType(), $sBillMode)
+  Endif
+  cmbdilution.List = modControlSub.GetDirectFillresult(res)
 
 End
 
@@ -113,6 +137,13 @@ Private Sub ShowBillingParam(sDisctype As String)
 
 End
 
+Public Sub AlterScheme(sScheme As String)
+
+  ShowBillingParam(sScheme)
+  SetNarcoticsPrescriber()
+
+End
+
 ''--------------------------------------
 Private Sub ClearAllControl()
 
@@ -136,8 +167,28 @@ Private Sub ClearAllControl()
   dtstarting.Value = Now()
   dtlastclosing.Value = Now()
   dtending.Value = Now()
-  txtdilution.Text = ""
+  cmbdilution.Text = ""
   txtdirection.Text = ""
+
+End
+
+Private Sub SetNarcoticsPrescriber()
+
+  Dim res As Result
+
+  If modBasic.$MedNarcoPrescriber = "User" Then
+    res = modDatabase.$myConn.Exec("select fldusername,fldusercode from tbluser where flduserid=&1 and (fldopconsult=&2 or fldipconsult=&2) and fldstatus=&3 and fldusercode like &4", modBasic.$lbluser, True, "Active", "%")
+    If res.Available Then
+      $NarcoDoctor = res["fldusername"]
+      $NarcoRegd = res["fldusercode"]
+    Endif
+  Endif
+
+End
+
+Public Sub chknextplan_Click()
+
+  GetFuluidList()
 
 End
 
@@ -181,11 +232,19 @@ Public Sub cmbtarget_KeyRelease()
 
 End
 
+Public Sub cmbdilution_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbdilution)
+  modFillContainer.RestrictComboToContent(cmbdilution)
+
+End
+
 Public Sub cmbmedicine_GotFocus()
 
   Dim res As Result
   Dim xlist1 As String[]
   Dim xlist As String[]
+  Dim aList As String[]
 
   If Not cmbroute.Text Then
     cmbroute.SetFocus
@@ -210,13 +269,23 @@ Public Sub cmbmedicine_GotFocus()
           If xlist1 Then
             xlist = modMedConstant.GetStockIDWithCategory(xlist1)
             If xlist Then
-              cmbmedicine.Text = GridViewGroup("Select Medicine", xlist, False, cmbmedicine, Panel1.Height - (4 * cmbmedicine.Height))
+              If modBasic.$ClinicDisableMedicines And If modBasic.$ClinicDisableMedicines.Count Then
+                aList = modString.GetRemainingArray(xlist, modBasic.$ClinicDisableMedicines)
+                cmbmedicine.Text = GridViewGroup("Select Medicine", aList, False, cmbmedicine, Panel1.Height - (4 * cmbmedicine.Height))
+              Else
+                cmbmedicine.Text = GridViewGroup("Select Medicine", xlist, False, cmbmedicine, Panel1.Height - (4 * cmbmedicine.Height))
+              Endif
             Endif
           Endif
         Else
           xlist = modControlSub.GetDirectFillresult(res)
           If xlist Then
-            cmbmedicine.Text = GridViewNew("Select Particulars", xlist, False, cmbmedicine, Panel1.Height - (4 * cmbmedicine.Height))
+            If modBasic.$ClinicDisableMedicines And If modBasic.$ClinicDisableMedicines.Count Then
+              aList = modString.GetRemainingArray(xlist, modBasic.$ClinicDisableMedicines)
+              cmbmedicine.Text = GridViewNew("Select Particulars", aList, False, cmbmedicine, Panel1.Height - (4 * cmbmedicine.Height))
+            Else
+              cmbmedicine.Text = GridViewNew("Select Particulars", xlist, False, cmbmedicine, Panel1.Height - (4 * cmbmedicine.Height))
+            Endif
           Endif
         Endif
       Endif
@@ -230,6 +299,69 @@ Public Sub cmbmedicine_GotFocus()
 
     Endif
   Endif
+
+End
+
+Public Sub cmbmedicine_LostFocus()
+
+  Dim cForm As CRecommendDosing
+
+  If cmbmedicine.Text Then
+    If modStockSub.GetComboStockControl(cmbroute.Text, cmbmedicine.Text, rbgeneric, rbrand, modDatabase.$medConn) = False Then
+      cmbmedicine.Text = ""
+      Balloon.Warning(("Item not listed"), cmbmedicine)
+      Balloon.Delay = modBasic.$BalloonDelay
+      cmbroute.SetFocus
+    Else
+
+      If rbrand.Value = True Then
+        cmbmedicine.Text = modMedConstant.ConvertBrandToGeneric(cmbroute.Text, cmbmedicine.Text)
+      Endif
+      cForm = New CRecommendDosing($encid, xYear, cmbmedicine.Text)
+      txttarget.Value = cForm.RecommendDose()
+      cmbtarget.Text = cForm.DoseUnit()
+      ' txtdose.Value = cForm.UnitDose()
+      ' lbldose.Text = cForm.UnitDoseUnit()
+      cmbfreq.Text = cForm.Frequency()
+
+      CheckLastDispensing(cmbmedicine.Text)
+      Select cmbroute.Text
+        Case "oral", "liquid", "resp", "topical", "eye/ear", "anal/vaginal"
+          cmbdilution.Enabled = False
+        Case Else
+          cmbdilution.Enabled = True
+      End Select
+      cmbadminsite.SetFocus
+
+    Endif
+  Endif
+
+End
+
+Private Sub CheckLastDispensing(xmedicine As String)
+  '
+  '   Dim cForm As CLastDispensing
+  '   Dim xdate As Date
+  '   Dim xdays As Integer
+  '
+  '   cForm = New CLastDispensing(xmedicine, $PatientNum, $xNHISCode, cmbdisctype.Text)
+  '   txttotalqty.Value = cForm.GetLastQty()
+  '   xdate = cForm.GetLastDate()
+  '   xdays = cForm.GetLastDays()
+  '
+  '   If xdate Then
+  '     txtlastdispdate.Text = modReportVar.GetDateTimeReport(xdate, gb.MediumDate)
+  '     If DateDiff(xdate, Now(), gb.Month) <= 3 Then
+  '       txtlastdispdate.Foreground = Color.Red
+  '     Endif
+  '
+  '     If xdays Then
+  '       If DateAdd(xdate, gb.Day, xdays) > Now() Then
+  '         Message.Warning("Dispensed for " & xdays & " Days On " & modReportVar.GetDateTimeReport(xdate, gb.GeneralDate), ("OK"))
+  '       Endif
+  '     Endif
+  '   Endif
+  '
 
 End
 
@@ -278,10 +410,14 @@ Private Sub EnterDosingRecord()
   Dim xnarcotic As String[]
   Dim CPharmFix As CFixRatePharmacy
 
-  If modBasic.$DispRequestStatus = "Reserve" Then
-    xcurVal = "Reserve"
+  If chknextplan.Value = True Then
+    xcurVal = "Planned"
   Else
-    xcurVal = "Continue"
+    If modBasic.$DispRequestStatus = "Reserve" Then
+      xcurVal = "Reserve"
+    Else
+      xcurVal = "Continue"
+    Endif
   Endif
   If cmbroute.Text And If cmbmedicine.Text Then
 
@@ -294,16 +430,20 @@ Private Sub EnterDosingRecord()
     xtax = modNonMedical.ShowTaxValues(itemtype, cmbmedicine.Text)
     xdisc = modNonMedical.DiscPercentForCategoryValue($encid, $DiscPackage, itemtype, cmbmedicine.Text, itemmode)
     If modMedConstant.GetNarcoticType(cmbmedicine.Text) = "Yes" Then
-      xnarcotic = DualGridValue(("Select Narcotic Prescriber"), $ClinicianLst, False)
-      If xnarcotic Then
-        txprescriber = xnarcotic[1]
-        txpresno = xnarcotic[0]
+      txprescriber = $NarcoDoctor
+      txpresno = $NarcoRegd
+      If Not txpresno Then
+        xnarcotic = DualGridValue(("Select Narcotic Prescriber"), $ClinicianLst, False)
+        If xnarcotic Then
+          txprescriber = xnarcotic[1]
+          txpresno = xnarcotic[0]
+        Endif
       Endif
       If txprescriber And If txpresno Then
-        InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), cmbadminsite.Text, txtdosecount.Value, Trim(txtdilution.Text), 0, xcurVal)                     '
+        modPharmSub.InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), cmbadminsite.Text, txtdosecount.Value, Trim(cmbdilution.Text), 0, xcurVal)                     '
       Endif
     Else
-      InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, "", "", 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), cmbadminsite.Text, txtdosecount.Value, Trim(txtdilution.Text), 0, xcurVal)                     '
+      modPharmSub.InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, "", "", 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), cmbadminsite.Text, txtdosecount.Value, Trim(cmbdilution.Text), 0, xcurVal)                     '
     Endif
     ClearAllControl()
   Endif
@@ -352,7 +492,7 @@ Private Sub FillDosingGrid()
     .Columns[10].Text = "Count"
     .Columns[11].Text = "Site"
     .Columns[12].Text = "Direction"
-    .Columns[13].Text = "Mixing"
+    .Columns[13].Text = "Compounding"
   End With
 
   For Each res
@@ -395,6 +535,7 @@ Private Function GetCalcDose() As Float
 
   Dim xweight As Float
   Dim xval As Float
+  Dim xelimfrac As Float
 
   If cmbdosingwt.Text = "Actual Body Weight" Then
     xweight = $actualWt
@@ -403,19 +544,34 @@ Private Function GetCalcDose() As Float
   Endif
 
   Select cmbtarget.Text
-    Case "mg", "IU", "mL"
+    Case "mg", "mcg", "gram", "IU", "Unit", "mL"
       xval = txttarget.Value
-    Case "mg/Kg", "IU/Kg", "mL/Kg"
+    Case "mg/Kg", "mcg/Kg", "gram/Kg", "IU/Kg", "Unit/Kg", "mL/Kg"
       xval = xweight * txttarget.Value
-    Case "mg/sqm", "IU/sqm", "mL/sqm"
+    Case "mg/sqm", "mcg/sqm", "gram/sqm", "IU/sqm", "Unit/sqm", "mL/sqm"
       xval = txtbodysurfarea.Value * txttarget.Value
   End Select
+
+  If chkrenal.Value = True Then
+    If txtcreatclear.Value Then
+      xelimfrac = modMedConstant.GetDrugRenalEliminFraction(cmbmedicine.Text)
+      If (xelimfrac * 100) > modBasic.$MedMinRenalElimin And If txtcreatclear.Value < modBasic.$MedMaxCreatClear Then                                             ''
+        xval = xval * modMedDosing.GetDoseAdjustmentFactor(xelimfrac, txtcreatclear.Value)
+      Endif
+    Endif
+  Endif
 
   Select cmbtarget.Text
     Case "mg", "mg/Kg", "mg/sqm"
       lblcalculate.Text = "mg"
+    Case "mcg", "mcg/Kg", "mcg/sqm"
+      lblcalculate.Text = "mcg"
+    Case "gram", "gram/Kg", "gram/sqm"
+      lblcalculate.Text = "gram"
     Case "IU", "IU/Kg", "IU/sqm"
       lblcalculate.Text = "IU"
+    Case "Unit", "Unit/Kg", "Unit/sqm"
+      lblcalculate.Text = "Unit"
     Case "mL", "mL/Kg", "mL/sqm"
       lblcalculate.Text = "mL"
   End Select
@@ -518,98 +674,5 @@ End
 Public Sub txtstarthour_GotFocus()
 
   txtstarthour.SelectAll()
-
-End
-
-Private Sub InsertDosingMedicine(encid As String, sBilType As String, billingMode As String, DiscMode As String, sLedger As String, xroute As String, xitem As String, xdose As Float, xfreq As String, xday As Float, xqty As Float, PatStatus As String, xprescriber As String, xregno As String, startDay As Integer, taxper As Float, discper As Float, fixitem As String, fixrate As Float, OrderType As String, DeptID As String, sDirection As String, sAdminSite As String, sDoseCount As Integer, sMixing As String, sParent As Long, sDefault As String)                 ''
-
-  Dim res As Result
-  Dim order As String
-  Dim disptype As String
-  Dim xstart As Date
-  Dim xCashCredit As Float
-  Dim xcurVal As String
-
-  If sDefault Then
-    xcurVal = sDefault
-  Else
-    xcurVal = "Continue"
-  Endif
-  If DeptID Then
-    disptype = DeptID
-  Else
-    disptype = "OPD"
-  Endif
-  If OrderType Then
-    order = OrderType
-  Else
-    order = "UseOwn"
-  Endif
-  If startDay Then
-    xstart = DateAdd(Now(), gb.Hour, startDay)
-  Else
-    xstart = Now()
-  Endif
-  xCashCredit = modNonMedical.CashInCreditPerForCategory(DiscMode, "Medicines", xitem, billingMode)
-
-  res = modDatabase.$myConn.Create("tblpatdosing")
-  res["fldencounterval"] = encid
-  res["flditemtype"] = "Medicines"
-  res["fldroute"] = xroute
-  res["flditem"] = xitem
-  res["flddose"] = xdose
-  res["fldfreq"] = xfreq
-  res["flddays"] = xday
-  res["fldqtydisp"] = xqty
-  res["fldqtyret"] = 0
-  res["fldprescriber"] = xprescriber
-  res["fldregno"] = xregno
-  res["fldlevel"] = "Requested" ''changes to Dispensed (Only used to indicate dispensing when cash billing done before real dispensing)
-  res["flddirection"] = sDirection
-  res["fldadminsite"] = sAdminSite
-  res["flddosecount"] = sDoseCount
-  res["fldmixing"] = sMixing
-
-  res["flddispmode"] = disptype  ''Requesting Dept (OPD/IPD/Aseptic/Delivery/Pre-Operative:<val> etc)
-  res["fldorder"] = order     ''whether request or useown stock
-  res["fldcurval"] = xcurVal    ''clinician order to continue to Hold
-  res["fldstarttime"] = xstart
-  res["fldendtime"] = ""     ''when dosing regimen expires
-  res["fldfixname"] = fixitem
-  If fixrate Then
-    res["fldfixrate"] = fixrate
-  Else
-    res["fldfixrate"] = 0
-  Endif
-  res["fldtaxper"] = taxper
-  res["flddiscper"] = discper
-  res["fldcashincredit"] = xCashCredit
-  res["fldbillingmode"] = billingMode
-  res["flddisctype"] = DiscMode
-  res["fldacledger"] = sLedger
-  res["fldbilltype"] = sBilType
-  If sParent Then
-    res["flditemno"] = sParent
-  Endif
-
-  res["flduserid_order"] = modBasic.$lbluser  ''on insert record
-  res["fldtime_order"] = Now()
-  res["fldcomp_order"] = modBasic.$compID
-  res["fldsave_order"] = False
-  res["flduserid"] = ""    ''on dispensing
-  res["fldtime"] = ""
-  res["fldcomp"] = ""
-
-  res["fldsave"] = True  ''if data appears online in pharmacy on pressing F2 for Reuested only
-  If modPharmLabel.ForceLabelPrint(xitem) = True Then
-    res["fldlabel"] = True
-  Else
-    res["fldlabel"] = False   ''if label is printed
-  Endif
-  res["fldstatus"] = PatStatus   ''status of patient (admitted or discharged
-  res["flduptime"] = ""    ''date of data update
-  res["xyz"] = True
-  res.Update()
-  'don't catch error
 
 End

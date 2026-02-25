@@ -4,304 +4,84 @@
   MoveScaled(0,0,109,85)
   Text = ("Prescribing Medicines")
   Resizable = False
-  { GridView1 GridView
-    MoveScaled(1,62,107,22)
-    Mode = Select.Single
-    Header = GridView.Both
-  }
-  { Panel1 Panel
-    MoveScaled(1,0,107,62)
-    { cmbdosingwt ComboBox
-      MoveScaled(85,4.5,21,3)
-      Sorted = True
-    }
-    { cmbroute ComboBox
-      MoveScaled(10,8.5,15,3)
-      ToolTip = ("Category of Item")
-    }
-    { cmbmedicine ComboBox
-      MoveScaled(10,12,78,3)
-      ToolTip = ("Name of Medicines, surgical and extra items\nWrite few alphabets and press Down key to populate this combobox")
-      Sorted = True
-    }
-    { cmbadminsite ComboBox
-      MoveScaled(17,16,24,3)
-      ToolTip = ("Category of Item")
-    }
-    { txttarget ValueBox
-      MoveScaled(17,19.5,10,3)
-    }
-    { cmbtarget ComboBox
-      MoveScaled(28,19.5,13,3)
-      ToolTip = ("Category of Item")
-    }
-    { txtdose ValueBox
-      MoveScaled(17,26.5,10,3)
-    }
-    { cmbfreq ComboBox
-      MoveScaled(17,30,16,3)
-      ToolTip = ("Frequency of Use")
-    }
-    { txtday ValueBox
-      MoveScaled(17,37,10,3)
-      ToolTip = ("Duration of Use")
-    }
-    { txtdosecount ValueBox
-      MoveScaled(17,40.5,10,3)
-    }
-    { txtqty ValueBox
-      MoveScaled(17,44,10,3)
-      ToolTip = ("Quantity of item ordered")
-    }
-    { txtstarthour ValueBox
-      MoveScaled(24,47.5,7,3)
-    }
-    { dtending DateBox
-      MoveScaled(17,51,20,3)
-      Mode = DateChooser.DateTime
-    }
-    { txtdilution TextBox
-      MoveScaled(17,54.5,74,3)
-    }
-    { txtdirection ComboBox
-      MoveScaled(17,58,74,3)
-    }
-    { btnadd Button
-      MoveScaled(92,54,13,3)
-      Text = ("Add")
-      Picture = Picture["icon:/small/add"]
-    }
-    { btnclear Button
-      MoveScaled(92,58,13,3)
-      Text = ("Clear")
-      Picture = Picture["icon:/small/clear"]
-    }
-    { dtstarting DateBox
-      MoveScaled(42,47.5,20,3)
-      Mode = DateChooser.DateTime
-    }
-    { Label1 Label
-      MoveScaled(0,8.5,9,3)
+  Arrangement = Arrange.Vertical
+  { Panel2 Panel
+    MoveScaled(0,0,108,14.5)
+    { Label3 Label
+      MoveScaled(1,0.5,20,3)
       Border = Border.Plain
-      Text = ("Route")
-    }
-    { Label2 Label
-      MoveScaled(0,12,9,3)
-      Border = Border.Plain
-      Text = ("Medicine")
-    }
-    { Label4 Label
-      MoveScaled(66,1,18,3)
-      Border = Border.Plain
-      Text = ("Ideal Body Weight")
+      Text = ("Body Surface Area")
     }
     { txtbodysurfarea ValueBox
-      MoveScaled(21,1,10,3)
+      MoveScaled(22,0.5,10,3)
       ReadOnly = True
     }
     { Label5 Label
-      MoveScaled(32,1,8,3)
+      MoveScaled(33,0.5,8,3)
       Border = Border.Plain
       Text = ("sq m")
     }
-    { txtidealwt ValueBox
-      MoveScaled(85,1,10,3)
-      ReadOnly = True
-    }
-    { Label6 Label
-      MoveScaled(96,1,5,3)
-      Border = Border.Plain
-      Text = ("Kg")
-    }
     { Label7 Label
-      MoveScaled(0,4.5,20,3)
+      MoveScaled(1,4,20,3)
       Border = Border.Plain
       Text = ("Creatinine Clearance")
     }
     { txtcreatclear ValueBox
-      MoveScaled(21,4.5,10,3)
+      MoveScaled(22,4,10,3)
       ReadOnly = True
     }
     { Label8 Label
-      MoveScaled(32,4.5,8,3)
+      MoveScaled(33,4,8,3)
       Border = Border.Plain
       Text = ("mL/min")
     }
-    { Label9 Label
-      MoveScaled(0,47.5,16,3)
+    { Label1 Label
+      MoveScaled(1,7.5,9,3)
       Border = Border.Plain
-      Text = ("New Start Time")
+      Text = ("Route")
     }
-    { dtlastclosing DateBox
-      MoveScaled(87,47.5,19,3)
-      Enabled = False
-      Mode = DateChooser.DateTime
+    { chkout CheckBox
+      MoveScaled(30,7.5,15,3)
+      Text = ("Out of Stock")
     }
-    { btnstartdate Button
-      MoveScaled(63,47.5,3,3)
-      ToolTip = ("AI Advice")
-      Picture = Picture["icon:/small/clock"]
-    }
-    { Label11 Label
-      MoveScaled(53,16,16,3)
+    { Label2 Label
+      MoveScaled(1,11,9,3)
       Border = Border.Plain
-      Text = ("Dosage Form")
+      Text = ("Medicine")
     }
-    { txtdosageform TextBox
-      MoveScaled(70,16,23,3)
+    { Label4 Label
+      MoveScaled(67,0.5,18,3)
+      Border = Border.Plain
+      Text = ("Ideal Body Weight")
+    }
+    { txtidealwt ValueBox
+      MoveScaled(86,0.5,10,3)
       ReadOnly = True
     }
-    { Label12 Label
-      MoveScaled(0,16,16,3)
+    { Label6 Label
+      MoveScaled(97,0.5,5,3)
       Border = Border.Plain
-      Text = ("Site of Admin")
-    }
-    { Label14 Label
-      MoveScaled(0,19.5,16,3)
-      Border = Border.Plain
-      Text = ("Target Dose")
-    }
-    { Label15 Label
-      MoveScaled(0,23,16,3)
-      Border = Border.Plain
-      Text = ("Calculated Dose")
-    }
-    { txtcalculate ValueBox
-      MoveScaled(17,23,10,3)
-      Background = &HDFFFF7
-      ReadOnly = True
-    }
-    { lblcalculate Label
-      MoveScaled(28,23,13,3)
-      Border = Border.Plain
-      Text = ("mg")
-    }
-    { Label17 Label
-      MoveScaled(0,26.5,16,3)
-      Border = Border.Plain
-      Text = ("Final Dose")
-    }
-    { lbldose Label
-      MoveScaled(28,26.5,13,3)
-      Border = Border.Plain
-      Text = ("mg")
-    }
-    { Label19 Label
-      MoveScaled(0,30,16,3)
-      Border = Border.Plain
-      Text = ("Frequency")
-    }
-    { Label20 Label
-      MoveScaled(0,37,16,3)
-      Border = Border.Plain
-      Text = ("Duration (days)")
-    }
-    { Label21 Label
-      MoveScaled(0,44,16,3)
-      Border = Border.Plain
-      Text = ("Quantity")
-    }
-    { Frame1 Frame
-      MoveScaled(53,20,53,27)
-      Text = ("Tapering Regimen")
-      Alignment = Align.Left
-      { txtdosetaper ValueBox
-        MoveScaled(11,3,8,3)
-        ToolTip = ("Unit dose of medicine")
-      }
-      { cmbfreqtaper ComboBox
-        MoveScaled(23,3,14,3)
-        ToolTip = ("Frequency of medicine")
-      }
-      { txtdaytaper ValueBox
-        MoveScaled(40,3,7,3)
-        ToolTip = ("Duration of use of medicine")
-      }
-      { btntaperadd Button
-        MoveScaled(49,3,3,3)
-        ToolTip = ("AI Advice")
-        Picture = Picture["icon:/small/add"]
-      }
-      { Label16 Label
-        MoveScaled(1,3,9,3)
-        Border = Border.Plain
-        Text = ("Regimen")
-      }
-      { GridView2 GridView
-        MoveScaled(1,7,51,19)
-      }
-    }
-    { Label22 Label
-      MoveScaled(0,58,16,3)
-      Border = Border.Plain
-      Text = ("Direction of Use")
-    }
-    { Label23 Label
-      MoveScaled(0,40.5,16,3)
-      Border = Border.Plain
-      Text = ("Total Dose Count")
-    }
-    { Label24 Label
-      MoveScaled(0,33.5,16,3)
-      Border = Border.Plain
-      Text = ("Daily Dose")
-    }
-    { txtdailydose ValueBox
-      MoveScaled(17,33.5,10,3)
-      Background = &HDFFFF7
-      ReadOnly = True
-    }
-    { lbldailydose Label
-      MoveScaled(28,33.5,13,3)
-      Border = Border.Plain
-      Text = ("mg")
-    }
-    { Label26 Label
-      MoveScaled(0,54.5,16,3)
-      Border = Border.Plain
-      Text = ("Compounding")
-    }
-    { Label18 Label
-      MoveScaled(0,51,16,3)
-      Border = Border.Plain
-      Text = ("New End Time")
-    }
-    { btnendate Button
-      MoveScaled(38,51,3,3)
-      ToolTip = ("AI Advice")
-      Picture = Picture["icon:/small/clock"]
-    }
-    { Label25 Label
-      MoveScaled(17,47.5,6,3)
-      Border = Border.Plain
-      Text = ("After")
-    }
-    { Label27 Label
-      MoveScaled(32,47.5,9,3)
-      Border = Border.Plain
-      Text = ("Hours")
-    }
-    { Label3 Label
-      MoveScaled(0,1,20,3)
-      Border = Border.Plain
-      Text = ("Body Surface Area")
+      Text = ("Kg")
     }
     { Label13 Label
-      MoveScaled(66,4.5,18,3)
+      MoveScaled(67,4,18,3)
       Border = Border.Plain
       Text = ("Dosing Weight")
     }
-    { Label10 Label
-      MoveScaled(82,47.5,4.5,3)
-      Border = Border.Plain
-      Text = ("Last")
+    { cmbdosingwt ComboBox
+      MoveScaled(86,4,21,3)
+      Sorted = True
     }
-    { chkout CheckBox
-      MoveScaled(66,8,15,3)
-      Text = ("Out of Stock")
+    { chknextplan CheckBox
+      MoveScaled(55,7.5,14,3)
+      Text = ("Next Visit")
     }
-    { Panel2 Panel
-      MoveScaled(85,8,21,3)
+    { chkrenal CheckBox
+      MoveScaled(82,7.5,25,3)
+      Text = ("Renal Dose Adjustment")
+    }
+    { Panel3 Panel
+      MoveScaled(86,11,21,3)
       { rbgeneric RadioButton
         MoveScaled(0,0,10,3)
         Text = ("Generic")
@@ -312,5 +92,254 @@
         Text = ("Brand")
       }
     }
+    { cmbroute ComboBox
+      MoveScaled(11,7.5,15,3)
+      ToolTip = ("Category of Item")
+    }
+    { cmbmedicine ComboBox
+      MoveScaled(11,11,74,3)
+      ToolTip = ("Name of Medicines, surgical and extra items\nWrite few alphabets and press Down key to populate this combobox")
+      Sorted = True
+    }
+  }
+  { TabPanel1 TabPanel
+    MoveScaled(0,15,106,40)
+    Count = 2
+    Index = 0
+    Text = ("Regimen")
+    { cmbadminsite ComboBox
+      MoveScaled(18,0.5,24,3)
+    }
+    { txttarget ValueBox
+      MoveScaled(18,4,10,3)
+    }
+    { cmbtarget ComboBox
+      MoveScaled(29,4,13,3)
+    }
+    { txtdose ValueBox
+      MoveScaled(75,7.5,10,3)
+    }
+    { cmbfreq ComboBox
+      MoveScaled(18,11,16,3)
+      ToolTip = ("Frequency of Use")
+    }
+    { txtday ValueBox
+      MoveScaled(18,14.5,10,3)
+      ToolTip = ("Duration of Use")
+    }
+    { txtdosecount ValueBox
+      MoveScaled(75,14.5,10,3)
+    }
+    { txtqty ValueBox
+      MoveScaled(18,18,10,3)
+      ToolTip = ("Quantity of item ordered")
+    }
+    { txtstarthour ValueBox
+      MoveScaled(25,21.5,7,3)
+    }
+    { dtending DateBox
+      MoveScaled(18,25,20,3)
+      Mode = DateChooser.DateTime
+    }
+    { txtdirection ComboBox
+      MoveScaled(18,28.5,74,3)
+    }
+    { cmbdilution ComboBox
+      MoveScaled(18,32,74,3)
+      Enabled = False
+      Sorted = True
+    }
+    { btnadd Button
+      MoveScaled(93,28.5,13,3)
+      Text = ("Add")
+      Picture = Picture["icon:/small/add"]
+    }
+    { btnclear Button
+      MoveScaled(93,32,13,3)
+      Text = ("Clear")
+      Picture = Picture["icon:/small/clear"]
+    }
+    { Label12 Label
+      MoveScaled(1,0.5,16,3)
+      Border = Border.Plain
+      Text = ("Site of Admin")
+    }
+    { Label11 Label
+      MoveScaled(58,0.5,16,3)
+      Border = Border.Plain
+      Text = ("Dosage Form")
+    }
+    { txtdosageform TextBox
+      MoveScaled(75,0.5,23,3)
+      ReadOnly = True
+    }
+    { Label14 Label
+      MoveScaled(1,4,16,3)
+      Border = Border.Plain
+      Text = ("Target Dose")
+    }
+    { Label15 Label
+      MoveScaled(1,7.5,16,3)
+      Border = Border.Plain
+      Text = ("Calculated Dose")
+    }
+    { txtcalculate ValueBox
+      MoveScaled(18,7.5,10,3)
+      Background = &HDFFFF7
+      ReadOnly = True
+    }
+    { lblcalculate Label
+      MoveScaled(29,7.5,13,3)
+      Border = Border.Plain
+      Text = ("mg")
+    }
+    { Label17 Label
+      MoveScaled(58,7.5,16,3)
+      Border = Border.Plain
+      Text = ("Final Dose")
+    }
+    { lbldose Label
+      MoveScaled(86,7.5,13,3)
+      Border = Border.Plain
+      Text = ("mg")
+    }
+    { Label19 Label
+      MoveScaled(1,11,16,3)
+      Border = Border.Plain
+      Text = ("Frequency")
+    }
+    { Label24 Label
+      MoveScaled(58,11,16,3)
+      Border = Border.Plain
+      Text = ("Daily Dose")
+    }
+    { txtdailydose ValueBox
+      MoveScaled(75,11,10,3)
+      Background = &HDFFFF7
+      ReadOnly = True
+    }
+    { lbldailydose Label
+      MoveScaled(86,11,13,3)
+      Border = Border.Plain
+      Text = ("mg")
+    }
+    { Label20 Label
+      MoveScaled(1,14.5,16,3)
+      Border = Border.Plain
+      Text = ("Duration (days)")
+    }
+    { Label23 Label
+      MoveScaled(58,14.5,16,3)
+      Border = Border.Plain
+      Text = ("Total Dose Count")
+    }
+    { Label21 Label
+      MoveScaled(1,18,16,3)
+      Border = Border.Plain
+      Text = ("Quantity")
+    }
+    { Label9 Label
+      MoveScaled(1,21.5,16,3)
+      Border = Border.Plain
+      Text = ("New Start Time")
+    }
+    { Label25 Label
+      MoveScaled(18,21.5,6,3)
+      Border = Border.Plain
+      Text = ("After")
+    }
+    { Label27 Label
+      MoveScaled(33,21.5,9,3)
+      Border = Border.Plain
+      Text = ("Hours")
+    }
+    { dtstarting DateBox
+      MoveScaled(43,21.5,20,3)
+      Mode = DateChooser.DateTime
+    }
+    { btnstartdate Button
+      MoveScaled(64,21.5,3,3)
+      ToolTip = ("AI Advice")
+      Picture = Picture["icon:/small/clock"]
+    }
+    { Label10 Label
+      MoveScaled(75,21.5,4.5,3)
+      Border = Border.Plain
+      Text = ("Last")
+    }
+    { dtlastclosing DateBox
+      MoveScaled(80,21.5,19,3)
+      Enabled = False
+      Mode = DateChooser.DateTime
+    }
+    { Label18 Label
+      MoveScaled(1,25,16,3)
+      Border = Border.Plain
+      Text = ("New End Time")
+    }
+    { btnendate Button
+      MoveScaled(39,25,3,3)
+      ToolTip = ("AI Advice")
+      Picture = Picture["icon:/small/clock"]
+    }
+    { Label26 Label
+      MoveScaled(1,32,16,3)
+      Border = Border.Plain
+      Text = ("Compounding")
+    }
+    { Label22 Label
+      MoveScaled(1,28.5,16,3)
+      Border = Border.Plain
+      Text = ("Direction of Use")
+    }
+    Index = 1
+    Text = ("Tapering")
+    { GridView2 GridView
+      MoveScaled(1,4,104,31)
+      Mode = Select.Single
+      Header = GridView.Both
+    }
+    { Panel1 Panel
+      MoveScaled(0,0,105,4)
+      { txtdosetaper ValueBox
+        MoveScaled(11,0.5,8,3)
+        ToolTip = ("Unit dose of medicine")
+      }
+      { cmbfreqtaper ComboBox
+        MoveScaled(43,0.5,14,3)
+        ToolTip = ("Frequency of medicine")
+      }
+      { txtdaytaper ValueBox
+        MoveScaled(79,0.5,7,3)
+        ToolTip = ("Duration of use of medicine")
+      }
+      { btntaperadd Button
+        MoveScaled(92,0.5,11,3)
+        ToolTip = ("AI Advice")
+        Picture = Picture["icon:/small/add"]
+      }
+      { Label16 Label
+        MoveScaled(1,0.5,9,3)
+        Border = Border.Plain
+        Text = ("Regimen")
+      }
+      { Label28 Label
+        MoveScaled(33,0.5,10,3)
+        Border = Border.Plain
+        Text = ("Frequency")
+      }
+      { Label29 Label
+        MoveScaled(68,0.5,10,3)
+        Border = Border.Plain
+        Text = ("Duration")
+      }
+    }
+    Index = 0
+  }
+  { GridView1 GridView
+    MoveScaled(0,55,107,22)
+    Expand = True
+    Mode = Select.Single
+    Header = GridView.Both
   }
 }

@@ -1,0 +1,139 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,113,52)
+  Expand = True
+  Arrangement = Arrange.Vertical
+  { Panel1 Panel
+    MoveScaled(0,0,110,4)
+    { cmbstatus ComboBox
+      MoveScaled(8,0.5,18,3)
+    }
+    { Label1 Label
+      MoveScaled(0.5,0.5,7,3)
+      Border = Border.Plain
+      Text = ("Status")
+    }
+    { btnshow Button
+      MoveScaled(27,0.5,9,3)
+      Text = ("Show")
+    }
+    { btndispown Button
+      MoveScaled(96,0.5,6,3)
+      ToolTip = ("Dispense from Local Stock")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { mnusave Button
+      MoveScaled(103,0.5,6,3)
+      ToolTip = ("Brought from Outside")
+      Picture = Picture["icon:/small/download"]
+    }
+    { btnrepeat Button
+      MoveScaled(74,0.5,7,3)
+      ToolTip = ("Repeat Selected regimen from new starting date")
+      Picture = Picture["icon:/small/repeat"]
+    }
+    { btngroup Button
+      MoveScaled(81,0.5,5,3)
+      ToolTip = ("Select Medicine Protocol")
+      Picture = Picture["icon:/small/insert-link"]
+    }
+    { btnnewdose Button
+      MoveScaled(64,0.5,9,3)
+      Text = ("New")
+    }
+  }
+  { Panel10 Panel
+    MoveScaled(-1,4,112,11)
+    Visible = False
+    { txtstart ValueBox
+      MoveScaled(7,0,5,3)
+    }
+    { cmbroute ComboBox
+      MoveScaled(1,4,9,3)
+      ToolTip = ("Category of Item")
+    }
+    { Panel7 Panel
+      MoveScaled(10,4,93,3)
+      { cmbmedicine ComboBox
+        MoveScaled(0,0,62,3)
+        ToolTip = ("Name of Medicines, surgical and extra items\nWrite few alphabets and press Down key to populate this combobox")
+        Sorted = True
+      }
+      { txtdose ValueBox
+        MoveScaled(62,0,8,3)
+        ToolTip = ("Unit Dose of the Medicine")
+      }
+      { cmbfreq ComboBox
+        MoveScaled(75,0,11,3)
+        ToolTip = ("Frequency of Use")
+      }
+      { txtday ValueBox
+        MoveScaled(86,0,6,3)
+        ToolTip = ("Duration of Use")
+      }
+      { lbldose Label
+        MoveScaled(70,0,5,3)
+        Border = Border.Plain
+        Text = ("mg")
+      }
+    }
+    { txtqty ValueBox
+      MoveScaled(104,4,6,3)
+      Background = &HDFDFDF
+      ToolTip = ("Quantity of item ordered")
+    }
+    { txtdirection ComboBox
+      MoveScaled(10,7.5,62,3)
+    }
+    { chksave Button
+      MoveScaled(73,7.5,9,3)
+      Picture = Picture["icon:/small/add"]
+    }
+    { btnreview Button
+      MoveScaled(103,0.5,3,3)
+      Picture = Picture["icon:/small/important"]
+    }
+    { btnshow2 Button
+      MoveScaled(99,0.5,3,3)
+      Picture = Picture["icon:/small/text"]
+    }
+    { Label6 Label
+      MoveScaled(1,0,6,3)
+      Border = Border.Plain
+      Text = ("After")
+    }
+    { Label7 Label
+      MoveScaled(12,0,6,3)
+      Border = Border.Plain
+      Text = ("Hours")
+    }
+    { chknextplan CheckBox
+      MoveScaled(55,0.5,14,3)
+      Text = ("Next Visit")
+    }
+    { chkout CheckBox
+      MoveScaled(21,0.5,15,3)
+      Text = ("Out of Stock")
+    }
+    { lblregimen Label
+      MoveScaled(73,0.5,19,3)
+      Border = Border.Plain
+    }
+    { Label2 Label
+      MoveScaled(1,7.5,9,3)
+      Border = Border.Plain
+      Text = ("Direction")
+    }
+    { btnaireview Button
+      MoveScaled(107,0.5,3,3)
+      Picture = Picture["icon:/small/book"]
+    }
+  }
+  { GridView1 GridView
+    MoveScaled(0,15,90,23)
+    Expand = True
+    Mode = Select.Single
+    Header = GridView.Both
+  }
+}

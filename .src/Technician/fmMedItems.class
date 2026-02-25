@@ -255,7 +255,7 @@ Public Sub mnuconsume_Click()
   Dim hForm As FmPatConsume
 
   If GridView1.Rows.Selection.Count > 0 Then
-    hForm = New FmPatConsume(GridView1[GridView1.Row, 1].Text)
+    hForm = New FmPatConsume(GridView1[GridView1.Row, 0].Text)
     hForm.ShowModal
     FillPatDateGrid()
   Endif
@@ -578,5 +578,42 @@ Public Sub btntransfer_Click()
 Catch
   modDatabase.$myConn.Rollback
   modHelpVariable.CreateErrorReport()
+
+End
+
+''----------------- Sampling -----------------------
+Public Sub btnbarcode_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    If GridView1[GridView1.Row, 3].Text Then
+      modLabSub.PrintBarCodeSampling(GridView1[GridView1.Row, 3].Text, GridView1[GridView1.Row, 1].Text, GridView1[GridView1.Row, 2].Text, "", GridView1[GridView1.Row, 3].Text)
+    Endif
+  Endif
+
+End
+
+Public Sub btnbagcode_Click()
+
+  Dim hBarPage As CBloodData
+  Dim xpath As String
+  Dim sPath As String
+  Dim xcount As Integer
+  Dim i As Integer
+
+  If GridView1.Rows.Selection.Count Then
+    xcount = InputValue("Number of Print copies", GridView1[GridView1.Row, 1].Text, 1)
+    If xcount And If xcount < 10 Then
+      hBarPage = New CBloodData($sType, GridView1[GridView1.Row, 1].Text)
+      xpath = hBarPage.LabelPath()
+
+      If Exist(xpath) Then
+        sPath = modPrint.ConvertHTMLToPDFString(xpath, "LabelSize")
+        For i = 1 To xcount
+          modPrint.DefaultPrinting(sPath, "LabelSize")
+        Next
+      Endif
+
+    Endif
+  Endif
 
 End
