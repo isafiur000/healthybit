@@ -243,6 +243,10 @@ Public Sub btnpayto_Change()
 
 End
 
+Public Sub btnsearchpre_Click()
+
+End
+
 Public Sub btnnewrefresh_Click()
 
   Inc Application.Busy
@@ -267,6 +271,7 @@ Private Sub FillUnpaidEncounters()
   Dim sql As String
   Dim xsource As String
   Dim xsection As String
+  Dim xsearch As String
 
   If cmbsection.Text = "All Sections" Then
     xsection = ""
@@ -278,31 +283,36 @@ Private Sub FillUnpaidEncounters()
   Else
     xsource = ""
   Endif
+  If txtpresearch.Text Then
+    xsearch = db.Subst(" and fldencounterval like &1", Trim(txtpresearch.Text))
+  Else
+    xsearch = ""
+  Endif
 
   If chklist.Value = True Then
     If cmbcategory.Text = "Any" Then
-      sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and (fldtarget=&3 or fldtarget=&4 or fldtarget=&5) and fldordtime>=&6 and fldordtime<=&7 and flditemqty>fldretqty" & xsource & xsection                                               ''
+      sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and (fldtarget=&3 or fldtarget=&4 or fldtarget=&5) and fldordtime>=&6 and fldordtime<=&7 and flditemqty>fldretqty" & xsource & xsearch & xsection                                               ''
       $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", "Major", "Intermediate", "Extra", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))))
     Else
-      sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldtarget=&3 and fldordtime>=&4 and fldordtime<=&5 and flditemqty>fldretqty" & xsource & xsection                                               ''
+      sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldtarget=&3 and fldordtime>=&4 and fldordtime<=&5 and flditemqty>fldretqty" & xsource & xsearch & xsection                                               ''
       $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", cmbcategory.Text, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))))
     Endif
   Else
     If modBasic.$SQLDateRange = "Disable" Then
       If cmbcategory.Text = "Any" Then
-        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and (fldtarget=&3 or fldtarget=&4 or fldtarget=&5) and flditemqty>fldretqty" & xsource & xsection                                                ''
+        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and (fldtarget=&3 or fldtarget=&4 or fldtarget=&5) and flditemqty>fldretqty" & xsource & xsearch & xsection                                                ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", "Major", "Intermediate", "Extra")
       Else
-        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldtarget=&3 and flditemqty>fldretqty" & xsource & xsection                                                ''
+        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldtarget=&3 and flditemqty>fldretqty" & xsource & xsearch & xsection                                                ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", cmbcategory.Text)
       Endif
 
     Else
       If cmbcategory.Text = "Any" Then
-        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and (fldtarget=&3 or fldtarget=&4 or fldtarget=&5) and fldordtime>=&6 and fldordtime<=&7 and flditemqty>fldretqty" & xsource & xsection                                               ''
+        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and (fldtarget=&3 or fldtarget=&4 or fldtarget=&5) and fldordtime>=&6 and fldordtime<=&7 and flditemqty>fldretqty" & xsource & xsearch & xsection                                               ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", "Major", "Intermediate", "Extra", modDate.StartSqlDate(DateAdd(dtlisted.Value, gb.Day, 0 - 365)), modDate.EndSqlDate(dtlisted.Value))
       Else
-        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldtarget=&3 and fldordtime>=&4 and fldordtime<=&5 and flditemqty>fldretqty" & xsource & xsection                                               ''
+        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldtarget=&3 and fldordtime>=&4 and fldordtime<=&5 and flditemqty>fldretqty" & xsource & xsearch & xsection                                               ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", cmbcategory.Text, modDate.StartSqlDate(DateAdd(dtlisted.Value, gb.Day, 0 - 365)), modDate.EndSqlDate(dtlisted.Value))
       Endif
 
@@ -319,6 +329,7 @@ Private Sub FillSamplingEncounters()
   Dim sql As String
   Dim xsource As String
   Dim xsection As String
+  Dim xsearch As String
 
   If cmbsection.Text = "All Sections" Then
     xsection = ""
@@ -330,31 +341,36 @@ Private Sub FillSamplingEncounters()
   Else
     xsource = ""
   Endif
+  If txtpresearch.Text Then
+    xsearch = db.Subst(" and fldencounterval like &1", Trim(txtpresearch.Text))
+  Else
+    xsearch = ""
+  Endif
 
   If chklist.Value = True Then
     If cmbcategory.Text = "Any" Then
-      sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and fldtime>=&7 and fldtime<=&8 and flditemqty>fldretqty and fldbillno IS NOT NULL" & xsource & xsection                                               ''
+      sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and fldtime>=&7 and fldtime<=&8 and flditemqty>fldretqty and fldbillno IS NOT NULL" & xsource & xsearch & xsection                                               ''
       $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, "Major", "Intermediate", "Extra", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))))
     Else
-      sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and fldtime>=&5 and fldtime<=&6 and flditemqty>fldretqty and fldbillno IS NOT NULL" & xsource & xsection                                               ''
+      sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and fldtime>=&5 and fldtime<=&6 and flditemqty>fldretqty and fldbillno IS NOT NULL" & xsource & xsearch & xsection                                               ''
       $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, cmbcategory.Text, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))))
     Endif
   Else
     If modBasic.$SQLDateRange = "Disable" Then
       If cmbcategory.Text = "Any" Then
-        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and flditemqty>fldretqty and fldbillno IS NOT NULL" & xsource & xsection                                                ''
+        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and flditemqty>fldretqty and fldbillno IS NOT NULL" & xsource & xsearch & xsection                                                ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, "Major", "Intermediate", "Extra")
       Else
-        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and flditemqty>fldretqty and fldbillno IS NOT NULL" & xsource & xsection                                                ''
+        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and flditemqty>fldretqty and fldbillno IS NOT NULL" & xsource & xsearch & xsection                                                ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, cmbcategory.Text)
       Endif
 
     Else
       If cmbcategory.Text = "Any" Then
-        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and fldtime>=&7 and fldtime<=&8 and flditemqty>fldretqty and fldbillno IS NOT NULL" & xsource & xsection                                               ''
+        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and fldtime>=&7 and fldtime<=&8 and flditemqty>fldretqty and fldbillno IS NOT NULL" & xsource & xsearch & xsection                                               ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, "Major", "Intermediate", "Extra", modDate.StartSqlDate(DateAdd(dtlisted.Value, gb.Day, 0 - 365)), modDate.EndSqlDate(dtlisted.Value))
       Else
-        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and fldtime>=&5 and fldtime<=&6 and flditemqty>fldretqty and fldbillno IS NOT NULL" & xsource & xsection                                               ''
+        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and fldtime>=&5 and fldtime<=&6 and flditemqty>fldretqty and fldbillno IS NOT NULL" & xsource & xsearch & xsection                                               ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, cmbcategory.Text, modDate.StartSqlDate(DateAdd(dtlisted.Value, gb.Day, 0 - 365)), modDate.EndSqlDate(dtlisted.Value))
       Endif
 
@@ -371,6 +387,7 @@ Private Sub FillSamplingInvoices()
   Dim sql As String
   Dim xsource As String
   Dim xsection As String
+  Dim xsearch As String
 
   If cmbsection.Text = "All Sections" Then
     xsection = ""
@@ -382,31 +399,36 @@ Private Sub FillSamplingInvoices()
   Else
     xsource = ""
   Endif
+  If txtpresearch.Text Then
+    xsearch = db.Subst(" and fldbillno like &1", Trim(txtpresearch.Text))
+  Else
+    xsearch = ""
+  Endif
 
   If chklist.Value = True Then
     If cmbcategory.Text = "Any" Then
-      sql = "select fldid,fldbillno,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and fldtime>=&7 and fldtime<=&8 and flditemqty>fldretqty and fldprint=&9" & xsource & xsection                                                ''
+      sql = "select fldid,fldbillno,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and fldtime>=&7 and fldtime<=&8 and flditemqty>fldretqty and fldprint=&9" & xsource & xsearch & xsection                                                ''
       $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, "Major", "Intermediate", "Extra", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), True)
     Else
-      sql = "select fldid,fldbillno,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and fldtime>=&5 and fldtime<=&6 and flditemqty>fldretqty and fldprint=&7" & xsource & xsection                                                ''
+      sql = "select fldid,fldbillno,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and fldtime>=&5 and fldtime<=&6 and flditemqty>fldretqty and fldprint=&7" & xsource & xsearch & xsection                                                ''
       $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, cmbcategory.Text, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), True)
     Endif
   Else
     If modBasic.$SQLDateRange = "Disable" Then
       If cmbcategory.Text = "Any" Then
-        sql = "select fldid,fldbillno,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and flditemqty>fldretqty and fldprint=&7" & xsource & xsection                                             ''
+        sql = "select fldid,fldbillno,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and flditemqty>fldretqty and fldprint=&7" & xsource & xsearch & xsection                                             ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, "Major", "Intermediate", "Extra", True)
       Else
-        sql = "select fldid,fldbillno,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and flditemqty>fldretqty and fldprint=&5" & xsource & xsection                                             ''
+        sql = "select fldid,fldbillno,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and flditemqty>fldretqty and fldprint=&5" & xsource & xsearch & xsection                                             ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, cmbcategory.Text, True)
       Endif
 
     Else
       If cmbcategory.Text = "Any" Then
-        sql = "select fldid,fldbillno,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and fldtime>=&7 and fldtime<=&8 and flditemqty>fldretqty and fldprint=&9" & xsource & xsection                                                ''
+        sql = "select fldid,fldbillno,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and fldtime>=&7 and fldtime<=&8 and flditemqty>fldretqty and fldprint=&9" & xsource & xsearch & xsection                                                ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, "Major", "Intermediate", "Extra", modDate.StartSqlDate(DateAdd(dtlisted.Value, gb.Day, 0 - 365)), modDate.EndSqlDate(dtlisted.Value), True)
       Else
-        sql = "select fldid,fldbillno,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and fldtime>=&5 and fldtime<=&6 and flditemqty>fldretqty and fldprint=&7" & xsource & xsection                                                ''
+        sql = "select fldid,fldbillno,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and fldtime>=&5 and fldtime<=&6 and flditemqty>fldretqty and fldprint=&7" & xsource & xsearch & xsection                                                ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, cmbcategory.Text, modDate.StartSqlDate(DateAdd(dtlisted.Value, gb.Day, 0 - 365)), modDate.EndSqlDate(dtlisted.Value), True)
       Endif
 
@@ -423,6 +445,7 @@ Private Sub FillSamplingSaved()
   Dim sql As String
   Dim xsource As String
   Dim xsection As String
+  Dim xsearch As String
 
   If cmbsection.Text = "All Sections" Then
     xsection = ""
@@ -434,31 +457,36 @@ Private Sub FillSamplingSaved()
   Else
     xsource = ""
   Endif
+  If txtpresearch.Text Then
+    xsearch = db.Subst(" and fldencounterval like &1", Trim(txtpresearch.Text))
+  Else
+    xsearch = ""
+  Endif
 
   If chklist.Value = True Then
     If cmbcategory.Text = "Any" Then
-      sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and fldtime>=&7 and fldtime<=&8 and flditemqty>fldretqty and fldprint=&9" & xsource & xsection                                               ''
+      sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and fldtime>=&7 and fldtime<=&8 and flditemqty>fldretqty and fldprint=&9" & xsource & xsearch & xsection                                               ''
       $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, "Major", "Intermediate", "Extra", modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), False)
     Else
-      sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and fldtime>=&5 and fldtime<=&6 and flditemqty>fldretqty and fldprint=&7" & xsource & xsection                                               ''
+      sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and fldtime>=&5 and fldtime<=&6 and flditemqty>fldretqty and fldprint=&7" & xsource & xsearch & xsection                                               ''
       $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, cmbcategory.Text, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), False)
     Endif
   Else
     If modBasic.$SQLDateRange = "Disable" Then
       If cmbcategory.Text = "Any" Then
-        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and flditemqty>fldretqty and fldprint=&7" & xsource & xsection                                                ''
+        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and flditemqty>fldretqty and fldprint=&7" & xsource & xsearch & xsection                                                ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, "Major", "Intermediate", "Extra", False)
       Else
-        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and flditemqty>fldretqty and fldprint=&5" & xsource & xsection                                                ''
+        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and flditemqty>fldretqty and fldprint=&5" & xsource & xsearch & xsection                                                ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, cmbcategory.Text, False)
       Endif
 
     Else
       If cmbcategory.Text = "Any" Then
-        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and fldtime>=&7 and fldtime<=&8 and flditemqty>fldretqty and fldprint=&9" & xsource & xsection                                               ''
+        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and (fldtarget=&4 or fldtarget=&5 or fldtarget=&6) and fldtime>=&7 and fldtime<=&8 and flditemqty>fldretqty and fldprint=&9" & xsource & xsearch & xsection                                               ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, "Major", "Intermediate", "Extra", modDate.StartSqlDate(DateAdd(dtlisted.Value, gb.Day, 0 - 365)), modDate.EndSqlDate(dtlisted.Value), False)
       Else
-        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and fldtime>=&5 and fldtime<=&6 and flditemqty>fldretqty and fldprint=&7" & xsource & xsection                                               ''
+        sql = "select fldid,fldencounterval,fldencounterval,flditemname,fldordcomp,fldencounterval,fldencounterval,fldtarget from " & $tblpatbilling & " where flditemtype=&1 and fldsample=&2 and fldsave=&3 and fldtarget=&4 and fldtime>=&5 and fldtime<=&6 and flditemqty>fldretqty and fldprint=&7" & xsource & xsearch & xsection                                               ''
         $rData2 = modDatabase.$myConn.Exec(sql, "Procedures", "Waiting", True, cmbcategory.Text, modDate.StartSqlDate(DateAdd(dtlisted.Value, gb.Day, 0 - 365)), modDate.EndSqlDate(dtlisted.Value), False)
       Endif
 

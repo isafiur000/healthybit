@@ -203,6 +203,25 @@ Public Sub mnuopd_Click()
 
 End
 
+Public Sub mnucreadmission_Click()
+
+  Dim hCls As CReportCustom
+  Dim xPath As String
+
+  If $encid Then
+    If modSettings.ShowSettingFromFIle("Admission Report/Name") Then
+      hCls = New CReportCustom($encid, "Admission Report", "ReportSize", MMain.$defUnit)
+      hCls.Preview()
+    Else
+      Inc Application.Busy
+      xPath = modPatReports.ShowAdmissionSheet($encid, MMain.$defUnit)
+      Dec Application.Busy
+      modControlSub.OpenHTMLPreview($encid, xPath, "ReportSize")
+    Endif
+  Endif
+
+End
+
 Public Sub mnudischarge_Click()
 
   Dim xvarList As Variant[]

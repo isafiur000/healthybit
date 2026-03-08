@@ -672,7 +672,7 @@ Private Sub ResizeGrid()
       .Columns[16].Text = "Device"
     Endif
     If chknotice.Value = True Then
-      .Columns[17].Text = "Notice"
+      .Columns[17].Text = "Section"
     Endif
 
     If $newColumn.Count Then
@@ -791,8 +791,8 @@ Public Sub GridView1_Click()
       FillBedGrid()
 
     Else If GridView1.Column = 17 Then
-      xlst = New String[]
-      xData = InputCombo("Select Notice", GridView1[GridView1.Row, 2].Text, xlst, GridView1[GridView1.Row, 17].Text, False)
+      xlst = modBasic.$ClinCompSections
+      xData = InputCombo("Select Section", GridView1[GridView1.Row, 2].Text, xlst, GridView1[GridView1.Row, 17].Text, False)
       If xData Then
         If $sTable = "tblconsult" Then
           modPatientSub.UpdateConsultNotice(GridView1[GridView1.Row, 0].Text, xData)

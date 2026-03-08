@@ -956,3 +956,14 @@ Public Sub btnsynctransfer_Click()
   Endif
 
 End
+
+Public Sub btnsections_Click()
+
+  Dim hFrom As FmAddVariable1
+
+  If cmbtarget.Text Then
+    hFrom = New FmAddVariable1("fldsection", "fldcompid", cmbtarget.Text, "tbldepartsections")
+    hFrom.ShowModal
+  Endif
+
+End

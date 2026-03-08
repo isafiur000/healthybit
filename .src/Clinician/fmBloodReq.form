@@ -1,20 +1,20 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,90,66)
+  MoveScaled(0,0,96,65)
   Tag = "Med Product Request"
   Text = ("Med Product Request")
   Resizable = False
   Margin = True
   { Panel1 Panel
-    MoveScaled(0,0,90,65.5)
+    MoveScaled(0,0,95,64)
     { TabPanel1 TabPanel
-      MoveScaled(1,9,88,56)
+      MoveScaled(1,8,94,56)
       Count = 3
       Index = 0
       Text = ("Received")
       { GridView2 GridView
-        MoveScaled(1,4,86,47)
+        MoveScaled(0,4,93,47)
         Mode = Select.Single
         Header = GridView.Both
       }
@@ -23,13 +23,22 @@
         { btnreturn Button
           MoveScaled(74,0.5,13,3)
           Text = ("Return")
+          Picture = Picture["icon:/small/mail"]
+        }
+        { btnhold Button
+          MoveScaled(0,0.5,15,3)
+          Text = ("On Hold")
+        }
+        { btndiscontinue Button
+          MoveScaled(16,0.5,17,3)
+          Text = ("Discontinue")
           Picture = Picture["icon:/small/cancel"]
         }
       }
       Index = 1
       Text = ("Pending")
       { GridView3 GridView
-        MoveScaled(1,4,86,47)
+        MoveScaled(0,4,93,47)
         Mode = Select.Single
         Header = GridView.Both
       }
@@ -47,39 +56,40 @@
         MoveScaled(12,1,42,3)
         Sorted = True
       }
+      { cmbgroup ComboBox
+        MoveScaled(55,1,25,3)
+      }
+      { btnshow Button
+        MoveScaled(81,1,5,3)
+        Picture = Picture["icon:/small/refresh"]
+      }
+      { cmbcomment ComboBox
+        MoveScaled(12,5,57,3)
+      }
       { txtqty ValueBox
-        MoveScaled(12,5,10,3)
+        MoveScaled(12,9,10,3)
         ReadOnly = True
       }
       { btnsubOK Button
-        MoveScaled(71,5,15,3)
+        MoveScaled(71,9,15,3)
         Enabled = False
         Text = ("Save")
         Picture = Picture["icon:/small/add"]
       }
-      { TextArea1 TextArea
-        MoveScaled(1,9,85,8)
-        Tag = "Auto"
-        Wrap = True
-        ScrollBar = Scroll.Vertical
-      }
       { GridView1 GridView
-        MoveScaled(1,18,86,33)
+        MoveScaled(1,13,92,38)
         Mode = Select.Single
         Header = GridView.Both
         AutoResize = False
       }
       { Label8 Label
-        MoveScaled(1,5,10,3)
+        MoveScaled(1,9,10,3)
         Border = Border.Plain
         Text = ("Quantity")
       }
       { pnlquanti Panel
-        MoveScaled(10,9,15,16)
+        MoveScaled(10,13,15,16)
         Visible = False
-      }
-      { cmbgroup ComboBox
-        MoveScaled(55,1,25,3)
       }
       { Label1 Label
         MoveScaled(1,1,10,3)
@@ -87,18 +97,19 @@
         Text = ("Category")
       }
       { lblcode Label
-        MoveScaled(23,5,31,3)
+        MoveScaled(23,9,31,3)
         Visible = False
         Border = Border.Plain
-      }
-      { btnshow Button
-        MoveScaled(81,1,5,3)
-        Picture = Picture["icon:/small/refresh"]
       }
       { lblcost Label
-        MoveScaled(56,5,13,3)
+        MoveScaled(56,9,13,3)
         Visible = False
         Border = Border.Plain
+      }
+      { Label5 Label
+        MoveScaled(1,5,10,3)
+        Border = Border.Plain
+        Text = ("Comment")
       }
       Index = 0
     }

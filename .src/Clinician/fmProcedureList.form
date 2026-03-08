@@ -73,17 +73,17 @@
         }
       }
       { Panel8 Panel
-        MoveScaled(0,13,36,3)
+        MoveScaled(0,13,37,3)
         { rbencounter RadioButton
-          MoveScaled(1,0,9.375,3)
+          MoveScaled(0.5,0,9.375,3)
           Text = ("EncID")
         }
         { rbinvoice RadioButton
-          MoveScaled(11,0,10,3)
+          MoveScaled(12,0,10,3)
           Text = ("Invoice")
         }
         { rbindoor RadioButton
-          MoveScaled(23,0,10,3)
+          MoveScaled(25,0,10,3)
           Text = ("Saved")
           Value = True
         }
@@ -91,20 +91,31 @@
       { Panel21 Panel
         MoveScaled(0,16,38,4)
         { cmbsourcedept ComboBox
-          MoveScaled(8,0.5,21,3)
+          MoveScaled(8,0.5,28,3)
         }
         { Label9 Label
           MoveScaled(0,0.5,7,3)
           Border = Border.Plain
           Text = ("Depart")
         }
+      }
+      { Panel9 Panel
+        MoveScaled(0,20,37,4)
+        { Label8 Label
+          MoveScaled(0,0.5,7,3)
+          Border = Border.Plain
+          Text = ("Search")
+        }
         { btnnewrefresh Button
-          MoveScaled(30,0.5,7,3)
+          MoveScaled(29,0.5,7,3)
           Picture = Picture["icon:/small/refresh"]
+        }
+        { txtpresearch TextBox
+          MoveScaled(8,0.5,19,3)
         }
       }
       { GridView2 GridView
-        MoveScaled(2,22,31,20)
+        MoveScaled(2,26,31,20)
         Expand = True
         Mode = Select.Single
         Header = GridView.Both
