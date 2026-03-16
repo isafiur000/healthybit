@@ -20,6 +20,7 @@ Public Sub Form_Open()
   cmbpurcomplist.List = modMedicine.GetExtraDepartments()
   cmbpurextraparam.List = ["Enable", "Disable"]
   cmbtendersupply.List = ["Enable", "Disable"]
+  cmbsupplist.List = ["Complete", "Selected"]
 
   cmbinvenreport.List = ["Enable", "Disable"]
   cmbcostcalc.List = ["Exact", "Average", "Latest", "Fixed", "Average+Fixed"]
@@ -49,6 +50,7 @@ Private Sub ShowDefProfit()
   Endif
 
   cmbpurcomplist.Text = modSettings.ShowSettingFromFIle("Purchase/CompWiseList")
+  cmbsupplist.Text = modSettings.ShowSettingFromFIle("Purchase/SupplierList")
   cmbpurextraparam.Text = modSettings.ShowSettingFromFIle("Purchase/ExtraParameters")
   cmbtendersupply.Text = modSettings.ShowSettingFromFIle("Purchase/LockToTender")
   If modSettings.ShowSettingFromFIle("Purchase/ExpiryDays") Then
@@ -73,6 +75,15 @@ Public Sub btnpurcomplist_Click()
   modSettings.SaveSettingsToFile("Purchase/CompWiseList", cmbpurcomplist.Text)
   modBasic.$PurCompList = cmbpurcomplist.Text
   Balloon.Info(("Information saved"), btnpurcomplist)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnsupplist_Click()
+
+  modSettings.SaveSettingsToFile("Purchase/SupplierList", cmbsupplist.Text)
+  modBasic.$PurSupplierList = cmbsupplist.Text
+  Balloon.Info(("Information saved"), btnsupplist)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

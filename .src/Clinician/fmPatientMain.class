@@ -752,6 +752,7 @@ Private Sub ButtonControl()
   If xx = True Then
     mnucert.Enabled = False
     mnudiscexam.Enabled = False
+    mnusetfollowup.Enabled = False
     mnuexitpass.Enabled = False
     mnudiscrollback.Enabled = False
     If $sTatus = "Admitted" Then
@@ -766,6 +767,7 @@ Private Sub ButtonControl()
   Else If xx = False Then
     mnucert.Enabled = True
     mnudiscexam.Enabled = True
+    mnusetfollowup.Enabled = True
     mnuexitpass.Enabled = True
     mnudiscrollback.Enabled = True
     If $sTatus = "Discharged" Then
@@ -4106,6 +4108,19 @@ Public Sub mnudiscexam_Click()
     If xList And If xList.Count Then
       hForm = New FmTriage("Discharge Examinations", Trim(txtencid.Text), modBasic.$compID)
       hForm.ShowModal
+    Endif
+  Endif
+
+End
+
+Public Sub mnusetfollowup_Click()
+
+  Dim xdate As Date
+
+  If txtencid.Text Then
+    xdate = GetDateValue("Select Followup Date", Trim(txtencid.Text), Now())
+    If xdate Then
+      modPatientSub.SetFollowUpDate(Trim(txtencid.Text), xdate)
     Endif
   Endif
 

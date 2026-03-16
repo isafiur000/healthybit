@@ -538,7 +538,9 @@ Public Sub btnshow_Click()
         Else
           hPatient.$LockToInvOwn = modBasic.$BillLockInvoiceToOwnOPD
           If hPatient Then
-            hPatient.ShowDepositButton()
+            If modBasic.$BillQuickDepositReturn = "Enable" Then
+              hPatient.ShowDepositButton()
+            Endif
           Endif
         Endif
         If modBasic.$BillBedCharge = "Auto" Then
@@ -1262,7 +1264,9 @@ Public Sub mnuchangestate_Click()
         Else
           hPatient.$LockToInvOwn = modBasic.$BillLockInvoiceToOwnOPD
           If hPatient Then
-            hPatient.ShowDepositButton()
+            If modBasic.$BillQuickDepositReturn = "Enable" Then
+              hPatient.ShowDepositButton()
+            Endif
           Endif
         Endif
         If xmsg Then

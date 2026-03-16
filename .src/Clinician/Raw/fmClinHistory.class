@@ -63,7 +63,7 @@ End
 
 Private Sub ShowEncounterList()
 
-  $rData = modDatabase.$myConn.Exec("select fldregdate,fldencounterval from tblencounter where fldpatientval=&1 ORDER BY fldregdate DESC", $patId)
+  $rData = modDatabase.$syConn.Exec("select fldregdate,fldencounterval from tblencounter where fldpatientval=&1 ORDER BY fldregdate DESC", $patId)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields, -1)
   With GridView1

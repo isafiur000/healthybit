@@ -317,7 +317,7 @@ Public Function ShowWardOccupancyReport(sType As String) As String
   $BillingReport.UserData.Add(modReportVar.GetDateTimeReport(Now(), gb.GeneralDate), "PARAM2")
 
   i = 1
-  xList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(flddept) as col from tbldepartmentbed"))
+  xList = modControlSub.GetDirectFillresult(modDatabase.$syConn.Exec("select distinct(flddept) as col from tbldepartmentbed"))
   For Each xx In xList
 
     xtot = 0

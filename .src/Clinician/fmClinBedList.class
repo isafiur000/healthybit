@@ -2825,17 +2825,21 @@ Public Sub btnautopharm_Click()
   Dim xcopy As Integer
   Dim xcont As Integer
 
-  Inc Application.Busy
-  xcont = 0
-  For Row = 0 To GridView1.Rows.Count - 1
-    xcopy = AddMedicineRequest(GridView1[Row, 4].Text, "Admitted")
-    If xcopy Then
-      xcont = xcont + 1
-    Endif
-  Next
-  Dec Application.Busy
-  btnautopharm.Enabled = False
-  Message.Info("Medicine Request copied for " & CStr(xcont) & " Patients", "OK")
+  If rbselect.Value = True Then
+    Inc Application.Busy
+    xcont = 0
+    For Row = 0 To GridView1.Rows.Count - 1
+      xcopy = AddMedicineRequest(GridView1[Row, 4].Text, "Admitted")
+      If xcopy Then
+        xcont = xcont + 1
+      Endif
+    Next
+    Dec Application.Busy
+    btnautopharm.Enabled = False
+    Message.Info("Medicine Request copied for " & CStr(xcont) & " Patients", "OK")
+  Else
+    Message.Warning("Allowed for Selected Patients Only", ("OK"))
+  Endif
 
 End
 
@@ -2944,7 +2948,7 @@ Private Function AllowNewMedicineEntry(encid As String, xItem As String) As Bool
       Endif
       xdisp = xdisp + rsx["fldqtydisp"]
     Next
-    If xdisp >= xorder Then
+    If xdisp > xorder Then
       xallow = False
     Endif
   Endif

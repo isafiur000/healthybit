@@ -538,3 +538,14 @@ Public Sub btnreturn_Click()
   Endif
 
 End
+
+Public Sub btncomp_Click()
+
+  Dim hForm As FmAddVariableCombo
+
+  If txtsupname.Text Then
+    hform = New FmAddVariableCombo("fldcomp", "fldsuppname", Trim(txtsupname.Text), "tblsuppliercomp", modBasic.$AllCompList, True)
+    hform.ShowModal
+  Endif
+
+End

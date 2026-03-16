@@ -43,6 +43,7 @@ Public Sub Form_Open()
   cmbinvledger.List = modBasic.$ACLedgerListAll
   cmbinvledger.Add("%")
   cmbinvledger.Text = "%"
+  cmbreason.List = ["OP Deposit", "IP Deposit"]
   cmbreason.Text = "IP Deposit"
   modGeneralMain.SetEncIDPrefix(txtencid)
 

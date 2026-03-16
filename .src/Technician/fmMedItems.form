@@ -10,7 +10,6 @@
     }
   }
   { mnuencounter Menu
-    Text = ("Menu2")
     { mnuremove Menu
       Text = ("Cancel")
     }
@@ -43,6 +42,11 @@
       Text = ("Deselect")
     }
   }
+  { mnuallocgrid Menu
+    { mnuallocrollback Menu
+      Text = ("Rollback")
+    }
+  }
   { Panel1 Panel
     MoveScaled(0,0,119,74)
     { TabPanel1 TabPanel
@@ -55,7 +59,7 @@
       { Panel3 Panel
         MoveScaled(0,0,118,4)
         { btnpatrefresh Button
-          MoveScaled(34,0.5,13,3)
+          MoveScaled(82,0.5,13,3)
           Text = ("Refresh")
           Picture = Picture["icon:/small/refresh"]
         }
@@ -74,6 +78,17 @@
         { chknotify CheckBox
           MoveScaled(103,0.5,14,3)
           Text = ("Notice")
+        }
+        { cmbdepart ComboBox
+          MoveScaled(32,0.5,19,3)
+        }
+        { Label1 Label
+          MoveScaled(56,0.5,6,3)
+          Border = Border.Plain
+          Text = ("EncID")
+        }
+        { txtencid TextBox
+          MoveScaled(63,0.5,15,3)
         }
       }
       { GridView2 GridView
@@ -159,33 +174,35 @@
           ToolTip = ("Print Bar Code according to Settings [Ctrl + Q]")
           Picture = Picture["icon:/small/text-fill"]
         }
+        { btnbarcodenew Button
+          MoveScaled(22,0.5,3,3)
+          ToolTip = ("Print Bar Code according to Settings [Ctrl + Q]")
+          Picture = Picture["icon:/small/text-fill"]
+        }
       }
       Index = 1
       Text = ("Allocated")
       { Panel7 Panel
         MoveScaled(0,0,117,4)
         { dtnepalloc ToolButton
-          MoveScaled(68,0.5,3,3)
+          MoveScaled(78,0.5,3,3)
           Visible = False
           Picture = Picture["icon:/small/calendar"]
         }
         { cmballoitem ComboBox
-          MoveScaled(0,0.5,27,3)
+          MoveScaled(27,0.5,27,3)
           Sorted = True
         }
         { btnalloc Button
-          MoveScaled(75,0.5,11,3)
+          MoveScaled(82,0.5,11,3)
           Text = ("Show")
           Picture = Picture["icon:/small/refresh"]
         }
         { dtallocat DateBox
-          MoveScaled(53,0.5,14,3)
-        }
-        { cmballostatus ComboBox
-          MoveScaled(28,0.5,14,3)
+          MoveScaled(64,0.5,14,3)
         }
         { chkalloc CheckBox
-          MoveScaled(45,0.5,8,3)
+          MoveScaled(56,0.5,8,3)
           Text = ("Date")
         }
         { btntransfer Button
@@ -197,6 +214,18 @@
           MoveScaled(113,0.5,3,3)
           ToolTip = ("Print Bar Code according to Settings [Ctrl + Q]")
           Picture = Picture["icon:/small/text-fill"]
+        }
+        { Panel8 Panel
+          MoveScaled(0.5,0.5,26,3)
+          { rballocat RadioButton
+            MoveScaled(0,0,12.5,3)
+            Text = ("Allocated")
+            Value = True
+          }
+          { rbrequest RadioButton
+            MoveScaled(12.5,0,12.5,3)
+            Text = ("Requested")
+          }
         }
       }
       { GridView4 GridView

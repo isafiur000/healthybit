@@ -250,7 +250,9 @@ Public Sub btnshow_Click()
           Endif
         Else
           If hPatient Then
-            hPatient.ShowDepositButton()
+            If modBasic.$BillQuickDepositReturn = "Enable" Then
+              hPatient.ShowDepositButton()
+            Endif
           Endif
         Endif
 

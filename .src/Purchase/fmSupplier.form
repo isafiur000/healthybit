@@ -20,33 +20,59 @@
       Index = 0
       Text = ("Details")
       { Panel2 Panel
-        MoveScaled(0,0,108,21)
+        MoveScaled(0,0,109,21)
         { txtsupname TextBox
           MoveScaled(11,1,93.75,3)
         }
         { txtsupadd TextBox
           MoveScaled(11,5,30,3)
         }
-        { cmbstatus ComboBox
-          MoveScaled(52,17,17,3)
-        }
-        { txtsuphone TextBox
-          MoveScaled(11,9,30,3)
+        { txtpanno TextBox
+          MoveScaled(52,5,17,3)
         }
         { dtstart DateBox
+          MoveScaled(87,5,17,3)
+        }
+        { txtemail TextBox
+          MoveScaled(11,9,30,3)
+        }
+        { txtcreday ValueBox
+          MoveScaled(52,9,8,3)
+        }
+        { cmbpaymode ComboBox
           MoveScaled(87,9,17,3)
         }
         { txtcontname TextBox
           MoveScaled(11,13,30,3)
         }
-        { txtconphone TextBox
+        { txtsuphone TextBox
           MoveScaled(52,13,17,3)
         }
-        { cmbpaymode ComboBox
+        { txtconphone TextBox
           MoveScaled(87,13,17,3)
         }
-        { txtcreday ValueBox
-          MoveScaled(52,9,8,3)
+        { cmbledger ComboBox
+          MoveScaled(11,17,30,3)
+        }
+        { cmbstatus ComboBox
+          MoveScaled(52,17,17,3)
+        }
+        { pnlbuttons Panel
+          MoveScaled(75,17,31,3)
+          { btnadd Button
+            MoveScaled(0,0,12,3)
+            Text = ("Add")
+            Picture = Picture["icon:/small/add"]
+          }
+          { btnedit Button
+            MoveScaled(13,0,10.625,3)
+            Text = ("Edit")
+            Picture = Picture["icon:/small/edit"]
+          }
+          { btnfullrep Button
+            MoveScaled(25,0,5,3)
+            Picture = Picture["icon:/small/html"]
+          }
         }
         { Label2 Label
           MoveScaled(1,5,9,3)
@@ -54,7 +80,7 @@
           Text = ("Address")
         }
         { Label3 Label
-          MoveScaled(1,9,9,3)
+          MoveScaled(43,13,8,3)
           Border = Border.Plain
           Text = ("Phone")
         }
@@ -64,7 +90,7 @@
           Text = ("Contact")
         }
         { Label7 Label
-          MoveScaled(75,13,11,3)
+          MoveScaled(75,9,11,3)
           Border = Border.Plain
           Text = ("Payment")
         }
@@ -74,12 +100,12 @@
           Text = ("Credit")
         }
         { Label6 Label
-          MoveScaled(75,9,11,3)
+          MoveScaled(75,5,11,3)
           Border = Border.Plain
           Text = ("Start Date")
         }
         { Label5 Label
-          MoveScaled(43,13,8,3)
+          MoveScaled(75,13,11,3)
           Border = Border.Plain
           Text = ("Phone")
         }
@@ -89,7 +115,7 @@
           Text = ("Name")
         }
         { dtnepstart ToolButton
-          MoveScaled(105,9,3,3)
+          MoveScaled(105,5,3,3)
           Picture = Picture["icon:/small/calendar"]
         }
         { Label12 Label
@@ -102,54 +128,32 @@
           Border = Border.Plain
           Text = ("PAN")
         }
-        { txtpanno TextBox
-          MoveScaled(52,5,17,3)
-        }
         { Label14 Label
           MoveScaled(1,17,9,3)
           Border = Border.Plain
           Text = ("Ledger")
-        }
-        { cmbledger ComboBox
-          MoveScaled(11,17,30,3)
         }
         { Label15 Label
           MoveScaled(61,9,8,3)
           Border = Border.Plain
           Text = ("Days")
         }
-        { pnlbuttons Panel
-          MoveScaled(75,16,33,5)
-          { btnedit Button
-            MoveScaled(13,1,10.625,3)
-            Text = ("Edit")
-            Picture = Picture["icon:/small/edit"]
-          }
-          { btnadd Button
-            MoveScaled(0,1,12,3)
-            Text = ("Add")
-            Picture = Picture["icon:/small/add"]
-          }
-          { btnfullrep Button
-            MoveScaled(25,1,5,3)
-            Picture = Picture["icon:/small/html"]
-          }
-        }
         { btneditmulti ToolButton
           MoveScaled(105,1,3,3)
           Picture = Picture["icon:/small/edit"]
         }
         { Label16 Label
-          MoveScaled(75,5,11,3)
+          MoveScaled(1,9,9,3)
           Border = Border.Plain
           Text = ("E-Mail")
         }
-        { txtemail TextBox
-          MoveScaled(87,5,21,3)
+        { btncomp ToolButton
+          MoveScaled(105,9,3,3)
+          Picture = Picture["icon:/small/computer"]
         }
       }
       { GridView2 GridView
-        MoveScaled(0,25,107,19)
+        MoveScaled(1,23,107,10)
         Expand = True
         Mode = Select.Single
         Header = GridView.Both
