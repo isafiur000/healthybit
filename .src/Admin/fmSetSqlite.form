@@ -48,9 +48,9 @@
   }
   { TabPanel2 TabPanel
     MoveScaled(1,26,47,25)
-    Count = 4
+    Count = 5
     Index = 0
-    Text = ("Main Server")
+    Text = ("Main")
     { cmbtype ComboBox
       MoveScaled(12,1,12.5,3)
       Sorted = True
@@ -111,7 +111,7 @@
       Text = ("Port")
     }
     Index = 1
-    Text = ("Read Server")
+    Text = ("Read")
     { cmbtype2 ComboBox
       MoveScaled(12,1,12.5,3)
       Sorted = True
@@ -172,7 +172,7 @@
       Text = ("Port")
     }
     Index = 2
-    Text = ("Fall Back")
+    Text = ("Fall")
     { Label30 Label
       MoveScaled(1,1,10,3)
       Border = Border.Plain
@@ -233,7 +233,68 @@
       Picture = Picture["icon:/small/connect"]
     }
     Index = 3
-    Text = ("FTP Server")
+    Text = ("Sync")
+    { Label10 Label
+      MoveScaled(1,1,10,3)
+      Border = Border.Plain
+      Text = ("Type")
+    }
+    { cmbtype4 ComboBox
+      MoveScaled(12,1,12.5,3)
+      Sorted = True
+    }
+    { Label12 Label
+      MoveScaled(29,1,5,3)
+      Border = Border.Plain
+      Text = ("Port")
+    }
+    { txtport4 TextBox
+      MoveScaled(34,1,12,3)
+    }
+    { Label13 Label
+      MoveScaled(1,5,10,3)
+      Border = Border.Plain
+      Text = ("Host")
+    }
+    { txtserver4 TextBox
+      MoveScaled(12,5,34,3)
+    }
+    { Label19 Label
+      MoveScaled(1,9,10,3)
+      Border = Border.Plain
+      Text = ("User")
+    }
+    { txtuser4 TextBox
+      MoveScaled(12,9,23,3)
+      Password = True
+    }
+    { Label35 Label
+      MoveScaled(1,13,10,3)
+      Border = Border.Plain
+      Text = ("Password")
+    }
+    { txtpass4 TextBox
+      MoveScaled(12,13,23,3)
+      Password = True
+    }
+    { chkuser4 CheckBox
+      MoveScaled(36,9,10,3)
+      Text = ("Reveal")
+    }
+    { chkpass4 CheckBox
+      MoveScaled(36,13,10,3)
+      Text = ("Reveal")
+    }
+    { conshow4 ToolButton
+      MoveScaled(1,17,3,3)
+    }
+    { btnnewconn4 Button
+      MoveScaled(31,17,15,3)
+      Text = ("Connect")
+      Picture = Picture["icon:/small/connect"]
+    }
+    Index = 4
+    Text = ("FTP")
     { Label24 Label
       MoveScaled(1,1,11,3)
       Border = Border.Plain

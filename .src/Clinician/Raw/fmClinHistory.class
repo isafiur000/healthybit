@@ -139,7 +139,14 @@ Public Sub GridView1_Click()
 
   If GridView1.Rows.Selection.Count Then
     txtnewencid.Text = GridView1[GridView1.Row, 1].Text
-    ShowReportEncid(GetReportItems())
+    If GridView1.Row = 0 Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+      ShowReportEncid(GetReportItems())
+    Else
+      modDatabase.$syConn = modDatabase.$ssyncConn
+      ShowReportEncid(GetReportItems())
+    Endif
+    modAppSupport.SetReportServer(modHelpVariable.$LogInCategory)
   Endif
 
 End

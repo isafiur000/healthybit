@@ -717,3 +717,82 @@ Public Sub btnsetlist10_Click()
   Endif
 
 End
+
+''------------------------ Model Name -------------------
+Private Function GetModelName() As String
+
+  Dim xDirList As String[]
+  Dim xval As String
+  Dim xxx As String
+
+  xDirList = modMLModels.GetMLModelsList()
+  If xDirList And If xDirList.Count Then
+    xval = DIctionaryList(xDirList)
+    If xval Then
+      xxx = "$MLModel[" & xval & "]"
+    Endif
+  Endif
+
+  Return xxx
+
+End
+
+Public Sub btnaddmodel1_Click()
+
+  cmbvariable1.Text = GetModelName()
+
+End
+
+Public Sub btnaddmodel2_Click()
+
+  cmbvariable2.Text = GetModelName()
+
+End
+
+Public Sub btnaddmodel3_Click()
+
+  cmbvariable3.Text = GetModelName()
+
+End
+
+Public Sub btnaddmodel4_Click()
+
+  cmbvariable4.Text = GetModelName()
+
+End
+
+Public Sub btnaddmodel5_Click()
+
+  cmbvariable5.Text = GetModelName()
+
+End
+
+Public Sub btnaddmodel6_Click()
+
+  cmbvariable6.Text = GetModelName()
+
+End
+
+Public Sub btnaddmodel7_Click()
+
+  cmbvariable7.Text = GetModelName()
+
+End
+
+Public Sub btnaddmodel8_Click()
+
+  cmbvariable8.Text = GetModelName()
+
+End
+
+Public Sub btnaddmodel9_Click()
+
+  cmbvariable9.Text = GetModelName()
+
+End
+
+Public Sub btnaddmodel10_Click()
+
+  cmbvariable10.Text = GetModelName()
+
+End

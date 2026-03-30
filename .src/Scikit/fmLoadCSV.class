@@ -3,6 +3,7 @@
 Public Sub Form_Open()
 
   Me.Center
+  txtdelim.List = ["Tab"]
 
 End
 
@@ -23,7 +24,11 @@ Public Sub btnimport_Click()
   Dim hPython As FmPythonTerminal
 
   If Trim(txtdelim.Text) Then
-    xdelim = Trim(txtdelim.Text)
+    If Trim(txtdelim.Text) = "Tab" Then
+      xdelim = gb.Tab
+    Else
+      xdelim = Trim(txtdelim.Text)
+    Endif
   Else
     xdelim = ";"
   Endif

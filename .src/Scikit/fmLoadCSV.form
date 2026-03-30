@@ -14,9 +14,6 @@
     ToolTip = ("The CSV file should contain semicolon( ; ) separated fields. The first row should contain field names from tblservicecost.\nEssential Fields are flditemname and flditemtype.")
     Picture = Picture["icon:/small/file"]
   }
-  { txtdelim TextBox
-    MoveScaled(11,5,7,3)
-  }
   { Label1 Label
     MoveScaled(1,5,9,3)
     Border = Border.Plain
@@ -26,5 +23,8 @@
     MoveScaled(48,5,12,3)
     Text = ("Import")
     Picture = Picture["icon:/small/exec"]
+  }
+  { txtdelim ComboBox
+    MoveScaled(11,5,9,3)
   }
 }

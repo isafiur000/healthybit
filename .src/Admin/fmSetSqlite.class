@@ -8,6 +8,7 @@ Public Sub Form_Open()
   cmbtype.List = ["sqlite3", "mysql", "postgresql", "odbc"]
   cmbtype2.List = ["sqlite3", "mysql", "postgresql", "odbc"]
   cmbtype3.List = ["sqlite3", "mysql", "postgresql", "odbc"]
+  cmbtype4.List = ["sqlite3", "mysql", "postgresql", "odbc"]
   cmbinterface.List = modApplication.GetNetworkInterfaceList()
   cmbcomp.List = modMisc.CompIDList()
 
@@ -221,6 +222,12 @@ Public Sub btnshow_Click()
     txtpass3.Text = modPassword.DecryptDBPass(modControlSub.ShowSettingValue(xfile, "SystemFallback/Password"), chkssl.Value)
     txtport3.Text = modControlSub.ShowSettingValue(xfile, "SystemFallback/Port")
 
+    cmbtype4.Text = modControlSub.ShowSettingValue(xfile, "SystemSync/Service")
+    txtserver4.Text = modControlSub.ShowSettingValue(xfile, "SystemSync/Host")
+    txtuser4.Text = modControlSub.ShowSettingValue(xfile, "SystemFallback/User")
+    txtpass4.Text = modPassword.DecryptDBPass(modControlSub.ShowSettingValue(xfile, "SystemSync/Password"), chkssl.Value)
+    txtport4.Text = modControlSub.ShowSettingValue(xfile, "SystemSync/Port")
+
     txthospitalname.Text = modControlSub.ShowSettingValue(xfile, "Hospital/Hospital")
     txtaddress.Text = modControlSub.ShowSettingValue(xfile, "Hospital/Address")
     txtdepartment.Text = modControlSub.ShowSettingValue(xfile, "Hospital/Department")
@@ -406,8 +413,10 @@ End
 
 Public Sub btnnewconn2_Click()
 
-  modDatabase.$syConn = modDBApp.OpenConnection(cmbtype2.Text, txtserver2.Text, "", txtuser2.Text, txtpass2.text)
-  If modDatabase.$syConn.Opened = True Then
+  Dim sConn As Connection
+
+  sConn = modDBApp.OpenConnection(cmbtype2.Text, txtserver2.Text, "", txtuser2.Text, txtpass2.text)
+  If sConn.Opened = True Then
     conshow2.Picture = Picture[modMisc.GetGridIcon(False)]
   Else
     conshow2.Picture = Picture[modMisc.GetGridIcon(True)]
@@ -417,11 +426,47 @@ End
 
 Public Sub btnnewconn3_Click()
 
-  modDatabase.$syConn = modDBApp.OpenConnection(cmbtype3.Text, txtserver3.Text, "", txtuser3.Text, txtpass3.text)
-  If modDatabase.$syConn.Opened = True Then
+  Dim sConn As Connection
+
+  sConn = modDBApp.OpenConnection(cmbtype3.Text, txtserver3.Text, "", txtuser3.Text, txtpass3.text)
+  If sConn.Opened = True Then
     conshow3.Picture = Picture[modMisc.GetGridIcon(False)]
   Else
     conshow3.Picture = Picture[modMisc.GetGridIcon(True)]
+  Endif
+
+End
+
+''-------------------- Sync ---------------------
+Public Sub chkuser4_Click()
+
+  If chkuser4.Value = True Then
+    txtuser4.Password = False
+  Else If chkuser4.Value = False Then
+    txtuser4.Password = True
+  Endif
+
+End
+
+Public Sub chkpass4_Click()
+
+  If chkpass4.Value = True Then
+    txtpass4.Password = False
+  Else If chkpass4.Value = False Then
+    txtpass4.Password = True
+  Endif
+
+End
+
+Public Sub btnnewconn4_Click()
+
+  Dim sConn As Connection
+
+  sConn = modDBApp.OpenConnection(cmbtype4.Text, txtserver4.Text, "", txtuser4.Text, txtpass4.text)
+  If sConn.Opened = True Then
+    conshow4.Picture = Picture[modMisc.GetGridIcon(False)]
+  Else
+    conshow4.Picture = Picture[modMisc.GetGridIcon(True)]
   Endif
 
 End
@@ -490,6 +535,12 @@ Private Sub UpdateConfFile(dbFile As String)
     SaveSysSettingsToFile("SystemFallback/User", txtuser3.Text)
     SaveSysSettingsToFile("SystemFallback/Password", modPassword.EncryptDBPass(txtpass3.Text, chkssl.Value))
     SaveSysSettingsToFile("SystemFallback/Port", txtport3.Text)
+
+    SaveSysSettingsToFile("SystemSync/Service", cmbtype4.Text)
+    SaveSysSettingsToFile("SystemSync/Host", txtserver4.Text)
+    SaveSysSettingsToFile("SystemSync/User", txtuser4.Text)
+    SaveSysSettingsToFile("SystemSync/Password", modPassword.EncryptDBPass(txtpass4.Text, chkssl.Value))
+    SaveSysSettingsToFile("SystemSync/Port", txtport4.Text)
 
     SaveSysSettingsToFile("LocalFTP/Host", txtlocalhost.Text)
     SaveSysSettingsToFile("LocalFTP/Folder", txtlocalfolder.Text)

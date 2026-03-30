@@ -13,8 +13,6 @@ Private $RepoStr As String
 
 Public Sub Form_Open()
 
-  Dim xtype As String[]
-
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
   btnmnuqty.Menu = "mnuqty"
@@ -42,12 +40,7 @@ Public Sub Form_Open()
   cmbdelbaby.List = ["Live Baby", "Fresh Still Birth", "Macerated Still Birth", "%"]
   cmbdelbaby.Text = "%"
 
-  xtype = modControlSub.GetDirectFillresult(modDatabase.$syConn.Exec("select flditem as col from tbldelivery"))
-  If xtype And If xtype.Count Then
-    cmbdeltype.List = xtype
-  Else
-    cmbdeltype.List = modControlSub.GetDirectFillresult(modDatabase.$syConn.Exec("select distinct(flddeltype) as col from tblconfinement"))
-  Endif
+  cmbdeltype.List = modControlSub.GetDirectFillresult(modDatabase.$syConn.Exec("select flditem as col from tbldelivery"))
   cmbdeltype.Add("%")
   cmbdeltype.Text = "%"
 

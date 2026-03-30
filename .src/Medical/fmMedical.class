@@ -8,6 +8,7 @@ End
 
 Public Sub Form_Open()
 
+  modAppSupport.SetReportServer(modHelpVariable.$LogInCategory)
   modGeneralMain.GetFirstValues(ServerSocket1, ServerSocket2)
   modGeneralMain.LoadMainForms(Me, pnltop, pnlleft, Workspace1, pnlright, pnlbottom)
   If modBasic.$LocalTableCaching = "Disable" Then

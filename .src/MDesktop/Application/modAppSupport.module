@@ -4,6 +4,88 @@ Public $ImagePort As Integer = 5555
 Public $alphabetAll As String[] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 
 'NOTE: ----------------------------  Workspace function -------------------------------------------
+Public Sub SetReportServer(LogInType As String)
+
+  If MMain.$SISHAppMode = "HIS" Or If MMain.$SISHAppMode = "REP" Then ''remoteoptimized
+    If LoginType = "Account" Then
+      modDatabase.$syConn = modDatabase.$ssyncConn
+    Else If LoginType = "Cashier" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Record" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Medical" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Technologist" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Technician" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Consultant" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Clinician" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Research" Then
+      modDatabase.$syConn = modDatabase.$ssyncConn
+    Else If LoginType = "Purchase" Then
+      modDatabase.$syConn = modDatabase.$ssyncConn
+    Else If LoginType = "Store" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Pharmacist" Then
+      modDatabase.$syConn = modDatabase.$ssyncConn
+    Else If LoginType = "Dispensar" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Endif
+
+  Else If MMain.$SISHAppMode = "POL" Then
+    If LoginType = "Account" Then
+      modDatabase.$syConn = modDatabase.$ssyncConn
+    Else If LoginType = "Cashier" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Record" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Technologist" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Technician" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Pharmacist" Then
+      modDatabase.$syConn = modDatabase.$ssyncConn
+    Else If LoginType = "Dispensar" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Endif
+
+  Else If MMain.$SISHAppMode = "LAB" Then
+    If LoginType = "Account" Then
+      modDatabase.$syConn = modDatabase.$ssyncConn
+    Else If LoginType = "Cashier" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Record" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Technologist" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Technician" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Endif
+
+  Else If MMain.$SISHAppMode = "PHM" Then
+    If LoginType = "Pharmacist" Then
+      modDatabase.$syConn = modDatabase.$ssyncConn
+    Else If LoginType = "Dispensar" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else If LoginType = "Record" Then
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Else
+      modDatabase.$syConn = modDatabase.$sreadConn
+    Endif
+
+  Endif
+
+End
+
 Public Function FindWorkProgressBar(LogInType As String) As ProgressBar
 
   Dim xx As ProgressBar

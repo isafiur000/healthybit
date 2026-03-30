@@ -64,6 +64,7 @@ Public Sub Form_Open()
   cmbpatheightunit.List = ["cm", "inch", "foot"]
   cmbhepatic.List = ["Impaired", "Normal"]
   cmbsympunit.List = modMedicine.$SymptomFrequency
+  cmbmlmodel.List = modMLModels.GetMLModelsList()
   If modBasic.$ItemListFormat = "GridView" Then
   Else
     cmbsymptom.List = modString.GetListFromVariant(modTableCache.$SymptomCompVar, "fldsymptom", True)
@@ -3420,6 +3421,23 @@ Public Sub tlbtosmol_Click()
 
   If txtencid.Text Then
     txtserosmol.Value = modSysCons.GetConstantValue("Osmolality_Serum", Trim(txtencid.Text))
+  Endif
+
+End
+
+Public Sub tlbmodel_Click()
+
+  Dim xval As String
+
+  If txtencid.Text Then
+    If cmbmlmodel.Text Then
+      Inc Application.Busy
+      xval = Trim(modMLModels.GetModelValue(Trim(txtencid.Text), cmbmlmodel.Text))
+      Dec Application.Busy
+      If xval Then
+        txtmodelval.Value = Round(CFloat(xval), -6)
+      Endif
+    Endif
   Endif
 
 End
