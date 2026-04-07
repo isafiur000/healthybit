@@ -117,22 +117,22 @@
       MoveScaled(29,4,13,3)
     }
     { txtdose ValueBox
-      MoveScaled(75,7.5,10,3)
+      MoveScaled(18,11,10,3)
     }
     { cmbfreq ComboBox
-      MoveScaled(18,11,16,3)
+      MoveScaled(75,7.5,16,3)
       ToolTip = ("Frequency of Use")
     }
     { txtday ValueBox
-      MoveScaled(18,14.5,10,3)
+      MoveScaled(75,11,10,3)
       ToolTip = ("Duration of Use")
     }
-    { txtdosecount ValueBox
-      MoveScaled(75,14.5,10,3)
-    }
     { txtqty ValueBox
-      MoveScaled(18,18,10,3)
+      MoveScaled(75,14.5,10,3)
       ToolTip = ("Quantity of item ordered")
+    }
+    { txtdosecount ValueBox
+      MoveScaled(18,18,10,3)
     }
     { txtstarthour ValueBox
       MoveScaled(25,21.5,7,3)
@@ -141,23 +141,18 @@
       MoveScaled(18,25,20,3)
       Mode = DateChooser.DateTime
     }
-    { txtdirection ComboBox
-      MoveScaled(18,28.5,74,3)
-    }
     { cmbdilution ComboBox
-      MoveScaled(18,32,74,3)
+      MoveScaled(18,28.5,56,3)
       Enabled = False
       Sorted = True
     }
+    { txtdirection ComboBox
+      MoveScaled(18,32,72,3)
+    }
     { btnadd Button
-      MoveScaled(93,28.5,13,3)
+      MoveScaled(92,32,9,3)
       Text = ("Add")
       Picture = Picture["icon:/small/add"]
-    }
-    { btnclear Button
-      MoveScaled(93,32,13,3)
-      Text = ("Clear")
-      Picture = Picture["icon:/small/clear"]
     }
     { Label12 Label
       MoveScaled(1,0.5,16,3)
@@ -194,49 +189,34 @@
       Text = ("mg")
     }
     { Label17 Label
-      MoveScaled(58,7.5,16,3)
+      MoveScaled(1,11,16,3)
       Border = Border.Plain
       Text = ("Final Dose")
     }
     { lbldose Label
-      MoveScaled(86,7.5,13,3)
+      MoveScaled(29,11,13,3)
       Border = Border.Plain
       Text = ("mg")
     }
-    { Label19 Label
-      MoveScaled(1,11,16,3)
-      Border = Border.Plain
-      Text = ("Frequency")
-    }
     { Label24 Label
-      MoveScaled(58,11,16,3)
+      MoveScaled(1,14.5,16,3)
       Border = Border.Plain
       Text = ("Daily Dose")
     }
     { txtdailydose ValueBox
-      MoveScaled(75,11,10,3)
+      MoveScaled(18,14.5,10,3)
       Background = &HDFFFF7
       ReadOnly = True
     }
     { lbldailydose Label
-      MoveScaled(86,11,13,3)
+      MoveScaled(29,14.5,13,3)
       Border = Border.Plain
       Text = ("mg")
     }
-    { Label20 Label
-      MoveScaled(1,14.5,16,3)
-      Border = Border.Plain
-      Text = ("Duration (days)")
-    }
     { Label23 Label
-      MoveScaled(58,14.5,16,3)
-      Border = Border.Plain
-      Text = ("Total Dose Count")
-    }
-    { Label21 Label
       MoveScaled(1,18,16,3)
       Border = Border.Plain
-      Text = ("Quantity")
+      Text = ("Total Dose Count")
     }
     { Label9 Label
       MoveScaled(1,21.5,16,3)
@@ -282,15 +262,43 @@
       ToolTip = ("AI Advice")
       Picture = Picture["icon:/small/clock"]
     }
-    { Label26 Label
+    { Label22 Label
       MoveScaled(1,32,16,3)
       Border = Border.Plain
-      Text = ("Compounding")
+      Text = ("Direction of Use")
     }
-    { Label22 Label
+    { Label26 Label
       MoveScaled(1,28.5,16,3)
       Border = Border.Plain
-      Text = ("Direction of Use")
+      Text = ("Diluent")
+    }
+    { btnclear Button
+      MoveScaled(102,32,3,3)
+      Picture = Picture["icon:/small/clear"]
+    }
+    { btnadddiluent Button
+      MoveScaled(75,28.5,6,3)
+      Enabled = False
+      Picture = Picture["icon:/small/add"]
+    }
+    { Label19 Label
+      MoveScaled(58,7.5,16,3)
+      Border = Border.Plain
+      Text = ("Frequency")
+    }
+    { Label20 Label
+      MoveScaled(58,11,16,3)
+      Border = Border.Plain
+      Text = ("Duration (days)")
+    }
+    { Label21 Label
+      MoveScaled(58,14.5,16,3)
+      Border = Border.Plain
+      Text = ("Quantity")
+    }
+    { chkrecommfluid CheckBox
+      MoveScaled(88,28.5,17,3)
+      Text = ("Recommended")
     }
     Index = 1
     Text = ("Tapering")

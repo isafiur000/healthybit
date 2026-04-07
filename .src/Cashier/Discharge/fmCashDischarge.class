@@ -420,6 +420,14 @@ Public Sub btnshow_Click()
             cmbmode.Enabled = True
             cmbmode.Text = modBasic.$BillDefaultMode
           Endif
+          ''ledger A/C
+          xledger = resx["fldacledger"]
+          If xledger Then
+            cmbledgerac.Text = xledger
+            cmbledgerac.Enabled = False
+          Else
+            cmbledgerac.Enabled = True
+          Endif
           ''claim code button
           If resx["fldreference"] Then
             If resx["fldreference"] = "Staff List" Then
@@ -447,15 +455,10 @@ Public Sub btnshow_Click()
               Else
                 frmshow = False
               Endif
+              If modBasic.$BillCreditAPICheck = "Enable" Then
+                GetCreditLimitUpdate(Trim(txtencid.Text), resx["fldreference"], txtreference.Text, $DiscPackage)
+              Endif
             Endif
-          Endif
-          ''ledger A/C
-          xledger = resx["fldacledger"]
-          If xledger Then
-            cmbledgerac.Text = xledger
-            cmbledgerac.Enabled = False
-          Else
-            cmbledgerac.Enabled = True
           Endif
           ''BillType
           xbilltype = resx["fldbilltype"]
@@ -4115,7 +4118,11 @@ Public Sub mnupackphmall_Click()
           If res1["fldbilltype"] = "Cash" Then
             res["fldcashincredit"] = 0
           Else
-            ' res["fldcashincredit"] = modNonMedical.CashInCreditPerForCategory(xpack, res["flditemtype"], res["flditemname"], res1["fldbillingmode"])
+            res["fldcashincredit"] = modNonMedical.CashInCreditPerForCategory(xpack, res["flditemtype"], res["flditemname"], res1["fldbillingmode"])
+          Endif
+          If modBasic.$BillPharmFixedModes.Exist(res1["fldbillingmode"]) = False Then
+            res["fldfixname"] = ""
+            res["fldfixrate"] = 0
           Endif
           res.Update
         Next
@@ -4306,6 +4313,7 @@ Private Sub PharmacySave()
   Dim res2 As Result
   Dim sql2 As String
   Dim qtynew As Float
+  Dim xRow As Integer
 
   Dim patno As String
   Dim xerr As String
@@ -4345,7 +4353,7 @@ Private Sub PharmacySave()
               res2 = modDatabase.$myConn.Exec(sql2, res1["flditem"], GetPharmTarget(res1["fldroute"]), 1, 0)
             Endif
             If res2.Available Then
-              res2.MoveFirst
+              xRow = 0
 
               'get tax and discount percentages
               If res1["fldtaxper"] Then
@@ -4380,6 +4388,7 @@ Private Sub PharmacySave()
                   qtynew = res1["fldqtydisp"]
                   modDatabase.$myConn.Begin
                   While qtynew > 0
+                    res2.MoveTo(xRow)
                     xitem = res1["flditem"]
                     If res1["fldfixname"] Then
                       xitem = res1["fldfixname"]
@@ -4396,10 +4405,16 @@ Private Sub PharmacySave()
                       modBillings.InsertBlankBillItemNewApp(Trim(txtencid.Text), res1["fldbilltype"], res1["fldbillingmode"], res1["flddisctype"], res1["fldacledger"], res1["flditemtype"], res2["fldstockno"], xitem, xrate, qtynew, tax, disc, xCshCrd, "Done", res1["fldid"], True, False)
                       modStockSub.AddToExistEntry(res2["fldstockno"], (0 - qtynew), GetPharmTarget(res1["fldroute"]))
                       qtynew = 0
+                      Break
                     Else If qtynew > res2["fldqty"] Then
                       modBillings.InsertBlankBillItemNewApp(Trim(txtencid.Text), res1["fldbilltype"], res1["fldbillingmode"], res1["flddisctype"], res1["fldacledger"], res1["flditemtype"], res2["fldstockno"], xitem, xrate, res2["fldqty"], tax, disc, xCshCrd, "Done", res1["fldid"], True, False)
                       modStockSub.AddToExistEntry(res2["fldstockno"], (0 - res2["fldqty"]), GetPharmTarget(res1["fldroute"]))
                       qtynew = qtynew - res2["fldqty"]
+                      If xRow = res2.Count - 1 Then
+                        Break
+                      Else
+                        xRow = xRow + 1
+                      Endif
                     Endif
                     Wait
                   Wend
@@ -5459,5 +5474,57 @@ Public Sub mnumedhilimit_Click()
   Dim xx As String
 
   xx = GetTextArea("API Output", modDevAll.GetJsonFormat(JSON.Encode($HiCapAPIView)))
+
+End
+
+Public Sub GetCreditLimitUpdate(encid As String, sRefType As String, sClaimCode As String, DiscType As String)
+
+  Dim xrefer As String
+  Dim xmsg As Variant[]
+
+  Dim xcredamt As Float
+  Dim xexpdate As Date
+  Dim xpolicy As String
+  Dim crdtot As Float
+  Dim res As Result
+
+  If DiscType Then
+    If sRefType = "Claim Code" Then
+      xmsg = modClaim.CheckFixedIMISValues(encid, sClaimCode, DiscType)
+    Else If sRefType = "Accident SSF" Then
+      xmsg = modSSF.CheckSSFValues(encid, "Accident SSF")
+    Else If sRefType = "Critical SSF" Then
+    Else If sRefType = "MedExtra SSF" Then
+      xmsg = modSSF.CheckSSFValues(encid, "MedExtra SSF")
+    Else If sRefType = "Medical SSF" Then
+      xmsg = modSSF.CheckSSFValues(encid, "Medical SSF")
+    Endif
+
+    If xmsg Then
+      If xmsg[0] Then
+        xcredamt = xmsg[0]
+      Endif
+      If xmsg[1] Then
+        xexpdate = xmsg[1]
+      Endif
+      If sRefType = "Claim Code" Then
+        If xmsg[2] Then
+          xpolicy = xmsg[2]
+        Endif
+      Endif
+    Endif
+
+    crdtot = xcredamt + modNonMedical.TotalClaimedCreditExpensebyPatient(modDatabase.$myConn, encid)
+    If txtcreditlimit.Value > crdtot Then
+      If Message.Warning("Creidt Limit has Changed. Do you want to correct ?", ("No"), ("Yes")) = 2 Then
+        res = modDatabase.$myConn.Edit("tblencounter", "fldencounterval=&1", Trim(txtencid.Text))
+        res["fldcashcredit"] = crdtot
+        res["fldvalidity"] = xexpdate
+        res["xyz"] = False
+        res.Update
+      Endif
+    Endif
+
+  Endif
 
 End

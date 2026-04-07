@@ -188,6 +188,8 @@ Public Sub IconPanel1_Click()
     cmbwarncredit.List = ["Yes", "No"]
     cmbbillalert.List = ["Patient No", "Patient Code", "Data Repo", "None"]
     cmbnoregimen.List = ["Enable", "Disable"]
+    cmbcreditcheck.List = ["Enable", "Disable"]
+
     cmbautopayble.List = $xList
     cmbautocalc.List = ["Calculator", "InvoiceInfo", "BlankForm"]
     cmbdefitemtype.List = ["All", "Test", "Service", "Procedure", "Equipment", "Radio", "Others", "Package", "Group", "No Change"]
@@ -522,6 +524,7 @@ Private Sub GeneralBillSetting()
   cmbautocalc.Text = modSettings.ShowSettingFromFIle("BillingSettings/AfterPrintAutoDisplay")
   cmbeditax.Text = modSettings.ShowSettingFromFIle("BillingSettings/EditTaxDiscount")
   cmbwarncredit.Text = modSettings.ShowSettingFromFIle("BillingSettings/PastCreditsDisplay")
+  cmbcreditcheck.Text = modSettings.ShowSettingFromFIle("BillingSettings/CreditAPICheck")
 
   cmbbillalert.Text = modSettings.ShowSettingFromFIle("HistoryAlert/PatientCode")
   cmbnoregimen.Text = modSettings.ShowSettingFromFIle("MedicineSetting/DisableDoseRegimen")
@@ -594,6 +597,15 @@ Public Sub btnwarncredit_Click()
   modSettings.SaveSettingsToFile("BillingSettings/PastCreditsDisplay", cmbwarncredit.Text)
   modBasic.$BillWarnCredits = cmbwarncredit.Text
   Balloon.Info(("Information updated"), btnwarncredit)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btncreditcheck_Click()
+
+  modSettings.SaveSettingsToFile("BillingSettings/CreditAPICheck", cmbcreditcheck.Text)
+  modBasic.$BillCreditAPICheck = cmbcreditcheck.Text
+  Balloon.Info(("Information updated"), btncreditcheck)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

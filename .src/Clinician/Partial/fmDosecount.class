@@ -123,16 +123,16 @@ Private Sub FillMedicineList()
   Dim res1 As Result
 
   ListBox1.Clear
-  sql = "select fldid,flditem from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and fldroute<>&5 and flditemtype=&6 and fldcurval=&7 and fldqtydisp>fldqtyret"                    ''
-  res = modDatabase.$myConn.Exec(sql, $encid, True, Now(), DateAdd(Now(), gb.Hour, -3), "fluid", "Medicines", "Continue")
+  sql = "select fldid,flditem from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and fldroute<>&5 and flditemtype=&6 and fldcurval=&7 and flddose>&8 and fldqtydisp>fldqtyret"                    ''
+  res = modDatabase.$myConn.Exec(sql, $encid, True, Now(), DateAdd(Now(), gb.Hour, -3), "fluid", "Medicines", "Continue", 0)
   If res.Available Then
     For Each res
       ListBox1.Add(CStr(res["fldid"]), res["flditem"], Picture["icons/coll4.png"])
     Next
   Endif
 
-  sql1 = "select fldid,flditem from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and DATE_ADD(fldstarttime, INTERVAL flddays DAY)>=&4  and fldroute<>&5 and flditemtype=&6 and fldcurval=&7 and fldqtydisp>fldqtyret"
-  res1 = modDatabase.$myConn.Exec(sql1, $encid, False, Now(), DateAdd(Now(), gb.Hour, -3), "fluid", "Medicines", "Continue")
+  sql1 = "select fldid,flditem from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and DATE_ADD(fldstarttime, INTERVAL flddays DAY)>=&4  and fldroute<>&5 and flditemtype=&6 and fldcurval=&7 and flddose>&8 and fldqtydisp>fldqtyret"
+  res1 = modDatabase.$myConn.Exec(sql1, $encid, False, Now(), DateAdd(Now(), gb.Hour, -3), "fluid", "Medicines", "Continue", 0)
   If res1.Available Then
     For Each res1
       ListBox1.Add(CStr(res1["fldid"]), res1["flditem"], Picture["icons/coll5.png"])

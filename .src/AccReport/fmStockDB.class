@@ -345,7 +345,7 @@ Public Sub btninvent_Click()
   Else
     compLst = [cmblocat.Text]
   Endif
-  xPath = modHTMLStock.ShowTotalInventory($strType, compLst, cmblocation.Text, cmbvalue.Text)
+  xPath = modHTMLStock.ShowTotalInventory($strType, cmbroute.Text, compLst, cmblocation.Text, cmbvalue.Text)
   Dec Application.Busy
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
 

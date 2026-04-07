@@ -2734,7 +2734,7 @@ Public Sub tbnfinaldisease_Click()
   Dim sName As String[]
 
   If txtencid.Text Then
-    If modBasic.$FinalDiagnosisRule = "Obstetrics" Then
+    If modBasic.$FinalDiagnosisObstetrics = "Selection List" Then
       sName = DiagnoObstetrics(Trim(txtencid.Text), True)
     Else
       sName = GetSyndromes()
@@ -2783,13 +2783,21 @@ End
 Public Sub btnfinalcustom_Click()
 
   Dim xx As String
+  Dim sName As String[]
 
   If txtencid.Text Then
-    xx = InputBox(("Enter custom Final Diagnosis"), ("Final Diagnosis"), "")
-    If xx Then
-      modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
-      lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
+    If modBasic.$FinalDiagnosisObstetrics = "Custom Text" Then
+      sName = DiagnoObstetrics(Trim(txtencid.Text), True)
+      If sName Then
+        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
+      Endif
+    Else
+      xx = InputBox(("Enter custom Final Diagnosis"), ("Final Diagnosis"), "")
+      If xx Then
+        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
+      Endif
     Endif
+    lsticdisease.List = modPathoSub.GetSelectedDiagnosisList("Final Diagnosis", Trim(txtencid.Text))
   Endif
 
 End

@@ -1004,7 +1004,10 @@ Private Sub ButtonControl()
   xval = modBasic.$LockDiagnosisList
   If xval = "No" Then
   Else
-    btndismanual.Enabled = False
+    If modBasic.$ProvDiagnosisObstetrics = "Custom Text" Then
+    Else
+      btndismanual.Enabled = False
+    Endif
   Endif
 
   If $UserRestrict Then
@@ -1093,7 +1096,7 @@ Public Sub tbnsyndro_Click()
   Dim sName As String[]
 
   If txtencid.Text Then
-    If modBasic.$ProvDiagnosisRule = "Obstetrics" Then
+    If modBasic.$ProvDiagnosisObstetrics = "Selection List" Then
       sName = DiagnoObstetrics(Trim(txtencid.Text), True)
     Else
       sName = GetSyndromes()
@@ -1104,7 +1107,7 @@ Public Sub tbnsyndro_Click()
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1])
 
         If sName.Count > 2 And If sName[2] Then
-          If modBasic.$ProvDiagnosisRule = "Obstetrics" Then
+          If modBasic.$ProvDiagnosisObstetrics = "Selection List" Then
             If modSettings.ShowSettingFromFIle("ClinicalRule/ObstetricsParam_History") = "Yes" Then
               txthistory.Text = txthistory.Text & gb.NewLine & sName[2]
             Endif
@@ -1121,13 +1124,21 @@ End
 Public Sub btndismanual_Click()
 
   Dim xx As String
+  Dim sName As String[]
 
   If txtencid.Text Then
-    xx = InputBox(("Enter custom Provisional Diagnosis"), ("Provisional Diagnosis"), "")
-    If xx Then
-      modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
-      modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    If modBasic.$ProvDiagnosisObstetrics = "Custom Text" Then
+      sName = DiagnoObstetrics(Trim(txtencid.Text), True)
+      If sName Then
+        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1])
+      Endif
+    Else
+      xx = InputBox(("Enter custom Provisional Diagnosis"), ("Provisional Diagnosis"), "")
+      If xx Then
+        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
+      Endif
     Endif
+    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
   Endif
 
 End

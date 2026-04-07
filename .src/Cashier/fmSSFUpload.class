@@ -385,46 +385,56 @@ Private Sub SHowCreditGrid()
   Dim sql1 As String
   Dim sql2 As String
   Dim xList As String[]
-  Dim xtot As Float
+
   Dim xinvLst As String[]
 
   Dim xList1 As String[]
   Dim xList2 As String[]
 
-  xList = ["fldid", "CONCAT(flditemtype,'|', flditemname)", "flditemname", "flditemrate", "flditemqty", "fldditemamt", "fldbillno", "fldclaimstate", "fldclaimid"]
+  Dim asx As String[]
+  Dim abil As String
+
+  ' xList = ["fldid", "CONCAT(flditemtype,'|', flditemname)", "flditemname", "flditemrate", "flditemqty", "fldditemamt", "fldbillno", "fldclaimstate", "fldclaimid"]
+  xList = ["flditemname", "CONCAT(flditemtype,'|', flditemname)", "flditemname", "AVG(flditemrate)", "SUM(flditemqty)", "SUM(fldditemamt)", "GROUP_CONCAT(DISTINCT fldbillno) as fldbillno", "GROUP_CONCAT(DISTINCT fldclaimstate)", "GROUP_CONCAT(DISTINCT fldclaimid)", "GROUP_CONCAT(DISTINCT fldid)", "flditemtype"]
   xList1 = xList.Copy()
   xList1.Add(Quote($tblpatbilling))
   xList2 = xList.Copy()
   xList2.Add(Quote("tblpatbilling"))
 
   If cmbsource.Text = "Invoice" Then
-    sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4)"                                                  ''
-    sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4)"                                                  ''
+    sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"                                                  ''
+    sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"                                                  ''
   Else If cmbsource.Text = "Receipt" Then
-    sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4)"
-    sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4)"
+    sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"
+    sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"
   Else
-    sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) UNION ALL select " & xList1.Join(",") & " from " & $tblpatbilling & "  where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4)"
-    sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) UNION ALL select " & xList2.Join(",") & " from tblpatbilling  where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4)"
+    sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5 UNION ALL select " & xList1.Join(",") & " from " & $tblpatbilling & "  where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"
+    sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5 UNION ALL select " & xList2.Join(",") & " from tblpatbilling  where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldchequeno=&4) GROUP BY flditemname HAVING SUM(flditemqty)>&5"
   Endif
 
   If cmbfiscal.Text = "Current" Then
-    $rData1 = modDatabase.$syConn.Exec(sql1, txtaccount.Text, modPatient.GetPatientNoByEnc(txtgridencid.Text), "Credit", txtgridclaim.Text)
+    $rData1 = modDatabase.$syConn.Exec(sql1, txtaccount.Text, modPatient.GetPatientNoByEnc(txtgridencid.Text), "Credit", txtgridclaim.Text, 0)
   Else
-    $rData1 = modDatabase.$syConn.Exec(sql1 & " UNION ALL " & sql2, txtaccount.Text, modPatient.GetPatientNoByEnc(txtgridencid.Text), "Credit", txtgridclaim.Text)
+    $rData1 = modDatabase.$syConn.Exec(sql1 & " UNION ALL " & sql2, txtaccount.Text, modPatient.GetPatientNoByEnc(txtgridencid.Text), "Credit", txtgridclaim.Text, 0)
   Endif
   $aMyFields1 = New String[]
   modGridView.ReadSmallData(GridView2, $rData1, $aMyFields1)
 
-  xtot = 0
+  ' xtot = 0
   xinvLst = New String[]
   For Each $rData1
-    xtot = xtot + $rData1["fldditemamt"]
-    If xinvLst.Exist($rData1["fldbillno"]) = False Then
-      xinvLst.Add($rData1["fldbillno"])
-    Endif
+    ' xtot = xtot + $rData1["fldditemamt"]
+    ' If xinvLst.Exist($rData1["fldbillno"]) = False Then
+    '   xinvLst.Add($rData1["fldbillno"])
+    ' Endif
+    asx = Split($rData1["fldbillno"], ",")
+    For Each abil In asx
+      If xinvLst.Exist(Trim(abil)) = False Then
+        xinvLst.Add(Trim(abil))
+      Endif
+    Next
   Next
-  txtssftotalsel.Value = xtot
+  ' txtssftotalsel.Value = xtot
   If xinvLst.Count Then
     txtinvoicesel.Text = xinvLst.Join(", ")
   Endif
@@ -432,13 +442,15 @@ Private Sub SHowCreditGrid()
   With GridView2
     .Columns[0].Width = 1
     .Columns[1].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 225 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 250 * modBasic.$AppWidthRatio
     .Columns[3].Width = 50 * modBasic.$AppWidthRatio
     .Columns[4].Width = 50 * modBasic.$AppWidthRatio
     .Columns[5].Width = 75 * modBasic.$AppWidthRatio
     .Columns[6].Width = 125 * modBasic.$AppWidthRatio
     .Columns[7].Width = 100 * modBasic.$AppWidthRatio
     .Columns[8].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[9].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[10].Width = 125 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "Code"
     .Columns[2].Text = "Particulars"
@@ -447,7 +459,9 @@ Private Sub SHowCreditGrid()
     .Columns[5].Text = "Total"
     .Columns[6].Text = "Invoice"
     .Columns[7].Text = "State"
-    .Columns[8].Text = "Claim ID"
+    .Columns[8].Text = "Claim_ID"
+    .Columns[9].Text = "Index"
+    .Columns[10].Text = "Category"
   End With
 
 End
@@ -501,18 +515,17 @@ Public Sub btngridclaim_Click()
   Dim invList As String[]
   Dim pathLst As String[]
 
+  Dim asx As String[]
+  Dim abil As String
+
   Dim xout As String
   Dim aColl As Collection
   Dim aVar As Variant[]
   Dim xvar As Variant
   Dim bColl As Collection
 
-  Dim xstate As String
   Dim xmsg As String
-  Dim xUUId As String
-  Dim res As Result
-  Dim i As Integer
-
+  Dim xRow As Integer
   Dim NoDiagno As Boolean
 
   If cmbnodiagno.Text = "Enable" Then
@@ -527,21 +540,47 @@ Public Sub btngridclaim_Click()
     invList = New String[]
     For Row = 0 To GridView2.Rows.Count - 1
       If Not GridView2[Row, 8].Text Then
+
         If chkselall.Value = True Then
           sColl = New Collection
-          sColl.Add(GridView2[Row, 0].Text, "id")
-          sColl.Add(GridView2[Row, 9].Text, "table")
+          ' sColl.Add(GridView2[Row, 0].Text, "id")
+          ' sColl.Add(GridView2[Row, 9].Text, "table")
+          sColl.Add(GridView2[Row, 1].Text, "code")
+          sColl.Add(GridView2[Row, 2].Text, "item")
+          sColl.Add(GridView2[Row, 3].Text, "rate")
+          sColl.Add(GridView2[Row, 4].Text, "qty")
+          sColl.Add(GridView2[Row, 5].Text, "total")
+          sColl.Add(GridView2[Row, 9].Text, "index")
+          sColl.Add(GridView2[Row, 10].Text, "type")
+          sColl.Add(GridView2[Row, 11].Text, "table")
           xSNo.Add(sColl)
-          invList.Add(GridView2[Row, 6].Text)
+          ' invList.Add(GridView2[Row, 6].Text)
+          asx = Split(GridView2[Row, 6].Text, ",")
+          For Each abil In asx
+            invList.Add(Trim(abil))
+          Next
         Else
           If GridView2.Rows[Row].Selected = True Then
             sColl = New Collection
-            sColl.Add(GridView2[Row, 0].Text, "id")
-            sColl.Add(GridView2[Row, 9].Text, "table")
+            ' sColl.Add(GridView2[Row, 0].Text, "id")
+            ' sColl.Add(GridView2[Row, 9].Text, "table")
+            sColl.Add(GridView2[Row, 1].Text, "code")
+            sColl.Add(GridView2[Row, 2].Text, "item")
+            sColl.Add(GridView2[Row, 3].Text, "rate")
+            sColl.Add(GridView2[Row, 4].Text, "qty")
+            sColl.Add(GridView2[Row, 5].Text, "total")
+            sColl.Add(GridView2[Row, 9].Text, "index")
+            sColl.Add(GridView2[Row, 10].Text, "type")
+            sColl.Add(GridView2[Row, 11].Text, "table")
             xSNo.Add(sColl)
-            invList.Add(GridView2[Row, 6].Text)
+            ' invList.Add(GridView2[Row, 6].Text)
+            asx = Split(GridView2[Row, 6].Text, ",")
+            For Each abil In asx
+              invList.Add(Trim(abil))
+            Next
           Endif
         Endif
+
       Endif
     Next
     invall = modString.GetDistinctStringArray(invList)
@@ -557,27 +596,18 @@ Public Sub btngridclaim_Click()
       hForm.AddBilling(xSNo)
       hForm.AddDocuments(pathLst)
       xout = hForm.UploadClaim()
-      i = 0
 
       If xout Then
         Try aColl = JSON.Decode(xout)
         If aColl Then
           xmsg = "<b>" & aColl["outcome"] & "</b>"
-          xUUId = aColl["id"]
           aVar = aColl["item"]
 
           If aVar Then
             For Each xvar In aVar
-              xstate = ""
               bColl = xvar
-              Try xstate = bColl["adjudication"][0]["category"]["text"]
-              If xUUId And If xstate Then
-                res = modDatabase.$myConn.Edit($tblpatbilling, "fldid=&1", xSNo[i]["id"])
-                res["fldclaimstate"] = xstate
-                res["fldclaimid"] = xUUId
-                res.Update
-              Endif
-              i = i + 1
+              xRow = bColl["itemSequence"]
+              UpdateClaimRecord(xSNo[xRow]["index"], bColl["extension"][0]["valueReference"]["reference"], bColl["adjudication"][0]["category"]["text"])
             Next
             For Each xinv In invall
               modAccount.InsertClaimInvoice(xinv)
@@ -603,6 +633,24 @@ Public Sub btngridclaim_Click()
       Message.Warning(xmsg, "OK")
     Endif
 
+  Endif
+
+End
+
+Private Sub UpdateClaimRecord(sIndex As String, xUUID As String, xState As String)
+
+  Dim sIndLst As String[]
+  Dim aIndex As String
+  Dim res As Result
+
+  If xUUID And If xState Then
+    sIndLst = Split(sIndex, ",")
+    For Each aIndex In sIndLst
+      res = modDatabase.$myConn.Edit($tblpatbilling, "fldid=&1", CLong(aIndex))
+      res["fldclaimstate"] = xState
+      res["fldclaimid"] = xUUID
+      res.Update
+    Next
   Endif
 
 End

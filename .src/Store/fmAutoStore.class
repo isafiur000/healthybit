@@ -6,6 +6,7 @@ Private $sCheckDay As Integer
 Private $sReqDay As Integer
 Private $sRounding As String
 Private $sQuant As String
+Private $sMinRatio As Float
 
 Private $dt1 As Date
 Private $dt2 As Date
@@ -13,7 +14,7 @@ Private $dt2 As Date
 Private $xVar As Variant[]
 Private sTime As Date
 
-Public Sub _new(sCompID As String, sColumnName As String, sCheckDays As Integer, sRequestDays As Integer, sRounding As String, sQuant As String)
+Public Sub _new(sCompID As String, sColumnName As String, sCheckDays As Integer, sRequestDays As Integer, sRounding As String, sQuant As String, sMinStockRation As Float)
 
   $sCompId = sCompID
   $colmName = sColumnName
@@ -21,6 +22,7 @@ Public Sub _new(sCompID As String, sColumnName As String, sCheckDays As Integer,
   $sReqDay = sRequestDays
   $sRounding = sRounding
   $sQuant = sQuant
+  $sMinRatio = sMinStockRation
 
 End
 
@@ -44,7 +46,7 @@ Public Sub Timer1_Timer()
   If DateDiff(sTime, Now(), gb.Second) > 1 Then
     Timer1.Enabled = False
     If $sCompId And If $sReqDay Then
-      ShowStoreRequestMedSurg($sCompId, $dt1, $dt2, $sReqDay, $sRounding, $sQuant)
+      ShowStoreRequestMedSurg($sCompId, $dt1, $dt2, $sReqDay, $sRounding, $sQuant, $sMinRatio)
     Endif
   Endif
 
@@ -56,7 +58,7 @@ Public Sub Form_Close()
 
 End
 
-Private Sub ShowStoreRequestMedSurg(CompId As String, dt1 As Date, dt2 As Date, orderDays As Integer, sRound As String, sQuant As String)
+Private Sub ShowStoreRequestMedSurg(CompId As String, dt1 As Date, dt2 As Date, orderDays As Integer, sRound As String, sQuant As String, sMinRatio As Float)
 
   Dim sql As String
   Dim res As Result
@@ -107,7 +109,7 @@ Private Sub ShowStoreRequestMedSurg(CompId As String, dt1 As Date, dt2 As Date, 
     Endif
 
     If sQuant = "Minimum" Then
-      xminstock = modStock.GetMinimumStock(res["flditem"], modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"]))
+      xminstock = modStock.GetMinimumStock(res["flditem"], modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"])) * sMinRatio
       If xminstock Then
         If xnew < xminstock Then
           anew = xminstock - xnew

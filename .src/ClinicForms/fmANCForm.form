@@ -51,14 +51,17 @@
         Arrangement = Arrange.Vertical
         { Panel14 Panel
           MoveScaled(0,0,40.5,4)
+          { txtgravida ValueBox
+            MoveScaled(8,0.5,8,3)
+          }
+          { txtparity ValueBox
+            MoveScaled(29,0.5,8,3)
+          }
           { Label8 Label
             MoveScaled(0,0.5,8,3)
             Font = Font["Bold"]
             Border = Border.Plain
             Text = ("Gravida")
-          }
-          { txtgravida ValueBox
-            MoveScaled(8,0.5,8,3)
           }
           { Label9 Label
             MoveScaled(20,0.5,9,3)
@@ -66,12 +69,12 @@
             Border = Border.Plain
             Text = ("Parity")
           }
-          { txtparity ValueBox
-            MoveScaled(29,0.5,8,3)
-          }
         }
         { Panel15 Panel
           MoveScaled(0,4,40.5,4)
+          { txtliving ValueBox
+            MoveScaled(8,0.5,8,3)
+          }
           { txtabortion ValueBox
             MoveScaled(29,0.5,8,3)
           }
@@ -80,9 +83,6 @@
             Font = Font["Bold"]
             Border = Border.Plain
             Text = ("Living")
-          }
-          { txtliving ValueBox
-            MoveScaled(8,0.5,8,3)
           }
           { Label11 Label
             MoveScaled(20,0.5,9,3)
@@ -161,7 +161,7 @@
         { Panel10 Panel
           MoveScaled(0,24,40.5,4)
           { Label5 Label
-            MoveScaled(0,1,15.5,3)
+            MoveScaled(0,0.5,15.5,3)
             Font = Font["Bold"]
             Expand = True
             Border = Border.Plain
@@ -205,7 +205,7 @@
             Picture = Picture["icon:/small/apply"]
           }
           { txtreference TextBox
-            MoveScaled(1,0.5,17,3)
+            MoveScaled(0,0.5,17,3)
             Enabled = False
           }
         }
@@ -1234,6 +1234,42 @@
     }
     Index = 4
     Text = ("ANC Chart")
+    { Panel101 Panel
+      MoveScaled(0,0,117,4)
+      { Label66 Label
+        MoveScaled(0,0.5,6,3)
+        Font = Font["Bold"]
+        Expand = True
+        Border = Border.Plain
+        Text = ("LMP")
+      }
+      { txtlmp2 MaskBox
+        MoveScaled(6,0.5,19,3)
+        Mask = "0000/00/00"
+      }
+      { Label67 Label
+        MoveScaled(33,0.5,6,3)
+        Font = Font["Bold"]
+        Expand = True
+        Border = Border.Plain
+        Text = ("EDD")
+      }
+      { txtedd2 MaskBox
+        MoveScaled(39,0.5,19,3)
+        Mask = "0000/00/00"
+      }
+      { Label68 Label
+        MoveScaled(67,0.5,11,3)
+        Font = Font["Bold"]
+        Expand = True
+        Border = Border.Plain
+        Text = ("EDD (Scan)")
+      }
+      { txteddscan2 MaskBox
+        MoveScaled(78,0.5,19,3)
+        Mask = "0000/00/00"
+      }
+    }
     { ScrollView2 ScrollView
       MoveScaled(3,14,87,35)
       Expand = True

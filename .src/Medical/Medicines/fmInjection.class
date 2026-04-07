@@ -47,8 +47,8 @@ Public Sub btnOK_Click()
 
   Dim res As Result
 
-  If btnOK.Text = "&Add" Then
-    txtinjid.Text = lblinjname.Text & "()"
+  txtinjid.Text = lblinjname.Text & "()"
+  If txtinjid.Text Then
     res = modDatabase.$medConn.Create("tblinjection")
     res["fldinjection"] = txtinjid.Text
     res["fldlabel"] = lblinjname.Text
@@ -70,12 +70,18 @@ Public Sub btnOK_Click()
       res["fldnote"] = ""
     Endif
     res.Update()
-    btnOK.Text = "&Edit"
     Balloon.Info(("Information saved"), btnOK)
     Balloon.Delay = modBasic.$BalloonDelay
+  Endif
 
-  Else If btnOK.Text = "&Edit" Then
-    res = modDatabase.$medConn.Edit("tblinjection", "fldlabel=&1", lblinjname.Text)
+End
+
+Public Sub btnedit_Click()
+
+  Dim res As Result
+
+  res = modDatabase.$medConn.Edit("tblinjection", "fldlabel=&1", lblinjname.Text)
+  If res.Available Then
     res["fldreconst"] = txtreconst.Text
     res["fldreconstroom"] = txtreconroom.Value
     res["fldreconstcool"] = txtreconcool.Value
@@ -108,17 +114,16 @@ Private Sub ShowInjectionProp()
   sql = "select fldinjection,fldreconst,fldreconstroom,fldreconstcool,flddilution,flddilutionroom,flddilutioncool,fldrateadmin,fldsiteadmin,fldrouteadmin from tblinjection where fldlabel=&1"                                         '''
   res = modDatabase.$medConn.Exec(sql, lblinjname.Text)
   If res.Available Then
-    txtinjid.Text = res!fldinjection
-    txtreconst.Text = res!fldreconst
-    txtreconroom.Value = res!fldreconstroom
-    txtreconcool.Value = res!fldreconstcool
-    txtdilute.Text = res!flddilution
-    txtdiluroom.Value = res!flddilutionroom
-    txtdilucool.Value = res!flddilutioncool
-    txtrate.Text = res!fldrateadmin
-    txtsite.Text = res!fldsiteadmin
-    txtroute.Text = res!fldrouteadmin
-    btnOK.Text = "&Edit"
+    txtinjid.Text = res["fldinjection"]
+    txtreconst.Text = res["fldreconst"]
+    txtreconroom.Value = res["fldreconstroom"]
+    txtreconcool.Value = res["fldreconstcool"]
+    txtdilute.Text = res["flddilution"]
+    txtdiluroom.Value = res["flddilutionroom"]
+    txtdilucool.Value = res["flddilutioncool"]
+    txtrate.Text = res["fldrateadmin"]
+    txtsite.Text = res["fldsiteadmin"]
+    txtroute.Text = res["fldrouteadmin"]
   Endif
   FillReconsFluid()
   FillDiluteFluid()
@@ -129,7 +134,7 @@ Public Sub tlbtnaddreconst_Click()
 
   Dim hForm As FmRefTextEntry
 
-  If btnOK.Text = "&Edit" Then
+  If txtinjid.Text Then
     hForm = New FmRefTextEntry("Select Reconstitution Fluids", "Reconstitution Fluids", txtinjid.Text)
     hForm.ShowModal
     FillReconsFluid()
@@ -141,7 +146,7 @@ Public Sub tlbtnaddilute_Click()
 
   Dim hForm As FmRefTextEntry
 
-  If btnOK.Text = "&Edit" Then
+  If txtinjid.Text Then
     hForm = New FmRefTextEntry("Select Dilution Fluids", "Dilution Fluids", txtinjid.Text)
     hForm.ShowModal
     FillDiluteFluid()
@@ -149,30 +154,20 @@ Public Sub tlbtnaddilute_Click()
 
 End
 
-'''ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
-
 Public Sub FillReconsFluid()
 
-  Dim sql As String
-  Dim tbl As String
   Dim res As Result
 
-  tbl = "tblreconstfluid"
-  sql = "select fldchild as col from " & tbl & " where fldparent=&1"
-  res = modDatabase.$medConn.Exec(sql, txtinjid.Text)
+  res = modDatabase.$medConn.Exec("select fldchild as col from tblreconstfluid where fldparent=&1", txtinjid.Text)
   modFillContainer.FillListBox(lstreconst, res, False)
 
 End
 
 Public Sub FillDiluteFluid()
 
-  Dim sql As String
-  Dim tbl As String
   Dim res As Result
 
-  tbl = "tbldilutionfluid"
-  sql = "select fldchild as col from " & tbl & " where fldparent=&1"
-  res = modDatabase.$medConn.Exec(sql, txtinjid.Text)
+  res = modDatabase.$medConn.Exec("select fldchild as col from tbldilutionfluid where fldparent=&1", txtinjid.Text)
   modFillContainer.FillListBox(lstdilut, res, False)
 
 End
@@ -189,18 +184,22 @@ End
 
 Public Sub btndelrecons_Click()
 
-  modDatabase.$medConn.Delete("tblreconstfluid", "fldchild=&1 and fldparent=&2", lstreconst.Text, txtinjid.Text)
-  FillReconsFluid()
-  Balloon.Delete(("Information deleted"), btndelrecons)
-  Balloon.Delay = modBasic.$BalloonDelay
+  If txtinjid.Text Then
+    modDatabase.$medConn.Delete("tblreconstfluid", "fldchild=&1 and fldparent=&2", lstreconst.Text, txtinjid.Text)
+    FillReconsFluid()
+    Balloon.Delete(("Information deleted"), btndelrecons)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
 
 End
 
 Public Sub btndeldilut_Click()
 
-  modDatabase.$medConn.Delete("tbldilutionfluid", "fldchild=&1 and fldparent=&2", lstdilut.Text, txtinjid.Text)
-  FillDiluteFluid()
-  Balloon.Delete(("Information deleted"), btndeldilut)
-  Balloon.Delay = modBasic.$BalloonDelay
+  If txtinjid.Text Then
+    modDatabase.$medConn.Delete("tbldilutionfluid", "fldchild=&1 and fldparent=&2", lstdilut.Text, txtinjid.Text)
+    FillDiluteFluid()
+    Balloon.Delete(("Information deleted"), btndeldilut)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
 
 End

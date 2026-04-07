@@ -15,6 +15,7 @@ Private $ClinicianLst As String[]
 
 Private $NarcoDoctor As String
 Private $NarcoRegd As String
+Private $fluidList As String[]
 
 Private $patHeight As Float
 Private $actualWt As Float
@@ -54,6 +55,7 @@ Public Sub Form_Open()
   Else
     $LabelType = "Outpatient"
   Endif
+  modSettings.ShowCheckBox(chkrecommfluid, "RecommendedList/DilutionFluids")
   GetFuluidList()
   FillDosingGrid()
   ClearAllControl()
@@ -76,7 +78,7 @@ Private Sub GetFuluidList()
   Else
     res = modStock.FillMedicinesPrescribingComboResult("fluid", GetBrandGenerricType(), $sBillMode)
   Endif
-  cmbdilution.List = modControlSub.GetDirectFillresult(res)
+  $fluidList = modControlSub.GetDirectFillresult(res)
 
 End
 
@@ -323,13 +325,16 @@ Public Sub cmbmedicine_LostFocus()
       ' txtdose.Value = cForm.UnitDose()
       ' lbldose.Text = cForm.UnitDoseUnit()
       cmbfreq.Text = cForm.Frequency()
+      ShowFluidInCombo()
 
       CheckLastDispensing(cmbmedicine.Text)
       Select cmbroute.Text
         Case "oral", "liquid", "resp", "topical", "eye/ear", "anal/vaginal"
           cmbdilution.Enabled = False
+          btnadddiluent.Enabled = False
         Case Else
           cmbdilution.Enabled = True
+          btnadddiluent.Enabled = True
       End Select
       cmbadminsite.SetFocus
 
@@ -446,6 +451,53 @@ Private Sub EnterDosingRecord()
       modPharmSub.InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, "", "", 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), cmbadminsite.Text, txtdosecount.Value, Trim(cmbdilution.Text), 0, xcurVal)                     '
     Endif
     ClearAllControl()
+  Endif
+
+End
+
+Public Sub btnadddiluent_Click()
+
+  EnterDilutionRecord()
+  Balloon.Info(("Information saved"), btnadddiluent)
+  Balloon.Delay = modBasic.$BalloonDelay
+  btnadddiluent.Enabled = False
+  FillDosingGrid()
+
+End
+
+Private Sub EnterDilutionRecord()
+
+  Dim xtax As Float
+  Dim xdisc As Float
+  Dim itemtype As String
+  Dim xfixrate As Float
+  Dim xfixname As String
+
+  Dim itemmode As String
+  Dim xcurVal As String
+  Dim xnarcotic As String[]
+  Dim CPharmFix As CFixRatePharmacy
+
+  If chknextplan.Value = True Then
+    xcurVal = "Planned"
+  Else
+    If modBasic.$DispRequestStatus = "Reserve" Then
+      xcurVal = "Reserve"
+    Else
+      xcurVal = "Continue"
+    Endif
+  Endif
+  If cmbdilution.Text Then
+
+    itemtype = "Medicines"
+    CPharmFix = New CFixRatePharmacy(itemtype, cmbdilution.Text, $sBillMode)
+    xfixrate = CPharmFix.GetFixRate()
+    xfixname = CPharmFix.GetFixItem()
+
+    itemmode = $sBillMode
+    xtax = modNonMedical.ShowTaxValues(itemtype, cmbdilution.Text)
+    xdisc = modNonMedical.DiscPercentForCategoryValue($encid, $DiscPackage, itemtype, cmbdilution.Text, itemmode)
+    modPharmSub.InsertNonMedDosingEntry("Medicines", $encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, "fluid", cmbdilution.Text, 1, $status, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, "Dilution Fluid", False)
   Endif
 
 End
@@ -604,7 +656,7 @@ Private Function ConvertDailyFreToNumber(txtfreq As String) As Float
     Select Case txtfreq
       Case "PRN"
         xx = 3
-      Case "SOS", "stat", "AM", "HS", "Pre", "Post"
+      Case "SOS", "stat", "AM", "HS", "Pre", "Post", "Continuous"
         xx = 1
       Case "Two-hourly"
         xx = 12
@@ -674,5 +726,25 @@ End
 Public Sub txtstarthour_GotFocus()
 
   txtstarthour.SelectAll()
+
+End
+
+Public Sub chkrecommfluid_Click()
+
+  modSettings.EnterCheckSetting(chkrecommfluid, "RecommendedList/DilutionFluids")
+  ShowFluidInCombo()
+
+End
+
+Private Sub ShowFluidInCombo()
+
+  Dim res As Result
+
+  If chkrecommfluid.Value = True And If cmbroute.Text = "CIV" And If cmbmedicine.Text Then
+    res = modDatabase.$medConn.Exec("select fldchild as col from tbldilutionfluid where fldparent=&1", modMedConstant.GetDrugFromStockID(cmbmedicine.Text) & "-CIV()")
+    cmbdilution.List = modControlSub.GetDirectFillresult(res)
+  Else
+    cmbdilution.List = $fluidList
+  Endif
 
 End

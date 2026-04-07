@@ -656,12 +656,35 @@
           }
           Index = 1
           Text = ("Description")
+          { Panel62 Panel
+            MoveScaled(1,0,118,4)
+            Border = Border.Plain
+            { lblindication Label
+              MoveScaled(0,0.5,11.125,3)
+              Border = Border.Plain
+              Text = ("Indication")
+            }
+            { btnaddprelist ToolButton
+              MoveScaled(12,0.5,3,3)
+              Picture = Picture["icon:/small/add"]
+            }
+            { cmbprocindication ComboBox
+              MoveScaled(16,0.5,80,3)
+              Sorted = True
+            }
+            { btnpreindication Button
+              MoveScaled(97,0.5,12,3)
+              Text = ("Save")
+              Picture = Picture["icon:/small/apply"]
+            }
+          }
           { pnlabs Panel
-            MoveScaled(1,0,117,4)
+            MoveScaled(1,5,117,4)
+            Border = Border.Plain
             { lblindication2 Label
               MoveScaled(0,0.5,13,3)
               Border = Border.Plain
-              Text = ("Lab Request")
+              Text = ("Pathology")
             }
             { cmblabdepart ComboBox
               MoveScaled(14,0.5,21,3)
@@ -678,29 +701,8 @@
               MoveScaled(82,0.5,21,3)
             }
           }
-          { Panel62 Panel
-            MoveScaled(1,6,118,4)
-            { lblindication Label
-              MoveScaled(0,0.5,11.125,3)
-              Border = Border.Plain
-              Text = ("Indication")
-            }
-            { btnaddprelist ToolButton
-              MoveScaled(12,0.5,3,3)
-              Picture = Picture["icon:/small/add"]
-            }
-            { cmbprocindication ComboBox
-              MoveScaled(16,0.5,80,3)
-              Sorted = True
-            }
-            { btnpreindication Button
-              MoveScaled(100,0.5,12,3)
-              Text = ("Save")
-              Picture = Picture["icon:/small/apply"]
-            }
-          }
           { Panel9 Panel
-            MoveScaled(0,11,117,4)
+            MoveScaled(0,11,118,4)
             { lblindication3 Label
               MoveScaled(1,0.5,11.125,3)
               Border = Border.Plain
@@ -719,7 +721,7 @@
               Picture = Picture["icon:/small/attach"]
             }
             { btnprecomment Button
-              MoveScaled(103,0.5,10,3)
+              MoveScaled(107,0.5,10,3)
               Text = ("Save")
               Picture = Picture["icon:/small/apply"]
             }

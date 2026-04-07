@@ -85,7 +85,10 @@ Public Sub Form_Open()
   modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
   If modBasic.$LockDiagnosisList = "No" Then
   Else
-    btndismanual.Enabled = False
+    If modBasic.$ProvDiagnosisObstetrics = "Custom Text" Then
+    Else
+      btndismanual.Enabled = False
+    Endif
   Endif
 
   ShowRiskFactors()
@@ -345,6 +348,24 @@ Public Sub dteddscan_Click()
 
 End
 
+Public Sub txtlmp_Change()
+
+  txtlmp2.Text = txtlmp.Text
+
+End
+
+Public Sub txtedd_Change()
+
+  txtedd2.Text = txtedd.Text
+
+End
+
+Public Sub txteddscan_Change()
+
+  txteddscan2.Text = txteddscan.Text
+
+End
+
 Public Sub btnsavediagnosis_Click()
 
   Dim res As Result
@@ -439,7 +460,7 @@ Private Sub ShowObsDiagnosis()
 
   Dim res As Result
   Dim res1 As Result
-  Dim xParamLst As String[] = ["Menstrual Cycle", "Contraception", "Married For", "Quickening"]
+  Dim xParamLst As String[] = ["EDD (Scan)", "Menstrual Cycle", "Contraception", "Married For", "Quickening"]
   Dim xparam As String
 
   res = modDatabase.$myConn.Exec("select fldgravida,fldparity,fldbortion,fldlive,fldlast,fldexpect,fldgestation,fldpresent,fldstatus,fldpast,flddelref from tblobstetrics where fldpatientval=&1 and fldlast<&2 and fldexpect>&3 ORDER BY fldtime", $PatientNum, Now(), DateAdd(Now(), gb.Month, -3))
@@ -1761,13 +1782,21 @@ End
 Public Sub btndismanual_Click()
 
   Dim xx As String
+  Dim sName As String[]
 
   If $encid Then
-    xx = InputBox(("Enter custom Provisional Diagnosis"), ("Provisional Diagnosis"), "")
-    If xx Then
-      modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, xx, "Other", "Other")
-      modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
+    If modBasic.$ProvDiagnosisObstetrics = "Custom Text" Then
+      sName = DiagnoObstetrics($encid, True)
+      If sName Then
+        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, sName[0], sName[1], sName[1])
+      Endif
+    Else
+      xx = InputBox(("Enter custom Provisional Diagnosis"), ("Provisional Diagnosis"), "")
+      If xx Then
+        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, xx, "Other", "Other")
+      Endif
     Endif
+    modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
   Endif
 
 End
@@ -1777,7 +1806,12 @@ Public Sub tbnsyndro_Click()
   Dim sName As String[]
 
   If $encid Then
-    sName = DiagnoObstetrics($encid, True)
+    If modBasic.$ProvDiagnosisObstetrics = "Selection List" Then
+      sName = DiagnoObstetrics($encid, True)
+    Else
+      sName = GetSyndromes()
+    Endif
+
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, sName[0], sName[1], sName[1])

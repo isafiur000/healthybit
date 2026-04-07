@@ -22,13 +22,27 @@ Public Sub Form_Close()
 
 End
 
+Public Sub btnshowmedicine_Click()
+
+  ShowUnderStockMedSurg()
+
+End
+
+Public Sub btnshowextra_Click()
+
+  ShowUnderStockExtra()
+
+End
+
 ''------------------------------ first grid -------------------------------
 Private Sub ShowUnderStockMedSurg()
 
-  Dim sql As String
+  Dim sql1 As String
+  Dim sql2 As String
 
-  sql = "select tblmedbrand.fldbrandid as fldbrandid,tblmedbrand.fldbrandid as fldbrandid,tblmedbrand.fldmanufacturer as fldmanufacturer,tblmedbrand.fldminqty as fldminqty,tblmedbrand.fldbrandid as fldbrandid from tblmedbrand inner join tblentry on tblmedbrand.fldbrandid=tblentry.fldstockid where tblmedbrand.fldactive=&1 GROUP BY tblmedbrand.fldbrandid HAVING SUM(tblentry.fldqty)<tblmedbrand.fldminqty  UNION select tblsurgbrand.fldbrandid as fldbrandid,tblsurgbrand.fldbrandid as fldbrandid,tblsurgbrand.fldmanufacturer as fldmanufacturer,tblsurgbrand.fldminqty as fldminqty,tblsurgbrand.fldbrandid as fldbrandid from tblsurgbrand inner join tblentry on tblsurgbrand.fldbrandid=tblentry.fldstockid where tblsurgbrand.fldactive=&1 GROUP BY tblsurgbrand.fldbrandid HAVING SUM(tblentry.fldqty)<tblsurgbrand.fldminqty"           ''
-  $rData = modDatabase.$syConn.Exec(sql, "Active")
+  sql1 = "select " & Subst("tblmedbrand.fldbrandid as fldbrandid,tblmedbrand.fldbrandid as fldbrandid,tblmedbrand.fldmanufacturer as fldmanufacturer,(tblmedbrand.fldminqty*&1) as fldminqty,tblmedbrand.fldbrandid as fldbrandid", spnminmedicine.Value / 100) & " from tblmedbrand inner join tblentry on tblmedbrand.fldbrandid=tblentry.fldstockid where tblmedbrand.fldactive=&1 GROUP BY tblmedbrand.fldbrandid HAVING SUM(tblentry.fldqty)<(fldminqty*&2)"           ''
+  sql2 = "select " & Subst("tblsurgbrand.fldbrandid as fldbrandid,tblsurgbrand.fldbrandid as fldbrandid,tblsurgbrand.fldmanufacturer as fldmanufacturer,(tblsurgbrand.fldminqty*&1) as fldminqty,tblsurgbrand.fldbrandid as fldbrandid", spnminmedicine.Value / 100) & " from tblsurgbrand inner join tblentry on tblsurgbrand.fldbrandid=tblentry.fldstockid where tblsurgbrand.fldactive=&1 GROUP BY tblsurgbrand.fldbrandid HAVING SUM(tblentry.fldqty)<(fldminqty*&2)"
+  $rData = modDatabase.$syConn.Exec(sql1 & "  UNION " & sql2, "Active", spnminmedicine.Value / 100)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
 
@@ -93,8 +107,8 @@ Private Sub ShowUnderStockExtra()
 
   Dim sql As String
 
-  sql = "select tblextrabrand.fldbrandid as fldbrandid,tblextrabrand.fldbrandid as fldbrandid,tblextrabrand.flddepart as flddepart,tblextrabrand.fldminqty as fldminqty,tblextrabrand.fldbrandid as fldbrandid from tblextrabrand inner join tblentry on tblextrabrand.fldbrandid=tblentry.fldstockid where tblextrabrand.fldactive=&1 GROUP BY tblextrabrand.fldbrandid HAVING SUM(tblentry.fldqty)<tblextrabrand.fldminqty"           ''
-  $rData1 = modDatabase.$syConn.Exec(sql, "Active")
+  sql = "select " & Subst("tblextrabrand.fldbrandid as fldbrandid,tblextrabrand.fldbrandid as fldbrandid,tblextrabrand.flddepart as flddepart,(tblextrabrand.fldminqty*&1) as fldminqty,tblextrabrand.fldbrandid as fldbrandid", spnminextra.Value / 100) & " from tblextrabrand inner join tblentry on tblextrabrand.fldbrandid=tblentry.fldstockid where tblextrabrand.fldactive=&1 GROUP BY tblextrabrand.fldbrandid HAVING SUM(tblentry.fldqty)<(fldminqty*&2)"           ''
+  $rData1 = modDatabase.$syConn.Exec(sql, "Active", spnminextra.Value / 100)
   $aMyFields1 = New String[]
   modGridView.ReadSmallData(GridView2, $rData1, $aMyFields1)
 

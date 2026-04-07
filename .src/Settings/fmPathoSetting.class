@@ -13,8 +13,8 @@ Public Sub Form_Open()
 
   lstdepartment.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldsubclass) as col from tblstructexam"))
   cmbparam.List = modSysCons.SysParamList()
-  cmbprovdiagno.List = ["Obstetrics", "Syndromes"]
-  cmbfinaldiagno.List = ["Obstetrics", "Syndromes"]
+  cmbprovdiagno.List = ["Custom Text", "Selection List"]
+  cmbfinaldiagno.List = ["Custom Text", "Selection List"]
   cmbobshistory.List = ["Yes", "No"]
 
   SHowMiscellaneous()
@@ -91,15 +91,15 @@ End
 ''-------------------------------- Miscellaneous -------------------------
 Private Sub SHowMiscellaneous()
 
-  cmbprovdiagno.Text = modSettings.ShowSettingFromFIle("ClinicalList/ProvDiagnosis_Rule")
-  cmbfinaldiagno.Text = modSettings.ShowSettingFromFIle("ClinicalList/FinalDiagnosis_Rule")
+  cmbprovdiagno.Text = modSettings.ShowSettingFromFIle("ClinicalList/ProvDiagnosis_Obstetrics")
+  cmbfinaldiagno.Text = modSettings.ShowSettingFromFIle("ClinicalList/FinalDiagnosis_Obstetrics")
 
 End
 
 Public Sub btnprovdiagno_Click()
 
-  modSettings.SaveSettingsToFile("ClinicalList/ProvDiagnosis_Rule", cmbprovdiagno.Text)
-  modBasic.$ProvDiagnosisRule = cmbprovdiagno.Text
+  modSettings.SaveSettingsToFile("ClinicalList/ProvDiagnosis_Obstetrics", cmbprovdiagno.Text)
+  modBasic.$ProvDiagnosisObstetrics = cmbprovdiagno.Text
   Balloon.Info(("Information updated"), btnprovdiagno)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -107,8 +107,8 @@ End
 
 Public Sub btnfinaldiagno_Click()
 
-  modSettings.SaveSettingsToFile("ClinicalList/FinalDiagnosis_Rule", cmbfinaldiagno.Text)
-  modBasic.$FinalDiagnosisRule = cmbfinaldiagno.Text
+  modSettings.SaveSettingsToFile("ClinicalList/FinalDiagnosis_Obstetrics", cmbfinaldiagno.Text)
+  modBasic.$FinalDiagnosisObstetrics = cmbfinaldiagno.Text
   Balloon.Info(("Information updated"), btnfinaldiagno)
   Balloon.Delay = modBasic.$BalloonDelay
 

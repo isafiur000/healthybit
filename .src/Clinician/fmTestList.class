@@ -4,6 +4,7 @@ Private $encid As String
 Private $BillMode As String
 Private $sPackage As String
 Private $sClaimState As String
+Private $sClaimRefno As String
 Private $bedLocation As String
 Private $xFinClear As Boolean
 Private $PatientNum As String
@@ -178,6 +179,7 @@ Private Sub ShowBillingParam(sPack As String)
   hForm = New CPackageParams($encid, sPack)
   $BillMode = hForm.GetBillingMode()
   $sClaimState = hForm.GetClaimState()
+  $sClaimRefno = hForm.GetReferenceType()
 
 End
 
@@ -428,7 +430,7 @@ Public Sub btnselect_Click()
       For j = 0 To GridView1.Rows.Count - 1
         xList.Add(GridView1[j, 1].Text)
       Next
-    Case "Standard", "Full"
+    Case "Standard", "RefOnly", "Full"
       xList = New String[]
       For j = 0 To GridView1.Rows.Count - 1
         xList.Add(GridView1[j, 1].Text)
@@ -440,7 +442,8 @@ Public Sub btnselect_Click()
     For i = 1 To ListView1.Count
       If ListView1[CStr(i)].Picture = Picture["icons/checked.png"] Then     '
 
-        If modBasic.$AutoBillTest = "Standard" Or If modBasic.$AutoBillTest = "Full" Or If modBasic.$AutoBillTest = "Partial" Then
+        If modBasic.$AutoBillTest = "No" Then
+        Else
           If chknextvisit.Value = True Then
             modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Test", ListView1[CStr(i)].Text, 1, "Planned", 0, False, False, xpayble, xrefer, cmbtarget.Text)
           Else
@@ -574,6 +577,16 @@ Public Sub btnsave_Click()
       If modBasic.$AutoBillTest = "Standard" Then
         If modNonMedical.AllowPreCheckDeposit($encid, "Test", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsave) = True Then
           SavePartialEntry(res, xadv)
+        Endif
+      Else If modBasic.$AutoBillTest = "RefOnly" Then
+        If $sClaimRefno Then
+          If modNonMedical.AllowPreCheckDeposit($encid, "Test", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsave) = True Then
+            SavePartialEntry(res, xadv)
+          Endif
+        Else
+          If modNonMedical.AllowPreEntryWithDeposit($encid, "Test", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsave) = True Then
+            SavePartialEntry(res, xadv)
+          Endif
         Endif
       Else If modBasic.$AutoBillTest = "Full" Then
         If modNonMedical.AllowPreEntryWithDeposit($encid, "Test", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsave) = True Then
@@ -914,7 +927,7 @@ Public Sub btnselecttree_Click()
       For j = 0 To GridView4.Rows.Count - 1
         xList.Add(GridView4[j, 6].Text)
       Next
-    Case "Standard", "Full"
+    Case "Standard", "RefOnly", "Full"
       xList = New String[]
       For j = 0 To GridView4.Rows.Count - 1
         xList.Add(GridView4[j, 6].Text)
@@ -925,7 +938,8 @@ Public Sub btnselecttree_Click()
   If modMisc.AllowDiagnoBilling($encid) = True Then
     If TreeView1.Current.Picture = Picture["icons/coll3.png"] Then   '
 
-      If modBasic.$AutoBillTest = "Standard" Or If modBasic.$AutoBillTest = "Full" Or If modBasic.$AutoBillTest = "Partial" Then
+      If modBasic.$AutoBillTest = "No" Then
+      Else
         If chknextvisitree.Value = True Then
           modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Test", TreeView1.Current.Text, 1, "Planned", 0, False, False, xpayble, xrefer, cmbtarget.Text)
         Else
@@ -971,6 +985,16 @@ Public Sub btnsavetree_Click()
       If modBasic.$AutoBillTest = "Standard" Then
         If modNonMedical.AllowPreCheckDeposit($encid, "Test", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsavetree) = True Then
           SavePartialEntry(res, xadv)
+        Endif
+      Else If modBasic.$AutoBillTest = "RefOnly" Then
+        If $sClaimRefno Then
+          If modNonMedical.AllowPreCheckDeposit($encid, "Test", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsavetree) = True Then
+            SavePartialEntry(res, xadv)
+          Endif
+        Else
+          If modNonMedical.AllowPreEntryWithDeposit($encid, "Test", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsavetree) = True Then
+            SavePartialEntry(res, xadv)
+          Endif
         Endif
       Else If modBasic.$AutoBillTest = "Full" Then
         If modNonMedical.AllowPreEntryWithDeposit($encid, "Test", res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsavetree) = True Then

@@ -159,7 +159,7 @@ Public Sub tbnsyndro_Click()
   Dim sName As String[]
 
   If $encid Then
-    If modBasic.$ProvDiagnosisRule = "Obstetrics" Then
+    If modBasic.$ProvDiagnosisObstetrics = "Selection List" Then
       sName = DiagnoObstetrics($encid, True)
     Else
       sName = GetSyndromes()

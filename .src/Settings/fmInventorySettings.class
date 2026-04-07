@@ -258,6 +258,10 @@ Private Sub ShowStoreRequest()
   Endif
 
   cmbrounding.Text = modSettings.ShowSettingFromFIle("StoreAlert/QTYRounding")
+  If modSettings.ShowSettingFromFIle("StoreAlert/MinimumStockPercentage") Then
+    txtminstock.Value = CInt(modSettings.ShowSettingFromFIle("StoreAlert/MinimumStockPercentage"))
+  Endif
+  cmbcalculate.Text = modSettings.ShowSettingFromFIle("StoreAlert/QTYCalculation")
   cmbalertvalue.Text = modSettings.ShowSettingFromFIle("StoreAlert/QTYValue")
 
 End
@@ -281,6 +285,10 @@ Public Sub btnrequest_Click()
     modSettings.SaveSettingsToFile("StoreAlert/RequestedDays", CStr(txtrequest.Value))
   Endif
   modSettings.SaveSettingsToFile("StoreAlert/QTYRounding", cmbrounding.Text)
+  If txtminstock.Value Then
+    modSettings.SaveSettingsToFile("StoreAlert/MinimumStockPercentage", CStr(txtminstock.Value))
+  Endif
+  modSettings.SaveSettingsToFile("StoreAlert/QTYCalculation", cmbcalculate.Text)
   modSettings.SaveSettingsToFile("StoreAlert/QTYValue", cmbalertvalue.Text)
 
   Balloon.Info(("Information saved"), btnrequest)

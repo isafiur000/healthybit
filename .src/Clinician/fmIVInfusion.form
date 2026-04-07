@@ -1,59 +1,92 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,84,63)
+  MoveScaled(0,0,94,66)
   Text = ("IV Infusion")
-  Resizable = False
+  Arrangement = Arrange.Vertical
+  Margin = True
   { Panel1 Panel
-    MoveScaled(1,1,82,61)
-    { Label2 Label
-      MoveScaled(1,1,8,3)
-      Border = Border.Plain
-      Text = ("Name")
+    MoveScaled(1,1,92,64)
+    Expand = True
+    Arrangement = Arrange.Vertical
+    { Panel2 Panel
+      MoveScaled(0,0,91,7.5)
+      { Label2 Label
+        MoveScaled(0,0.5,8,3)
+        Border = Border.Plain
+        Text = ("Name")
+      }
+      { txtpatientname TextBox
+        MoveScaled(9,0.5,34,3)
+        Font = Font["Bold"]
+        ReadOnly = True
+      }
+      { Label7 Label
+        MoveScaled(68,0.5,8,3)
+        Border = Border.Plain
+        Text = ("Bed No")
+      }
+      { txtlocation TextBox
+        MoveScaled(77,0.5,12,3)
+        ReadOnly = True
+      }
+      { chkalldate CheckBox
+        MoveScaled(68,4,12,3)
+        Text = ("All Dates")
+      }
+      { txtfluidname TextBox
+        MoveScaled(29,4,14,3)
+        Visible = False
+      }
+      { txtgender TextBox
+        MoveScaled(9,4,19,3)
+        ReadOnly = True
+      }
+      { Label4 Label
+        MoveScaled(0,4,8,3)
+        Border = Border.Plain
+        Text = ("Gender")
+      }
     }
-    { txtpatientname TextBox
-      MoveScaled(10,1,34,3)
-      Font = Font["Bold"]
-      ReadOnly = True
-    }
-    { Label4 Label
-      MoveScaled(1,5,8,3)
-      Border = Border.Plain
-      Text = ("Gender")
-    }
-    { txtgender TextBox
-      MoveScaled(10,5,19,3)
-      ReadOnly = True
-    }
-    { Label7 Label
-      MoveScaled(60,1,8,3)
-      Border = Border.Plain
-      Text = ("Bed No")
-    }
-    { txtlocation TextBox
-      MoveScaled(69,1,12,3)
-      ReadOnly = True
+    { Panel3 Panel
+      MoveScaled(0,7.5,91,3)
+      { lblduration Label
+        MoveScaled(0,0,78,3)
+        Border = Border.Plain
+      }
+      { btndirection ToolButton
+        MoveScaled(78,0,3,3)
+        Picture = Picture["icon:/small/info"]
+      }
+      { btnprotocol ToolButton
+        MoveScaled(87,0,3,3)
+        Picture = Picture["icon:/small/book"]
+      }
+      { btnfluid ToolButton
+        MoveScaled(81,0,3,3)
+        Picture = Picture["icon:/small/battery"]
+      }
+      { btntime ToolButton
+        MoveScaled(84,0,3,3)
+        Picture = Picture["icon:/small/clock"]
+      }
     }
     { grdfluid GridView
-      MoveScaled(1,9,80,26)
+      MoveScaled(0,11,91,22)
       Expand = True
       Mode = Select.Single
       Header = GridView.Both
       AutoResize = False
     }
+    { Panel4 Panel
+      MoveScaled(0,33,15,2)
+    }
     { grdfluiddata GridView
-      MoveScaled(1,37,80,23)
+      MoveScaled(0,35,91,28)
+      Expand = True
       Mode = Select.Single
       Header = GridView.Both
       AutoResize = False
-    }
-    { chkalldate CheckBox
-      MoveScaled(60,5,12,3)
-      Text = ("All Dates")
-    }
-    { txtfluidname TextBox
-      MoveScaled(30,5,14,3)
-      Visible = False
     }
   }
 }

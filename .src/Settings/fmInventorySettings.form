@@ -248,7 +248,7 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Frame1 Frame
-      MoveScaled(0,20,71,15)
+      MoveScaled(0,17,71,19)
       Text = ("Store Request")
       Alignment = Align.Left
       { Label18 Label
@@ -274,12 +274,12 @@
         Text = ("Duration (days)")
       }
       { Label21 Label
-        MoveScaled(36,11,9,3)
+        MoveScaled(36,15,9,3)
         Border = Border.Plain
         Text = ("Request")
       }
       { txtrequest ValueBox
-        MoveScaled(46,11,5,3)
+        MoveScaled(46,15,5,3)
         ToolTip = ("Number of days to consider")
       }
       { txtanalyze ValueBox
@@ -297,7 +297,7 @@
         Text = ("Analyze")
       }
       { btnrequest Button
-        MoveScaled(57,11,12,3)
+        MoveScaled(57,15,12,3)
         Text = ("Save")
         Picture = Picture["icon:/small/apply"]
       }
@@ -312,6 +312,27 @@
       }
       { cmbalertvalue ComboBox
         MoveScaled(46,7,16,3)
+      }
+      { Label26 Label
+        MoveScaled(1,15,14,3)
+        Border = Border.Plain
+        Text = ("Min Stock (%)")
+      }
+      { txtminstock ValueBox
+        MoveScaled(16,15,5,3)
+      }
+      { Label27 Label
+        MoveScaled(22,15,10,3)
+        Border = Border.Plain
+        Text = ("of Actual")
+      }
+      { Label28 Label
+        MoveScaled(36,11,9,3)
+        Border = Border.Plain
+        Text = ("Calculate")
+      }
+      { cmbcalculate ComboBox
+        MoveScaled(46,11,16,3)
       }
     }
     Index = 0
