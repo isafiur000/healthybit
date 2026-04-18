@@ -3443,5 +3443,47 @@ Catch
   Message.Warning("Unable to get data from Remote Server", "OK")
 
 End
-
 ''---------end ------------------------
+
+Public Sub mnupatimage_Click()
+
+  Dim hForm As FmPersonImage
+
+  If txtbookingid.Text Then
+    If rbstaff.Value = True Then
+    Else If rbsocial.Value = True Then
+      hForm = New FmPersonImage("Social", Trim(txtbookingid.Text), False)
+      hForm.ShowModal
+    Else If rbnhis.Value = True Then
+    Else If rbssf.Value = True Then
+    Else If rbbook.Value = True Then
+    Else
+    Endif
+  Endif
+
+End
+
+Public Sub mnudocs_Click()
+
+  Dim hForm As FmOfficeDocs
+  Dim xList1 As String[] = ["fldid", "fldtime", "fldreference", "fldtitle", "flddetail", "fldsave", "fldlink", "fldreference", "fldid"]
+  Dim res As Result
+  Dim myRes As New MyResult
+
+  If txtbookingid.Text Then
+    If rbstaff.Value = True Then
+    Else If rbsocial.Value = True Then
+      res = modDatabase.$myConn.Exec("select" & xList1.Join(",") & "from tblofficedocs where fldreference=&1 and fldcateg=&2", Trim(txtbookingid.Text), "SocialService")
+      If res.Available Then
+        myRes.AddResult(res)
+        hForm = New FMyRequest(myRes, "Social Service", "OfficeReports", False, xList1.Count)
+        hForm.ShowModal
+      Endif
+    Else If rbnhis.Value = True Then
+    Else If rbssf.Value = True Then
+    Else If rbbook.Value = True Then
+    Else
+    Endif
+  Endif
+
+End

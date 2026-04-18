@@ -290,7 +290,11 @@ Public Sub LoadMainForms(frm As Form, pnltop As Panel, pnlleft As Panel, wrkoffi
   If $DeskCustWidth Then
     wrkofficer.Width = CInt($DeskCustWidth) * modBasic.$AppScaleFactor
   Else
-    wrkofficer.Width = 960 * modBasic.$AppScaleFactor
+    If modHelpVariable.$LogInCategory = "Cashier" Then
+      wrkofficer.Width = 960 * modBasic.$AppScaleFactor
+    Else
+      wrkofficer.Width = (Screen.AvailableWidth - 100) * modBasic.$AppScaleFactor
+    Endif
   Endif
 
   'advertise embedder
@@ -327,13 +331,14 @@ Public Sub LoadMainForms(frm As Form, pnltop As Panel, pnlleft As Panel, wrkoffi
   If modBasic.$FormLeftWidth Then
     xleftlen = modBasic.$FormLeftWidth
   Else
-    If MMain.$GovtApp = "Yes" Then
-      xleftlen = 5 * modBasic.$AppScaleFactor
+    If $DeskCustWidth Then
+      xleftlen = 0.5 * ($DeskWidth - CInt($DeskCustWidth) * modBasic.$AppScaleFactor)
     Else
-      If $DeskCustWidth Then
-        xleftlen = 0.5 * ($DeskWidth - CInt($DeskCustWidth) * modBasic.$AppScaleFactor)
+      ' xleftlen = 0.5 * ($DeskWidth - 960 * modBasic.$AppScaleFactor)
+      If modHelpVariable.$LogInCategory = "Cashier" Then
+        xleftlen = 5 * modBasic.$AppScaleFactor
       Else
-        xleftlen = 0.5 * ($DeskWidth - 960 * modBasic.$AppScaleFactor)
+        xleftlen = 0.5 * ($DeskWidth - (Screen.AvailableWidth - 100) * modBasic.$AppScaleFactor)
       Endif
     Endif
   Endif
@@ -341,7 +346,11 @@ Public Sub LoadMainForms(frm As Form, pnltop As Panel, pnlleft As Panel, wrkoffi
   If $DeskCustWidth Then
     pnlright.Width = $DeskWidth - (xleftlen + CInt($DeskCustWidth) * modBasic.$AppScaleFactor)
   Else
-    pnlright.Width = $DeskWidth - (xleftlen + 960 * modBasic.$AppScaleFactor)
+    If modHelpVariable.$LogInCategory = "Cashier" Then
+      pnlright.Width = $DeskWidth - (xleftlen + 960 * modBasic.$AppScaleFactor)
+    Else
+      pnlright.Width = $DeskWidth - (xleftlen + (Screen.AvailableWidth - 100) * modBasic.$AppScaleFactor)
+    Endif
   Endif
 
   'left webview
@@ -376,23 +385,28 @@ Public Sub LoadMainForms(frm As Form, pnltop As Panel, pnlleft As Panel, wrkoffi
   xadright = modBasic.$FormRightAdv
   If xadright = "Yes" Then
   Else
+
     pnltopright = New Panel(pnlright)
     pnltopright.Arrangement = Arrange.Horizontal
     pnltopright.Height = 28
     pnltopright.Spacing = True
     ''controls
-    btnleft = New Button(pnltopright) As "PreviousButton"
-    btnleft.Width = 35
-    btnleft.Picture = Picture["icon:/tiny/left"]
-    btnright = New Button(pnltopright) As "ForwardtButton"
-    btnright.Width = 35
-    btnright.Picture = Picture["icon:/tiny/right"]
+    If $DeskCustWidth Then
+      btnleft = New Button(pnltopright) As "PreviousButton"
+      btnleft.Width = 35
+      btnleft.Picture = Picture["icon:/tiny/left"]
+      btnright = New Button(pnltopright) As "ForwardtButton"
+      btnright.Width = 35
+      btnright.Picture = Picture["icon:/tiny/right"]
+    Endif
     $xslider = New Slider(pnltopright) As "RightSlider"
     $xslider.Expand = True
     $xslider.MaxValue = 1000
-    xbutton = New Button(pnltopright) As "RightButton"
-    xbutton.Width = 100
-    xbutton.Picture = Picture["icon:/small/refresh"]
+    If $DeskCustWidth Then
+      xbutton = New Button(pnltopright) As "RightButton"
+      xbutton.Width = 100
+      xbutton.Picture = Picture["icon:/small/refresh"]
+    Endif
 
     $RightAdView = New WebView(pnlright)
     $RightAdView.Expand = True
@@ -541,7 +555,11 @@ Public Sub ArrangeEmbedForms(frm As Form, pnl As Panel, Optional sArrange As Str
   If $DeskCustWidth Then
     pnl.Width = CInt($DeskCustWidth) * modBasic.$AppScaleFactor
   Else
-    pnl.Width = 960 * modBasic.$AppScaleFactor
+    If modHelpVariable.$LogInCategory = "Cashier" Then
+      pnl.Width = 960 * modBasic.$AppScaleFactor
+    Else
+      pnl.Width = (Screen.AvailableWidth - 100) * modBasic.$AppScaleFactor
+    Endif
   Endif
   If frm.Menus.Count Then
     If frm.Menus.Visible = True Then
