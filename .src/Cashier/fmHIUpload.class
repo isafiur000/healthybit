@@ -337,6 +337,7 @@ Public Sub GridView1_Click()
   ClearSubInputs()
   txttotal.Value = 0
   txttotal.Value = GetTotalSelectedAMT(GridView1.Row)
+  modPatient.$PatProfileData.Remove(GridView1[GridView1.Row, 2].Text)
 
   txtgridencid.Text = GridView1[GridView1.Row, 2].Text
   txtgridnhsi.Text = modNonMedical.GetPatientNHSIbyCode(GridView1[GridView1.Row, 0].Text)

@@ -432,6 +432,8 @@ Public Sub btnshow_Click()
           If resx["fldreference"] Then
             If resx["fldreference"] = "Staff List" Then
               txtreference.ReadOnly = False
+            Else If resx["fldreference"] = "Social List" Then
+              txtreference.ReadOnly = False
             Else
               If resx["fldreference"] = "Claim Code" Then
                 txtreference.Text = modClaim.GetClaimCidePatient(Trim(txtencid.Text), modNonMedical.GetLastCLaimType(Trim(txtencid.Text)))
@@ -657,6 +659,8 @@ Private Sub ShowBillingParam(sPack As String)
       ''claim code button
       If resx["fldreference"] Then
         If resx["fldreference"] = "Staff List" Then
+          txtreference.ReadOnly = False
+        Else If resx["fldreference"] = "Social List" Then
           txtreference.ReadOnly = False
         Else
           If resx["fldreference"] = "Claim Code" Then
@@ -5484,7 +5488,6 @@ End
 
 Public Sub GetCreditLimitUpdate(encid As String, sRefType As String, sClaimCode As String, DiscType As String)
 
-  Dim xrefer As String
   Dim xmsg As Variant[]
 
   Dim xcredamt As Float

@@ -4711,6 +4711,19 @@ Public Sub mnudosing_Click()
 
 End
 
+Public Sub mnuinfusionview_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowInfusionDosing(Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
 Public Sub mnuplan_Click()
 
   Dim xPath As String

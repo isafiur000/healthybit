@@ -6,6 +6,7 @@ Private $ItemListFlag As String[]
 Private $FlagLst As String[]
 Private $sValueList As String[]
 
+Private aHorizPanel As New Object[100]
 Private aMarkCheck As New Object[100]
 Private aNameLabel As New Object[100]
 Private aValueBox As New Object[100]
@@ -20,7 +21,7 @@ End
 
 Public Sub Form_Open()
 
-  modGeneralMain.ArrangeFormCentre(Me, "False")
+  ' modGeneralMain.ArrangeFormCentre(Me, "False")
   $FlagLst = modFixPatho.GetFlaggedSymptomGroup()
   rbgroup.Value = True
   rbgroup_Click()
@@ -121,6 +122,7 @@ Public Sub ListBox1_Click()
 
   $sValueList = xval
   LoadControls()
+  btnBrOK.Enabled = True
 
 End
 
@@ -130,29 +132,30 @@ Private Sub LoadControls()
 
   For i = 0 To $sValueList.Count - 1
     If i < 99 Then
-      aMarkCheck[i] = New CheckBox(Frame1) As "IndexCheck"
-      aNameLabel[i] = New TextLabel(Frame1) As "IndexLabel"
-      ' aValueBox[i] = New SpinNewBox(Frame1) As "IndexValue"
-      aValueBox[i] = New ValueBox(Frame1) As "IndexValue"
-      aComboBox[i] = New ComboBox(Frame1) As "IndexCombo"
-      bComboBox[i] = New ComboBox(Frame1) As "IndexText"
+      aHorizPanel[i] = New HPanel(Frame1)
+      aMarkCheck[i] = New CheckBox(aHorizPanel[i]) As "IndexCheck"
+      aNameLabel[i] = New TextLabel(aHorizPanel[i]) As "IndexLabel"
+      ' aValueBox[i] = New SpinNewBox(aHorizPanel[i]) As "IndexValue"
+      aValueBox[i] = New ValueBox(aHorizPanel[i]) As "IndexValue"
+      aComboBox[i] = New ComboBox(aHorizPanel[i]) As "IndexCombo"
+      bComboBox[i] = New ComboBox(aHorizPanel[i]) As "IndexText"
     Endif
   Next
 
-  Frame1.Height = ($sValueList.Count * 40 + 80) * modBasic.$AppScaleFactor
   For i = 0 To $sValueList.Count - 1
     If i < 99 Then
+      With aHorizPanel[i]
+        .Height = 40 * modBasic.$AppScaleFactor
+        .Width = Frame1.Width - (24 * modBasic.$AppScaleFactor)
+      End With
+
       With aMarkCheck[i]
-        .X = 5 * modBasic.$AppScaleFactor
-        .Y = (i * 40 + 15) * modBasic.$AppScaleFactor
         .Width = 25 * modBasic.$AppScaleFactor
         .Height = 25 * modBasic.$AppScaleFactor
         .Tag = i
       End With
       With aNameLabel[i]
-        .X = (30 + 10) * modBasic.$AppScaleFactor
-        .Y = (i * 40 + 15) * modBasic.$AppScaleFactor
-        .Width = 290 * modBasic.$AppScaleFactor
+        .Width = 250 * modBasic.$AppScaleFactor
         .Height = 40 * modBasic.$AppScaleFactor
         .Text = $sValueList[i]
         .Tag = i
@@ -161,8 +164,6 @@ Private Sub LoadControls()
       End With
 
       With aValueBox[i]
-        .X = (310 + 25) * modBasic.$AppScaleFactor
-        .Y = (i * 40 + 15) * modBasic.$AppScaleFactor
         .Width = 50 * modBasic.$AppScaleFactor
         .Height = 25 * modBasic.$AppScaleFactor
         ' .MaxValue = 100
@@ -172,8 +173,6 @@ Private Sub LoadControls()
       End With
 
       With aComboBox[i]
-        .X = (365 + 25) * modBasic.$AppScaleFactor
-        .Y = (i * 40 + 15) * modBasic.$AppScaleFactor
         .Width = 75 * modBasic.$AppScaleFactor
         .Height = 25 * modBasic.$AppScaleFactor
         .List = modMedicine.$SymptomFrequency
@@ -182,9 +181,8 @@ Private Sub LoadControls()
       End With
 
       With bComboBox[i]
-        .X = (445 + 25) * modBasic.$AppScaleFactor
-        .Y = (i * 40 + 15) * modBasic.$AppScaleFactor
-        .Width = 150 * modBasic.$AppScaleFactor
+        ' .Width = 150 * modBasic.$AppScaleFactor
+        .Expand = True
         .Height = 25 * modBasic.$AppScaleFactor
         .List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldsubsymptom as col from tblsubsymptoms where fldsymptom=&1", $sValueList[i]))
         .Tag = i
@@ -193,6 +191,8 @@ Private Sub LoadControls()
 
     Endif
   Next
+
+  Frame1.Height = ($sValueList.Count * 40 + 80) * modBasic.$AppScaleFactor
 
 End
 
@@ -245,12 +245,6 @@ Public Sub btnBrOK_Click()
   Next
   Balloon.Info(("Information saved"), btnBrOK)
   Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btnBrChange_Click()
-
-  modGeneralMain.SaveFormArrangement(Me)
-  Me.Close()
+  btnBrOK.Enabled = False
 
 End

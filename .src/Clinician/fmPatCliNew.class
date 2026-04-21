@@ -20,6 +20,7 @@ Private $VidIndex As String
 Private $ExamLst As String[]
 Private $RuleChartLst As String[]
 
+Private hMultiCompl As FmMultiComplaints
 Private hPtForm As FmClinHistory
 Private hDigForm As FmDiagnosticTab
 Private hOwnStockForm As FmWardStock
@@ -116,7 +117,7 @@ Public Sub Form_Open()
   If MMain.$SISHAppMode = "HIS" Then
     txtbedno.ReadOnly = True
   Endif
-  SetHtmlTextOption(txtgencomplaint)
+
   SetHtmlTextOption(txthistory)
   SetHtmlTextOption(txtplan)
   SetHtmlTextOption(txtcomment)
@@ -260,27 +261,23 @@ Public Sub Form_KeyRelease()
   Else If Key.Code = Key.F3 Then
     TabPanel1.Index = 0
     If chkenabhistory.Value = True Then
-      btngencompln.Enabled = True
-    Endif
-    txtgencomplaint.SetFocus
-  Else If Key.Code = Key.F4 Then
-    TabPanel1.Index = 1
-    If chkenabhistory.Value = True Then
       btnhistory.Enabled = True
     Endif
     txthistory.SetFocus
+  Else If Key.Code = Key.F4 Then
+    TabPanel1.Index = 1
   Else If Key.Code = Key.F5 Then
     TabPanel1.Index = 2
   Else If Key.Code = Key.F6 Then
     TabPanel1.Index = 3
   Else If Key.Code = Key.F7 Then
     TabPanel1.Index = 4
-  Else If Key.Code = Key.F8 Then
-    TabPanel1.Index = 5
     If txtclinIndex.Value And If txtclinmode.Text Then
       hOwnStockForm.SetOwnDepartment(txtclinIndex.Value & "|" & txtclinmode.Text)
     Endif
     hOwnStockForm.RearrangeGrid()
+  Else If Key.Code = Key.F8 Then
+    TabPanel1.Index = 5
   Else If Key.Code = Key.F9 Then
     TabPanel1.Index = 6
   Else If Key.Code = Key.F10 Then
@@ -308,37 +305,26 @@ Public Sub TabPanel1_Click()
 
   If TabPanel1.Index = 0 Then
     If chkenabhistory.Value = True Then
-      btngencompln.Enabled = True
-    Endif
-    txtgencomplaint.SetFocus
-  Else If TabPanel1.Index = 1 Then
-    If chkenabhistory.Value = True Then
       btnhistory.Enabled = True
     Endif
     txthistory.SetFocus
+  Else If TabPanel1.Index = 1 Then
   Else If TabPanel1.Index = 2 Then
   Else If TabPanel1.Index = 3 Then
   Else If TabPanel1.Index = 4 Then
-    txtquery.SetFocus
-  Else If TabPanel1.Index = 5 Then
     If txtclinIndex.Value And If txtclinmode.Text Then
       hOwnStockForm.SetOwnDepartment(txtclinIndex.Value & "|" & txtclinmode.Text)
     Endif
     hOwnStockForm.RearrangeGrid()
+  Else If TabPanel1.Index = 5 Then
   Else If TabPanel1.Index = 6 Then
   Else If TabPanel1.Index = 7 Then
     If chkenabhistory.Value = True Then
       btnplan.Enabled = True
     Endif
     txtplan.SetFocus
-  Endif
-
-End
-
-Public Sub btnshowgencomp_Click()
-
-  If txtencid.Text Then
-    ShowGeneralComplaints()
+  Else If TabPanel1.Index = 8 Then
+    txtquery.SetFocus
   Endif
 
 End
@@ -490,6 +476,7 @@ Private Sub GetEncounterValue()
             $vidRoom = LCase(Trim(txtencid.Text) & Format(Now(), "yymmdd"))
             $VidIndex = modApplication.GetMD5SumString($vidRoom)
             If $sTatus = "Admitted" Then
+              rbimproved.Enabled = False
               rblama.Enabled = False
               rbdeath.Enabled = False
             Endif
@@ -501,7 +488,6 @@ Private Sub GetEncounterValue()
               SHowALgorithmList()
               modImage.ShowPhotoSplash("Patient", $PatientNum)
               modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
-              txtgencomplaint.SetFocus
               $focus = False
             Else
               Me.Enabled = False
@@ -536,7 +522,6 @@ Private Sub BasicInfoPatient()
     PregnancySettings()
 
     ShowSymptomData()
-    ShowGeneralComplaints()
     ShowEssentialExamRange()
     ShowEssentialExam()
     modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
@@ -545,6 +530,7 @@ Private Sub BasicInfoPatient()
     ShowTelemedSaved()
     GetPatientOutComeVal()
 
+    hMultiCompl = New FmMultiComplaints(Trim(txtencid.Text), pnlmulticomplaints)
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
     hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
@@ -561,6 +547,7 @@ Private Function GetHistoryList() As String[]
   Dim xfinal As String[]
 
   xList = New String[]
+  xList.Add("General Complaints")
   xList.Add("History of Illness")
   xnew = modMedicine.GetClinHistoryList($billReference, $sComp, txtgender.Text)
   If xnew And If xnew.Count Then
@@ -926,7 +913,7 @@ Private Sub ButtonControl()
   btnsympadd.Enabled = xx
   btnaddsymplist.Enabled = xx
   grdchiefsymptom.Enabled = xx
-  btngencompln.Enabled = xx
+  pnlmulticomplaints.Enabled = xx
   ''history
   btnhistory.Enabled = xx
   btnplan.Enabled = xx
@@ -949,6 +936,9 @@ Private Sub ButtonControl()
   tbnsyndro.Enabled = xx
   tbndisease.Enabled = xx
   btnfinaldiagno.Enabled = xx
+  btnfinalsyndro.Enabled = xx
+  tbnfinaldisease.Enabled = xx
+  btnfinalcustom.Enabled = xx
   ''alergy
   tlbtndelallergy.Enabled = xx
   btnallergy.Enabled = xx
@@ -1196,6 +1186,79 @@ Public Sub btnfinaldiagno_Click()
         Endif
       Endif
     Endif
+  Endif
+
+End
+
+Public Sub tbnfinaldisease_Click()
+
+  Dim sName As String[]
+
+  If txtencid.Text Then
+    If modBasic.$FinalDiagnosisObstetrics = "Selection List" Then
+      sName = DiagnoObstetrics(Trim(txtencid.Text), True)
+    Else
+      sName = GetSyndromes()
+    Endif
+
+    If sName Then
+      If sName[1] And If sName[0] Then
+        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1])
+        modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub btnfinalsyndro_Click()
+
+  Dim sName As String[]
+  Dim xGroup As String
+
+  If txtencid.Text Then
+    If MMain.$Ayurveda = "Yes" Then
+      sName = AyurvedicDiagnosis(modAMISRep.$AyurvedicDiagnosis)
+    Else
+      If modBasic.$ClinICDPunchFormat = "GridView" Then
+        sName = ICDGridView("Select Diseases")
+      Else
+        xGroup = modPathoSub.GetDiagnoGroupForService(txtbedno.Text)
+        If xGroup Then
+          sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, xGroup, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
+        Else
+          sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, modBasic.$FixDiagnoGroupOPD, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
+        Endif
+      Endif
+    Endif
+    If sName Then
+      If sName[1] And If sName[0] Then
+        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
+        modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub btnfinalcustom_Click()
+
+  Dim xx As String
+  Dim sName As String[]
+
+  If txtencid.Text Then
+    If modBasic.$FinalDiagnosisObstetrics = "Custom Text" Then
+      sName = DiagnoObstetrics(Trim(txtencid.Text), True)
+      If sName Then
+        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
+      Endif
+    Else
+      xx = InputBox(("Enter custom Final Diagnosis"), ("Final Diagnosis"), "")
+      If xx Then
+        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
+      Endif
+    Endif
+    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
   Endif
 
 End
@@ -1730,24 +1793,16 @@ Public Sub btnaddsymplist_Click()
   Dim xlist As String[]
   Dim aList As String[]
   Dim xitem As String
-  Dim hForm As FmMultiComplaints
 
-  If modBasic.$SelectMultiSymptoms = "Yes" Then
-    xlist = modString.GetListFromVariant(modTableCache.$SymptomCompVar, "fldsymptom", True)
-    If xlist.Count Then
-      aList = GridListView("Select Presenting Complaints", xlist, Panel13, grdchiefsymptom.Height + cmbsymptom.Height + lblhistoryhead.Height + cmbfinding.Height + GridView1.Height)
-      If aList And If aList.Count Then
-        For Each xitem In aList
-          modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", xitem, "", 0, "")
-        Next
-        ShowSymptomData()
-      Endif
+  xlist = modString.GetListFromVariant(modTableCache.$SymptomCompVar, "fldsymptom", True)
+  If xlist.Count Then
+    aList = GridListView("Select Presenting Complaints", xlist, Panel13, grdchiefsymptom.Height + cmbsymptom.Height + lblhistoryhead.Height + cmbfinding.Height + GridView1.Height)
+    If aList And If aList.Count Then
+      For Each xitem In aList
+        modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", xitem, "", 0, "")
+      Next
+      ShowSymptomData()
     Endif
-
-  Else
-    hForm = New FmMultiComplaints(Trim(txtencid.Text))
-    hForm.ShowModal()
-    ShowSymptomData()
   Endif
 
 End
@@ -2447,62 +2502,6 @@ Public Sub btnplan_Click()
 
 End
 
-''=================== complaints =====================
-Private Sub ShowGeneralComplaints()
-
-  Dim xcomplAr As String[]
-
-  xcomplAr = modPatPatho.ShowSelectedHistoryUser(Trim(txtencid.Text), "General Complaints")
-  If xcomplAr And If xcomplAr.Count Then
-    txtgencomplaint.RichText = xcomplAr[0]
-    lblcomplaintuser.Text = xcomplAr[1]
-  Endif
-
-End
-
-Public Sub dcthelpgencomp_Click()
-
-  Dim xx As String
-
-  xx = GetRichTextArea("General Complaints", txtgencomplaint.RichText)
-  If xx Then
-    txtgencomplaint.RichText = xx
-  Endif
-
-End
-
-Public Sub btnhelpgencomp_Click()
-
-  txtgencomplaint.RichText = txtgencomplaint.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtgencomplaint.Text)
-
-End
-
-Public Sub btntemplpgencomp_Click()
-
-  txtgencomplaint.RichText = txtgencomplaint.RichText & DictionaryVIew("General Complaints")
-
-End
-
-Public Sub btngencompln_Click()
-
-  Dim xboolean As Boolean
-
-  If modBasic.$ClinHistoryInput = "Single" Then
-    xboolean = True
-  Else
-    xboolean = False
-  Endif
-
-  If txtgencomplaint.Text Then
-    modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "History", "General Complaints", txtgencomplaint.KeyList.Join(";"), txtgencomplaint.RichText, xboolean)
-    Balloon.Info(("Information saved"), btngencompln)
-    Balloon.Delay = modBasic.$BalloonDelay
-    btngencompln.Enabled = False
-  Endif
-  modSettings.SaveSettingsToFile("OPDForm/Complaints", "General")
-
-End
-
 ''------------------------------------- Menu -------------------------------------------------
 Public Sub mnupatimage_Click()
 
@@ -3101,6 +3100,19 @@ Public Sub mnudrugdosing_Click()
   If txtencid.Text Then
     Inc Application.Busy
     xPath = modCHTMLPatient.ShowNursingDosing(Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnuinfusionview_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowInfusionDosing(Trim(txtencid.Text))
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
   Endif
@@ -3912,9 +3924,7 @@ Private Sub RestrictUserAccess()
     btnaddsymplist.Enabled = False
     btnsympadd.Enabled = False
     grdchiefsymptom.Enabled = False
-  Endif
-  If $UserRestrict.Exist("General Complaints") Then
-    btngencompln.Enabled = False
+    pnlmulticomplaints.Enabled = False
   Endif
   If $UserRestrict.Exist("Patient History") Then
     btnhistory.Enabled = False
@@ -3941,6 +3951,9 @@ Private Sub RestrictUserAccess()
   Endif
   If $UserRestrict.Exist("Final Diagnosis") Then
     btnfinaldiagno.Enabled = False
+    btnfinalsyndro.Enabled = False
+    tbnfinaldisease.Enabled = False
+    btnfinalcustom.Enabled = False
   Endif
   If $UserRestrict.Exist("Drug Allergy") Then
     tlbtndelallergy.Enabled = False
@@ -4305,7 +4318,6 @@ End
 Public Sub btnsaveAll_Click()
 
   If txtencid.Text Then
-    btngencompln_Click()
     btnsavevitals_Click()
     btnhistory_Click()
     btnplan_Click()
@@ -4352,6 +4364,12 @@ Public Sub btnselect_Click()
 End
 
 Public Sub rbimproved_Click()
+
+  pnloutcome.Visible = False
+
+End
+
+Public Sub rbcomplete_Click()
 
   pnloutcome.Visible = False
 
@@ -4432,7 +4450,9 @@ Public Sub btnoutcome_Click()
       xmode = "Death"
       modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "Death(OPD)", dtfollowup.Value)
     Else If rbimproved.Value = True Then
-      xmode = "Improved"
+      xmode = "Discharged"
+    Else If rbcomplete.Value = True Then
+      xmode = "Completed"
     Endif
 
     If xmode Then
@@ -4460,7 +4480,7 @@ Public Sub btnoutcome_Click()
       Endif
       If modBasic.$AutoDeskNotice = "Disable" Then
       Else
-        If xmode = "Improved" Then
+        If xmode = "Discharged" Then
           modDevice.GetNotification("Discharged", "<b>" & txtpatientname.Text & "</b> with Encounter ID : " & txtencid.Text)
         Else
           modDevice.GetNotification(xmode, "<b>" & txtpatientname.Text & "</b> with Encounter ID : " & txtencid.Text)

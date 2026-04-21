@@ -16,6 +16,7 @@ Public Sub Form_Open()
   cmbinjsub.List = ["Enable", "Disable"]
   cmblockstock.List = ["Enable", "Disable"]
   cmbcurnarcotic.List = ["Select", "User"]
+  cmbdefreq.List = modMedicine.FrequencyCombo()
 
   cmblabelregimen.List = ["Yes", "No"]
   cmblabelauto.List = ["High Risk", "Low Risk", "All Types"]
@@ -226,6 +227,7 @@ Private Sub DisplayGeneral()
   cmbrandsubst.Text = modSettings.ShowSettingFromFIle("ClinicForms/AllowBrandSubstitution")
   cmbinjsub.Text = modSettings.ShowSettingFromFIle("ClinicForms/ShowInjectionSubRoutes")
   cmblockstock.Text = modSettings.ShowSettingFromFIle("ClinicForms/LockPharmacyStock")
+  cmbdefreq.Text = modSettings.ShowSettingFromFIle("ClinicForms/DefaultFrequency")
 
 End
 
@@ -294,6 +296,15 @@ Public Sub btnlockstock_Click()
   modSettings.SaveSettingsToFile("ClinicForms/LockPharmacyStock", cmblockstock.Text)
   modBasic.$ClinLockPharmStock = cmblockstock.Text
   Balloon.Info(("Information saved"), btnlockstock)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btndefreq_Click()
+
+  modSettings.SaveSettingsToFile("ClinicForms/DefaultFrequency", cmbdefreq.Text)
+  modBasic.$ClinDefaultFreq = cmbdefreq.Text
+  Balloon.Info(("Information saved"), btndefreq)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

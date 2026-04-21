@@ -3,6 +3,8 @@
 { Form Form
   MoveScaled(0,0,107,82)
   Text = ("HI Documents")
+  Arrangement = Arrange.Vertical
+  Margin = True
   { mnufile Menu
     Text = ("File")
     { mnuscanfile Menu
@@ -56,6 +58,8 @@
   }
   { TabPanel1 TabPanel
     MoveScaled(1,0,105,78)
+    Expand = True
+    Arrangement = Arrange.Vertical
     Count = 2
     Index = 0
     Text = ("Invoices")
@@ -97,6 +101,7 @@
     }
     { GridView2 GridView
       MoveScaled(1,4,103,66)
+      Expand = True
       Mode = Select.Single
       Header = GridView.Both
       AutoResize = False
@@ -168,6 +173,7 @@
     }
     { Panel6 Panel
       MoveScaled(0,29,104,44)
+      Expand = True
       Arrangement = Arrange.Horizontal
       Border = Border.Plain
       { docviewleft DocumentView

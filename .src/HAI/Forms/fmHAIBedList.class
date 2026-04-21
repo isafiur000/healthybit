@@ -1251,6 +1251,19 @@ Public Sub mnumedview_Click()
 
 End
 
+Public Sub mnuinfusionview_Click()
+
+  Dim xPath As String
+
+  If GridView1.Rows.Selection.Count Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowInfusionDosing(GridView1[GridView1.Row, 4].Text)
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(GridView1[GridView1.Row, 4].Text, xPath, "ReportSize")
+  Endif
+
+End
+
 Public Sub mnuhistory_Click()
 
   Dim xPath As String

@@ -352,6 +352,7 @@ Public Sub GridView1_Click()
   btnupload.Text = "Upload"
   txttotal.Value = 0
   txttotal.Value = GridView1[GridView1.Row, 7].Text
+  modPatient.$PatProfileData.Remove(GridView1[GridView1.Row, 2].Text)
 
   txtgridencid.Text = GridView1[GridView1.Row, 2].Text
   xpatNo = modPatient.GetPatientNoByEnc(GridView1[GridView1.Row, 2].Text)

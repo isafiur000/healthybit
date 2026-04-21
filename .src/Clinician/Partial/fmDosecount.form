@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,109,58)
+  MoveScaled(0,0,109,57)
   Expand = True
   Text = ("Dosing Record")
   Resizable = False
@@ -30,12 +30,12 @@
       { Panel3 Panel
         MoveScaled(0,36,33.5,3.875)
         { btnexpo Button
-          MoveScaled(17,0.5,15.625,3)
+          MoveScaled(17,0.5,15,3)
           Text = ("Export")
           Picture = Picture["icon:/small/html"]
         }
         { btnrepo Button
-          MoveScaled(0,0.5,15.625,3)
+          MoveScaled(1,0.5,15,3)
           Text = ("Report")
           Picture = Picture["icon:/small/html"]
         }
@@ -55,8 +55,16 @@
           Border = Border.Plain
         }
         { btninjection ToolButton
-          MoveScaled(45,0,3.5,3.5)
+          MoveScaled(43,0,3.5,3.5)
           Picture = Picture["icon:/small/info"]
+        }
+        { txtmedname TextBox
+          MoveScaled(47,0,8,3)
+          Visible = False
+        }
+        { txtinitstren ValueBox
+          MoveScaled(55,0,4,3)
+          Visible = False
         }
         { chkdisp CheckBox
           MoveScaled(61,0.5,10,3)
@@ -108,7 +116,7 @@
           Picture = Picture["icon:/small/add"]
         }
         { Label1 Label
-          MoveScaled(0,0.5,8,3)
+          MoveScaled(0,0.5,8.5,3)
           Border = Border.Plain
           Text = ("Regimen")
         }
@@ -119,14 +127,16 @@
         ReadOnly = True
         Wrap = True
       }
-      { txtmixture TextArea
-        MoveScaled(0,21,71,4)
-        Visible = False
-        ReadOnly = True
-        Wrap = True
+      { txtmixture Label
+        MoveScaled(0,21,36,3)
+        Border = Border.Plain
+      }
+      { txtprescriber Label
+        MoveScaled(0,25,36,3)
+        Border = Border.Plain
       }
       { GridView1 GridView
-        MoveScaled(1,27,66,14)
+        MoveScaled(1,31,66,10)
         Expand = True
         Mode = Select.Single
         Header = GridView.Both

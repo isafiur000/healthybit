@@ -14,7 +14,7 @@ Public Sub Form_Open()
   Dim i As Integer
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
-  cmbdept.List = modGeneral.GetDepartForConsultOnly()
+  cmbdept.List = modBasic.$OPDConsultDepartments
   dtconsultdate.Value = Now()
   dtconsultime.Value = Now()
   If modHelpVariable.$LogInCategory = "Cashier" Then

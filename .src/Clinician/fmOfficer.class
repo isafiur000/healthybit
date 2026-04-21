@@ -1145,3 +1145,28 @@ Public Sub mnuaimodels_Click()
   fmAISettings.ShowModal
 
 End
+
+Public Sub mnustockedit_Click()
+
+  fmPharmCost.Close
+  fmPharmCost.ShowModal
+
+End
+
+Public Sub mnuconsreport_Click()
+
+  Dim hForm As FmConsultReport
+
+  hForm = New FmConsultReport("tblconsult")
+  modWorkSpace.Add(hForm)
+
+End
+
+Public Sub mnuopvisits_Click()
+
+  Dim hForm As FmConsultReport
+
+  hForm = New FmConsultReport("tblopvisit")
+  modWorkSpace.Add(hForm)
+
+End

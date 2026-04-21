@@ -1,43 +1,56 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,107,56)
-  Text = ("Presenting Complaints")
-  Resizable = False
-  { btnBrOK Button
-    MoveScaled(80,51.5,12,3.5)
-    ToolTip = ("[Ctrl+S] to save")
-    Text = Shortcut(("Save"), "S")
-    Picture = Picture["icon:/small/apply"]
-  }
-  { ScrollView1 ScrollView
-    MoveScaled(25,1,81,50)
-    { Frame1 Panel
-      MoveScaled(0,0,80,49)
+  MoveScaled(0,0,93,56)
+  Expand = True
+  Arrangement = Arrange.Horizontal
+  { Panel4 Panel
+    MoveScaled(1,1,21,53)
+    Arrangement = Arrange.Vertical
+    { Panel1 Panel
+      MoveScaled(0,0,21,4)
+      { rbfixed RadioButton
+        MoveScaled(0.5,0.5,9,3)
+        Text = ("Class")
+        Value = True
+      }
+      { rbgroup RadioButton
+        MoveScaled(10,0.5,10,3)
+        Text = ("Group")
+      }
+    }
+    { ListBox1 ListBox
+      MoveScaled(0,4,20,39)
       Expand = True
+      ScrollBar = Scroll.Both
+      Sorted = True
     }
   }
-  { btnBrChange Button
-    MoveScaled(93,51.5,12,3.5)
-    Text = ("Close")
-    Picture = Picture["icon:/small/close"]
-    Cancel = True
+  { Panel5 Panel
+    MoveScaled(22,1,1,53)
   }
-  { ListBox1 ListBox
-    MoveScaled(1,5,23,50)
-    ScrollBar = Scroll.Both
-    Sorted = True
-  }
-  { Panel1 Panel
-    MoveScaled(1,1,23,4)
-    { rbfixed RadioButton
-      MoveScaled(0.5,0.5,10,3)
-      Text = ("Class")
-      Value = True
+  { Panel3 Panel
+    MoveScaled(23,1,69,53)
+    Expand = True
+    Arrangement = Arrange.Vertical
+    { ScrollView1 ScrollView
+      MoveScaled(0,0,68,39)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { Frame1 Panel
+        MoveScaled(0,0,67,33)
+        Arrangement = Arrange.Vertical
+        AutoResize = True
+      }
     }
-    { rbgroup RadioButton
-      MoveScaled(12,0.5,10,3)
-      Text = ("Group")
+    { Panel2 Panel
+      MoveScaled(0,41,68,3.5)
+      { btnBrOK Button
+        MoveScaled(51,0,12,3.5)
+        ToolTip = ("[Ctrl+S] to save")
+        Text = ("Save")
+        Picture = Picture["icon:/small/apply"]
+      }
     }
   }
 }

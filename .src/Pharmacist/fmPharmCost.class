@@ -17,22 +17,33 @@ Public Sub Form_Open()
   lblrupee.Text = modBasic.$currency
   lblrupcost.Text = modBasic.$currency
   lblrupmrp.Text = modBasic.$currency
-  If modHelpVariable.$LogInCategory = "Account" Then
-    $SuperMode = True
-    txtrate.ReadOnly = False
-    txtnetcost.ReadOnly = False
-    txtmrp.ReadOnly = False
-  Else If modHelpVariable.$LogInCategory = "Pharmacist" Then
-    $SuperMode = False
-    txtrate.ReadOnly = True
-    txtnetcost.ReadOnly = False
-    txtmrp.ReadOnly = False
-  Else
-    $SuperMode = False
-    txtrate.ReadOnly = True
-    txtnetcost.ReadOnly = True
-    txtmrp.ReadOnly = True
-  Endif
+  Select modHelpVariable.$LogInCategory
+    Case "Account"
+      $SuperMode = True
+      txtrate.ReadOnly = False
+      txtnetcost.ReadOnly = False
+      txtmrp.ReadOnly = False
+
+    Case "Pharmacist"
+      $SuperMode = False
+      txtrate.ReadOnly = True
+      txtnetcost.ReadOnly = False
+      txtmrp.ReadOnly = False
+
+    Case "Dispensar", "Store"
+      $SuperMode = False
+      txtrate.ReadOnly = True
+      txtnetcost.ReadOnly = True
+      txtmrp.ReadOnly = True
+
+    Case Else
+      $SuperMode = False
+      txtbatch.ReadOnly = True
+      dtexpiry.Enabled = False
+      txtrate.ReadOnly = True
+      txtnetcost.ReadOnly = True
+      txtmrp.ReadOnly = True
+  End Select
   cmbcomp.SetFocus
 
 End
@@ -154,9 +165,9 @@ Private Sub ShowGridData(available As Boolean)
   Dim fld As ResultField
 
   If available = True Then
-    $rData = modDatabase.$myConn.Exec("select fldstockno,fldbatch,fldexpiry,fldqty,fldsellpr,fldstatus from tblentry where fldstockid=&1 and fldcomp like &2 and fldqty>&3 and fldstatus>&4", cmbitem.Text, cmbcomp.Text, 0, 0)                                                    ''
+    $rData = modDatabase.$myConn.Exec("select fldstockno,fldbatch,fldexpiry,fldqty,fldsellpr,fldstatus from tblentry where fldstockid=&1 and fldcomp like &2 and fldqty>&3 and fldstatus>&4 ORDER BY fldstatus", cmbitem.Text, cmbcomp.Text, 0, 0)                                                    ''
   Else If available = False Then
-    $rData = modDatabase.$myConn.Exec("select fldstockno,fldbatch,fldexpiry,fldqty,fldsellpr,fldstatus from tblentry where fldstockid=&1 and fldcomp like &2 and fldqty>&3", cmbitem.Text, cmbcomp.Text, 0)                                                      ''
+    $rData = modDatabase.$myConn.Exec("select fldstockno,fldbatch,fldexpiry,fldqty,fldsellpr,fldstatus from tblentry where fldstockid=&1 and fldcomp like &2 and fldqty>&3 ORDER BY fldstatus", cmbitem.Text, cmbcomp.Text, 0)                                                      ''
   Endif
 
   GridView1.Clear
@@ -190,7 +201,7 @@ Private Sub ShowGridData(available As Boolean)
     .Columns[1].Text = "Batch"
     .Columns[2].Text = "Expiry"
     .Columns[3].Text = "QTY"
-    .Columns[4].Text = "SP"
+    .Columns[4].Text = "SellP"
     .Columns[5].Text = "Order"
   End With
 

@@ -1654,7 +1654,7 @@ Public Sub btnoutcome_Click()
       xmode = "Death"
       modPatientSub.UpdateCurrentStatus($encid, "Death(OPD)", dtfollowup.Value)
     Else If rbimproved.Value = True Then
-      xmode = "Improved"
+      xmode = "Discharged"
     Endif
 
     If xmode Then

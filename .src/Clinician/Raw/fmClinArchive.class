@@ -71,7 +71,7 @@ Private Sub ShowEncounterList()
 
   If rbarchive.Value = True Then
     cmbsource.List = ["All Archives", "Diagnostic Tests", "Radio Diagnostics", "General Reports", "Scanned Images", "Past Documents"]
-    cmbsource.Text = "Scanned Images"
+    cmbsource.Text = "All Archives"
     sql = "select t1.fldregdate as fldregdate,t2.fldencounterval as fldencounterval from tblencounter as t1 inner join " & $tblpatreport & " as t2 on t1.fldencounterval=t2.fldencounterval where t1.fldpatientval=&1 GROUP BY fldencounterval ORDER BY fldregdate DESC"
   Else If rbsaved.Value = True Then
     cmbsource.List = ["Patient Images", "Patient Videos"]

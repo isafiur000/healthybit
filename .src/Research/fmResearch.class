@@ -575,15 +575,19 @@ End
 
 Public Sub mnuconsreport_Click()
 
-  modWorkSpace.Remove(fmConsultReport)
-  modWorkSpace.Add(fmConsultReport)
+  Dim hForm As FmConsultReport
+
+  hForm = New FmConsultReport("tblconsult")
+  modWorkSpace.Add(hForm)
 
 End
 
 Public Sub mnuopvisits_Click()
 
-  modWorkSpace.Remove(fmOpVisitReport)
-  modWorkSpace.Add(fmOpVisitReport)
+  Dim hForm As FmConsultReport
+
+  hForm = New FmConsultReport("tblopvisit")
+  modWorkSpace.Add(hForm)
 
 End
 

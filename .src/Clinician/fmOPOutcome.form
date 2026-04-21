@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,78,31)
+  MoveScaled(0,0,78,34)
   Text = ("Out Patient Outcome")
   Resizable = False
   Margin = True
@@ -10,7 +10,7 @@
     Border = Border.Plain
   }
   { Panel4 Panel
-    MoveScaled(0,0,14,26)
+    MoveScaled(0,0,14,29)
     { rbimproved RadioButton
       MoveScaled(0.5,1,12,3)
       Text = ("Discharge")
@@ -36,13 +36,17 @@
       MoveScaled(0.5,21,10,3)
       Text = ("Death")
     }
+    { rbcomplete RadioButton
+      MoveScaled(0.5,25,13,3)
+      Text = ("Completed")
+    }
   }
   { txtcomment TextArea
-    MoveScaled(14,5,63,21)
+    MoveScaled(14,5,63,23)
     Wrap = True
   }
   { Panel2 Panel
-    MoveScaled(0,26,77,4)
+    MoveScaled(0,29,77,4)
     { btnsave Button
       MoveScaled(43,0.5,13,3)
       Text = ("Save")
