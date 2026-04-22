@@ -5522,15 +5522,20 @@ Public Sub GetCreditLimitUpdate(encid As String, sRefType As String, sClaimCode 
       Endif
     Endif
 
-    crdtot = xcredamt + modNonMedical.TotalClaimedCreditExpensebyPatient(modDatabase.$myConn, encid)
-    If txtcreditlimit.Value > crdtot Then
-      If Message.Warning("Creidt Limit has Changed. Do you want to correct ?", ("No"), ("Yes")) = 2 Then
-        res = modDatabase.$myConn.Edit("tblencounter", "fldencounterval=&1", Trim(txtencid.Text))
-        res["fldcashcredit"] = crdtot
-        res["fldvalidity"] = xexpdate
-        res["xyz"] = False
-        res.Update
+    If xcredamt Then
+      crdtot = xcredamt + modNonMedical.TotalClaimedCreditExpensebyPatient(modDatabase.$myConn, encid)
+      If txtcreditlimit.Value > crdtot Then
+        If Message.Warning("Creidt Limit has Changed. Do you want to correct ?", ("No"), ("Yes")) = 2 Then
+          res = modDatabase.$myConn.Edit("tblencounter", "fldencounterval=&1", Trim(txtencid.Text))
+          res["fldcashcredit"] = crdtot
+          res["fldvalidity"] = xexpdate
+          res["xyz"] = False
+          res.Update
+        Endif
       Endif
+
+    Else
+      Message.Warning("Update Credit Limit manually.", ("OK"))
     Endif
 
   Endif
