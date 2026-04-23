@@ -122,7 +122,6 @@ Public Sub ListBox1_Click()
 
   $sValueList = xval
   LoadControls()
-  btnBrOK.Enabled = True
 
 End
 
@@ -146,7 +145,7 @@ Private Sub LoadControls()
     If i < 99 Then
       With aHorizPanel[i]
         .Height = 40 * modBasic.$AppScaleFactor
-        .Width = Frame1.Width - (24 * modBasic.$AppScaleFactor)
+        .Width = Frame1.Width - (32 * modBasic.$AppScaleFactor)
       End With
 
       With aMarkCheck[i]
@@ -232,7 +231,7 @@ Public Sub IndexText_KeyRelease()
 
 End
 
-Public Sub btnBrOK_Click()
+Public Sub SaveSymptomsEntry()
 
   Dim i As Integer
 
@@ -240,11 +239,20 @@ Public Sub btnBrOK_Click()
     If i < 99 Then
       If aMarkCheck[i].Value = True Then
         modPatientGeneral.AddPatComplaintsData($encid, "Presenting Symptoms", aNameLabel[i].Text, bComboBox[i].Text, aValueBox[i].Value, aComboBox[i].Text)
+        bComboBox[i].Text = ""
+        aValueBox[i].Value = 0
+        aComboBox[i].Text = ""
+        aMarkCheck[i].Value = False
       Endif
     Endif
   Next
+
+End
+
+Public Sub btnBrOK_Click()
+
+  SaveSymptomsEntry()
   Balloon.Info(("Information saved"), btnBrOK)
   Balloon.Delay = modBasic.$BalloonDelay
-  btnBrOK.Enabled = False
 
 End

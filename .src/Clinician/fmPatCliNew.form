@@ -611,7 +611,7 @@
             Visible = False
             ToolTip = ("Delete Selected Diagnosis")
             Text = ("Copy")
-            Picture = Picture["icon:/32/copy"]
+            Picture = Picture["icon:/small/copy"]
           }
         }
         { lsticdisease TreeView
@@ -690,7 +690,7 @@
           Picture = Picture["icon:/small/color"]
         }
         { btnshowvital ToolButton
-          MoveScaled(37,12.5,3,3)
+          MoveScaled(39,12.5,3,3)
           Picture = Picture["icon:/small/refresh"]
         }
         { Label5 Label
@@ -723,10 +723,6 @@
           Border = Border.Plain
           Text = ("S P O2")
         }
-        { chkenabhistory CheckBox
-          MoveScaled(14,12,3,3)
-          Visible = False
-        }
         { btnpulseinfo ToolButton
           MoveScaled(18,1,3,3)
           Picture = Picture["icon:/small/info"]
@@ -750,6 +746,11 @@
         { btntempinfo ToolButton
           MoveScaled(40,9,3,3)
           Picture = Picture["icon:/small/info"]
+        }
+        { btnaddchart2 Button
+          MoveScaled(13.5,12.5,9,3)
+          Text = ("Order")
+          Picture = Picture["icon:/small/pen"]
         }
       }
     }
@@ -885,6 +886,10 @@
             Text = ("Save")
             Picture = Picture["icon:/small/apply"]
           }
+          { chkenabhistory CheckBox
+            MoveScaled(38,0,3,3)
+            Visible = False
+          }
         }
         { txthistory TextHTML
           MoveScaled(0,4,59,8)
@@ -899,44 +904,43 @@
       Index = 1
       Text = ("Complaints [F4]")
       { Panel3 Panel
-        MoveScaled(0,0,60,33)
+        MoveScaled(0,0,56,33)
         Arrangement = Arrange.Vertical
         { Panel13 Panel
-          MoveScaled(0,7,60,3.5)
+          MoveScaled(0,7,55,4)
           { btnaddsymplist ToolButton
-            MoveScaled(0,0.5,8,3)
-            Text = ("List")
+            MoveScaled(0,0.5,4,3)
             Picture = Picture["icon:/small/bookmark"]
           }
           { cmbsymptom ComboBox
-            MoveScaled(8,0.5,51,3)
+            MoveScaled(5,0.5,48,3)
             ToolTip = ("Symptom Name\nWrite few alphabets and press Down key to populate this combobox")
             Expand = True
             Sorted = True
           }
         }
         { Panel22 Panel
-          MoveScaled(0,11,60,4)
+          MoveScaled(0,11,55,4)
           { txtsympval ValueBox
-            MoveScaled(0,0.5,7,3)
+            MoveScaled(0,0.5,6,3)
             ToolTip = ("Duration of the symptom")
           }
           { cmbsympunit ComboBox
-            MoveScaled(7,0.5,13,3)
+            MoveScaled(6,0.5,12,3)
             ToolTip = ("Unit of the duration")
           }
           { cmbsymdura ComboBox
-            MoveScaled(21,0.5,27,3)
+            MoveScaled(18,0.5,24,3)
           }
           { btnsympadd Button
-            MoveScaled(49,0.5,10,3)
+            MoveScaled(43,0.5,10,3)
             Tag = "Auto"
             Text = ("Add")
             Picture = Picture["icon:/small/add"]
           }
         }
         { grdchiefsymptom GridView
-          MoveScaled(0,16,56,16)
+          MoveScaled(0,16,55,16)
           Expand = True
           Mode = Select.Single
           Header = GridView.Both
@@ -950,12 +954,30 @@
         }
       }
       { Panel21 Panel
-        MoveScaled(60,1,1,32)
+        MoveScaled(56,1,1,32)
       }
-      { pnlmulticomplaints Panel
-        MoveScaled(61,0,57,34)
+      { Panel23 Panel
+        MoveScaled(57,0,57,38)
         Expand = True
         Arrangement = Arrange.Vertical
+        { Panel39 Panel
+          MoveScaled(0,0,56,3.5)
+          { btnmultisymptom Button
+            MoveScaled(43,0,13,3)
+            Text = ("Save")
+            Picture = Picture["icon:/small/apply"]
+          }
+          { Label1 Label
+            MoveScaled(0,0,30,3)
+            Border = Border.Plain
+            Text = ("Chief Complaints")
+          }
+        }
+        { pnlmulticomplaints Panel
+          MoveScaled(0,8,44,28)
+          Expand = True
+          Arrangement = Arrange.Vertical
+        }
       }
       Index = 2
       Text = ("Findings [F5]")
@@ -1358,18 +1380,21 @@
             Text = ("Final Diagnosis")
           }
           { btnfinalsyndro Button
-            MoveScaled(18,0,14,3)
-            Text = ("Diagnosis")
+            MoveScaled(17,0,4.5,3)
             Picture = Picture["icon:/small/add"]
           }
           { tbnfinaldisease Button
-            MoveScaled(33,0,14,3)
-            Text = ("Diagnosis")
+            MoveScaled(22,0,4.5,3)
             Picture = Picture["icon:/small/add"]
           }
           { btnfinalcustom Button
-            MoveScaled(48,0,4,3)
+            MoveScaled(27,0,4.5,3)
             Picture = Picture["icon:/small/add"]
+          }
+          { btnopreport Button
+            MoveScaled(39,0,13,3)
+            Text = ("Report")
+            Picture = Picture["icon:/small/html"]
           }
         }
         { pnlsaveoutcome Panel
@@ -1379,17 +1404,12 @@
             Text = ("Section")
           }
           { btnoutcome Button
-            MoveScaled(29,0.5,13,3)
+            MoveScaled(39,0.5,13,3)
             Text = ("Save")
             Picture = Picture["icon:/small/apply"]
           }
-          { btnopreport Button
-            MoveScaled(42,0.5,13,3)
-            Text = ("Report")
-            Picture = Picture["icon:/small/html"]
-          }
           { chkarchive CheckBox
-            MoveScaled(15,0.5,10,3)
+            MoveScaled(24,0.5,10,3)
             Text = ("Archive")
           }
         }

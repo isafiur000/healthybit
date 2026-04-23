@@ -1,20 +1,53 @@
 ' Gambas class file
 
 Private $encid As String
+Private $sType As String
 Private $rData As Result
 Private $aMyFields As String[]
 
-Public Sub _new(encid As String)
+Public Sub _new(encid As String, sType As String)
 
   $encid = encid
+  $sType = sType
 
 End
 
 Public Sub Form_Open()
 
-  cmbnote.List = ["Progress Note", "Clinicians Note", "Nurses Note", "Transfer Note"]
+  If $sType Then
+    cmbnote.Text = $sType
+    cmbnote.Enabled = False
+    Me.Text = $sType
+    Select $sType
+      Case "Progress Note"
+        rbprogress.Value = True
+      Case "Clinicians Note"
+        rbclinician.Value = True
+      Case "Nurses Note"
+        rbnurses.Value = True
+      Case "Transfer Note"
+        rbtransfer.Value = True
+      Case "Doctor Order"
+        rbdoctor.Value = True
+        Panel5.Enabled = False
+    End Select
+    Panel4.Enabled = False
+  Else
+    cmbnote.List = ["Progress Note", "Clinicians Note", "Nurses Note", "Transfer Note", "Doctor Order"]
+    Panel4.Enabled = True
+  Endif
   txtname.Text = modPatient.GetPatientNameByEnc($encid)
   cmbnote.SetFocus
+
+End
+
+Public Sub cmbnote_Click()
+
+  If cmbnote.Text = "Doctor Order" Then
+    Panel5.Enabled = False
+  Else
+    Panel5.Enabled = True
+  Endif
 
 End
 
@@ -89,6 +122,8 @@ Private Sub SHowNotesGrid()
     xType = "Nurses Note"
   Else If rbtransfer.Value = True Then
     xType = "Transfer Note"
+  Else If rbdoctor.Value = True Then
+    xType = "Doctor Order"
   Endif
 
   sql1 = "select fldtime,flddetail,fldreportquali,flduserid from tblexamgeneral where fldencounterval=&1 and fldinput=&2 and flditem=&3"
@@ -98,7 +133,7 @@ Private Sub SHowNotesGrid()
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
 
   With GridView1
-    .Columns[0].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[0].Width = 150 * modBasic.$AppWidthRatio
     .Columns[1].Width = 400 * modBasic.$AppWidthRatio
     .Columns[2].Width = 125 * modBasic.$AppWidthRatio
     .Columns[3].Width = 75 * modBasic.$AppWidthRatio

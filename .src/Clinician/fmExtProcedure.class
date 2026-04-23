@@ -648,33 +648,6 @@ Public Sub btnnewsummry_Click()
 End
 
 ''------------------------------------- chief symptom ------------------------------------------------------
-Public Sub btnaddsymplist_Click()
-
-  Dim xlist As String[]
-  Dim aList As String[]
-  Dim xitem As String
-  Dim hForm As FmMultiComplaints
-
-  If modBasic.$SelectMultiSymptoms = "Yes" Then
-    xlist = modString.GetListFromVariant(modTableCache.$SymptomCompVar, "fldsymptom", True)
-    If xlist.Count Then
-      aList = GridListView("Select Presenting Complaints", xlist, Panel10, Panel18.Height)
-      If aList And If aList.Count Then
-        For Each xitem In aList
-          modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", xitem, "", 0, "")
-        Next
-        ShowSymptomData()
-      Endif
-    Endif
-
-  Else
-    hForm = New FmMultiComplaints(Trim(txtencid.Text))
-    hForm.ShowModal()
-    ShowSymptomData()
-  Endif
-
-End
-
 Public Sub cmbsymptom_GotFocus()
 
   Dim xlist As String[]

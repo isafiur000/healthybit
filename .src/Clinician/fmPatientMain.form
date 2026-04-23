@@ -940,50 +940,27 @@
         Arrangement = Arrange.Vertical
       }
       { Panel30 Panel
-        MoveScaled(61,0,57,38)
+        MoveScaled(61,0,55,40)
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel31 Panel
-          MoveScaled(0,0,57,4)
-          { dcthelpgencomp ToolButton
-            MoveScaled(27,0.5,3,3)
-            Picture = Picture["icon:/small/edit"]
-          }
-          { btnhelpgencomp ToolButton
-            MoveScaled(31,0.5,3,3)
-            Picture = Picture["icon:/small/exec"]
-          }
-          { btntemplpgencomp ToolButton
-            MoveScaled(35,0.5,3,3)
-            Picture = Picture["icon:/small/attach"]
-          }
-          { btnshowgencomp ToolButton
-            MoveScaled(39,0.5,3,3)
-            Picture = Picture["icon:/small/refresh"]
-          }
-          { Label27 Label
-            MoveScaled(0,0.5,19,3)
-            Border = Border.Plain
-            Text = ("General Complaints")
-          }
-          { btngencompln Button
-            MoveScaled(47,0.5,9,3)
+          MoveScaled(0,0,53,3.5)
+          { btnmultisymptom Button
+            MoveScaled(41,0,12,3)
+            ToolTip = ("[Ctrl+S] to save")
             Text = ("Save")
             Picture = Picture["icon:/small/apply"]
           }
-          { chkenabhistory CheckBox
-            MoveScaled(19,0,3,3)
-            Visible = False
+          { Label1 Label
+            MoveScaled(0,0,30,3)
+            Border = Border.Plain
+            Text = ("Chief Complaints")
           }
         }
-        { txtgencomplaint TextHTML
-          MoveScaled(0,7,51,16)
-          Tag = "Auto"
+        { pnlmulticomplaints Panel
+          MoveScaled(6,7,38,31)
           Expand = True
-        }
-        { lblcomplaintuser Label
-          MoveScaled(0,29,89,3)
-          Border = Border.Plain
+          Arrangement = Arrange.Vertical
         }
       }
       Index = 1
@@ -994,6 +971,13 @@
         { cmbinpathistory ListBox
           MoveScaled(1,2,23,27)
           Expand = True
+        }
+        { Panel44 Panel
+          MoveScaled(0,30,25,4)
+          { mnupatcomment Button
+            MoveScaled(0,0,24,3.5)
+            Text = ("Long Med Record")
+          }
         }
         { Panel2 Panel
           MoveScaled(0,35,24,3)
@@ -1051,6 +1035,10 @@
             MoveScaled(0,0.5,36,3)
             Font = Font["Bold"]
             Border = Border.Plain
+          }
+          { chkenabhistory CheckBox
+            MoveScaled(63,0,3,3)
+            Visible = False
           }
         }
         { txthistory TextHTML
@@ -1625,11 +1613,6 @@
         Arrangement = Arrange.Vertical
         { Panel39 Panel
           MoveScaled(0,0,118,4)
-          { btnshowallfluid ToggleButton
-            MoveScaled(86,0.375,13,3)
-            Text = ("Show All")
-            Picture = Picture["icon:/small/view-detail"]
-          }
           { btnfluidexpo Button
             MoveScaled(114,0.375,4,3)
             Picture = Picture["icon:/small/html"]
@@ -1659,19 +1642,52 @@
             Text = ("Labels")
             Picture = Picture["icon:/small/help"]
           }
+          { chkalldate CheckBox
+            MoveScaled(63,0.5,14,3)
+            Text = ("Add Dates")
+          }
+          { txtfluidname TextBox
+            MoveScaled(50,0.5,11,3)
+            Visible = False
+          }
+        }
+        { Panel3 Panel
+          MoveScaled(0,4,118,3)
+          Arrangement = Arrange.Horizontal
+          { lblduration Label
+            MoveScaled(0,0,78,3)
+            Expand = True
+            Border = Border.Plain
+          }
+          { btndirection ToolButton
+            MoveScaled(78,0,3,3)
+            Picture = Picture["icon:/small/info"]
+          }
+          { btnfluid ToolButton
+            MoveScaled(81,0,3,3)
+            Picture = Picture["icon:/small/battery"]
+          }
+          { btntime ToolButton
+            MoveScaled(84,0,3,3)
+            Picture = Picture["icon:/small/clock"]
+          }
+          { btnprotocol ToolButton
+            MoveScaled(87,0,3,3)
+            Picture = Picture["icon:/small/book"]
+          }
         }
         { grdfluid GridView
-          MoveScaled(0,4,118,15)
+          MoveScaled(0,9,118,15)
           Expand = True
           Mode = Select.Single
           Header = GridView.Both
           AutoResize = False
         }
         { Panel41 Panel
-          MoveScaled(0,20,117,1)
+          MoveScaled(0,24,117,1)
         }
         { grdfluiddata GridView
-          MoveScaled(0,21,118,12)
+          MoveScaled(0,25,118,12)
           Expand = True
           Mode = Select.Single
           Header = GridView.Both

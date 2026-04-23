@@ -615,7 +615,7 @@ Public Sub mnunote_Click()
   Dim hForm As FmNoteMobile
 
   If txtencid.Text Then
-    hForm = New FmNoteMobile(Trim(txtencid.Text))
+    hForm = New FmNoteMobile(Trim(txtencid.Text), "")
     hForm.ShowModal
   Endif
 

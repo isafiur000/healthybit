@@ -1062,12 +1062,12 @@ Public Sub btnIPform_Click()
 
 End
 
-Public Sub btnvideo_Click()
+Public Sub btndrorder_Click()
 
-  Dim hForm8 As FmPatVideo
+  Dim hForm8 As FmNoteMobile
 
   If GridView1.Rows.Selection.Count Then
-    hForm8 = New FmPatVideo("VIDEO", GridView1[GridView1.Row, 2].Text, "")
+    hForm8 = New FmNoteMobile(GridView1[GridView1.Row, 2].Text, "Doctor Order")
     hForm8.ShowModal
   Endif
 
@@ -1977,8 +1977,8 @@ Private Sub GetComboItemList()
     btnmobimage.Enabled = True
     btndraw.Enabled = True
   Endif
-  If $UserRestrict.Exist("Video Data") = False Then
-    btnvideo.Enabled = True
+  If $UserRestrict.Exist("Clinical Notes") = False Then
+    btndrorder.Enabled = True
   Endif
   If $UserRestrict.Exist("PACS Images") = False Then
     btnmobpacs.Enabled = True

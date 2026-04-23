@@ -1592,7 +1592,7 @@ Public Sub btnmobnote_Click()
   Dim hForm As FmNoteMobile
 
   If GridView1.Rows.Selection.Count Then
-    hForm = New FmNoteMobile(GridView1[GridView1.Row, 4].Text)
+    hForm = New FmNoteMobile(GridView1[GridView1.Row, 4].Text, "")
     hForm.ShowModal
   Endif
 

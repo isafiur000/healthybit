@@ -914,6 +914,7 @@ Private Sub ButtonControl()
   btnaddsymplist.Enabled = xx
   grdchiefsymptom.Enabled = xx
   pnlmulticomplaints.Enabled = xx
+  btnmultisymptom.Enabled = xx
   ''history
   btnhistory.Enabled = xx
   btnplan.Enabled = xx
@@ -1539,6 +1540,17 @@ Public Sub btntriage_Click()
 
 End
 
+Public Sub btnaddchart2_Click()
+
+  Dim hForm8 As FmNoteMobile
+
+  If txtencid.Text Then
+    hForm8 = New FmNoteMobile(Trim(txtencid.Text), "Doctor Order")
+    hForm8.ShowModal
+  Endif
+
+End
+
 Public Sub btnfinadd_Click()
 
   Dim sType As String
@@ -1906,6 +1918,15 @@ Public Sub btnsympadd_Click()
     Endif
 
   Endif
+
+End
+
+Public Sub btnmultisymptom_Click()
+
+  hMultiCompl.SaveSymptomsEntry()
+  ShowSymptomData()
+  Balloon.Info(("Information saved"), btnmultisymptom)
+  Balloon.Delay = modBasic.$BalloonDelay
 
 End
 
@@ -3925,6 +3946,7 @@ Private Sub RestrictUserAccess()
     btnsympadd.Enabled = False
     grdchiefsymptom.Enabled = False
     pnlmulticomplaints.Enabled = False
+    btnmultisymptom.Enabled = False
   Endif
   If $UserRestrict.Exist("Patient History") Then
     btnhistory.Enabled = False

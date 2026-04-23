@@ -846,37 +846,36 @@
       Index = 2
       Text = ("Complaints [F5]")
       { Panel5 Panel
-        MoveScaled(0,0,60,45)
-        Expand = True
+        MoveScaled(0,0,57,45)
         Arrangement = Arrange.Vertical
         { Panel13 Panel
-          MoveScaled(0,0,60,3.5)
+          MoveScaled(0,0,57,4)
           { cmbsymptom ComboBox
-            MoveScaled(0,0.5,48,3)
+            MoveScaled(5,0.5,51,3)
             ToolTip = ("Symptom Name\nWrite few alphabets and press Down key to populate this combobox")
             Expand = True
             Sorted = True
           }
           { btnaddsymplist ToolButton
-            MoveScaled(55,0.5,3,3)
+            MoveScaled(1,0.5,3,3)
             Picture = Picture["icon:/small/bookmark"]
           }
         }
         { Panel22 Panel
-          MoveScaled(0,4,60,4)
+          MoveScaled(0,4,57,4)
           { txtsympval ValueBox
-            MoveScaled(0,0.5,7,3)
+            MoveScaled(0,0.5,6,3)
             ToolTip = ("Duration of the symptom")
           }
           { cmbsympunit ComboBox
-            MoveScaled(7,0.5,13,3)
+            MoveScaled(6,0.5,13,3)
             ToolTip = ("Unit of the duration")
           }
           { cmbsymdura ComboBox
-            MoveScaled(21,0.5,27,3)
+            MoveScaled(20,0.5,25,3)
           }
           { btnsympadd Button
-            MoveScaled(49,0.5,10,3)
+            MoveScaled(46,0.5,10,3)
             Tag = "Auto"
             Text = ("Add")
             Picture = Picture["icon:/small/add"]
@@ -897,49 +896,29 @@
         }
       }
       { Panel21 Panel
-        MoveScaled(60,0,1,32)
+        MoveScaled(57,0,1,32)
       }
       { Panel4 Panel
-        MoveScaled(61,0,57,45)
+        MoveScaled(58,0,57,38)
         Expand = True
         Arrangement = Arrange.Vertical
-        { Panel10 Panel
-          MoveScaled(0,0,57,4)
-          { dcthelpgencomp ToolButton
-            MoveScaled(28,0.5,3,3)
-            Picture = Picture["icon:/small/edit"]
-          }
-          { btnhelpgencomp ToolButton
-            MoveScaled(32,0.5,3,3)
-            Picture = Picture["icon:/small/exec"]
-          }
-          { btntemplpgencomp ToolButton
-            MoveScaled(36,0.5,3,3)
-            Picture = Picture["icon:/small/attach"]
-          }
-          { btnshowgencomp ToolButton
-            MoveScaled(40,0.5,3,3)
-            Picture = Picture["icon:/small/refresh"]
-          }
-          { Label27 Label
-            MoveScaled(0,0.5,19,3)
-            Border = Border.Plain
-            Text = ("General Complaints")
-          }
-          { btngencompln Button
-            MoveScaled(47,0.5,9,3)
-            Text = ("Add")
+        { Panel39 Panel
+          MoveScaled(0,0,56,3.5)
+          { btnmultisymptom Button
+            MoveScaled(43,0,13,3)
+            Text = ("Save")
             Picture = Picture["icon:/small/apply"]
           }
+          { Label27 Label
+            MoveScaled(0,0,30,3)
+            Border = Border.Plain
+            Text = ("Chief Complaints")
+          }
         }
-        { txtgencomplaint TextHTML
-          MoveScaled(3,4,48,15)
-          Tag = "Auto"
+        { pnlmulticomplaints Panel
+          MoveScaled(0,8,44,28)
           Expand = True
-        }
-        { lblcomplaintuser Label
-          MoveScaled(1,26,55,3)
-          Border = Border.Plain
+          Arrangement = Arrange.Vertical
         }
       }
       Index = 3

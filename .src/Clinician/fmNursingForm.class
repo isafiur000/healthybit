@@ -18,6 +18,7 @@ Private $rInputRes As Result
 Private $aInputFields As String[]
 
 Private hViewVital As FmVitalView
+Private hMultiCompl As FmMultiComplaints
 Private hinputVital As FmVitalInput
 Private hOwnStockForm As FmWardStock
 Private hDoseCount As FmDosecount
@@ -91,7 +92,6 @@ Public Sub Form_Open()
     txtbedno.ReadOnly = True
   Endif
 
-  SetHtmlTextOption(txtgencomplaint)
   SetHtmlTextOption(txtmonproblem)
   SetHtmlTextOption(txtmontreatment)
   SetHtmlTextOption(txtmoninout)
@@ -209,14 +209,6 @@ Public Sub Form_KeyRelease()
     Me.Close()
   Else
     modGeneralmain.GoToNextControlTab()
-  Endif
-
-End
-
-Public Sub btnshowgencomp_Click()
-
-  If txtencid.Text Then
-    ShowGeneralComplaints()
   Endif
 
 End
@@ -353,11 +345,11 @@ Private Sub BasicInfoPatient()
     $dateReg = modPatient.GetRecordDate(Trim(txtencid.Text))
     modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
     ShowSymptomData()
-    ShowGeneralComplaints()
     ShowEssentialExamRange()
     ShowEssentialExam()
 
     hViewVital = New FmVitalView(Trim(txtencid.Text), Panel14)
+    hMultiCompl = New FmMultiComplaints(Trim(txtencid.Text), pnlmulticomplaints)
     hinputVital = New FmVitalInput(Trim(txtencid.Text), pnlvitals)
     hDoseCount = New FmDosecount(Trim(txtencid.Text), $billModePharmacy, pnldosecount)
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
@@ -676,8 +668,9 @@ Private Sub ButtonControl()
   ''complaints
   btnsympadd.Enabled = xx
   btnaddsymplist.Enabled = xx
+  pnlmulticomplaints.Enabled = xx
+  btnmultisymptom.Enabled = xx
   grdchiefsymptom.Enabled = xx
-  btngencompln.Enabled = xx
   btntriage.Enabled = xx
   ''diagnosis
   tlbtndeldises.Enabled = xx
@@ -995,24 +988,16 @@ Public Sub btnaddsymplist_Click()
   Dim xlist As String[]
   Dim aList As String[]
   Dim xitem As String
-  Dim hForm As FmMultiComplaints
 
-  If modBasic.$SelectMultiSymptoms = "Yes" Then
-    xlist = modString.GetListFromVariant(modTableCache.$SymptomCompVar, "fldsymptom", True)
-    If xlist.Count Then
-      aList = GridListView("Select Presenting Complaints", xlist, Panel13, Panel9.Height)
-      If aList And If aList.Count Then
-        For Each xitem In aList
-          modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", xitem, "", 0, "")
-        Next
-        ShowSymptomData()
-      Endif
+  xlist = modString.GetListFromVariant(modTableCache.$SymptomCompVar, "fldsymptom", True)
+  If xlist.Count Then
+    aList = GridListView("Select Presenting Complaints", xlist, Panel13, Panel9.Height)
+    If aList And If aList.Count Then
+      For Each xitem In aList
+        modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", xitem, "", 0, "")
+      Next
+      ShowSymptomData()
     Endif
-
-  Else
-    hForm = New FmMultiComplaints(Trim(txtencid.Text))
-    hForm.ShowModal()
-    ShowSymptomData()
   Endif
 
 End
@@ -1116,6 +1101,15 @@ Public Sub btnsympadd_Click()
     Endif
 
   Endif
+
+End
+
+Public Sub btnmultisymptom_Click()
+
+  hMultiCompl.SaveSymptomsEntry()
+  ShowSymptomData()
+  Balloon.Info(("Information saved"), btnmultisymptom)
+  Balloon.Delay = modBasic.$BalloonDelay
 
 End
 
@@ -1573,60 +1567,6 @@ Public Sub txttemp_GotFocus()
 End
 
 ''--------------------- History and planning ---------------------------
-Private Sub ShowGeneralComplaints()
-
-  Dim xcomplAr As String[]
-
-  xcomplAr = modPatPatho.ShowSelectedHistoryUser(Trim(txtencid.Text), "General Complaints")
-  If xcomplAr And If xcomplAr.Count Then
-    txtgencomplaint.RichText = xcomplAr[0]
-    lblcomplaintuser.Text = xcomplAr[1]
-  Endif
-
-End
-
-Public Sub dcthelpgencomp_Click()
-
-  Dim xx As String
-
-  xx = GetRichTextArea("General Complaints", txtgencomplaint.RichText)
-  If xx Then
-    txtgencomplaint.RichText = xx
-  Endif
-
-End
-
-Public Sub btnhelpgencomp_Click()
-
-  txtgencomplaint.RichText = txtgencomplaint.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtgencomplaint.Text)
-
-End
-
-Public Sub btntemplpgencomp_Click()
-
-  txtgencomplaint.RichText = txtgencomplaint.RichText & DictionaryVIew("General Complaints")
-
-End
-
-Public Sub btngencompln_Click()
-
-  Dim xboolean As Boolean
-
-  If modBasic.$ClinHistoryInput = "Single" Then
-    xboolean = True
-  Else
-    xboolean = False
-  Endif
-
-  If txtgencomplaint.Text Then
-    modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "History", "General Complaints", txtgencomplaint.KeyList.Join(";"), txtgencomplaint.RichText, xboolean)
-    Balloon.Info(("Information saved"), btngencompln)
-    Balloon.Delay = modBasic.$BalloonDelay
-    btngencompln.Enabled = False
-  Endif
-  modSettings.SaveSettingsToFile("OPDForm/Complaints", "General")
-
-End
 
 ''------------------------------------- Menu -------------------------------------------------
 Public Sub mnupatimage_Click()
@@ -3022,9 +2962,8 @@ Private Sub RestrictUserAccess()
     btnaddsymplist.Enabled = False
     btnsympadd.Enabled = False
     grdchiefsymptom.Enabled = False
-  Endif
-  If $UserRestrict.Exist("General Complaints") Then
-    btngencompln.Enabled = False
+    pnlmulticomplaints.Enabled = False
+    btnmultisymptom.Enabled = False
   Endif
 
   If $UserRestrict.Exist("Progress Notes") Then
@@ -4274,5 +4213,9 @@ Public Sub grdoutput_Click()
     modPatientGeneral.UpdateExamGeneralQuantiData(grdoutput[grdoutput.Row, 0].Text, Trim(txtencid.Text), grdoutput[grdoutput.Row, 3].Text, yval, "")
     SHowOutputFluid()
   Endif
+
+End
+
+Public Sub btnshowgencomp_Click()
 
 End

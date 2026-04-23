@@ -51,6 +51,7 @@ Public Sub Form_Open()
   cmbqualival.List = ["FitsrVal", "LastVal", "First-LastVal", "AllValues"]
   cmbclinscale.List = ["Summary", "GroupWise"]
   cmbvisithistory.List = ["All Visits", "Last Visit"]
+  cmbvarnull.List = ["Enable", "Disable"]
 
   cmbmedlabel.List = ["Brand", "Generic", "Both"]
   cmbmedicineday.List = ["Yes", "No"]
@@ -581,6 +582,7 @@ Private Sub ShowFormatReport()
   cmbqualival.Text = modSettings.ShowSettingFromFIle("ClinicalReport/QualiValue_Format")
   cmbclinscale.Text = modSettings.ShowSettingFromFIle("ClinicalReport/ScaleValue_Format")
   cmbvisithistory.Text = modSettings.ShowSettingFromFIle("ClinicalReport/HistorySource")
+  cmbvarnull.Text = modSettings.ShowSettingFromFIle("ClinicalReport/NullValueVariable")
 
 End
 
@@ -620,6 +622,16 @@ Public Sub btnvisithistory_Click()
 
 End
 
+Public Sub btnvarnull_Click()
+
+  modSettings.SaveSettingsToFile("ClinicalReport/NullValueVariable", cmbvarnull.Text)
+  modBasic.$ShowNullVariable = cmbvarnull.Text
+  Balloon.Info(("Information saved"), btnvarnull)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''-------------
 Public Sub btnshowday_Click()
 
   modSettings.SaveSettingsToFile("ClinicalReport/ShowDay_Report", cmbshowday.Text)
