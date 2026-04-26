@@ -7,47 +7,49 @@
   { Panel1 Panel
     MoveScaled(0,0,110,4)
     { cmbstatus ComboBox
-      MoveScaled(8,0.5,18,3)
-    }
-    { Label1 Label
-      MoveScaled(0.5,0.5,7,3)
-      Border = Border.Plain
-      Text = ("Status")
-    }
-    { btnshow Button
-      MoveScaled(27,0.5,9,3)
-      Text = ("Show")
+      MoveScaled(1,0.5,18,3)
     }
     { btndispown Button
-      MoveScaled(96,0.5,6,3)
-      ToolTip = ("Dispense from Local Stock")
+      MoveScaled(102,0.5,7,3)
+      ToolTip = ("Create Medicine Order")
       Picture = Picture["icon:/small/apply"]
     }
-    { mnusave Button
-      MoveScaled(103,0.5,6,3)
-      ToolTip = ("Brought from Outside")
-      Picture = Picture["icon:/small/download"]
-    }
     { btnrepeat Button
-      MoveScaled(74,0.5,7,3)
+      MoveScaled(64,0.5,7,3)
       ToolTip = ("Repeat Selected regimen from new starting date")
       Picture = Picture["icon:/small/repeat"]
     }
     { btngroup Button
-      MoveScaled(81,0.5,5,3)
+      MoveScaled(71,0.5,5,3)
       ToolTip = ("Select Medicine Protocol")
       Picture = Picture["icon:/small/insert-link"]
     }
     { btnnewdose Button
-      MoveScaled(64,0.5,9,3)
+      MoveScaled(46,0.5,9,3)
       Text = ("New")
     }
+    { chknextplan CheckBox
+      MoveScaled(27,0.5,14,3)
+      Text = ("Next Visit")
+    }
+    { btncpoe Button
+      MoveScaled(55,0.5,9,3)
+      Text = ("CPOE")
+    }
+    { cmbdisctype ComboBox
+      MoveScaled(82,0.5,19,3)
+    }
+    { btnshow ToolButton
+      MoveScaled(19,0.5,4,3)
+      Picture = Picture["icon:/small/refresh"]
+    }
   }
-  { Panel10 Panel
-    MoveScaled(-1,4,112,11)
+  { pnldosing Panel
+    MoveScaled(-1,4,111,11)
     Visible = False
+    Border = Border.Plain
     { txtstart ValueBox
-      MoveScaled(7,0,5,3)
+      MoveScaled(7,0.5,5,3)
     }
     { cmbroute ComboBox
       MoveScaled(1,4,9,3)
@@ -99,18 +101,14 @@
       Picture = Picture["icon:/small/text"]
     }
     { Label6 Label
-      MoveScaled(1,0,6,3)
+      MoveScaled(1,0.5,6,3)
       Border = Border.Plain
       Text = ("After")
     }
     { Label7 Label
-      MoveScaled(12,0,6,3)
+      MoveScaled(12,0.5,6,3)
       Border = Border.Plain
       Text = ("Hours")
-    }
-    { chknextplan CheckBox
-      MoveScaled(55,0.5,14,3)
-      Text = ("Next Visit")
     }
     { chkout CheckBox
       MoveScaled(21,0.5,15,3)
@@ -128,6 +126,18 @@
     { btnaireview Button
       MoveScaled(107,0.5,3,3)
       Picture = Picture["icon:/small/book"]
+    }
+    { Panel2 Panel
+      MoveScaled(45,0.5,21,3)
+      { rbgeneric RadioButton
+        MoveScaled(0,0,10,3)
+        Text = ("Generic")
+        Value = True
+      }
+      { rbrand RadioButton
+        MoveScaled(11,0,10,3)
+        Text = ("Brand")
+      }
     }
   }
   { GridView1 GridView

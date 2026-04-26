@@ -1,15 +1,16 @@
 ' Gambas class file
 
+Private $encid As String
+Private $DiscPackage As String
 Private $status As String
-Private $Dept As String = "IPD"
+Private $sTable As String
 
 Private $LedgerAC As String
 Private $xBillType As String
 Private $sBillMode As String
 Private $LabelType As String
 
-Private $encid As String
-Private $DiscPackage As String
+Private $Dept As String = "IPD"
 Private xYear As Integer
 Private $ClinicianLst As String[]
 
@@ -20,11 +21,12 @@ Private $fluidList As String[]
 Private $patHeight As Float
 Private $actualWt As Float
 
-Public Sub _new(encid As String, sStatus As String, DiscPackage As String)
+Public Sub _new(encid As String, sStatus As String, DiscPackage As String, sTable As String)
 
   $encid = encid
   $DiscPackage = DiscPackage
   $status = sStatus
+  $sTable = sTable
 
 End
 
@@ -396,7 +398,11 @@ Public Sub btnadd_Click()
 
   If cmbroute.Text And If cmbmedicine.Text And If txtqty.Value Then
     If modMisc.AllowDiagnoBilling($encid) = True Then
-      EnterDosingRecord()
+      If $sTable = "tblpatdosing" Then
+        EnterDosingRecord()
+      Else If $sTable = "tblinpatdosing" Then
+        EnterIPDosingRecord()
+      Endif
       FillDosingGrid()
       cmbroute.SetFocus
     Else
@@ -404,6 +410,51 @@ Public Sub btnadd_Click()
       cmbroute.SetFocus
     Endif
   Endif '
+
+End
+
+Private Sub EnterIPDosingRecord()
+
+  Dim txprescriber As String
+  Dim txpresno As String
+
+  Dim xcurVal As String
+  Dim xnarcotic As String[]
+
+  If chknextplan.Value = True Then
+    xcurVal = "Planned"
+  Else
+    xcurVal = "Continue"
+  Endif
+
+  If cmbroute.Text And If cmbmedicine.Text Then
+    If modMisc.AllowDiagnoBilling($encid) = True Then
+
+      If txtdose.Value And If cmbfreq.Text Then
+        If modMedConstant.GetNarcoticType(cmbmedicine.Text) = "Yes" Then
+          txprescriber = $NarcoDoctor
+          txpresno = $NarcoRegd
+          If Not txpresno Then
+            xnarcotic = DualGridValue(("Select Narcotic Prescriber"), $ClinicianLst, False)
+            If xnarcotic Then
+              txprescriber = xnarcotic[1]
+              txpresno = xnarcotic[0]
+            Endif
+          Endif
+          If txprescriber And If txpresno Then
+            modPharmSub.InsertIPMedicineEntry($encid, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, txprescriber, txpresno, dtstarting.Value, dtending.Value, Trim(txtdirection.Text), cmbadminsite.Text, cmbdilution.Text, txtdosecount.Value, xcurVal)
+          Endif
+        Else
+          modPharmSub.InsertIPMedicineEntry($encid, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, txprescriber, txpresno, dtstarting.Value, dtending.Value, Trim(txtdirection.Text), cmbadminsite.Text, cmbdilution.Text, txtdosecount.Value, xcurVal)
+        Endif
+        ClearAllControl()
+      Endif
+
+    Else
+      Message.Warning("Diagnosis not provided", ("OK"))
+      cmbroute.SetFocus
+    Endif
+  Endif
 
 End
 
@@ -433,32 +484,34 @@ Private Sub EnterDosingRecord()
     Endif
   Endif
   If cmbroute.Text And If cmbmedicine.Text Then
+    If txtdose.Value And If cmbfreq.Text Then
 
-    itemtype = modNonMedical.GetBillItemCategoryFromCombo(cmbroute.Text)
-    CPharmFix = New CFixRatePharmacy(itemtype, cmbmedicine.Text, $sBillMode)
-    xfixrate = CPharmFix.GetFixRate()
-    xfixname = CPharmFix.GetFixItem()
+      itemtype = modNonMedical.GetBillItemCategoryFromCombo(cmbroute.Text)
+      CPharmFix = New CFixRatePharmacy(itemtype, cmbmedicine.Text, $sBillMode)
+      xfixrate = CPharmFix.GetFixRate()
+      xfixname = CPharmFix.GetFixItem()
 
-    itemmode = $sBillMode
-    xtax = modNonMedical.ShowTaxValues(itemtype, cmbmedicine.Text)
-    xdisc = modNonMedical.DiscPercentForCategoryValue($encid, $DiscPackage, itemtype, cmbmedicine.Text, itemmode)
-    If modMedConstant.GetNarcoticType(cmbmedicine.Text) = "Yes" Then
-      txprescriber = $NarcoDoctor
-      txpresno = $NarcoRegd
-      If Not txpresno Then
-        xnarcotic = DualGridValue(("Select Narcotic Prescriber"), $ClinicianLst, False)
-        If xnarcotic Then
-          txprescriber = xnarcotic[1]
-          txpresno = xnarcotic[0]
+      itemmode = $sBillMode
+      xtax = modNonMedical.ShowTaxValues(itemtype, cmbmedicine.Text)
+      xdisc = modNonMedical.DiscPercentForCategoryValue($encid, $DiscPackage, itemtype, cmbmedicine.Text, itemmode)
+      If modMedConstant.GetNarcoticType(cmbmedicine.Text) = "Yes" Then
+        txprescriber = $NarcoDoctor
+        txpresno = $NarcoRegd
+        If Not txpresno Then
+          xnarcotic = DualGridValue(("Select Narcotic Prescriber"), $ClinicianLst, False)
+          If xnarcotic Then
+            txprescriber = xnarcotic[1]
+            txpresno = xnarcotic[0]
+          Endif
         Endif
+        If txprescriber And If txpresno Then
+          modPharmSub.InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, txprescriber, txpresno, dtstarting.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), cmbadminsite.Text, txtdosecount.Value, Trim(cmbdilution.Text), 0, xcurVal)                     '
+        Endif
+      Else
+        modPharmSub.InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, "", "", dtstarting.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), cmbadminsite.Text, txtdosecount.Value, Trim(cmbdilution.Text), 0, xcurVal)                     '
       Endif
-      If txprescriber And If txpresno Then
-        modPharmSub.InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, txprescriber, txpresno, 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), cmbadminsite.Text, txtdosecount.Value, Trim(cmbdilution.Text), 0, xcurVal)                     '
-      Endif
-    Else
-      modPharmSub.InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, "", "", 0, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), cmbadminsite.Text, txtdosecount.Value, Trim(cmbdilution.Text), 0, xcurVal)                     '
+      ClearAllControl()
     Endif
-    ClearAllControl()
   Endif
 
 End
@@ -516,8 +569,13 @@ Private Sub FillDosingGrid()
   Dim fld As ResultField
   Dim res As Result
 
-  sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,flduserid_order,fldcurval,flddosecount,fldadminsite,flddirection,fldmixing from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstatus=&3 and fldorder=&4 and (fldcurval=&5 or fldcurval=&6) and flditemtype=&7 ORDER BY fldid DESC"                                                   ''
-  res = modDatabase.$myConn.Exec(sql, $encid, False, $status, "Request", "Continue", "Reserve", "Medicines")
+  If $sTable = "tblpatdosing" Then
+    sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,flduserid_order,fldcurval,flddosecount,fldadminsite,flddirection,fldmixing from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstatus=&3 and fldorder=&4 and (fldcurval=&5 or fldcurval=&6) and flditemtype=&7 ORDER BY fldid DESC"                                                   ''
+    res = modDatabase.$myConn.Exec(sql, $encid, False, $status, "Request", "Continue", "Reserve", "Medicines")
+  Else If $sTable = "tblinpatdosing" Then
+    sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldqtyorder,flduserid,fldcurval,flddosecount,fldadminsite,flddirection,fldmixing from tblinpatdosing where fldencounterval=&1 and fldsave=&2 and (fldcurval=&3 or fldcurval=&4) ORDER BY fldid DESC"                                                   ''
+    res = modDatabase.$myConn.Exec(sql, $encid, False, "Continue", "Reserve")
+  Endif
 
   GridView1.Clear
   GridView1.Columns.Count = res.Fields.Count

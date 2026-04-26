@@ -1244,11 +1244,8 @@ UPDATE tblcostgroup SET fldqty=1 WHERE fldqty IS NULL
 
 ALTER TABLE tblsociallist ADD fldcomment VARCHAR( 250 ) NULL
 
+''-------------------- 0.5.24 -----------------------------
 ALTER TABLE tblmedbrand ADD flddispsize INT( 11 ) NULL
-
-ALTER TABLE tblnurdosing ADD COLUMN fldmedicine VARCHAR( 250 ) NULL
-ALTER TABLE tblnurdosing ADD COLUMN fldrecdose DOUBLE NULL
-ALTER TABLE tblnurdosing ADD COLUMN fldrecfreq VARCHAR( 25 ) NULL
 
 ALTER TABLE tblextradosing ADD fldcomment VARCHAR( 250 ) NULL
 
@@ -1256,6 +1253,11 @@ ALTER TABLE tblmedinventory ADD fldproctime DATETIME NULL
 ALTER TABLE tblmedinventory ADD fldprocuserid VARCHAR( 25 ) NULL
 ALTER TABLE tblmedinventory ADD fldproccomp VARCHAR( 50 ) NULL
 ALTER TABLE tblmedinventory ADD fldretreason VARCHAR( 250 ) NULL
+
+ALTER TABLE tblnurdosing ADD COLUMN fldmedicine VARCHAR( 250 ) NULL
+ALTER TABLE tblnurdosing ADD COLUMN fldrecdose DOUBLE NULL
+ALTER TABLE tblnurdosing ADD COLUMN fldrecfreq VARCHAR( 25 ) NULL
+ALTER TABLE tblnurdosing ADD COLUMN fldcardex BIGINT( 11 ) NULL
 
 
 

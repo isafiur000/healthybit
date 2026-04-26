@@ -351,7 +351,12 @@ Private Sub BasicInfoPatient()
     hViewVital = New FmVitalView(Trim(txtencid.Text), Panel14)
     hMultiCompl = New FmMultiComplaints(Trim(txtencid.Text), pnlmulticomplaints)
     hinputVital = New FmVitalInput(Trim(txtencid.Text), pnlvitals)
-    hDoseCount = New FmDosecount(Trim(txtencid.Text), $billModePharmacy, pnldosecount)
+    Select $sTatus
+      Case "Admitted", "Discharged", "LAMA", "Death", "Refer", "Absconder"
+        hDoseCount = New FmDosecount(Trim(txtencid.Text), $billModePharmacy, True, pnldosecount)
+      Case Else
+        hDoseCount = New FmDosecount(Trim(txtencid.Text), $billModePharmacy, False, pnldosecount)
+    End Select
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
     hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
     hPtArchive = New FmClinArchive($PatientNum, pnlarchivbe)

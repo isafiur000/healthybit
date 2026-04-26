@@ -1047,10 +1047,8 @@ End
 
 Public Sub mnurequested_Click()
 
-  Dim hForm As FmDispList
-
-  hForm = New FmDispList("Requested")
-  modWorkSpace.Add(hForm)
+  modWorkSpace.Remove(fmIPDispList)
+  modWorkSpace.Add(fmIPDispList)
 
 End
 

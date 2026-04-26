@@ -185,7 +185,7 @@ Public Sub grdfluid_Click()
       If grdfluid[grdfluid.Row, 1].Picture = Picture["icon:/tiny/next"] Then
         yval = InputValue(("Enter Rate of Administration in mL/Hour"), grdfluid[grdfluid.Row, 2].Text, 0)
         If yval Then
-          modPharmSub.InsertNurDosing(grdfluid[grdfluid.Row, 0].Text, $encid, yval, "mL/Hour", Now())
+          modPharmSub.InsertNurDosing($encid, grdfluid[grdfluid.Row, 0].Text, 0, yval, "mL/Hour", Now())
           FillFluidGridView(grdfluid[grdfluid.Row, 0].Text)
           ShowMedFluids()
         Endif

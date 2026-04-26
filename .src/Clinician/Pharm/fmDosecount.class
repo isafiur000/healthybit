@@ -2,6 +2,7 @@
 
 Private $encid As String
 Private $DiscPackage As String
+Private $useCardex As Boolean
 Private $sTatus As String
 
 Private $LedgerAC As String
@@ -9,16 +10,19 @@ Private $xBillType As String
 Private $sBillMode As String
 Private $sClaimState As String
 
+Private $rData1 As Result
+Private $aMyFields1 As String[]
 Private $rData As Result
 Private $aMyFields As String[]
 
 Private $xNHISCode As String
 Private $HiCappingVar As Collection
 
-Public Sub _new(encid As String, DiscPackage As String)
+Public Sub _new(encid As String, DiscPackage As String, useCardex As Boolean)
 
   $encid = encid
   $DiscPackage = DiscPackage
+  $useCardex = useCardex
 
 End
 
@@ -33,7 +37,7 @@ Public Sub Form_Open()
   cmbdisctype.Text = $DiscPackage
   ShowBillingParam($DiscPackage)
   FillMedicineList()
-  ListBox1.SetFocus
+  GridView2.SetFocus
 
 End
 
@@ -101,109 +105,135 @@ Public Sub Form_KeyRelease()
   If Key.Code = Key.Esc Then
     Me.Close
   Else If Key.Code = Key.Up Then
-    ListBox1.SetFocus
+    GridView2.SetFocus
   Else If Key.Code = Key.Down Then
-    ListBox1.SetFocus
+    GridView2.SetFocus
   Else
     modGeneralmain.GoToNextControlTab()
   Endif
 
 End
 
-Public Sub ListBox1_KeyRelease()
-
-  If Key.Code = Key.Return Or If Key.Code = Key.Enter Or If Key.Code = Key.AltKey Then
-    ListBox1_Click()
-  Endif
-
-End
-
 Private Sub FillMedicineList()
 
-  Dim sql As String
-  Dim res As Result
   Dim sql1 As String
-  Dim res1 As Result
+  Dim sql2 As String
 
-  ListBox1.Clear
-  sql = "select fldid,flditem from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and fldroute<>&5 and flditemtype=&6 and fldcurval=&7 and flddose>&8 and fldqtydisp>fldqtyret"                    ''
-  res = modDatabase.$myConn.Exec(sql, $encid, True, Now(), DateAdd(Now(), gb.Hour, -3), "fluid", "Medicines", "Continue", 0)
-  If res.Available Then
-    For Each res
-      ListBox1.Add(CStr(res["fldid"]), res["flditem"], Picture["icons/coll4.png"])
-    Next
-  Endif
-
-  sql1 = "select fldid,flditem from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and DATE_ADD(fldstarttime, INTERVAL flddays DAY)>=&4  and fldroute<>&5 and flditemtype=&6 and fldcurval=&7 and flddose>&8 and fldqtydisp>fldqtyret"
-  res1 = modDatabase.$myConn.Exec(sql1, $encid, False, Now(), DateAdd(Now(), gb.Hour, -3), "fluid", "Medicines", "Continue", 0)
-  If res1.Available Then
-    For Each res1
-      ListBox1.Add(CStr(res1["fldid"]), res1["flditem"], Picture["icons/coll5.png"])
-    Next
-  Endif
+  sql1 = "select fldsave_order,fldid,fldroute,flditem,flddose,fldfreq,flddays,fldstatus,flddirection,fldmixing,flddosecount,fldqtydisp,flduserid_order,flditemno from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and fldroute<>&5 and flditemtype=&6 and fldcurval=&7 and flddose>&8 and fldqtydisp>fldqtyret"                    ''
+  sql2 = "select fldsave_order,fldid,fldroute,flditem,flddose,fldfreq,flddays,fldstatus,flddirection,fldmixing,flddosecount,fldqtydisp,flduserid_order,flditemno from tblpatdosing where fldencounterval=&1 and fldsave_order=&9 and fldstarttime<=&3 and DATE_ADD(fldstarttime, INTERVAL flddays DAY)>=&4 and fldroute<>&5 and flditemtype=&6 and fldcurval=&7 and flddose>&8 and fldqtydisp>fldqtyret"
+  $rData1 = modDatabase.$myConn.Exec(sql1 & " UNION ALL " & sql2, $encid, True, Now(), DateAdd(Now(), gb.Hour, -3), "fluid", "Medicines", "Continue", 0, False)
+  $aMyFields1 = New String[]
+  modGridView.ReadSmallData(GridView2, $rData1, $aMyFields1)
+  With GridView2
+    .Columns[0].Width = 25 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 1
+    .Columns[2].Width = 1
+    .Columns[3].Width = 325 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 1
+    .Columns[5].Width = 1
+    .Columns[6].Width = 1
+    .Columns[7].Width = 1
+    .Columns[8].Width = 1
+    .Columns[9].Width = 1
+    .Columns[10].Width = 1
+    .Columns[11].Width = 1
+    .Columns[12].Width = 1
+    .Columns[13].Width = 1
+  End With
 
 End
 
-Public Sub ListBox1_Click()
+Public Sub GridView2_Data(Row As Integer, Column As Integer)
 
-  Dim res As Result
+  $rData1.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView2, Row)
+  If Column = 0 Then
+    GridView2.Data.Picture = Picture[GetMedStatus($rData1[$aMyFields1[Column]])]
+    GridView2.Data.Text = ""
+  Else
+    GridView2.Data.Text = $rData1[$aMyFields1[Column]]
+  Endif
+  GridView2.Rows[Row].Height = Max(GridView2.Rows[Row].Height, GridView2.Data.Font.RichTextHeight(GridView2.Data.Text, GridView2.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView2.Rows.Height - GridView2.Font.Height))
+  GridView2.Data.WordWrap = True
 
+End
+
+Private Function GetMedStatus(sBool As Boolean) As String
+
+  Dim xicon As String
+
+  If sBool = True Then
+    xicon = "icons/coll4.png"
+  Else If sBool = False Then
+    xicon = "icons/coll5.png"
+  Endif
+
+  Return xicon
+
+End
+
+Public Sub GridView2_Click()
+
+  ShowSelectedDosing()
+
+End
+
+Private Sub ShowSelectedDosing()
+
+  txtcardex.Value = 0
   txtdose.Value = 0
   txtdose.Tag = ""
   chkuselocal.Value = False
-  txtid.Value = CLong(ListBox1.Current.Key)
-  lblmedicine.Text = ListBox1.Current.Text
-  txtmedname.Text = modMedConstant.GetDrugFromStockID(lblmedicine.Text)
-
-  If txtid.Value Then
-    res = modDatabase.$myConn.Exec("select fldroute,flditem,flddose,fldfreq,flddays,fldstatus,flddirection,fldmixing,fldqtydisp,flduserid_order from tblpatdosing where fldid=&1 and flditem=&2", txtid.Value, lblmedicine.Text)
-    If res.Available Then
-
-      If ListBox1.Current.Picture = Picture["icons/coll5.png"] Then
-        chkdisp.Value = False
-        pnlocal.Visible = True
-        txttransqty.Value = res["fldqtydisp"]
-      Else
-        chkdisp.Value = True
-        txttransqty.Value = 0
-        pnlocal.Visible = False
-      Endif
-      btninjection.Tag = res["fldroute"]
-      txtinitstren.Value = modMedConstant.GetDrugInitialStrength(ListBox1.Current.Text)
-      lblregimen.Text = res["fldroute"] & Space(2) & res["flddose"] & Space(1) & modMedConstant.GetMedicineDoseUnit(res["flditem"]) & " X " & res["fldfreq"] & " X " & res["flddays"] & " day(s)"
-      lblregimen.Tag = res["fldfreq"]
-
-      If res["flddirection"] Then
-        txtdirection.Visible = True
-        txtdirection.Text = res["flddirection"]
-      Else
-        txtdirection.Visible = False
-      Endif
-      If res["fldmixing"] Then
-        txtmixture.Visible = True
-        txtmixture.Text = "DILUTION : " & res["fldmixing"]
-      Else
-        txtmixture.Visible = False
-      Endif
-      txtprescriber.Text = "PRESCRIBER : " & modGeneral.GetUserFullName(res["flduserid_order"])
-      FillGridView(txtid.Value)
-      If chkdisp.Value = True Then
-        btnsave.Enabled = True
-      Else
-        btnsave.Enabled = False
-      Endif
-      Select res["fldroute"]
-        Case "fluid", "CIV", "CIn(Epid)", "CIn(Block)"
-          lblunit.Text = "mL/Hour"
-        Case Else
-          If txtinitstren.Value Then
-            txtdose.Value = Round(res["flddose"] / txtinitstren.Value, -2)
-          Endif
-          lblunit.Text = modPharmLabel.GetDosageFormForLabel(lblmedicine.Text, "Inpatient")
-      End Select
-      txtdose.SetFocus
-
+  If GridView2.Rows.Selection.Count Then
+    txtid.Value = GridView2[GridView2.Row, 1].Text
+    txtcardex.Value = GridView2[GridView2.Row, 13].Text
+    lblmedicine.Text = GridView2[GridView2.Row, 3].Text
+    txtmedname.Text = modMedConstant.GetDrugFromStockID(lblmedicine.Text)
+    If GridView2[GridView2.Row, 0].Picture = Picture["icons/coll5.png"] Then
+      chkdisp.Value = False
+      pnlocal.Visible = True
+      txttransqty.Value = GridView2[GridView2.Row, 11].Text
+    Else
+      chkdisp.Value = True
+      txttransqty.Value = 0
+      pnlocal.Visible = False
     Endif
+
+    btninjection.Tag = GridView2[GridView2.Row, 2].Text
+    txtinitstren.Value = modMedConstant.GetDrugInitialStrength(GridView2[GridView2.Row, 3].Text)
+    lblregimen.Text = GridView2[GridView2.Row, 2].Text & Space(2) & GridView2[GridView2.Row, 4].Text & Space(1) & modMedConstant.GetMedicineDoseUnit(GridView2[GridView2.Row, 3].Text) & " X " & GridView2[GridView2.Row, 5].Text & " X " & GridView2[GridView2.Row, 6].Text & " day(s)"
+    lblregimen.Tag = GridView2[GridView2.Row, 5].Text
+
+    If GridView2[GridView2.Row, 8].Text Then
+      txtdirection.Visible = True
+      txtdirection.Text = GridView2[GridView2.Row, 8].Text
+    Else
+      txtdirection.Visible = False
+    Endif
+    If GridView2[GridView2.Row, 9].Text Then
+      txtmixture.Visible = True
+      txtmixture.Text = "DILUTION : " & GridView2[GridView2.Row, 9].Text
+    Else
+      txtmixture.Visible = False
+    Endif
+    txtprescriber.Text = "PRESCRIBER : " & modGeneral.GetUserFullName(GridView2[GridView2.Row, 12].Text)
+    FillGridView(txtid.Value)
+    If chkdisp.Value = True Then
+      btnsave.Enabled = True
+    Else
+      btnsave.Enabled = False
+    Endif
+
+    Select GridView2[GridView2.Row, 2].Text
+      Case "fluid", "CIV", "CIn(Epid)", "CIn(Block)"
+        lblunit.Text = "mL/Hour"
+      Case Else
+        If txtinitstren.Value Then
+          txtdose.Value = Round(GridView2[GridView2.Row, 4].Text / txtinitstren.Value, -2)
+        Endif
+        lblunit.Text = modPharmLabel.GetDosageFormForLabel(GridView2[GridView2.Row, 3].Text, "Inpatient")
+    End Select
+    txtdose.SetFocus
   Endif
 
 End
@@ -327,7 +357,7 @@ Public Sub btnsave_Click()
 
   If txtid.Value And If txtdose.Value Then
     If chkdisp.Value = True Then
-      modPharmSub.InsertNurDosing(txtid.Value, $encid, txtdose.Value, lblunit.Text, "")
+      modPharmSub.InsertNurDosing($encid, txtid.Value, txtcardex.Value, txtdose.Value, lblunit.Text, "")
       If lblregimen.Tag = "stat" Then
         res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", txtid.Value)
         res["fldcurval"] = "Completed"
@@ -349,7 +379,7 @@ Public Sub btnsave_KeyRelease()
 
   If Key.Code = Key.Return Or If Key.Code = Key.Enter Or If Key.Code = Key.AltKey Then
     btnsave_Click()
-    ListBox1.SetFocus
+    GridView2.SetFocus
   Endif
 
 End

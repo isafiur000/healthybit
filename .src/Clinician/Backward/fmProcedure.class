@@ -2391,7 +2391,7 @@ Private Sub SaveOwnDispensing(sID As Long)
         Endif
         xunit = modPharmLabel.GetDosageFormForLabel(res1["flditem"], "Inpatient")
         If xdose Then
-          modPharmSub.InsertNurDosing(res1["fldid"], Trim(txtencid.Text), xdose, xunit, "")
+          modPharmSub.InsertNurDosing(Trim(txtencid.Text), res1["fldid"], 0, xdose, xunit, "")
         Endif
       Endif
       Dec Application.Busy

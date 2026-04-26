@@ -1,0 +1,32 @@
+' Gambas class file
+
+Private $encid As String
+Private $DiscPackage As String
+Private $status As String
+Private $sTable As String
+Private $hForm As FmMedPrescribe
+
+Public Sub _new(encid As String, sStatus As String, DiscPackage As String, sTable As String)
+
+  $encid = encid
+  $status = sStatus
+  $DiscPackage = DiscPackage
+  $sTable = sTable
+
+End
+
+Public Sub Form_Open()
+
+  $hForm = New FmMedPrescribe($encid, $status, $DiscPackage, $sTable, Panel1)
+
+End
+
+Public Sub Form_KeyRelease()
+
+  If Key.Code = Key.Esc Then
+    Me.Close
+  Else
+    modGeneralmain.GoToNextControlTab()
+  Endif
+
+End

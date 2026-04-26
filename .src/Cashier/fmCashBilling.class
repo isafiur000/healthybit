@@ -5558,6 +5558,19 @@ Public Sub mnugenreport_Click()
 
 End
 
+Public Sub mnuarchivebackup_Click()
+
+  Dim res As Result
+  Dim hForm As FRequest
+
+  If txtencid.Text Then
+    res = modDatabase.$syConn.Exec("select fldid,fldtime,fldencounterval,fldtitle,flddetail,fldsave,fldlink,fldencounterval from tblpatreport where fldcateg=&1 and fldencounterval like &2 and (flvisible=&3 or flvisible IS NULL) ORDER BY fldid DESC", "Backup", Trim(txtencid.Text), "Visible")
+    hForm = New FRequest(res, ("Backup Reports"), "ArchivedReports", False)
+    hForm.ShowModal
+  Endif
+
+End
+
 ''------------------- For Diagnosis ----------------
 Public Sub btndiuser_Click()
 

@@ -1,12 +1,62 @@
 ' Gambas module file
 
+''inpatient order cardex
+Public Sub InsertIPMedicineEntry(encid As String, xroute As String, xitem As String, xdose As Float, xfreq As String, xday As Float, xqty As Float, xprescriber As String, xregno As String, startTime As Date, sEndTime As Date, sDirection As String, sAdminSite As String, sMixing As String, sDoseCount As Integer, sDefault As String)
+
+  Dim res As Result
+  Dim xcurVal As String
+  Dim xendtime As Date
+
+  If sDefault Then
+    xcurVal = sDefault
+  Else
+    xcurVal = "Continue"
+  Endif
+  If sEndTime Then
+    xendtime = sEndTime
+  Else
+    xendtime = DateAdd(startTime, gb.Hour, CInt(xday * 24))
+  Endif
+
+  res = modDatabase.$myConn.Create("tblinpatdosing")
+  res["fldencounterval"] = encid
+  res["fldroute"] = xroute
+  res["flditem"] = xitem
+  res["flddose"] = xdose
+  res["fldfreq"] = xfreq
+  res["flddays"] = xday
+  res["fldqtyorder"] = xqty
+
+  res["fldprescriber"] = xprescriber
+  res["fldregno"] = xregno
+  res["flddirection"] = sDirection
+  res["fldadminsite"] = sAdminSite
+  res["fldmixing"] = sMixing
+  res["fldcurval"] = xcurVal
+  res["flddosecount"] = sDoseCount
+
+  res["flduserid"] = modBasic.$lbluser
+  res["fldtime"] = Now()
+  res["fldcomp"] = modBasic.$compID
+  res["fldsave"] = False
+
+  res["fldstarttime"] = startTime
+  res["fldendtime"] = xendtime
+  res["fldstopuserid"] = ""
+  res["fldstoptime"] = ""
+  res["fldstopcomp"] = ""
+  res["fldstopsave"] = False
+  res["xyz"] = True
+  res.Update()
+
+End
+
 ''for medicine only
-Public Sub InsertDosingMedicine(encid As String, sBilType As String, billingMode As String, DiscMode As String, sLedger As String, xroute As String, xitem As String, xdose As Float, xfreq As String, xday As Float, xqty As Float, PatStatus As String, xprescriber As String, xregno As String, startDay As Integer, taxper As Float, discper As Float, fixitem As String, fixrate As Float, OrderType As String, DeptID As String, sDirection As String, sAdminSite As String, sDoseCount As Integer, sMixing As String, sParent As Long, sDefault As String)                 ''
+Public Sub InsertDosingMedicine(encid As String, sBilType As String, billingMode As String, DiscMode As String, sLedger As String, xroute As String, xitem As String, xdose As Float, xfreq As String, xday As Float, xqty As Float, PatStatus As String, xprescriber As String, xregno As String, xstart As Date, taxper As Float, discper As Float, fixitem As String, fixrate As Float, OrderType As String, DeptID As String, sDirection As String, sAdminSite As String, sDoseCount As Integer, sMixing As String, sParent As Long, sDefault As String)                 ''
 
   Dim res As Result
   Dim order As String
   Dim disptype As String
-  Dim xstart As Date
   Dim xCashCredit As Float
   Dim xcurVal As String
 
@@ -24,11 +74,6 @@ Public Sub InsertDosingMedicine(encid As String, sBilType As String, billingMode
     order = OrderType
   Else
     order = "UseOwn"
-  Endif
-  If startDay Then
-    xstart = DateAdd(Now(), gb.Hour, startDay)
-  Else
-    xstart = Now()
   Endif
   xCashCredit = modNonMedical.CashInCreditPerForCategory(DiscMode, "Medicines", xitem, billingMode)
 
@@ -836,7 +881,7 @@ Public Sub GetSplitRecordWithQTYIndoor(encid As String, xIndex As Long, newqty A
 
 End
 
-Public Sub InsertNurDosing(dosid As Long, encid As String, Value As Float, sUnit As String, sStart As Date)
+Public Sub InsertNurDosing(encid As String, dosid As Long, cardexid As Long, Value As Float, sUnit As String, sStart As Date)
 
   Dim res As Result
   Dim rsx As Result
@@ -846,6 +891,7 @@ Public Sub InsertNurDosing(dosid As Long, encid As String, Value As Float, sUnit
     res = modDatabase.$myConn.Create("tblnurdosing")
     res["fldencounterval"] = encid
     res["flddoseno"] = dosid
+    res["fldcardex"] = cardexid
     res["fldmedicine"] = rsx["flditem"]
     res["fldrecdose"] = rsx["flddose"]
     res["fldrecfreq"] = rsx["fldfreq"]

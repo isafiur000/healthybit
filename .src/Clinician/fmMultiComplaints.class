@@ -235,17 +235,19 @@ Public Sub SaveSymptomsEntry()
 
   Dim i As Integer
 
-  For i = 0 To $sValueList.Count - 1
-    If i < 99 Then
-      If aMarkCheck[i].Value = True Then
-        modPatientGeneral.AddPatComplaintsData($encid, "Presenting Symptoms", aNameLabel[i].Text, bComboBox[i].Text, aValueBox[i].Value, aComboBox[i].Text)
-        bComboBox[i].Text = ""
-        aValueBox[i].Value = 0
-        aComboBox[i].Text = ""
-        aMarkCheck[i].Value = False
+  If $sValueList And If $sValueList.Count Then
+    For i = 0 To $sValueList.Count - 1
+      If i < 99 Then
+        If aMarkCheck[i].Value = True Then
+          modPatientGeneral.AddPatComplaintsData($encid, "Presenting Symptoms", aNameLabel[i].Text, bComboBox[i].Text, aValueBox[i].Value, aComboBox[i].Text)
+          bComboBox[i].Text = ""
+          aValueBox[i].Value = 0
+          aComboBox[i].Text = ""
+          aMarkCheck[i].Value = False
+        Endif
       Endif
-    Endif
-  Next
+    Next
+  Endif
 
 End
 

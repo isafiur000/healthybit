@@ -35,6 +35,7 @@ Private hDigForm As FmDiagnosticTab
 Private hOwnStockForm As FmWardStock
 Private hPtForm As FmClinHistory
 Private hPtArchive As FmClinArchive
+Private hIpCardex As FmIPMedOrder
 
 Private $billModeTest As String
 Private $billModeRadio As String
@@ -612,6 +613,7 @@ Private Sub BasicInfoPatient()
 
     hMultiCompl = New FmMultiComplaints(Trim(txtencid.Text), pnlmulticomplaints)
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
+    hIpCardex = New FmIPMedOrder(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlcardex)
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
     hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
     hPtArchive = New FmClinArchive($PatientNum, pnlarchivbe)
@@ -1107,6 +1109,7 @@ Public Sub TabStrip1_Click()
         btnhistory.Enabled = True
       Endif
       txthistory.SetFocus
+
     Else If TabStrip1.Index = 2 Then ''exams
 
     Else If TabStrip1.Index = 3 Then ''report
@@ -1117,14 +1120,17 @@ Public Sub TabStrip1_Click()
 
     Else If TabStrip1.Index = 6 Then ''Routine
       ShowMedicines("Current")
-    Else If TabStrip1.Index = 7 Then  ''PRN
-      hOwnStockForm.RearrangeGrid()
+
+    Else If TabStrip1.Index = 7 Then  ''cardex
     Else If TabStrip1.Index = 8 Then  ''Fluids
       ShowMedFluids()
 
-    Else If TabStrip1.Index = 9 Then ''SOAP
+    Else If TabStrip1.Index = 9 Then ''inventory
+      hOwnStockForm.RearrangeGrid()
 
-    Else If TabStrip1.Index = 9 Then ''History
+    Else If TabStrip1.Index = 10 Then ''SOAP
+    Else If TabStrip1.Index = 11 Then ''History
+    Else If TabStrip1.Index = 12 Then ''Archive
     Endif
   Endif
 
@@ -1161,6 +1167,7 @@ Public Sub Form_KeyRelease()
     ShowMedFluids()
   Else If Key.Code = Key.F10 Then
     TabStrip1.Index = 9
+
   Else If Key.Code = Key.F11 Then
     btnlabs_Click()
   Else If Key.Code = Key.F12 Then
@@ -3233,7 +3240,7 @@ Public Sub grdfluid_Click()
       If grdfluid[grdfluid.Row, 1].Picture = Picture["icon:/tiny/next"] Then
         yval = InputValue(("Enter Rate of Administration in mL/Hour"), grdfluid[grdfluid.Row, 2].Text, 0)
         If yval Then
-          modPharmSub.InsertNurDosing(grdfluid[grdfluid.Row, 0].Text, Trim(txtencid.Text), yval, "mL/Hour", Now())
+          modPharmSub.InsertNurDosing(Trim(txtencid.Text), grdfluid[grdfluid.Row, 0].Text, 0, yval, "mL/Hour", Now())
           FillFluidGridView(grdfluid[grdfluid.Row, 0].Text)
           ShowMedFluids()
         Endif
