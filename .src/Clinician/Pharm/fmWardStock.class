@@ -304,6 +304,7 @@ Public Sub GridView3_Click()
     txtqty.Value = 0
     If modBasic.$ClinFractQuantity = "Enable" Then
       txtbreakitem.Text = GridView3[GridView3.Row, 1].Text
+      txtroute.Text = GridView3[GridView3.Row, 3].Text
       SHowBreakPanel(GridView3[GridView3.Row, 1].Text)
     Endif
   Endif
@@ -352,7 +353,7 @@ Public Sub btnselbreak_Click()
 
   If cmbgroup.Text Then
     If txtqty.Value Then
-      EntryUseOwndata(cmbgroup.Text, txtbreakitem.Text, txtqty.Value)
+      EntryUseOwndata(cmbgroup.Text, txtroute.Text, txtbreakitem.Text, txtqty.Value)
       txtdose.Value = 0
       txtqty.Value = 0
       ShowUsedGridViewList()
@@ -392,7 +393,7 @@ Public Sub btnselect_Click()
           xqty = GridView3[Row, 2].Text
         Endif
         If xqty Then
-          EntryUseOwndata(sType, GridView3[Row, 1].Text, xqty)
+          EntryUseOwndata(sType, GridView3[Row, 3].Text, GridView3[Row, 1].Text, xqty)
         Endif
         GridView3[Row, 0].Picture = Picture["icons/unchecked.png"]
       Endif
@@ -403,9 +404,8 @@ Public Sub btnselect_Click()
 
 End
 
-Private Sub EntryUseOwndata(sType As String, sItem As String, sQty As Float)
+Private Sub EntryUseOwndata(sType As String, xroute As String, sItem As String, sQty As Float)
 
-  Dim xroute As String
   Dim xtax As Float
   Dim xdisc As Float
   Dim xdose As Float
@@ -440,7 +440,7 @@ Private Sub EntryUseOwndata(sType As String, sItem As String, sQty As Float)
     itemmode = $sBillMode
     xtax = modNonMedical.ShowTaxValues(sType, sItem)
     xdisc = modNonMedical.DiscPercentForCategoryValue($encid, cmbdisctype.Text, sType, sItem, itemmode)
-    xroute = modMedicine.GetRouteFromItem(sItem, sType)
+    ' xroute = modMedicine.GetRouteFromItem(sItem, sType)
 
     If sType = "Medicines" Then
       xdose = sQty * modMedConstant.GetPackVolValue(sItem) * modMedConstant.GetDrugInitialStrength(sItem)

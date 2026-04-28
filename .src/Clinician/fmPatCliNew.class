@@ -469,8 +469,9 @@ Private Sub GetEncounterValue()
             $dtRegist = modPatient.GetRecordDate(Trim(txtencid.Text))
             txtpatdoa.Text = modReportVar.GetDateTimeReport($dtRegist, gb.GeneralDate)
             txtpatweight.Value = modClinic.GetBodyWeight(Trim(txtencid.Text))
-            btnconsult.Tag = modPatient.GetAttendingConsultant(Trim(txtencid.Text))
-            btnconsult.Text = modGeneral.GetUserFullName(btnconsult.Tag)
+            ' btnconsult.Tag = modPatient.GetAttendingConsultant(Trim(txtencid.Text))
+            ' btnconsult.Text = modGeneral.GetUserFullName(btnconsult.Tag)
+            GetDoctorNames()
             modClinSub.GetPatientHeight(Trim(txtencid.Text), txtpatheight, cmbpatheightunit)
             UpdateTriage()
             $vidRoom = LCase(Trim(txtencid.Text) & Format(Now(), "yymmdd"))
@@ -699,6 +700,34 @@ Public Sub cmbpatheightunit_KeyRelease()
 
 End
 
+Private Sub GetDoctorNames()
+
+  Dim res As Result
+
+  btnconsult.Tag = modPatient.GetAttendingConsultant(Trim(txtencid.Text))
+  If Not btnconsult.Tag Then
+    If txtclinmode.Text = "Consultation" Then
+      res = modDatabase.$myConn.Exec("select flduserid as flduser from tblconsult where fldencounterval=&1 and fldid=&2", Trim(txtencid.Text), txtclinIndex.Value)
+    Else If txtclinmode.Text = "OP Visit" Then
+      res = modDatabase.$myConn.Exec("select fldflaguser as flduser from tblopvisit where fldencounterval=&1 and fldid=&2", Trim(txtencid.Text), txtclinIndex.Value)
+    Endif
+    If res.Available Then
+      If res["flduser"] Then
+        btnconsult.Tag = res["flduser"]
+      Else
+        btnconsult.Tag = ""
+      Endif
+    Else
+      btnconsult.Tag = ""
+    Endif
+  Endif
+
+  If btnconsult.Tag Then
+    btnconsult.Text = modGeneral.GetUserFullName(btnconsult.Tag)
+  Endif
+
+End
+
 Public Sub btnconsult_Click()
 
   Dim xMedUser As String[]
@@ -715,6 +744,7 @@ Public Sub btnconsult_Click()
     modPatientSub.UpdateAttendingConsultant(Trim(txtencid.Text), btnconsult.Tag)
     Balloon.Info(("Information saved"), btnconsult)
     Balloon.Delay = modBasic.$BalloonDelay
+    ButtonControl()
   Endif
 
 End
@@ -895,11 +925,16 @@ Private Sub ButtonControl()
   Dim xfinal As Boolean
   Dim xval As String
 
-  xfinal = modPatient.EnableClinicForm($sTatus)
-  If xfinal = True Then
-    xx = modPatient.EnableClinicOPDForm(Trim(txtencid.Text))
-  Else
+  If modBasic.$DoctorOblig = "Enable" And If Not btnconsult.Tag Then
     xx = False
+    xfinal = False
+  Else
+    xfinal = modPatient.EnableClinicForm($sTatus)
+    If xfinal = True Then
+      xx = modPatient.EnableClinicOPDForm(Trim(txtencid.Text))
+    Else
+      xx = False
+    Endif
   Endif
 
   ''consultation
@@ -3043,6 +3078,37 @@ Public Sub mnudiagnorep_Click()
 
 End
 
+Public Sub mnucurlab_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("Diagnostic Tests", Trim(txtencid.Text))
+
+End
+
+Public Sub mnucurradio_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("Radio Diagnostics", Trim(txtencid.Text))
+
+End
+
+Public Sub mnucurgeneral_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("General Reports", Trim(txtencid.Text))
+
+End
+
+Public Sub mnucurscan_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("Scanned Images", Trim(txtencid.Text))
+
+End
+
+Public Sub mnucurpast_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("Past Documents", Trim(txtencid.Text))
+
+End
+
+''Multiple encid
 Public Sub mnuarchlab_Click()
 
   modPatReports.GetArchiveReportResult("Diagnostic Tests", $PatientNum)
@@ -4540,9 +4606,24 @@ End
 Private Sub ArchiveSummary()
 
   Dim xPath As String
+  Dim hCls As CReportCustom
 
   Inc Application.Busy
-  xPath = modPatReportAll.ShowAllCompleteReport(Trim(txtencid.Text), LabUnitForm())
+  If modSettings.ShowSettingFromFIle("OPD Sheet/Name") Then
+    If txtclinIndex.Value And If txtclinmode.Text Then
+      If txtclinmode.Text = "Consultation" Then
+        hCls = New CReportCustom(Trim(txtencid.Text), "OPD Sheet", "ReportSize", LabUnitForm(), "Consultation|" & CStr(txtclinIndex.Value))
+      Else If txtclinmode.Text = "OP Visit" Then
+        hCls = New CReportCustom(Trim(txtencid.Text), "OPD Sheet", "ReportSize", LabUnitForm(), "OPVisit|" & CStr(txtclinIndex.Value))
+      Endif
+    Else
+      hCls = New CReportCustom(Trim(txtencid.Text), "OPD Sheet", "ReportSize", LabUnitForm())
+    Endif
+    xPath = hCls.NewHTMLPath()
+
+  Else
+    xPath = modPatReportAll.ShowAllCompleteReport(Trim(txtencid.Text), LabUnitForm())
+  Endif
   Dec Application.Busy
   modPrint.HTMLViewDOcument(xPath, Trim(txtencid.Text), "Backup")
 
@@ -4695,5 +4776,11 @@ End
 Public Sub mnulongirecord_Click()
 
   mnupatcomment_Click()
+
+End
+
+Public Sub mnupatcomment2_Click()
+
+  mnucurscan_Click()
 
 End

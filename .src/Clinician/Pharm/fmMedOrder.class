@@ -119,8 +119,10 @@ Public Sub Form_Open()
   ShowBillingParam($DiscPackage)
   If $status = "Admitted" Then
     $LabelType = "Inpatient"
+    btndispown.Visible = False
   Else
     $LabelType = "Outpatient"
+    btndispown.Visible = True
   Endif
 
   If $status = "Registered" Then

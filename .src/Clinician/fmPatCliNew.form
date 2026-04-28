@@ -201,6 +201,9 @@
     }
     { mnufileLabs Menu
       Text = ("Laboratory")
+      { mnucurlab Menu
+        Text = ("Current")
+      }
       { mnuarchlab Menu
         Text = ("Hospital")
       }
@@ -210,6 +213,9 @@
     }
     { mnufileRadio Menu
       Text = ("Radiology")
+      { mnucurradio Menu
+        Text = ("Current")
+      }
       { mnuarchradio Menu
         Text = ("Hospital")
       }
@@ -219,6 +225,9 @@
     }
     { mnufileGendocs Menu
       Text = ("General Docs")
+      { mnucurgeneral Menu
+        Text = ("Current")
+      }
       { mnuarchgeneral Menu
         Text = ("Hospital")
       }
@@ -228,6 +237,9 @@
     }
     { mnufileScan Menu
       Text = ("Scanned Docs")
+      { mnucurscan Menu
+        Text = ("Scanned")
+      }
       { mnuscannedimg Menu
         Text = ("Hospital")
       }
@@ -237,6 +249,9 @@
     }
     { mnufilePast Menu
       Text = ("Past Docs")
+      { mnucurpast Menu
+        Text = ("Current")
+      }
       { mnupastdocs Menu
         Text = ("Hospital")
       }
@@ -830,10 +845,17 @@
           Expand = True
         }
         { Panel8 Panel
-          MoveScaled(0,30,25,4)
+          MoveScaled(0,25,25,4)
           { mnupatcomment Button
             MoveScaled(0,0,24,3.5)
             Text = ("Long Med Record")
+          }
+        }
+        { Panel40 Panel
+          MoveScaled(0,29,25,4)
+          { mnupatcomment2 Button
+            MoveScaled(0,0,24,3.5)
+            Text = ("Scanned Archive")
           }
         }
         { Panel2 Panel

@@ -3487,3 +3487,11 @@ Public Sub mnudocs_Click()
   Endif
 
 End
+
+Public Sub mnuscandocs_Click()
+
+  If txtpatno.Text Then
+    modPatReports.GetArchiveReportResult("Scanned Images", Trim(txtpatno.Text))
+  Endif
+
+End

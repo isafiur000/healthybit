@@ -13,7 +13,6 @@ Private $RestrictList As String[]
 
 Private $HiCappingVar As Collection
 Private $HiCapAPIView As Variant[]
-Private $sClaimState As String
 
 Public Sub Form_Open()
 
@@ -115,18 +114,17 @@ End
 
 Private Sub FillEncList(xencid As String)
 
-  Dim xstate As Boolean
   Dim xsql As String
 
   If cmbdepart.Text = "%" And If cmbpackage.Text = "%" Then
     xsql = ""
   Else
     If cmbdepart.Text = "%" Then
-      xsql = db.Subst(" and fldencounterval in(select fldencounterval from tblencounter where flddisctype=&1)", cmbpackage.Text)
+      xsql = db.Subst(" and fldencounterval in(select fldencounterval from tblencounter where flddod IS NULL and flddisctype=&1)", cmbpackage.Text)
     Else If cmbpackage.Text = "%" Then
-      xsql = db.Subst(" and fldencounterval in(select fldencounterval from tblencounter where fldcurrlocat in(select fldbed from tbldepartmentbed where flddept like &1))", cmbdepart.Text)
+      xsql = db.Subst(" and fldencounterval in(select fldencounterval from tblencounter where flddod IS NULL and fldcurrlocat in(select fldbed from tbldepartmentbed where flddept like &1))", cmbdepart.Text)
     Else
-      xsql = db.Subst(" and fldencounterval in(select fldencounterval from tblencounter where flddisctype=&1 and fldcurrlocat in(select fldbed from tbldepartmentbed where flddept like &2))", cmbpackage.Text, cmbdepart.Text)
+      xsql = db.Subst(" and fldencounterval in(select fldencounterval from tblencounter where flddod IS NULL and flddisctype=&1 and fldcurrlocat in(select fldbed from tbldepartmentbed where flddept like &2))", cmbpackage.Text, cmbdepart.Text)
     Endif
   Endif
 
@@ -192,6 +190,7 @@ Public Sub GridView1_Click()
     cmbnewscheme.Text = GridView1[GridView1.Row, 3].Text
 
     FillDispenstable($encid)
+    ShowMedicineOrderList($encid)
     $HiCappingVar = New Collection
     GridView2.SetFocus
   Endif
@@ -205,6 +204,64 @@ Private Sub GetPatientProfile(encid As String)
   txtagesex.Text = modPatient.GetPatientAgeString(encid, Now()) & "/" & modPatient.GetPatientAddressByEnc(encid)
   txtpatientcontact.Text = modPatient.GetPatientLocation(encid)
   txtnhsi.Text = modPatient.GetPatientExtCOdebyEnc(encid)
+
+End
+
+Private Sub ShowMedicineOrderList(encid As String)
+
+  Dim xrestr As String
+  Dim i As Integer
+  Dim xList As String[]
+  Dim Row As Integer
+  Dim res As Result
+  Dim pic2 As Picture
+
+  If $RestrictType And If $RestrictList.Count Then
+    xList = $RestrictList.Copy()
+    For i = 0 To xList.Count - 1
+      xList[i] = "'" & xList[i] & "'"
+    Next
+    If $RestrictType = "Allow" Then
+      xrestr = " and flditem IN(" & xList.Join(",") & ")"
+    Else If $RestrictType = "Prevent" Then
+      xrestr = " and flditem NOT IN(" & xList.Join(",") & ")"
+    Endif
+  Else
+    xrestr = ""
+  Endif
+
+  ListView1.Clear
+  pic2 = Picture["icons/checked.png"]
+  res = modDatabase.$myConn.Exec("select distinct(flditem) as flditem from tblinpatdosing where fldencounterval=&1 and fldcurval=&2 and fldsave=&3 and fldendtime>=&4" & xrestr, encid, "Continue", False, modDate.StartSqlDate(Now()))                 ''
+  If res.Available Then
+    Row = 1
+    For Each res
+      ListView1.Add(CStr(Row), res["flditem"], pic2)
+      Row = Row + 1
+    Next
+  Endif
+
+End
+
+Public Sub ListView1_Click()
+
+  ShowCheckedView()
+
+End
+
+Private Sub ShowCheckedView()
+
+  Dim pic1 As Picture
+  Dim pic2 As Picture
+
+  pic1 = Picture["icons/unchecked.png"]
+  pic2 = Picture["icons/checked.png"]
+
+  If ListView1.Current.Picture = pic1 Then
+    ListView1.Current.Picture = pic2
+  Else If ListView1.Current.Picture = pic2 Then
+    ListView1.Current.Picture = pic1
+  Endif
 
 End
 
@@ -222,8 +279,6 @@ Public Sub btnaddorder_Click()
   Dim CPharmFix As CFixRatePharmacy
   Dim xgo As Boolean
   Dim xrestr As String
-  Dim i As Integer
-  Dim xList As String[]
 
   Dim hForm As CPackageParams
   Dim xBillMode As String
@@ -238,55 +293,44 @@ Public Sub btnaddorder_Click()
   xBillType = hForm.GetBillType()
   xsClaimState = hForm.GetClaimState()
 
-  If $RestrictType And If $RestrictList.Count Then
-    xList = $RestrictList.Copy()
-    For i = 0 To xList.Count - 1
-      xList[i] = "'" & xList[i] & "'"
-    Next
-    If $RestrictType = "Allow" Then
-      xrestr = " and flditem IN(" & xList.Join(",") & ")"
-    Else If $RestrictType = "Prevent" Then
-      xrestr = " and flditem NOT IN(" & xList.Join(",") & ")"
-    Endif
-  Else
-    xrestr = ""
-  Endif
+  For Row = 1 To ListView1.Count
+    If ListView1[Row].Picture = Picture["icons/checked.png"] Then
+      res = modDatabase.$myConn.Exec("select fldid,fldroute,flditem,flddose,fldfreq,flddays,fldqtyorder,fldprescriber,fldregno,flddirection,fldadminsite,fldmixing,fldstarttime,fldendtime from tblinpatdosing where fldencounterval=&1 and flditem=&2 and fldcurval=&3 and fldsave=&4 and fldendtime>=&5" & xrestr, $encid, ListView1[Row].Text, "Continue", False, modDate.StartSqlDate(Now()))                 ''
+      If res.Available Then
+        For Each res
 
-  res = modDatabase.$myConn.Exec("select fldid,fldroute,flditem,flddose,fldfreq,flddays,fldqtyorder,fldprescriber,fldregno,flddirection,fldadminsite,fldmixing,fldstarttime,fldendtime from tblinpatdosing where fldencounterval=&1 and fldcurval=&2 and fldsave=&3 and fldendtime>=&4" & xrestr, $encid, "Continue", False, modDate.StartSqlDate(Now()))                 ''
-  If res.Available Then
-    For Each res
-
-      itemtype = modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"])
-      xgo = False
-      If modBasic.$BillPharmFixedModes.Exist(xBillMode) = True Then
-        CPharmFix = New CFixRatePharmacy(itemtype, res["flditem"], xBillMode)
-        xfixrate = CPharmFix.GetFixRate()
-        xfixname = CPharmFix.GetFixItem()
-        If xfixname Then
-          xgo = True
-        Else
+          itemtype = modNonMedical.GetBillItemCategoryFromCombo(res["fldroute"])
           xgo = False
-        Endif
-      Else
-        xgo = True
-      Endif
+          If modBasic.$BillPharmFixedModes.Exist(xBillMode) = True Then
+            CPharmFix = New CFixRatePharmacy(itemtype, res["flditem"], xBillMode)
+            xfixrate = CPharmFix.GetFixRate()
+            xfixname = CPharmFix.GetFixItem()
+            If xfixname Then
+              xgo = True
+            Else
+              xgo = False
+            Endif
+          Else
+            xgo = True
+          Endif
 
-      If xgo = True Then
-        itemmode = xBillMode
-        xtax = modNonMedical.ShowTaxValues(itemtype, res["flditem"])
-        xdisc = modNonMedical.DiscPercentForCategoryValue($encid, cmbnewscheme.Text, itemtype, res["flditem"], itemmode)
-        modPharmSub.InsertDosingMedicine($encid, xBillType, xBillMode, cmbnewscheme.Text, xLedgerAC, res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtyorder"], txtstatus.Text, res["fldprescriber"], res["fldregno"], Now(), xtax, xdisc, xfixname, xfixrate, "Request", "IPD", res["flddirection"], res["fldadminsite"], 0, res["fldmixing"], res["fldid"], "Continue")
-      Endif
+          If xgo = True Then
+            itemmode = xBillMode
+            xtax = modNonMedical.ShowTaxValues(itemtype, res["flditem"])
+            xdisc = modNonMedical.DiscPercentForCategoryValue($encid, cmbnewscheme.Text, itemtype, res["flditem"], itemmode)
+            modPharmSub.InsertDosingMedicine($encid, xBillType, xBillMode, cmbnewscheme.Text, xLedgerAC, res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtyorder"], txtstatus.Text, res["fldprescriber"], res["fldregno"], Now(), xtax, xdisc, xfixname, xfixrate, "Request", "IPD", res["flddirection"], res["fldadminsite"], 0, res["fldmixing"], res["fldid"], "Continue")
+          Endif
 
-    Next
-    FillDispenstable($encid)
-  Endif
+        Next
+      Endif
+    Endif
+  Next
+  FillDispenstable($encid)
 
 End
 
 Private Function ExecuteQuery(encid As String) As Result
 
-  Dim xstate As Boolean
   Dim res As Result
   Dim xrestr As String
   Dim xList As String[]
@@ -396,7 +440,6 @@ Public Sub GridView2_Click()
   Dim yval As String
   Dim col As Integer
   Dim row As Integer
-  Dim anum As Float
 
   col = GridView2.Column
   row = GridView2.Row
@@ -454,39 +497,6 @@ Public Sub btnclaerall_Click()
   FillDispenstable($encid)
   txtsearch.Text = ""
   txtsearch.SetFocus
-
-End
-
-Private Sub COnfirmDispensing()
-
-  Dim res As Result
-  Dim Row As Integer
-  Dim xgo As Boolean
-
-  If GridView2.Rows.Count Then
-    For Row = 0 To GridView2.Rows.Count - 1
-      xgo = False
-      If chkselall.Value = True Then
-        xgo = True
-      Else If chkselall.Value = False Then
-        If GridView2.Rows[Row].Selected = True Then
-          xgo = True
-        Endif
-      Endif
-      If xgo = True Then
-        res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", GridView2[Row, 0].Text)
-        res["fldlevel"] = "Dispensed"
-        res["flduserid_disp"] = modBasic.$lbluser
-        res["fldtime_disp"] = Now()
-        res["fldcomp_disp"] = modBasic.$compID
-        res["xyz"] = False
-        res.Update()
-      Endif
-    Next
-    FillDispenstable($encid)
-    Balloon.Info(("Information saved"), btnclaerall)
-    Balloon.Delay = modBasic.$BalloonDelay
-  Endif
 
 End
 

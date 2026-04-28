@@ -151,6 +151,9 @@
     }
     { mnufilelabs Menu
       Text = ("Laboratory")
+      { mnucurlab Menu
+        Text = ("Current")
+      }
       { mnuarchlab Menu
         Text = ("Hospital")
       }
@@ -160,6 +163,9 @@
     }
     { mnufileradio Menu
       Text = ("Radiology")
+      { mnucurradio Menu
+        Text = ("Current")
+      }
       { mnuarchradio Menu
         Text = ("Hospital")
       }
@@ -169,6 +175,9 @@
     }
     { mnufilegeneral Menu
       Text = ("General Docs")
+      { mnucurgeneral Menu
+        Text = ("Current")
+      }
       { mnuarchgenerl Menu
         Text = ("Hospital")
       }
@@ -178,6 +187,9 @@
     }
     { mnufilescanned Menu
       Text = ("Scanned Docs")
+      { mnucurscan Menu
+        Text = ("Current")
+      }
       { mnuscannedimg Menu
         Text = ("Hospital")
       }
@@ -187,6 +199,9 @@
     }
     { mnufilepast Menu
       Text = ("Past Docs")
+      { mnucurpast Menu
+        Text = ("Current")
+      }
       { mnupastdocs Menu
         Text = ("Hospital")
       }
@@ -634,15 +649,15 @@
     { Panel6 Panel
       MoveScaled(1,59,118,4)
       { btnpersonal Button
-        MoveScaled(110,0.5,3,3)
+        MoveScaled(111.5,0.5,3,3)
         Picture = Picture["icon:/small/house"]
       }
       { btnexpo Button
-        MoveScaled(114,0.5,3,3)
+        MoveScaled(115,0.5,3,3)
         Picture = Picture["icon:/small/html"]
       }
       { Panel7 Panel
-        MoveScaled(82,0.5,27,3)
+        MoveScaled(78,0.5,33,3)
         Border = Border.Plain
         { rbdate RadioButton
           MoveScaled(0,0,8,3)
@@ -654,42 +669,47 @@
           Text = ("Name")
         }
         { rbtriage RadioButton
-          MoveScaled(17,0,9.5,2.75)
+          MoveScaled(17,0,9,2.75)
           Text = ("Triage")
+        }
+        { rbdoctor RadioButton
+          MoveScaled(26,0,7,3)
+          Text = ("Doc")
         }
       }
       { chkshowdepart CheckBox
-        MoveScaled(48,0.5,10,3)
+        MoveScaled(45,0.5,10,3)
         Text = ("Params")
       }
       { chkshowstatus CheckBox
-        MoveScaled(59,0.5,10,3)
+        MoveScaled(55.5,0.5,10,3)
         Text = ("Status")
       }
       { chknotice CheckBox
-        MoveScaled(70,0.5,10,3)
+        MoveScaled(66,0.5,10,3)
         Text = ("Section")
       }
       { cmbunit ComboBox
         MoveScaled(0.5,0.5,12,3)
       }
       { Panel5 Panel
-        MoveScaled(16,0.5,30,3)
+        MoveScaled(14,0.5,29.5,3)
+        Border = Border.Plain
         { rbopd RadioButton
           MoveScaled(0,0,8,3)
           Text = ("OPD")
         }
         { rbipd RadioButton
-          MoveScaled(15,0,7,3)
+          MoveScaled(14.5,0,7,3)
           Text = ("IPD")
         }
         { rbboth RadioButton
-          MoveScaled(22.5,0,7,3)
+          MoveScaled(22,0,7,3)
           Text = ("Any")
           Value = True
         }
         { rber RadioButton
-          MoveScaled(8,0,7,3)
+          MoveScaled(8,0,6.5,3)
           Text = ("ER")
         }
       }

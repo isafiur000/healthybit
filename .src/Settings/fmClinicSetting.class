@@ -58,6 +58,7 @@ Public Sub Form_Open()
   cmbconsultcomment.List = ["Optional", "Essential"]
   cmbfracqty.List = ["Enable", "Disable"]
 
+  cmbessendoctor.List = ["Enable", "Disable"]
   cmbtriage.List = ["Manual", "Dynamic"]
   cmbdosing.List = ["Enable", "Disable"]
   xList = modControlSub.GetDirectFillresultNoNull(modDatabase.$medConn.Exec("select distinct(fldsubclass) as col from tblstructexam where fldclass like &1", "Physician Examinations"))
@@ -127,6 +128,7 @@ Private Sub ManageSettings()
   Dim xdosing As String
   Dim xdosestart As String
 
+  cmbessendoctor.Text = modGlobalSetting.ShowSettingFromDBAny("IPClinic/MandatoryDoctor", cmbtarget.Text)
   cmbtriage.Text = modGlobalSetting.ShowSettingFromDBAny("IPClinic/TriageColorValue", cmbtarget.Text)
   xdosing = modGlobalSetting.ShowSettingFromDBAny("IPClinic/VitalsInterval", cmbtarget.Text)
   If xdosing Then
@@ -152,6 +154,14 @@ Private Sub ManageSettings()
   Endif
 
   cmbradiotree.Text = modGlobalSetting.ShowSettingFromDBAny("IPClinic/ForceRadioTree", cmbtarget.Text)
+
+End
+
+Public Sub btnessendoctor_Click()
+
+  modGlobalSetting.SaveSettingToDB("IPClinic/MandatoryDoctor", cmbessendoctor.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnessendoctor)
+  Balloon.Delay = modBasic.$BalloonDelay
 
 End
 
@@ -799,6 +809,7 @@ Public Sub btnsettall_Click()
   xList.Add("IPClinic/FixDiagnosisOPDOutcome")
   xList.Add("IPClinic/FixAdviceOPDOutcome")
 
+  xList.Add("IPClinic/MandatoryDoctor")
   xList.Add("IPClinic/TriageColorValue")
   xList.Add("IPClinic/VitalsInterval")
   xList.Add("IPClinic/RestrictToDoseTime")

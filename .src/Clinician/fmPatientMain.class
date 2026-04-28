@@ -382,6 +382,7 @@ Public Sub btnconsult_Click()
     modPatientSub.UpdateAttendingConsultant(Trim(txtencid.Text), btnconsult.Tag)
     Balloon.Info(("Information saved"), btnconsult)
     Balloon.Delay = modBasic.$BalloonDelay
+    ButtonControl()
   Endif
 
 End
@@ -654,18 +655,21 @@ Private Sub ButtonControl()
   Dim xx As Boolean
   Dim xval As String
 
-  xx = modPatient.EnableClinicForm(txtnow.Text)
+  If modBasic.$DoctorOblig = "Enable" And If Not btnconsult.Tag Then
+    xx = False
+  Else
+    xx = modPatient.EnableClinicForm(txtnow.Text)
+  Endif
 
   If xx = False Then
     If $sTatus = "Cleared" Then
       btnpharm.Enabled = False
       btnoteadd.Enabled = False
+      pnlcardex.Enabled = False
     Endif
   Endif
 
   chkenabhistory.Value = xx
-  ''set consult
-  btnconsult.Enabled = xx
   ''presenting complaints
   btnsympadd.Enabled = xx
   btnaddsymplist.Enabled = xx
@@ -4768,6 +4772,75 @@ Public Sub mnuprescrlocal_Click()
 
 End
 
+''History
+Public Sub mnuexamrepo_Click()
+
+  modPatReports.GetRepoHistoryLocalResult("Examination", Trim(txtencid.Text), LabUnitForm())
+
+End
+
+Public Sub mnulabremote_Click()
+
+  modPatReports.GetRepoHistoryLocalResult("Laboratory", Trim(txtencid.Text), LabUnitForm())
+
+End
+
+Public Sub mnuradioremote_Click()
+
+  modPatReports.GetRepoHistoryLocalResult("Radiology", Trim(txtencid.Text), LabUnitForm())
+
+End
+
+Public Sub mnupresremote_Click()
+
+  modPatReports.GetRepoHistoryLocalResult("Medicines", Trim(txtencid.Text), LabUnitForm())
+
+End
+
+Public Sub mnuallhist_Click()
+
+  modPatReports.GetSelectHistoryResult(Trim(txtencid.Text), LabUnitForm())
+
+End
+
+Public Sub mnuremoreport_Click()
+
+  modPatReports.GetRepoSelectHistoryResult(Trim(txtencid.Text), LabUnitForm())
+
+End
+
+''Archives
+Public Sub mnucurlab_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("Diagnostic Tests", Trim(txtencid.Text))
+
+End
+
+Public Sub mnucurradio_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("Radio Diagnostics", Trim(txtencid.Text))
+
+End
+
+Public Sub mnucurgeneral_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("General Reports", Trim(txtencid.Text))
+
+End
+
+Public Sub mnucurscan_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("Scanned Images", Trim(txtencid.Text))
+
+End
+
+Public Sub mnucurpast_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("Past Documents", Trim(txtencid.Text))
+
+End
+
+''Multiple encid
 Public Sub mnuarchgeneral_Click()
 
   modPatReports.GetArchiveReportResult("General Reports", $PatientNum)
@@ -4804,19 +4877,6 @@ Public Sub mnupastdocsrepo_Click()
 
 End
 
-''History
-Public Sub mnuexamrepo_Click()
-
-  modPatReports.GetRepoHistoryLocalResult("Examination", Trim(txtencid.Text), LabUnitForm())
-
-End
-
-Public Sub mnulabremote_Click()
-
-  modPatReports.GetRepoHistoryLocalResult("Laboratory", Trim(txtencid.Text), LabUnitForm())
-
-End
-
 Public Sub mnuarchlab_Click()
 
   modPatReports.GetArchiveReportResult("Diagnostic Tests", $PatientNum)
@@ -4829,12 +4889,6 @@ Public Sub mnuarchlabrepo_Click()
 
 End
 
-Public Sub mnuradioremote_Click()
-
-  modPatReports.GetRepoHistoryLocalResult("Radiology", Trim(txtencid.Text), LabUnitForm())
-
-End
-
 Public Sub mnuarchradio_Click()
 
   modPatReports.GetArchiveReportResult("Radio Diagnostics", $PatientNum)
@@ -4844,24 +4898,6 @@ End
 Public Sub mnuarchradiorepo_Click()
 
   modPatReports.GetRepoArchiveReportResult("Radio Diagnostics", $PatientNum)
-
-End
-
-Public Sub mnupresremote_Click()
-
-  modPatReports.GetRepoHistoryLocalResult("Medicines", Trim(txtencid.Text), LabUnitForm())
-
-End
-
-Public Sub mnuallhist_Click()
-
-  modPatReports.GetSelectHistoryResult(Trim(txtencid.Text), LabUnitForm())
-
-End
-
-Public Sub mnuremoreport_Click()
-
-  modPatReports.GetRepoSelectHistoryResult(Trim(txtencid.Text), LabUnitForm())
 
 End
 
@@ -5595,6 +5631,7 @@ Private Sub RestrictUserAccess()
     grdmedicine.Enabled = False
     pnlwardstock.Enabled = False
     btnpharm.Enabled = False
+    pnlcardex.Enabled = False
   Endif
   If $UserRestrict.Exist("Products Request") Then
     mnumedproduct.Enabled = False

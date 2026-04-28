@@ -483,6 +483,7 @@ Public Sub btnconsult_Click()
     modPatientSub.UpdateAttendingConsultant(Trim(txtencid.Text), btnconsult.Tag)
     Balloon.Info(("Information saved"), btnconsult)
     Balloon.Delay = modBasic.$BalloonDelay
+    ButtonControl()
   Endif
 
 End
@@ -2022,6 +2023,36 @@ Public Sub mnudiagnorep_Click()
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
   Endif
+
+End
+
+Public Sub mnucurlab_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("Diagnostic Tests", Trim(txtencid.Text))
+
+End
+
+Public Sub mnucurradio_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("Radio Diagnostics", Trim(txtencid.Text))
+
+End
+
+Public Sub mnucurgeneral_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("General Reports", Trim(txtencid.Text))
+
+End
+
+Public Sub mnucurscan_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("Scanned Images", Trim(txtencid.Text))
+
+End
+
+Public Sub mnucurpast_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("Past Documents", Trim(txtencid.Text))
 
 End
 

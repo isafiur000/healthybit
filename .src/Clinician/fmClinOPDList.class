@@ -85,12 +85,11 @@ Public Sub Form_Open()
       cmbdept.Enabled = False
     Endif
   Else
+    pnlconsult.Visible = True
     If $sTable = "tblconsult" Then
       cmbdept.List = modBasic.$OPDConsultDepartments
-      pnlconsult.Visible = True
     Else If $sTable = "tblopvisit" Then
       cmbdept.List = modBasic.$OPDServiceDepartments
-      pnlconsult.Visible = False
     Endif
     cmbdept.Add("All")
     cmbdept.Text = modSettings.ShowSettingFromFIle("Clinic/DefaultOPD")
@@ -375,7 +374,11 @@ Private Function ExecuteQuery(xFldList As String[]) As Result
   Endif
 
   If btnconsult.Tag Then
-    xconsult = db.Subst(" and " & $sTable & "." & "flduserid like &1", btnconsult.Tag)
+    If $sTable = "tblconsult" Then
+      xconsult = db.Subst(" and " & $sTable & "." & "flduserid like &1", btnconsult.Tag)
+    Else If $sTable = "tblopvisit" Then
+      xconsult = db.Subst(" and " & $sTable & "." & "fldflaguser like &1", btnconsult.Tag)
+    Endif
   Else
     xconsult = ""
   Endif
@@ -394,6 +397,14 @@ Private Function ExecuteQuery(xFldList As String[]) As Result
     xpreun = ""
     xunion = ""
     xorder = " ORDER BY " & $sTable & "." & "fldconsulttime"
+  Else If rbdoctor.Value = True Then
+    xpreun = ""
+    xunion = ""
+    If $sTable = "tblconsult" Then
+      xorder = " ORDER BY " & $sTable & "." & "flduserid"
+    Else If $sTable = "tblopvisit" Then
+      xorder = " ORDER BY " & $sTable & "." & "fldflaguser"
+    Endif
   Else If rbtriage.Value = True Then
     xpreun = ""
     xunion = " inner join tblencounter on " & $sTable & "." & "fldencounterval=tblencounter.fldencounterval"
@@ -2406,30 +2417,6 @@ Public Sub mnulabhist_Click()
 
 End
 
-Public Sub mnulabviewrepo_Click()
-
-  If GridView1.Rows.Selection.Count Then
-    modPatReports.GetRepoHistoryLocalResult("Laboratory", GridView1[GridView1.Row, 2].Text, LabUnitForm())
-  Endif
-
-End
-
-Public Sub mnuarchlab_Click()
-
-  If GridView1.Rows.Selection.Count Then
-    modPatReports.GetArchiveReportResult("Diagnostic Tests", modPatient.GetPatientNoByEnc(GridView1[GridView1.Row, 2].Text))
-  Endif
-
-End
-
-Public Sub mnuarchlabrepo_Click()
-
-  If GridView1.Rows.Selection.Count Then
-    modPatReports.GetRepoArchiveReportResult("Diagnostic Tests", modPatient.GetPatientNoByEnc(GridView1[GridView1.Row, 2].Text))
-  Endif
-
-End
-
 Public Sub mnuradiohist_Click()
 
   If GridView1.Rows.Selection.Count Then
@@ -2446,18 +2433,10 @@ Public Sub mnuradioviewrepo_Click()
 
 End
 
-Public Sub mnuarchradio_Click()
+Public Sub mnulabviewrepo_Click()
 
   If GridView1.Rows.Selection.Count Then
-    modPatReports.GetArchiveReportResult("Radio Diagnostics", modPatient.GetPatientNoByEnc(GridView1[GridView1.Row, 2].Text))
-  Endif
-
-End
-
-Public Sub mnuarchradiorepo_Click()
-
-  If GridView1.Rows.Selection.Count Then
-    modPatReports.GetRepoArchiveReportResult("Radio Diagnostics", modPatient.GetPatientNoByEnc(GridView1[GridView1.Row, 2].Text))
+    modPatReports.GetRepoHistoryLocalResult("Laboratory", GridView1[GridView1.Row, 2].Text, LabUnitForm())
   Endif
 
 End
@@ -2490,6 +2469,78 @@ Public Sub mnugenhistrepo_Click()
 
   If GridView1.Rows.Selection.Count Then
     modPatReports.GetRepoSelectHistoryResult(GridView1[GridView1.Row, 2].Text, LabUnitForm())
+  Endif
+
+End
+
+Public Sub mnucurlab_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    modPatReports.GetArchiveCurrReportEnc("Diagnostic Tests", GridView1[GridView1.Row, 2].Text)
+  Endif
+
+End
+
+Public Sub mnucurradio_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    modPatReports.GetArchiveCurrReportEnc("Radio Diagnostics", GridView1[GridView1.Row, 2].Text)
+  Endif
+
+End
+
+Public Sub mnucurgeneral_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    modPatReports.GetArchiveCurrReportEnc("General Reports", GridView1[GridView1.Row, 2].Text)
+  Endif
+
+End
+
+Public Sub mnucurscan_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    modPatReports.GetArchiveCurrReportEnc("Scanned Images", GridView1[GridView1.Row, 2].Text)
+  Endif
+
+End
+
+Public Sub mnucurpast_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    modPatReports.GetArchiveCurrReportEnc("Past Documents", GridView1[GridView1.Row, 2].Text)
+  Endif
+
+End
+
+Public Sub mnuarchlab_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    modPatReports.GetArchiveReportResult("Diagnostic Tests", modPatient.GetPatientNoByEnc(GridView1[GridView1.Row, 2].Text))
+  Endif
+
+End
+
+Public Sub mnuarchlabrepo_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    modPatReports.GetRepoArchiveReportResult("Diagnostic Tests", modPatient.GetPatientNoByEnc(GridView1[GridView1.Row, 2].Text))
+  Endif
+
+End
+
+Public Sub mnuarchradio_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    modPatReports.GetArchiveReportResult("Radio Diagnostics", modPatient.GetPatientNoByEnc(GridView1[GridView1.Row, 2].Text))
+  Endif
+
+End
+
+Public Sub mnuarchradiorepo_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    modPatReports.GetRepoArchiveReportResult("Radio Diagnostics", modPatient.GetPatientNoByEnc(GridView1[GridView1.Row, 2].Text))
   Endif
 
 End
