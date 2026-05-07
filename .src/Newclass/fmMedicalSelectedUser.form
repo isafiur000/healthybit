@@ -1,16 +1,34 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,37,52)
+  MoveScaled(0,0,37,65)
   Resizable = False
-  { txtsearch TextBox
-    MoveScaled(1,0.375,31,3)
+  Arrangement = Arrange.Vertical
+  Margin = True
+  { Panel2 Panel
+    MoveScaled(0,0,36,4)
+    { rbuser RadioButton
+      MoveScaled(1,0.5,14,3)
+      Text = ("User ID")
+      Value = True
+    }
+    { rbname RadioButton
+      MoveScaled(17,0.5,14,3)
+      Text = ("User Name")
+    }
+  }
+  { Panel1 Panel
+    MoveScaled(0,4,35.875,3.5)
+    { btnsel Button
+      MoveScaled(32,0,3,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { txtsearch TextBox
+      MoveScaled(0,0,31,3)
+    }
   }
   { ListView1 ListView
-    MoveScaled(1,4,35,47)
-  }
-  { btnsel Button
-    MoveScaled(33,0.375,3,3)
-    Picture = Picture["icon:/small/apply"]
+    MoveScaled(1,8,35,33)
+    Expand = True
   }
 }

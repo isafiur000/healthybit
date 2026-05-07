@@ -187,3 +187,17 @@ Public Sub btnclose_Click()
   Endif
 
 End
+
+Public Sub chkselall_Click()
+
+  Dim Row As Integer
+
+  For Row = 0 To GridView2.Rows.Count - 1
+    If chkselall.Value = True Then
+      GridView2[Row, 1].Picture = Picture["icons/checked.png"]
+    Else If chkselall.Value = False Then
+      GridView2[Row, 1].Picture = Picture["icons/unchecked.png"]
+    Endif
+  Next
+
+End

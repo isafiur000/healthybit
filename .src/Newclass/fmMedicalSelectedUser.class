@@ -35,11 +35,11 @@ Private Sub FillUserList()
       sLst = xx
       If Trim(sLst[0]) Then
 
-        If modBasic.$DefaultUserSearch = "Name" Then
+        If rbname.Value = True Then
           If LCase(sLst[1]) Like LCase(txtsearch.Text) & "*" Then
             ListView1.Add(sLst[0], sLst[1], pic1)
           Endif
-        Else
+        Else If rbuser.Value = True Then
           If LCase(sLst[0]) Like LCase(txtsearch.Text) & "*" Then
             ListView1.Add(sLst[0], sLst[1], pic1)
           Endif

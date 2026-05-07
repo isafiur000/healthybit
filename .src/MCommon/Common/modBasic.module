@@ -70,7 +70,6 @@ Public $RichtextResizeRow As String
 Public $AutoRichTextMode As String
 Public $DefaultViewPath As String
 Public $DefaultViewShell As String
-Public $DefaultUserSearch As String
 Public $ConvertToASCII As String
 
 Public $ConvImagePDF As String
@@ -739,6 +738,7 @@ Public $LabSensitivityReport As String
 Public $LabReportSections As String
 Public $LabExtraColumn As String
 Public $LabOutputLock As String
+Public $LabShowMICVal As String
 
 Public $LabInterfaceCompDate As String
 Public $LabBloodBagPath As String
@@ -1143,7 +1143,6 @@ Public Sub LoadGeneralVariables()
   $DefaultViewShell = modSettings.ShowSettingFromFIle("GeneralSettings/DefaultView_Shell")
   $WebViewFunction = modSettings.ShowSettingFromFIle("GeneralSettings/WebViewFunction")
   $AutoClearHighlight = modSettings.ShowSettingFromFIle("GeneralSettings/AutoClearHighLight")
-  $DefaultUserSearch = modSettings.ShowSettingFromFIle("GeneralSettings/UserSearch")
   $ConvertToASCII = modSettings.ShowSettingFromFIle("GeneralSettings/ConvertToASCII")
 
   $ConvImagePDF = modSettings.ShowSettingFromFIle("Converter/imagetopdf")
@@ -2634,6 +2633,7 @@ Public Sub LabRadiologySeting()
   $LabReportSections = modSettings.ShowSettingFromFIle("Laboratory/ReportSections")
   $LabExtraColumn = modSettings.ShowSettingFromFIle("Laboratory/ExtraColumn")
   $LabOutputLock = modSettings.ShowSettingFromFIle("Laboratory/OutputLock")
+  $LabShowMICVal = modSettings.ShowSettingFromFIle("Laboratory/ShowMICValues")
 
   $LabInterfaceCompDate = modSettings.ShowSettingFromFIle("Interface/ReportingDate")
   $LabBloodBagPath = modSettings.ShowSettingFromFIle("BloodBank/BagTemplate")

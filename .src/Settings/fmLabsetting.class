@@ -38,6 +38,7 @@ Public Sub Form_Open()
   cmbarchlog.List = ["Enable", "Disable"]
   cmblocksms.List = ["Reported", "Verified", "None"]
   cmbentryprint.List = ["Enable", "Disable"]
+  cmbshowmic.List = ["Enable", "Disable"]
 
   cmbextra3.List = $LabHeaderList
   cmbextra4.List = $LabHeaderList
@@ -270,6 +271,7 @@ Private Sub ShowLabReport()
   cmbarchlog.Text = modSettings.ShowSettingFromFIle("Laboratory/ArchiveLogReport")
   cmblocksms.Text = modSettings.ShowSettingFromFIle("Laboratory/LockSMSReport")
   cmbentryprint.Text = modSettings.ShowSettingFromFIle("Laboratory/Print_EntryForm")
+  cmbshowmic.Text = modSettings.ShowSettingFromFIle("Laboratory/ShowMICValues")
 
 End
 
@@ -349,6 +351,15 @@ Public Sub btnentryprint_Click()
   modSettings.SaveSettingsToFile("Laboratory/Print_EntryForm", cmbentryprint.Text)
   modBasic.$LabPrintWithEntry = cmbentryprint.Text
   Balloon.Info(("Information saved"), btnlocksms)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnshowmic_Click()
+
+  modSettings.SaveSettingsToFile("Laboratory/ShowMICValues", cmbshowmic.Text)
+  modBasic.$LabPrintWithEntry = cmbshowmic.Text
+  Balloon.Info(("Information saved"), btnshowmic)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

@@ -14,7 +14,6 @@ Public Sub Form_Open()
 
   cmbbothside.List = ["Yes", "No"]
   cmbrowheight.List = ["Yes", "No"]
-  cmbusersearch.List = ["UserID", "Name"]
   cmbsetascii.List = ["Enable", "Disable"]
   cmbreportview.List = ["litehtml", "webkit"]
   cmbrowser.List = ["BuiltIn", "External", "RightPanel"]
@@ -1020,7 +1019,6 @@ Private Sub ShowOptionSettings()
   cmbwebfunc.Text = modSettings.ShowSettingFromFIle("GeneralSettings/WebViewFunction")
   cmbbothside.Text = modSettings.ShowSettingFromFIle("GeneralSettings/GridViewSearch")
   cmbrowheight.Text = modSettings.ShowSettingFromFIle("GeneralSettings/ResizeRowheight")
-  cmbusersearch.Text = modSettings.ShowSettingFromFIle("GeneralSettings/UserSearch")
   cmbsetascii.Text = modSettings.ShowSettingFromFIle("GeneralSettings/ConvertToASCII")
   If modSettings.ShowSettingFromFIle("GeneralSettings/WebView_Zoom") Then
     txtwebzoom.Value = CInt(modSettings.ShowSettingFromFIle("GeneralSettings/WebView_Zoom"))
@@ -1214,15 +1212,6 @@ Public Sub btnwebzoom_Click()
   modSettings.SaveSettingsToFile("GeneralSettings/WebView_Zoom", CStr(txtwebzoom.Value))
   modBasic.$WebZoomValue = txtwebzoom.Value / 100
   Balloon.Info(("Information saved"), btnwebzoom)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btnusersearch_Click()
-
-  modSettings.SaveSettingsToFile("GeneralSettings/UserSearch", cmbusersearch.Text)
-  modBasic.$DefaultUserSearch = cmbusersearch.Text
-  Balloon.Info(("Information saved"), btnusersearch)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
