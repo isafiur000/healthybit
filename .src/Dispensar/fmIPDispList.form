@@ -169,11 +169,11 @@
       { Panel10 Panel
         MoveScaled(0,47,81,4)
         { chkregimen CheckBox
-          MoveScaled(0.625,0.5,16,3)
+          MoveScaled(32,0.5,16,3)
           Text = ("Show Regimen")
         }
         { chkprintlabel CheckBox
-          MoveScaled(19,0.5,15,3)
+          MoveScaled(50,0.5,15,3)
           Text = ("Print Labels")
         }
         { btnexpogrid Button
@@ -181,6 +181,24 @@
           Text = ("Export")
           Picture = Picture["icon:/small/html"]
         }
+        { Label6 Label
+          MoveScaled(0,0.5,5,3)
+          Border = Border.Plain
+          Text = ("Date")
+        }
+        { dtdisp DateBox
+          MoveScaled(5,0.5,14,3)
+        }
+        { btnshowdisp ToolButton
+          MoveScaled(20,0.5,3,3)
+          Picture = Picture["icon:/small/refresh"]
+        }
+      }
+      { GridView3 GridView
+        MoveScaled(1,51,42,20)
+        Expand = True
+        Mode = Select.Single
+        Header = GridView.Both
       }
     }
   }
