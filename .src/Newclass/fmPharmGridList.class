@@ -120,7 +120,7 @@ Private Sub FillItemGrid()
         .Columns[i + 3].Width = 100 * modBasic.$AppWidthRatio
         .Columns[i + 4].Width = 75 * modBasic.$AppWidthRatio
       Endif
-      .Columns[i + 5].Width = 1
+      .Columns[i + 5].Width = 100 * modBasic.$AppWidthRatio
 
       .Columns[0].Text = "Particulars"
       If $sColmn = 6 Then
@@ -138,6 +138,7 @@ Private Sub FillItemGrid()
         .Columns[j + 3].Text = "Rate"
         .Columns[j + 4].Text = "Stock"
       Endif
+      .Columns[j + 5].Text = "Index"
     End With
     GridView1.Row = 0
   Endif

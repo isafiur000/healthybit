@@ -51,10 +51,10 @@ Private Sub ShowMedFluids()
   Next
 
   If chkalldate.Value = True Then
-    sql = "select fldid,fldid,flditem,flddose,fldfreq,flddays,fldstarttime,fldcurval,fldstarttime,fldstatus,fldendtime,flddirection,fldadminsite,fldmixing,fldroute from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldroute IN(" & xrouLst.Join(",") & ") and fldcurval=&3 and flddose>&4 ORDER BY fldstarttime DESC"
+    sql = "select fldid,fldid,CONCAT(flditem, '|', COALESCE(fldmixing, '')),flddose,fldfreq,flddays,fldstarttime,fldcurval,fldstarttime,fldstatus,fldendtime,flddirection,fldadminsite,fldmixing,fldroute,flditem,fldmixvolume,fldmixrate from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldroute IN(" & xrouLst.Join(",") & ") and fldcurval=&3 and flddose>&4 ORDER BY fldstarttime DESC"
     $rFludRes = modDatabase.$myConn.Exec(sql, $encid, True, "Continue", 0)
   Else
-    sql = "select fldid,fldid,flditem,flddose,fldfreq,flddays,fldstarttime,fldcurval,fldstarttime,fldstatus,fldendtime,flddirection,fldadminsite,fldmixing,fldroute from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldroute IN(" & xrouLst.Join(",") & ") and fldcurval=&3 and flddose>&4 and fldstarttime<=&5 and fldendtime>=&6 ORDER BY fldstarttime DESC"
+    sql = "select fldid,fldid,CONCAT(flditem, '|', COALESCE(fldmixing, '')),flddose,fldfreq,flddays,fldstarttime,fldcurval,fldstarttime,fldstatus,fldendtime,flddirection,fldadminsite,fldmixing,fldroute,flditem,fldmixvolume,fldmixrate from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldroute IN(" & xrouLst.Join(",") & ") and fldcurval=&3 and flddose>&4 and fldstarttime<=&5 and fldendtime>=&6 ORDER BY fldstarttime DESC"
     $rFludRes = modDatabase.$myConn.Exec(sql, $encid, True, "Continue", 0, modDate.EndSqlDate(Now()), modDate.StartSqlDate(Now()))
   Endif
   $aFludFields = New String[]
@@ -63,7 +63,7 @@ Private Sub ShowMedFluids()
   With grdfluid
     .Columns[0].Width = 1
     .Columns[1].Width = 40 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 350 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 400 * modBasic.$AppWidthRatio
     .Columns[3].Width = 75 * modBasic.$AppWidthRatio
     .Columns[4].Width = 100 * modBasic.$AppWidthRatio
     .Columns[5].Width = 1
@@ -72,16 +72,20 @@ Private Sub ShowMedFluids()
     .Columns[8].Width = 1 ''start time
     .Columns[9].Width = 1
     .Columns[10].Width = 1 ''end time
-    .Columns[11].Width = 1
-    .Columns[12].Width = 1
-    .Columns[13].Width = 1
-    .Columns[14].Width = 1
+    .Columns[11].Width = 1 ''direction
+    .Columns[12].Width = 1 ''admin site
+    .Columns[13].Width = 1 ''dilution
+    .Columns[14].Width = 1  ''route
+    .Columns[15].Width = 1 ''Item name
+    .Columns[16].Width = 1 ''Mix Volume
+    .Columns[17].Width = 75 * modBasic.$AppWidthRatio
 
     .Columns[2].Text = "Medicine"
     .Columns[3].Text = "Dose"
     .Columns[4].Text = "Freq"
     .Columns[6].Text = "Date"
     .Columns[7].Text = "Status"
+    .Columns[17].Text = "mL/Hour"
   End With
 
 End
@@ -90,14 +94,38 @@ Public Sub grdfluid_Data(Row As Integer, Column As Integer)
 
   $rFludRes.MoveTo(Row)
   modGeneralMain.GridViewDecoration(grdfluid, Row)
-  If Column = 6 Then
-    grdfluid.Data.Text = modReportVar.GetDateTimeReport($rFludRes[$aFludFields[Column]], gb.GeneralDate)
-  Else If Column = 1 Then
+  If Column = 1 Then
     grdfluid.Data.Picture = Picture[GetFluidAdminStatusCode($rFludRes[$aFludFields[Column]])]
     grdfluid.Data.Text = ""
+  Else If Column = 2 Then
+    grdfluid.Data.RichText = GetInjectionName($rFludRes[$aFludFields[Column]])
+  Else If Column = 6 Then
+    grdfluid.Data.Text = modReportVar.GetDateTimeReport($rFludRes[$aFludFields[Column]], gb.GeneralDate)
   Else
     grdfluid.Data.Text = $rFludRes[$aFludFields[Column]]
   Endif
+  grdfluid.Rows[Row].Height = Max(grdfluid.Rows[Row].Height, grdfluid.Data.Font.RichTextHeight(grdfluid.Data.RichText, grdfluid.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (grdfluid.Rows.Height - grdfluid.Font.Height))
+  grdfluid.Data.WordWrap = True
+
+End
+
+Private Function GetInjectionName(sItem As String) As String
+
+  Dim asx As String[]
+  Dim xx As String
+
+  asx = Split(sItem, "|")
+  If asx.Count = 2 Then
+    If Trim(asx[1]) Then
+      xx = asx[0] & " <small>[" & asx[1] & "]</small>"
+    Else
+      xx = asx[0]
+    Endif
+  Else
+    xx = asx[0]
+  Endif
+
+  Return xx
 
 End
 
@@ -112,7 +140,7 @@ End
 Public Sub btnfluid_Click()
 
   If grdfluid.Rows.Selection.Count Then
-    lblduration.Text = grdfluid[grdfluid.Row, 13].Text
+    lblduration.Text = grdfluid[grdfluid.Row, 13].Text & "  Volume: " & grdfluid[grdfluid.Row, 16].Text & " mL"
   Endif
 
 End
@@ -123,7 +151,7 @@ Public Sub btnprotocol_Click()
   Dim hForm As FmInjection
 
   If grdfluid.Rows.Selection.Count Then
-    res = modDatabase.$medConn.Exec("select fldlabel from tbllabel where flddrug=&1 and fldsubroute=&2", modMedConstant.GetDrugFromStockID(grdfluid[grdfluid.Row, 2].Text), grdfluid[grdfluid.Row, 14].Text)
+    res = modDatabase.$medConn.Exec("select fldlabel from tbllabel where flddrug=&1 and fldsubroute=&2", modMedConstant.GetDrugFromStockID(grdfluid[grdfluid.Row, 15].Text), grdfluid[grdfluid.Row, 14].Text)
     If res.Available Then
       res.MoveFirst
       hForm = New FmInjection(grdfluid[grdfluid.Row, 14].Text, res["fldlabel"])
@@ -167,11 +195,11 @@ Public Sub grdfluid_Click()
   Dim Row As Integer
 
   Row = grdfluid.Row
-  txtfluidname.Text = grdfluid[grdfluid.Row, 2].Text
+  txtfluidname.Text = grdfluid[grdfluid.Row, 15].Text
   FillFluidGridView(grdfluid[grdfluid.Row, 0].Text)
   lblduration.Text = grdfluid[grdfluid.Row, 11].Text
   If grdfluid.Column = 7 Then
-    xval = InputCombo(grdfluid[grdfluid.Row, 2].Text, ("Select Current Status"), xx, grdfluid[grdfluid.Row, 7].Text, True)
+    xval = InputCombo(grdfluid[grdfluid.Row, 15].Text, ("Select Current Status"), xx, grdfluid[grdfluid.Row, 7].Text, True)
     If xval Then
       res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", grdfluid[grdfluid.Row, 0].Text)
       res["fldcurval"] = xval
@@ -183,13 +211,23 @@ Public Sub grdfluid_Click()
   Else If grdfluid.Column = 1 Then
     If grdfluid[grdfluid.Row, 7].Text = "Continue" Then
       If grdfluid[grdfluid.Row, 1].Picture = Picture["icon:/tiny/next"] Then
-        yval = InputValue(("Enter Rate of Administration in mL/Hour"), grdfluid[grdfluid.Row, 2].Text, 0)
+        yval = InputValue(("Enter Rate of Administration in ") & "<b>mL/Hour</b> FOR <b>" & grdfluid[grdfluid.Row, 15].Text & "</b>", "Administration Rate", 0)
         If yval Then
           modPharmSub.InsertNurDosing($encid, grdfluid[grdfluid.Row, 0].Text, 0, yval, "mL/Hour", Now())
           FillFluidGridView(grdfluid[grdfluid.Row, 0].Text)
           ShowMedFluids()
         Endif
       Endif
+    Endif
+
+  Else If grdfluid.Column = 17 Then
+    yval = InputValue(("Enter New Rate of Administration in ") & "<b>mL/Hour</b> FOR <b>" & grdfluid[grdfluid.Row, 15].Text & "</b>", "Administration Rate", grdfluid[grdfluid.Row, 17].Text)
+    If yval Then
+      res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", grdfluid[grdfluid.Row, 0].Text)
+      res["fldmixrate"] = yval
+      res["xyz"] = False
+      res.Update()
+      ShowMedFluids()
     Endif
 
   Endif

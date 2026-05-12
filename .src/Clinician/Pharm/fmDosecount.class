@@ -216,7 +216,11 @@ Private Sub ShowSelectedDosing()
     Else
       txtmixture.Visible = False
     Endif
-    txtprescriber.Text = "PRESCRIBER : " & modGeneral.GetUserFullName(GridView2[GridView2.Row, 12].Text)
+    If txtcardex.Value Then
+      txtprescriber.Text = "PRESCRIBER : " & modGeneral.GetUserFullName(modPharmacy.GetInpatPrescriber($encid, txtcardex.Value))
+    Else
+      txtprescriber.Text = "PRESCRIBER : " & modGeneral.GetUserFullName(GridView2[GridView2.Row, 12].Text)
+    Endif
     FillGridView(txtid.Value)
     If chkdisp.Value = True Then
       btnsave.Enabled = True
@@ -446,6 +450,7 @@ Public Sub btnreceive_Click()
 
   If chkuselocal.Value = True Then
     SaveOwnDispensing(txtid.Value)
+    chkuselocal.Value = False
     FillMedicineList()
   Endif
 

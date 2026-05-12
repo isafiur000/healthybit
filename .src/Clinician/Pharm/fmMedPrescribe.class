@@ -5,6 +5,9 @@ Private $DiscPackage As String
 Private $status As String
 Private $sTable As String
 
+Private $rData As Result
+Private $aMyFields As String[]
+
 Private $LedgerAC As String
 Private $xBillType As String
 Private $sBillMode As String
@@ -154,7 +157,6 @@ Private Sub ClearAllControl()
   cmbroute.Text = ""
   cmbmedicine.Text = ""
   cmbadminsite.Text = ""
-  txtdosageform.Text = ""
   txttarget.Value = 0
   cmbtarget.Text = ""
   txtcalculate.Value = 0
@@ -173,6 +175,8 @@ Private Sub ClearAllControl()
   dtending.Value = Now()
   cmbdilution.Text = ""
   txtdirection.Text = ""
+  txtdiluvolume.Value = 0
+  txtivrate.Value = 0
 
 End
 
@@ -243,6 +247,35 @@ Public Sub cmbdilution_KeyRelease()
 
 End
 
+Public Sub txtivrate_LostFocus()
+
+  txtstarthour.SetFocus
+
+End
+
+Public Sub cmbroute_Change()
+
+  If cmbroute.Text Then
+    Select cmbroute.Text
+      Case "oral", "liquid", "resp", "topical", "eye/ear", "anal/vaginal"
+        pnldiluent.Enabled = False
+      Case Else
+        pnldiluent.Enabled = True
+        btnadddiluent.Enabled = True
+    End Select
+    Select cmbroute.Text
+      Case "CIV", "CIn(Epid)", "CIn(Block)", "fluid"
+        cmbfreq.Text = "Continuous"
+      Case Else
+        If modBasic.$ClinDefaultFreq Then
+          cmbfreq.Text = modBasic.$ClinDefaultFreq
+        Endif
+    End Select
+    cmbmedicine.Text = ""
+  Endif
+
+End
+
 Public Sub cmbmedicine_GotFocus()
 
   Dim res As Result
@@ -298,7 +331,6 @@ Public Sub cmbmedicine_GotFocus()
         If rbrand.Value = True Then
           cmbmedicine.Text = modMedConstant.ConvertBrandToGeneric(cmbroute.Text, cmbmedicine.Text)
         Endif
-        txtdosageform.Text = modMedConstant.GetDosageFormFromStockID(cmbmedicine.Text)
       Endif
 
     Endif
@@ -330,24 +362,7 @@ Public Sub cmbmedicine_LostFocus()
       ShowFluidInCombo()
 
       CheckLastDispensing(cmbmedicine.Text)
-      Select cmbroute.Text
-        Case "oral", "liquid", "resp", "topical", "eye/ear", "anal/vaginal"
-          cmbdilution.Enabled = False
-          btnadddiluent.Enabled = False
-        Case Else
-          cmbdilution.Enabled = True
-          btnadddiluent.Enabled = True
-      End Select
-      Select cmbroute.Text
-        Case "CIV", "CIn(Epid)", "CIn(Block)"
-          cmbfreq.Text = "Continuous"
-        Case Else
-          If modBasic.$ClinDefaultFreq Then
-            cmbfreq.Text = modBasic.$ClinDefaultFreq
-          Endif
-      End Select
-      cmbadminsite.SetFocus
-
+      txttarget.SetFocus
     Endif
   Endif
 
@@ -442,10 +457,10 @@ Private Sub EnterIPDosingRecord()
             Endif
           Endif
           If txprescriber And If txpresno Then
-            modPharmSub.InsertIPMedicineEntry($encid, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, txprescriber, txpresno, dtstarting.Value, dtending.Value, Trim(txtdirection.Text), cmbadminsite.Text, cmbdilution.Text, txtdosecount.Value, xcurVal)
+            modPharmSub.InsertIPMedicineEntry($encid, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, txprescriber, txpresno, dtstarting.Value, dtending.Value, Trim(txtdirection.Text), txtdosecount.Value, xcurVal, cmbadminsite.Text, cmbdilution.Text, txtivrate.Value, txtdiluvolume.Value)
           Endif
         Else
-          modPharmSub.InsertIPMedicineEntry($encid, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, txprescriber, txpresno, dtstarting.Value, dtending.Value, Trim(txtdirection.Text), cmbadminsite.Text, cmbdilution.Text, txtdosecount.Value, xcurVal)
+          modPharmSub.InsertIPMedicineEntry($encid, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, txprescriber, txpresno, dtstarting.Value, dtending.Value, Trim(txtdirection.Text), txtdosecount.Value, xcurVal, cmbadminsite.Text, cmbdilution.Text, txtivrate.Value, txtdiluvolume.Value)
         Endif
         ClearAllControl()
       Endif
@@ -505,10 +520,10 @@ Private Sub EnterDosingRecord()
           Endif
         Endif
         If txprescriber And If txpresno Then
-          modPharmSub.InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, txprescriber, txpresno, dtstarting.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), cmbadminsite.Text, txtdosecount.Value, Trim(cmbdilution.Text), 0, xcurVal)                     '
+          modPharmSub.InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, txprescriber, txpresno, dtstarting.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), txtdosecount.Value, 0, xcurVal, cmbadminsite.Text, Trim(cmbdilution.Text), txtivrate.Value, txtdiluvolume.Value)                     '
         Endif
       Else
-        modPharmSub.InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, "", "", dtstarting.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), cmbadminsite.Text, txtdosecount.Value, Trim(cmbdilution.Text), 0, xcurVal)                     '
+        modPharmSub.InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, "", "", dtstarting.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), txtdosecount.Value, 0, xcurVal, cmbadminsite.Text, Trim(cmbdilution.Text), txtivrate.Value, txtdiluvolume.Value)                     '
       Endif
       ClearAllControl()
     Endif
@@ -565,24 +580,18 @@ End
 Private Sub FillDosingGrid()
 
   Dim sql As String
-  Dim Column As Integer
-  Dim fld As ResultField
-  Dim res As Result
 
   If $sTable = "tblpatdosing" Then
-    sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,flduserid_order,fldcurval,flddosecount,fldadminsite,flddirection,fldmixing from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstatus=&3 and fldorder=&4 and (fldcurval=&5 or fldcurval=&6) and flditemtype=&7 ORDER BY fldid DESC"                                                   ''
-    res = modDatabase.$myConn.Exec(sql, $encid, False, $status, "Request", "Continue", "Reserve", "Medicines")
+    sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldqtydisp,flduserid_order,fldcurval,flddosecount,fldadminsite,flddirection,fldmixing,fldmixvolume,fldmixrate from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstatus=&3 and fldorder=&4 and (fldcurval=&5 or fldcurval=&6) and flditemtype=&7 ORDER BY fldid DESC"                                                   ''
+    $rData = modDatabase.$myConn.Exec(sql, $encid, False, $status, "Request", "Continue", "Reserve", "Medicines")
   Else If $sTable = "tblinpatdosing" Then
-    sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldqtyorder,flduserid,fldcurval,flddosecount,fldadminsite,flddirection,fldmixing from tblinpatdosing where fldencounterval=&1 and fldsave=&2 and (fldcurval=&3 or fldcurval=&4) ORDER BY fldid DESC"                                                   ''
-    res = modDatabase.$myConn.Exec(sql, $encid, False, "Continue", "Reserve")
+    sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldqtyorder,flduserid,fldcurval,flddosecount,fldadminsite,flddirection,fldmixing,fldmixvolume,fldmixrate from tblinpatdosing where fldencounterval=&1 and fldsave=&2 and (fldcurval=&3 or fldcurval=&4) ORDER BY fldid DESC"                                                   ''
+    $rData = modDatabase.$myConn.Exec(sql, $encid, False, "Continue", "Reserve")
   Endif
-
-  GridView1.Clear
-  GridView1.Columns.Count = res.Fields.Count
-  GridView1.Rows.Count = res.Count
+  $aMyFields = New String[]
+  modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
 
   With GridView1
-    .Rows.Height = modBasic.$AppGridRowHeight
     .Columns[0].Width = 1
     .Columns[1].Width = 100 * modBasic.$AppWidthRatio
     .Columns[2].Width = 75 * modBasic.$AppWidthRatio
@@ -597,6 +606,8 @@ Private Sub FillDosingGrid()
     .Columns[11].Width = 100 * modBasic.$AppWidthRatio
     .Columns[12].Width = 200 * modBasic.$AppWidthRatio
     .Columns[13].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[14].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[15].Width = 75 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "Start"
     .Columns[2].Text = "Route"
@@ -609,25 +620,22 @@ Private Sub FillDosingGrid()
     .Columns[10].Text = "Count"
     .Columns[11].Text = "Site"
     .Columns[12].Text = "Direction"
-    .Columns[13].Text = "Compounding"
+    .Columns[13].Text = "Dilution"
+    .Columns[14].Text = "Volume"
+    .Columns[15].Text = "Rate"
   End With
 
-  For Each res
-    Column = 0
-    For Each fld In res.Fields
-      modGeneralMain.GridExplicitDecoration(GridView1, res.Index, Column)
-      If Column = 1 Then
-        GridView1[res.Index, Column].Text = modReportVar.GetDateTimeReport(res["fldstarttime"], gb.GeneralDate)
-      Else
-        GridView1[res.Index, Column].Text = res[fld.Name]
-      Endif
-      GridView1.Rows[res.Index].Height = Max(GridView1.Rows[res.Index].Height, GridView1[res.Index, Column].Font.RichTextHeight(GridView1[res.Index, Column].Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
-      GridView1[res.Index, Column].WordWrap = True
+End
 
-      Column = Column + 1
-    Next
-  Next
-  GridView1.Row = 0
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  $rData.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView1, Row)
+  If Column = 1 Then
+    GridView1.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.GeneralDate)
+  Else
+    GridView1.Data.Text = $rData[$aMyFields[Column]]
+  Endif
 
 End
 
