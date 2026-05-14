@@ -1051,8 +1051,9 @@ Private Sub PharmacyReturn()
         If qtynew Then
           modDatabase.$myConn.Begin
           If rbBill.Value = True Then
-            res1 = modDatabase.$myConn.Exec("select fldid,fldqtydisp,fldqtyret from tblpatdosing where fldid in(select fldparent from " & $tblpatbilling & " where fldid=&1 and flditemname=&2 and fldencounterval=&3)", res["fldparent"], res["flditemname"], $encid)
-            If qtynew <= (res1["fldqtydisp"] - res1["fldqtyret"]) Then
+            res1 = modDatabase.$myConn.Exec("select fldid,fldqtydisp,fldqtyret from tblpatdosing where fldid in(select fldparent from " & $tblpatbilling & " where fldid=&1 and flditemname=&2 and fldencounterval=&3) and (fldqtydisp-fldqtyret)>=&4", res["fldparent"], res["flditemname"], $encid, qtynew)
+            If res1.Available Then
+              res1.MoveFirst
               res2 = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", res1["fldid"])
               res2["fldqtyret"] = res2["fldqtyret"] + qtynew
               res2["flduptime"] = Now()
@@ -1064,8 +1065,9 @@ Private Sub PharmacyReturn()
 
           Else If rbEncid.Value = True Then
             If txtbill.Text Like "ARC" & "*" Then
-              res1 = modDatabase.$myConn.Exec("select fldid,fldqtydisp,fldqtyret from tblpatdosing where fldid in(select fldparent from " & $tblpatbilling & " where fldid=&1 and flditemname=&2 and fldencounterval=&3)", res["fldparent"], res["flditemname"], $encid)
-              If qtynew <= (res1["fldqtydisp"] - res1["fldqtyret"]) Then
+              res1 = modDatabase.$myConn.Exec("select fldid,fldqtydisp,fldqtyret from tblpatdosing where fldid in(select fldparent from " & $tblpatbilling & " where fldid=&1 and flditemname=&2 and fldencounterval=&3) and (fldqtydisp-fldqtyret)>=&4", res["fldparent"], res["flditemname"], $encid, qtynew)
+              If res1.Available Then
+                res1.MoveFirst
                 res2 = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", res1["fldid"])
                 res2["fldqtyret"] = res2["fldqtyret"] + qtynew
                 res2["flduptime"] = Now()
@@ -1076,29 +1078,34 @@ Private Sub PharmacyReturn()
               Endif
             Else
               If modBasic.$BillReturnByEnc = "Yes" Then
-                res1.MoveFirst
-                While qtynew > 0
-                  If qtynew <= (res1["fldqtydisp"] - res1["fldqtyret"]) Then
-                    res2 = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", res1["fldid"])
-                    res2["fldqtyret"] = res2["fldqtyret"] + qtynew
-                    res2["flduptime"] = Now()
-                    res2["xyz"] = False
-                    res2.Update()
-                    xgo = True
-                    qtynew = 0
-                  Else If qtynew > (res1["fldqtydisp"] - res1["fldqtyret"])
-                    xx = res1["fldqtydisp"] - res1["fldqtyret"]
-                    res2 = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", res1["fldid"])
-                    res2["fldqtyret"] = res2["fldqtyret"] + xx
-                    res2["flduptime"] = Now()
-                    res2["xyz"] = False
-                    res2.Update()
-                    xgo = True
-                    qtynew = qtynew - xx
-                  Endif
-                  Wait
-                  res1.MoveNext
-                Wend
+                res1 = modDatabase.$myConn.Exec("select fldid,fldqtydisp,fldqtyret from tblpatdosing where fldid in(select fldparent from " & $tblpatbilling & " where fldid=&1 and flditemname=&2 and fldencounterval=&3)", res["fldparent"], res["flditemname"], $encid)
+                If res1.Available Then
+
+                  res1.MoveFirst
+                  While qtynew > 0
+                    If qtynew <= (res1["fldqtydisp"] - res1["fldqtyret"]) Then
+                      res2 = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", res1["fldid"])
+                      res2["fldqtyret"] = res2["fldqtyret"] + qtynew
+                      res2["flduptime"] = Now()
+                      res2["xyz"] = False
+                      res2.Update()
+                      xgo = True
+                      qtynew = 0
+                    Else If qtynew > (res1["fldqtydisp"] - res1["fldqtyret"])
+                      xx = res1["fldqtydisp"] - res1["fldqtyret"]
+                      res2 = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", res1["fldid"])
+                      res2["fldqtyret"] = res2["fldqtyret"] + xx
+                      res2["flduptime"] = Now()
+                      res2["xyz"] = False
+                      res2.Update()
+                      xgo = True
+                      qtynew = qtynew - xx
+                    Endif
+                    Wait
+                    res1.MoveNext
+                  Wend
+
+                Endif
               Endif
             Endif
 
