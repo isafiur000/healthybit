@@ -37,6 +37,20 @@ Private hPtForm As FmClinHistory
 Private hPtArchive As FmClinArchive
 Private hIpCardex As FmIPMedOrder
 
+Private $PulseName As String
+Private $DiastBPName As String
+Private $SystBPName As String
+Private $RespRateName As String
+Private $OxySatName As String
+Private $TempeName As String
+
+Private $PulseRangeLimits As Float[]
+Private $DiastBPRangeLimits As Float[]
+Private $SystBPRangeLimits As Float[]
+Private $RespRateRangeLimits As Float[]
+Private $OxySatRangeLimits As Float[]
+Private $TempeRangeLimits As Float[]
+
 Private $billModeTest As String
 Private $billModeRadio As String
 Private $billModePharmacy As String
@@ -603,6 +617,8 @@ Private Sub BasicInfoPatient()
     lstsyndrome.List = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", Trim(txtencid.Text))
     cmbhepatic.Text = modClinic.GetHepaticStatus(Trim(txtencid.Text))
     ShowChiefSymptomData()
+    ShowEssentialExamRange()
+    ShowEssentialExam()
     FillExamtable()
     PregnancySettings()
     ShowNoteTypeTime()
@@ -2052,6 +2068,186 @@ Public Sub btntemplphistory_Click()
 End
 
 '''------------------------------------------------- General parameters --------------------------------------------------------------------
+Private Sub ShowEssentialExamRange()
+
+  $PulseRangeLimits = New Float[]
+  $DiastBPRangeLimits = New Float[]
+  $SystBPRangeLimits = New Float[]
+  $RespRateRangeLimits = New Float[]
+  $OxySatRangeLimits = New Float[]
+  $TempeRangeLimits = New Float[]
+
+  $PulseName = modFixClinic.GetExamIDFromSysConst("Pulse_Rate")
+  If $PulseName Then
+    $PulseRangeLimits = modClinic.GetBothQuantiExamVal($PulseName, Trim(txtencid.Text))
+  Endif
+
+  $SystBPName = modFixClinic.GetExamIDFromSysConst("BloodPressure_Systolic")
+  If $SystBPName Then
+    $SystBPRangeLimits = modClinic.GetBothQuantiExamVal($SystBPName, Trim(txtencid.Text))
+  Endif
+
+  $DiastBPName = modFixClinic.GetExamIDFromSysConst("BloodPressure_Diastolic")
+  If $DiastBPName Then
+    $DiastBPRangeLimits = modClinic.GetBothQuantiExamVal($DiastBPName, Trim(txtencid.Text))
+  Endif
+
+  $RespRateName = modFixClinic.GetExamIDFromSysConst("Respiration_Rate")
+  If $RespRateName Then
+    $RespRateRangeLimits = modClinic.GetBothQuantiExamVal($RespRateName, Trim(txtencid.Text))
+  Endif
+
+  $OxySatName = modFixClinic.GetExamIDFromSysConst("Oxygen_Saturation")
+  If $OxySatName Then
+    $OxySatRangeLimits = modClinic.GetBothQuantiExamVal($OxySatName, Trim(txtencid.Text))
+  Endif
+
+  $TempeName = modFixClinic.GetExamIDFromSysConst("Temperature_System")
+  If $TempeName Then
+    $TempeRangeLimits = modClinic.GetBothQuantiExamVal($TempeName, Trim(txtencid.Text))
+  Endif
+
+End
+
+Private Sub GetMarkAbnorm(valueBox1 As ValueBox, sRange As Float[])
+
+  Dim xmax As Float
+  Dim xmin As Float
+  Dim abn As Boolean
+
+  If sRange And If sRange.Count = 2 Then
+    xmin = sRange[0]
+    xmax = sRange[1]
+
+    abn = False
+    If valueBox1.Value Then
+      If xmin Then
+        If xmin > valueBox1.Value Then
+          abn = True
+        Endif
+      Endif
+      If xmax Then
+        If xmax < valueBox1.Value Then
+          abn = True
+        Endif
+      Endif
+    Endif
+
+    If abn = True Then
+      valueBox1.Font.Bold = True
+      valueBox1.Foreground = Color.Red
+    Else
+      valueBox1.Font.Bold = False
+      valueBox1.Foreground = Color.Default
+    Endif
+
+  Endif
+
+End
+
+Private Sub ShowEssentialExam()
+
+  Dim xsystolic As Variant[]
+  Dim xdiastolic As Variant[]
+  Dim xpulse As Variant[]
+  Dim xtemp As Variant[]
+  Dim xresprate As Variant[]
+  Dim xoxysat As Variant[]
+
+  xsystolic = modClinic.GetCurrQuantiExamValueFromID("Last", Trim(txtencid.Text), $SystBPName)
+  xdiastolic = modClinic.GetCurrQuantiExamValueFromID("Last", Trim(txtencid.Text), $DiastBPName)
+  xpulse = modClinic.GetCurrQuantiExamValueFromID("Last", Trim(txtencid.Text), $PulseName)
+  xtemp = modClinic.GetCurrQuantiExamValueFromID("Last", Trim(txtencid.Text), $TempeName)
+  xresprate = modClinic.GetCurrQuantiExamValueFromID("Last", Trim(txtencid.Text), $RespRateName)
+  xoxysat = modClinic.GetCurrQuantiExamValueFromID("Last", Trim(txtencid.Text), $OxySatName)
+
+  If xsystolic Then
+    txtsystolicbp.Value = xsystolic[0]
+    ' btnsystolicinfo.Tag = xsystolic[1]
+  Else
+    txtsystolicbp.Value = 0
+    ' btnsystolicinfo.Tag = ""
+  Endif
+  If xdiastolic Then
+    txtdiastolicbp.Value = xdiastolic[0]
+    ' btndiastolicinfo.Tag = xdiastolic[1]
+  Else
+    txtdiastolicbp.Value = 0
+    ' btndiastolicinfo.Tag = ""
+  Endif
+  If xpulse Then
+    txtpulse.Value = xpulse[0]
+    ' btnpulseinfo.Tag = xpulse[1]
+  Else
+    txtpulse.Value = 0
+    ' btnpulseinfo.Tag = ""
+  Endif
+  If xtemp Then
+    txttemp.Value = xtemp[0]
+    ' btntempinfo.Tag = xtemp[1]
+  Else
+    txttemp.Value = 0
+    ' btntempinfo.Tag = ""
+  Endif
+  If xresprate Then
+    txtresprate.Value = xresprate[0]
+    ' btnrespinfo.Tag = xresprate[1]
+  Else
+    txtresprate.Value = 0
+    ' btnrespinfo.Tag = ""
+  Endif
+  If xoxysat Then
+    txtoxysat.Value = xoxysat[0]
+    ' btnoxygeninfo.Tag = xoxysat[1]
+  Else
+    txtoxysat.Value = 0
+    ' btnoxygeninfo.Tag = ""
+  Endif
+
+End
+
+Public Sub txtpulse_Change()
+
+  GetMarkAbnorm(txtpulse, $PulseRangeLimits)
+  ' btnpulseinfo.Tag = ""
+
+End
+
+Public Sub txtsystolicbp_Change()
+
+  GetMarkAbnorm(txtsystolicbp, $SystBPRangeLimits)
+  ' btnsystolicinfo.Tag = ""
+
+End
+
+Public Sub txtdiastolicbp_Change()
+
+  GetMarkAbnorm(txtdiastolicbp, $DiastBPRangeLimits)
+  ' btndiastolicinfo.Tag = ""
+
+End
+
+Public Sub txtresprate_Change()
+
+  GetMarkAbnorm(txtresprate, $RespRateRangeLimits)
+  ' btnrespinfo.Tag = ""
+
+End
+
+Public Sub txtoxysat_Change()
+
+  GetMarkAbnorm(txtoxysat, $OxySatRangeLimits)
+  ' btnoxygeninfo.Tag = ""
+
+End
+
+Public Sub txttemp_Change()
+
+  GetMarkAbnorm(txttemp, $TempeRangeLimits)
+  ' btntempinfo.Tag = ""
+
+End
+
 ''''hepatic
 Public Sub tlbthepatic_Click()
 

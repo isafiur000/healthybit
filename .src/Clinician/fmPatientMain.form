@@ -1161,7 +1161,7 @@
         Arrangement = Arrange.Vertical
       }
       { Panel8 Panel
-        MoveScaled(70,0,48,40)
+        MoveScaled(70,0,48,44)
         Arrangement = Arrange.Vertical
         { Panel17 Panel
           MoveScaled(0,0,47,4)
@@ -1181,142 +1181,193 @@
             Text = ("Monitor")
           }
         }
+        { Panel45 Panel
+          MoveScaled(0,4,47,11)
+          { Label2 Label
+            MoveScaled(0.5,0,10,3)
+            Border = Border.Plain
+            Text = ("Pulse Rate")
+          }
+          { txtpulse ValueBox
+            MoveScaled(11,0,7,3)
+          }
+          { Label3 Label
+            MoveScaled(22.5,0,10,3)
+            Border = Border.Plain
+            Text = ("Resp Rate")
+          }
+          { txtresprate ValueBox
+            MoveScaled(33,0,7,3)
+          }
+          { txtdiastolicbp ValueBox
+            MoveScaled(33,3.5,7,3)
+          }
+          { Label23 Label
+            MoveScaled(22.5,3.5,10,3)
+            Border = Border.Plain
+            Text = ("Diast BP")
+          }
+          { txtsystolicbp ValueBox
+            MoveScaled(11,3.5,7,3)
+          }
+          { Label24 Label
+            MoveScaled(0.5,3.5,10,3)
+            Border = Border.Plain
+            Text = ("Syst BP")
+          }
+          { Label25 Label
+            MoveScaled(0.5,7,10,3)
+            Border = Border.Plain
+            Text = ("S P O2")
+          }
+          { txtoxysat ValueBox
+            MoveScaled(11,7,7,3)
+          }
+          { Label27 Label
+            MoveScaled(22.5,7,10,3)
+            Border = Border.Plain
+            Text = ("Temp")
+          }
+          { txttemp ValueBox
+            MoveScaled(33,7,7,3)
+          }
+        }
         { Panel60 Panel
-          MoveScaled(1,5,47,4)
+          MoveScaled(0,15,47,3.5)
           { Label16 Label
-            MoveScaled(0,0.375,24,3)
+            MoveScaled(0,0,24,3)
             Border = Border.Plain
             Text = ("Hepatic Status")
           }
           { cmbhepatic ComboBox
-            MoveScaled(25,0.375,18,3)
+            MoveScaled(25,0,18,3)
           }
           { tlbthepatic ToolButton
-            MoveScaled(43,0.375,3,3)
+            MoveScaled(43,0,3,3)
             Picture = Picture["icon:/small/apply"]
           }
         }
         { Panel58 Panel
-          MoveScaled(1,9,47,4)
+          MoveScaled(0,19,47,3.5)
           { Label15 Label
-            MoveScaled(0,0.375,24,3)
+            MoveScaled(0,0,24,3)
             Border = Border.Plain
             Text = ("Pregnancy/Breast Feeding")
           }
           { cmbpregnancy ComboBox
-            MoveScaled(25,0.375,18,3)
+            MoveScaled(25,0,18,3)
           }
           { tlbtpregnancy ToolButton
-            MoveScaled(43,0.375,3,3)
+            MoveScaled(43,0,3,3)
             Picture = Picture["icon:/small/apply"]
           }
         }
         { Panel52 Panel
-          MoveScaled(1,13,47,4)
+          MoveScaled(0,22,47,3.5)
           { txtibw ValueBox
-            MoveScaled(29,0.625,11,3)
+            MoveScaled(29,0,11,3)
           }
           { tlbibw ToolButton
-            MoveScaled(40,0.625,3,3)
+            MoveScaled(40,0,3,3)
             Picture = Picture["icon:/small/question"]
           }
           { grpibw ToolButton
-            MoveScaled(43,0.625,3,3)
+            MoveScaled(43,0,3,3)
             Picture = Picture["icon:/small/science"]
           }
           { Label18 Label
-            MoveScaled(0,0.625,29,3)
+            MoveScaled(0,0,28,3)
             Border = Border.Plain
             Text = ("Ideal Body Weight (Kg)")
           }
         }
         { Panel53 Panel
-          MoveScaled(1,18,47,4)
+          MoveScaled(0,26,47,3.5)
           { txtbsa ValueBox
-            MoveScaled(29,0.625,11,3)
+            MoveScaled(29,0,11,3)
           }
           { tlbsa ToolButton
-            MoveScaled(40,0.625,3,3)
+            MoveScaled(40,0,3,3)
             Picture = Picture["icon:/small/question"]
           }
           { grpbsa ToolButton
-            MoveScaled(43,0.625,3,3)
+            MoveScaled(43,0,3,3)
             Picture = Picture["icon:/small/science"]
           }
           { Label19 Label
-            MoveScaled(0,0.625,29,3)
+            MoveScaled(0,0,28,3)
             Border = Border.Plain
             Text = ("Body Surface Area (sq m)")
           }
         }
         { Panel54 Panel
-          MoveScaled(1,22,47,4)
+          MoveScaled(0,29,47,3.5)
           { txtcrclr ValueBox
-            MoveScaled(29,0.625,11,3)
+            MoveScaled(29,0,11,3)
           }
           { tlbcreclr ToolButton
-            MoveScaled(40,0.625,3,3)
+            MoveScaled(40,0,3,3)
             Picture = Picture["icon:/small/question"]
           }
           { grpcclr ToolButton
-            MoveScaled(43,0.625,3,3)
+            MoveScaled(43,0,3,3)
             Picture = Picture["icon:/small/science"]
           }
           { Label20 Label
-            MoveScaled(0,0.625,29,3)
+            MoveScaled(0,0,28,3)
             Border = Border.Plain
             Text = ("Creat Cl (mL/min/1.73sqm)")
           }
         }
         { Panel55 Panel
-          MoveScaled(1,26,47,4)
+          MoveScaled(0,32,47,3.5)
           { txtbmi ValueBox
-            MoveScaled(29,0.625,11,3)
+            MoveScaled(29,0,11,3)
           }
           { tlbtbmi ToolButton
-            MoveScaled(40,0.625,3,3)
+            MoveScaled(40,0,3,3)
             Picture = Picture["icon:/small/question"]
           }
           { grpbmi ToolButton
-            MoveScaled(43,0.625,3,3)
+            MoveScaled(43,0,3,3)
             Picture = Picture["icon:/small/science"]
           }
           { Label21 Label
-            MoveScaled(0,0.625,29,3)
+            MoveScaled(0,0,28,3)
             Border = Border.Plain
             Text = ("Body Mass Index(Kg/sqm)")
           }
         }
         { Panel56 Panel
-          MoveScaled(1,30,47,4)
+          MoveScaled(0,36,47,3.5)
           { txtserosmol ValueBox
-            MoveScaled(29,0.625,11,3)
+            MoveScaled(29,0,11,3)
           }
           { tlbtosmol ToolButton
-            MoveScaled(40,0.625,3,3)
+            MoveScaled(40,0,3,3)
             Picture = Picture["icon:/small/question"]
           }
           { grposmol ToolButton
-            MoveScaled(43,0.625,3,3)
+            MoveScaled(43,0,3,3)
             Picture = Picture["icon:/small/science"]
           }
           { Label22 Label
-            MoveScaled(0,0.625,29,3)
+            MoveScaled(0,0,28,3)
             Border = Border.Plain
             Text = ("Serum Osmolality(mOsm/L)")
           }
         }
         { Panel57 Panel
-          MoveScaled(1,34,47,4)
+          MoveScaled(0,40,47,3.5)
           { txtmodelval ValueBox
-            MoveScaled(29,0.5,11,3)
+            MoveScaled(29,0.25,11,3)
           }
           { tlbmodel ToolButton
-            MoveScaled(40,0.5,3,3)
+            MoveScaled(40,0.25,3,3)
             Picture = Picture["icon:/small/question"]
           }
           { cmbmlmodel ComboBox
-            MoveScaled(0,0.5,29,3)
+            MoveScaled(0,0.25,28,3)
           }
         }
       }

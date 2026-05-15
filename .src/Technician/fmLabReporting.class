@@ -2271,3 +2271,22 @@ Public Sub ImageBoxGroup_Click()
   aButtonBox[j].Text = Dialog.Path
 
 End
+
+Public Sub btnservice_Click()
+
+  Dim hForm14 As FmMiniService
+  Dim xservmode As String
+  Dim xprocmode As String
+  Dim xothermode As String
+  Dim xpharmmode As String
+
+  If $encid Then
+    xservmode = modNonMedical.GetAutoIPBillingPack("Service", $encid)
+    xprocmode = modNonMedical.GetAutoIPBillingPack("Procedure", $encid)
+    xothermode = modNonMedical.GetAutoIPBillingPack("Others", $encid)
+    xpharmmode = modNonMedical.GetAutoIPBillingPack("Pharmacy", $encid)
+    hForm14 = New FmMiniService($encid, xservmode, xprocmode, xothermode, xpharmmode)
+    hForm14.ShowModal
+  Endif
+
+End

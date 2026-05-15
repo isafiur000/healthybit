@@ -119,9 +119,15 @@ Private Sub FillMedicineList()
   Dim sql1 As String
   Dim sql2 As String
 
-  sql1 = "select fldsave_order,fldid,fldroute,flditem,flddose,fldfreq,flddays,fldstatus,flddirection,fldmixing,flddosecount,fldqtydisp,flduserid_order,flditemno from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and fldroute<>&5 and flditemtype=&6 and fldcurval=&7 and flddose>&8 and fldqtydisp>fldqtyret"                    ''
-  sql2 = "select fldsave_order,fldid,fldroute,flditem,flddose,fldfreq,flddays,fldstatus,flddirection,fldmixing,flddosecount,fldqtydisp,flduserid_order,flditemno from tblpatdosing where fldencounterval=&1 and fldsave_order=&9 and fldstarttime<=&3 and DATE_ADD(fldstarttime, INTERVAL flddays DAY)>=&4 and fldroute<>&5 and flditemtype=&6 and fldcurval=&7 and flddose>&8 and fldqtydisp>fldqtyret"
-  $rData1 = modDatabase.$myConn.Exec(sql1 & " UNION ALL " & sql2, $encid, True, Now(), DateAdd(Now(), gb.Hour, -3), "fluid", "Medicines", "Continue", 0, False)
+  If $useCardex = True Then
+    sql1 = "select fldid,fldid,fldroute,flditem,flddose,fldfreq,flddays,fldcurval,flddirection,fldmixing,flddosecount,fldqtyorder,flduserid,fldid from tblinpatdosing where fldencounterval=&1 and fldstarttime<=&2 and fldendtime>=&3 and fldroute<>&4 and fldcurval=&5 and flddose>&6 and flddays>&6"                    ''
+    sql2 = "select fldid,fldid,fldroute,flditem,flddose,fldfreq,flddays,fldcurval,flddirection,fldmixing,flddosecount,fldqtyorder,flduserid,fldid from tblinpatdosing where fldencounterval=&1 and fldroute<>&4 and fldcurval=&5 and flddose>&6 and flddays=&6"
+    $rData1 = modDatabase.$myConn.Exec(sql1 & " UNION ALL " & sql2, $encid, Now(), DateAdd(Now(), gb.Hour, -3), "fluid", "Continue", 0)
+  Else
+    sql1 = "select fldsave_order,fldid,fldroute,flditem,flddose,fldfreq,flddays,fldstatus,flddirection,fldmixing,flddosecount,fldqtydisp,flduserid_order,flditemno from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and fldroute<>&5 and flditemtype=&6 and fldcurval=&7 and flddose>&8 and fldqtydisp>fldqtyret"                    ''
+    sql2 = "select fldsave_order,fldid,fldroute,flditem,flddose,fldfreq,flddays,fldstatus,flddirection,fldmixing,flddosecount,fldqtydisp,flduserid_order,flditemno from tblpatdosing where fldencounterval=&1 and fldsave_order=&9 and fldstarttime<=&3 and DATE_ADD(fldstarttime, INTERVAL flddays DAY)>=&4 and fldroute<>&5 and flditemtype=&6 and fldcurval=&7 and flddose>&8 and fldqtydisp>fldqtyret"
+    $rData1 = modDatabase.$myConn.Exec(sql1 & " UNION ALL " & sql2, $encid, True, Now(), DateAdd(Now(), gb.Hour, -3), "fluid", "Medicines", "Continue", 0, False)
+  Endif
   $aMyFields1 = New String[]
   modGridView.ReadSmallData(GridView2, $rData1, $aMyFields1)
   With GridView2
@@ -148,13 +154,39 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
   $rData1.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView2, Row)
   If Column = 0 Then
-    GridView2.Data.Picture = Picture[GetMedStatus($rData1[$aMyFields1[Column]])]
+    If $useCardex = True Then
+      GridView2.Data.Picture = Picture[GetMedCardex($encid, $rData1[$aMyFields1[Column]])]
+    Else
+      GridView2.Data.Picture = Picture[GetMedStatus($rData1[$aMyFields1[Column]])]
+    Endif
     GridView2.Data.Text = ""
   Else
     GridView2.Data.Text = $rData1[$aMyFields1[Column]]
   Endif
   GridView2.Rows[Row].Height = Max(GridView2.Rows[Row].Height, GridView2.Data.Font.RichTextHeight(GridView2.Data.Text, GridView2.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView2.Rows.Height - GridView2.Font.Height))
   GridView2.Data.WordWrap = True
+
+End
+
+Private Function GetMedCardex(encid As String, sCardex As Long) As String
+
+  Dim xtot As Float
+  Dim xadmn As Float
+  Dim xicon As String
+
+  If sCardex Then
+    xtot = modPharmacy.GetCardexDispensedQTY(encid, sCardex)
+    xadmn = modPharmacy.GetCardexAdministerQTY(encid, sCardex)
+    If xtot > xadmn Then
+      xicon = "icons/coll4.png"
+    Else
+      xicon = "icons/coll5.png"
+    Endif
+  Else
+    xicon = ""
+  Endif
+
+  Return xicon
 
 End
 
@@ -183,11 +215,15 @@ Private Sub ShowSelectedDosing()
   txtcardex.Value = 0
   txtdose.Value = 0
   txtdose.Tag = ""
+  txtordose.Value = 0
+  txtorfreq.Text = ""
   chkuselocal.Value = False
   If GridView2.Rows.Selection.Count Then
     txtid.Value = GridView2[GridView2.Row, 1].Text
     txtcardex.Value = GridView2[GridView2.Row, 13].Text
     lblmedicine.Text = GridView2[GridView2.Row, 3].Text
+    txtordose.Value = GridView2[GridView2.Row, 4].Text
+    txtorfreq.Text = GridView2[GridView2.Row, 5].Text
     txtmedname.Text = modMedConstant.GetDrugFromStockID(lblmedicine.Text)
     If GridView2[GridView2.Row, 0].Picture = Picture["icons/coll5.png"] Then
       chkdisp.Value = False
@@ -217,9 +253,9 @@ Private Sub ShowSelectedDosing()
       txtmixture.Visible = False
     Endif
     If txtcardex.Value Then
-      txtprescriber.Text = "PRESCRIBER : " & modGeneral.GetUserFullName(modPharmacy.GetInpatPrescriber($encid, txtcardex.Value))
+      lblregimen.Text = lblregimen.Text & " [" & modGeneral.GetUserFullName(modPharmacy.GetInpatPrescriber($encid, txtcardex.Value)) & "]"
     Else
-      txtprescriber.Text = "PRESCRIBER : " & modGeneral.GetUserFullName(GridView2[GridView2.Row, 12].Text)
+      lblregimen.Text = lblregimen.Text & " [" & modGeneral.GetUserFullName(GridView2[GridView2.Row, 12].Text) & "]"
     Endif
     FillGridView(txtid.Value)
     If chkdisp.Value = True Then
@@ -244,7 +280,11 @@ End
 
 Private Sub FillGridView(dosno As Long)
 
-  $rData = modDatabase.$syConn.Exec("select fldid,fldtime,fldid,fldvalue,fldunit,fldid,fldvalue,flduserid from tblnurdosing where fldencounterval=&1 and flddoseno=&2", $encid, dosno)
+  If $useCardex = True Then
+    $rData = modDatabase.$syConn.Exec("select fldid,fldtime,fldid,fldvalue,fldunit,fldid,fldvalue,flduserid from tblnurdosing where fldencounterval=&1 and fldcardex=&2", $encid, dosno)
+  Else
+    $rData = modDatabase.$syConn.Exec("select fldid,fldtime,fldid,fldvalue,fldunit,fldid,fldvalue,flduserid from tblnurdosing where fldencounterval=&1 and flddoseno=&2", $encid, dosno)
+  Endif
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
 
@@ -361,14 +401,13 @@ Public Sub btnsave_Click()
 
   If txtid.Value And If txtdose.Value Then
     If chkdisp.Value = True Then
-      modPharmSub.InsertNurDosing($encid, txtid.Value, txtcardex.Value, txtdose.Value, lblunit.Text, "")
+      modPharmSub.InsertNurDosingIndoor($encid, txtid.Value, txtcardex.Value, txtdose.Value, lblunit.Text, lblmedicine.Text, txtordose.Value, txtorfreq.Text)
       If lblregimen.Tag = "stat" Then
         res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", txtid.Value)
         res["fldcurval"] = "Completed"
         res.Update
       Endif
     Else If chkdisp.Value = False Then
-
     Endif
 
     FillGridView(txtid.Value)

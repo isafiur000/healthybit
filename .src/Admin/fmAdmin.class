@@ -10,6 +10,7 @@ Public Sub Form_Open()
   db.Debug = True
   modBasic.$DebugMode = True
   modHelpVariable.CalenderConnection()
+  modAppSupport.SetReportServer(modHelpVariable.$LogInCategory)
   modDate.$LocalDateData = New Collection
   If Exist(modHelpVariable.AppDirectory &/ "splash.JPG") Then
     Me.Picture = Image.Load(modHelpVariable.AppDirectory &/ "splash.JPG").Stretch(Me.Width - 10, Me.Height - 15).Picture

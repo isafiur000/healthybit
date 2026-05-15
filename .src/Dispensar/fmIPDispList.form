@@ -8,6 +8,9 @@
     { mnuremove Menu
       Text = ("Delete")
     }
+    { mnusaveout Menu
+      Text = ("Send Out")
+    }
   }
   { Panel1 Panel
     MoveScaled(0,0,121,76)
@@ -50,8 +53,25 @@
         Mode = Select.Single
         Header = GridView.Both
       }
+      { Panel8 Panel
+        MoveScaled(0,37,37,3.5)
+        { btnlist Button
+          MoveScaled(26,0.25,10,3)
+          Text = ("List")
+          Picture = Picture["icon:/small/html"]
+        }
+        { btnsumall Button
+          MoveScaled(13,0.25,13,3)
+          Text = ("Summary")
+          Picture = Picture["icon:/small/book"]
+        }
+        { chkaddall CheckBox
+          MoveScaled(1,0.25,12,3)
+          Text = ("Select All")
+        }
+      }
       { ListView1 ListView
-        MoveScaled(0,37,33,20)
+        MoveScaled(0,42,33,20)
         Expand = True
       }
       { Panel6 Panel
@@ -64,19 +84,6 @@
           MoveScaled(27,0.5,10,3)
           Text = ("Add")
           Picture = Picture["icon:/small/right"]
-        }
-      }
-      { Panel8 Panel
-        MoveScaled(0,69,36,3.5)
-        { btnlist Button
-          MoveScaled(22,0.25,13,3)
-          Text = ("List")
-          Picture = Picture["icon:/small/html"]
-        }
-        { btnsumall Button
-          MoveScaled(1,0.25,15,3)
-          Text = ("Summary")
-          Picture = Picture["icon:/small/book"]
         }
       }
     }
@@ -157,7 +164,16 @@
           Text = ("Select All")
         }
         { txtnhsi TextBox
-          MoveScaled(31,4.5,8,3)
+          MoveScaled(46,1,5,3)
+          Visible = False
+        }
+        { chkregimen CheckBox
+          MoveScaled(31,4.5,11,3)
+          Text = ("Regimen")
+        }
+        { chkprintlabel CheckBox
+          MoveScaled(43,4.5,9,3)
+          Text = ("Labels")
         }
       }
       { GridView2 GridView
@@ -168,17 +184,8 @@
       }
       { Panel10 Panel
         MoveScaled(0,47,81,4)
-        { chkregimen CheckBox
-          MoveScaled(32,0.5,16,3)
-          Text = ("Show Regimen")
-        }
-        { chkprintlabel CheckBox
-          MoveScaled(50,0.5,15,3)
-          Text = ("Print Labels")
-        }
         { btnexpogrid Button
-          MoveScaled(66,0.5,14,3)
-          Text = ("Export")
+          MoveScaled(77,0.5,3,3)
           Picture = Picture["icon:/small/html"]
         }
         { Label6 Label
@@ -192,6 +199,18 @@
         { btnshowdisp ToolButton
           MoveScaled(20,0.5,3,3)
           Picture = Picture["icon:/small/refresh"]
+        }
+        { chkalldate CheckBox
+          MoveScaled(25,0.5,12,3)
+          Text = ("All Dates")
+        }
+        { Label8 Label
+          MoveScaled(53,0.5,8,3)
+          Border = Border.Plain
+          Text = ("Balance")
+        }
+        { txtbalance ValueBox
+          MoveScaled(62,0.5,7,3)
         }
       }
       { GridView3 GridView

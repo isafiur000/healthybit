@@ -41,6 +41,32 @@
           Picture = Picture["icon:/small/html"]
         }
       }
+      { Panel6 Panel
+        MoveScaled(1,41,39,5)
+        Visible = False
+        { txtinitstren ValueBox
+          MoveScaled(9,1,4,3)
+          Visible = False
+        }
+        { txtcardex ValueBox
+          MoveScaled(14,1,4,3)
+          Visible = False
+        }
+        { txtmedname TextBox
+          MoveScaled(0,1,8,3)
+          Visible = False
+        }
+        { txtid ValueBox
+          MoveScaled(19,1,4,3)
+          Visible = False
+        }
+        { txtordose ValueBox
+          MoveScaled(25,1,5,3)
+        }
+        { txtorfreq TextBox
+          MoveScaled(31,1,6,3)
+        }
+      }
     }
     { Panel8 Panel
       MoveScaled(42,1,76,49)
@@ -58,18 +84,6 @@
         { btninjection ToolButton
           MoveScaled(43,0,3.5,3)
           Picture = Picture["icon:/small/info"]
-        }
-        { txtmedname TextBox
-          MoveScaled(47,0,8,3)
-          Visible = False
-        }
-        { txtinitstren ValueBox
-          MoveScaled(55,0,4,3)
-          Visible = False
-        }
-        { txtcardex ValueBox
-          MoveScaled(59,0,4,3)
-          Visible = False
         }
         { chkdisp CheckBox
           MoveScaled(64,0,6,3)
@@ -103,7 +117,7 @@
       { Panel5 Panel
         MoveScaled(0,12,76,4)
         { lblregimen Label
-          MoveScaled(9,0.5,36,3)
+          MoveScaled(0,0.5,45,3)
           Border = Border.Plain
         }
         { txtdose ValueBox
@@ -120,11 +134,6 @@
           Text = ("Save")
           Picture = Picture["icon:/small/add"]
         }
-        { Label1 Label
-          MoveScaled(0,0.5,8.5,3)
-          Border = Border.Plain
-          Text = ("Regimen")
-        }
       }
       { txtdirection TextArea
         MoveScaled(0,16,71,5)
@@ -134,10 +143,6 @@
       }
       { txtmixture Label
         MoveScaled(0,21,36,3)
-        Border = Border.Plain
-      }
-      { txtprescriber Label
-        MoveScaled(0,25,36,3)
         Border = Border.Plain
       }
       { GridView1 GridView
@@ -194,10 +199,6 @@
           MoveScaled(7.5,0.5,3,3)
           Border = Border.Plain
           Text = ("N")
-        }
-        { txtid ValueBox
-          MoveScaled(32,0,4,3)
-          Visible = False
         }
       }
     }

@@ -177,7 +177,7 @@ End
 Public Sub cmbconsult_Click()
 
   txtdepart.Text = cmbconsult.Text
-  txtfixcomp.Text = modGeneral.GetFixCompFromDept(txtdepart.Text)
+  txtfixcomp.Text = modGeneral.GetRoomNoFromDept(txtdepart.Text)
   dtconsult.Value = Now()
   txtpresummary.RichText = ""
   btnconsult.Tag = ""

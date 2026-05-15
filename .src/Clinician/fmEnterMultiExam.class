@@ -771,6 +771,15 @@ Public Sub btntemplsumm_Click()
 
 End
 
+Public Sub btnfill_Click()
+
+  Dim j As Integer
+
+  Try j = Application.ActiveControl.Tag
+  OpenOption(j)
+
+End
+
 Public Sub chkautoption_Click()
 
   modSettings.EnterCheckSetting(chkautoption, "EntrySetting/AutoDisplayOptions")

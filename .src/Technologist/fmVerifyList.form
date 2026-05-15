@@ -3,7 +3,8 @@
 { Form Form
   MoveScaled(0,0,110,60)
   Text = ("Verification List")
-  Resizable = False
+  Arrangement = Arrange.Vertical
+  Margin = True
   { mnufile Menu
     { mnuverify Menu
       Text = ("Mark Verified")
@@ -17,49 +18,47 @@
       Text = ("Edit Value")
     }
   }
-  { txtsearch TextBox
-    MoveScaled(1,0.625,18.75,3)
-  }
-  { btnrefresh Button
-    MoveScaled(95,0.625,13,3)
-    Text = ("Refresh")
-    Picture = Picture["icon:/small/refresh"]
+  { Panel4 Panel
+    MoveScaled(0,0,109,3.5)
+    { Label5 Label
+      MoveScaled(26,0.25,5,3)
+      Border = Border.Plain
+      Text = ("Flag")
+    }
+    { cmbflag ComboBox
+      MoveScaled(31,0.25,12,3)
+    }
+    { chkdate CheckBox
+      MoveScaled(52,0.25,11,3)
+      Text = ("Selected")
+    }
+    { dtsample DateBox
+      MoveScaled(64,0.25,16,3)
+      Enabled = False
+    }
+    { dtnepfir ToolButton
+      MoveScaled(80,0.25,3,3)
+      Enabled = False
+      Picture = Picture["icon:/small/calendar"]
+    }
+    { btnrefresh Button
+      MoveScaled(95,0.25,13,3)
+      Text = ("Refresh")
+      Picture = Picture["icon:/small/refresh"]
+    }
+    { txtsearch TextBox
+      MoveScaled(0.5,0.25,18.75,3)
+    }
   }
   { GridView1 GridView
-    MoveScaled(1,4,108,30)
+    MoveScaled(0,4,108,30)
+    Expand = True
     Mode = Select.Multiple
     Header = GridView.Horizontal
     AutoResize = False
   }
-  { Label5 Label
-    MoveScaled(26,0.625,5,3)
-    Border = Border.Plain
-    Text = ("Flag")
-  }
-  { cmbflag ComboBox
-    MoveScaled(31,0.625,12,3)
-  }
-  { chkdate CheckBox
-    MoveScaled(52,0.625,11,3)
-    Text = ("Selected")
-  }
-  { dtsample DateBox
-    MoveScaled(64,0.625,16,3)
-    Enabled = False
-  }
-  { dtnepfir ToolButton
-    MoveScaled(80,0.625,3,3)
-    Enabled = False
-    Picture = Picture["icon:/small/calendar"]
-  }
-  { GridView2 GridView
-    MoveScaled(1,42,108,17)
-    Mode = Select.Single
-    Header = GridView.Horizontal
-    AutoResize = False
-  }
   { Panel1 Panel
-    MoveScaled(1,34,108.875,3.875)
+    MoveScaled(0,34,108.875,3.875)
     { chkselect CheckBox
       MoveScaled(47,0.5,16,3)
       Text = ("Select All")
@@ -70,7 +69,7 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Panel2 Panel
-      MoveScaled(0,0.5,21,3)
+      MoveScaled(0.5,0.5,21,3)
       { rbsi RadioButton
         MoveScaled(0,0,9,3)
         Text = ("SI Unit")
@@ -83,10 +82,10 @@
     }
   }
   { Panel3 Panel
-    MoveScaled(1,38,108,3.5)
+    MoveScaled(0,38,108,3.5)
     Border = Border.Plain
     { Label1 Label
-      MoveScaled(0,0.25,10,3)
+      MoveScaled(0.5,0.25,9,3)
       Border = Border.Plain
       Text = ("Age/Sex")
     }
@@ -103,5 +102,12 @@
       MoveScaled(58,0.25,25,3)
       ReadOnly = True
     }
+  }
+  { GridView2 GridView
+    MoveScaled(1,42,108,17)
+    Expand = True
+    Mode = Select.Single
+    Header = GridView.Horizontal
+    AutoResize = False
   }
 }
