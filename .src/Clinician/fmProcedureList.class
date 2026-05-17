@@ -18,6 +18,7 @@ Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Horizontal")
   Me.Icon = Picture[modGeneralMain.$strLogo]
+  Panel2.Width = (Panel1.Width / 3)
   Panel4.Width = Panel1.Width - (Panel2.Width + Panel7.Width)
 
   cmbcategory.List = ["Major", "Intermediate", "Extra", "Any"]

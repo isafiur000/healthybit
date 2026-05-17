@@ -1595,74 +1595,10 @@
       }
       Index = 6
       Text = ("Medicine[F7]")
-      { Panel43 Panel
+      { pnldosetable Panel
         MoveScaled(0,0,118,39)
         Expand = True
         Arrangement = Arrange.Vertical
-        { Panel42 Panel
-          MoveScaled(0,0,118,4)
-          { btnmedexpo Button
-            MoveScaled(113,0.5,4,3)
-            Picture = Picture["icon:/small/html"]
-          }
-          { btndrp Button
-            MoveScaled(53,0.5,13,3)
-            Text = ("Review")
-            Picture = Picture["icon:/small/important"]
-          }
-          { btncounsel Button
-            MoveScaled(40,0.5,13,3)
-            Text = ("Drug Info")
-            Picture = Picture["icon:/small/attach"]
-          }
-          { btndosinfo Button
-            MoveScaled(27,0.5,13,3)
-            Text = ("Labels")
-            Picture = Picture["icon:/small/help"]
-          }
-          { btnshowallmed ToggleButton
-            MoveScaled(90,0.5,12,3)
-            Text = ("Show All")
-            Picture = Picture["icon:/small/view-detail"]
-          }
-          { Panel72 Panel
-            MoveScaled(69,0.5,18,3)
-            { rbvalue RadioButton
-              MoveScaled(0,0,8,3)
-              Text = ("Value")
-              Value = True
-            }
-            { rblabel RadioButton
-              MoveScaled(9,0,8,3)
-              Text = ("Label")
-            }
-          }
-          { btndosingroutine Button
-            MoveScaled(102,0.5,11,3)
-            ToolTip = ("Dosing Record Entry")
-            Text = ("Dosing")
-            Picture = Picture["icon:/small/edit"]
-          }
-          { Panel36 Panel
-            MoveScaled(1,0.5,23,3)
-            { rbroutine RadioButton
-              MoveScaled(0,0,11,3)
-              Text = ("Routine")
-              Value = True
-            }
-            { rbprn RadioButton
-              MoveScaled(11,0,11.5,3)
-              Text = ("Stat/PRN")
-            }
-          }
-        }
-        { grdmedicine GridView
-          MoveScaled(0,4,117,22)
-          Expand = True
-          Mode = Select.Single
-          Header = GridView.Both
-          AutoResize = False
-        }
       }
       Index = 7
       Text = ("Cardex[F8]")

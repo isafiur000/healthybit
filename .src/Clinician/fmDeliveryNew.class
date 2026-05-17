@@ -2635,7 +2635,7 @@ Public Sub mnuallhist_Click()
     Wait
     If xList Then
       Inc Application.Busy
-      xPath = modPatReportAll.ShowAllEncounterReport(Trim(txtencid.Text), xList, modLabSub.GetTestUnitFromButton(rbsi, rbmetric))
+      xPath = modPatReportAll.ShowAllEncounterReport(Trim(txtencid.Text), xList, modLabSub.GetTestUnitFromButton(rbsi, rbmetric), False)
       Dec Application.Busy
       modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
     Endif

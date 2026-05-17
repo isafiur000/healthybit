@@ -24,6 +24,7 @@ Private hOwnStockForm As FmWardStock
 Private hDoseCount As FmDosecount
 Private hPtForm As FmClinHistory
 Private hIpCardex As FmIPMedOrder
+Private hDosTable As FmDosingTable
 Private $OutFluid As String[]
 
 Private $billReference As String
@@ -360,6 +361,7 @@ Private Sub BasicInfoPatient()
     End Select
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
     hIpCardex = New FmIPMedOrder(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlcardex)
+    hDosTable = New FmDosingTable(Trim(txtencid.Text), pnldosetable)
     hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
     hPtArchive = New FmClinArchive($PatientNum, pnlarchivbe)
 
@@ -972,6 +974,7 @@ Public Sub TabPanel1_Click()
   Else If TabPanel1.Index = 9 Then
   Else If TabPanel1.Index = 10 Then
   Else If TabPanel1.Index = 11 Then
+  Else If TabPanel1.Index = 12 Then
   Endif
 
 End

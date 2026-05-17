@@ -145,8 +145,8 @@ Public Sub GridView1_Click()
     Else
       modDatabase.$syConn = modDatabase.$ssyncConn
       ShowReportEncid(GetReportItems())
+      modAppSupport.SetReportServer(modHelpVariable.$LogInCategory)
     Endif
-    modAppSupport.SetReportServer(modHelpVariable.$LogInCategory)
   Endif
 
 End
@@ -323,5 +323,61 @@ Public Sub btnopenweb_Click()
     Endif
     Try modGeneralMain.$RightAdView.Refresh()
   Endif
+
+End
+
+Public Sub btnyearly_Click()
+
+  Dim xList As String[]
+  Dim xstring As String
+  Dim xdate As Date
+  Dim res As Result
+  Dim encLst As String[]
+
+  xList = GetReportItems()
+  If xList.Count Then
+    res = modDatabase.$syConn.Exec("select fldencounterval as col from tblencounter where fldpatientval=&1 and fldregdate>&2 ORDER BY fldregdate DESC", $PatNum, DateAdd(Now(), gb.Day, -730))                   ''
+    encLst = modControlSub.GetDirectFillresult(res)
+    If encLst.Count Then
+      txtnewencid.Text = encLst[0]
+      xdate = modPatient.GetRecordDate(txtnewencid.Text)
+      lbldate.Text = "DATE: " & Format(xdate, gb.ShortDate) & Space(1) & "(" & modDate.ConvertToLocaldate(xdate) & ")"
+
+      encLst.Remove(encLst.Find(txtnewencid.Text))
+      If encLst And If encLst.Count Then
+        modDatabase.$syConn = modDatabase.$ssyncConn
+        xstring = GetAllVisitHistoryResultStr(xList, encLst, txtnewencid.Text)
+        modAppSupport.SetReportServer(modHelpVariable.$LogInCategory)
+        If modBasic.$WebViewApp = "webkit" Then
+          $hView.SetHtml(xstring)
+        Else
+          $hView.Html = xstring
+        Endif
+      Endif
+
+    Endif
+  Endif
+
+End
+
+Private Sub GetAllVisitHistoryResultStr(xList As String[], encLst As String[], encid As String) As String
+
+  Dim sUnit As String
+  Dim xstring As String
+
+  If encid Then
+    If modPatientSub.GetPatPassCheck(modDatabase.$myConn, $PatNum) = True Then
+      If xList Then
+        sUnit = modLabSub.GetTestUnitFromButton(rbsi, rbmetric)
+        Inc Application.Busy
+        xstring = modPatReportAll.ShowAllEncounterReport(encid, xList, sUnit, True, encLst)
+        Dec Application.Busy
+      Endif
+    Else
+      xstring = "You do not have permission to view"
+    Endif
+  Endif
+
+  Return xstring
 
 End

@@ -1,0 +1,58 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,119,64)
+  Expand = True
+  Arrangement = Arrange.Vertical
+  { Panel42 Panel
+    MoveScaled(0,0,105,4)
+    { btnmedexpo Button
+      MoveScaled(100,0.5,4,3)
+      Picture = Picture["icon:/small/html"]
+    }
+    { btndrp Button
+      MoveScaled(53,0.5,13,3)
+      Text = ("Review")
+      Picture = Picture["icon:/small/important"]
+    }
+    { btncounsel Button
+      MoveScaled(40,0.5,13,3)
+      Text = ("Drug Info")
+      Picture = Picture["icon:/small/attach"]
+    }
+    { btndosinfo Button
+      MoveScaled(27,0.5,13,3)
+      Text = ("Labels")
+      Picture = Picture["icon:/small/help"]
+    }
+    { btndosingroutine Button
+      MoveScaled(89,0.5,11,3)
+      ToolTip = ("Dosing Record Entry")
+      Text = ("Dosing")
+      Picture = Picture["icon:/small/edit"]
+    }
+    { Panel36 Panel
+      MoveScaled(1,0.5,23,3)
+      { rbroutine RadioButton
+        MoveScaled(0,0,11,3)
+        Text = ("Routine")
+        Value = True
+      }
+      { rbprn RadioButton
+        MoveScaled(11,0,11.5,3)
+        Text = ("Stat/PRN")
+      }
+    }
+    { chkall CheckBox
+      MoveScaled(76,0.5,12,3)
+      Text = ("Show All")
+    }
+  }
+  { GridView1 GridView
+    MoveScaled(6,6,70,32)
+    Expand = True
+    Mode = Select.Single
+    Header = GridView.Both
+    AutoResize = False
+  }
+}

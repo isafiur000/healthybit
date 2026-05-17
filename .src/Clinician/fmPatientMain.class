@@ -19,8 +19,6 @@ Private $rSympRes As Result
 Private $aSympFields As String[]
 Private $rExamRes As Result
 Private $aExamFields As String[]
-Private $rMedRes As Result
-Private $aMedFields As String[]
 Private $rPlanRes As Result
 Private $aPlanFields As String[]
 Private $rInputRes As Result
@@ -35,6 +33,7 @@ Private hDigForm As FmDiagnosticTab
 Private hOwnStockForm As FmWardStock
 Private hPtForm As FmClinHistory
 Private hPtArchive As FmClinArchive
+Private hDosTable As FmDosingTable
 Private hIpCardex As FmIPMedOrder
 
 Private $PulseName As String
@@ -624,16 +623,16 @@ Private Sub BasicInfoPatient()
     ShowNoteTypeTime()
     ShowIntakeFoodGrid()
     SHowOutputFluid()
-    ShowProblemList()
-    rbvalue.Value = True
-    ButtonControl()
 
     hMultiCompl = New FmMultiComplaints(Trim(txtencid.Text), pnlmulticomplaints)
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
+    hDosTable = New FmDosingTable(Trim(txtencid.Text), pnldosetable)
     hIpCardex = New FmIPMedOrder(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlcardex)
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
     hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
     hPtArchive = New FmClinArchive($PatientNum, pnlarchivbe)
+
+    ButtonControl()
     TabStrip1.Index = 0
   Endif
 
@@ -685,7 +684,9 @@ Private Sub ButtonControl()
     Endif
   Endif
 
+  hDosTable.SetDosingOrder(xx)
   chkenabhistory.Value = xx
+
   ''presenting complaints
   btnsympadd.Enabled = xx
   btnaddsymplist.Enabled = xx
@@ -735,7 +736,6 @@ Private Sub ButtonControl()
   btnradio.Enabled = xx
   ''pharmacy request
   grdfluid.Enabled = xx
-  grdmedicine.Enabled = xx
   pnlwardstock.Enabled = xx
   ''medical product
   mnumedproduct.Enabled = xx
@@ -761,7 +761,6 @@ Private Sub ButtonControl()
   mnuextprocedure.Enabled = xx
   ''drug dosing
   grdfluiddata.Enabled = xx
-  btndosingroutine.Enabled = xx
   grdfluid.Enabled = xx
   ''event timing
   mnuevent.Enabled = xx
@@ -1139,7 +1138,6 @@ Public Sub TabStrip1_Click()
     Else If TabStrip1.Index = 5 Then ''in/out
 
     Else If TabStrip1.Index = 6 Then ''Routine
-      ShowMedicines("Current")
 
     Else If TabStrip1.Index = 7 Then  ''cardex
     Else If TabStrip1.Index = 8 Then  ''Fluids
@@ -2931,254 +2929,6 @@ End
 Public Sub btntemplplanplan_Click()
 
   txtplan.RichText = txtplan.RichText & DictionaryVIew("Clinical Planning")
-
-End
-
-''--------------------------------------routine medicines ------------------------------------------------------------------------------------
-Public Sub rbroutine_Click()
-
-  ShowRoutineMed()
-
-End
-
-Public Sub rbprn_Click()
-
-  ShowRoutineMed()
-
-End
-
-Public Sub btnmedexpo_Click()
-  ''export grid
-
-End
-
-Public Sub btndosingroutine_Click()
-
-  Dim hForm As FmDoseMobile
-
-  If txtencid.Text Then
-    hForm = New FmDoseMobile(Trim(txtencid.Text))
-    hForm.ShowModal
-  Endif
-
-End
-
-Private Sub ShowRoutineMed()
-
-  If txtencid.Text Then
-    If btnshowallmed.Value = True Then
-      ShowMedicines("All")
-    Else If btnshowallmed.Value = False Then
-      ShowMedicines("Current")
-    Endif
-  Endif
-
-End
-
-Public Sub rbvalue_Click()
-
-  ShowRoutineMed()
-
-End
-
-Public Sub rblabel_Click()
-
-  ShowRoutineMed()
-
-End
-
-Public Sub btnshowallmed_Click()
-
-  ShowRoutineMed()
-
-End
-
-Private Sub ShowMedicines(strType As String)
-
-  Dim sql As String
-
-  If strType = "Current" Then
-    If rbroutine.Value = True Then
-      If rblabel.Value = True Then
-        sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and fldroute<>&5 and flditemtype=&6 and fldfreq<>&7 and fldfreq<>&8 ORDER BY fldid DESC"
-      Else
-        sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and fldroute<>&5 and flditemtype=&6 and fldfreq<>&7 and fldfreq<>&8 ORDER BY fldid DESC"                    ''
-      Endif
-    Else If rbprn.Value = True Then
-      If rblabel.Value = True Then
-        sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and fldroute<>&5 and flditemtype=&6 and (fldfreq=&7 or fldfreq=&8) ORDER BY fldid DESC"
-      Else
-        sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and fldroute<>&5 and flditemtype=&6 and (fldfreq=&7 or fldfreq=&8) ORDER BY fldid DESC"                    ''
-      Endif
-    Endif
-    $rMedRes = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), True, Now(), DateAdd(Now(), gb.Hour, -3), "fluid", "Medicines", "stat", "PRN")
-  Else If strType = "All" Then
-    If rbroutine.Value = True Then
-      If rblabel.Value = True Then
-        sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldroute<>&3 and flditemtype=&4 and fldfreq<>&5 and fldfreq<>&6 ORDER BY fldid DESC"
-      Else
-        sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldroute<>&3 and flditemtype=&4 and fldfreq<>&5 and fldfreq<>&6 ORDER BY fldid DESC"
-      Endif
-    Else If rbprn.Value = True Then
-      If rblabel.Value = True Then
-        sql = "select fldid,fldstarttime,fldroute,flditem,fldid,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldroute<>&3 and flditemtype=&4 and (fldfreq=&5 or fldfreq=&6) ORDER BY fldid DESC"
-      Else
-        sql = "select fldid,fldstarttime,fldroute,flditem,flddose,fldfreq,flddays,fldcurval,fldid,fldstarttime,fldstatus from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldroute<>&3 and flditemtype=&4 and (fldfreq=&5 or fldfreq=&6) ORDER BY fldid DESC"
-      Endif
-    Endif
-    $rMedRes = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), True, "fluid", "Medicines", "stat", "PRN")
-  Endif
-  $aMedFields = New String[]
-  modGridView.ReadSmallData(grdmedicine, $rMedRes, $aMedFields)
-
-  With grdmedicine
-    .Columns[0].Width = 1
-    .Columns[1].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 325 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[5].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[6].Width = 50 * modBasic.$AppWidthRatio
-    .Columns[7].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[8].Width = 50 * modBasic.$AppWidthRatio
-    .Columns[9].Width = 1
-    .Columns[10].Width = 1
-
-    .Columns[1].Text = "StartDate"
-    .Columns[2].Text = "Route"
-    .Columns[3].Text = "Medicine"
-    .Columns[4].Text = "Dose"
-    .Columns[5].Text = "Freq"
-    .Columns[6].Text = "Days"
-    .Columns[7].Text = "Status"
-    .Columns[8].Text = "N"
-  End With
-
-End
-
-Public Sub grdmedicine_Data(Row As Integer, Column As Integer)
-
-  $rMedRes.MoveTo(Row)
-  modGeneralMain.GridViewDecoration(grdmedicine, Row)
-  If Column = 1 Then
-    grdmedicine.Data.Text = modReportVar.GetDateTimeReport($rMedRes[$aMedFields[Column]], gb.GeneralDate)
-  Else If Column = 4 Then
-    If rblabel.Value = True Then
-      grdmedicine.Data.Text = modPharmacy.GetMedicineDoseInFormat($rMedRes[$aMedFields[Column]], "Label")
-    Else
-      grdmedicine.Data.Text = $rMedRes[$aMedFields[Column]]
-    Endif
-  Else If Column = 8 Then
-    grdmedicine.Data.Text = modPharmacy.TotalDoseCount($rMedRes[$aMedFields[Column]])
-  Else
-    grdmedicine.Data.Text = $rMedRes[$aMedFields[Column]]
-  Endif
-  grdmedicine.Rows[Row].Height = Max(grdmedicine.Rows[Row].Height, grdmedicine.Data.Font.RichTextHeight(grdmedicine.Data.Text, grdmedicine.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (grdmedicine.Rows.Height - grdmedicine.Font.Height))
-  grdmedicine.Data.WordWrap = True
-
-End
-
-Public Sub grdmedicine_Click()
-
-  Dim xx As String[] = ["Continue", "Completed", "Discontinue", "On Hold", "Change", "ReWrite", "Cancelled", "Wasted"]
-  Dim res As Result
-  Dim xval As String
-  Dim yval As Integer
-  Dim xdate As Date
-
-  If grdmedicine.Column = 1 Then
-    xdate = GetDateValue(("Select Start Date for this medicine"), grdmedicine[grdmedicine.Row, 3].Text, grdmedicine[grdmedicine.Row, 9].Text)
-    If xdate Then
-      modPharmSub.UpdateStartAfterDispensing(grdmedicine[grdmedicine.Row, 0].Text, xdate)
-      ShowMedicines("Current")
-    Endif
-  Else If grdmedicine.Column = 7 Then
-    xval = InputCombo(grdmedicine[grdmedicine.Row, 3].Text, ("Select Current Status"), xx, grdmedicine[grdmedicine.Row, 7].Text, True)
-    If xval Then
-      res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", grdmedicine[grdmedicine.Row, 0].Text)
-      res["fldcurval"] = xval
-      res["xyz"] = False
-      res.Update()
-      ShowMedicines("Current")
-    Endif
-  Else If grdmedicine.Column = 6 Then
-    yval = InputValue(grdmedicine[grdmedicine.Row, 3].Text, ("Select Number of Days"), grdmedicine[grdmedicine.Row, 6].Text)
-    If yval Then
-      res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", grdmedicine[grdmedicine.Row, 0].Text)
-      res["flddays"] = yval
-      res["fldendtime"] = DateAdd(grdmedicine[grdmedicine.Row, 9].Text, gb.Day, CInt(yval))
-      res["xyz"] = False
-      res.Update()
-      ShowMedicines("Current")
-    Endif
-  Endif
-
-End
-
-Public Sub btndrp_Click()
-
-  Dim opt As Long[]
-  Dim sql As String
-  Dim res As Result
-  Dim cForm As CMedError
-  Dim xPath As String
-
-  If btnshowallmed.Value = False Then
-    sql = "select fldid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval=&6"                    ''
-    res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), True, modDate.EndSqlDate(Now()), modDate.StartSqlDate(Now()), "Medicines", "Continue")
-  Else If btnshowallmed.Value = True Then
-    sql = "select fldid from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and flditemtype=&3 and fldcurval=&4"
-    res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), True, "Medicines", "Continue")
-  Endif
-  If res.Available Then
-    opt = New Long[]
-    For Each res
-      opt.Add(res["fldid"])
-    Next
-    cForm = New CMedError
-    Inc Application.Busy
-    xPath = cForm.ShowMedicationReviewMultipleDosIDReport(Trim(txtencid.Text), opt)
-    Dec Application.Busy
-    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
-  Endif
-
-End
-
-Public Sub btndosinfo_Click()
-
-  Dim i As Integer
-  Dim dosid As Long[]
-  Dim xPath As String
-
-  If txtencid.Text Then
-    dosid = New Long[]
-    For i = 0 To grdmedicine.Rows.Count - 1
-      dosid.Add(grdmedicine[i, 0].Text)
-    Next
-    Inc Application.Busy
-    xPath = modCHTMLPatient.ShowMedicationLabelReport(Trim(txtencid.Text), dosid, "Inpatient")
-    Dec Application.Busy
-    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
-  Endif
-
-End
-
-Public Sub btncounsel_Click()
-
-  Dim doslst As Long[]
-  Dim i As Integer
-  Dim xPath As String
-
-  If txtencid.Text Then
-    doslst = New Long[]
-    For i = 0 To grdmedicine.Rows.Count - 1
-      doslst.Add(grdmedicine[i, 0].Text)
-    Next
-    Inc Application.Busy
-    xPath = modCHTMLPatient.ShowCounselingReport(Trim(txtencid.Text), doslst)
-    Dec Application.Busy
-    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
-  Endif
 
 End
 
@@ -5852,7 +5602,6 @@ Private Sub RestrictUserAccess()
   Endif
   If $UserRestrict.Exist("Pharmacy Request") Then
     grdfluid.Enabled = False
-    grdmedicine.Enabled = False
     pnlwardstock.Enabled = False
     btnpharm.Enabled = False
     pnlcardex.Enabled = False
@@ -5905,7 +5654,6 @@ Private Sub RestrictUserAccess()
   Endif
   If $UserRestrict.Exist("Medicine Dosing") Then
     grdfluiddata.Enabled = False
-    btndosingroutine.Enabled = False
     grdfluid.Enabled = False
   Endif
   If $UserRestrict.Exist("IV Infusion") Then
