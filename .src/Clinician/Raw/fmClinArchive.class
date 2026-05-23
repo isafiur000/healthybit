@@ -240,6 +240,8 @@ Private Sub DisplayImage(sPath As String)
   PictureBox1.Image = Image.Load(sPath)
   PictureBox1.Zoom = SliderBox1.Value / 100
   ' modImage.StretchtPictureToBox(PictureBox1, sPath)
+  btnright.Enabled = True
+  btnleft.Enabled = True
 
 End
 

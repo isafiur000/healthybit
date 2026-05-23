@@ -1,7 +1,6 @@
 ' Gambas class file
 
 Private $encid As String
-Private strType As String
 
 Private $rData As Result
 Private $gridVar As Variant[]
@@ -108,7 +107,7 @@ Private Sub ShowMedicines()
     sColl = New Collection
 
     sColl.Add(res["fldid"], CStr(0))
-    sColl.Add(res["fldstarttime"], CStr(1))
+    sColl.Add(modReportVar.GetDateTimeReport(res["fldstarttime"], gb.GeneralDate), CStr(1))
     sColl.Add(res["fldroute"], CStr(2))
     sColl.Add(res["flditem"], CStr(3))
     sColl.Add(modMedConstant.GetMedicineRegimenInFormat(res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"]), CStr(4))
@@ -162,8 +161,6 @@ End
 Public Sub btndrp_Click()
 
   Dim opt As Long[]
-  Dim sql As String
-  Dim res As Result
   Dim cForm As CMedError
   Dim xPath As String
 

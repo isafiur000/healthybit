@@ -78,6 +78,16 @@ Public Sub Form_Open()
 
 End
 
+Public Sub SetEntryOrder(sBool As Boolean)
+
+  btnnewdose.Enabled = sBool
+  btncpoe.Enabled = sBool
+  btnrepeat.Enabled = sBool
+  btngroup.Enabled = sBool
+  btndispown.Enabled = sBool
+
+End
+
 Public Sub cmbdisctype_Click()
 
   If cmbdisctype.Text Then

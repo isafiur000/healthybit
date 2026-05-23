@@ -517,7 +517,7 @@ Private Sub BasicInfoPatient()
     If cmbinpathistory.List.Count Then
       cmbinpathistory.Index = 0
     Endif
-    ButtonControl()
+
     $dateReg = modPatient.GetRecordDate(Trim(txtencid.Text))
     cmbhepatic.Text = modClinic.GetHepaticStatus(Trim(txtencid.Text))
     PregnancySettings()
@@ -536,6 +536,8 @@ Private Sub BasicInfoPatient()
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
     hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
     hPtArchive = New FmClinArchive($PatientNum, pnlarchivbe)
+
+    ButtonControl()
     modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
   Endif
 
@@ -937,6 +939,7 @@ Private Sub ButtonControl()
     Endif
   Endif
 
+  hOwnStockForm.SetEntryControls(xx)
   ''consultation
   mnuconsultplan.Enabled = xfinal
 
@@ -944,6 +947,9 @@ Private Sub ButtonControl()
   mnupatcomment.Enabled = xx
   btnsaveAll.Enabled = xx
   btnpharm.Enabled = xx
+  mnupatcomment.Enabled = xx
+  tlbtpregnancy.Enabled = xx
+  tlbthepatic.Enabled = xx
   ''complaints
   btnsympadd.Enabled = xx
   btnaddsymplist.Enabled = xx
@@ -1024,7 +1030,6 @@ Private Sub ButtonControl()
   btnfeedback.Enabled = xx
   btngetfeed.Enabled = xx
 
-  pnlwardstock.Enabled = xx
   pnlsaveoutcome.Enabled = xx
 
   xval = modBasic.$LockDiagnosisList
@@ -4770,12 +4775,6 @@ Public Sub tlbmodel_Click()
       Endif
     Endif
   Endif
-
-End
-
-Public Sub mnulongirecord_Click()
-
-  mnupatcomment_Click()
 
 End
 

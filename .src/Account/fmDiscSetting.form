@@ -12,7 +12,7 @@
     }
   }
   { GridView1 GridView
-    MoveScaled(1,1,31,51)
+    MoveScaled(1,1,31,55)
     Mode = Select.Single
     Header = GridView.Vertical
     AutoResize = False
@@ -82,6 +82,9 @@
     Text = ("View List")
     Picture = Picture["icon:/small/file"]
   }
+  { txtbankaccount TextBox
+    MoveScaled(87,41,18,3)
+  }
   { cmbreserve ComboBox
     MoveScaled(87,29,18,3)
     ToolTip = ("Scheme :  Not allowed for registration\nCancel   :  Used for Cancellation scheme")
@@ -93,20 +96,20 @@
   { dtstart DateBox
     MoveScaled(87,37,14.625,3)
   }
-  { cmbonline ComboBox
-    MoveScaled(87,41,18,3)
-  }
   { cmbfixdepart ComboBox
     MoveScaled(49,45,18,3)
   }
   { cmbfixstate ComboBox
     MoveScaled(87,45,18,3)
   }
+  { cmbonline ComboBox
+    MoveScaled(49,49,18,3)
+  }
   { cmboffspring ComboBox
     MoveScaled(87,49,18,3)
   }
-  { txtbankaccount TextBox
-    MoveScaled(49,49,18,3)
+  { txtbookdays ValueBox
+    MoveScaled(49,53,10,3)
   }
   { btnOKdisc Button
     MoveScaled(70,53,16,3)
@@ -222,7 +225,7 @@
     Picture = Picture["icon:/small/book"]
   }
   { Label7 Label
-    MoveScaled(70,41,16,3)
+    MoveScaled(33,49,15,3)
     Border = Border.Plain
     Text = ("Show Online")
   }
@@ -246,7 +249,7 @@
     Text = ("Fix Department")
   }
   { Label22 Label
-    MoveScaled(33,49,15,3)
+    MoveScaled(70,41,16,3)
     Border = Border.Plain
     Text = ("Bank Account")
   }
@@ -264,5 +267,10 @@
     MoveScaled(70,45,16,3)
     Border = Border.Plain
     Text = ("Fix State")
+  }
+  { Label26 Label
+    MoveScaled(33,53,15,3)
+    Border = Border.Plain
+    Text = ("Booking Days")
   }
 }

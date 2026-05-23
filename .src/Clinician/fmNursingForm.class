@@ -343,7 +343,7 @@ Private Sub BasicInfoPatient()
     modRepository.$RepoDataStatus = False
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
     GetDefaultBillingmodes()
-    ButtonControl()
+
     $dateReg = modPatient.GetRecordDate(Trim(txtencid.Text))
     modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
     ShowSymptomData()
@@ -372,6 +372,7 @@ Private Sub BasicInfoPatient()
       cmbmonexam.List = modString.GetListFromCompareVariant(modTableCache.$ExaminationCompVar, "fldexamid", "fldcategory", "Nursing Examinations", True)
     Endif
     ShowMonitoring()
+    ButtonControl()
 
     modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
   Endif
@@ -669,6 +670,10 @@ Private Sub ButtonControl()
 
   xx = modPatient.EnableClinicForm($sTatus)
 
+  hOwnStockForm.SetEntryControls(xx)
+  hDosTable.SetDosingOrder(xx)
+  hIpCardex.SetEntryOrder(xx)
+
   btnorderedit.Enabled = xx
   btnoteadd.Enabled = xx
   btnpharm.Enabled = xx
@@ -744,7 +749,6 @@ Private Sub ButtonControl()
 
   pnlvitals.Enabled = xx
   pnldosecount.Enabled = xx
-  pnlwardstock.Enabled = xx
 
   xval = modBasic.$LockDiagnosisList
   If xval = "No" Then

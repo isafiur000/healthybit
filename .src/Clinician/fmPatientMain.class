@@ -685,8 +685,12 @@ Private Sub ButtonControl()
   Endif
 
   hDosTable.SetDosingOrder(xx)
+  hIpCardex.SetEntryOrder(xx)
   chkenabhistory.Value = xx
 
+  hOwnStockForm.SetEntryControls(xx)
+
+  mnupatcomment.Enabled = xx
   ''presenting complaints
   btnsympadd.Enabled = xx
   btnaddsymplist.Enabled = xx
@@ -736,7 +740,6 @@ Private Sub ButtonControl()
   btnradio.Enabled = xx
   ''pharmacy request
   grdfluid.Enabled = xx
-  pnlwardstock.Enabled = xx
   ''medical product
   mnumedproduct.Enabled = xx
   ''major proced

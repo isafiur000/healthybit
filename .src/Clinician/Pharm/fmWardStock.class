@@ -52,6 +52,15 @@ Public Sub Form_Open()
 
 End
 
+Public Sub SetEntryControls(xBool As Boolean)
+
+  btnselect.Enabled = xBool
+  btnselbreak.Enabled = xBool
+  btnsave.Enabled = xBool
+  GridView4.Enabled = xBool
+
+End
+
 Public Sub cmbdisctype_KeyRelease()
 
   modFillContainer.AutoFillComboBox(cmbdisctype)

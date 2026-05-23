@@ -202,6 +202,7 @@ Public Sub btnpatnoedit_Click()
         Balloon.Info(("Information updated"), btnpatnoedit)
         Balloon.Delay = modBasic.$BalloonDelay
       Endif
+      modPatient.$PatProfileData.Remove(Trim(txtencid.Text))
     Endif
   Endif
 
@@ -229,11 +230,11 @@ Public Sub btnedit_Click()
         If txtpolicy.Text Then
           xval = modClaim.GetClaimCidePatient(Trim(txtencid.Text), txtpolicy.Text)
         Endif
-        modPatient.$PatProfileData.Remove(Trim(txtencid.Text))
         Balloon.Info(("Information updated"), btnedit)
         Balloon.Delay = modBasic.$BalloonDelay
       Endif
     Endif
+    modPatient.$PatProfileData.Remove(Trim(txtencid.Text))
   Endif
 
 End

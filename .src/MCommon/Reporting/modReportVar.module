@@ -1597,6 +1597,12 @@ Public Function GetReportLastConsult($encid As String, $Line As String) As Strin
   If (String.InStr($Line, "LastOPVisitOutcome") > 0) Then
     $Line = Replace($Line, "{LastOPVisitOutcome}", GetLastValue("tblopvisit", "fldoutcome", "fldencounterval", $encid))
   Endif
+  If (String.InStr($Line, "LastOPVisitAttendant") > 0) Then
+    $Line = Replace($Line, "{LastOPVisitAttendant}", modGeneral.GetUserFullName(GetLastValue("tblopvisit", "fldflaguser", "fldencounterval", $encid)))
+  Endif
+  If (String.InStr($Line, "LastOPVisitAttendDate") > 0) Then
+    $Line = Replace($Line, "{LastOPVisitAttendDate}", GetDateTimeReport(GetLastValue("tblopvisit", "fldflagtime", "fldencounterval", $encid), gb.MediumDate))
+  Endif
 
   ''any
   If (String.InStr($Line, "LastVisitDate") > 0) Then
@@ -3362,6 +3368,8 @@ Public Sub GetReportVarCollection(sType As String) As Variant[]
     ListView1.Add(["{LastOPVisitStatus}", "LastOPVisitStatus"])
     ListView1.Add(["{LastOPVisitComment}", "LastOPVisitComment"])
     ListView1.Add(["{LastOPVisitOutcome}", "LastOPVisitOutcome"])
+    ListView1.Add(["{LastOPVisitAttendant}", "LastOPVisitAttendant"])
+    ListView1.Add(["{LastOPVisitAttendDate}", "LastOPVisitAttendDate"])
     ListView1.Add(["{LastVisitDate}", "LastVisitDate"])
     ListView1.Add(["{LastVisitTime}", "LastVisitTime"])
     ListView1.Add(["{LastVisitLocation}", "LastVisitLocation"])
