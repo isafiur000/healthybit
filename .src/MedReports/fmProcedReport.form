@@ -95,17 +95,8 @@
         Border = Border.Plain
         Text = ("Procedure")
       }
-      { Label5 Label
-        MoveScaled(28,4.625,10,3)
-        Border = Border.Plain
-        Text = ("Last Status")
-      }
       { cmbprocedure ComboBox
         MoveScaled(38,1,19,3)
-        Sorted = True
-      }
-      { cmbstatus ComboBox
-        MoveScaled(38,4.625,19,3)
         Sorted = True
       }
       { btnrefresh Button
@@ -124,15 +115,15 @@
         Text = ("From:")
       }
       { Label6 Label
-        MoveScaled(60,4.625,8,3)
+        MoveScaled(28,4.5,10,3)
         Border = Border.Plain
         Text = ("Age (Yr)")
       }
       { txtfromage ValueBox
-        MoveScaled(69,4.625,6,3)
+        MoveScaled(39,4.5,6,3)
       }
       { txttoage ValueBox
-        MoveScaled(76,4.625,6,3)
+        MoveScaled(50,4.5,6,3)
       }
       { Label7 Label
         MoveScaled(60,1,7.75,3)
@@ -151,6 +142,15 @@
         { cmbvalue ComboBox
           MoveScaled(1,4.625,15,3)
         }
+      }
+      { Label5 Label
+        MoveScaled(60,4.5,8,3)
+        Border = Border.Plain
+        Text = ("Status")
+      }
+      { cmbstatus ComboBox
+        MoveScaled(69,4.5,13,3)
+        Sorted = True
       }
     }
     { TabStrip1 TabPanel
@@ -199,6 +199,14 @@
       { chkdistenc CheckBox
         MoveScaled(92,0.625,24,3)
         Text = ("Distinct Encounter")
+      }
+      { chksurgteam CheckBox
+        MoveScaled(70,0.5,15,3)
+        Text = ("Show Team")
+      }
+      { chkshowsumm CheckBox
+        MoveScaled(51,0.5,17,3)
+        Text = ("Show Summary")
       }
     }
   }

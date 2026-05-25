@@ -39,6 +39,7 @@ Public Sub Form_Open()
   cmbfixbill.List = ["Credit", "Cash", "None"]
   cmblockmode.List = ["Yes", "No"]
   cmbrounding.List = ["Yes", "No"]
+  cmbmobilebill.List = ["Enable", "Disable"]
   cmbextrabill.List = ["Print", "Print+Print", "Save", "Print+Save", "None"]
   cmbverifyret.List = ["Enable", "Disable"]
   cmbsavpayble.List = ["Yes", "No"]
@@ -572,6 +573,8 @@ Private Sub ShowGeneralOPCash()
 
   cmbrounding.Text = modGlobalSetting.ShowSettingFromDBAny("CashBilling/AmountRounding", cmbtarget.Text)
   cmbextrabill.Text = modGlobalSetting.ShowSettingFromDBAny("CashBilling/InvoiceExtraCopy", cmbtarget.Text)
+  cmbmobilebill.Text = modGlobalSetting.ShowSettingFromDBAny("CashBilling/EnableRemoteBilling", cmbtarget.Text)
+
   cmbfixbill.Text = modGlobalSetting.ShowSettingFromDBAny("CashBilling/FixBilling", cmbtarget.Text)
   cmblockmode.Text = modGlobalSetting.ShowSettingFromDBAny("CashBilling/LockBilling", cmbtarget.Text)
   cmbverifyret.Text = modGlobalSetting.ShowSettingFromDBAny("CashBilling/VerifyReturn", cmbtarget.Text)
@@ -604,6 +607,14 @@ Public Sub btnextrabill_Click()
 
   modGlobalSetting.SaveSettingToDB("CashBilling/InvoiceExtraCopy", cmbextrabill.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btnextrabill)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnmobilebill_Click()
+
+  modGlobalSetting.SaveSettingToDB("CashBilling/EnableRemoteBilling", cmbmobilebill.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnmobilebill)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -1173,6 +1184,7 @@ Public Sub btnsettall_Click()
   xList.Add("CashBilling/AmountRounding")
   xList.Add("CashBilling/FixBilling")
   xList.Add("CashBilling/InvoiceExtraCopy")
+  xList.Add("CashBilling/EnableRemoteBilling")
 
   xList.Add("CashBilling/VerifyReturn")
   xList.Add("SavedBillingEntry/EditPayable")
@@ -1314,6 +1326,7 @@ Private Sub PrintableSettings()
   AddSettingReport("CashBilling/LockBilling", cmbtarget.Text, cmblockmode.Tooltip, cmblockmode.List.Join("; "))
   AddSettingReport("CashBilling/AmountRounding", cmbtarget.Text, cmbrounding.Tooltip, cmbrounding.List.Join("; "))
   AddSettingReport("CashBilling/InvoiceExtraCopy", cmbtarget.Text, cmbextrabill.Tooltip, cmbextrabill.List.Join("; "))
+  AddSettingReport("CashBilling/EnableRemoteBilling", cmbtarget.Text, cmbmobilebill.Tooltip, cmbmobilebill.List.Join("; "))
 
   AddSettingReport("CashBilling/VerifyReturn", cmbtarget.Text, cmbverifyret.Tooltip, cmbverifyret.List.Join("; "))
   AddSettingReport("SavedBillingEntry/EditPayable", cmbtarget.Text, cmbsavpayble.Tooltip, cmbsavpayble.List.Join("; "))

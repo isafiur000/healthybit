@@ -352,6 +352,7 @@ Public Sub GridView1_Click()
   btnupload.Text = "Upload"
   txttotal.Value = 0
   txttotal.Value = GridView1[GridView1.Row, 7].Text
+  dtinvoice.Value = GridView1[GridView1.Row, 8].Text
   modPatient.$PatProfileData.Remove(GridView1[GridView1.Row, 2].Text)
 
   txtgridencid.Text = GridView1[GridView1.Row, 2].Text
@@ -434,20 +435,20 @@ Private Sub SHowCreditGrid()
   xList2.Add(Quote("tblpatbilling"))
 
   If cmbsource.Text = "Invoice" Then
-    sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4)"                                                  ''
-    sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4)"                                                  ''
+    sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4) and (fldclaimstate<>&5 or fldclaimstate IS NULL)"                                                  ''
+    sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4) and (fldclaimstate<>&5 or fldclaimstate IS NULL)"                                                  ''
   Else If cmbsource.Text = "Receipt" Then
-    sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4)"
-    sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4)"
+    sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4) and (fldclaimstate<>&5 or fldclaimstate IS NULL)"
+    sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4) and (fldclaimstate<>&5 or fldclaimstate IS NULL)"
   Else
-    sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4) UNION ALL select " & xList1.Join(",") & " from " & $tblpatbilling & "  where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4)"
-    sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4) UNION ALL select " & xList2.Join(",") & " from tblpatbilling  where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4)"
+    sql1 = "select " & xList1.Join(",") & " from " & $tblpatbilling & " where fldbillno in(select fldbillno from " & $tblpatbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4) and (fldclaimstate<>&5 or fldclaimstate IS NULL) UNION ALL select " & xList1.Join(",") & " from " & $tblpatbilling & "  where fldbillno in(select fldbillno from " & $tbltempbilldetail & " where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4) and (fldclaimstate<>&5 or fldclaimstate IS NULL)"
+    sql2 = "select " & xList2.Join(",") & " from tblpatbilling where fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4) and (fldclaimstate<>&5 or fldclaimstate IS NULL) UNION ALL select " & xList2.Join(",") & " from tblpatbilling  where fldbillno in(select fldbillno from tbltempbilldetail where fldbankname=&1 and fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&2) and fldbilltype like &3 and fldbillno=&4) and (fldclaimstate<>&5 or fldclaimstate IS NULL)"
   Endif
 
   If cmbfiscal.Text = "Current" Then
-    $rData1 = modDatabase.$syConn.Exec(sql1, txtaccount.Text, modPatient.GetPatientNoByEnc(txtgridencid.Text), "Credit", txtinvoice.Text)
+    $rData1 = modDatabase.$syConn.Exec(sql1, txtaccount.Text, modPatient.GetPatientNoByEnc(txtgridencid.Text), "Credit", txtinvoice.Text, "success")
   Else
-    $rData1 = modDatabase.$syConn.Exec(sql1 & " UNION ALL " & sql2, txtaccount.Text, modPatient.GetPatientNoByEnc(txtgridencid.Text), "Credit", txtinvoice.Text)
+    $rData1 = modDatabase.$syConn.Exec(sql1 & " UNION ALL " & sql2, txtaccount.Text, modPatient.GetPatientNoByEnc(txtgridencid.Text), "Credit", txtinvoice.Text, "success")
   Endif
   $aMyFields1 = New String[]
   modGridView.ReadSmallData(GridView2, $rData1, $aMyFields1)
@@ -647,25 +648,87 @@ End
 
 Public Sub btngridclaim_Click()
 
+  Select cmbbippatask.Text
+    Case "Treatment", "Kidney Session"
+      UploadItemClaim()
+    Case "Billing"
+      UploadBillingAPI()
+  End Select
+
+End
+
+Private Function GetItemCode(sItem As String) As Integer
+
+  Dim res As Result
+  Dim asx As String[]
+  Dim xval As Integer
+
+  res = modDatabase.$myConn.Exec("select fldgroup from tblbipannagroup where flditemname=&1", sItem)
+  If res.Available Then
+    asx = Split(res["fldgroup"], ":")
+    If asx.Count Then
+      xval = CInt(asx[0])
+    Endif
+  Endif
+
+  Return xval
+
+End
+
+Private Sub UploadItemClaim()
+
+  Dim Row As Integer
+  Dim xDate As Date
   Dim hForm1 As BipannaTreatAPI
+  Dim xitemcode As Integer
+
+  Dim xout As String
+  Dim sColl As Collection
+  Dim res As Result
+
+  If txtinvoice.Text And If txttotal.Value > 0 Then
+    If txtssucode.Text And If txtdiseaseid.Text Then
+      xDate = dtinvoice.Value
+
+      For Row = 0 To GridView2.Rows.Count - 1
+        xitemcode = 0
+        If cmbbippcategory.Text Then
+          xitemcode = txtcategcode.Value
+        Else
+          xitemcode = GetItemCode(GridView2[Row, 2].Text)
+        Endif
+
+        If xitemcode Then
+          hForm1 = New BipannaTreatAPI(cmbbippatask.Text, txtssucode.Text, CInt(txtdiseaseid.Text), xitemcode, txtinvoice.Text, xDate, GridView2[Row, 3].Text, GridView2[Row, 4].Text)
+          xout = hForm1.GetUploadAPI()
+          If xout Then
+            Try sColl = JSON.Decode(xout)
+            If sColl And If sColl["success"] = True Then
+              res = modDatabase.$myConn.Edit(GridView2[Row, 9].Text, "fldid=&1", GridView2[Row, 0].Text)
+              res["fldclaimstate"] = "success"
+              res.Update
+            Else
+              Message.Info(xout)
+            Endif
+          Endif
+        Endif
+      Next
+
+    Endif
+  Endif
+
+End
+
+Private Sub UploadBillingAPI()
+
   Dim hForm2 As BippannaBillingAPI
   Dim xout As String
   Dim sColl As Collection
 
   If txtinvoice.Text And If txttotal.Value > 0 Then
     If txtssucode.Text And If txtdiseaseid.Text Then
-      Select cmbbippatask.Text
-        Case "Treatment", "Kidney Session"
-          If chkeditamt.Value = True Then
-            hForm1 = New BipannaTreatAPI(cmbbippatask.Text, txtssucode.Text, CInt(txtdiseaseid.Text), txtcategcode.Value, txtinvoice.Text, txttotal.Value)
-          Else
-            hForm1 = New BipannaTreatAPI(cmbbippatask.Text, txtssucode.Text, CInt(txtdiseaseid.Text), txtcategcode.Value, txtinvoice.Text)
-          Endif
-          xout = hForm1.GetUploadAPI()
-        Case "Billing"
-          hForm2 = New BippannaBillingAPI(txtssucode.Text, CInt(txtdiseaseid.Text), txtinvoice.Text)
-          xout = hForm2.GetUploadAPI()
-      End Select
+      hForm2 = New BippannaBillingAPI(txtssucode.Text, CInt(txtdiseaseid.Text), txtinvoice.Text)
+      xout = hForm2.GetUploadAPI()
 
       If xout Then
         Try sColl = JSON.Decode(xout)
@@ -731,5 +794,33 @@ Public Sub mnuinvupload_Click()
     Wait
 
   Next
+
+End
+
+Public Sub mnusettreatment_Click()
+
+  Dim xList As String[] = ["1:O.P.D", "2:Radiology Charge", "3:Beds Charge", "4:Medicine Charge", "5:Surgical Charge", "6:Other", "7:Laboratory Charge", "8:Radiation Charge", "9:Heart Valve Change"]
+  Dim xItem As String
+  Dim hForm As FmSelectList
+
+  xItem = InputCombo("Select Category", "Treatment", xList, "", True)
+  If xItem Then
+    hForm = New FmSelectList("Treatment", "Bipanna Grouping", xItem)
+    hForm.ShowModal
+  Endif
+
+End
+
+Public Sub mnusetkidn_Click()
+
+  Dim xList As String[] = ["1:Transplant", "2:Hemodialysis", "3:Peritoneal Dialysis", "4:Medical Treatment", "5:AKI/Medical Treatment", "6:Seropositive Dialysis"]
+  Dim xItem As String
+  Dim hForm As FmSelectList
+
+  xItem = InputCombo("Select Category", "Kidney Disease", xList, "", True)
+  If xItem Then
+    hForm = New FmSelectList("Kidney Disease", "Bipanna Grouping", xItem)
+    hForm.ShowModal
+  Endif
 
 End

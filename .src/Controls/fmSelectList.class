@@ -18,6 +18,8 @@ Public Sub _new(sTitle As String, xType As String, xItemName As String)
       cmbcategory.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldcategory) as col from tblsymptoms"))
     Case "Essential Examinations", "Physician Examinations", "Nursing Examinations", "ABC Examinations", "Discharge Examinations"
       cmbcategory.List = ["Qualitative", "Quantitative"]
+    Case "Bipanna Grouping"
+      cmbcategory.List = ["Diagnostic Tests", "General Services", "Procedures", "Equipment", "Radio Diagnostics", "Other Items", "Mapped Items", "Pharmacy"]
   End Select
   ShowFilledList()
 
@@ -41,6 +43,8 @@ Private Sub LoadSelectedListsView()
       CompComplaintsListView(cmbcategory.Text)
     Case "Essential Examinations", "Physician Examinations", "Nursing Examinations", "ABC Examinations", "Discharge Examinations"
       CompVitalExamListView(cmbcategory.Text)
+    Case "Bipanna Grouping"
+      NonStockBillingItemListView(cmbcategory.Text)
   End Select
 
 End
@@ -89,6 +93,10 @@ Private Sub ShowFilledList()
       $tbl = "tblcompexam"
       sql = "select fldexamid as col from tblcompexam where fldcomp=&1 and fldcategory=&2"
       res = modDatabase.$myConn.Exec(sql, txtitemname.Text, $typ)
+    Case "Bipanna Grouping"
+      $tbl = "tblbipannagroup"
+      sql = "select flditemname as col from tblbipannagroup where fldgroup=&1"
+      res = modDatabase.$myConn.Exec(sql, txtitemname.Text)
   End Select
   modFillContainer.FillListBox(lstsecond, res, False)
 
@@ -136,6 +144,11 @@ Public Sub btnsave_Click()
             res["fldexamorder"] = 0
             res["fldflag"] = False
             res["fldcomp"] = txtitemname.Text
+          Case "Bipanna Grouping"
+            res["flditemname"] = lstfirst[CStr(i)].Text
+            res["flditemtype"] = cmbcategory.Text
+            res["fldgroup"] = txtitemname.Text
+            res["fldactive"] = "Active"
         End Select
         res.Update()
       Endif

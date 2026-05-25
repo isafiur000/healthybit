@@ -4411,9 +4411,18 @@ End
 Public Sub btnsaveAll_Click()
 
   If txtencid.Text Then
-    btnsavevitals_Click()
-    btnhistory_Click()
-    btnplan_Click()
+    ' If btnsavevitals.Enabled = True Then
+    '   btnsavevitals_Click()
+    ' Endif
+    ' If btnhistory.Enabled = True Then
+    '   btnhistory_Click()
+    ' Endif
+    ' If btnplan.Enabled = True Then
+    '   btnplan_Click()
+    ' Endif
+    If modBasic.$AutoBillAdvReceipt = "Enable" Then
+      modBillings.SetAdvancedReceipt(Trim(txtencid.Text), modBasic.$compID)
+    Endif
     Balloon.Info(("Information saved"), btnsaveAll)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif

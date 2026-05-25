@@ -11,6 +11,15 @@
       Text = ("Invoice Upload")
     }
   }
+  { mnusetting Menu
+    Text = ("Settings")
+    { mnusettreatment Menu
+      Text = ("Treatment")
+    }
+    { mnusetkidn Menu
+      Text = ("Kidney Disease")
+    }
+  }
   { Panel1 Panel
     MoveScaled(1,1,117,73)
     { Panel3 Panel
@@ -150,74 +159,75 @@
     { Panel2 Panel
       MoveScaled(0,33,117,3.5)
       { Label8 Label
-        MoveScaled(0,0.5,6,3)
+        MoveScaled(0,0.5,8,3)
         Border = Border.Plain
         Text = ("EncID")
       }
       { txtgridencid TextBox
-        MoveScaled(6,0.5,14.375,3)
+        MoveScaled(8,0.5,20,3)
         ReadOnly = True
       }
       { Label9 Label
-        MoveScaled(24,0.5,6,3)
+        MoveScaled(36,0.5,6,3)
         Border = Border.Plain
         Text = ("Code")
       }
       { txtssucode TextBox
-        MoveScaled(30,0.5,18,3)
+        MoveScaled(42,0.5,23,3)
       }
       { Label11 Label
-        MoveScaled(53,0.5,7,3)
+        MoveScaled(70,0.5,10,3)
         Border = Border.Plain
         Text = ("Invoice")
       }
       { txtinvoice TextBox
-        MoveScaled(60,0.5,19.5,3)
+        MoveScaled(80,0.5,18,3)
         ReadOnly = True
       }
-      { txtaccount TextBox
-        MoveScaled(80,0.5,4,3)
-        Visible = False
-      }
-      { btnclaimlink Button
-        MoveScaled(107,0.5,9,3)
-        Visible = False
-        Text = ("Link")
-      }
       { btngridclaim Button
-        MoveScaled(93,0.5,14,3)
+        MoveScaled(102,0.5,14,3)
         Text = ("Claim")
         Picture = Picture["icon:/small/up"]
+      }
+      { dtinvoice DateBox
+        MoveScaled(28,0.5,7,3)
+        Visible = False
+        Mode = DateChooser.DateTime
       }
     }
     { pnlbipanna Panel
       MoveScaled(0,37,117,4)
       { cmbbippatask ComboBox
-        MoveScaled(13,0.5,20,3)
+        MoveScaled(8,0.5,20,3)
       }
       { Label16 Label
-        MoveScaled(0,0.5,13,3)
+        MoveScaled(0,0.5,8,3)
         Border = Border.Plain
-        Text = ("Bipanna Task")
+        Text = ("Service")
       }
       { cmbbippcategory ComboBox
-        MoveScaled(37,0.5,23,3)
+        MoveScaled(36,0.5,23,3)
       }
       { txtcategcode ValueBox
-        MoveScaled(61,0.5,5,3)
+        MoveScaled(60,0.5,5,3)
         ReadOnly = True
       }
       { Label17 Label
-        MoveScaled(92,0.5,10,3)
+        MoveScaled(70,0.5,10,3)
         Border = Border.Plain
         Text = ("Disease ID")
       }
       { txtdiseaseid TextBox
-        MoveScaled(102,0.5,13,3)
+        MoveScaled(80,0.5,18,3)
       }
-      { chkeditamt CheckBox
-        MoveScaled(69,0.5,12,3)
-        Text = ("Edit AMT")
+      { btnclaimlink Button
+        MoveScaled(103,0.5,12,3)
+        Visible = False
+        Text = ("Link")
+      }
+      { txtaccount TextBox
+        MoveScaled(30,0,4,3)
+        Visible = False
       }
     }
     { GridView2 GridView

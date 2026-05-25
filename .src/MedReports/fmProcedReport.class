@@ -12,6 +12,7 @@ Private $RepoStr As String
 Public Sub Form_Open()
 
   Dim xhospfld As String
+  Dim xdtdiff As String
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
@@ -45,7 +46,8 @@ Public Sub Form_Open()
   dtlast.Value = Now()
 
   xhospfld = modDataRepo.HospitalField()
-  $SSQLFields = ["fldid", "fldencounterval", "fldencounterval", modDataRepo.SerialField(), "fldencounterval", "fldtime", "flditem", "fldreportquali", "fldid", "flddetail"]
+  xdtdiff = modDate.GetSQLDateDiffStr("fldnewdate", "fldtime", modDatabase.$syConn)
+  $SSQLFields = ["fldid", "fldencounterval", "fldencounterval", modDataRepo.SerialField(), "fldencounterval", "fldtime", "fldnewdate", "fldstatus", "flditem", "fldreportquali", "fldid", "flddetail", xdtdiff, "CONCAT(fldencounterval, '|', fldid)"]
   If xhospfld Then
     $SSQLFields.Add(xhospfld)
   Endif
@@ -187,6 +189,7 @@ Private Function ExecuteQuery(xFldList As String[]) As Result
   Dim xstr As String
   Dim xsql As String
   Dim xdistenc As String
+  Dim xtype As String
 
   Dim res As Result
 
@@ -197,9 +200,11 @@ Private Function ExecuteQuery(xFldList As String[]) As Result
   Endif
 
   If cmbstatus.Text = "Minor" Then
-    xstat = "Completed"
+    xstat = "Done"
+    xtype = "Minor Procedures"
   Else
     xstat = cmbstatus.Text
+    xtype = "Procedures"
   Endif
 
   If Not cmbgender.Text Then
@@ -218,8 +223,8 @@ Private Function ExecuteQuery(xFldList As String[]) As Result
     Endif
   Endif
 
-  sql = "select " & xFldList.Join(",") & " from tblpatgeneral where fldtime>=&1 and fldtime<=&2 and fldinput=&3 and flditem like &4 and fldreportquali like &5" & xsql & $RepoStr & xdistenc                                                        ''
-  res = modDatabase.$syConn.Exec(sql, modDate.StartSqlDate(dtfir.value), modDate.EndSqlDate(dtlast.value), "Procedures", cmbprocedure.Text, xstat, cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value)
+  sql = "select " & xFldList.Join(",") & " from tblpatgeneral where fldnewdate>=&1 and fldnewdate<=&2 and fldinput=&3 and flditem like &4 and fldreportquali like &5" & xsql & $RepoStr & xdistenc                                                        ''
+  res = modDatabase.$syConn.Exec(sql, modDate.StartSqlDate(dtfir.value), modDate.EndSqlDate(dtlast.value), xtype, cmbprocedure.Text, xstat, cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value)
   Return res
 
 End
@@ -237,7 +242,19 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
     xxx = modPatient.GetPatientSex(xVariable, modDatabase.$syConn)
   Else If Column = 5 Then
     xxx = modReportVar.GetDateTimeReport(xVariable, gb.GeneralDate)
-  Else If Column = 10 Then
+  Else If Column = 6 Then
+    xxx = modReportVar.GetDateTimeReport(xVariable, gb.GeneralDate)
+  Else If Column = 13 Then
+    If cmbstatus.Text = "Minor" Then
+      xxx = ""
+    Else
+      If chksurgteam.Value = True Then
+        xxx = modPatSurgery.GetUserAllUniProcedure(Trim(Split(xVariable, "|")[0]), CLong(Split(xVariable, "|")[1]), "Plain")
+      Else
+        xxx = ""
+      Endif
+    Endif
+  Else If Column = 14 Then
     xxx = modDataRepo.GetHospitalTextLabel(xVariable)
   Else
     xxx = xVariable
@@ -291,19 +308,39 @@ Private Sub FillPatientGrid()
     .Columns[3].Width = 75 * modBasic.$AppWidthRatio
     .Columns[4].Width = 75 * modBasic.$AppWidthRatio
     .Columns[5].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[6].Width = 250 * modBasic.$AppWidthRatio
-    .Columns[7].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[8].Width = 1
-    .Columns[9].Width = 350 * modBasic.$AppWidthRatio
+    .Columns[6].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[7].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[8].Width = 300 * modBasic.$AppWidthRatio
+    .Columns[9].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[10].Width = 1
+    If chkshowsumm.Value = True Then
+      .Columns[11].Width = 400 * modBasic.$AppWidthRatio
+    Else
+      .Columns[11].Width = 1
+    Endif
+    .Columns[12].Width = 75 * modBasic.$AppWidthRatio
+    If chksurgteam.Value = True Then
+      .Columns[13].Width = 250 * modBasic.$AppWidthRatio
+    Else
+      .Columns[13].Width = 1
+    Endif
 
     .Columns[1].Text = "EncID"
     .Columns[2].Text = "Name"
     .Columns[3].Text = "Age"
     .Columns[4].Text = "Gender"
     .Columns[5].Text = "DateTime"
-    .Columns[6].Text = "Procedure"
-    .Columns[7].Text = "Status"
-    .Columns[9].Text = "Summary"
+    .Columns[6].Text = "PlanDate"
+    .Columns[7].Text = "Section"
+    .Columns[8].Text = "Procedure"
+    .Columns[9].Text = "Status"
+    If chkshowsumm.Value = True Then
+      .Columns[11].Text = "Summary"
+    Endif
+    .Columns[12].Text = "Wait"
+    If chksurgteam.Value = True Then
+      .Columns[13].Text = "Team"
+    Endif
 
     If $newColumn.Count Then
       For i = 0 To $newColumn.Count - 1
@@ -319,7 +356,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
 
   $rData.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView1, Row)
-  If Column = 9 Then
+  If Column = 11 Then
     GridView1.Data.RichText = GetGridViewValue(Column, $rData[$aMyFields[Column]])
     If modBasic.$RichtextResizeRow = "Yes" Then
       GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.RichText, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
@@ -349,12 +386,12 @@ Public Sub mnucompreport_Click()
   Dim abc As String[] = ["General:Status", "General:Personnel", "General:Summary", "Pre-Operative:Indication", "Pre-Operative:Discussion", "Pre-Operative:Discussion Panel", "Pre-Operative:Examination", "Pre-Operative:Medications", "Pre-Operative:Note", "Procedure:Components", "Procedure:Parameters", "Procedure:Medications", "Procedure:Incision", "Procedure:Findings", "Procedure:Proedures", "Procedure:Closure", "Procedure:Note", "Anaesthesia:Technique", "Anaesthesia:Parameters", "Anaesthesia:Medications", "Anaesthesia:Medications", "Anaesthesia:Note", "Post-Operative:Indication", "Post-Operative:Examination", "Post-Operative:Medications", "Post-Operative:Note"]
   Dim xxx As String[]
 
-  If GridView1.Rows.Count > 0 Then
-    If GridView1[GridView1.Row, 7].Text = "Done" Then
+  If GridView1.Rows.Count Then
+    If GridView1[GridView1.Row, 9].Text = "Done" Then
       xxx = SelectListView("Select Procedure Components", abc, False)
       If xxx Then
         Inc Application.Busy
-        xPath = modPatSurgery.ShowUniProcedureReport(GridView1[GridView1.Row, 8].Text, GridView1[GridView1.Row, 1].Text, xxx)
+        xPath = modPatSurgery.ShowUniProcedureReport(GridView1[GridView1.Row, 10].Text, GridView1[GridView1.Row, 1].Text, xxx)
         Dec Application.Busy
         modControlSub.OpenHTMLPreview(GridView1[GridView1.Row, 1].Text, xPath, "ReportSize")
       Endif                                     ''
