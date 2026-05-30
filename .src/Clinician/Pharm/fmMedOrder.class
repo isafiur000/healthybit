@@ -77,10 +77,14 @@ Public Sub Form_Open()
   Endif
   cmbdisctype.Text = $DiscPackage
 
-  If modSettings.ShowSettingFromFIle("ClinicForms/ShowInjectionSubRoutes") = "Disable" Then
-    cmbroute.List = modMedicine.AllComboRoute()
+  If modBasic.$ClinInjectionRoute = "Disable" Then
+    cmbroute.List = modMedicine.InpatientSubRoute(False)
   Else
-    cmbroute.List = modMedicine.InpatientRoute(False)
+    If modSettings.ShowSettingFromFIle("ClinicForms/ShowInjectionSubRoutes") = "Disable" Then
+      cmbroute.List = modMedicine.AllComboRoute()
+    Else
+      cmbroute.List = modMedicine.InpatientRoute(False)
+    Endif
   Endif
   cmbfreq.List = modMedicine.FrequencyCombo()
   cmbcurrent.List = ["Continue", "On Hold", "Removed", "All Active"]

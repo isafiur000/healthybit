@@ -44,10 +44,14 @@ Public Sub Form_Open()
   cmbdosingwt.Text = "Actual Body Weight"
   cmbtarget.List = modMedicine.$MedicineUnitList
   modStockSub.DisplayDefaultDispensingMode(rbrand, rbgeneric)
-  If modSettings.ShowSettingFromFIle("ClinicForms/ShowInjectionSubRoutes") = "Disable" Then
-    cmbroute.List = modMedicine.RouteMedicine()
+  If modBasic.$ClinInjectionRoute = "Disable" Then
+    cmbroute.List = modMedicine.ClinicalSubRoutes()
   Else
-    cmbroute.List = modMedicine.ClinicalRoute()
+    If modSettings.ShowSettingFromFIle("ClinicForms/ShowInjectionSubRoutes") = "Disable" Then
+      cmbroute.List = modMedicine.RouteMedicine()
+    Else
+      cmbroute.List = modMedicine.ClinicalRoute()
+    Endif
   Endif
   cmbfreq.List = modMedicine.FrequencyCombo()
   $ClinicianLst = New String[]

@@ -335,3 +335,35 @@ Public Sub btnlistleft_Click()
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
 
 End
+
+Public Sub btncopubulk_Click()
+
+  Dim xList As String[]
+  Dim xx As String
+  Dim res As Result
+  Dim rsx As Result
+
+  If cmbgroup.Text Then
+    xList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldgroupname) as col from tblgrouptest"))
+    If xList.Count Then
+
+      xx = GridViewNew("Select Particulars", xList, False, cmbtest)
+      If xx Then
+        res = modDatabase.$myConn.Exec("select fldtestid,fldtesttype,fldactive from tblgrouptest where fldgroupname=&1", xx)
+        For Each res
+          rsx = modDatabase.$myConn.Create("tblgrouptest")
+          rsx["fldgroupname"] = Trim(cmbgroup.Text)
+          rsx["fldtestid"] = res["fldtestid"]
+          rsx["fldtesttype"] = res["fldtesttype"]
+          rsx["fldactive"] = res["fldactive"]
+          rsx.Update
+        Next
+        FillGroupGrid()
+        Balloon.Info(("Information saved"), btnBrOK)
+        Balloon.Delay = modBasic.$BalloonDelay
+      Endif
+
+    Endif
+  Endif
+
+End

@@ -57,6 +57,7 @@ Public Sub Form_Open()
   cmbhistdisch.List = ["Selected", "All"]
   cmbconsultcomment.List = ["Optional", "Essential"]
   cmbfracqty.List = ["Enable", "Disable"]
+  cmbinjection.List = ["Enable", "Disable"]
 
   cmbessendoctor.List = ["Enable", "Disable"]
   cmbtriage.List = ["Manual", "Dynamic"]
@@ -414,6 +415,7 @@ Private Sub ShowDataEntry()
 
   cmbconsultcomment.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/ConsultationComment", cmbtarget.Text)
   cmbfracqty.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/FractionalQuantity", cmbtarget.Text)
+  cmbinjection.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/Injection_Route", cmbtarget.Text)
 
 End
 
@@ -510,6 +512,14 @@ Public Sub btnfracqty_Click()
 
   modGlobalSetting.SaveSettingToDB("ClinicForms/FractionalQuantity", cmbfracqty.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btnfracqty)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btninjection_Click()
+
+  modGlobalSetting.SaveSettingToDB("ClinicForms/Injection_Route", cmbinjection.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btninjection)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -795,6 +805,7 @@ Public Sub btnsettall_Click()
   xList.Add("ClinicForms/History_Discharge_Variables")
   xList.Add("ClinicForms/ConsultationComment")
   xList.Add("ClinicForms/FractionalQuantity")
+  xList.Add("ClinicForms/Injection_Route")
 
   xList.Add("IPClinic/SymptomCauseScale")
   xList.Add("ClinicForms/OPDExaminations")

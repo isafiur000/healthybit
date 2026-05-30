@@ -161,6 +161,10 @@ Public Sub DoCommandLineSub()
       ' Print "                       are required. The variable is quoted Concatenated string of EncounterID,"
       ' Print "                       Advanced Receipt and total amount received joined by '|'"
       ' Print " "
+      Print "--check-invoice        Check Total Amount from Advanced Receipt. User, Password and Variable"
+      Print "                       are required. The variable is quoted Concatenated string of EncounterID,"
+      Print "                       and Advanced Receipt joined by '|'"
+      Print " "
       ' Print "--create-deposit       Create Deposit. User, Password and Variable are required. The variable is"
       ' Print "                       quoted Concatenated string of EncounterID,Receipt No and Deposit joined by '|'"
       ' Print " "
@@ -393,7 +397,7 @@ Public Sub DoCommandLineSub()
       modRepository.InsertLogToRemoteServer()
       Quit
 
-    Case "--create-invoice", "--create-deposit"
+    Case "--create-invoice", "--create-deposit", "--check-invoice"
       InitialProcedures()
       MMain.$SISHAppMode = modMisc.GetApplicationType()
       modCommand.CommandPrint(Application.Args[1], xuser, xpass, xvar, $isdebug)
@@ -569,7 +573,9 @@ Public Sub CommandPrint(sType As String, sUser As String, sPass As String, sVal 
   Dim xallow As Boolean
   Dim stbl As String
   Dim i As Integer
+
   Dim asx As String[]
+  Dim xFinClear As Boolean
 
   modBasic.$lbluser = sUser
   modHelpVariable.CreateUserCacheDir(modBasic.$lbluser)
@@ -686,30 +692,46 @@ Public Sub CommandPrint(sType As String, sUser As String, sPass As String, sVal 
         Wait
       Endif
 
+    Else If sType = "--check-invoice" Then
+      asx = Split(UnQuote(sVal), "|")
+      If asx.Count = 2 Then
+        xPath = GetCommandCheckInvoice(Trim(asx[0]), Trim(asx[1]))
+        Print xPath
+        Wait
+      Endif
+
     Else If sType = "--create-invoice" Then
       asx = Split(UnQuote(sVal), "|")
       If asx.Count = 3 Then
-        modBasic.$BillMobileInvoiceAPI = modGlobalSetting.ShowSettingFromDB("CashBilling/EnableRemoteBilling")
-        If modBasic.$BillMobileInvoiceAPI = "Enable" Then
-          xPath = GetCommandCreateInvoice(Trim(asx[0]), Trim(asx[1]), CFloat(asx[2]))
+        xFinClear = modNonMedical.GetFinanceClearance(Trim(asx[0]))
+        If xFinClear = True Then
         Else
-          xPath = "Not Permitted"
+          modBasic.$BillMobileInvoiceAPI = modGlobalSetting.ShowSettingFromDB("CashBilling/EnableRemoteBilling")
+          If modBasic.$BillMobileInvoiceAPI = "Enable" Then
+            xPath = GetCommandCreateInvoice(Trim(asx[0]), Trim(asx[1]), CFloat(asx[2]))
+          Else
+            xPath = "Not Permitted"
+          Endif
+          Print xPath
+          Wait
         Endif
-        Print xPath
-        Wait
       Endif
 
     Else If sType = "--create-deposit" Then
       asx = Split(UnQuote(sVal), "|")
       If asx.Count = 3 Then
-        modBasic.$BillMobileInvoiceAPI = modGlobalSetting.ShowSettingFromDB("CashBilling/EnableRemoteBilling")
-        If modBasic.$BillMobileInvoiceAPI = "Enable" Then
-          xPath = GetCommandCreateDeposit(Trim(asx[0]), Trim(asx[1]), CFloat(asx[2]))
+        xFinClear = modNonMedical.GetFinanceClearance(Trim(asx[0]))
+        If xFinClear = True Then
         Else
-          xPath = "Not Permitted"
+          modBasic.$BillMobileInvoiceAPI = modGlobalSetting.ShowSettingFromDB("CashBilling/EnableRemoteBilling")
+          If modBasic.$BillMobileInvoiceAPI = "Enable" Then
+            xPath = GetCommandCreateDeposit(Trim(asx[0]), Trim(asx[1]), CFloat(asx[2]))
+          Else
+            xPath = "Not Permitted"
+          Endif
+          Print xPath
+          Wait
         Endif
-        Print xPath
-        Wait
       Endif
 
     Endif
@@ -1311,6 +1333,39 @@ Public Sub GetHourlyInvoiceReport(sType As String, xemail As String)
 
 End
 
+''------------------------- Billing -------------------
+Private Function GetCommandCheckInvoice(encid As String, xAdvRecep As String) As String
+
+  Dim res As Result
+  Dim xscheme As String
+  Dim discLst As String[]
+  Dim xinvoice As String
+  Dim xtot As Float
+
+  Dim CForm As CCreateInvoice
+  Dim rcvamt As Float
+
+  xtot = 0
+  res = modDatabase.$myConn.Exec("select distinct(flddisctype) as flddisctype from tblpatbilling where fldencounterval=&1 and fldextracol=&2 and fldsave=&3 and fldprint=&4 and fldstatus=&5 and flditemqty>&6 and fldretqty=&6 and fldbillno IS NULL", encid, xAdvRecep, False, False, "Punched", 0)
+  If res.Available Then
+    discLst = modControlSub.GetDirectFillresultNoNull(res)
+    For Each xscheme In discLst
+      CForm = New CCreateInvoice(encid, xAdvRecep, xscheme, 0)
+      rcvamt = CForm.GetReceivedAmount()
+      If rcvamt Then
+        xtot = xtot + rcvamt
+      Endif
+    Next
+    xinvoice = "TOTAL:" & CStr(xtot)
+
+  Else
+    xinvoice = "Unable to get Total"
+  Endif
+
+  Return xinvoice
+
+End
+
 Private Function GetCommandCreateInvoice(encid As String, xAdvRecep As String, xTotal As Float) As String
 
   Dim res As Result
@@ -1332,7 +1387,7 @@ Private Function GetCommandCreateInvoice(encid As String, xAdvRecep As String, x
     discLst = modControlSub.GetDirectFillresultNoNull(res)
     For Each xscheme In discLst
       CForm = New CCreateInvoice(encid, xAdvRecep, xscheme, xtot)
-      If CForm.GetInvoiceDone() = True Then
+      If CForm.CompleteBilling() = True Then
         invList = CForm.GetInvoiceNumbers()
         rcvamt = CForm.GetReceivedAmount()
 

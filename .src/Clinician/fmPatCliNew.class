@@ -4535,6 +4535,12 @@ Public Sub btnoutcome_Click()
 
   Dim xmode As String
 
+  If txtencid.Text Then
+    If modBasic.$AutoBillAdvReceipt = "Enable" Then
+      modBillings.SetAdvancedReceipt(Trim(txtencid.Text), modBasic.$compID)
+    Endif
+  Endif
+
   If txtclinIndex.Value And If txtclinmode.Text Then
     If modPathoSub.AllowOPOutcomeDiagno(Trim(txtencid.Text)) = True Then
       Inc Application.Busy

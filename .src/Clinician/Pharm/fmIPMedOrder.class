@@ -61,7 +61,11 @@ Public Sub Form_Open()
     $ShowReview = "None"
   Endif
 
-  cmbroute.List = modMedicine.ClinicalRoute()
+  If modBasic.$ClinInjectionRoute = "Disable" Then
+    cmbroute.List = modMedicine.ClinicalSubRoutes()
+  Else
+    cmbroute.List = modMedicine.ClinicalRoute()
+  Endif
   cmbfreq.List = modMedicine.FrequencyCombo()
 
   $PatientNum = modPatient.GetPatientNoByEnc($encid)
