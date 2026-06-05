@@ -9,6 +9,7 @@ Private $EBMDiagnosis As String
 Private $PatientNum As String
 Private $xFinClear As Boolean
 Private $NotesList As String[]
+Private $SyndroType As String
 
 Private $ExamLst As String[]
 Private $RuleChartLst As String[]
@@ -602,6 +603,7 @@ Private Sub BasicInfoPatient()
     lbldtnote.Text = xipday
     lbldtfluid.Text = xipday
 
+    $SyndroType = modNonMedical.GetFixedInvType(modPatient.ShowDiscountCategEnc(Trim(txtencid.Text)))
     GetDefaultBillingmodes()
     cmbinpathistory.List = GetHistoryList()
     If cmbinpathistory.List.Count Then
@@ -670,10 +672,9 @@ Private Sub ButtonControl()
   Dim xx As Boolean
   Dim xval As String
 
+  xx = modPatient.EnableClinicForm(txtnow.Text)
   If modBasic.$DoctorOblig = "Enable" And If Not btnconsult.Tag Then
     xx = False
-  Else
-    xx = modPatient.EnableClinicForm(txtnow.Text)
   Endif
 
   If xx = False Then
@@ -979,7 +980,7 @@ Public Sub tbnprovdisease_Click()
     If modBasic.$ProvDiagnosisObstetrics = "Selection List" Then
       sName = DiagnoObstetrics(Trim(txtencid.Text), True)
     Else
-      sName = GetSyndromes()
+      sName = GetSyndromes($SyndroType)
     Endif
 
     If sName Then
@@ -1038,7 +1039,7 @@ Public Sub tbnfinaldisease_Click()
     If modBasic.$FinalDiagnosisObstetrics = "Selection List" Then
       sName = DiagnoObstetrics(Trim(txtencid.Text), True)
     Else
-      sName = GetSyndromes()
+      sName = GetSyndromes($SyndroType)
     Endif
 
     If sName Then

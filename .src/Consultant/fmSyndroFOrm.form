@@ -25,8 +25,11 @@
     MoveScaled(65,13,3,3)
     Picture = Picture["icon:/small/edit"]
   }
+  { cmbpattype ComboBox
+    MoveScaled(17,17,17,3)
+  }
   { btnadd Button
-    MoveScaled(16,17,11,3)
+    MoveScaled(46,17,11,3)
     Text = ("Add")
     Picture = Picture["icon:/small/add"]
   }
@@ -34,6 +37,13 @@
     MoveScaled(58,17,11,3)
     Text = ("Delete")
     Picture = Picture["icon:/small/cancel"]
+  }
+  { txtcode TextBox
+    MoveScaled(52,13,12,3)
+  }
+  { txtsearch TextBox
+    MoveScaled(16,13,35,3)
+    ReadOnly = True
   }
   { Label1 Label
     MoveScaled(1,5,14,3)
@@ -51,7 +61,7 @@
     Text = ("ICD Group")
   }
   { GridView1 GridView
-    MoveScaled(1,21,69,46)
+    MoveScaled(1,21,69,48)
     Mode = Select.Single
     Header = GridView.Both
     AutoResize = False
@@ -59,14 +69,6 @@
   { tlbtnadd ToolButton
     MoveScaled(58,5,3,3)
     Picture = Picture["icon:/small/add"]
-  }
-  { txtcode TextBox
-    MoveScaled(52,13,12,3)
-    ReadOnly = True
-  }
-  { txtsearch TextBox
-    MoveScaled(16,13,35,3)
-    ReadOnly = True
   }
   { Label5 Label
     MoveScaled(1,1,14,3)
@@ -76,5 +78,10 @@
   { lblcomp Label
     MoveScaled(32,1,25,3)
     Border = Border.Plain
+  }
+  { Label4 Label
+    MoveScaled(1,17,14,3)
+    Border = Border.Plain
+    Text = ("Patient Type")
   }
 }

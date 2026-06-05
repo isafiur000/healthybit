@@ -16,6 +16,7 @@ Private $dateReg As Date
 Private $PatientNum As String
 Private $vidRoom As String
 Private $VidIndex As String
+Private $SyndroType As String
 
 Private $ExamLst As String[]
 Private $RuleChartLst As String[]
@@ -509,9 +510,12 @@ End
 
 Private Sub BasicInfoPatient()
 
+  Dim xallrg As Boolean
+
   If txtencid.Text Then
     modRepository.$RepoDataStatus = False
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
+    $SyndroType = modNonMedical.GetFixedInvType(modPatient.ShowDiscountCategEnc(Trim(txtencid.Text)))
     GetDefaultBillingmodes()
     cmbinpathistory.List = GetHistoryList()
     If cmbinpathistory.List.Count Then
@@ -525,7 +529,12 @@ Private Sub BasicInfoPatient()
     ShowSymptomData()
     ShowEssentialExamRange()
     ShowEssentialExam()
-    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    If xallrg = True Then
+      lblallergy.Text = "ALLERGY"
+    Else
+      lblallergy.Text = ""
+    Endif
     FillExamtable()
     ShowPlanningInitial()
     ShowTelemedSaved()
@@ -652,7 +661,6 @@ Private Sub BlockDCButton()
   tlbtnadwt.Enabled = xx
   dtdob.Enabled = xx
   btnpic.Enabled = xx
-  btnconsult.Enabled = xx
 
 End
 
@@ -706,8 +714,7 @@ Private Sub GetDoctorNames()
 
   Dim res As Result
 
-  btnconsult.Tag = modPatient.GetAttendingConsultant(Trim(txtencid.Text))
-  If Not btnconsult.Tag Then
+  If txtclinIndex.Value Then
     If txtclinmode.Text = "Consultation" Then
       res = modDatabase.$myConn.Exec("select flduserid as flduser from tblconsult where fldencounterval=&1 and fldid=&2", Trim(txtencid.Text), txtclinIndex.Value)
     Else If txtclinmode.Text = "OP Visit" Then
@@ -722,10 +729,10 @@ Private Sub GetDoctorNames()
     Else
       btnconsult.Tag = ""
     Endif
-  Endif
 
-  If btnconsult.Tag Then
-    btnconsult.Text = modGeneral.GetUserFullName(btnconsult.Tag)
+    If btnconsult.Tag Then
+      btnconsult.Text = modGeneral.GetUserFullName(btnconsult.Tag)
+    Endif
   Endif
 
 End
@@ -734,19 +741,23 @@ Public Sub btnconsult_Click()
 
   Dim xMedUser As String[]
 
-  xMedUser = MedicalSelectedValue(("Select Consultant"), modBasic.$OPConsulUserList)
-  If xMedUser And If xMedUser.Count Then
-    btnconsult.Tag = xMedUser[0]
-    btnconsult.Text = xMedUser[1]
-  Else
-    btnconsult.Tag = ""
-    btnconsult.Text = ""
-  Endif
-  If btnconsult.Tag And If txtencid.Text Then
-    modPatientSub.UpdateAttendingConsultant(Trim(txtencid.Text), btnconsult.Tag)
-    Balloon.Info(("Information saved"), btnconsult)
-    Balloon.Delay = modBasic.$BalloonDelay
-    ButtonControl()
+  If txtclinIndex.Value Then
+    xMedUser = MedicalSelectedValue(("Select Consultant"), modBasic.$OPConsulUserList)
+    If xMedUser And If xMedUser.Count Then
+      btnconsult.Tag = xMedUser[0]
+      btnconsult.Text = xMedUser[1]
+    Else
+      btnconsult.Tag = ""
+      btnconsult.Text = ""
+    Endif
+    If btnconsult.Tag And If txtencid.Text Then
+      If txtclinmode.Text = "Consultation" Then
+        modPatientSub.UpdateConsultConsultant(txtclinIndex.Value, btnconsult.Tag)
+      Endif
+      Balloon.Info(("Information saved"), btnconsult)
+      Balloon.Delay = modBasic.$BalloonDelay
+      ButtonControl()
+    Endif
   Endif
 
 End
@@ -927,22 +938,21 @@ Private Sub ButtonControl()
   Dim xfinal As Boolean
   Dim xval As String
 
+  xfinal = modPatient.EnableClinicForm($sTatus)
+  mnuconsultplan.Enabled = xfinal
+
+  If xfinal = True Then
+    xx = modPatient.EnableClinicOPDForm(Trim(txtencid.Text))
+  Else
+    xx = False
+  Endif
+  btnconsult.Enabled = xx
+
   If modBasic.$DoctorOblig = "Enable" And If Not btnconsult.Tag Then
     xx = False
-    xfinal = False
-  Else
-    xfinal = modPatient.EnableClinicForm($sTatus)
-    If xfinal = True Then
-      xx = modPatient.EnableClinicOPDForm(Trim(txtencid.Text))
-    Else
-      xx = False
-    Endif
   Endif
 
   hOwnStockForm.SetEntryControls(xx)
-  ''consultation
-  mnuconsultplan.Enabled = xfinal
-
   chkenabhistory.Value = xx
   mnupatcomment.Enabled = xx
   btnsaveAll.Enabled = xx
@@ -977,7 +987,6 @@ Private Sub ButtonControl()
   btndismanual.Enabled = xx
   tbnsyndro.Enabled = xx
   tbndisease.Enabled = xx
-  btnfinaldiagno.Enabled = xx
   btnfinalsyndro.Enabled = xx
   tbnfinaldisease.Enabled = xx
   btnfinalcustom.Enabled = xx
@@ -1079,6 +1088,7 @@ End
 Public Sub tlbtndeldises_Click()
 
   Dim res As Result
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     If lsticdisease.Current.Text Then
@@ -1090,7 +1100,7 @@ Public Sub tlbtndeldises_Click()
           res.Update
           Balloon.Delete(("Information deleted"), tlbtndeldises)
           Balloon.Delay = modBasic.$BalloonDelay
-          modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+          xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
         Endif
       Endif
     Endif
@@ -1101,6 +1111,7 @@ End
 Public Sub tbndisease_Click()
 
   Dim sName As String[]
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     If MMain.$Ayurveda = "Yes" Then
@@ -1115,7 +1126,7 @@ Public Sub tbndisease_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
-        modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
       Endif
     Endif
   Endif
@@ -1125,12 +1136,13 @@ End
 Public Sub tbnsyndro_Click()
 
   Dim sName As String[]
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     If modBasic.$ProvDiagnosisObstetrics = "Selection List" Then
       sName = DiagnoObstetrics(Trim(txtencid.Text), True)
     Else
-      sName = GetSyndromes()
+      sName = GetSyndromes($SyndroType)
     Endif
 
     If sName Then
@@ -1145,7 +1157,7 @@ Public Sub tbnsyndro_Click()
           Endif
         Endif
 
-        modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
       Endif
     Endif
   Endif
@@ -1156,6 +1168,7 @@ Public Sub btndismanual_Click()
 
   Dim xx As String
   Dim sName As String[]
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     If modBasic.$ProvDiagnosisObstetrics = "Custom Text" Then
@@ -1169,7 +1182,7 @@ Public Sub btndismanual_Click()
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
       Endif
     Endif
-    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
   Endif
 
 End
@@ -1177,6 +1190,7 @@ End
 Public Sub btncopydiagnosis_Click()
 
   Dim asx As String[]
+  Dim xallrg As Boolean
 
   If lsticdisease.Current.Key Then
     asx = Split(lsticdisease.Current.Key, "|")
@@ -1184,7 +1198,7 @@ Public Sub btncopydiagnosis_Click()
     Else
       If Message.Question("Do you want to copy " & lsticdisease.Current.Text, ("No"), ("OK")) = 2 Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), asx[2], asx[1], "")
-        modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
       Endif
     Endif
   Endif
@@ -1203,49 +1217,22 @@ End
 ' End
 
 ''final diagnosis
-Public Sub btnfinaldiagno_Click()
-
-  Dim sName As String[]
-  Dim xList As String[]
-
-  If txtencid.Text Then
-    xList = modPathoSub.GetSelectedDiagnosisList("Provisional Diagnosis", Trim(txtencid.Text))
-    If xList.Count Then
-      If MMain.$Ayurveda = "Yes" Then
-        sName = AyurvedicDiagnosis(modAMISRep.$AyurvedicDiagnosis)
-      Else
-        If modBasic.$ClinICDPunchFormat = "GridView" Then
-          sName = ICDGridView("Select Diseases")
-        Else
-          sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, modBasic.$FixDiagnoGroupOPD, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
-        Endif
-      Endif
-      If sName Then
-        If sName[1] And If sName[0] Then
-          modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
-          modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
-        Endif
-      Endif
-    Endif
-  Endif
-
-End
-
 Public Sub tbnfinaldisease_Click()
 
   Dim sName As String[]
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     If modBasic.$FinalDiagnosisObstetrics = "Selection List" Then
       sName = DiagnoObstetrics(Trim(txtencid.Text), True)
     Else
-      sName = GetSyndromes()
+      sName = GetSyndromes($SyndroType)
     Endif
 
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1])
-        modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
       Endif
     Endif
   Endif
@@ -1256,6 +1243,7 @@ Public Sub btnfinalsyndro_Click()
 
   Dim sName As String[]
   Dim xGroup As String
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     If MMain.$Ayurveda = "Yes" Then
@@ -1275,7 +1263,7 @@ Public Sub btnfinalsyndro_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
-        modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
       Endif
     Endif
   Endif
@@ -1286,6 +1274,7 @@ Public Sub btnfinalcustom_Click()
 
   Dim xx As String
   Dim sName As String[]
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     If modBasic.$FinalDiagnosisObstetrics = "Custom Text" Then
@@ -1299,15 +1288,22 @@ Public Sub btnfinalcustom_Click()
         modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
       Endif
     Endif
-    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
   Endif
 
 End
 
 Public Sub chkalldiagno_Click()
 
-  modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+  Dim xallrg As Boolean
+
+  xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
   btncopydiagnosis.Visible = chkalldiagno.Value
+  If xallrg = True Then
+    lblallergy.Text = "ALLERGY"
+  Else
+    lblallergy.Text = ""
+  Endif
 
 End
 
@@ -1315,6 +1311,7 @@ End
 Public Sub tlbtndelallergy_Click()
 
   Dim res As Result
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     If lsticdisease.Current.Text Then
@@ -1326,7 +1323,12 @@ Public Sub tlbtndelallergy_Click()
           res.Update
           Balloon.Delete(("Information deleted"), tlbtndelallergy)
           Balloon.Delay = modBasic.$BalloonDelay
-          modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+          xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+          If xallrg = True Then
+            lblallergy.Text = "ALLERGY"
+          Else
+            lblallergy.Text = ""
+          Endif
         Endif
       Endif
     Endif
@@ -1337,12 +1339,18 @@ End
 Public Sub btnallergymanual_Click()
 
   Dim xx As String
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     xx = InputBox(("Enter Other Allergy"), ("Drug Allergy"), "")
     If xx Then
       modPatientGeneral.AddPatientFindings("Allergic Drugs", Trim(txtencid.Text), xx, "", "")
-      modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+      xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+      If xallrg = True Then
+        lblallergy.Text = "ALLERGY"
+      Else
+        lblallergy.Text = ""
+      Endif
     Endif
   Endif
 
@@ -1354,17 +1362,23 @@ Public Sub btnallergy_Click()
   Dim sName As String[]
   Dim sText As String
   Dim druglist As String[]
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     curLst = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), True)
     druglist = modString.GetRemainingArray(modBasic.$GenericMedName, curLst)
-    sName = GridListView(("Select Drugs"), druglist, lsticdisease, lsticdisease.Height + lsticdisease.Height + TabPanel1.Height)
+    sName = GridListView(("Select Drugs"), druglist, lsticdisease, lsticdisease.Height + TabPanel1.Height)
     If sName And If sName.Count Then
       For Each sText In sName
         modPatientGeneral.AddPatientFindings("Allergic Drugs", Trim(txtencid.Text), sText, "", "")
       Next
     Endif
-    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    If xallrg = True Then
+      lblallergy.Text = "ALLERGY"
+    Else
+      lblallergy.Text = ""
+    Endif
   Endif
 
 End
@@ -2783,6 +2797,7 @@ Public Sub mnuconsultplan_Click()
       hForm = New FmMiniConsult(Trim(txtencid.Text), $billModeService)
     Endif
     hForm.ShowModal
+    ButtonControl()
   Endif
 
 End
@@ -4043,7 +4058,6 @@ Private Sub RestrictUserAccess()
     tbndisease.Enabled = False
   Endif
   If $UserRestrict.Exist("Final Diagnosis") Then
-    btnfinaldiagno.Enabled = False
     btnfinalsyndro.Enabled = False
     tbnfinaldisease.Enabled = False
     btnfinalcustom.Enabled = False

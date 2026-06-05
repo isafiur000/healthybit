@@ -9,6 +9,7 @@ Private $dateReg As Date
 Private $PatientNum As String
 Private $vidRoom As String
 Private $VidIndex As String
+Private $SyndroType As String
 
 Private $rData As Result
 Private $aMyFields As String[]
@@ -333,6 +334,7 @@ Private Sub BasicInfoPatient()
 
   Dim xadmit As String
   Dim hPtArchive As FmClinArchive
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     xadmit = modPatient.GetDayDiffAdmission(Trim(txtencid.Text), Now())
@@ -342,10 +344,16 @@ Private Sub BasicInfoPatient()
     lbldtfluid.Text = xadmit
     modRepository.$RepoDataStatus = False
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
+    $SyndroType = modNonMedical.GetFixedInvType(modPatient.ShowDiscountCategEnc(Trim(txtencid.Text)))
     GetDefaultBillingmodes()
 
     $dateReg = modPatient.GetRecordDate(Trim(txtencid.Text))
-    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    If xallrg = True Then
+      lblallergy.Text = "ALLERGY"
+    Else
+      lblallergy.Text = ""
+    Endif
     ShowSymptomData()
     ShowEssentialExamRange()
     ShowEssentialExam()
@@ -796,13 +804,21 @@ End
 ''--------------------------------------------- icd disease --------------------------------------------------
 Public Sub chkalldiagno_Click()
 
-  modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+  Dim xallrg As Boolean
+
+  xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+  If xallrg = True Then
+    lblallergy.Text = "ALLERGY"
+  Else
+    lblallergy.Text = ""
+  Endif
 
 End
 
 Public Sub tlbtndeldises_Click()
 
   Dim res As Result
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     If lsticdisease.Current.Text Then
@@ -814,7 +830,7 @@ Public Sub tlbtndeldises_Click()
           res.Update
           Balloon.Delete(("Information deleted"), tlbtndeldises)
           Balloon.Delay = modBasic.$BalloonDelay
-          modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+          xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
         Endif
       Endif
     Endif
@@ -825,6 +841,7 @@ End
 Public Sub tbndisease_Click()
 
   Dim sName As String[]
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     If MMain.$Ayurveda = "Yes" Then
@@ -839,7 +856,7 @@ Public Sub tbndisease_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Nursing Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
-        modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
       Endif
     Endif
   Endif
@@ -849,18 +866,19 @@ End
 Public Sub tbnsyndro_Click()
 
   Dim sName As String[]
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     If modBasic.$ProvDiagnosisObstetrics = "Selection List" Then
       sName = DiagnoObstetrics(Trim(txtencid.Text), True)
     Else
-      sName = GetSyndromes()
+      sName = GetSyndromes($SyndroType)
     Endif
 
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Nursing Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1])
-        modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
       Endif
     Endif
   Endif
@@ -871,6 +889,7 @@ Public Sub btndismanual_Click()
 
   Dim xx As String
   Dim sName As String[]
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     If modBasic.$ProvDiagnosisObstetrics = "Custom Text" Then
@@ -884,7 +903,7 @@ Public Sub btndismanual_Click()
         modPatientGeneral.AddPatientFindings("Nursing Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
       Endif
     Endif
-    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
   Endif
 
 End
@@ -904,6 +923,7 @@ End
 Public Sub tlbtndelallergy_Click()
 
   Dim res As Result
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     If lsticdisease.Current.Text Then
@@ -915,7 +935,12 @@ Public Sub tlbtndelallergy_Click()
           res.Update
           Balloon.Delete(("Information deleted"), tlbtndelallergy)
           Balloon.Delay = modBasic.$BalloonDelay
-          modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+          xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+          If xallrg = True Then
+            lblallergy.Text = "ALLERGY"
+          Else
+            lblallergy.Text = ""
+          Endif
         Endif
       Endif
     Endif
@@ -926,12 +951,18 @@ End
 Public Sub btnallergymanual_Click()
 
   Dim xx As String
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     xx = InputBox(("Enter Other Allergy"), ("Drug Allergy"), "")
     If xx Then
       modPatientGeneral.AddPatientFindings("Allergic Drugs", Trim(txtencid.Text), xx, "", "")
-      modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+      xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+      If xallrg = True Then
+        lblallergy.Text = "ALLERGY"
+      Else
+        lblallergy.Text = ""
+      Endif
     Endif
   Endif
 
@@ -943,17 +974,23 @@ Public Sub btnallergy_Click()
   Dim sName As String[]
   Dim sText As String
   Dim druglist As String[]
+  Dim xallrg As Boolean
 
   If txtencid.Text Then
     curLst = modPathoSub.GetAllergyMedicineList(Trim(txtencid.Text), True)
     druglist = modString.GetRemainingArray(modBasic.$GenericMedName, curLst)
-    sName = GridListView(("Select Drugs"), druglist, lsticdisease, lsticdisease.Height + lsticdisease.Height + TabPanel1.Height)
+    sName = GridListView(("Select Drugs"), druglist, lsticdisease, lsticdisease.Height + TabPanel1.Height)
     If sName And If sName.Count Then
       For Each sText In sName
         modPatientGeneral.AddPatientFindings("Allergic Drugs", Trim(txtencid.Text), sText, "", "")
       Next
     Endif
-    modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    If xallrg = True Then
+      lblallergy.Text = "ALLERGY"
+    Else
+      lblallergy.Text = ""
+    Endif
   Endif
 
 End

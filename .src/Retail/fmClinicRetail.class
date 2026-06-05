@@ -2,6 +2,7 @@
 
 Private $encid As String
 Private $CreatName As String
+Private $SyndroType As String
 
 Public Sub _new(encid As String)
 
@@ -14,6 +15,7 @@ Public Sub Form_Open()
   Me.Center
   cmbunit.List = ["mg/dL", "mMol/L"]
   cmbhepatic.List = ["Impaired", "Normal"]
+  $SyndroType = modNonMedical.GetFixedInvType(modPatient.ShowDiscountCategEnc($encid))
   cmbhepatic.Text = modClinic.GetHepaticStatus($encid)
   If modPatient.GetPatientSex($encid) = "Male" Then
     cmbpregnancy.Text = "Not Applicable"
@@ -162,7 +164,7 @@ Public Sub tbnsyndro_Click()
     If modBasic.$ProvDiagnosisObstetrics = "Selection List" Then
       sName = DiagnoObstetrics($encid, True)
     Else
-      sName = GetSyndromes()
+      sName = GetSyndromes($SyndroType)
     Endif
 
     If sName Then

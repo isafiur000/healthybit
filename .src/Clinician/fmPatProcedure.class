@@ -12,6 +12,7 @@ Private $PatientNum As String
 Private $AlphaList As String[]
 Private $sLevel As String
 Private $PositionList As String[]
+Private $SyndroType As String
 
 Private $ExamLst As String[]
 Private $RuleChartLst As String[]
@@ -459,6 +460,7 @@ Private Sub BasicInfoPatient()
   If txtencid.Text Then
     modRepository.$RepoDataStatus = False
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
+    $SyndroType = modNonMedical.GetFixedInvType(modPatient.ShowDiscountCategEnc(Trim(txtencid.Text)))
     GetDefaultBillingmodes()
     InitializeProcedures()
 
@@ -473,6 +475,9 @@ Private Sub BasicInfoPatient()
       cmbdisctype.Add($billModeProcedure)
     Endif
     cmbdisctype.Text = $billModeProcedure
+    If modNonMedical.GetAutoBillingLock(Trim(txtencid.Text), $billModeProcedure) = True Then
+      cmbdisctype.Enabled = False
+    Endif
     ShowFInalProcedures()
   Endif
 
@@ -2737,7 +2742,7 @@ Public Sub tbnfinaldisease_Click()
     If modBasic.$FinalDiagnosisObstetrics = "Selection List" Then
       sName = DiagnoObstetrics(Trim(txtencid.Text), True)
     Else
-      sName = GetSyndromes()
+      sName = GetSyndromes($SyndroType)
     Endif
 
     If sName Then

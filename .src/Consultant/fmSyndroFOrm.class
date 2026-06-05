@@ -14,6 +14,8 @@ Public Sub Form_Open()
     cmbtarget.Enabled = True
   Endif
   cmbcategory.List = modMedicine.GetPathoCategoryList("Syndrome")
+  cmbpattype.List = ["Any", "Cash", "Credit"]
+  cmbpattype.Text = "Any"
 
 End
 
@@ -68,12 +70,16 @@ Public Sub btnadd_Click()
   If Not txtcode.Text Then
     txtcode.Text = "Other"
   Endif
+  If Not cmbpattype.Text Then
+    cmbpattype.Text = "Any"
+  Endif
   If cmbcategory.Text And If txtsyndrome.Text And If txtcode.Text Then
     If cmbtarget.Text Then
       res = modDatabase.$medConn.Create("tblsyndromes")
       res["fldsyndrome"] = Trim(txtsyndrome.Text)
       res["fldcategory"] = cmbcategory.Text
       res["fldsymcode"] = txtcode.Text
+      res["fldpatient"] = cmbpattype.Text
       res["fldcomp"] = cmbtarget.Text
       res.Update
       ShowGridData(cmbcategory.Text)
@@ -109,14 +115,16 @@ End
 Private Sub ShowGridData(sType As String)
 
   If sType Then
-    $rData = modDatabase.$medConn.Exec("select fldsyndrome,fldsymcode from tblsyndromes where fldcategory=&1 and fldcomp=&2", sType, cmbtarget.Text)
+    $rData = modDatabase.$medConn.Exec("select fldsyndrome,fldsymcode,fldpatient from tblsyndromes where fldcategory=&1 and fldcomp=&2", sType, cmbtarget.Text)
     $aMyFields = New String[]
     modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
     With GridView1
-      .Columns[0].Width = 400 * modBasic.$AppWidthRatio
+      .Columns[0].Width = 350 * modBasic.$AppWidthRatio
       .Columns[1].Width = 100 * modBasic.$AppWidthRatio
-      .Columns[0].Text = "Syndrome"
+      .Columns[2].Width = 100 * modBasic.$AppWidthRatio
+      .Columns[0].Text = "Disease"
       .Columns[1].Text = "ICD Group"
+      .Columns[2].Text = "Patient"
     End With
   Endif
 

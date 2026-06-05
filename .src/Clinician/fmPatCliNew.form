@@ -593,7 +593,7 @@
       Enabled = False
       Arrangement = Arrange.Horizontal
       { Panel6 Panel
-        MoveScaled(-3,0,62,16)
+        MoveScaled(0,0,62,16)
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel33 Panel
@@ -605,17 +605,12 @@
             Picture = Picture["icon:/small/cancel"]
           }
           { Label13 Label
-            MoveScaled(4,0,9.5,3)
+            MoveScaled(0.5,0,9.5,3)
             Border = Border.Plain
             Text = ("Diagnosis")
           }
-          { btnfinaldiagno ToolButton
-            MoveScaled(14,0,3,3)
-            ToolTip = ("Select Final Diagnosis from List")
-            Picture = Picture["icon:/small/add"]
-          }
           { chkalldiagno CheckBox
-            MoveScaled(22,0,7,3)
+            MoveScaled(38,0,7,3)
             Text = ("All")
           }
           { btncopydiagnosis Button
@@ -625,6 +620,12 @@
             Text = ("Copy")
             Picture = Picture["icon:/small/copy"]
           }
+          { lblallergy Label
+            MoveScaled(13,0,22,3)
+            Font = Font["Bold"]
+            Foreground = Color.Red
+            Alignment = Align.Center
+          }
         }
         { lsticdisease TreeView
           MoveScaled(4,4,37,7)
@@ -632,64 +633,65 @@
         }
       }
       { Panel16 Panel
-        MoveScaled(59,0,15,16)
+        MoveScaled(62,0,14,16)
         { btndismanual Button
-          MoveScaled(0,0,14,3)
+          MoveScaled(0,0,13.5,3)
           ToolTip = ("Write Provisional Diagnosis")
           Text = ("Diagnosis")
           Picture = Picture["icon:/small/add"]
         }
         { tbnsyndro Button
-          MoveScaled(0,4,14,3)
+          MoveScaled(0,4,13.5,3)
           ToolTip = ("Select Provisional Diagnosis")
           Text = ("Diagnosis")
           Picture = Picture["icon:/small/add"]
         }
         { tbndisease Button
-          MoveScaled(0,8,14,3)
+          MoveScaled(0,8,13.5,3)
           ToolTip = ("Select Provisional Diagnosis from List")
           Text = ("Diagnosis")
           Picture = Picture["icon:/small/add"]
         }
         { btnallergymanual ToolButton
-          MoveScaled(6,12,3,3)
+          MoveScaled(8,12,3,3)
           ToolTip = ("Select Allergic Drugs")
           Picture = Picture["icon:/small/add"]
         }
         { tlbtndelallergy ToolButton
-          MoveScaled(1,12,3,3)
+          MoveScaled(11,12,3,3)
           ToolTip = ("Delete Allergic Drug")
           Picture = Picture["icon:/small/cancel"]
         }
-        { btnallergy ToolButton
-          MoveScaled(10,12,3,3)
+        { btnallergy Button
+          MoveScaled(0,12,7.75,3)
           ToolTip = ("Select Allergic Drugs")
+          Text = ("Alrg")
           Picture = Picture["icon:/small/add"]
         }
       }
       { Panel14 Panel
-        MoveScaled(74,0,2,16)
+        MoveScaled(76,0,1,16)
       }
       { Frame2 Panel
-        MoveScaled(76,0,44,16)
+        MoveScaled(77,0,42.75,16)
         Border = Border.Plain
         { txtpulse ValueBox
-          MoveScaled(11,1,7,3)
+          MoveScaled(11,1,6.5,3)
         }
         { txtresprate ValueBox
-          MoveScaled(33,1,7,3)
+          MoveScaled(32,1,6.5,3)
         }
         { txtsystolicbp ValueBox
-          MoveScaled(11,5,7,3)
+          MoveScaled(11,5,6.5,3)
         }
         { txtdiastolicbp ValueBox
-          MoveScaled(33,5,7,3)
+          MoveScaled(32,5,6.5,3)
         }
         { txtoxysat ValueBox
-          MoveScaled(11,9,7,3)
+          MoveScaled(11,9,6.5,3)
         }
         { txttemp ValueBox
-          MoveScaled(33,9,7,3)
+          MoveScaled(32,9,6.5,3)
         }
         { btnsavevitals Button
           MoveScaled(23,12.5,13.5,3)
@@ -702,7 +704,7 @@
           Picture = Picture["icon:/small/color"]
         }
         { btnshowvital ToolButton
-          MoveScaled(39,12.5,3,3)
+          MoveScaled(38,12.5,3,3)
           Picture = Picture["icon:/small/refresh"]
         }
         { Label5 Label
@@ -711,12 +713,12 @@
           Text = ("Syst BP")
         }
         { Label6 Label
-          MoveScaled(23,5,10,3)
+          MoveScaled(22,5,10,3)
           Border = Border.Plain
           Text = ("Diast BP")
         }
         { Label7 Label
-          MoveScaled(23,9,10,3)
+          MoveScaled(22,9,10,3)
           Border = Border.Plain
           Text = ("Temp")
         }
@@ -726,7 +728,7 @@
           Text = ("Pulse Rate")
         }
         { Label3 Label
-          MoveScaled(23,1,10,3)
+          MoveScaled(22,1,10,3)
           Border = Border.Plain
           Text = ("Resp Rate")
         }
@@ -736,27 +738,27 @@
           Text = ("S P O2")
         }
         { btnpulseinfo ToolButton
-          MoveScaled(18,1,3,3)
+          MoveScaled(17.5,1,3,3)
           Picture = Picture["icon:/small/info"]
         }
         { btnrespinfo ToolButton
-          MoveScaled(40,1,3,3)
+          MoveScaled(38.5,1,3,3)
           Picture = Picture["icon:/small/info"]
         }
         { btnsystolicinfo ToolButton
-          MoveScaled(18,5,3,3)
+          MoveScaled(17.5,5,3,3)
           Picture = Picture["icon:/small/info"]
         }
         { btndiastolicinfo ToolButton
-          MoveScaled(40,5,3,3)
+          MoveScaled(38.5,5,3,3)
           Picture = Picture["icon:/small/info"]
         }
         { btnoxygeninfo ToolButton
-          MoveScaled(18,9,3,3)
+          MoveScaled(17.5,9,3,3)
           Picture = Picture["icon:/small/info"]
         }
         { btntempinfo ToolButton
-          MoveScaled(40,9,3,3)
+          MoveScaled(38.5,9,3,3)
           Picture = Picture["icon:/small/info"]
         }
         { btnaddchart2 Button
@@ -845,7 +847,7 @@
           MoveScaled(0,25,25,4)
           { mnupatcomment Button
             MoveScaled(0,0,24,3.5)
-            Text = ("Long Med Record")
+            Text = ("Longitudinal Med Record")
           }
         }
         { Panel40 Panel
@@ -1260,7 +1262,7 @@
         Arrangement = Arrange.Vertical
       }
       Index = 7
-      Text = ("Outcome [F10]")
+      Text = ("Advice [F10]")
       { Panel17 Panel
         MoveScaled(0,0,59,16)
         Expand = True

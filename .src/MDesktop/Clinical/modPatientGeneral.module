@@ -740,7 +740,7 @@ End
 '
 ' End
 
-Public Sub SetPatientFindingTree(encid As String, TreeView1 As TreeView, showAll As Boolean)
+Public Function SetPatientFindingTree(encid As String, TreeView1 As TreeView, showAll As Boolean) As Boolean
 
   Dim orgLst As String[]
   Dim categLst As String[]
@@ -749,10 +749,13 @@ Public Sub SetPatientFindingTree(encid As String, TreeView1 As TreeView, showAll
   Dim pic2 As Picture
   Dim pic3 As Picture
 
+  Dim xallrg As Boolean
+
   TreeView1.Clear()
   pic2 = Picture["icon:/tiny/view-compact"]   'Picture["icons/coll2.png"]
   pic3 = Picture["icon:/tiny/added"]    'Picture["icons/coll6.png"]
 
+  xallrg = False
   If showAll = True Then
     orgLst = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select distinct(fldtype) as col from tblpatfindings where fldencounterval in(select fldencounterval from tblencounter where fldpatientval=&1) and fldsave=&2", modPatient.GetPatientNoByEnc(encid), True))
   Else
@@ -783,6 +786,7 @@ Public Sub SetPatientFindingTree(encid As String, TreeView1 As TreeView, showAll
     Endif
     If orgLst.Exist("Allergic Drugs") Then
       categLst.Add("Allergic Drugs")
+      xallrg = True
     Endif
 
     For Each xcateg In categLst
@@ -804,5 +808,7 @@ Public Sub SetPatientFindingTree(encid As String, TreeView1 As TreeView, showAll
     Next
   Endif
   TreeView1.ExpandAll()
+
+  Return xallrg
 
 End

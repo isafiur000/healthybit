@@ -54,18 +54,22 @@
         Header = GridView.Both
       }
       { Panel8 Panel
-        MoveScaled(0,37,37,3.5)
+        MoveScaled(0,37,39,4)
         { chkaddall CheckBox
-          MoveScaled(1,0.25,12,3)
+          MoveScaled(1,0.5,12,3)
           Text = ("Select All")
         }
         { Label8 Label
-          MoveScaled(20,0.25,8,3)
+          MoveScaled(23,0.5,8,3)
           Border = Border.Plain
           Text = ("Balance")
         }
         { txtbalance ValueBox
-          MoveScaled(29,0.25,7,3)
+          MoveScaled(32,0.5,7,3)
+        }
+        { btnsumall ToolButton
+          MoveScaled(16,0.5,5,3)
+          Picture = Picture["icon:/small/book"]
         }
       }
       { ListView1 GridView
@@ -204,14 +208,9 @@
           MoveScaled(25,0.5,12,3)
           Text = ("All Dates")
         }
-        { btnsumall Button
-          MoveScaled(53,0.5,13,3)
-          Text = ("Summary")
-          Picture = Picture["icon:/small/book"]
-        }
         { btnlist Button
-          MoveScaled(66,0.5,10,3)
-          Text = ("List")
+          MoveScaled(64,0.5,13,3)
+          Text = ("Sent Out")
           Picture = Picture["icon:/small/html"]
         }
       }

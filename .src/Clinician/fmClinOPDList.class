@@ -2310,14 +2310,9 @@ Public Sub mnuconsultant_Click()
     Endif
 
     If xuser And If GridView1[GridView1.Row, 2].Text Then
-      If Not GridView1[GridView1.Row, 7].Text Then
-        If $sTable = "tblconsult" Then
-          modPatientSub.UpdateConsultConsultant(GridView1[GridView1.Row, 0].Text, xuser)
-          FillBedGrid()
-        Else If $sTable = "tblopvisit" Then
-          modPatientSub.UpdateAttendingConsultant(GridView1[GridView1.Row, 2].Text, xuser)
-          FillBedGrid()
-        Endif
+      If $sTable = "tblconsult" Then
+        modPatientSub.UpdateConsultConsultant(GridView1[GridView1.Row, 0].Text, xuser)
+        FillBedGrid()
       Endif
     Endif
     GridView1.Row = Row

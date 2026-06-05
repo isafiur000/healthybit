@@ -588,6 +588,7 @@ Private Sub GetReturnClaim()
   Dim xout As String
   Dim xcoll As Collection
   Dim res As Result
+  Dim xclaim As String
 
   xSNo = New String[]
   xIndexLst = New String[]
@@ -603,7 +604,15 @@ Private Sub GetReturnClaim()
         Endif
       Next
 
-      hForm = New CimisAPIReturn(txtgridencid.Text, txtgridclaim.Text, xcateg, xSNo)
+      If modBasic.$RegistCreateHIClaim = "Enable" Then
+        xclaim = modClaim.GetRemoteClaimCode(txtgridclaim.Text)
+        If Not xclaim Then
+          xclaim = txtgridclaim.Text
+        Endif
+      Else
+        xclaim = txtgridclaim.Text
+      Endif
+      hForm = New CimisAPIReturn(txtgridencid.Text, xclaim, xcateg, xSNo)
       xout = hForm.GetAPIOutput()
 
       Try xcoll = JSON.Decode(xout)

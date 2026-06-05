@@ -205,7 +205,11 @@ Public Sub TreeView1_Click()
     modFillContainer.ExpandClickTreeView(TreeView1)
 
   Else If TreeView1.Current.Picture = Picture["icons/coll3.png"] Then
-    xdate = modBillings.CheckLastSalesItemDate(TreeView1.Current.Text, $PatientNum, $xNHISCode, cmbdisctype.Text)
+    If modBasic.$SalesHistoryAlert = "Patient Code" Then
+      xdate = modBillings.CheckLastServiceSalesItemHIDate(modNonMedical.GetServiceItemHIAbbv(TreeView1.Current.Text), $PatientNum, $xNHISCode, cmbdisctype.Text)
+    Else
+      xdate = modBillings.CheckLastSalesItemDate(TreeView1.Current.Text, $PatientNum, $xNHISCode, cmbdisctype.Text)
+    Endif
     If xdate Then
       txtlastsaledate2.Text = modReportVar.GetDateTimeReport(xdate, gb.MediumDate)
       If DateDiff(xdate, Now(), gb.Month) <= 3 Then

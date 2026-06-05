@@ -30,6 +30,9 @@ Public Sub Form_Open()
     cmbdisctype.Add($sPackage)
   Endif
   cmbdisctype.Text = $sPackage
+  If modNonMedical.GetAutoBillingLock($encid, $sPackage) = True Then
+    cmbdisctype.Enabled = False
+  Endif
   txtpatientname.Text = modPatient.GetPatientNameByEnc($encid)
   txtgender.Text = modPatient.GetPatientSex($encid)
   $BillMode = modNonMedical.GetDiscBindBillMode($sPackage)

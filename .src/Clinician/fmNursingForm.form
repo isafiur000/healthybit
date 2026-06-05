@@ -579,7 +579,7 @@
       Enabled = False
       Arrangement = Arrange.Horizontal
       { Panel6 Panel
-        MoveScaled(-3,0,62,13)
+        MoveScaled(0,0,62,13)
         Expand = True
         Arrangement = Arrange.Vertical
         { Panel33 Panel
@@ -596,8 +596,14 @@
             Text = ("Diagnosis")
           }
           { chkalldiagno CheckBox
-            MoveScaled(27,0,7,3)
+            MoveScaled(41,0,7,3)
             Text = ("All")
+          }
+          { lblallergy Label
+            MoveScaled(14,0,22,3)
+            Font = Font["Bold"]
+            Foreground = Color.Red
+            Alignment = Align.Center
           }
         }
         { lsticdisease TreeView
@@ -606,7 +612,7 @@
         }
       }
       { Panel16 Panel
-        MoveScaled(59,0,15,16)
+        MoveScaled(62,0,15,16)
         { btndismanual Button
           MoveScaled(0,0,14,3)
           ToolTip = ("Write Provisional Diagnosis")
@@ -625,27 +631,28 @@
           Text = ("Diagnosis")
           Picture = Picture["icon:/small/add"]
         }
+        { btnallergy Button
+          MoveScaled(0,12,8.5,3)
+          ToolTip = ("Select Allergic Drugs")
+          Text = ("Alrg")
+          Picture = Picture["icon:/small/add"]
+        }
         { btnallergymanual ToolButton
-          MoveScaled(6,12,3,3)
+          MoveScaled(9,12,3,3)
           ToolTip = ("Select Allergic Drugs")
           Picture = Picture["icon:/small/add"]
         }
         { tlbtndelallergy ToolButton
-          MoveScaled(1,12,3,3)
+          MoveScaled(12,12,3,3)
           ToolTip = ("Delete Allergic Drug")
           Picture = Picture["icon:/small/cancel"]
         }
-        { btnallergy ToolButton
-          MoveScaled(10,12,3,3)
-          ToolTip = ("Select Allergic Drugs")
-          Picture = Picture["icon:/small/add"]
-        }
       }
       { Panel2 Panel
-        MoveScaled(74,0,2,16)
+        MoveScaled(77,0,1,16)
       }
       { Frame2 Panel
-        MoveScaled(76,0,43,16)
+        MoveScaled(78,0,42,16)
         Border = Border.Plain
         { btnsavevitals Button
           MoveScaled(24,12.5,13.5,3)
@@ -672,10 +679,10 @@
           Text = ("Pulse Rate")
         }
         { txtpulse ValueBox
-          MoveScaled(10,1,7,3)
+          MoveScaled(10,1,6.5,3)
         }
         { btnpulseinfo ToolButton
-          MoveScaled(17,1,3,3)
+          MoveScaled(16.5,1,3,3)
           Picture = Picture["icon:/small/info"]
         }
         { Label5 Label
@@ -684,10 +691,10 @@
           Text = ("Syst BP")
         }
         { txtsystolicbp ValueBox
-          MoveScaled(10,5,7,3)
+          MoveScaled(10,5,6.5,3)
         }
         { btnsystolicinfo ToolButton
-          MoveScaled(17,5,3,3)
+          MoveScaled(16.5,5,3,3)
           Picture = Picture["icon:/small/info"]
         }
         { Label11 Label
@@ -696,46 +703,46 @@
           Text = ("S P O2")
         }
         { txtoxysat ValueBox
-          MoveScaled(10,9,7,3)
+          MoveScaled(10,9,6.5,3)
         }
         { btnoxygeninfo ToolButton
-          MoveScaled(17,9,3,3)
+          MoveScaled(16.5,9,3,3)
           Picture = Picture["icon:/small/info"]
         }
         { Label3 Label
-          MoveScaled(22,1,10,3)
+          MoveScaled(21,1,10,3)
           Border = Border.Plain
           Text = ("Resp Rate")
         }
         { txtresprate ValueBox
-          MoveScaled(32,1,7,3)
+          MoveScaled(31,1,6.5,3)
         }
         { btnrespinfo ToolButton
-          MoveScaled(39,1,3,3)
+          MoveScaled(37.5,1,3,3)
           Picture = Picture["icon:/small/info"]
         }
         { btndiastolicinfo ToolButton
-          MoveScaled(39,5,3,3)
+          MoveScaled(37.5,5,3,3)
           Picture = Picture["icon:/small/info"]
         }
         { txtdiastolicbp ValueBox
-          MoveScaled(32,5,7,3)
+          MoveScaled(31,5,6.5,3)
         }
         { Label6 Label
-          MoveScaled(22,5,10,3)
+          MoveScaled(21,5,10,3)
           Border = Border.Plain
           Text = ("Diast BP")
         }
         { Label7 Label
-          MoveScaled(22,9,10,3)
+          MoveScaled(21,9,10,3)
           Border = Border.Plain
           Text = ("Temp")
         }
         { txttemp ValueBox
-          MoveScaled(32,9,7,3)
+          MoveScaled(31,9,6.5,3)
         }
         { btntempinfo ToolButton
-          MoveScaled(39,9,3,3)
+          MoveScaled(37.5,9,3,3)
           Picture = Picture["icon:/small/info"]
         }
       }

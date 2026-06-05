@@ -28,6 +28,9 @@ Public Sub Form_Open()
     cmbdisctype.Add($sPackage)
   Endif
   cmbdisctype.Text = $sPackage
+  If modNonMedical.GetAutoBillingLock($encid, $sPackage) = True Then
+    cmbdisctype.Enabled = False
+  Endif
   txtpatientname.Text = modPatient.GetPatientNameByEnc($encid)
   txtgender.Text = modPatient.GetPatientSex($encid)
   $PatientNum = modPatient.GetPatientNoByEnc($encid)
@@ -176,7 +179,11 @@ Public Sub ListView1_Click()
 
   modFillContainer.ShowCheckedListView(ListView1)
   If ListView1.Current.Text Then
-    xdate = modBillings.CheckLastSalesItemDate(ListView1.Current.Text, $PatientNum, $xNHISCode, cmbdisctype.Text)
+    If modBasic.$SalesHistoryAlert = "Patient Code" Then
+      xdate = modBillings.CheckLastServiceSalesItemHIDate(modNonMedical.GetServiceItemHIAbbv(ListView1.Current.Text), $PatientNum, $xNHISCode, cmbdisctype.Text)
+    Else
+      xdate = modBillings.CheckLastSalesItemDate(ListView1.Current.Text, $PatientNum, $xNHISCode, cmbdisctype.Text)
+    Endif
     If xdate Then
       txtlastsaledate.Text = modReportVar.GetDateTimeReport(xdate, gb.MediumDate)
       If DateDiff(xdate, Now(), gb.Month) <= 3 Then

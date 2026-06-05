@@ -1267,8 +1267,13 @@ ALTER TABLE tblinpatdosing ADD COLUMN fldmixrate DOUBLE NULL
 
 ''-------------------- 0.5.25 -----------------------------
 ALTER TABLE tbldiscount ADD fldbookday INT( 11 ) NULL
-
 ALTER TABLE tblservicecost ADD fldminlimit DOUBLE NULL
+
+ALTER TABLE tblclaimcode ADD COLUMN fldclaimcode VARCHAR( 150 ) NULL
+ALTER TABLE tblclaimcode ADD COLUMN fldoutput TEXT NULL
+
+ALTER TABLE tblsyndromes ADD fldpatient VARCHAR( 100 ) NULL
+UPDATE tblsyndromes SET fldpatient='Any' WHERE fldpatient IS NULL
 
 
 

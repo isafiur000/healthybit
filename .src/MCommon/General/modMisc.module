@@ -423,7 +423,7 @@ Public Function GetDuplicationAllow(sList As String[], sItem As String, xctrl As
 
   xbool = True
   If sItem Then
-    If sList.Exist(sItem) = True Then
+    If sList And If sList.Exist(sItem) = True Then
       If modBasic.$BillDuplicateAllow.Exist(sItem) = False Then
         Select modBasic.$BillDuplication
           Case "Inform"

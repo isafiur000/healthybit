@@ -5,6 +5,7 @@ Private $sExam As String
 Private $sType As String
 Private $PatientNum As String
 Private hPtForm As FmClinHistory
+Private $SyndroType As String
 
 Private $ObsColumns As String[] = ["Date of Birth", "Gest. Age (wks)", "Complications during preg.", "Mode of delivery", "Complications in 3rd stage", "Puerperium", "Live/SB", "Gender", "Birth Wt. (gram)", "Outcome"]
 Private $ANCColumns As String[] = ["Date of Regd", "Complaints", "Fet. Move.", "Gest. Age", "Uterine Ht./SFH (cm)", "Presentation", "Relation of PP to pelvic brim", "FHS", "Weight (Kg)", "Blood Pressure", "Edema", "Urine Albumin", "Urine Sugar", "Treatment", "Remarks", "Doctor", "PS/PV"]
@@ -70,6 +71,7 @@ End
 Public Sub Form_Open()
 
   Dim xdepart As String
+  Dim xallrg As Boolean
 
   $PatientNum = modPatient.GetPatientNoByEnc($encid)
   If txtclinIndex.Value And If txtclinmode.Text Then
@@ -80,9 +82,10 @@ Public Sub Form_Open()
   Else
     GetConsultParamIndex(True)
   Endif
+  $SyndroType = modNonMedical.GetFixedInvType(modPatient.ShowDiscountCategEnc($encid))
   GetPatientOutComeVal()
   hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
-  modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
+  xallrg = modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
   If modBasic.$LockDiagnosisList = "No" Then
   Else
     If modBasic.$ProvDiagnosisObstetrics = "Custom Text" Then
@@ -1783,6 +1786,7 @@ Public Sub btndismanual_Click()
 
   Dim xx As String
   Dim sName As String[]
+  Dim xallrg As Boolean
 
   If $encid Then
     If modBasic.$ProvDiagnosisObstetrics = "Custom Text" Then
@@ -1796,7 +1800,7 @@ Public Sub btndismanual_Click()
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, xx, "Other", "Other")
       Endif
     Endif
-    modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
+    xallrg = modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
   Endif
 
 End
@@ -1804,18 +1808,19 @@ End
 Public Sub tbnsyndro_Click()
 
   Dim sName As String[]
+  Dim xallrg As Boolean
 
   If $encid Then
     If modBasic.$ProvDiagnosisObstetrics = "Selection List" Then
       sName = DiagnoObstetrics($encid, True)
     Else
-      sName = GetSyndromes()
+      sName = GetSyndromes($SyndroType)
     Endif
 
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, sName[0], sName[1], sName[1])
-        modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
       Endif
     Endif
   Endif
@@ -1825,6 +1830,7 @@ End
 Public Sub tbndisease_Click()
 
   Dim sName As String[]
+  Dim xallrg As Boolean
 
   If $encid Then
     If MMain.$Ayurveda = "Yes" Then
@@ -1839,7 +1845,7 @@ Public Sub tbndisease_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, sName[0], sName[1], sName[2])
-        modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
       Endif
     Endif
   Endif
@@ -1848,6 +1854,8 @@ End
 
 Public Sub chkalldiagno_Click()
 
-  modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
+  Dim xallrg As Boolean
+
+  xallrg = modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
 
 End
