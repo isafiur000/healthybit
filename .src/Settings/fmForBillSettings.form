@@ -262,16 +262,16 @@
     Index = 2
     Text = ("Pack and Rate")
     { Label51 Label
-      MoveScaled(2,29,21,3)
+      MoveScaled(2,33,21,3)
       Border = Border.Plain
       Text = ("Alter Package (Saved)")
     }
     { cmbeditpackage ComboBox
-      MoveScaled(24,29,15,3)
+      MoveScaled(24,33,15,3)
       ToolTip = ("Select Yes to allow alter patient package after items are saved")
     }
     { btneditpackage Button
-      MoveScaled(40,29,5,3)
+      MoveScaled(40,33,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Panel1 Frame
@@ -331,12 +331,12 @@
       Border = Border.Plain
       Text = ("Set Fixed Package")
     }
-    { cmbpackagenew ComboBox
-      MoveScaled(24,25,15,3)
-      ToolTip = ("Select Yes to allow changing patient Package on temporary basis.")
+    { cmbpackservnew ComboBox
+      MoveScaled(24,29,15,3)
+      ToolTip = ("Select Yes to allow changing Package for new Service items.")
     }
-    { btnpackagenew Button
-      MoveScaled(40,25,5,3)
+    { btnpackservnew Button
+      MoveScaled(40,29,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     { Label14 Label
@@ -353,25 +353,25 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label46 Label
-      MoveScaled(2,33,21,3)
+      MoveScaled(2,37,21,3)
       Border = Border.Plain
       Text = ("Default Cash Package")
     }
     { cmbcashpack ComboBox
-      MoveScaled(24,33,21,3)
+      MoveScaled(24,37,21,3)
     }
     { btncashpack Button
-      MoveScaled(49,33,5,3)
+      MoveScaled(49,37,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     { btndiscgroup ToolButton
-      MoveScaled(45,33,3,3)
+      MoveScaled(45,37,3,3)
       Picture = Picture["icon:/small/add"]
     }
     { Label87 Label
-      MoveScaled(2,25,21,3)
+      MoveScaled(2,29,21,3)
       Border = Border.Plain
-      Text = ("Alter Package (New)")
+      Text = ("Alter Package (Service)")
     }
     { cmbfixpackage ComboBox
       MoveScaled(24,21,15,3)
@@ -382,19 +382,32 @@
       Picture = Picture["icon:/small/apply"]
     }
     { Label96 Label
-      MoveScaled(2,37,21,3)
+      MoveScaled(2,41,21,3)
       Border = Border.Plain
       Text = ("Default Full Package")
     }
     { cmbfullpack ComboBox
-      MoveScaled(24,37,21,3)
+      MoveScaled(24,41,21,3)
     }
     { btndiscfullgroup ToolButton
-      MoveScaled(45,37,3,3)
+      MoveScaled(45,41,3,3)
       Picture = Picture["icon:/small/add"]
     }
     { btnfullpack Button
-      MoveScaled(49,37,5,3)
+      MoveScaled(49,41,5,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label110 Label
+      MoveScaled(2,25,21,3)
+      Border = Border.Plain
+      Text = ("Alter Package (Pharm)")
+    }
+    { cmbpharmpacknew ComboBox
+      MoveScaled(24,25,15,3)
+      ToolTip = ("Select Yes to allow changing Package for new Pharmacy items.")
+    }
+    { btnpharmpacknew Button
+      MoveScaled(40,25,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     Index = 3

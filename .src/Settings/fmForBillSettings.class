@@ -64,7 +64,8 @@ Public Sub Form_Open()
   cmbpackage.List = ["Encounter", "Scheduled", "Department", "Fixed"]
   cmbfixpackage.List = modNonMedical.FillDiscountCombo()
   cmbeditpackage.List = ["Yes", "Partial", "No"]
-  cmbpackagenew.List = ["Yes", "Partial", "No"]
+  cmbpharmpacknew.List = ["Yes", "Partial", "No"]
+  cmbpackservnew.List = ["Yes", "Partial", "No"]
   xlist = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldpackgroup) as col from tblpackgroup"))
   cmbcashpack.List = xlist
   cmbfullpack.List = xlist
@@ -482,7 +483,8 @@ Private Sub UpdateAllowSaved()
 
   cmbpackage.Text = modGlobalSetting.ShowSettingFromDBAny("CashBilling/SchedulePackage", cmbtarget.Text)
   cmbfixpackage.Text = modGlobalSetting.ShowSettingFromDBAny("CashBilling/FixedPackage", cmbtarget.Text)
-  cmbpackagenew.Text = modGlobalSetting.ShowSettingFromDBAny("CashBilling/AlterPackage", cmbtarget.Text)
+  cmbpharmpacknew.Text = modGlobalSetting.ShowSettingFromDBAny("CashBilling/AlterPharmacyPackage", cmbtarget.Text)
+  cmbpackservnew.Text = modGlobalSetting.ShowSettingFromDBAny("CashBilling/AlterServicePackage", cmbtarget.Text)
   cmbeditpackage.Text = modGlobalSetting.ShowSettingFromDBAny("SavedBillingEntry/EditPackageSaved", cmbtarget.Text)
   cmbcashpack.Text = modGlobalSetting.ShowSettingFromDBAny("CashBilling/DefaultPackage", cmbtarget.Text)
   cmbfullpack.Text = modGlobalSetting.ShowSettingFromDBAny("CashBilling/DefaultFullPackage", cmbtarget.Text)
@@ -505,10 +507,18 @@ Public Sub btnfixpackage_Click()
 
 End
 
-Public Sub btnpackagenew_Click()
+Public Sub btnpharmpacknew_Click()
 
-  modGlobalSetting.SaveSettingToDB("CashBilling/AlterPackage", cmbpackagenew.Text, cmbtarget.Text)
-  Balloon.Info(("Information saved"), btnpackagenew)
+  modGlobalSetting.SaveSettingToDB("CashBilling/AlterPharmacyPackage", cmbpharmpacknew.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnpharmpacknew)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnpackservnew_Click()
+
+  modGlobalSetting.SaveSettingToDB("CashBilling/AlterServicePackage", cmbpackservnew.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnpackservnew)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -1208,7 +1218,8 @@ Public Sub btnsettall_Click()
   xList.Add("CashBilling/EditRateSaved")
 
   xList.Add("CashBilling/SchedulePackage")
-  xList.Add("CashBilling/AlterPackage")
+  xList.Add("CashBilling/AlterPharmacyPackage")
+  xList.Add("CashBilling/AlterServicePackage")
   xList.Add("SavedBillingEntry/EditPackageSaved")
   xList.Add("CashBilling/DefaultPackage")
   xList.Add("CashBilling/DefaultFullPackage")
@@ -1357,7 +1368,8 @@ Private Sub PrintableSettings()
 
   $BillingReport.AddChapter("Package")
   AddSettingReport("CashBilling/SchedulePackage", cmbtarget.Text, cmbpackage.Tooltip, cmbpackage.List.Join("; "))
-  AddSettingReport("CashBilling/AlterPackage", cmbtarget.Text, cmbpackagenew.Tooltip, cmbpackagenew.List.Join("; "))
+  AddSettingReport("CashBilling/AlterPharmacyPackage", cmbtarget.Text, cmbpharmpacknew.Tooltip, cmbpharmpacknew.List.Join("; "))
+  AddSettingReport("CashBilling/AlterServicePackage", cmbtarget.Text, cmbpackservnew.Tooltip, cmbpackservnew.List.Join("; "))
   AddSettingReport("SavedBillingEntry/EditPackageSaved", cmbtarget.Text, cmbeditpackage.Tooltip, cmbeditpackage.List.Join("; "))
   AddSettingReport("CashBilling/DefaultPackage", cmbtarget.Text, cmbcashpack.Tooltip, cmbcashpack.List.Join("; "))
   AddSettingReport("CashBilling/DefaultFullPackage", cmbtarget.Text, cmbfullpack.Tooltip, cmbfullpack.List.Join("; "))

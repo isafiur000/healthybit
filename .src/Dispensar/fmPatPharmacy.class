@@ -51,7 +51,7 @@ Public Sub Form_Open()
   cmbroute.List = $OPDRoute
   cmbfreq.List = modMedicine.FrequencyCombo()
   cmbbillmode.List = modBasic.$BillBillingMode
-  If modBasic.$BillAlterPackage = "Yes" Then
+  If modBasic.$BillAlterPharmPackage = "Yes" Then
     cmbdisctype.List = modBasic.$BillDiscountAll
   Else
     cmbdisctype.List = modBasic.$BillDiscountCash
@@ -421,9 +421,9 @@ Public Sub BasicInfoPatient()
       cmbdisctype.Add($DiscPackage)
     Endif
     cmbdisctype.Text = $DiscPackage
-    If modBasic.$BillAlterPackage = "Yes" Then
+    If modBasic.$BillAlterPharmPackage = "Yes" Then
       cmbdisctype.Enabled = True
-    Else If modBasic.$BillAlterPackage = "Partial" Then
+    Else If modBasic.$BillAlterPharmPackage = "Partial" Then
       cmbdisctype.Enabled = True
     Else
       cmbdisctype.Enabled = False
