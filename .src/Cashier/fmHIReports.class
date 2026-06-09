@@ -542,7 +542,11 @@ Private Sub UploadHIDocs()
         If fileList.Count Then
           sPath = modDevAll.ComvertMultiImagesToPDF(fileList)
           If Exist(sPath) Then
-            hForm1 = New FmClaimUnit($encid, $sClaim, sPath, indexLst)
+            If modBasic.$RegistCreateHIClaim = "Enable" Then
+              hForm1 = New FmClaimUnit($encid, modClaim.GetRemoteClaimCode($sClaim), sPath, indexLst)
+            Else
+              hForm1 = New FmClaimUnit($encid, $sClaim, sPath, indexLst)
+            Endif
             hForm1.ShowModal()
             ShowDocuments()
           Endif
@@ -550,7 +554,11 @@ Private Sub UploadHIDocs()
       Endif
 
     Else
-      hForm = New FmClaimForm(GridView1[GridView1.Row, 0].Text, "Report", $tblpatreport, chkblnwht.Value, $sClaim)
+      If modBasic.$RegistCreateHIClaim = "Enable" Then
+        hForm = New FmClaimForm(GridView1[GridView1.Row, 0].Text, "Report", $tblpatreport, chkblnwht.Value, modClaim.GetRemoteClaimCode($sClaim))
+      Else
+        hForm = New FmClaimForm(GridView1[GridView1.Row, 0].Text, "Report", $tblpatreport, chkblnwht.Value, $sClaim)
+      Endif
       hForm.ShowModal
       ShowDocuments()
 
@@ -639,7 +647,11 @@ Public Sub mnupresupload_Click()
         If sDocID Then
           Select $sType
             Case "Claim Code"
-              hForm = New FmClaimForm(sDocID, "Report", $tblpatreport, False, $sClaim)
+              If modBasic.$RegistCreateHIClaim = "Enable" Then
+                hForm = New FmClaimForm(sDocID, "Report", $tblpatreport, False, modClaim.GetRemoteClaimCode($sClaim))
+              Else
+                hForm = New FmClaimForm(sDocID, "Report", $tblpatreport, False, $sClaim)
+              Endif
               hForm.ShowModal
             Case "Accident SSF", "Medical SSF", "MedExtra SSF", "Critical SSF"
               hForm1 = New CssfAPIAttach($encid, $sClaim)
@@ -700,7 +712,11 @@ Public Sub mnudischupload_Click()
         If sDocID Then
           Select $sType
             Case "Claim Code"
-              hForm = New FmClaimForm(sDocID, "Report", $tblpatreport, False, $sClaim)
+              If modBasic.$RegistCreateHIClaim = "Enable" Then
+                hForm = New FmClaimForm(sDocID, "Report", $tblpatreport, False, modClaim.GetRemoteClaimCode($sClaim))
+              Else
+                hForm = New FmClaimForm(sDocID, "Report", $tblpatreport, False, $sClaim)
+              Endif
               hForm.ShowModal
             Case "Accident SSF", "Medical SSF", "MedExtra SSF", "Critical SSF"
               hForm1 = New CssfAPIAttach($encid, $sClaim)
@@ -741,7 +757,11 @@ Public Sub mnuplodexpense_Click()
       If sDocID Then
         Select $sType
           Case "Claim Code"
-            hForm = New FmClaimForm(sDocID, "Report", $tblpatreport, False, $sClaim)
+            If modBasic.$RegistCreateHIClaim = "Enable" Then
+              hForm = New FmClaimForm(sDocID, "Report", $tblpatreport, False, modClaim.GetRemoteClaimCode($sClaim))
+            Else
+              hForm = New FmClaimForm(sDocID, "Report", $tblpatreport, False, $sClaim)
+            Endif
             hForm.ShowModal
           Case "Accident SSF", "Medical SSF", "MedExtra SSF", "Critical SSF"
             hForm1 = New CssfAPIAttach($encid, $sClaim)
@@ -882,14 +902,22 @@ Private Sub UploadHIInvoices()
       sInvList.Add($rData1["fldbillno"])
     Next
     If sInvList And If sInvList.Count Then
-      GetClaimUploadProcess($sClaim, sInvList)
+      If modBasic.$RegistCreateHIClaim = "Enable" Then
+        GetClaimUploadProcess(modClaim.GetRemoteClaimCode($sClaim), sInvList)
+      Else
+        GetClaimUploadProcess($sClaim, sInvList)
+      Endif
       ShowInvoices()
     Endif
 
   Else
     If GridView2.Rows.Selection.Count Then
       sInvList = [GridView2[GridView2.Row, 1].Text]
-      GetClaimUploadProcess($sClaim, sInvList)
+      If modBasic.$RegistCreateHIClaim = "Enable" Then
+        GetClaimUploadProcess(modClaim.GetRemoteClaimCode($sClaim), sInvList)
+      Else
+        GetClaimUploadProcess($sClaim, sInvList)
+      Endif
       ShowInvoices()
     Endif
 

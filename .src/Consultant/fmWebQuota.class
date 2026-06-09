@@ -1,0 +1,182 @@
+' Gambas class file
+
+Private $rData As Result
+Private $aMyFields As String[]
+
+Public Sub Form_Open()
+
+  modGeneralMain.ArrangeFormCentre(Me)
+  dtquota.Value = Now()
+  cmbdisctype.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldtype from tbldiscount where fldonline=&1", "Enable"))
+  cmbdepart.List = modGeneral.RegistrationDeptList()
+
+End
+
+Public Sub dtnepquota_Click()
+
+  Dim xx As String
+
+  xx = BSDateFormat(("Enter BS Date in yyyy/mm/dd format"), ("Date Converter"), modDate.ConvertToLocaldate(dtquota.Value))
+  If xx Then
+    dtquota.Value = modDate.ConvertToEnglishdate(xx)
+  Endif
+
+End
+
+Public Sub btnconsult_Click()
+
+  Dim xMedUser As String[]
+
+  xMedUser = MedicalSelectedValue(("Select Consultant"), modBasic.$OPConsulUserList)
+  If xMedUser And If xMedUser.Count Then
+    btnconsult.Tag = xMedUser[0]
+    btnconsult.Text = xMedUser[1]
+  Else
+    btnconsult.Tag = ""
+    btnconsult.Text = ""
+  Endif
+
+End
+
+Public Sub btnconsult_Change()
+
+  If btnconsult.Text = "" Then
+    btnconsult.Tag = ""
+  Endif
+
+End
+
+Public Sub cmbdisctype_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbdisctype)
+  modFillContainer.RestrictComboToContent(cmbdisctype)
+
+End
+
+Public Sub cmbdisctype_LostFocus()
+
+  If cmbdisctype.Text Then
+    txtbillmode.Text = modNonMedical.GetDiscBindBillMode(cmbdisctype.Text)
+  Endif
+
+End
+
+Public Sub cmbdepart_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbdepart)
+  modFillContainer.RestrictComboToContent(cmbdepart)
+
+End
+
+Public Sub cmbpayment_GotFocus()
+
+  Dim xLst As String[]
+
+  If cmbdisctype.Text And If txtbillmode.Text Then
+    If Not cmbpayment.Text Then
+      xLst = modNonMedical.NonStockBillActiveItemArray(modNonMedical.GetBillItemCategoryFromCombo("Service"), txtbillmode.Text)
+      If xLst.Count Then
+        cmbpayment.Text = GridViewNew("Select Particulars", xLst, False, cmbpayment, GridView1.Height)
+        If cmbpayment.Text Then
+          txtpaycost.Value = modNonMedical.GetCashBillItemCost(cmbpayment.Text, "General Services")
+        Endif
+      Endif
+    Endif
+  Endif
+
+End
+
+Private Sub CLearComntrols()
+
+  cmbdisctype.Text = ""
+  cmbdepart.Text = ""
+  btnconsult.Tag = ""
+  btnconsult.Text = ""
+  cmbpayment.Text = ""
+  txtpaycost.Value = 0
+  txtquota.Value = 0
+
+End
+
+Public Sub btnadd_Click()
+
+  Dim res As Result
+
+  If cmbdisctype.Text And If cmbdepart.Text And If cmbpayment.Text Then
+    res = modDatabase.$myConn.Create("tblquota")
+    res["fldgroup"] = cmbdisctype.Text
+    res["fldconsultdate"] = dtquota.Value
+    res["flddepartment"] = cmbdepart.Text
+    res["fldconsultant"] = btnconsult.Tag
+    res["flditemname"] = cmbpayment.Text
+    res["flditemcost"] = txtpaycost.Value
+    res["fldwebquota"] = txtquota.Value
+
+    res["flduserid"] = modBasic.$lbluser
+    res["fldtime"] = Now()
+    res["fldcomp"] = modBasic.$compID
+    res["fldsave"] = True
+    res["flduptime"] = ""
+    res.Update
+    ShowGridView()
+    CLearComntrols()
+  Endif
+
+End
+
+Public Sub Button1_Click()
+
+  If dtquota.Value Then
+    ShowGridView()
+  Endif
+
+End
+
+Private Sub ShowGridView()
+
+  $rData = modDatabase.$myConn.Exec("select fldid,fldconsultdate,fldgroup,flddepartment,fldconsultant,fldwebquota,flditemname,flditemcost from tblquota where fldconsultdate>=&1 and fldconsultdate<=&2", modDate.StartSqlDate(dtquota.Value), modDate.EndSqlDate(dtquota.Value))                                  ''
+  $aMyFields = New String[]
+  modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
+  With GridView1
+    .Columns[0].Width = 1
+    .Columns[1].Width = 1
+    .Columns[2].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 50 * modBasic.$AppWidthRatio
+    .Columns[6].Width = 175 * modBasic.$AppWidthRatio
+    .Columns[7].Width = 75 * modBasic.$AppWidthRatio
+
+    .Columns[2].Text = "Package"
+    .Columns[3].Text = "Department"
+    .Columns[4].Text = "Consultant"
+    .Columns[5].Text = "Quota"
+    .Columns[6].Text = "Payment"
+    .Columns[7].Text = "Rate"
+  End With
+
+End
+
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  $rData.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView1, Row)
+  GridView1.Data.Text = $rData[$aMyFields[Column]]
+
+End
+
+Public Sub btndelete_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    modDatabase.$myConn.Delete("tblquota", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+    ShowGridView()
+    CLearComntrols()
+  Endif
+
+End
+
+Public Sub btnexport_Click()
+
+  modCHTMLReport.ExportGridToHTML(GridView1, "WEB QUOTA ALLOCATION", modReportVar.GetDateTimeReport(dtquota.Value, gb.MediumDate))
+
+End

@@ -1,0 +1,114 @@
+' Gambas class file
+
+Private $rData As Result
+Private $aMyFields As String[]
+
+Public Sub Form_Open()
+
+  modGeneralMain.ArrangeFormCentre(Me)
+  dtconsultime.Value = Now()
+  cmbdisctype.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldtype from tbldiscount where fldonline=&1", "Enable"))
+  cmbdepart.List = modGeneral.RegistrationDeptList()
+
+End
+
+Public Sub cmbdisctype_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbdisctype)
+  modFillContainer.RestrictComboToContent(cmbdisctype)
+
+End
+
+Public Sub cmbdepart_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbdepart)
+  modFillContainer.RestrictComboToContent(cmbdepart)
+
+End
+
+Private Sub CLearComntrols()
+
+  cmbdisctype.Text = ""
+  cmbdepart.Text = ""
+  txtquefirst.Value = 0
+  txtquelst.Value = 0
+
+End
+
+Public Sub btnadd_Click()
+
+  Dim res As Result
+  Dim Row As Integer
+
+  If cmbdisctype.Text And If cmbdepart.Text Then
+    For Row = txtquefirst.Value To txtquelst.Value
+      res = modDatabase.$myConn.Create("tblwebqueue")
+      res["fldgroup"] = cmbdisctype.Text
+      res["flddepartment"] = cmbdepart.Text
+      res["fldqueue"] = Row
+      res["fldconsultstart"] = dtconsultime.Value
+
+      res["flduserid"] = modBasic.$lbluser
+      res["fldtime"] = Now()
+      res["fldcomp"] = modBasic.$compID
+      res["fldsave"] = True
+      res.Update
+    Next
+    ShowGridView()
+  Endif
+
+End
+
+Public Sub btnshow_Click()
+
+  ShowGridView()
+
+End
+
+Private Sub ShowGridView()
+
+  $rData = modDatabase.$myConn.Exec("select fldid,fldgroup,flddepartment,fldqueue,fldconsultstart from tblwebqueue where fldgroup=&1 and flddepartment=&2 ORDER BY fldconsultstart", cmbdisctype.Text, cmbdepart.Text)                                  ''
+  $aMyFields = New String[]
+  modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
+  With GridView1
+    .Columns[0].Width = 1
+    .Columns[1].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 50 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 125 * modBasic.$AppWidthRatio
+
+    .Columns[1].Text = "Package"
+    .Columns[2].Text = "Department"
+    .Columns[3].Text = "Queue"
+    .Columns[4].Text = "Time"
+  End With
+
+End
+
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  $rData.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView1, Row)
+  If Column = 4 Then
+    GridView1.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.ShortTime)
+  Else
+    GridView1.Data.Text = $rData[$aMyFields[Column]]
+  Endif
+
+End
+
+Public Sub btndelete_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    modDatabase.$myConn.Delete("tblquota", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+    ShowGridView()
+    CLearComntrols()
+  Endif
+
+End
+
+Public Sub btnexport_Click()
+
+  modCHTMLReport.ExportGridToHTML(GridView1, "WEB QUEUE ALLOCATION", cmbdisctype.Text & " : " & cmbdepart.Text)
+
+End

@@ -11,7 +11,6 @@ Public Sub Form_Open()
   cmbreglock.List = ["OnePerDay", "OnePerCompPerDay", "Standard", "None"]
   cmbprevclear.List = ["Yes", "No"]
   cmbregdslip.List = ["Enable", "Disable"]
-  cmbhiclaim.List = ["Enable", "Disable"]
   cmbhinewclaim.List = ["Enable", "Disable"]
 
   cmbautoregist.List = ["Yes", "Partial", "No"]
@@ -262,7 +261,6 @@ Private Sub GeneralRegistSett()
   cmbregdslip.Text = modGlobalSetting.ShowSettingFromDBAny("RegistrationData/SlipAfterInvoice", cmbtarget.Text)
   cmbnewborn.Text = modGlobalSetting.ShowSettingFromDBAny("RegistrationData/NewbornLocation", cmbtarget.Text)
 
-  cmbhiclaim.Text = modGlobalSetting.ShowSettingFromDBAny("RegistrationCount/NewClaimRegistration", cmbtarget.Text)
   cmbhinewclaim.Text = modGlobalSetting.ShowSettingFromDBAny("RegistrationData/GenerateHIClaimCode", cmbtarget.Text)
 
 End
@@ -312,14 +310,6 @@ Public Sub btnnewborn_Click()
 
   modGlobalSetting.SaveSettingToDB("RegistrationData/NewbornLocation", cmbnewborn.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btnnewborn)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btnhiclaim_Click()
-
-  modGlobalSetting.SaveSettingToDB("RegistrationCount/NewClaimRegistration", cmbhiclaim.Text, cmbtarget.Text)
-  Balloon.Info(("Information saved"), btnhiclaim)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -604,7 +594,7 @@ End
 Public Sub btnhiipdclaim_Click()
 
   modGlobalSetting.SaveSettingToDB("Admission/ContinueHIClaim", cmbhiipdclaim.Text, cmbtarget.Text)
-  Balloon.Info(("Information saved"), btnhiclaim)
+  Balloon.Info(("Information saved"), btnhiipdclaim)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -649,7 +639,6 @@ Public Sub btnsettall_Click()
   xList.Add("RegistrationData/LockProfileHour")
   xList.Add("RegistrationData/SlipAfterInvoice")
   xList.Add("RegistrationData/NewbornLocation")
-  xList.Add("RegistrationCount/NewClaimRegistration")
   xList.Add("RegistrationData/GenerateHIClaimCode")
 
   xList.Add("Admission/WardAdmission")
