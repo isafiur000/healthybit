@@ -63,6 +63,8 @@ Public Sub Form_Open()
     Timer1.Enabled = True
   Endif
 
+  modClaim.$claimFormat = modBasic.$RegistCreateHIClaim
+
   If modHelpVariable.$AutoDashUpload = "Yes" Then
     Timer2.Enabled = True
   Endif

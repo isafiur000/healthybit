@@ -31,21 +31,6 @@ Private $ratePlanProcedure As String
 Private $ratePlanOthers As String
 Private $ratePlanPharm As String
 
-Private $ClaimStateService As String
-Private $ClaimStateProcedure As String
-Private $ClaimStateOthers As String
-Private $ClaimStatePharm As String
-
-Private $ClaimReferService As String
-Private $ClaimReferProcedure As String
-Private $ClaimReferOthers As String
-Private $ClaimReferPharm As String
-
-Private $ClaimCodeService As String
-Private $ClaimCodeProcedure As String
-Private $ClaimCodeOthers As String
-Private $ClaimCodePharm As String
-
 Private $phmLedger As String
 Private $phmBillType As String
 
@@ -246,9 +231,6 @@ Private Sub ShowServiceParam(sPack As String)
 
   hForm = New CPackageParams($encid, sPack)
   $ratePlanService = hForm.GetBillingMode()
-  $ClaimCodeService = hForm.GetClaimCode()
-  $ClaimStateService = hForm.GetClaimState()
-  $ClaimReferService = hForm.GetReferenceType()
 
 End
 
@@ -268,9 +250,6 @@ Private Sub ShowProcedureParam(sPack As String)
 
   hForm = New CPackageParams($encid, sPack)
   $ratePlanProcedure = hForm.GetBillingMode()
-  $ClaimCodeProcedure = hForm.GetClaimCode()
-  $ClaimStateProcedure = hForm.GetClaimState()
-  $ClaimReferProcedure = hForm.GetReferenceType()
 
 End
 
@@ -290,9 +269,6 @@ Private Sub ShowOthersParam(sPack As String)
 
   hForm = New CPackageParams($encid, sPack)
   $ratePlanOthers = hForm.GetBillingMode()
-  $ClaimCodeOthers = hForm.GetClaimCode()
-  $ClaimStateOthers = hForm.GetClaimState()
-  $ClaimReferOthers = hForm.GetReferenceType()
 
 End
 
@@ -312,9 +288,6 @@ Private Sub ShowPharmacyParam(sPack As String)
 
   hForm = New CPackageParams($encid, sPack)
   $ratePlanPharm = hForm.GetBillingMode()
-  $ClaimCodePharm = hForm.GetClaimCode()
-  $ClaimStatePharm = hForm.GetClaimState()
-  $ClaimReferPharm = hForm.GetReferenceType()
   $phmLedger = hForm.GetLedgerAC()
   $phmBillType = hForm.GetBillType()
 
@@ -328,21 +301,17 @@ Public Sub cmbdiscpharmacy_Click()
 
 End
 
-Private Sub GetHImedicineCappingVar(xPackage As String, xClaimCode As String)
+Private Sub GetHImedicineCappingVar(xClaimCode As String)
 
-  If xPackage = modBasic.$HIPackage Or If xPackage = modBasic.$HIPackageER Then
-    If modBasic.$IMISValidateURL Then
-
-      If modClaim.GetChronicClaimStatus($encid) = True Then
-        If $HiCappingVar.Count Then
-          $HiCappingVar.Clear()
-        Endif
-      Else
-        If Not $HiCappingVar.Count Then
-          $HiCappingVar = modClaim.GetClaimCappingLimit($encid, xClaimCode)
-        Endif
+  If modBasic.$IMISValidateURL Then
+    If modClaim.GetChronicClaimStatus($encid) = True Then
+      If $HiCappingVar.Count Then
+        $HiCappingVar.Clear()
       Endif
-
+    Else
+      If Not $HiCappingVar.Count Then
+        $HiCappingVar = modClaim.GetClaimCappingLimit($encid, xClaimCode)
+      Endif
     Endif
   Endif
 
@@ -708,7 +677,7 @@ Public Sub FillLabtable()
   Dim fld As ResultField
   Dim res As Result
 
-  sql = "select fldid,flditemname,fldid,flditemqty,fldordtime,fldstatus from tblpatbilling where fldencounterval=&1 and fldsave=&2 and fldprint=&3 and (fldstatus=&4 or fldstatus=&5) and (flditemtype=&6 or flditemtype=&7 or flditemtype=&8)"                                             ''
+  sql = "select fldid,flditemname,fldid,flditemqty,fldordtime,fldstatus,flddisctype,flditemtype from tblpatbilling where fldencounterval=&1 and fldsave=&2 and fldprint=&3 and (fldstatus=&4 or fldstatus=&5) and (flditemtype=&6 or flditemtype=&7 or flditemtype=&8)"                                             ''
   res = modDatabase.$myConn.Exec(sql, $encid, False, False, "Punched", "Planned", "General Services", "Procedures", "Other Items")
 
   GridView1.Clear
@@ -740,11 +709,15 @@ Public Sub FillLabtable()
     .Columns[3].Width = 50 * modBasic.$AppWidthRatio
     .Columns[4].Width = 150 * modBasic.$AppWidthRatio
     .Columns[5].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[6].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[7].Width = 100 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "Particulars"
     .Columns[3].Text = "QTY"
     .Columns[4].Text = "DateTime"
     .Columns[5].Text = "Status"
+    .Columns[6].Text = "Scheme"
+    .Columns[7].Text = "Category"
   End With
 
 End
@@ -766,10 +739,23 @@ Public Sub btnsave_Click()
   Dim res As Result
   Dim xauto As String
   Dim xadv As String
+
+  Dim Row As Integer
+  Dim hForm As CBillReference
+
+  Dim CForm As CBillReference
+  Dim xrefrn As String
   Dim xstate As String
-  Dim xrefno As String
 
   Inc Application.Busy
+  For Row = 0 To GridView1.Rows.Count - 1
+    If GridView1[Row, 6].Text = modBasic.$HIPackage Or If GridView1[Row, 6].Text = modBasic.$HIPackageER Then
+      hForm = New CBillReference($encid, "Claim Code")
+      GetHImedicineCappingVar(hForm.GetClaimCode())
+      Break
+    Endif
+  Next
+
   res = modDatabase.$myConn.Edit("tblpatbilling", "fldencounterval=&1 and fldsave=&2 and fldprint=&3 and fldordcomp like &4 and fldstatus=&5 and (flditemtype=&6 or flditemtype=&7 or flditemtype=&8)", $encid, False, False, modBasic.$compID, "Punched", "General Services", "Procedures", "Other Items")                 ''
   If res.Available Then
     If modBasic.$AutoBillAdvReceipt = "Enable" Then
@@ -779,19 +765,21 @@ Public Sub btnsave_Click()
     Endif
 
     For Each res
+      xrefrn = modNonMedical.GetFixedReferenceScheme(res["flddisctype"])
+      If xrefrn = "Claim Code" Then
+        CForm = New CBillReference($encid, xrefrn)
+        xstate = CForm.GetClaimState()
+      Else
+        xstate = ""
+      Endif
+
       xform = modNonMedical.GetServiceKeyFromCategory(res["flditemtype"])
       If xform = "Service" Then
         xauto = modBasic.$AutoBillService
-        xstate = $ClaimStateService
-        xrefno = $ClaimReferService
       Else If xform = "Procedure" Then
         xauto = modBasic.$AutoBillProcedure
-        xstate = $ClaimStateProcedure
-        xrefno = $ClaimReferProcedure
       Else If xform = "Others" Then
         xauto = modBasic.$AutoBillOthers
-        xstate = $ClaimStateOthers
-        xrefno = $ClaimReferOthers
       Endif
 
       If xauto = "Standard" Then
@@ -799,7 +787,7 @@ Public Sub btnsave_Click()
           SavePartialEntry(res, xstate, xadv)
         Endif
       Else If xauto = "RefOnly" Then
-        If xrefno Then
+        If xrefrn Then
           If modNonMedical.AllowPreCheckDeposit($encid, xform, res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsave) = True Then
             SavePartialEntry(res, xstate, xadv)
           Endif
@@ -834,25 +822,40 @@ Private Sub SavePartialEntry(res As Result, xstate As String, Optional advReceip
 
   Dim xdate As Date
   Dim xcapday As Integer
+  Dim xfixcode As String
+  Dim ygo As Boolean
   Dim xgo As Boolean
 
-  xgo = True
+  ygo = True
+  xfixcode = modNonMedical.GetServiceItemHIAbbv(res["flditemname"])
   If xstate = "Consultation" Or If xstate = "Patient Ward" Then
-    If modBasic.$SalesHistoryAlert = "Patient Code" Then
-      xdate = modBillings.CheckLastServiceSalesItemHIDate(modNonMedical.GetServiceItemHIAbbv(res["flditemname"]), $PatientNum, $xNHISCode, res["flddisctype"])
+    If GetHICapGo(xfixcode, res["flditemname"], res["flditemqty"], res["flddisctype"]) = True Then
+      ygo = True
+    Else
+      ygo = False
+    Endif
+  Endif
+
+  xgo = True
+  xcapday = modNonMedical.GetCappingDayFromItemName(res["flditemname"])
+  If xcapday Then
+    If xstate = "Consultation" Or If xstate = "Patient Ward" Then
+      If modBasic.$SalesHistoryAlert = "Patient Code" Then
+        xdate = modBillings.CheckLastServiceSalesItemHIDate(xfixcode, $PatientNum, $xNHISCode, res["flddisctype"])
+      Else
+        xdate = modBillings.CheckLastSalesItemDate(res["flditemname"], $PatientNum, $xNHISCode, res["flddisctype"])
+      Endif
     Else
       xdate = modBillings.CheckLastSalesItemDate(res["flditemname"], $PatientNum, $xNHISCode, res["flddisctype"])
     Endif
     If xdate Then
-      xcapday = modNonMedical.GetCappingDayFromItemName(res["flditemname"])
-      If xcapday Then
-        If DateDiff(xdate, Now(), gb.Day) <= xcapday Then
-          xgo = False
-        Endif
+      If DateDiff(xdate, Now(), gb.Day) <= xcapday Then
+        xgo = False
       Endif
     Endif
   Endif
-  If xgo = True Then
+
+  If xgo = True And If ygo = True Then
     res["fldstatus"] = "Done"
     If advReceipt Then
       res["fldextracol"] = advReceipt
@@ -864,6 +867,31 @@ Private Sub SavePartialEntry(res As Result, xstate As String, Optional advReceip
     res["xyz"] = False
     res.Update()
   Endif
+
+End
+
+Private Function GetHICapGo(sFixCode As String, sFixItem As String, sQty As Float, sDiscType As String) As Boolean
+
+  Dim xgo As Boolean
+  Dim xmax As Float
+
+  xgo = True
+  If sFixCode Then
+    If $HiCappingVar.Exist(sFixCode) Then
+
+      If Not $HiCappingVar[sFixCode] Then
+        xgo = False
+      Else
+        xmax = $HiCappingVar[sFixCode] - modNonMedical.GetPatientItemSavedSalesPackage($encid, sFixItem, sDiscType)
+        If xmax < sQty Then
+          xgo = False
+        Endif
+      Endif
+
+    Endif
+  Endif
+
+  Return xgo
 
 End
 
@@ -967,24 +995,6 @@ Private Function GetSchemeName(xform As String) As String
   Endif
 
   Return xpackg
-
-End
-
-Private Function GetReference(xform As String) As String
-
-  Dim xstate As String
-  Dim xscheme As String
-  Dim xrefer As String
-
-  xscheme = GetSchemeName(xform)
-  If xscheme Then
-    xrefer = modNonMedical.GetFixedReferenceScheme(xscheme)
-    If xrefer And If xrefer = "Claim Code" Then
-      xstate = modClaim.GetHIClaimState(xrefer)
-    Endif
-  Endif
-
-  Return xstate
 
 End
 
@@ -1124,7 +1134,7 @@ Private Sub ShowGroupGrid()
   For i = 0 To xtypLst.Count - 1
     xtypLst[i] = "'" & xtypLst[i] & "'"
   Next
-  sql = "select fldid,flditemname,fldid,flditemqty,fldordtime,fldstatus from tblpatbilling where fldencounterval=&1 and fldsave=&2 and fldprint=&3 and (fldstatus=&4 or fldstatus=&5) and flditemtype in(" & xtypLst.Join(",") & ")"     ''
+  sql = "select fldid,flditemname,fldid,flditemqty,fldordtime,fldstatus,flddisctype from tblpatbilling where fldencounterval=&1 and fldsave=&2 and fldprint=&3 and (fldstatus=&4 or fldstatus=&5) and flditemtype in(" & xtypLst.Join(",") & ")"     ''
   res = modDatabase.$myConn.Exec(sql, $encid, False, False, "Punched", "Planned")
   ShowInitialGridView(res)
 
@@ -1164,11 +1174,13 @@ Private Sub ShowInitialGridView(res As Result)
     .Columns[3].Width = 50 * modBasic.$AppWidthRatio
     .Columns[4].Width = 150 * modBasic.$AppWidthRatio
     .Columns[5].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[6].Width = 100 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "Particulars"
     .Columns[3].Text = "QTY"
     .Columns[4].Text = "DateTime"
     .Columns[5].Text = "Status"
+    .Columns[6].Text = "Scheme"
   End With
 
 End
@@ -1271,8 +1283,23 @@ Public Sub btnsavegroup_Click()
   Dim res As Result
   Dim xauto As String
   Dim xadv As String
-  Dim xstate As String
   Dim i As Integer
+
+  Dim Row As Integer
+  Dim hForm As CBillReference
+
+  Dim CForm As CBillReference
+  Dim xrefrn As String
+  Dim xstate As String
+
+  Inc Application.Busy
+  For Row = 0 To GridView4.Rows.Count - 1
+    If GridView4[Row, 6].Text = modBasic.$HIPackage Or If GridView4[Row, 6].Text = modBasic.$HIPackageER Then
+      hForm = New CBillReference($encid, "Claim Code")
+      GetHImedicineCappingVar(hForm.GetClaimCode())
+      Break
+    Endif
+  Next
 
   xtypLst = modNonMedical.BillServiceCategory()
   For i = 0 To xtypLst.Count - 1
@@ -1289,9 +1316,16 @@ Public Sub btnsavegroup_Click()
     Endif
 
     For Each res
+      xrefrn = modNonMedical.GetFixedReferenceScheme(res["flddisctype"])
+      If xrefrn = "Claim Code" Then
+        CForm = New CBillReference($encid, xrefrn)
+        xstate = CForm.GetClaimState()
+      Else
+        xstate = ""
+      Endif
+
       xform = modNonMedical.GetServiceKeyFromCategory(res["flditemtype"])
       xauto = GetAutoStatus(xform)
-      xstate = GetReference(xform)
 
       If xauto = "Standard" Then
         If modNonMedical.AllowPreCheckDeposit($encid, xform, res["flditemname"], res["fldditemamt"], res["fldbilltype"], btnsave) = True Then

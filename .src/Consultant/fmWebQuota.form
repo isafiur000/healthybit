@@ -4,92 +4,100 @@
   MoveScaled(0,0,91,64)
   Text = ("Web Quota")
   Resizable = False
-  { Label1 Label
-    MoveScaled(1,5,14,3)
-    Border = Border.Plain
-    Text = ("Package")
-  }
-  { cmbdisctype ComboBox
-    MoveScaled(16,5,28,3)
-  }
-  { Label2 Label
-    MoveScaled(1,1,14,3)
-    Border = Border.Plain
-    Text = ("Booking Date")
+  { cmbcategory ComboBox
+    MoveScaled(16,1,28,3)
   }
   { dtquota DateBox
-    MoveScaled(16,1,19,3)
-  }
-  { dtnepquota ToolButton
-    MoveScaled(36,1,3.25,3.25)
-    Picture = Picture["icon:/small/calendar"]
+    MoveScaled(16,5,19,3)
   }
   { Button1 Button
-    MoveScaled(44,1,12,3)
+    MoveScaled(44,5,12,3)
     Text = ("Show")
     Picture = Picture["icon:/small/refresh"]
   }
   { cmbdepart ComboBox
     MoveScaled(16,9,40,3)
   }
+  { cmbdisctype ComboBox
+    MoveScaled(16,13,28,3)
+  }
+  { btnconsult ButtonBox
+    MoveScaled(16,17,40,3)
+    Picture = Picture["icon:/small/people"]
+    ReadOnly = True
+  }
+  { cmbpayment ComboBox
+    MoveScaled(16,21,62,3)
+  }
+  { txtquota ValueBox
+    MoveScaled(16,25,12,3)
+  }
+  { btnadd Button
+    MoveScaled(44,25,12,3)
+    Text = ("Add")
+    Picture = Picture["icon:/small/add"]
+  }
+  { btndelete Button
+    MoveScaled(78,25,12,3)
+    Text = ("Delete")
+    Picture = Picture["icon:/small/delete"]
+  }
+  { Label2 Label
+    MoveScaled(1,5,14,3)
+    Border = Border.Plain
+    Text = ("Booking Date")
+  }
+  { dtnepquota ToolButton
+    MoveScaled(36,5,3.25,3.25)
+    Picture = Picture["icon:/small/calendar"]
+  }
   { Label3 Label
     MoveScaled(1,9,14,3)
     Border = Border.Plain
     Text = ("Department")
   }
-  { btnconsult ButtonBox
-    MoveScaled(16,13,40,3)
-    Picture = Picture["icon:/small/people"]
-    ReadOnly = True
-  }
   { Label4 Label
-    MoveScaled(1,13,14,3)
+    MoveScaled(1,17,14,3)
     Border = Border.Plain
     Text = ("Consultant")
   }
   { Label5 Label
-    MoveScaled(1,17,14,3)
+    MoveScaled(1,21,14,3)
     Border = Border.Plain
     Text = ("Payment")
   }
-  { cmbpayment ComboBox
-    MoveScaled(16,17,62,3)
-  }
   { txtpaycost ValueBox
-    MoveScaled(79,17,10,3)
+    MoveScaled(79,21,10,3)
     Enabled = False
   }
   { Label6 Label
-    MoveScaled(1,21,14,3)
+    MoveScaled(1,25,14,3)
     Border = Border.Plain
     Text = ("Max Quota")
   }
-  { txtquota ValueBox
-    MoveScaled(16,21,12,3)
-  }
   { GridView1 GridView
-    MoveScaled(1,25,89,38)
+    MoveScaled(1,29,89,34)
     Mode = Select.Single
     Header = GridView.Both
     AutoResize = False
   }
-  { btnadd Button
-    MoveScaled(44,21,12,3)
-    Text = ("Add")
-    Picture = Picture["icon:/small/add"]
-  }
-  { btndelete Button
-    MoveScaled(78,21,12,3)
-    Text = ("Delete")
-    Picture = Picture["icon:/small/delete"]
-  }
   { txtbillmode TextBox
-    MoveScaled(58,13,13,3)
+    MoveScaled(58,17,13,3)
     Visible = False
   }
   { btnexport Button
-    MoveScaled(78,1,12,3)
+    MoveScaled(78,5,12,3)
     Text = ("Export")
     Picture = Picture["icon:/small/html"]
+  }
+  { Label1 Label
+    MoveScaled(1,13,14,3)
+    Border = Border.Plain
+    Text = ("Package")
+  }
+  { Label7 Label
+    MoveScaled(1,1,14,3)
+    Border = Border.Plain
+    Text = ("Category")
   }
 }

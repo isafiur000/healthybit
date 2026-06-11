@@ -761,8 +761,6 @@ Private Sub ButtonControl()
   btnminor.Enabled = xx
   ''gen service
   mnugenservice.Enabled = xx
-  ''extra procedure
-  mnuextprocedure.Enabled = xx
   ''drug dosing
   grdfluiddata.Enabled = xx
   grdfluid.Enabled = xx
@@ -3610,17 +3608,6 @@ Public Sub mnugenservice_Click()
 
 End
 
-Public Sub mnuextprocedure_Click()
-
-  Dim hForm As FmAddExtraProced
-
-  If txtencid.Text Then
-    hForm = New FmAddExtraProced(Trim(txtencid.Text), $billModeProcedure)
-    hForm.ShowModal
-  Endif
-
-End
-
 Public Sub mnuconsult_Click()
 
   Dim hForm As FmMiniConsult
@@ -5617,9 +5604,6 @@ Private Sub RestrictUserAccess()
 
   If $UserRestrict.Exist("Procedure Plan") Then
     mnumajor.Enabled = False
-  Endif
-  If $UserRestrict.Exist("Extra Procedure Plan") Then
-    mnuextprocedure.Enabled = False
   Endif
   If $UserRestrict.Exist("Consultation Plan") Then
     mnuconsult.Enabled = False

@@ -740,8 +740,6 @@ Private Sub ButtonControl()
   mnugenservice.Enabled = xx
   ''IV infusion
   mnuivinfusion.Enabled = xx
-  ''extra procedure
-  mnuextprocedure.Enabled = xx
   ''monitoring
   mnumonitor.Enabled = xx
   ''outcome
@@ -1849,17 +1847,6 @@ Public Sub mnumajor_Click()
       hForm = New FmMajorProced(Trim(txtencid.Text), $billModeProcedure)
       hForm.ShowModal
     Endif
-  Endif
-
-End
-
-Public Sub mnuextprocedure_Click()
-
-  Dim hForm As FmAddExtraProced
-
-  If txtencid.Text Then
-    hForm = New FmAddExtraProced(Trim(txtencid.Text), $billModeProcedure)
-    hForm.ShowModal
   Endif
 
 End
@@ -3113,9 +3100,6 @@ Private Sub RestrictUserAccess()
   Endif
   If $UserRestrict.Exist("Procedure Plan") Then
     mnumajor.Enabled = False
-  Endif
-  If $UserRestrict.Exist("Extra Procedure Plan") Then
-    mnuextprocedure.Enabled = False
   Endif
   If $UserRestrict.Exist("Consultation Plan") Then
     mnuconsultplan.Enabled = False

@@ -6,8 +6,10 @@ Private $aMyFields As String[]
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me)
+  cmbcategory.List = ["General OPD"]
   dtquota.Value = Now()
   cmbdisctype.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldtype from tbldiscount where fldonline=&1", "Enable"))
+  cmbdisctype.Add("%")
   cmbdepart.List = modGeneral.RegistrationDeptList()
 
 End
@@ -104,7 +106,8 @@ Public Sub btnadd_Click()
 
   If cmbdisctype.Text And If cmbdepart.Text And If cmbpayment.Text Then
     res = modDatabase.$myConn.Create("tblquota")
-    res["fldgroup"] = cmbdisctype.Text
+    res["fldgroup"] = cmbcategory.Text
+    res["fldscheme"] = cmbdisctype.Text
     res["fldconsultdate"] = dtquota.Value
     res["flddepartment"] = cmbdepart.Text
     res["fldconsultant"] = btnconsult.Tag
@@ -134,21 +137,21 @@ End
 
 Private Sub ShowGridView()
 
-  $rData = modDatabase.$myConn.Exec("select fldid,fldconsultdate,fldgroup,flddepartment,fldconsultant,fldwebquota,flditemname,flditemcost from tblquota where fldconsultdate>=&1 and fldconsultdate<=&2", modDate.StartSqlDate(dtquota.Value), modDate.EndSqlDate(dtquota.Value))                                  ''
+  $rData = modDatabase.$myConn.Exec("select fldid,fldconsultdate,flddepartment,fldscheme,fldconsultant,fldwebquota,flditemname,flditemcost from tblquota where fldgroup=&1 and fldconsultdate>=&2 and fldconsultdate<=&3", cmbcategory.Text, modDate.StartSqlDate(dtquota.Value), modDate.EndSqlDate(dtquota.Value))                                  ''
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
   With GridView1
     .Columns[0].Width = 1
     .Columns[1].Width = 1
-    .Columns[2].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 150 * modBasic.$AppWidthRatio
     .Columns[3].Width = 125 * modBasic.$AppWidthRatio
     .Columns[4].Width = 150 * modBasic.$AppWidthRatio
     .Columns[5].Width = 50 * modBasic.$AppWidthRatio
     .Columns[6].Width = 175 * modBasic.$AppWidthRatio
     .Columns[7].Width = 75 * modBasic.$AppWidthRatio
 
-    .Columns[2].Text = "Package"
-    .Columns[3].Text = "Department"
+    .Columns[2].Text = "Department"
+    .Columns[3].Text = "Package"
     .Columns[4].Text = "Consultant"
     .Columns[5].Text = "Quota"
     .Columns[6].Text = "Payment"

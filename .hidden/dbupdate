@@ -1275,6 +1275,17 @@ ALTER TABLE tblclaimcode ADD COLUMN fldoutput TEXT NULL
 ALTER TABLE tblsyndromes ADD fldpatient VARCHAR( 100 ) NULL
 UPDATE tblsyndromes SET fldpatient='Any' WHERE fldpatient IS NULL
 
+ALTER TABLE tblquota ADD fldscheme VARCHAR( 150 ) NULL
+UPDATE tblquota SET fldscheme=fldgroup WHERE fldscheme IS NULL
+UPDATE tblquota SET fldgroup='General OPD'
+
+ALTER TABLE tblwebqueue ADD fldscheme VARCHAR( 150 ) NULL
+UPDATE tblwebqueue SET fldscheme=fldgroup WHERE fldscheme IS NULL
+UPDATE tblwebqueue SET fldgroup='General OPD'
+
+ALTER TABLE tblonlinebook ADD fldgroup VARCHAR( 150 ) NULL
+
+
 
 
 
