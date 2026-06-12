@@ -10,23 +10,26 @@
   { cmbdepart ComboBox
     MoveScaled(16,5,29,3)
   }
-  { cmbdisctype ComboBox
-    MoveScaled(16,9,29,3)
-  }
   { btnshow Button
-    MoveScaled(46,9,12,3)
+    MoveScaled(46,5,12,3)
     Text = ("Show")
     Picture = Picture["icon:/small/refresh"]
   }
-  { dtconsultime DateBox
-    MoveScaled(16,13,14,3)
-    Mode = DateChooser.TimeOnly
+  { cmbdisctype ComboBox
+    MoveScaled(16,9,29,3)
   }
   { txtquefirst ValueBox
-    MoveScaled(16,17,6,3)
+    MoveScaled(16,13,5,3)
   }
-  { txtquelst ValueBox
-    MoveScaled(31,17,6,3)
+  { txtcount ValueBox
+    MoveScaled(31,13,4,3)
+  }
+  { txtjump ValueBox
+    MoveScaled(46,13,4,3)
+  }
+  { dtconsultime DateBox
+    MoveScaled(16,17,14,3)
+    Mode = DateChooser.TimeOnly
   }
   { btnadd Button
     MoveScaled(39,17,12,3)
@@ -43,9 +46,9 @@
     Text = ("Department")
   }
   { Label6 Label
-    MoveScaled(1,17,14,3)
+    MoveScaled(1,13,14,3)
     Border = Border.Plain
-    Text = ("Queue Range")
+    Text = ("Start Queue")
   }
   { GridView1 GridView
     MoveScaled(1,21,67,42)
@@ -54,20 +57,14 @@
     AutoResize = False
   }
   { btnexport Button
-    MoveScaled(46,5,12,3)
+    MoveScaled(46,1,12,3)
     Text = ("Export")
     Picture = Picture["icon:/small/html"]
   }
   { Label2 Label
-    MoveScaled(1,13,14,3)
+    MoveScaled(1,17,14,3)
     Border = Border.Plain
     Text = ("Consult Time")
-  }
-  { Label4 Label
-    MoveScaled(24,17,5,3)
-    Alignment = Align.Center
-    Border = Border.Plain
-    Text = ("TO")
   }
   { Label1 Label
     MoveScaled(1,9,14,3)
@@ -78,5 +75,15 @@
     MoveScaled(1,1,14,3)
     Border = Border.Plain
     Text = ("Category")
+  }
+  { Label4 Label
+    MoveScaled(24,13,6,3)
+    Border = Border.Plain
+    Text = ("Count")
+  }
+  { Label7 Label
+    MoveScaled(39,13,6,3)
+    Border = Border.Plain
+    Text = ("Jump")
   }
 }

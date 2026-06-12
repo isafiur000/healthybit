@@ -11,6 +11,7 @@ Public Sub Form_Open()
   cmbdisctype.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldtype from tbldiscount where fldonline=&1", "Enable"))
   cmbdisctype.Add("%")
   cmbdepart.List = modGeneral.RegistrationDeptList()
+  txtjump.Value = 1
 
 End
 
@@ -33,7 +34,8 @@ Private Sub CLearComntrols()
   cmbdisctype.Text = ""
   cmbdepart.Text = ""
   txtquefirst.Value = 0
-  txtquelst.Value = 0
+  txtcount.Value = 0
+  txtjump.Value = 1
 
 End
 
@@ -43,12 +45,12 @@ Public Sub btnadd_Click()
   Dim Row As Integer
 
   If cmbdisctype.Text And If cmbdepart.Text Then
-    For Row = txtquefirst.Value To txtquelst.Value
+    For Row = 0 To txtcount.Value - 1
       res = modDatabase.$myConn.Create("tblwebqueue")
       res["fldgroup"] = cmbcategory.Text
       res["fldscheme"] = cmbdisctype.Text
       res["flddepartment"] = cmbdepart.Text
-      res["fldqueue"] = Row
+      res["fldqueue"] = txtquefirst.Value + (txtjump.Value * Row)
       res["fldconsultstart"] = dtconsultime.Value
 
       res["flduserid"] = modBasic.$lbluser
@@ -70,15 +72,16 @@ End
 
 Private Sub ShowGridView()
 
-  $rData = modDatabase.$myConn.Exec("select fldid,flddepartment,fldscheme,fldqueue,fldconsultstart from tblwebqueue where fldgroup=&1 and flddepartment=&2 ORDER BY fldconsultstart", cmbcategory.Text, cmbdepart.Text)                                  ''
+  $rData = modDatabase.$myConn.Exec("select fldid,flddepartment,fldscheme,fldqueue,fldconsultstart,fldconsultstart from tblwebqueue where fldgroup=&1 and flddepartment=&2 ORDER BY fldconsultstart", cmbcategory.Text, cmbdepart.Text)                                  ''
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
   With GridView1
     .Columns[0].Width = 1
-    .Columns[1].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 175 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 150 * modBasic.$AppWidthRatio
     .Columns[3].Width = 50 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 1
 
     .Columns[1].Text = "Department"
     .Columns[2].Text = "Package"
@@ -103,9 +106,8 @@ End
 Public Sub btndelete_Click()
 
   If GridView1.Rows.Selection.Count Then
-    modDatabase.$myConn.Delete("tblquota", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+    modDatabase.$myConn.Delete("tblwebqueue", "fldid=&1", GridView1[GridView1.Row, 0].Text)
     ShowGridView()
-    CLearComntrols()
   Endif
 
 End
@@ -113,5 +115,52 @@ End
 Public Sub btnexport_Click()
 
   modCHTMLReport.ExportGridToHTML(GridView1, "WEB QUEUE ALLOCATION", cmbdisctype.Text & " : " & cmbdepart.Text)
+
+End
+
+Public Sub GridView1_Click()
+
+  Dim res As Result
+  Dim xstr As String
+  Dim xque As Integer
+
+  ' If GridView1.Column = 1 Then
+  '   xstr = InputCombo("Select Department Name", "Update", cmbdepart.List, GridView1[GridView1.Row, 1].Text, True)
+  '   If xstr Then
+  '     res = modDatabase.$myConn.Edit("tblwebqueue", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+  '     res["flddepartment"] = xstr
+  '     res.Update
+  '     ShowGridView()
+  '   Endif
+  '
+  ' Else
+
+  If GridView1.Column = 2 Then
+    xstr = InputCombo("Select Package Name", "Update", cmbdisctype.List, GridView1[GridView1.Row, 2].Text, True)
+    If xstr Then
+      res = modDatabase.$myConn.Edit("tblwebqueue", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+      res["fldscheme"] = xstr
+      res.Update
+      ShowGridView()
+    Endif
+
+  Else If GridView1.Column = 3 Then
+    xque = InputValue("Update Queue Number", "Update", GridView1[GridView1.Row, 3].Text)
+    If xque Then
+      res = modDatabase.$myConn.Edit("tblwebqueue", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+      res["fldqueue"] = xque
+      res.Update
+      ShowGridView()
+    Endif
+
+  Else If GridView1.Column = 4 Then
+    xstr = InputMask("Update Consult Time", "00:00", "Update", "00:00")
+    If xstr Then
+      res = modDatabase.$myConn.Edit("tblwebqueue", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+      res["fldconsultstart"] = Time(CInt(Split(xstr, ":")[0]), CInt(Split(xstr, ":")[1]), 0, 0)
+      res.Update
+      ShowGridView()
+    Endif
+  Endif
 
 End

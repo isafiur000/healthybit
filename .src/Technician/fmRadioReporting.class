@@ -1955,12 +1955,12 @@ Private Sub FillSamplingGrid(res As Result)
         If modBasic.$RichtextResizeRow = "Yes" Then
           GridView1.Rows[res.Index].Height = Max(GridView1.Rows[res.Index].Height, GridView1[res.Index, Column].Font.RichTextHeight(GridView1[res.Index, Column].RichText, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
         Endif
+        GridView1.Rows[res.Index].Height = Max(GridView1.Rows[res.Index].Height, GridView1[res.Index, Column].Font.RichTextHeight(GridView1[res.Index, Column].Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
       Else If Column = 11 Then
         GridView1[res.Index, Column].Text = modReportVar.GetDateTimeReport(res["fldtime_report"], gb.GeneralDate)
       Else
         GridView1[res.Index, Column].Text = res[fld.Name]
       Endif
-      GridView1.Rows[res.Index].Height = Max(GridView1.Rows[res.Index].Height, GridView1[res.Index, Column].Font.RichTextHeight(GridView1[res.Index, Column].Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
       GridView1[res.Index, Column].WordWrap = True
 
       Column = Column + 1
@@ -2403,12 +2403,12 @@ Public Sub btnplay_Click()
   If GridView1.Rows.Selection.Count Then
     If GridView1[GridView1.Row, 15].Text Then
 
-      res = modDatabase.$myConn.Exec("select fldpacstudy,fldpacseries,fldpacsform from tblpatradiotest where fldid=&1", GridView1[GridView1.Row, 0].Text)
+      res = modDatabase.$myConn.Exec("select fldpacstudy,fldpacseries,fldpacsform,fldpacsnode from tblpatradiotest where fldid=&1 and fldencounterval=&2", GridView1[GridView1.Row, 0].Text, Trim(txtencid.Text))
       If res.Available Then
         If res["fldpacseries"] Then
-          xserver = InputCombo("Select PACS Node to Use", "PACS", modMisc.GetPacsServerList(), "", True)
+          xserver = modPACS.GetPacsNodeFromHost(res["fldpacsnode"])
           If xserver Then
-            modpacs.GetPacsSetting(xserver)
+            modPACS.GetPacsSetting(xserver)
             xLink = modPACS.DicomSeriesWebView(res["fldpacsform"], $encid, res["fldpacstudy"], res["fldpacseries"])
             modControlSub.OpenBrowser(xLink)
           Endif

@@ -329,41 +329,61 @@ End
 
 Public Sub GridView1_Click()
 
-  ClearSubInputs()
-  txttotal.Value = 0
-  txttotal.Value = GetTotalSelectedAMT(GridView1.Row)
-  modPatient.$PatProfileData.Remove(GridView1[GridView1.Row, 2].Text)
+  Dim xval As String
+  Dim res As Result
 
-  txtgridencid.Text = GridView1[GridView1.Row, 2].Text
-  txtgridnhsi.Text = modNonMedical.GetPatientNHSIbyCode(GridView1[GridView1.Row, 0].Text)
-  If Not txtgridnhsi.Text Then
-    txtgridnhsi.Text = modPatient.GetPatientExtCOdebyEnc(GridView1[GridView1.Row, 2].Text)
-  Endif
-  txtgridclaim.Text = GridView1[GridView1.Row, 0].Text
-  txtaccount.Text = GridView1[GridView1.Row, 1].Text
-  txtcomment.Text = ""
-  If txtgridclaim.Text Like "HIB-" & "*" Then
-    modBasic.$RegistCreateHIClaim = modClaim.$claimFormat
+  If GridView1.Column = 11 Then
+    If Not GridView1[GridView1.Row, 11].Text And If GridView1[GridView1.Row, 0].Text Like "HIB-" & "*" Then
+      xval = InputBox("Update Claim Code Manually", "HIB CLaim Code", "")
+      If xval Then
+        res = modDatabase.$myConn.Edit("tblclaimcode", "fldclaimid=&1", GridView1[GridView1.Row, 0].Text)
+        If res.Available Then
+          res["fldclaimcode"] = xval
+          res.Update
+          FillGridView()
+        Endif
+      Endif
+    Endif
+
   Else
-    modBasic.$RegistCreateHIClaim = "Disable"
-  Endif
-  txtformat.Text = modBasic.$RegistCreateHIClaim
-  If GridView1[GridView1.Row, 5].Text = "Patient Ward" Then
-    If GridView1[GridView1.Row, 4].Text = "Admitted" Then
-      btnupload.Enabled = False
-      btngridclaim.Enabled = False
+
+    ClearSubInputs()
+    txttotal.Value = 0
+    txttotal.Value = GetTotalSelectedAMT(GridView1.Row)
+    modPatient.$PatProfileData.Remove(GridView1[GridView1.Row, 2].Text)
+
+    txtgridencid.Text = GridView1[GridView1.Row, 2].Text
+    txtgridnhsi.Text = modNonMedical.GetPatientNHSIbyCode(GridView1[GridView1.Row, 0].Text)
+    If Not txtgridnhsi.Text Then
+      txtgridnhsi.Text = modPatient.GetPatientExtCOdebyEnc(GridView1[GridView1.Row, 2].Text)
+    Endif
+    txtgridclaim.Text = GridView1[GridView1.Row, 0].Text
+    txtaccount.Text = GridView1[GridView1.Row, 1].Text
+    txtcomment.Text = ""
+    If txtgridclaim.Text Like "HIB-" & "*" Then
+      modBasic.$RegistCreateHIClaim = modClaim.$claimFormat
     Else
+      modBasic.$RegistCreateHIClaim = "Disable"
+    Endif
+    txtformat.Text = modBasic.$RegistCreateHIClaim
+    If GridView1[GridView1.Row, 5].Text = "Patient Ward" Then
+      If GridView1[GridView1.Row, 4].Text = "Admitted" Then
+        btnupload.Enabled = False
+        btngridclaim.Enabled = False
+      Else
+        btnupload.Enabled = True
+        btngridclaim.Enabled = True
+      Endif
+    Else
+      modBasic.$RegistCreateHIClaim = modClaim.$claimFormat
       btnupload.Enabled = True
       btngridclaim.Enabled = True
     Endif
-  Else
-    modBasic.$RegistCreateHIClaim = modClaim.$claimFormat
-    btnupload.Enabled = True
-    btngridclaim.Enabled = True
-  Endif
 
-  SHowDiagnosis()
-  SHowCreditGrid()
+    SHowDiagnosis()
+    SHowCreditGrid()
+
+  Endif
 
 End
 

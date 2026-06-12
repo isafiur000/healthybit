@@ -1591,3 +1591,27 @@ Public Sub mnugetdicom_Click()
   Endif
 
 End
+
+Public Sub mnuviewpacs_Click()
+
+  Dim res As Result
+  Dim xserver As String
+  Dim xLink As String
+
+  res = modDatabase.$myConn.Exec("select fldpacstudy,fldpacseries,fldpacsform,fldpacsnode from tblpatradiotest where fldid=&1 and fldencounterval=&2", GridView1[GridView1.Row, 0].Text, GridView1[GridView1.Row, 1].Text)
+  If res.Available Then
+    If res["fldpacseries"] Then
+      xserver = modPACS.GetPacsNodeFromHost(res["fldpacsnode"])
+      If xserver Then
+        modPACS.GetPacsSetting(xserver)
+        xLink = modPACS.DicomSeriesWebView(res["fldpacsform"], GridView1[GridView1.Row, 1].Text, res["fldpacstudy"], res["fldpacseries"])
+        modControlSub.OpenBrowser(xLink)
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub mnudeskview_Click()
+
+End

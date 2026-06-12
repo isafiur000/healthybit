@@ -168,6 +168,10 @@ Public Sub DoCommandLineSub()
       ' Print "--create-deposit       Create Deposit. User, Password and Variable are required. The variable is"
       ' Print "                       quoted Concatenated string of EncounterID,Receipt No and Deposit joined by '|'"
       ' Print " "
+      ' Print "--radio-imageurl       Get Radiology DICOM Series URL. User, Password and Variable are required"
+      ' Print "                       The variable is quoted Concatenated string of EncounterID and Radiology"
+      ' Print "                       serial number joined by '|'"
+      ' Print " "
 
       Print "--print-invoice        Print Selected Invoice. User, Password and Variable are required."
       Print "                       The variable is Invoice No"
@@ -397,7 +401,7 @@ Public Sub DoCommandLineSub()
       modRepository.InsertLogToRemoteServer()
       Quit
 
-    Case "--create-invoice", "--create-deposit", "--check-invoice"
+    Case "--create-invoice", "--create-deposit", "--check-invoice", "--radio-imageurl"
       InitialProcedures()
       MMain.$SISHAppMode = modMisc.GetApplicationType()
       modCommand.CommandPrint(Application.Args[1], xuser, xpass, xvar, $isdebug)
@@ -696,6 +700,14 @@ Public Sub CommandPrint(sType As String, sUser As String, sPass As String, sVal 
       asx = Split(UnQuote(sVal), "|")
       If asx.Count = 2 Then
         xPath = GetCommandCheckInvoice(Trim(asx[0]), Trim(asx[1]))
+        Print xPath
+        Wait
+      Endif
+
+    Else If sType = "--radio-imageurl" Then
+      asx = Split(UnQuote(sVal), "|")
+      If asx.Count = 2 Then
+        xPath = GetCommandCreateRadioURL(Trim(asx[0]), Trim(asx[1]))
         Print xPath
         Wait
       Endif
@@ -1330,6 +1342,32 @@ Public Sub GetHourlyInvoiceReport(sType As String, xemail As String)
       modDevAll.SendSMTPEmail(xmails, xvar, xvar, sType & " Report", sType & " Report For " & xparam2, xPDFPath)
     Endif
   Endif
+
+End
+
+''---------------------- Radio Image URL --------------------
+Public Function GetCommandCreateRadioURL(encid As String, xSerial As Long) As String
+
+  Dim res As Result
+  Dim xLink As String
+  Dim xserver As String
+
+  res = modDatabase.$myConn.Exec("select fldpacstudy,fldpacseries,fldpacsform,fldpacsnode from tblpatradiotest where fldid=&1 and fldencounterval=&2", xSerial, encid)
+  If res.Available Then
+    If res["fldpacseries"] Then
+      xserver = modPACS.GetPacsNodeFromHost(res["fldpacsnode"])
+      If xserver Then
+        modPACS.GetPacsSetting(xserver)
+        xLink = modPACS.DicomSeriesWebView(res["fldpacsform"], encid, res["fldpacstudy"], res["fldpacseries"])
+      Else
+        xLink = "Host Not Found"
+      Endif
+    Else
+      xLink = "No Image Found"
+    Endif
+  Endif
+
+  Return xLink
 
 End
 

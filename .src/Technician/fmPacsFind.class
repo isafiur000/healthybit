@@ -10,6 +10,7 @@ Private $sFind As String
 Private $sGet As String
 Private $ssL As String
 Private xGridData As Variant[]
+Private xMarkedVar As Variant[]
 
 Public Sub _new(encid As String, sType As String)
 
@@ -25,6 +26,7 @@ Public Sub Form_Open()
   If MMain.$SISHAppMode = "HIS" Then
     cmbserver.Add("REPO")
   Endif
+  xMarkedVar = modRadioTest.GetPatientDicomStudies($encNo)
 
   If cmbserver.List.Count = 1 Then
     cmbserver.Index = 0
@@ -130,6 +132,26 @@ Public Sub btncopy_Click()
 
 End
 
+Private Sub GetMarkedOrthancList(sHost As String) As String[]
+
+  Dim sColl As Collection
+  Dim xList As String[]
+
+  xList = New String[]
+  For Each sColl In xMarkedVar
+    If sColl["Host"] = sHost Then
+      If sColl["Format"] = "Orthanc" Then
+        xList.Add(sColl["Study"])
+      Else
+        xList.Add(modPACS.GetOrthancString($encNo & "|" & sColl["Study"]))
+      Endif
+    Endif
+  Next
+
+  Return xList
+
+End
+
 ''=============================== First Grid ============================
 Private Function GetStudyData() As Variant[]
 
@@ -140,8 +162,10 @@ Private Function GetStudyData() As Variant[]
   Dim xVar As Variant[]
   Dim aColl As Collection
   Dim encid As String
+  Dim xMarkList As String[]
 
   xVar = New Variant[]
+  xMarkList = GetMarkedOrthancList(modPACS.$sHost)
   If $sFind = "Orthanc" Then
     For Each encid In $encList
       xcoll = modPACS.GetOrthancValueJSON("patients", modPACS.GetOrthancString(encid))
@@ -151,7 +175,11 @@ Private Function GetStudyData() As Variant[]
           aColl = New Collection
           aColl.Add("", CStr(0))
           aColl.Add(xcoll["MainDicomTags"]["PatientID"], CStr(1))
-          aColl.Add("", CStr(2))
+          If xMarkList.Exist(aList[Row]) = True Then
+            aColl.Add("icons/coll4.png", CStr(2))
+          Else
+            aColl.Add("", CStr(2))
+          Endif
           aColl.Add(xcoll["MainDicomTags"]["PatientName"], CStr(3))
           aColl.Add(xcoll["MainDicomTags"]["PatientSex"], CStr(4))
           aColl.Add("", CStr(5))
@@ -169,7 +197,11 @@ Private Function GetStudyData() As Variant[]
           aColl = New Collection
           aColl.Add(aList[Row]["00080020"]["Value"][0], CStr(0))
           aColl.Add(aList[Row]["00100020"]["Value"][0], CStr(1))
-          aColl.Add("", CStr(2))
+          If xMarkList.Exist(modPACS.GetOrthancString($encNo & "|" & aList[Row]["0020000D"]["Value"][0])) = True Then
+            aColl.Add("icons/coll4.png", CStr(2))
+          Else
+            aColl.Add("", CStr(2))
+          Endif
           aColl.Add(aList[Row]["00100010"]["Value"][0]["Alphabetic"], CStr(3))
           aColl.Add(aList[Row]["00100040"]["Value"][0], CStr(4))
           aColl.Add("", CStr(5))
@@ -187,7 +219,11 @@ Private Function GetStudyData() As Variant[]
           aColl = New Collection
           aColl.Add(aList[Row]["StudyDate"], CStr(0))
           aColl.Add(aList[Row]["PatientID"], CStr(1))
-          aColl.Add("", CStr(2))
+          If xMarkList.Exist(modPACS.GetOrthancString($encNo & "|" & aList[Row]["StudyInstanceUID"])) = True Then
+            aColl.Add("icons/coll4.png", CStr(2))
+          Else
+            aColl.Add("", CStr(2))
+          Endif
           aColl.Add(aList[Row]["PatientName"], CStr(3))
           aColl.Add(aList[Row]["PatientSex"], CStr(4))
           aColl.Add("", CStr(5))
@@ -226,7 +262,12 @@ Private Sub LoadVariableToGrid(xFinal As Variant[], xGridView As GridView)
   For Row = 0 To xFinal.Count - 1
     xRowVal = xFinal[Row]
     For Column = 0 To xGridView.Columns.Count - 1
-      xGridView[Row, Column].Text = xRowVal[CStr(Column)]
+      If Column = 2 Then
+        xGridView[Row, Column].Picture = Picture[xRowVal[CStr(Column)]]
+        xGridView[Row, Column].Text = ""
+      Else
+        xGridView[Row, Column].Text = xRowVal[CStr(Column)]
+      Endif
     Next
   Next
 
@@ -238,7 +279,7 @@ Private Sub ResizeFirstGrid()
     .Rows.Height = 1.25 * modBasic.$AppGridRowHeight
     .Columns[0].Width = 100 * modBasic.$AppWidthRatio
     .Columns[1].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[2].Width = 1
+    .Columns[2].Width = 25
     .Columns[3].Width = 175 * modBasic.$AppWidthRatio
     .Columns[4].Width = 50 * modBasic.$AppWidthRatio
     .Columns[5].Width = 1
@@ -442,6 +483,7 @@ Public Sub btnselect_Click()
       res["fldpacstudy"] = GridView2[GridView2.Row, 1].Text
       res["fldpacseries"] = GridView2[GridView2.Row, 3].Text
       res["fldpacsform"] = $sFind
+      res["fldpacsnode"] = modPACS.$sHost
       res.Update
       Balloon.Info(("Information updated"), btnselect)
       Balloon.Delay = modBasic.$BalloonDelay

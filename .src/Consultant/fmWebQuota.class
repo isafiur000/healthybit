@@ -147,7 +147,7 @@ Private Sub ShowGridView()
     .Columns[3].Width = 125 * modBasic.$AppWidthRatio
     .Columns[4].Width = 150 * modBasic.$AppWidthRatio
     .Columns[5].Width = 50 * modBasic.$AppWidthRatio
-    .Columns[6].Width = 175 * modBasic.$AppWidthRatio
+    .Columns[6].Width = 200 * modBasic.$AppWidthRatio
     .Columns[7].Width = 75 * modBasic.$AppWidthRatio
 
     .Columns[2].Text = "Department"
@@ -181,5 +181,83 @@ End
 Public Sub btnexport_Click()
 
   modCHTMLReport.ExportGridToHTML(GridView1, "WEB QUOTA ALLOCATION", modReportVar.GetDateTimeReport(dtquota.Value, gb.MediumDate))
+
+End
+
+Public Sub GridView1_Click()
+
+  Dim res As Result
+  Dim xstr As String
+  Dim xval As Float
+  Dim xLst As String[]
+
+  If GridView1.Column = 3 Then
+    xstr = InputCombo("Select Package Name", "Update", cmbdisctype.List, GridView1[GridView1.Row, 3].Text, True)
+    If xstr Then
+      res = modDatabase.$myConn.Edit("tblquota", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+      res["fldscheme"] = xstr
+      res.Update
+      ShowGridView()
+    Endif
+
+  Else If GridView1.Column = 5 Then
+    xval = InputValue("Update Quota Count", "Update", GridView1[GridView1.Row, 5].Text)
+    If xval Then
+      res = modDatabase.$myConn.Edit("tblquota", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+      res["fldwebquota"] = xval
+      res.Update
+      ShowGridView()
+    Endif
+
+  Else If GridView1.Column = 6 Then
+    xLst = modNonMedical.NonStockBillActiveItemArray(modNonMedical.GetBillItemCategoryFromCombo("Service"), modNonMedical.GetDiscBindBillMode(GridView1[GridView1.Row, 3].Text))
+    If xLst.Count Then
+      xstr = GridViewNew("Select Particulars", xLst, False, GridView1, GridView1.Height)
+      If xstr Then
+        res = modDatabase.$myConn.Edit("tblquota", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+        res["flditemname"] = xstr
+        res["flditemcost"] = modNonMedical.GetCashBillItemCost(xstr, "General Services")
+        res.Update
+        ShowGridView()
+      Endif
+    Endif
+
+  Endif
+
+End
+
+Public Sub btncopy_Click()
+
+  Dim xdate As Date
+  Dim res As Result
+  Dim res1 As Result
+
+  If GridView1.Rows.Count Then
+    xdate = GetDateValue("Select Date For Consultation", "Copy Booking Quota", Now())
+    If xdate Then
+      res1 = modDatabase.$myConn.Exec("select fldgroup,fldscheme,flddepartment,fldconsultant,flditemname,flditemcost,fldwebquota from tblquota where fldid=&1", GridView1[GridView1.Row, 0].Text)
+      cmbcategory.Text = res1["fldgroup"]
+      dtquota.Value = xdate
+
+      res = modDatabase.$myConn.Create("tblquota")
+      res["fldgroup"] = res1["fldgroup"]
+      res["fldscheme"] = res1["fldscheme"]
+      res["fldconsultdate"] = xdate
+      res["flddepartment"] = res1["flddepartment"]
+      res["fldconsultant"] = res1["fldconsultant"]
+      res["flditemname"] = res1["flditemname"]
+      res["flditemcost"] = res1["flditemcost"]
+      res["fldwebquota"] = res1["fldwebquota"]
+
+      res["flduserid"] = modBasic.$lbluser
+      res["fldtime"] = Now()
+      res["fldcomp"] = modBasic.$compID
+      res["fldsave"] = True
+      res["flduptime"] = ""
+      res.Update
+
+      ShowGridView()
+    Endif
+  Endif
 
 End
