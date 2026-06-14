@@ -189,7 +189,7 @@ Public Sub GridView1_Click()
     $encid = GridView1[GridView1.Row, 1].Text
     GetPatientProfile($encid)
 
-    cmbnewscheme.List = modBasic.$BillDiscountCash
+    cmbnewscheme.List = modNonMedical.GetHigherCostSchemes(modBasic.$BillDiscountCash, GridView1[GridView1.Row, 3].Text)
     If cmbnewscheme.List.Count = 0 Then
       cmbnewscheme.Add(GridView1[GridView1.Row, 3].Text)
     Endif
@@ -309,8 +309,8 @@ Public Sub ListView1_Click()
   Else
     xtot = 0
     xadmn = 0
-    xtot = modPharmacy.GetCardexDispensedQTY(ListView1[ListView1.Row, 6].Text, ListView1[ListView1.Row, 0].Text)
-    xadmn = modPharmacy.GetCardexAdministerQTY(ListView1[ListView1.Row, 6].Text, ListView1[ListView1.Row, 0].Text)
+    xtot = modPharmacy.GetCardexDispensedQTY(ListView1[ListView1.Row, 6].Text, ListView1[ListView1.Row, 2].Text)
+    xadmn = modPharmacy.GetCardexAdministerQTY(ListView1[ListView1.Row, 6].Text, ListView1[ListView1.Row, 2].Text)
     txtbalance.Value = xtot - xadmn
   Endif
 

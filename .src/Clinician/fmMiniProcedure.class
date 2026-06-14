@@ -31,7 +31,7 @@ Public Sub Form_Open()
 
   modGeneralMain.ArrangeFormCentre(Me, "False")
 
-  cmbdisctype.List = modBasic.$BillDiscountCash
+  cmbdisctype.List = modNonMedical.GetHigherCostSchemes(modBasic.$BillDiscountCash, $sPackage)
   If cmbdisctype.List.Count = 0 Then
     cmbdisctype.Add($sPackage)
   Endif

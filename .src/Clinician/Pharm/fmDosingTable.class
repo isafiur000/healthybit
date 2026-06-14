@@ -1,13 +1,15 @@
 ' Gambas class file
 
 Private $encid As String
+Private $useCardex As Boolean
 
 Private $rData As Result
 Private $gridVar As Variant[]
 
-Public Sub _new(encid As String)
+Public Sub _new(encid As String, useCardex As Boolean)
 
   $encid = encid
+  $useCardex = useCardex
   ShowMedicines()
 
 End
@@ -29,7 +31,7 @@ Public Sub btndosingroutine_Click()
   Dim hForm As FmDoseMobile
 
   If $encid Then
-    hForm = New FmDoseMobile($encid)
+    hForm = New FmDoseMobile($encid, $useCardex)
     hForm.ShowModal
     ShowMedicines()
   Endif

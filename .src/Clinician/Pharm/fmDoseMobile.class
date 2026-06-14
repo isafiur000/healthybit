@@ -1,7 +1,6 @@
 ' Gambas class file
 
 Private $encid As String
-Private $sTatus As String
 Private $useCardex As Boolean
 Private $rData As Result
 Private AppFactor As Float
@@ -28,22 +27,16 @@ Private aFreqVal As New Object[50]
 Private aCardex As New Object[50]
 Private aBlankBox As New Object[50]
 
-Public Sub _new(encid As String)
+Public Sub _new(encid As String, useCardex As Boolean)
 
   $encid = encid
+  $useCardex = useCardex
 
 End
 
 Public Sub Form_Open()
 
   txtname.Text = modPatient.GetPatientNameByEnc($encid)
-  $sTatus = modPatient.CurrentAdmissionStatus($encid)
-  Select $sTatus
-    Case "Admitted", "Discharged", "LAMA", "Death", "Refer", "Absconder"
-      $useCardex = True
-    Case Else
-      $useCardex = False
-  End Select
   AppFactor = modBasic.$AppScaleFactor
   ' $minTime = DateAdd(Now(), gb.Hour, -3)
   ' $maxTime = DateAdd(Now(), gb.Hour, 3)
@@ -157,7 +150,7 @@ Private Sub LoadControlsWeb()
 
           xallow = False
           If $useCardex = True Then
-            xallow = GetMedCardex($encid, $rData["fldid"])
+            xallow = GetMedCardex($encid, $rData["flditem"])
           Else
             xallow = $rData["fldsave_order"]
           Endif
@@ -274,15 +267,15 @@ Private Sub LoadControlsWeb()
 
 End
 
-Private Function GetMedCardex(encid As String, sCardex As Long) As Boolean
+Private Function GetMedCardex(encid As String, xStockId As String) As Boolean
 
   Dim xtot As Float
   Dim xadmn As Float
   Dim xicon As Boolean
 
-  If sCardex Then
-    xtot = modPharmacy.GetCardexDispensedQTY(encid, sCardex)
-    xadmn = modPharmacy.GetCardexAdministerQTY(encid, sCardex)
+  If xStockId Then
+    xtot = modPharmacy.GetCardexDispensedQTY(encid, xStockId)
+    xadmn = modPharmacy.GetCardexAdministerQTY(encid, xStockId)
     If xtot > xadmn Then
       xicon = True
     Else

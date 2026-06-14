@@ -1338,7 +1338,12 @@ Public Sub mnudrugdosing_Click()
 
   If txtencid.Text Then
     Inc Application.Busy
-    xPath = modCHTMLPatient.ShowNursingDosing(Trim(txtencid.Text))
+    Select $sTatus
+      Case "Admitted", "Discharged", "LAMA", "Death", "Refer", "Absconder"
+        xPath = modCHTMLPatient.ShowNursingDosing(Trim(txtencid.Text), True)
+      Case Else
+        xPath = modCHTMLPatient.ShowNursingDosing(Trim(txtencid.Text), False)
+    End Select
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
   Endif
@@ -1351,7 +1356,12 @@ Public Sub mnuinfusionview_Click()
 
   If txtencid.Text Then
     Inc Application.Busy
-    xPath = modCHTMLPatient.ShowInfusionDosing(Trim(txtencid.Text))
+    Select $sTatus
+      Case "Admitted", "Discharged", "LAMA", "Death", "Refer", "Absconder"
+        xPath = modCHTMLPatient.ShowInfusionDosing(Trim(txtencid.Text), True)
+      Case Else
+        xPath = modCHTMLPatient.ShowInfusionDosing(Trim(txtencid.Text), False)
+    End Select
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
   Endif

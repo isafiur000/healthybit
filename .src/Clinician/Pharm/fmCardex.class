@@ -1,0 +1,32 @@
+' Gambas class file
+
+Private $encid As String
+Private $sTatus As String
+Private $DiscPackage As String
+Private $hForm As FmIPMedOrder
+Private $hForm1 As FmDosingTable
+
+Public Sub _new(encid As String, sStatus As String, sPackage As String)
+
+  $encid = encid
+  $sTatus = sStatus
+  $DiscPackage = sPackage
+
+End
+
+Public Sub Form_Open()
+
+  $hForm = New FmIPMedOrder($encid, $status, $DiscPackage, Panel1)
+  $hForm1 = New FmDosingTable($encid, True, Panel2)
+
+End
+
+Public Sub Form_KeyRelease()
+
+  If Key.Code = Key.Esc Then
+    Me.Close
+  Else
+    modGeneralmain.GoToNextControlTab()
+  Endif
+
+End

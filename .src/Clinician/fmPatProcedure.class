@@ -470,7 +470,7 @@ Private Sub BasicInfoPatient()
     hPtArchive = New FmClinArchive($PatientNum, pnlarchivbe)
 
     ButtonControl()
-    cmbdisctype.List = modBasic.$BillDiscountCash
+    cmbdisctype.List = modNonMedical.GetHigherCostSchemes(modBasic.$BillDiscountCash, $billModeProcedure)
     If cmbdisctype.List.Count = 0 Then
       cmbdisctype.Add($billModeProcedure)
     Endif
@@ -2359,7 +2359,7 @@ Public Sub btndosepre_Click()
 
   If txtencid.Text Then
     If $ProcIndex Then
-      hForm = New FmDoseMobile(Trim(txtencid.Text))
+      hForm = New FmDoseMobile(Trim(txtencid.Text), False)
       hForm.ShowModal
       FillDosingGrid("Current")
     Endif
@@ -2373,7 +2373,7 @@ Public Sub btninfusionpre_Click()
 
   If txtencid.Text Then
     If $ProcIndex Then
-      hForm = New FmIVInfusion(Trim(txtencid.Text))
+      hForm = New FmIVInfusion(Trim(txtencid.Text), False)
       hForm.ShowModal
       FillDosingGrid("Current")
     Endif

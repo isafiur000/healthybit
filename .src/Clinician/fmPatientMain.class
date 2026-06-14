@@ -628,7 +628,7 @@ Private Sub BasicInfoPatient()
 
     hMultiCompl = New FmMultiComplaints(Trim(txtencid.Text), pnlmulticomplaints)
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
-    hDosTable = New FmDosingTable(Trim(txtencid.Text), pnldosetable)
+    hDosTable = New FmDosingTable(Trim(txtencid.Text), True, pnldosetable)
     hIpCardex = New FmIPMedOrder(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlcardex)
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
     hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
@@ -3037,7 +3037,8 @@ End
 
 Private Sub ShowMedFluids()
 
-  Dim sql As String
+  Dim sql1 As String
+  Dim sql2 As String
   Dim xrouLst As String[] = ["fluid", "CIV", "CIn(Epid)", "CIn(Block)"]
   Dim j As Integer
 
@@ -3045,13 +3046,9 @@ Private Sub ShowMedFluids()
     xrouLst[j] = "'" & xrouLst[j] & "'"
   Next
 
-  If chkalldate.Value = True Then
-    sql = "select fldid,fldid,CONCAT(flditem, '|', COALESCE(fldmixing, '')),flddose,fldfreq,flddays,fldstarttime,fldcurval,fldstarttime,fldstatus,fldendtime,flddirection,fldadminsite,fldmixing,fldroute,flditem,fldmixvolume,fldmixrate from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldroute IN(" & xrouLst.Join(",") & ") and fldcurval=&3 and flddose>&4 ORDER BY fldstarttime DESC"
-    $rFludRes = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), True, "Continue", 0)
-  Else
-    sql = "select fldid,fldid,CONCAT(flditem, '|', COALESCE(fldmixing, '')),flddose,fldfreq,flddays,fldstarttime,fldcurval,fldstarttime,fldstatus,fldendtime,flddirection,fldadminsite,fldmixing,fldroute,flditem,fldmixvolume,fldmixrate from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldroute IN(" & xrouLst.Join(",") & ") and fldcurval=&3 and flddose>&4 and fldstarttime<=&5 and fldendtime>=&6 ORDER BY fldstarttime DESC"
-    $rFludRes = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), True, "Continue", 0, modDate.EndSqlDate(Now()), modDate.StartSqlDate(Now()))
-  Endif
+  sql1 = "select fldid,fldid,CONCAT(flditem, '|', COALESCE(fldmixing, '')),flddose,fldfreq,flddays,fldstarttime,fldcurval,fldstarttime,fldcurval,fldendtime,flddirection,fldadminsite,fldmixing,fldroute,flditem,fldmixvolume,fldmixrate from tblinpatdosing where fldencounterval=&1 and fldroute IN(" & xrouLst.Join(",") & ") and fldcurval=&2 and flddose>&3 and flddays>&3 and fldstarttime<=&4 and fldendtime>=&5"
+  sql2 = "select fldid,fldid,CONCAT(flditem, '|', COALESCE(fldmixing, '')),flddose,fldfreq,flddays,fldstarttime,fldcurval,fldstarttime,fldcurval,fldendtime,flddirection,fldadminsite,fldmixing,fldroute,flditem,fldmixvolume,fldmixrate from tblinpatdosing where fldencounterval=&1 and fldroute IN(" & xrouLst.Join(",") & ") and fldcurval=&2 and flddose>&3 and flddays=&3"
+  $rFludRes = modDatabase.$myConn.Exec(sql1 & " UNION " & sql2, Trim(txtencid.Text), "Continue", 0, Now(), DateAdd(Now(), gb.Hour, -3))
   $aFludFields = New String[]
   modGridView.ReadSmallData(grdfluid, $rFludRes, $aFludFields)
 
@@ -3194,39 +3191,18 @@ Public Sub grdfluid_Click()
   txtfluidname.Text = grdfluid[grdfluid.Row, 15].Text
   FillFluidGridView(grdfluid[grdfluid.Row, 0].Text)
   lblduration.Text = grdfluid[grdfluid.Row, 11].Text
-  If grdfluid.Column = 7 Then
-    xval = InputCombo(grdfluid[grdfluid.Row, 15].Text, ("Select Current Status"), xx, grdfluid[grdfluid.Row, 7].Text, True)
-    If xval Then
-      res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", grdfluid[grdfluid.Row, 0].Text)
-      res["fldcurval"] = xval
-      res["xyz"] = False
-      res.Update()
-      ShowMedFluids()
-    Endif
 
-  Else If grdfluid.Column = 5 Then
-    yval = InputValue(grdfluid[grdfluid.Row, 15].Text, ("Select Number of Days"), grdfluid[grdfluid.Row, 5].Text)
-    If yval Then
-      res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", grdfluid[grdfluid.Row, 0].Text)
-      res["flddays"] = yval
-      res["fldendtime"] = DateAdd(grdfluid[grdfluid.Row, 8].Text, gb.Day, CInt(yval))
-      res["xyz"] = False
-      res.Update()
-      ShowMedFluids()
-    Endif
-
-  Else If grdfluid.Column = 1 Then
+  If grdfluid.Column = 1 Then
     If grdfluid[grdfluid.Row, 7].Text = "Continue" Then
       If grdfluid[grdfluid.Row, 1].Picture = Picture["icon:/tiny/next"] Then
         yval = InputValue(("Enter Rate of Administration in ") & "<b>mL/Hour</b> FOR <b>" & grdfluid[grdfluid.Row, 15].Text & "</b>", "Administration Rate", 0)
         If yval Then
-          modPharmSub.InsertNurDosing(Trim(txtencid.Text), grdfluid[grdfluid.Row, 0].Text, 0, yval, "mL/Hour", Now())
+          modPharmSub.InsertNurDosingIndoor(Trim(txtencid.Text), 0, grdfluid[grdfluid.Row, 0].Text, yval, "mL/Hour", grdfluid[grdfluid.Row, 15].Text, grdfluid[grdfluid.Row, 3].Text, grdfluid[grdfluid.Row, 4].Text, Now())
           FillFluidGridView(grdfluid[grdfluid.Row, 0].Text)
           ShowMedFluids()
         Endif
       Endif
     Endif
-
   Endif
   grdfluid.Row = Row
 
@@ -3234,7 +3210,7 @@ End
 
 Private Sub FillFluidGridView(dosno As Long)
 
-  $rRateRes = modDatabase.$syConn.Exec("select fldid,fldid,fldvalue,fldunit,fldid,fldfromtime,fldtotime,flddoseno from tblnurdosing where fldencounterval=&1 and flddoseno=&2 and fldfromtime IS NOT NULL ORDER BY fldid DESC", Trim(txtencid.Text), dosno)
+  $rRateRes = modDatabase.$syConn.Exec("select fldid,fldid,fldvalue,fldunit,fldid,fldfromtime,fldtotime,fldcardex from tblnurdosing where fldencounterval=&1 and fldcardex=&2 and fldfromtime IS NOT NULL ORDER BY fldid DESC", Trim(txtencid.Text), dosno)
   $aRateFields = New String[]
   modGridView.ReadSmallData(grdfluiddata, $rRateRes, $aRateFields)
 
@@ -3320,7 +3296,7 @@ Private Function GetFluidAdminStatusCode(dosno As Long) As String
   Dim res As Result
   Dim xx As String
 
-  res = modDatabase.$syConn.Exec("select fldid,fldfromtime,fldtotime from tblnurdosing where fldencounterval=&1 and flddoseno=&2 ORDER BY fldid DESC", Trim(txtencid.Text), dosno)
+  res = modDatabase.$syConn.Exec("select fldid,fldfromtime,fldtotime from tblnurdosing where fldencounterval=&1 and fldcardex=&2 ORDER BY fldid DESC", Trim(txtencid.Text), dosno)
   If res.Available Then
     If res["fldfromtime"] And If Not res["fldtotime"] Then
       xx = "icon:/tiny/stop"
@@ -3746,7 +3722,7 @@ Public Sub btnivdrip_Click()
   Dim hForm As FmIVInfusion
 
   If txtencid.Text Then
-    hForm = New FmIVInfusion(Trim(txtencid.Text))
+    hForm = New FmIVInfusion(Trim(txtencid.Text), True)
     hForm.ShowModal
   Endif
 
@@ -4658,7 +4634,7 @@ Public Sub mnudosing_Click()
 
   If txtencid.Text Then
     Inc Application.Busy
-    xPath = modCHTMLPatient.ShowNursingDosing(Trim(txtencid.Text))
+    xPath = modCHTMLPatient.ShowNursingDosing(Trim(txtencid.Text), True)
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
   Endif
@@ -4671,7 +4647,7 @@ Public Sub mnuinfusionview_Click()
 
   If txtencid.Text Then
     Inc Application.Busy
-    xPath = modCHTMLPatient.ShowInfusionDosing(Trim(txtencid.Text))
+    xPath = modCHTMLPatient.ShowInfusionDosing(Trim(txtencid.Text), True)
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
   Endif

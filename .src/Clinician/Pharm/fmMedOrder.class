@@ -73,7 +73,7 @@ Public Sub Form_Open()
   hOwnStockForm.SetOwnDepartment($Dept)
   $medForm = New FmMedPrescribe($encid, $status, $DiscPackage, "tblpatdosing", pnlcpoe)
 
-  cmbdisctype.List = modBasic.$BillDiscountCash
+  cmbdisctype.List = modNonMedical.GetHigherCostSchemes(modBasic.$BillDiscountCash, $DiscPackage)
   If cmbdisctype.List.Count = 0 Then
     cmbdisctype.Add($DiscPackage)
   Endif

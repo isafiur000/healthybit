@@ -342,17 +342,63 @@ Public Sub btnexecstudy_Click()
 
 End
 
+Private Sub GetMarkedOrthancSeries(sHost As String, sStudy As String) As String[]
+
+  Dim sColl As Collection
+  Dim xList As String[]
+
+  xList = New String[]
+  If $sFind = "Orthanc" Then
+    For Each sColl In xMarkedVar
+      If sColl["Host"] = sHost Then
+        If sColl["Format"] = "Orthanc" Then
+          If sColl["Study"] = sStudy Then
+            xList.Add(sColl["Series"])
+          Endif
+        Else
+          If modPACS.GetOrthancString($encNo & "|" & sColl["Study"]) = sStudy Then
+            xList.Add(modPACS.GetOrthancString($encNo & "|" & sColl["Study"] & "|" & sColl["Series"]))
+          Endif
+        Endif
+      Endif
+    Next
+
+  Else
+    For Each sColl In xMarkedVar
+      If sColl["Host"] = sHost Then
+        If sColl["Format"] = "Orthanc" Then
+          If sColl["Study"] = modPACS.GetOrthancString($encNo & "|" & sStudy) Then
+            xList.Add(sColl["Series"])
+          Endif
+        Else
+          If sColl["Study"] = sStudy Then
+            xList.Add(modPACS.GetOrthancString($encNo & "|" & sColl["Study"] & "|" & sColl["Series"]))
+          Endif
+        Endif
+      Endif
+    Next
+
+  Endif
+
+  Return xList
+
+End
+
 ''========================== Second Grid ==============================
 Public Sub GridView1_Click()
 
   Dim Row As Integer
   Dim xcoll As Collection
   Dim aList As Variant[]
+  Dim xMarkList As String[]
 
   GridView2.Clear
+  xMarkList = New Variant[]
   $encid = GridView1[GridView1.Row, 1].Text
   txtstudycode.Text = GridView1[GridView1.Row, 6].Text
-  GridView2.Columns.Count = 4
+  xMarkList = GetMarkedOrthancSeries(modPACS.$sHost, txtstudycode.Text)
+
+  GridView2.Columns.Count = 5
   If $sFind = "Orthanc" Then
     xcoll = modPACS.GetOrthancValueJSON("studies", GridView1[GridView1.Row, 6].Text)
     If xcoll And If xcoll.Count Then
@@ -363,7 +409,11 @@ Public Sub GridView1_Click()
         GridView2[Row, 1].Text = GridView1[GridView1.Row, 6].Text
         GridView2[Row, 2].Picture = Picture["icon:/tiny/attach"]
         GridView2[Row, 2].Text = ""
-        GridView2[Row, 3].Text = aList[Row]
+        If xMarkList.Exist(aList[Row]) = True Then
+          GridView2[Row, 3].Picture = Picture["icons/coll4.png"]
+        Endif
+        GridView2[Row, 3].Text = ""
+        GridView2[Row, 4].Text = aList[Row]
       Next
     Endif
 
@@ -376,7 +426,11 @@ Public Sub GridView1_Click()
         GridView2[Row, 1].Text = GridView1[GridView1.Row, 6].Text
         GridView2[Row, 2].Picture = Picture["icon:/tiny/attach"]
         GridView2[Row, 2].Text = ""
-        GridView2[Row, 3].Text = aList[Row]["0020000E"]["Value"][0]
+        If xMarkList.Exist(modPACS.GetOrthancString($encNo & "|" & txtstudycode.Text & "|" & aList[Row]["0020000E"]["Value"][0])) = True Then
+          GridView2[Row, 3].Picture = Picture["icons/coll4.png"]
+        Endif
+        GridView2[Row, 3].Text = ""
+        GridView2[Row, 4].Text = aList[Row]["0020000E"]["Value"][0]
       Next
     Endif
 
@@ -389,7 +443,11 @@ Public Sub GridView1_Click()
         GridView2[Row, 1].Text = GridView1[GridView1.Row, 6].Text
         GridView2[Row, 2].Picture = Picture["icon:/tiny/attach"]
         GridView2[Row, 2].Text = ""
-        GridView2[Row, 3].Text = aList[Row]["SeriesInstanceUID"]  'GetDicomValue(FileList[Row], "SeriesInstanceUID")
+        If xMarkList.Exist(modPACS.GetOrthancString($encNo & "|" & txtstudycode.Text & "|" & aList[Row]["SeriesInstanceUID"])) = True Then
+          GridView2[Row, 3].Picture = Picture["icons/coll4.png"]
+        Endif
+        GridView2[Row, 3].Text = ""
+        GridView2[Row, 4].Text = aList[Row]["SeriesInstanceUID"]  'GetDicomValue(FileList[Row], "SeriesInstanceUID")
       Next
     Endif
 
@@ -405,10 +463,11 @@ Private Sub ResizeSecondGridView()
     .Columns[0].Width = 75 * modBasic.$AppWidthRatio
     .Columns[1].Width = 1 ''Study UID
     .Columns[2].Width = 25 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 500 * modBasic.$AppWidthRatio ''series UID
+    .Columns[3].Width = 25 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 500 * modBasic.$AppWidthRatio ''series UID
 
     .Columns[0].Text = "Modality"
-    .Columns[3].Text = "SeriesInstanceUID"
+    .Columns[4].Text = "SeriesInstanceUID"
   End With
   GridView2.Row = 0
 
@@ -420,7 +479,7 @@ Public Sub GridView2_Click()
 
   If GridView2.Column = 2 Then
     If cmbserver.Text Then
-      hForm = New FmPACSInstance(cmbserver.Text, $encid, GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 3].Text)
+      hForm = New FmPACSInstance(cmbserver.Text, $encid, GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 4].Text)
       hForm.ShowModal
     Endif
   Endif
@@ -437,9 +496,9 @@ Public Sub btnsave_Click()
     xdir = Dialog.Path
     Inc Application.Busy
     If $sGet = "Orthanc" And If chkanonym.Value = False Then
-      modPACS.DicomSeriesDownload(xdir, $sFind, $encid, GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 3].Text)
+      modPACS.DicomSeriesDownload(xdir, $sFind, $encid, GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 4].Text)
     Else
-      xVar = modPACS.GetDicomDIR($sFind, xdir &/ GridView2[GridView2.Row, 3].Text, $encid, GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 3].Text, chkanonym.Value)                ''
+      xVar = modPACS.GetDicomDIR($sFind, xdir &/ GridView2[GridView2.Row, 4].Text, $encid, GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 4].Text, chkanonym.Value)                ''
     Endif
     Dec Application.Busy
   Endif
@@ -450,7 +509,7 @@ Public Sub btndesktop_Click()
 
   If GridView2.Rows.Selection.Count Then
     Inc Application.Busy
-    modPACS.DicomSeriesAppView($sFind, $encid, GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 3].Text, chkanonym.Value)
+    modPACS.DicomSeriesAppView($sFind, $encid, GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 4].Text, chkanonym.Value)
     Dec Application.Busy
   Endif
 
@@ -461,7 +520,7 @@ Public Sub btnwebview_Click()
   Dim xLink As String
 
   If GridView2.Rows.Selection.Count Then
-    xLink = modPACS.DicomSeriesWebView($sFind, $encid, GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 3].Text)
+    xLink = modPACS.DicomSeriesWebView($sFind, $encid, GridView2[GridView2.Row, 1].Text, GridView2[GridView2.Row, 4].Text)
     modControlSub.OpenBrowserNormal(xLink, $encNo, "PACS")
   Endif
 
@@ -481,7 +540,7 @@ Public Sub btnselect_Click()
     res = modDatabase.$myConn.Edit("tblpatradiotest", "fldid=&1", $sIndex)
     If res.Available Then
       res["fldpacstudy"] = GridView2[GridView2.Row, 1].Text
-      res["fldpacseries"] = GridView2[GridView2.Row, 3].Text
+      res["fldpacseries"] = GridView2[GridView2.Row, GridView2[GridView2.Row, 3].Text].Text
       res["fldpacsform"] = $sFind
       res["fldpacsnode"] = modPACS.$sHost
       res.Update

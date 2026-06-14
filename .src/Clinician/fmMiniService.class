@@ -102,7 +102,7 @@ End
 Private Sub SetPackageLoad()
   ''Service
 
-  cmbdiscservice.List = modBasic.$BillDiscountCash
+  cmbdiscservice.List = modNonMedical.GetHigherCostSchemes(modBasic.$BillDiscountCash, $discModeService)
   If cmbdiscservice.List.Count = 0 Then
     cmbdiscservice.Add($discModeService)
   Endif
@@ -113,7 +113,7 @@ Private Sub SetPackageLoad()
   ShowServiceParam(cmbdiscservice.Text)
 
   ''Procedures
-  cmbdiscprocedure.List = modBasic.$BillDiscountCash
+  cmbdiscprocedure.List = modNonMedical.GetHigherCostSchemes(modBasic.$BillDiscountCash, $discModeProcedure)
   If cmbdiscprocedure.List.Count = 0 Then
     cmbdiscprocedure.Add($discModeProcedure)
   Endif
@@ -124,7 +124,7 @@ Private Sub SetPackageLoad()
   ShowProcedureParam(cmbdiscprocedure.Text)
 
   ''Others
-  cmbdiscother.List = modBasic.$BillDiscountCash
+  cmbdiscother.List = modNonMedical.GetHigherCostSchemes(modBasic.$BillDiscountCash, $discModeOthers)
   If cmbdiscother.List.Count = 0 Then
     cmbdiscother.Add($discModeOthers)
   Endif
@@ -135,7 +135,7 @@ Private Sub SetPackageLoad()
   ShowOthersParam(cmbdiscother.Text)
 
   ''Surgicals
-  cmbdiscpharmacy.List = modBasic.$BillDiscountCash
+  cmbdiscpharmacy.List = modNonMedical.GetHigherCostSchemes(modBasic.$BillDiscountCash, $discModePharmacy)
   If cmbdiscpharmacy.List.Count = 0 Then
     cmbdiscpharmacy.Add($discModePharmacy)
   Endif

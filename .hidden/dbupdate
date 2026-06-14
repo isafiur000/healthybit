@@ -1266,7 +1266,6 @@ ALTER TABLE tblinpatdosing ADD COLUMN fldmixvolume DOUBLE NULL
 ALTER TABLE tblinpatdosing ADD COLUMN fldmixrate DOUBLE NULL
 
 ''-------------------- 0.5.25 -----------------------------
-ALTER TABLE tbldiscount ADD fldbookday INT( 11 ) NULL
 ALTER TABLE tblservicecost ADD fldminlimit DOUBLE NULL
 
 ALTER TABLE tblclaimcode ADD COLUMN fldclaimcode VARCHAR( 150 ) NULL
@@ -1281,6 +1280,10 @@ ALTER TABLE tblwebqueue ADD fldscheme VARCHAR( 150 ) NULL
 ALTER TABLE tblonlinebook ADD fldgroup VARCHAR( 150 ) NULL
 
 ALTER TABLE tblpatradiotest ADD COLUMN fldpacsnode VARCHAR( 255 ) NULL
+
+ALTER TABLE tbldiscount ADD fldbookday INT( 11 ) NULL
+ALTER TABLE tbldiscount ADD fldcostlevel INT( 11 ) NULL
+
 
 
 

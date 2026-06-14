@@ -2127,7 +2127,7 @@ Public Sub mnumeddosing_Click()
   Dim hForm As FmDoseMobile
 
   If txtencid.Text Then
-    hForm = New FmDoseMobile(Trim(txtencid.Text))
+    hForm = New FmDoseMobile(Trim(txtencid.Text), False)
     hForm.ShowModal
   Endif
 
@@ -2138,7 +2138,7 @@ Public Sub mnuivinfusion_Click()
   Dim hForm As FmIVInfusion
 
   If txtencid.Text Then
-    hForm = New FmIVInfusion(Trim(txtencid.Text))
+    hForm = New FmIVInfusion(Trim(txtencid.Text), False)
     hForm.ShowModal
   Endif
 
@@ -2934,7 +2934,7 @@ Public Sub mnubabydosing_Click()
 
   If cmbbabyencid.Text Then
     Inc Application.Busy
-    xPath = modCHTMLPatient.ShowNursingDosing(Trim(cmbbabyencid.Text))
+    xPath = modCHTMLPatient.ShowNursingDosing(Trim(cmbbabyencid.Text), False)
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(Trim(cmbbabyencid.Text), xPath, "ReportSize")
   Endif
@@ -2947,7 +2947,7 @@ Public Sub mnuinfusionview_Click()
 
   If cmbbabyencid.Text Then
     Inc Application.Busy
-    xPath = modCHTMLPatient.ShowInfusionDosing(Trim(cmbbabyencid.Text))
+    xPath = modCHTMLPatient.ShowInfusionDosing(Trim(cmbbabyencid.Text), False)
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(Trim(cmbbabyencid.Text), xPath, "ReportSize")
   Endif

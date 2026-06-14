@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,106,57)
+  MoveScaled(0,0,106,61)
   Tag = "Set Package"
   Text = ("Set Package")
   Resizable = False
@@ -12,7 +12,7 @@
     }
   }
   { GridView1 GridView
-    MoveScaled(1,1,31,55)
+    MoveScaled(1,1,31,59)
     Mode = Select.Single
     Header = GridView.Vertical
     AutoResize = False
@@ -102,27 +102,30 @@
   { cmbfixstate ComboBox
     MoveScaled(87,45,18,3)
   }
-  { cmbonline ComboBox
+  { txtcostval SpinBox
     MoveScaled(49,49,18,3)
+  }
+  { cmbonline ComboBox
+    MoveScaled(49,53,18,3)
   }
   { cmboffspring ComboBox
     MoveScaled(87,49,18,3)
   }
   { txtbookdays ValueBox
-    MoveScaled(49,53,10,3)
+    MoveScaled(87,53,10,3)
   }
   { btnOKdisc Button
-    MoveScaled(70,53,16,3)
+    MoveScaled(70,57,16,3)
     Text = Shortcut(("Add"), "A")
     Picture = Picture["icon:/small/add"]
   }
   { btnedit Button
-    MoveScaled(87,53,14,3)
+    MoveScaled(87,57,14,3)
     Text = ("Update")
     Picture = Picture["icon:/small/edit"]
   }
   { btnexport Button
-    MoveScaled(102,53,3,3)
+    MoveScaled(102,57,3,3)
     Picture = Picture["icon:/small/html"]
   }
   { btnnodisclist Button
@@ -225,7 +228,7 @@
     Picture = Picture["icon:/small/book"]
   }
   { Label7 Label
-    MoveScaled(33,49,15,3)
+    MoveScaled(33,53,15,3)
     Border = Border.Plain
     Text = ("Show Online")
   }
@@ -269,8 +272,13 @@
     Text = ("Fix State")
   }
   { Label26 Label
-    MoveScaled(33,53,15,3)
+    MoveScaled(70,53,16,3)
     Border = Border.Plain
     Text = ("Booking Days")
+  }
+  { Label27 Label
+    MoveScaled(33,49,15,3)
+    Border = Border.Plain
+    Text = ("Cost Level")
   }
 }

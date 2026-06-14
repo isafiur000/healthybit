@@ -364,12 +364,14 @@ Private Sub BasicInfoPatient()
     Select $sTatus
       Case "Admitted", "Discharged", "LAMA", "Death", "Refer", "Absconder"
         hDoseCount = New FmDosecount(Trim(txtencid.Text), $billModePharmacy, True, pnldosecount)
+        hDosTable = New FmDosingTable(Trim(txtencid.Text), True, pnldosetable)
       Case Else
         hDoseCount = New FmDosecount(Trim(txtencid.Text), $billModePharmacy, False, pnldosecount)
+        hDosTable = New FmDosingTable(Trim(txtencid.Text), False, pnldosetable)
     End Select
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
     hIpCardex = New FmIPMedOrder(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlcardex)
-    hDosTable = New FmDosingTable(Trim(txtencid.Text), pnldosetable)
+
     hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
     hPtArchive = New FmClinArchive($PatientNum, pnlarchivbe)
 
@@ -1960,7 +1962,12 @@ Public Sub mnupatdosing_Click()
   Dim hForm4 As FmDoseMobile
 
   If txtencid.Text Then
-    hForm4 = New FmDoseMobile(Trim(txtencid.Text))
+    Select $sTatus
+      Case "Admitted", "Discharged", "LAMA", "Death", "Refer", "Absconder"
+        hForm4 = New FmDoseMobile(Trim(txtencid.Text), True)
+      Case Else
+        hForm4 = New FmDoseMobile(Trim(txtencid.Text), False)
+    End Select
     hForm4.ShowModal
   Endif
 
@@ -1971,7 +1978,12 @@ Public Sub mnuivinfusion_Click()
   Dim hForm As FmIVInfusion
 
   If txtencid.Text Then
-    hForm = New FmIVInfusion(Trim(txtencid.Text))
+    Select $sTatus
+      Case "Admitted", "Discharged", "LAMA", "Death", "Refer", "Absconder"
+        hForm = New FmIVInfusion(Trim(txtencid.Text), True)
+      Case Else
+        hForm = New FmIVInfusion(Trim(txtencid.Text), False)
+    End Select
     hForm.ShowModal
   Endif
 
@@ -2337,7 +2349,12 @@ Public Sub mnudrugdosing_Click()
 
   If txtencid.Text Then
     Inc Application.Busy
-    xPath = modCHTMLPatient.ShowNursingDosing(Trim(txtencid.Text))
+    Select $sTatus
+      Case "Admitted", "Discharged", "LAMA", "Death", "Refer", "Absconder"
+        xPath = modCHTMLPatient.ShowNursingDosing(Trim(txtencid.Text), True)
+      Case Else
+        xPath = modCHTMLPatient.ShowNursingDosing(Trim(txtencid.Text), False)
+    End Select
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
   Endif
@@ -2350,7 +2367,12 @@ Public Sub mnuinfusionview_Click()
 
   If txtencid.Text Then
     Inc Application.Busy
-    xPath = modCHTMLPatient.ShowInfusionDosing(Trim(txtencid.Text))
+    Select $sTatus
+      Case "Admitted", "Discharged", "LAMA", "Death", "Refer", "Absconder"
+        xPath = modCHTMLPatient.ShowInfusionDosing(Trim(txtencid.Text), True)
+      Case Else
+        xPath = modCHTMLPatient.ShowInfusionDosing(Trim(txtencid.Text), False)
+    End Select
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
   Endif

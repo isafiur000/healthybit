@@ -1134,7 +1134,7 @@ Public Sub btndosing_Click()
   Dim hForm4 As FmDoseMobile
 
   If GridView1.Rows.Selection.Count Then
-    hForm4 = New FmDoseMobile(GridView1[GridView1.Row, 2].Text)
+    hForm4 = New FmDoseMobile(GridView1[GridView1.Row, 2].Text, False)
     hForm4.ShowModal
   Endif
 
@@ -1311,7 +1311,7 @@ Public Sub btnmobivfl_Click()
   Dim hForm18 As FmIVInfusion
 
   If GridView1.Rows.Selection.Count Then
-    hForm18 = New FmIVInfusion(GridView1[GridView1.Row, 2].Text)
+    hForm18 = New FmIVInfusion(GridView1[GridView1.Row, 2].Text, False)
     hForm18.ShowModal
   Endif
 
@@ -1917,7 +1917,7 @@ Public Sub mnumedview_Click()
 
   If GridView1.Rows.Selection.Count Then
     Inc Application.Busy
-    xPath = modCHTMLPatient.ShowNursingDosing(GridView1[GridView1.Row, 2].Text)
+    xPath = modCHTMLPatient.ShowNursingDosing(GridView1[GridView1.Row, 2].Text, False)
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(GridView1[GridView1.Row, 2].Text, xPath, "ReportSize")
   Endif
@@ -1930,7 +1930,7 @@ Public Sub mnuinfusionview_Click()
 
   If GridView1.Rows.Selection.Count Then
     Inc Application.Busy
-    xPath = modCHTMLPatient.ShowInfusionDosing(GridView1[GridView1.Row, 2].Text)
+    xPath = modCHTMLPatient.ShowInfusionDosing(GridView1[GridView1.Row, 2].Text, False)
     Dec Application.Busy
     modControlSub.OpenHTMLPreview(GridView1[GridView1.Row, 2].Text, xPath, "ReportSize")
   Endif

@@ -598,7 +598,7 @@ Private Sub ClickDose(xcateg As String, xGridView As GridView)
 
   If txtencid.Text Then
     If $ProcIndex Then
-      hForm = New FmDoseMobile(Trim(txtencid.Text))
+      hForm = New FmDoseMobile(Trim(txtencid.Text), False)
       hForm.ShowModal
       FillDosingGrid("Current", xcateg, xGridView)
     Endif
@@ -612,7 +612,7 @@ Private Sub ClickInfusion(xcateg As String, xGridView As GridView)
 
   If txtencid.Text Then
     If $ProcIndex Then
-      hForm = New FmIVInfusion(Trim(txtencid.Text))
+      hForm = New FmIVInfusion(Trim(txtencid.Text), False)
       hForm.ShowModal
       FillDosingGrid("Current", xcateg, xGridView)
     Endif
