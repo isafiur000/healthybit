@@ -25,7 +25,6 @@ Private $PatWeight As Float
 Private $PatHeight As Float
 
 Private $ShowReview As String
-Private $HideErr As Boolean
 Private $HideDos As Boolean
 ' Private $HiCappingVar As Collection
 
@@ -308,7 +307,6 @@ Public Sub GridView1_Click()
 
   Dim xval As Float
   Dim yval As String
-  Dim Column As Integer
   Dim res As Result
 
   If GridView1.Column = 8 Then
@@ -420,6 +418,7 @@ Public Sub btncpoe_Click()
   hForm = New FmMedNewOrder($encid, $sTatus, cmbdisctype.Text, "tblinpatdosing")
   hForm.ShowModal
   LoadMedicineGrid()
+  GetReviewMultiMessage()
 
 End
 
@@ -449,6 +448,7 @@ Public Sub btnrepeat_Click()
         AddPastRegimens(xLst)
       Endif
     Next
+    GetReviewMultiMessage()
   Endif
 
 End
@@ -632,6 +632,7 @@ Public Sub btngroup_Click()
         Endif
       Next
       LoadMedicineGrid()
+      GetReviewMultiMessage()
 
     Endif
   Else
@@ -652,10 +653,10 @@ Private Sub BlankDosingBox()
   txtqty.Value = 0
   txtqty.Tag = ""
   txtdirection.Text = ""
-  $HideErr = False
   $HideDos = False
   lbldose.Text = ""
   lblregimen.Text = ""
+  MessageView1.Close()
 
 End
 
@@ -906,15 +907,6 @@ Public Sub cmbfreq_KeyRelease()
 
   modFillContainer.AutoFillComboBox(cmbfreq)
   modFillContainer.RestrictComboToContent(cmbfreq)
-  If Key.Code = Key.Down Then
-    $HideErr = True
-  Endif
-
-End
-
-Public Sub cmbfreq_Click()
-
-  $HideErr = False
 
 End
 
@@ -926,38 +918,29 @@ Public Sub cmbfreq_LostFocus()
   Dim xcount As String
   Dim cForm As CMedError
 
-  If $HideErr = False Then
-    If txtdose.Value And If cmbfreq.Text Then
-
-      Select cmbroute.Text
-        Case "suture", "msurg", "ortho", "extra", "topical"
-          ''do nothing
-        Case Else
-          If $ShowReview = "None" Then
-          Else
-            opt = New String[]
-            For Row = 0 To GridView1.Rows.Count - 1
-              Select GridView1[Row, 1].Text
-                Case "suture", "msurg", "ortho", "extra", "topical"
-                Case Else
-                  xval = modMedConstant.GetDrugFromStockID(GridView1[Row, 16].Text)
-                  If opt.Count = 0 Then
-                    opt.Add(xval)
-                  Else
-                    If opt.Exist(xval) = False Then
-                      opt.Add(xval)
-                    Endif
-                  Endif
-              End Select
-            Next
-            $HideErr = True
-            cForm = New CMedError
-            Inc Application.Busy
-            xcount = cForm.ShowMedicationReviewPunching($encid, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, opt)
-            Dec Application.Busy
+  If txtdose.Value And If cmbfreq.Text Then
+    If $ShowReview = "None" Then
+    Else
+      opt = New String[]
+      For Row = 0 To GridView1.Rows.Count - 1
+        xval = modMedConstant.GetDrugFromStockID(GridView1[Row, 16].Text)
+        If opt.Count = 0 Then
+          opt.Add(xval)
+        Else
+          If opt.Exist(xval) = False Then
+            opt.Add(xval)
           Endif
-      End Select
+        Endif
+      Next
 
+      cForm = New CMedError
+      Inc Application.Busy
+      xcount = cForm.ShowMedicationReviewPunching($encid, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, opt)
+      Dec Application.Busy
+      If xcount Then
+        MessageView1.Close()
+        MessageView1.Open(xcount, Picture["icon:/small/info"])
+      Endif
     Endif
   Endif
 
@@ -1143,5 +1126,102 @@ Public Sub chkselall_Click()
       GridView1[Row, 8].Picture = Picture["icons/unchecked.png"]
     Endif
   Next
+
+End
+
+Private Sub GetReviewMultiMessage()
+
+  Dim xVar As Variant[]
+  Dim xColl As Collection
+  Dim Row As Integer
+  Dim cForm As CMedError
+  Dim xmsg As String
+
+  If GridView1.Rows.Count Then
+    xVar = New Variant[]
+    For Row = 0 To GridView1.Rows.Count - 1
+      xColl = New Collection
+      xColl.Add(GridView1[Row, 1].Text, "Route")
+      xColl.Add(GridView1[Row, 16].Text, "Medicine")
+      xColl.Add(GridView1[Row, 3].Text, "Dose")
+      xColl.Add(GridView1[Row, 4].Text, "Frequency")
+      xVar.Add(xColl)
+    Next
+
+    cForm = New CMedError
+    Inc Application.Busy
+    xmsg = cForm.ShowMedicationReviewMultipleDosIDMessage($encid, xVar)
+    Dec Application.Busy
+    If xmsg Then
+      MessageView1.Close()
+      MessageView1.Open(xmsg, Picture["icon:/small/info"])
+    Endif
+  Endif
+
+End
+
+Public Sub btnshowdrug_Click()
+
+  Dim xPath As String
+
+  Inc Application.Busy
+  xPath = modCHTMLPatient.ShowMedicationOrder($encid)
+  Dec Application.Busy
+  modControlSub.OpenHTMLPreview($encid, xPath, "ReportSize")
+
+End
+
+Public Sub btnreview_Click()
+
+  Dim xVar As Variant[]
+  Dim xColl As Collection
+  Dim Row As Integer
+  Dim cForm As CMedError
+  Dim xPath As String
+
+  If GridView1.Rows.Count Then
+
+    xVar = New Variant[]
+    For Row = 0 To GridView1.Rows.Count - 1
+      xColl = New Collection
+      xColl.Add(GridView1[Row, 2].Text, "Route")
+      xColl.Add(GridView1[Row, 16].Text, "Medicine")
+      xColl.Add(GridView1[Row, 3].Text, "Dose")
+      xColl.Add(GridView1[Row, 4].Text, "Frequency")
+      xVar.Add(xColl)
+    Next
+
+    cForm = New CMedError
+    Inc Application.Busy
+    xPath = cForm.ShowMedicationReviewMultipleDosIDReport($encid, xVar)
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview($encid, xPath, "ReportSize")
+
+  Endif
+
+End
+
+Public Sub btnaireview_Click()
+
+  Dim opt As Long[]
+  Dim Row As Integer
+  Dim xdata As String
+  Dim xans As String
+
+  If GridView1.Rows.Count > 0 Then
+    opt = New Long[]
+    For Row = 0 To GridView1.Rows.Count - 1
+      opt.Add(GridView1[Row, 0].Text)
+    Next
+
+    If opt.Count Then
+      xdata = modPharmacy.ShowMedicationListDosID($encid, opt).Join(gb.NewLine)
+      xans = modCloudAI.GetComboCloudAIResponse(xdata, modBasic.$CloudAIDrugQuery)
+      If xans Then
+        xans = MessageHtml("Cloud AI Response", modString.TextToHTML(xans), [("Useless"), ("Neutral"), ("Useful")])
+      Endif
+    Endif
+
+  Endif
 
 End

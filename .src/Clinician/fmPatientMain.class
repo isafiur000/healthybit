@@ -3013,7 +3013,7 @@ Public Sub btnfluidcompat_Click()
 
     cForm = New CMedError
     Inc Application.Busy
-    xmsg = cForm.ShowMedCompatibleSingleDosIDMessage(grdfluid[grdfluid.Row, 0].Text, opt)
+    xmsg = cForm.ShowMedCompatibleSingleDosIDMessage(Trim(txtencid.Text), grdfluid[grdfluid.Row, 2].Text, opt)
     Dec Application.Busy
     If xmsg Then
       xout = MessageHtml("Drug related Problems", xmsg, [("Continue")])
@@ -3181,9 +3181,7 @@ End
 
 Public Sub grdfluid_Click()
 
-  Dim xx As String[] = ["Continue", "Discontinue", "On Hold", "Cancelled"]
-  Dim res As Result
-  Dim xval As String
+  ' Dim xx As String[] = ["Continue", "Discontinue", "On Hold", "Cancelled"]
   Dim yval As Integer
   Dim Row As Integer
 
@@ -3867,8 +3865,7 @@ Public Sub mnudischarge_Click()
             modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "Discharged", xx)
             modDatabase.$myConn.Commit
             Dec Application.Busy
-            If modBasic.$AutoDeskNotice = "Disable" Then
-            Else
+            If modBasic.$AutoDeskNotice = "Enable" Then
               modDevice.GetNotification("Discharged", "<b>" & txtpatientname.Text & "</b> with Encounter ID : " & txtencid.Text)
             Endif
             If xmsg Then
@@ -3913,8 +3910,7 @@ Public Sub mnustartlama_Click()
             modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "LAMA", xx)
             modDatabase.$myConn.Commit
             Dec Application.Busy
-            If modBasic.$AutoDeskNotice = "Disable" Then
-            Else
+            If modBasic.$AutoDeskNotice = "Enable" Then
               modDevice.GetNotification("LAMA", "<b>" & txtpatientname.Text & "</b> with Encounter ID : " & txtencid.Text)
             Endif
             If xmsg Then
@@ -3961,8 +3957,7 @@ Public Sub mnurefer_Click()
             modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "Refer", xrefer)
             modDatabase.$myConn.Commit
             Dec Application.Busy
-            If modBasic.$AutoDeskNotice = "Disable" Then
-            Else
+            If modBasic.$AutoDeskNotice = "Enable" Then
               modDevice.GetNotification("Refer", "<b>" & txtpatientname.Text & "</b> with Encounter ID : " & txtencid.Text)
             Endif
             If xmsg Then
@@ -4013,8 +4008,7 @@ Public Sub mnustartdeath_Click()
             modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "Death", xx)
             modDatabase.$myConn.Commit
             Dec Application.Busy
-            If modBasic.$AutoDeskNotice = "Disable" Then
-            Else
+            If modBasic.$AutoDeskNotice = "Enable" Then
               modDevice.GetNotification("Death", "<b>" & txtpatientname.Text & "</b> with Encounter ID : " & txtencid.Text)
             Endif
             If xmsg Then
@@ -4049,8 +4043,7 @@ Public Sub mnuabsconder_Click()
         modPatientSub.UpdateCurrentStatus(Trim(txtencid.Text), "Absconder", "")
         modDatabase.$myConn.Commit
         Dec Application.Busy
-        If modBasic.$AutoDeskNotice = "Disable" Then
-        Else
+        If modBasic.$AutoDeskNotice = "Enable" Then
           modDevice.GetNotification("Absconder", "<b>" & txtpatientname.Text & "</b> with Encounter ID : " & txtencid.Text)
         Endif
         If xmsg Then

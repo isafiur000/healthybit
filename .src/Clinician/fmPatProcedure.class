@@ -1497,7 +1497,6 @@ Public Sub btnsubChange_Click()
   Dim Row As Integer
   Dim rex As Result
   Dim xadv As String
-  Dim xstate As String
 
   If $ProcIndex Then
     If cmbstatus.Text Then
@@ -1514,7 +1513,6 @@ Public Sub btnsubChange_Click()
         res["xyz"] = False
         res.Update()
       Endif
-      Wait
 
       If cmbstatus.Text = "Done" Then
         If GridView1.Rows.Count Then
@@ -1550,7 +1548,7 @@ Catch
 
 End
 
-Private Sub SavePartialEntry(res As Result, xstate As String, Optional advReceipt As String)
+Private Sub SavePartialEntry(res As Result, Optional advReceipt As String)
 
   res["fldstatus"] = "Done"
   If advReceipt Then

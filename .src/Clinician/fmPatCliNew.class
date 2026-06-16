@@ -4585,8 +4585,7 @@ Public Sub btnoutcome_Click()
             modPatientSub.UpdateOPVisitData(txtclinIndex.Value, Trim(txtencid.Text), "Done", txtcomment.RichText, xmode)
           Endif
         Endif
-        If modBasic.$AutoDeskNotice = "Disable" Then
-        Else
+        If modBasic.$AutoDeskNotice = "Enable" Then
           If xmode = "Discharged" Then
             modDevice.GetNotification("Discharged", "<b>" & txtpatientname.Text & "</b> with Encounter ID : " & txtencid.Text)
           Else

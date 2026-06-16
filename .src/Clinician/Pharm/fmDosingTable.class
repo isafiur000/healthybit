@@ -162,18 +162,25 @@ End
 
 Public Sub btndrp_Click()
 
-  Dim opt As Long[]
+  Dim xVar As Variant[]
+  Dim xColl As Collection
   Dim cForm As CMedError
   Dim xPath As String
 
   If $rData.Available Then
-    opt = New Long[]
+    xVar = New Variant[]
     For Each $rData
-      opt.Add($rData["fldid"])
+      xColl = New Collection
+      xColl.Add($rData["fldroute"], "Route")
+      xColl.Add($rData["flditem"], "Medicine")
+      xColl.Add($rData["flddose"], "Dose")
+      xColl.Add($rData["fldfreq"], "Frequency")
+      xVar.Add(xColl)
     Next
+
     cForm = New CMedError
     Inc Application.Busy
-    xPath = cForm.ShowMedicationReviewMultipleDosIDReport($encid, opt)
+    xPath = cForm.ShowMedicationReviewMultipleDosIDReport($encid, xVar)
     Dec Application.Busy
     modControlSub.OpenHTMLPreview($encid, xPath, "ReportSize")
   Endif

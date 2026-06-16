@@ -246,9 +246,11 @@ Public Sub SendCompIDNotofication(xcomp As String, xtitle As String, xnotice As 
 
   Dim xuserList As String[]
 
-  xuserList = modGeneral.FillCurrentUseronJob(xcomp)
-  If xuserList Then
-    modControl.SendLabAlert(xuserList, "UserNotice", " [" & xtitle & "]" & xnotice & "@" & modBasic.$lbluser)
+  If modBasic.$AutoDeskNotice = "Enable" Then
+    xuserList = modGeneral.FillCurrentUseronJob(xcomp)
+    If xuserList Then
+      modControl.SendLabAlert(xuserList, "UserNotice", " [" & xtitle & "]" & xnotice & "@" & modBasic.$lbluser)
+    Endif
   Endif
 
 End

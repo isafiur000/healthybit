@@ -2497,27 +2497,31 @@ Public Sub mnureviewsingle_Click()
   Dim xPath As String
 
   If GridView1.Rows.Selection.Count > 0 Then
-    If GridView1.Rows.Count > 0 Then
-      opt = New String[]
-      For Row = 0 To GridView1.Rows.Count - 1
-        If GridView1[Row, 2].Text = "suture" Or If GridView1[Row, 2].Text = "msurg" Or If GridView1[Row, 2].Text = "ortho" Or If GridView1[Row, 2].Text = "extra" Or If GridView1[Row, 2].Text = "topical" Then
-        Else
-          xval = modMedConstant.GetDrugFromStockID(GridView1[Row, 3].Text)
-          If opt.Count = 0 Then
-            opt.Add(xval)
-          Else
-            If opt.Exist(xval) = False Then
-              opt.Add(xval)
-            Endif
-          Endif
+    If rbvalue.Value = True Then
 
-        Endif
-      Next
-      cForm = New CMedError
-      Inc Application.Busy
-      xPath = cForm.ShowMedicationReviewSingleDosIDReport(GridView1[GridView1.Row, 0].Text, opt)
-      Dec Application.Busy
-      modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+      If GridView1.Rows.Count Then
+        opt = New String[]
+        For Row = 0 To GridView1.Rows.Count - 1
+          If GridView1[Row, 2].Text = "suture" Or If GridView1[Row, 2].Text = "msurg" Or If GridView1[Row, 2].Text = "ortho" Or If GridView1[Row, 2].Text = "extra" Or If GridView1[Row, 2].Text = "topical" Then
+          Else
+            xval = modMedConstant.GetDrugFromStockID(GridView1[Row, 3].Text)
+            If opt.Count = 0 Then
+              opt.Add(xval)
+            Else
+              If opt.Exist(xval) = False Then
+                opt.Add(xval)
+              Endif
+            Endif
+
+          Endif
+        Next
+        cForm = New CMedError
+        Inc Application.Busy
+        xPath = cForm.ShowMedicationReviewSingleDosIDReport(Trim(txtencid.Text), GridView1[GridView1.Row, 3].Text, GridView1[GridView1.Row, 2].Text, GridView1[GridView1.Row, 4].Text, GridView1[GridView1.Row, 5].Text, opt)
+        Dec Application.Busy
+        modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+      Endif
+
     Endif
   Endif
 
@@ -2525,24 +2529,35 @@ End
 
 Public Sub mnurevall_Click()
 
-  Dim opt As Long[]
+  Dim xVar As Variant[]
+  Dim xColl As Collection
   Dim Row As Integer
   Dim cForm As CMedError
   Dim xPath As String
 
   If GridView1.Rows.Count > 0 Then
-    opt = New Long[]
-    For Row = 0 To GridView1.Rows.Count - 1
-      If GridView1[Row, 2].Text = "suture" Or If GridView1[Row, 2].Text = "msurg" Or If GridView1[Row, 2].Text = "ortho" Or If GridView1[Row, 2].Text = "extra" Or If GridView1[Row, 2].Text = "topical" Then
-      Else
-        opt.Add(GridView1[Row, 0].Text)
-      Endif
-    Next
-    cForm = New CMedError
-    Inc Application.Busy
-    xPath = cForm.ShowMedicationReviewMultipleDosIDReport(Trim(txtencid.Text), opt)
-    Dec Application.Busy
-    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+    If rbvalue.Value = True Then
+
+      xVar = New Variant[]
+      For Row = 0 To GridView1.Rows.Count - 1
+        If GridView1[Row, 2].Text = "suture" Or If GridView1[Row, 2].Text = "msurg" Or If GridView1[Row, 2].Text = "ortho" Or If GridView1[Row, 2].Text = "extra" Or If GridView1[Row, 2].Text = "topical" Then
+        Else
+          xColl = New Collection
+          xColl.Add(GridView1[Row, 2].Text, "Route")
+          xColl.Add(GridView1[Row, 3].Text, "Medicine")
+          xColl.Add(GridView1[Row, 4].Text, "Dose")
+          xColl.Add(GridView1[Row, 5].Text, "Frequency")
+          xVar.Add(xColl)
+        Endif
+      Next
+
+      cForm = New CMedError
+      Inc Application.Busy
+      xPath = cForm.ShowMedicationReviewMultipleDosIDReport(Trim(txtencid.Text), xVar)
+      Dec Application.Busy
+      modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+
+    Endif
   Endif
 
 End

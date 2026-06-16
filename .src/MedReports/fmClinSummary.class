@@ -8,6 +8,8 @@ Private $ColCount As Integer
 Private $newColumn As String[]
 Private $RepoStr As String
 
+Private $UseDateTime As Boolean
+
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
@@ -41,6 +43,21 @@ Public Sub Form_Open()
   dtfir.Value = Now()
   dtlast.Value = Now()
   rbasc.Value = True
+  $UseDateTime = False
+
+End
+
+Public Sub mnusedatetime_Click()
+
+  If $UseDateTime = False Then
+    $UseDateTime = True
+    dtfir.Mode = DateChooser.DateTime
+    dtlast.Mode = DateChooser.DateTime
+  Else If $UseDateTime = True Then
+    $UseDateTime = False
+    dtfir.Mode = DateChooser.DateOnly
+    dtlast.Mode = DateChooser.DateOnly
+  Endif
 
 End
 
@@ -116,6 +133,17 @@ Private Function SHowPatGrid(xFldList As String[]) As Result
   Dim xdstenc As String
   Dim xorder As String
 
+  Dim xfir As Date
+  Dim xlast As Date
+
+  If $UseDateTime = False Then
+    xfir = modDate.EndSqlDate(dtfir.value)
+    xlast = modDate.StartSqlDate(dtlast.value)
+  Else If $UseDateTime = True Then
+    xfir = dtfir.value
+    xlast = dtlast.value
+  Endif
+
   If Not cmbgender.Text Then
     cmbgender.Text = "%"
   Endif
@@ -172,22 +200,22 @@ Private Function SHowPatGrid(xFldList As String[]) As Result
   $RepoStr = modDataRepo.GetWhereStringRepo(cmblocation.Text, cmbvalue.Text)
   If cmbstatus.Text = "Current" Then
     sql = "select " & xFldList.Join(",") & " from tblencounter where flddoa<=&1 and (flddod>=&2 or flddod IS NULL)" & xsql & " and flddisctype like &7" & xdept & $RepoStr & xdstenc                                                                                ''
-    res = modDatabase.$syConn.Exec(sql, modDate.EndSqlDate(dtfir.value), modDate.StartSqlDate(dtlast.value), cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, cmbpackage.Text, cmbdepart.Text)
+    res = modDatabase.$syConn.Exec(sql, xfir, xlast, cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, cmbpackage.Text, cmbdepart.Text)
 
   Else If cmbstatus.Text = "Admitted" Then
     sql = "select " & xFldList.Join(",") & " from tblpatientdate where fldtime>=&1 and fldtime<=&2" & xsql & " and fldhead=&7 and fldencounterval in(select fldencounterval from tblencounter where flddisctype like &8" & xdept & ")" & $RepoStr & xdstenc & xorder                                                                             ''
-    res = modDatabase.$syConn.Exec(sql, modDate.StartSqlDate(dtfir.value), modDate.EndSqlDate(dtlast.value), cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, "Admitted", cmbpackage.Text, cmbdepart.Text)
+    res = modDatabase.$syConn.Exec(sql, xfir, xlast, cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, "Admitted", cmbpackage.Text, cmbdepart.Text)
 
   Else If cmbstatus.Text = "Transition" Then
     sql = "select " & xFldList.Join(",") & " from tblpatientdate where fldtime>=&1 and fldtime<=&2" & xsql & " and fldhead=&7 and fldencounterval in(select fldencounterval from tblencounter where flddisctype like &8)" & xdept & $RepoStr & xdstenc & xorder                                                                              ''
-    res = modDatabase.$syConn.Exec(sql, modDate.StartSqlDate(dtfir.value), modDate.EndSqlDate(dtlast.value), cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, "Location Update", cmbpackage.Text, cmbdepart.Text)
+    res = modDatabase.$syConn.Exec(sql, xfir, xlast, cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, "Location Update", cmbpackage.Text, cmbdepart.Text)
 
   Else If cmbstatus.Text = "Exits(All)" Then
     sql = "select " & xFldList.Join(",") & " from tblpatientdate where fldtime>=&1 and fldtime<=&2" & xsql & " and (fldhead=&7 or fldhead=&8 or fldhead=&9 or fldhead=&{10} or fldhead=&{11}) and fldencounterval in(select fldencounterval from tblencounter where flddisctype like &{12}" & xdept & ")" & $RepoStr & xdstenc & xorder                                                                              ''
-    res = modDatabase.$syConn.Exec(sql, modDate.StartSqlDate(dtfir.value), modDate.EndSqlDate(dtlast.value), cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, "Discharged", "LAMA", "Refer", "Death", "Absconder", cmbpackage.Text, cmbdepart.Text)                                                    ''
+    res = modDatabase.$syConn.Exec(sql, xfir, xlast, cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, "Discharged", "LAMA", "Refer", "Death", "Absconder", cmbpackage.Text, cmbdepart.Text)                                                    ''
   Else
     sql = "select " & xFldList.Join(",") & " from tblpatientdate where fldtime>=&1 and fldtime<=&2" & xsql & " and fldhead=&7 and fldencounterval in(select fldencounterval from tblencounter where flddisctype like &8" & xdept & ")" & $RepoStr & xdstenc & xorder                                                                            ''
-    res = modDatabase.$syConn.Exec(sql, modDate.StartSqlDate(dtfir.value), modDate.EndSqlDate(dtlast.value), cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, cmbstatus.Text, cmbpackage.Text, cmbdepart.Text)                                                    ''
+    res = modDatabase.$syConn.Exec(sql, xfir, xlast, cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, cmbstatus.Text, cmbpackage.Text, cmbdepart.Text)                                                    ''
   Endif
   Return res
 

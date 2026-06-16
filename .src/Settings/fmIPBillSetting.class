@@ -53,6 +53,7 @@ Public Sub Form_Open()
   cmbdeporadio.List = ["Warn", "Disable", "None"]
   cmbdepoother.List = ["Warn", "Disable", "None"]
   cmbdeposerv.List = ["Warn", "Disable", "None"]
+  cmbsplitdepo.List = ["Enable", "Disable"]
   cmbdischarge.List = ["No Due", "Fin Lock", "None"]
 
   cmbpayequip.List = ["Consult", "User", "Group", "None"]
@@ -318,6 +319,7 @@ Private Sub SetLowDeposit()
   cmbdepoother.Text = modGlobalSetting.ShowSettingFromDBAny("LowDeposit/Others", cmbtarget.Text)
   cmbdeposerv.Text = modGlobalSetting.ShowSettingFromDBAny("LowDeposit/Service", cmbtarget.Text)
 
+  cmbsplitdepo.Text = modGlobalSetting.ShowSettingFromDBAny("LowDeposit/SplitAmount", cmbtarget.Text)
   cmbdischarge.Text = modGlobalSetting.ShowSettingFromDBAny("DischargePrint/OnClearance", cmbtarget.Text)
   modGlobalSetting.ShowCheckBoxFromDBAny(chkinexbed, "DynamicExpense/BedCharges", cmbtarget.Text)
   modGlobalSetting.ShowCheckBoxFromDBAny(chkinexpequip, "DynamicExpense/Equipments", cmbtarget.Text)
@@ -454,6 +456,14 @@ Public Sub btndeposervex_Click()
   xType = "LowDeposit/Service"
   hForm = New FmSettingList("LowDeposit", "Service", xType, cmbtarget.Text)
   hForm.ShowModal
+
+End
+
+Public Sub btnsplitdepo_Click()
+
+  modGlobalSetting.SaveSettingToDB("LowDeposit/SplitAmount", cmbsplitdepo.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnsplitdepo)
+  Balloon.Delay = modBasic.$BalloonDelay
 
 End
 
@@ -812,6 +822,7 @@ Public Sub btnsettall_Click()
   xList.Add("LowDeposit/Radio")
   xList.Add("LowDeposit/Others")
   xList.Add("LowDeposit/Service")
+  xList.Add("LowDeposit/SplitAmount")
   xList.Add("DischargePrint/OnClearance")
   xList.Add("DynamicExpense/BedCharges")
   xList.Add("DynamicExpense/Equipments")
