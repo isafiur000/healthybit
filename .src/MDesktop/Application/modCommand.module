@@ -136,6 +136,9 @@ Public Sub DoCommandLineSub()
       Print "HAI CRF Upload:"
       Print "--upload-hai-crf       Upload HAI CRF information to specified DHIS2 server"
 
+      Print "MOHP Capacity Upload:"
+      Print "--upload-mohp          Upload MOHP Capacity Dashboard"
+
       Print " "
       Print " "
       Print "--mail-smtp            Send E-mails with specified SMTP parameters. User, Password"
@@ -429,6 +432,11 @@ Public Sub DoCommandLineSub()
       InitialProcedures()
       modHelpVariable.ConnectionMain()
       modCRFUpload.AutoUploadHAICRF(Application.Args[2], $isdebug)
+
+    Case "--upload-mohp"
+      InitialProcedures()
+      modHelpVariable.ConnectionMain()
+      modCRFUpload.AutoUploadMoHPCapacity($isdebug)
 
     Case "--sync-machine"
       InitialProcedures()

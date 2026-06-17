@@ -55,6 +55,8 @@ Public Sub Form_Open()
   cmbhtmltopdf.List = ["wkhtmltopdf", "chrome"]
   cmbnumtotext.List = ["number", "num2words"]
 
+  cmbmohocert.List = ["Enable", "Disable"]
+
   BarCodeReader()
   ShowWebImage()
 
@@ -81,6 +83,7 @@ Public Sub Form_Open()
   SHowPDFSetting()
 
   ShowBipannaSetting()
+  ShowDashboard()
 
 End
 
@@ -1865,5 +1868,75 @@ End
 Public Sub txtbippdocum_Click()
 
   txtbippdocum.Text = "https://bipanna.dohs.gov.np/api/patient/prescription/store-prescription"
+
+End
+
+''---------------- Dashboard----------------------
+Private Sub ShowDashboard()
+
+  txtbagmatiurl.Text = modSettings.ShowSettingFromFIle("BagmatiDashboard/URL")
+  txtbagmatikey.Text = modSettings.ShowSettingFromFIle("BagmatiDashboard/Key")
+
+  txtmohpurl.Text = modSettings.ShowSettingFromFIle("MoHPDashboard/URL")
+  txtmohpkey.Text = modSettings.ShowSettingFromFIle("MoHPDashboard/Key")
+  txtmohpfacility.Text = modSettings.ShowSettingFromFIle("MoHPDashboard/Facility")
+  cmbmohocert.Text = modSettings.ShowSettingFromFIle("MoHPDashboard/CACertificate")
+  txtmohoagent.Text = modSettings.ShowSettingFromFIle("MoHPDashboard/UserAgent")
+
+End
+
+Public Sub btnbagmatiurl_Click()
+
+  modSettings.SaveSettingsToFile("BagmatiDashboard/URL", txtbagmatiurl.Text)
+  Balloon.Info(("Information saved"), btnbagmatiurl)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnbagmatikey_Click()
+
+  modSettings.SaveSettingsToFile("BagmatiDashboard/Key", txtbagmatikey.Text)
+  Balloon.Info(("Information saved"), btnbagmatikey)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnmohpurl_Click()
+
+  modSettings.SaveSettingsToFile("MoHPDashboard/URL", txtmohpurl.Text)
+  Balloon.Info(("Information saved"), btnmohpurl)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnmohpkey_Click()
+
+  modSettings.SaveSettingsToFile("MoHPDashboard/Key", txtmohpkey.Text)
+  Balloon.Info(("Information saved"), btnmohpkey)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnmohpfacility_Click()
+
+  modSettings.SaveSettingsToFile("MoHPDashboard/Facility", txtmohpfacility.Text)
+  Balloon.Info(("Information saved"), btnmohpfacility)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btmmohocert_Click()
+
+  modSettings.SaveSettingsToFile("MoHPDashboard/CACertificate", cmbmohocert.Text)
+  Balloon.Info(("Information saved"), btmmohocert)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnmohpagent_Click()
+
+  modSettings.SaveSettingsToFile("MoHPDashboard/UserAgent", txtmohoagent.Text)
+  Balloon.Info(("Information saved"), btnmohpagent)
+  Balloon.Delay = modBasic.$BalloonDelay
 
 End

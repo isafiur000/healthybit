@@ -47,6 +47,17 @@ Public Sub FindPatientEnroll(encid As String, xclass As String)
 
 End
 
+Public Sub AutoUploadMoHPCapacity(xdebug As Boolean)
+
+  Dim cForm As CCapacityApi
+  Dim xout As String
+
+  cForm = New CCapacityApi
+  xout = cForm.GetOutput()
+  Print xout
+
+End
+
 Public Sub AutoUploadHAICRF(sWard As String, xdebug As Boolean)
 
   Dim sql As String

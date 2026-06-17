@@ -414,9 +414,9 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
     GridView1.Data.Text = modReportVar.GetLocaleNumberFormat($rData[$aMyFields[Column]], gb.Currency)
   Else If Column = 4 Then
     If cmbcomp.Text = "%" Then
-      GridView1.Data.Text = modReportVar.GetLocaleNumberFormat(modSupplier.GetTotalPaymentToSupplier($rData[$aMyFields[Column]]), gb.Currency)
+      Try GridView1.Data.Text = modReportVar.GetLocaleNumberFormat(modSupplier.GetTotalPaymentToSupplier($rData[$aMyFields[Column]]), gb.Currency)
     Else
-      GridView1.Data.Text = modReportVar.GetLocaleNumberFormat($rData[$aMyFields[Column]], gb.Currency)
+      Try GridView1.Data.Text = modReportVar.GetLocaleNumberFormat($rData[$aMyFields[Column]], gb.Currency)
     Endif
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]
@@ -548,5 +548,11 @@ Public Sub btncomp_Click()
     hform = New FmAddVariableCombo("fldcomp", "fldsuppname", Trim(txtsupname.Text), "tblsuppliercomp", modBasic.$AllCompList, True)
     hform.ShowModal
   Endif
+
+End
+
+Public Sub cmbcomp_KeyRelease()
+
+  modFillContainer.RestrictComboToContent(cmbcomp)
 
 End

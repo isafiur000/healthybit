@@ -33,9 +33,6 @@ End
 
 Public Sub Form_Open()
 
-  Dim i As Integer
-  Dim srt As String
-
   modGeneralMain.ArrangeFormCentre(Me, "False")
   AppWidth = modBasic.$AppScaleFactor
   AppHeight = modBasic.$AppScaleFactor
@@ -49,6 +46,35 @@ Public Sub Form_Open()
   Frame1.Width = 650 * AppWidth
 
   Me.Title = $strType
+  Select $strType
+    Case "Drug Sensitivity", "Dual Columns", "Triple Columns"
+      chkselall.Visible = True
+    Case Else
+      chkselall.Visible = False
+  End Select
+  MakeNewCOntrols()
+
+End
+
+Public Sub chkselall_Click()
+
+  Dim i As Integer
+  Dim srt As String
+
+  For Each srt In $opt
+    If aCheckBox[i] Then
+      aCheckBox[i].Value = chkselall.Value
+    Endif
+    i = i + 1
+  Next
+
+End
+
+Private Sub MakeNewCOntrols()
+
+  Dim i As Integer
+  Dim srt As String
+
   If $strType = "Single Selection" Or If $strType = "Dichotomous" Then
     i = 1
     For Each srt In $opt

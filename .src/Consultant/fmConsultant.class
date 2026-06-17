@@ -670,3 +670,14 @@ Public Sub mnuwebqueue_Click()
   fmWebQueue.ShowModal
 
 End
+
+Public Sub mnumohpupload_Click()
+
+  Dim cForm As CCapacityApi
+  Dim xout As String
+
+  cForm = New CCapacityApi
+  xout = cForm.GetOutput()
+  Message.Info(xout)
+
+End
