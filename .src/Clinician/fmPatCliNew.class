@@ -4806,3 +4806,14 @@ Public Sub mnupatcomment2_Click()
   mnucurscan_Click()
 
 End
+
+Public Sub mnussurequest_Click()
+
+  Dim hForm As FmSSURequest
+
+  If txtencid.Text Then
+    hForm = New FmSSURequest(Trim(txtencid.Text))
+    hForm.ShowModal
+  Endif
+
+End

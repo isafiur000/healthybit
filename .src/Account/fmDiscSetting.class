@@ -408,7 +408,7 @@ Public Sub btnschemeall_Click()
   $BillingReport.UserData.Add(modReportVar.GetDateTimeReport(Now(), gb.GeneralDate), "PARAM2")
 
   For Row = 0 To GridView1.Rows.Count - 1
-    res = modDatabase.$myConn.Exec("select fldtype,fldmode,fldacledger,fldbilltype,fldamount,fldcredit,fldpercent,fldlimit,fldbillingmode,fldacledger,fldreference,fldyear,fldinvoice,fldreserved,fldonline,fldbookday,fldcashincredit,fldforce,fldqtylimit,fldoffspring,fldfixdepart,fldlockstate,fldlab,fldradio,fldproc,fldequip,fldservice,fldother,fldmedicine,fldsurgical,fldextra,fldregist,fldcrdlab,fldcrdradio,fldcrdproc,fldcrdequip,fldcrdservice,fldcrdother,fldcrdmedicine,fldcrdsurgical,fldcrdextra from tbldiscount where fldtype=&1", GridView1[Row, 0].Text)
+    res = modDatabase.$myConn.Exec("select fldtype,fldmode,fldacledger,fldbilltype,fldamount,fldcredit,fldpercent,fldlimit,fldbillingmode,fldacledger,fldreference,fldyear,fldinvoice,fldreserved,fldonline,fldbookday,fldcashincredit,fldforce,fldqtylimit,fldoffspring,fldfixdepart,fldlockstate,fldcostlevel,fldlab,fldradio,fldproc,fldequip,fldservice,fldother,fldmedicine,fldsurgical,fldextra,fldregist,fldcrdlab,fldcrdradio,fldcrdproc,fldcrdequip,fldcrdservice,fldcrdother,fldcrdmedicine,fldcrdsurgical,fldcrdextra from tbldiscount where fldtype=&1", GridView1[Row, 0].Text)
     If res.Available Then
       $BillingReport.AddSection(res["fldtype"], True)
 

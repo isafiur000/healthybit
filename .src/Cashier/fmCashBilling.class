@@ -5272,10 +5272,16 @@ End
 
 Public Sub mnuclearmed_Click()
 
-  If GridView3.Rows.Selection.Count > 0 Then
-    If Message.Question(("Do you want to send out of pharmacy ?"), ("No"), ("Yes")) = 2 Then
-      modPharmSub.UpdateDispensing(GridView3[GridView3.Row, 0].Text, True)
-    Endif
+  Dim xcomp As String
+
+  If chkall.Value Then
+    xcomp = "%"
+  Else
+    xcomp = modBasic.$compID
+  Endif
+
+  If Message.Question(("Do you want to send out of pharmacy ?"), ("No"), ("Yes")) = 2 Then
+    SendOuterPharmacy(xcomp)
     FillDosingGrid()
   Endif
 
@@ -5307,16 +5313,75 @@ Private Function GetHICapGo(sFixCode As String, sFixItem As String, sQty As Floa
 
 End
 
-Private Sub TransferOutPendingPharmacy()
+Private Sub SendOuterPharmacy(xcomp As String)
 
-  Dim xint As Integer
   Dim Row As Integer
-  Dim rsx As Result
   Dim res As Result
   Dim res1 As Result
   Dim hField As ResultField
-  Dim xcomp As String
   Dim xhash As String
+
+  Inc Application.Busy
+  xhash = modString.GetNowString()
+  modDatabase.$myConn.Begin
+  For Row = 0 To GridView3.Rows.Count - 1
+    If GridView3[Row, 8].Picture = Picture["icons/checked.png"] Then
+
+      res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1 and fldencounterval=&2 and fldsave_order=&3 and fldqtydisp>&4 and fldbilltype=&5 and fldacledger=&6 and fldcomp_order like &7 and fldcurval=&8", GridView3[Row, 0].Text, Trim(txtencid.Text), False, 0, hPatient.GetCashCreditMode(), cmbledgerac.Text, xcomp, "Continue")
+      If res.Available = True Then
+        res1 = modDatabase.$myConn.Create("tblpatoutdosing")
+        For Each hField In res1.Fields
+          If hField.Name = "fldreference" Then
+            res1["fldreference"] = xhash
+          Else If hField.Name = "fldsave" Then
+            res1["fldsave"] = False
+          Else If hField.Name = "flduserid" Then
+            res1["flduserid"] = res["flduserid_order"]
+          Else If hField.Name = "fldtime" Then
+            res1["fldtime"] = res["fldtime_order"]
+          Else If hField.Name = "fldcomp" Then
+            res1["fldcomp"] = res["fldcomp_order"]
+          Else
+            res1[hField.Name] = res[hField.Name]
+          Endif
+        Next
+        res1.Update
+
+        res["fldsave_order"] = True
+        res["flduserid"] = modBasic.$lbluser
+        res["fldtime"] = Now()
+        res["fldcomp"] = modBasic.$compID
+        If res["flddose"] And If Not res["flddays"] Then
+          res["fldendtime"] = DateAdd(res["fldstarttime"], gb.Day, 1)
+        Else
+          res["fldendtime"] = DateAdd(res["fldstarttime"], gb.Day, CInt(res["flddays"]))
+        Endif
+        res["fldcurval"] = "Continue"
+        res["fldlevel"] = "Dispensed"
+        res["fldextrarow"] = xhash
+        res["xyz"] = False
+        res.Update()
+      Endif
+
+    Endif
+  Next
+  hPatient.$OutPhmHash = xhash
+  modDatabase.$myConn.Commit
+  Dec Application.Busy
+
+Catch
+  modDatabase.$myConn.Rollback
+  hPatient.$OutPhmHash = ""
+  Dec Application.Busy
+  modHelpVariable.CreateErrorReport()
+
+End
+
+Private Sub TransferOutPendingPharmacy()
+
+  Dim xint As Integer
+  Dim rsx As Result
+  Dim xcomp As String
 
   If chkall.Value Then
     xcomp = "%"
@@ -5330,61 +5395,9 @@ Private Sub TransferOutPendingPharmacy()
     If xint = 2 Then
       mnupackphmall_Click()
     Else If xint = 3 Then
-      Inc Application.Busy
-      xhash = modString.GetNowString()
-      modDatabase.$myConn.Begin
-      For Row = 0 To GridView3.Rows.Count - 1
-        If GridView3[Row, 8].Picture = Picture["icons/checked.png"] Then
-
-          res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1 and fldencounterval=&2 and fldsave_order=&3 and fldqtydisp>&4 and fldbilltype=&5 and fldacledger=&6 and fldcomp_order like &7 and fldcurval=&8", GridView3[Row, 0].Text, Trim(txtencid.Text), False, 0, hPatient.GetCashCreditMode(), cmbledgerac.Text, xcomp, "Continue")
-          If res.Available = True Then
-            res1 = modDatabase.$myConn.Create("tblpatoutdosing")
-            For Each hField In res1.Fields
-              If hField.Name = "fldreference" Then
-                res1["fldreference"] = xhash
-              Else If hField.Name = "fldsave" Then
-                res1["fldsave"] = False
-              Else If hField.Name = "flduserid" Then
-                res1["flduserid"] = res["flduserid_order"]
-              Else If hField.Name = "fldtime" Then
-                res1["fldtime"] = res["fldtime_order"]
-              Else If hField.Name = "fldcomp" Then
-                res1["fldcomp"] = res["fldcomp_order"]
-              Else
-                res1[hField.Name] = res[hField.Name]
-              Endif
-            Next
-            res1.Update
-
-            res["fldsave_order"] = True
-            res["flduserid"] = modBasic.$lbluser
-            res["fldtime"] = Now()
-            res["fldcomp"] = modBasic.$compID
-            If res["flddose"] And If Not res["flddays"] Then
-              res["fldendtime"] = DateAdd(res["fldstarttime"], gb.Day, 1)
-            Else
-              res["fldendtime"] = DateAdd(res["fldstarttime"], gb.Day, CInt(res["flddays"]))
-            Endif
-            res["fldcurval"] = "Continue"
-            res["fldlevel"] = "Dispensed"
-            res["fldextrarow"] = xhash
-            res["xyz"] = False
-            res.Update()
-          Endif
-
-        Endif
-      Next
-      hPatient.$OutPhmHash = xhash
-      modDatabase.$myConn.Commit
-      Dec Application.Busy
+      SendOuterPharmacy(xcomp)
     Endif
   Endif
-
-Catch
-  modDatabase.$myConn.Rollback
-  hPatient.$OutPhmHash = ""
-  Dec Application.Busy
-  modHelpVariable.CreateErrorReport()
 
 End
 

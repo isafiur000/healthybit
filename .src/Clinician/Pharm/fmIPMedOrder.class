@@ -79,8 +79,9 @@ Public Sub Form_Open()
   $PatWeight = modClinic.GetBodyWeight($encid)
   ShowBillingParam($DiscPackage)
 
-  LoadMedicineGrid()
   ShowBasicParamStatus()
+  LoadMedicineGrid()
+  ShowAdmixtures()
 
 End
 
@@ -202,6 +203,7 @@ End
 Public Sub btnshow_Click()
 
   LoadMedicineGrid()
+  ShowAdmixtures()
 
 End
 
@@ -210,13 +212,13 @@ Private Sub LoadMedicineGrid()
   Dim sFieldLst As String[]
   Dim sql As String
 
-  sFieldLst = ["fldid", "fldroute", "CONCAT(flditem, '|', COALESCE(fldmixing, ''))", "flddose", "fldfreq", "flddays", "fldcurval", "fldqtyorder", "fldid", "flduserid", "fldstarttime", "fldid", "flddirection", "fldadminsite", "fldmixing", "flduserid", "flditem", "fldmixvolume", "fldmixrate"]
+  sFieldLst = ["fldid", "fldroute", "CONCAT(flditem, '|', COALESCE(fldmixing, ''))", "CONCAT(flditem, '|', flddose)", "fldfreq", "flddays", "fldcurval", "fldqtyorder", "fldid", "flduserid", "fldstarttime", "fldid", "flddirection", "fldadminsite", "fldmixing", "flduserid", "flditem", "fldmixvolume", "fldmixrate", "flddose", "CONCAT(fldroute, '|', flditem, '|', flddose, '|', fldmixvolume, '|', fldmixrate)"]
   If cmbstatus.Text = "%" Then
-    sql = "select " & sFieldLst.Join(",") & " from tblinpatdosing where fldencounterval=&1 ORDER BY fldstarttime DESC"
+    sql = "select " & sFieldLst.Join(",") & " from tblinpatdosing where fldencounterval=&1 and (fldmixing IS NULL or fldmixing NOT LIKE &2) ORDER BY fldstarttime DESC"
   Else
-    sql = "select " & sFieldLst.Join(",") & " from tblinpatdosing where fldencounterval=&1 and fldcurval=&2 and fldsave=&3 ORDER BY fldstarttime DESC"
+    sql = "select " & sFieldLst.Join(",") & " from tblinpatdosing where fldencounterval=&1 and (fldmixing IS NULL or fldmixing NOT LIKE &2) and fldcurval=&3 and fldsave=&4 ORDER BY fldstarttime DESC"
   Endif
-  $rData = modDatabase.$myConn.Exec(sql, $encid, cmbstatus.Text, False)
+  $rData = modDatabase.$myConn.Exec(sql, $encid, "ADMIXTURE:" & "%", cmbstatus.Text, False)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
 
@@ -224,7 +226,7 @@ Private Sub LoadMedicineGrid()
     .Columns[0].Width = 1
     .Columns[1].Width = 75 * modBasic.$AppWidthRatio
     .Columns[2].Width = 300 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 100 * modBasic.$AppWidthRatio
     .Columns[4].Width = 100 * modBasic.$AppWidthRatio
     .Columns[5].Width = 50 * modBasic.$AppWidthRatio
     .Columns[6].Width = 100 * modBasic.$AppWidthRatio
@@ -235,11 +237,13 @@ Private Sub LoadMedicineGrid()
     .Columns[11].Width = 50 * modBasic.$AppWidthRatio
     .Columns[12].Width = 150 * modBasic.$AppWidthRatio
     .Columns[13].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[14].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[14].Width = 250 * modBasic.$AppWidthRatio
     .Columns[15].Width = 1
     .Columns[16].Width = 1
     .Columns[17].Width = 75 * modBasic.$AppWidthRatio
     .Columns[18].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[19].Width = 1  ''dose in number
+    .Columns[20].Width = 100 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "Route"
     .Columns[2].Text = "Medicine"
@@ -256,6 +260,7 @@ Private Sub LoadMedicineGrid()
     .Columns[14].Text = "Dilution"
     .Columns[17].Text = "Vol(mL)"
     .Columns[18].Text = "mL/Hour"
+    .Columns[20].Text = "Target"
   End With
 
 End
@@ -266,6 +271,8 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   modGeneralMain.GridViewDecoration(GridView1, Row)
   If Column = 2 Then
     GridView1.Data.RichText = GetInjectionName($rData[$aMyFields[Column]])
+  Else If Column = 3 Then
+    GridView1.Data.Text = GetMedicineDose($rData[$aMyFields[Column]])
   Else If Column = 8 Then
     GridView1.Data.Picture = Picture["icons/unchecked.png"]
     GridView1.Data.Text = ""
@@ -275,11 +282,29 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
     GridView1.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.GeneralDate)
   Else If Column = 11 Then
     GridView1.Data.Text = ""
+  Else If Column = 20 Then
+    GridView1.Data.Text = GetDosingTarget($rData[$aMyFields[Column]])
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]
   Endif
   GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.RichText, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
   GridView1.Data.WordWrap = True
+
+End
+
+Private Function GetMedicineDose(sItem As String) As String
+
+  Dim asx As String[]
+  Dim xx As String
+
+  asx = Split(sItem, "|")
+  If asx.Count = 2 Then
+    xx = asx[1] & Space(1) & modMedConstant.GetMedicineDoseUnit(asx[0])
+  Else
+    xx = ""
+  Endif
+
+  Return xx
 
 End
 
@@ -303,6 +328,35 @@ Private Function GetInjectionName(sItem As String) As String
 
 End
 
+Private Function GetDosingTarget(sValue As String) As String
+
+  Dim asx As String[]
+  Dim xunit As String
+  Dim xval As Float
+  Dim xx As String
+
+  asx = Split(sValue, "|")
+  If asx.Count = 5 Then
+    Select asx[0]
+      Case "CIV", "CIn(Epid)", "CIn(Block)"
+        If asx[3] Then
+          xunit = modMedConstant.GetMedicineDoseUnit(asx[1])
+          xval = (CFloat(asx[2]) * CFloat(asx[4])) / (CFloat(asx[3]) * 60)
+          xx = CStr(Round(xval, -3)) & Space(1) & xunit & "/min"
+        Else
+          xx = ""
+        Endif
+      Case Else
+        xx = ""
+    End Select
+  Else
+    xx = ""
+  Endif
+
+  Return xx
+
+End
+
 Public Sub GridView1_Click()
 
   Dim xval As Float
@@ -314,8 +368,8 @@ Public Sub GridView1_Click()
 
   Else If GridView1.Column = 3 Then ''dose
     If modGeneral.AllowClinicalEdit(GridView1[GridView1.Row, 15].Text) = True Then
-      If GridView1[GridView1.Row, 3].Text Then
-        xval = InputValue(GridView1[GridView1.Row, 16].Text, ("Alter Unit Dose"), GridView1[GridView1.Row, 3].Text)
+      If GridView1[GridView1.Row, 19].Text Then
+        xval = InputValue(GridView1[GridView1.Row, 16].Text, ("Alter Unit Dose"), GridView1[GridView1.Row, 19].Text)
       Else
         xval = InputValue(GridView1[GridView1.Row, 16].Text, ("Alter Unit Dose"), 0)
       Endif
@@ -418,6 +472,7 @@ Public Sub btncpoe_Click()
   hForm = New FmMedNewOrder($encid, $sTatus, cmbdisctype.Text, "tblinpatdosing")
   hForm.ShowModal
   LoadMedicineGrid()
+  ShowAdmixtures()
   GetReviewMultiMessage()
 
 End
@@ -505,6 +560,7 @@ Private Sub AddNewRegimen(itmList As Long[])
         Endif
       Next
       LoadMedicineGrid()
+      ShowAdmixtures()
 
     Else
       Message.Warning("Diagnosis not provided", ("OK"))
@@ -565,6 +621,7 @@ Private Sub AddPastRegimens(itmList As Long[])
         Endif
       Next
       LoadMedicineGrid()
+      ShowAdmixtures()
 
     Else
       Message.Warning("Diagnosis not provided", ("OK"))
@@ -632,6 +689,7 @@ Public Sub btngroup_Click()
         Endif
       Next
       LoadMedicineGrid()
+      ShowAdmixtures()
       GetReviewMultiMessage()
 
     Endif
@@ -1034,6 +1092,7 @@ Private Sub EnterIPDosingRecord()
         Endif
       Endif
       LoadMedicineGrid()
+      ShowAdmixtures()
       BlankDosingBox()
 
     Else
@@ -1222,6 +1281,200 @@ Public Sub btnaireview_Click()
       Endif
     Endif
 
+  Endif
+
+End
+
+''========================== Admixtures ================================
+Private Sub ShowAdmixtures()
+
+  Dim sFieldLst As String[]
+  Dim sql As String
+  Dim rsx As Result
+  Dim res As Result
+
+  Dim pic2 As Picture
+  Dim pic3 As Picture
+
+  Dim Column As Integer
+  Dim fld As ResultField
+
+  pic2 = Picture["icons/coll4.png"]
+  pic3 = Picture["icons/unchecked.png"]
+  sFieldLst = ["flditem", "fldroute", "CONCAT(flditem, '|', flddose)", "fldfreq", "flddays", "fldcurval", "fldqtyorder", "fldid", "flduserid", "fldstarttime", "fldid", "flddirection", "fldadminsite", "flduserid", "fldmixvolume", "fldmixrate", "flddose"]
+
+  If cmbstatus.Text = "%" Then
+    rsx = modDatabase.$myConn.Exec("select distinct(fldmixing) as fldmixing from tblinpatdosing where fldencounterval=&1 and fldmixing LIKE &2 ORDER BY fldstarttime DESC", $encid, "ADMIXTURE:" & "%")
+  Else
+    rsx = modDatabase.$myConn.Exec("select distinct(fldmixing) as fldmixing from tblinpatdosing where fldencounterval=&1 and fldmixing LIKE &2 and fldcurval=&3 and fldsave=&4 ORDER BY fldstarttime DESC", $encid, "ADMIXTURE:" & "%", cmbstatus.Text, False)
+  Endif
+  If rsx.Available Then
+    Panel3.Visible = True
+    ColumnView1.Clear
+    ColumnView1.Columns.Count = sFieldLst.Count
+    With ColumnView1
+      .Columns[0].Text = "Medicine"
+      .Columns[1].Text = "Route"
+      .Columns[2].Text = "Dose"
+      .Columns[3].Text = "Freq"
+      .Columns[4].Text = "Days"
+      .Columns[5].Text = "Status"
+      .Columns[6].Text = "QTY"
+      .Columns[8].Text = "Doctor"
+      .Columns[9].Text = "Start"
+      .Columns[10].Text = "N"
+      .Columns[11].Text = "Direction"
+      .Columns[12].Text = "Admin"
+      .Columns[14].Text = "Vol(mL)"
+      .Columns[15].Text = "mL/Hour"
+    End With
+
+    For Each rsx
+      ColumnView1.Add(rsx["fldmixing"], rsx["fldmixing"], pic2)
+      If cmbstatus.Text = "%" Then
+        sql = "select " & sFieldLst.Join(",") & " from tblinpatdosing where fldencounterval=&1 and fldmixing=&2"
+        res = modDatabase.$myConn.Exec(sql, $encid, rsx["fldmixing"])
+      Else
+        sql = "select " & sFieldLst.Join(",") & " from tblinpatdosing where fldencounterval=&1 and fldcurval=&2 and fldsave=&3 and fldmixing=&4"
+        res = modDatabase.$myConn.Exec(sql, $encid, cmbstatus.Text, False, rsx["fldmixing"])
+      Endif
+      If res.Available Then
+        For Each res
+          ColumnView1.Add(rsx["fldmixing"] & "@" & CStr(res["fldid"]), res["fldid"], pic3, rsx["fldmixing"])
+          Column = 0
+          For Each fld In res.Fields
+            If Column = 2 Then
+              ColumnView1[rsx["fldmixing"] & "@" & CStr(res["fldid"])][Column] = GetMedicineDose(res[fld.Name])
+            Else If Column = 8 Then
+              ColumnView1[rsx["fldmixing"] & "@" & CStr(res["fldid"])][Column] = modGeneral.GetUserFullName(res[fld.Name])
+            Else If Column = 9 Then
+              ColumnView1[rsx["fldmixing"] & "@" & CStr(res["fldid"])][Column] = modReportVar.GetDateTimeReport(res[fld.Name], gb.GeneralDate)
+            Else If Column = 10 Then
+              ColumnView1[rsx["fldmixing"] & "@" & CStr(res["fldid"])][Column] = "" 'res[fld.Name]
+            Else
+              ColumnView1[rsx["fldmixing"] & "@" & CStr(res["fldid"])][Column] = res[fld.Name]
+            Endif
+            Column = Column + 1
+          Next
+        Next
+      Endif
+    Next
+
+    With ColumnView1
+      .Columns[0].Width = 350 * modBasic.$AppWidthRatio
+      .Columns[1].Width = 75 * modBasic.$AppWidthRatio
+      .Columns[2].Width = 100 * modBasic.$AppWidthRatio
+      .Columns[3].Width = 100 * modBasic.$AppWidthRatio
+      .Columns[4].Width = 50 * modBasic.$AppWidthRatio
+      .Columns[5].Width = 100 * modBasic.$AppWidthRatio
+      .Columns[6].Width = 50 * modBasic.$AppWidthRatio
+      .Columns[7].Width = 1
+      .Columns[8].Width = 125 * modBasic.$AppWidthRatio
+      .Columns[9].Width = 150 * modBasic.$AppWidthRatio
+      .Columns[10].Width = 50 * modBasic.$AppWidthRatio
+      .Columns[11].Width = 250 * modBasic.$AppWidthRatio
+      .Columns[12].Width = 150 * modBasic.$AppWidthRatio
+      .Columns[13].Width = 1
+      .Columns[14].Width = 75 * modBasic.$AppWidthRatio
+      .Columns[15].Width = 75 * modBasic.$AppWidthRatio
+      .Columns[16].Width = 1
+    End With
+
+  Else
+    Panel3.Visible = False
+  Endif
+
+End
+
+Public Sub ColumnView1_Click()
+
+  If ColumnView1.Current.Picture = Picture["icons/unchecked.png"] Then
+    ColumnView1.Current.Picture = Picture["icons/checked.png"]
+  Else If ColumnView1.Current.Picture = Picture["icons/checked.png"] Then
+    ColumnView1.Current.Picture = Picture["icons/unchecked.png"]
+  Endif
+
+End
+
+Public Sub ColumnView1_Menu()
+
+  mnumixture.Popup
+
+End
+
+Public Sub mnueditstate_Click()
+
+  Dim yval As String
+  Dim res As Result
+
+  yval = InputCombo(ColumnView1[ColumnView1.Current.Key][0], ("Alter Status"), $StateList, ColumnView1[ColumnView1.Current.Key][5], True)
+  If yval Then
+    res = modDatabase.$myConn.Edit("tblinpatdosing", "fldid=&1 and fldencounterval=&2", CLong(ColumnView1[ColumnView1.Current.Key][7]), $encid)
+    res["fldcurval"] = yval
+    res["xyz"] = False
+    res.Update
+    ShowAdmixtures()
+  Endif
+
+End
+
+Public Sub mnueditdose_Click()
+
+  Dim xval As Float
+  Dim res As Result
+
+  If modGeneral.AllowClinicalEdit(ColumnView1[ColumnView1.Current.Key][13]) = True Then
+    If ColumnView1[ColumnView1.Current.Key][16] Then
+      xval = InputValue(ColumnView1[ColumnView1.Current.Key][0], ("Alter Unit Dose"), ColumnView1[ColumnView1.Current.Key][16])
+    Else
+      xval = InputValue(ColumnView1[ColumnView1.Current.Key][0], ("Alter Unit Dose"), 0)
+    Endif
+    If xval Then
+      res = modDatabase.$myConn.Edit("tblinpatdosing", "fldid=&1 and fldencounterval=&2", CLong(ColumnView1[ColumnView1.Current.Key][7]), $encid)
+      res["flddose"] = xval
+      res["xyz"] = False
+      res.Update
+      ShowAdmixtures()
+    Endif
+  Endif
+
+End
+
+Public Sub mnueditdays_Click()
+
+  Dim xval As Float
+  Dim res As Result
+
+  If modGeneral.AllowClinicalEdit(ColumnView1[ColumnView1.Current.Key][13]) = True Then
+    xval = InputValue(ColumnView1[ColumnView1.Current.Key][0], ("Alter Duration"), ColumnView1[ColumnView1.Current.Key][4])
+    If xval >= 0 Then
+      res = modDatabase.$myConn.Edit("tblinpatdosing", "fldid=&1 and fldencounterval=&2", CLong(ColumnView1[ColumnView1.Current.Key][7]), $encid)
+      res["flddays"] = xval
+      If xval Then
+        res["fldendtime"] = DateAdd(res["fldstarttime"], gb.Hour, CInt(xval * 24))
+      Endif
+      res["xyz"] = False
+      res.Update
+      ShowAdmixtures()
+    Endif
+  Endif
+
+End
+
+Public Sub mnueditdirection_Click()
+
+  Dim yval As String
+  Dim res As Result
+
+  If modGeneral.AllowClinicalEdit(ColumnView1[ColumnView1.Current.Key][13]) = True Then
+    yval = GetTextArea(ColumnView1[ColumnView1.Current.Key][0], ColumnView1[ColumnView1.Current.Key][11])
+    If yval Then
+      res = modDatabase.$myConn.Edit("tblinpatdosing", "fldid=&1 and fldencounterval=&2", CLong(ColumnView1[ColumnView1.Current.Key][7]), $encid)
+      res["flddirection"] = Trim(yval)
+      res["xyz"] = False
+      res.Update
+      ShowAdmixtures()
+    Endif
   Endif
 
 End

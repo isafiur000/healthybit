@@ -1,0 +1,111 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,103,74)
+  Expand = True
+  Arrangement = Arrange.Vertical
+  { TabPanel1 TabPanel
+    MoveScaled(2,2,97,67)
+    Expand = True
+    Arrangement = Arrange.Vertical
+    Count = 2
+    Index = 0
+    Text = ("Infusion")
+    { Panel3 Panel
+      MoveScaled(0,0,95,3)
+      Arrangement = Arrange.Horizontal
+      { lblduration Label
+        MoveScaled(17,0,43,3)
+        Expand = True
+        Border = Border.Plain
+      }
+      { btndirection ToolButton
+        MoveScaled(60,0,3,3)
+        Picture = Picture["icon:/small/info"]
+      }
+      { btnfluid ToolButton
+        MoveScaled(63,0,3,3)
+        Picture = Picture["icon:/small/battery"]
+      }
+      { btntime ToolButton
+        MoveScaled(66,0,3,3)
+        Picture = Picture["icon:/small/clock"]
+      }
+      { btnprotocol ToolButton
+        MoveScaled(69,0,3,3)
+        Picture = Picture["icon:/small/book"]
+      }
+      { Panel5 Panel
+        MoveScaled(80,0,3,3)
+      }
+      { chkalldate CheckBox
+        MoveScaled(83,0,12,3)
+        Text = ("All Dates")
+      }
+    }
+    { !grdfluid GridView
+      MoveScaled(0,4,91,13)
+      #Public = True
+      Expand = True
+      Mode = Select.Single
+      Header = GridView.Both
+      AutoResize = False
+    }
+    { Panel4 Panel
+      MoveScaled(2,19,15,1)
+    }
+    { grdfluiddata GridView
+      MoveScaled(0,21,91,18)
+      Expand = True
+      Mode = Select.Single
+      Header = GridView.Both
+      AutoResize = False
+    }
+    Index = 1
+    Text = ("Admixture")
+    { ColumnView1 ColumnView
+      MoveScaled(2,1,86,17)
+      Expand = True
+      AutoResize = False
+    }
+    { pnlmixture Panel
+      MoveScaled(0,19,91,4)
+      { Label1 Label
+        MoveScaled(0,0.5,14,3)
+        Border = Border.Plain
+        Text = ("Rate (mL/Hour)")
+      }
+      { txtmixrate ValueBox
+        MoveScaled(15,0.5,10,3)
+      }
+      { txtmixture TextBox
+        MoveScaled(66,1,10,3)
+        Visible = False
+      }
+      { btnmixstart Button
+        MoveScaled(26,0.5,11,3)
+        Enabled = False
+        Text = ("Start")
+        Picture = Picture["icon:/small/play"]
+      }
+      { btnmixclose Button
+        MoveScaled(38,0.5,10,3)
+        Enabled = False
+        Text = ("Close")
+        Picture = Picture["icon:/small/stop"]
+      }
+      { chkmixall CheckBox
+        MoveScaled(78,0.5,12,3)
+        Text = ("All Dates")
+      }
+    }
+    { grdmixture GridView
+      MoveScaled(0,23,91,23)
+      Expand = True
+      Mode = Select.Single
+      Header = GridView.Both
+      AutoResize = False
+    }
+    Index = 0
+  }
+}

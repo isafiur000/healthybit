@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,100,66)
+  MoveScaled(0,0,104,73)
   Text = ("IV Infusion")
   Arrangement = Arrange.Vertical
   Margin = True
@@ -10,7 +10,7 @@
     Expand = True
     Arrangement = Arrange.Vertical
     { Panel2 Panel
-      MoveScaled(0,0,98,7)
+      MoveScaled(0,0,98,4)
       { Label2 Label
         MoveScaled(0,0.5,8,3)
         Border = Border.Plain
@@ -30,65 +30,11 @@
         MoveScaled(77,0.5,12,3)
         ReadOnly = True
       }
-      { chkalldate CheckBox
-        MoveScaled(68,4,12,3)
-        Text = ("All Dates")
-      }
-      { txtfluidname TextBox
-        MoveScaled(29,4,14,3)
-        Visible = False
-      }
-      { txtgender TextBox
-        MoveScaled(9,4,19,3)
-        ReadOnly = True
-      }
-      { Label4 Label
-        MoveScaled(0,4,8,3)
-        Border = Border.Plain
-        Text = ("Gender")
-      }
     }
-    { Panel3 Panel
-      MoveScaled(0,7.5,98,3)
-      Arrangement = Arrange.Horizontal
-      { lblduration Label
-        MoveScaled(0,0,78,3)
-        Expand = True
-        Border = Border.Plain
-      }
-      { btndirection ToolButton
-        MoveScaled(78,0,3,3)
-        Picture = Picture["icon:/small/info"]
-      }
-      { btnfluid ToolButton
-        MoveScaled(81,0,3,3)
-        Picture = Picture["icon:/small/battery"]
-      }
-      { btntime ToolButton
-        MoveScaled(84,0,3,3)
-        Picture = Picture["icon:/small/clock"]
-      }
-      { btnprotocol ToolButton
-        MoveScaled(87,0,3,3)
-        Picture = Picture["icon:/small/book"]
-      }
-    }
-    { grdfluid GridView
-      MoveScaled(0,11,91,22)
+    { pnlinfusion Panel
+      MoveScaled(0,8,68,43)
       Expand = True
-      Mode = Select.Single
-      Header = GridView.Both
-      AutoResize = False
-    }
-    { Panel4 Panel
-      MoveScaled(0,33,15,1)
-    }
-    { grdfluiddata GridView
-      MoveScaled(0,35,91,28)
-      Expand = True
-      Mode = Select.Single
-      Header = GridView.Both
-      AutoResize = False
+      Arrangement = Arrange.Vertical
     }
   }
 }

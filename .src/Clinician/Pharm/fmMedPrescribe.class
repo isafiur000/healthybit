@@ -16,6 +16,7 @@ Private $LabelType As String
 Private $Dept As String = "IPD"
 Private xYear As Integer
 Private $ClinicianLst As String[]
+Private $RouteList As String[]
 
 Private $NarcoDoctor As String
 Private $NarcoRegd As String
@@ -45,14 +46,15 @@ Public Sub Form_Open()
   cmbtarget.List = modMedicine.$MedicineUnitList
   modStockSub.DisplayDefaultDispensingMode(rbrand, rbgeneric)
   If modBasic.$ClinInjectionRoute = "Disable" Then
-    cmbroute.List = modMedicine.ClinicalSubRoutes()
+    $RouteList = modMedicine.ClinicalSubRoutes()
   Else
     If modSettings.ShowSettingFromFIle("ClinicForms/ShowInjectionSubRoutes") = "Disable" Then
-      cmbroute.List = modMedicine.RouteMedicine()
+      $RouteList = modMedicine.RouteMedicine()
     Else
-      cmbroute.List = modMedicine.ClinicalRoute()
+      $RouteList = modMedicine.ClinicalRoute()
     Endif
   Endif
+  cmbroute.List = $RouteList
   cmbfreq.List = modMedicine.FrequencyCombo()
   $ClinicianLst = New String[]
   SetNarcoticsPrescriber()
@@ -69,6 +71,16 @@ Public Sub Form_Open()
   FillDosingGrid()
   ClearAllControl()
   cmbroute.SetFocus
+
+End
+
+Public Sub chkadmixture_Click()
+
+  If chkadmixture.Value = True Then
+    cmbroute.List = ["CIV", "CIn(Epid)", "CIn(Block)", "fluid"]
+  Else
+    cmbroute.List = $RouteList
+  Endif
 
 End
 
@@ -158,6 +170,14 @@ End
 ''--------------------------------------
 Private Sub ClearAllControl()
 
+  Select cmbroute.Text
+    Case "CIV", "CIn(Epid)", "CIn(Block)", "fluid"
+    Case Else
+      cmbdilution.Text = ""
+      txtdiluvolume.Value = 0
+      txtivrate.Value = 0
+  End Select
+
   cmbroute.Text = ""
   cmbmedicine.Text = ""
   cmbadminsite.Text = ""
@@ -177,10 +197,7 @@ Private Sub ClearAllControl()
   dtstarting.Value = Now()
   dtlastclosing.Value = Now()
   dtending.Value = Now()
-  cmbdilution.Text = ""
   txtdirection.Text = ""
-  txtdiluvolume.Value = 0
-  txtivrate.Value = 0
 
 End
 
@@ -267,6 +284,7 @@ Public Sub cmbroute_Change()
         pnldiluent.Enabled = True
         btnadddiluent.Enabled = True
     End Select
+
     Select cmbroute.Text
       Case "CIV", "CIn(Epid)", "CIn(Block)", "fluid"
         cmbfreq.Text = "Continuous"
@@ -537,11 +555,14 @@ End
 
 Public Sub btnadddiluent_Click()
 
-  EnterDilutionRecord()
-  Balloon.Info(("Information saved"), btnadddiluent)
-  Balloon.Delay = modBasic.$BalloonDelay
-  btnadddiluent.Enabled = False
-  FillDosingGrid()
+  If cmbdilution.Text Like "ADMIXTURE:" & "*" Then
+  Else
+    EnterDilutionRecord()
+    Balloon.Info(("Information saved"), btnadddiluent)
+    Balloon.Delay = modBasic.$BalloonDelay
+    btnadddiluent.Enabled = False
+    FillDosingGrid()
+  Endif
 
 End
 
@@ -751,7 +772,7 @@ Private Function ConvertDailyFreToNumber(txtfreq As String) As Float
 
 End
 
-Public Sub cmbfreq_Click()
+Public Sub cmbfreq_LostFocus()
 
   If cmbfreq.Text Then
     txtdailydose.Value = Round(txtdose.Value * ConvertDailyFreToNumber(cmbfreq.Text), -2)
@@ -817,11 +838,29 @@ Private Sub ShowFluidInCombo()
 
   Dim res As Result
 
-  If chkrecommfluid.Value = True And If cmbroute.Text = "CIV" And If cmbmedicine.Text Then
-    res = modDatabase.$medConn.Exec("select fldchild as col from tbldilutionfluid where fldparent=&1", modMedConstant.GetDrugFromStockID(cmbmedicine.Text) & "-CIV()")
-    cmbdilution.List = modControlSub.GetDirectFillresult(res)
+  If chkadmixture.Value = True Then
+    cmbdilution.List = GetAdmixtureList()
   Else
-    cmbdilution.List = $fluidList
+    If chkrecommfluid.Value = True And If cmbroute.Text = "CIV" And If cmbmedicine.Text Then
+      res = modDatabase.$medConn.Exec("select fldchild as col from tbldilutionfluid where fldparent=&1", modMedConstant.GetDrugFromStockID(cmbmedicine.Text) & "-CIV()")
+      cmbdilution.List = modControlSub.GetDirectFillresult(res)
+    Else
+      cmbdilution.List = $fluidList
+    Endif
   Endif
+
+End
+
+Private Function GetAdmixtureList() As String[]
+
+  Dim xchar As String
+  Dim xList As String[]
+
+  xList = New String[]
+  For Each xchar In modLongVar.$Charcters
+    xList.Add("ADMIXTURE:" & xchar)
+  Next
+
+  Return xList
 
 End

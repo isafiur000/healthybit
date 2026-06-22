@@ -1,9 +1,24 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,113,52)
+  MoveScaled(0,0,113,68)
   Expand = True
   Arrangement = Arrange.Vertical
+  { mnumixture Menu
+    Visible = False
+    { mnueditstate Menu
+      Text = ("Edit Status")
+    }
+    { mnueditdose Menu
+      Text = ("Edit Dose")
+    }
+    { mnueditdays Menu
+      Text = ("Edit Days")
+    }
+    { mnueditdirection Menu
+      Text = ("Edit Direction")
+    }
+  }
   { Panel1 Panel
     MoveScaled(0,0,110,4)
     { cmbstatus ComboBox
@@ -149,8 +164,17 @@
     Mode = Select.Single
     Header = GridView.Both
   }
+  { Panel3 Panel
+    MoveScaled(0,40,105,20)
+    Arrangement = Arrange.Vertical
+    { ColumnView1 ColumnView
+      MoveScaled(1,0,69,8)
+      Expand = True
+      AutoResize = False
+    }
+  }
   { MessageView1 MessageView
-    MoveScaled(0,44,103,5)
+    MoveScaled(0,60,103,5)
     Foreground = Color.Red
     Border = True
   }

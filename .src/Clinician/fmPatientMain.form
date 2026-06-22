@@ -38,6 +38,9 @@
     { btnintake Menu
       Text = ("Nutrition Plan")
     }
+    { mnussurequest Menu
+      Text = ("SSU Request")
+    }
     { mnucloudai Menu
       Text = ("AI Advice")
       Picture = Picture["icon:/small/lamp"]
@@ -1646,47 +1649,10 @@
             Visible = False
           }
         }
-        { Panel3 Panel
-          MoveScaled(0,4,118,3)
-          Arrangement = Arrange.Horizontal
-          { lblduration Label
-            MoveScaled(0,0,78,3)
-            Expand = True
-            Border = Border.Plain
-          }
-          { btndirection ToolButton
-            MoveScaled(78,0,3,3)
-            Picture = Picture["icon:/small/info"]
-          }
-          { btnfluid ToolButton
-            MoveScaled(81,0,3,3)
-            Picture = Picture["icon:/small/battery"]
-          }
-          { btntime ToolButton
-            MoveScaled(84,0,3,3)
-            Picture = Picture["icon:/small/clock"]
-          }
-          { btnprotocol ToolButton
-            MoveScaled(87,0,3,3)
-            Picture = Picture["icon:/small/book"]
-          }
-        }
-        { grdfluid GridView
-          MoveScaled(0,9,118,15)
+        { pnlinfusion Panel
+          MoveScaled(2,7,68,21)
           Expand = True
-          Mode = Select.Single
-          Header = GridView.Both
-          AutoResize = False
-        }
-        { Panel41 Panel
-          MoveScaled(0,24,117,1)
-        }
-        { grdfluiddata GridView
-          MoveScaled(0,25,118,12)
-          Expand = True
-          Mode = Select.Single
-          Header = GridView.Both
-          AutoResize = False
+          Arrangement = Arrange.Vertical
         }
       }
       Index = 9

@@ -1,0 +1,83 @@
+' Gambas class file
+
+Private $encid As String
+
+Public Sub _new(encid As String)
+
+  $encid = encid
+
+End
+
+Public Sub Form_Open()
+
+  txtpatientname.Text = modPatient.GetPatientNameByEnc($encid)
+  txtgender.Text = modPatient.GetPatientAgeString($encid, Now()) & "/" & modPatient.GetPatientSex($encid)
+  txtpatientaddress.Text = modPatient.GetPatientAddressByEnc($encid)
+  ShowRequest()
+
+End
+
+Private Sub ShowRequest()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Exec("select fldid,flddetail,fldstatus,flduserid_order,fldtime_order,flduserid_verify,fldtime_verify from tblssurequest where fldencounterval=&1", $encid)                    ''
+  If res.Available Then
+    If res["fldstatus"] = "Requested" Then
+      btnadd.Enabled = False
+      btnverify.Enabled = True
+    Else If res["fldstatus"] = "Verified" Then
+      btnadd.Enabled = False
+      btnverify.Enabled = False
+    Endif
+
+    txtid.Value = res["fldid"]
+    txtdetail.Text = res["flddetail"]
+    lblrequest.Text = res["flduserid_order"] & " (" & modReportVar.GetDateTimeReport(res["fldtime_order"], gb.MediumDate) & ")"
+    lblverify.Text = res["flduserid_verify"] & " (" & modReportVar.GetDateTimeReport(res["fldtime_verify"], gb.MediumDate) & ")"
+  Else
+    btnadd.Enabled = True
+    btnverify.Enabled = False
+  Endif
+
+End
+
+Public Sub btnadd_Click()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Create("tblssurequest")
+  res["fldencounterval"] = $encid
+  res["flddetail"] = txtdetail.Text
+  res["fldstatus"] = "Requested"
+  res["flduserid_order"] = modBasic.$lbluser
+  res["fldtime_order"] = Now()
+  res["fldcomp_order"] = modBasic.$compID
+  res["fldsave_order"] = True
+  lblrequest.Text = modBasic.$lbluser
+  res.Update
+  Balloon.Info(("Information saved"), btnadd)
+  Balloon.Delay = modBasic.$BalloonDelay
+  btnadd.Enabled = False
+
+End
+
+Public Sub btnverify_Click()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Edit("tblssurequest", "fldid=&1 and fldencounterval=&2", txtid.Value, $encid)
+  If res.Available Then
+    res["flddetail"] = txtdetail.Text
+    res["fldstatus"] = "Verified"
+    res["flduserid_verify"] = modBasic.$lbluser
+    res["fldtime_verify"] = Now()
+    res["fldcomp_verify"] = modBasic.$compID
+    res["fldsave_verify"] = True
+    lblverify.Text = modBasic.$lbluser
+    res.Update
+    Balloon.Info(("Information saved"), btnverify)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+End

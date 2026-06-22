@@ -41,7 +41,7 @@
       Text = ("Route")
     }
     { chkout CheckBox
-      MoveScaled(30,7.5,15,3)
+      MoveScaled(45,4,15,3)
       Text = ("Out of Stock")
     }
     { Label2 Label
@@ -73,7 +73,7 @@
       Sorted = True
     }
     { chknextplan CheckBox
-      MoveScaled(49,7.5,14,3)
+      MoveScaled(64,7.5,14,3)
       Text = ("Next Visit")
     }
     { chkrenal CheckBox
@@ -101,6 +101,10 @@
       ToolTip = ("Name of Medicines, surgical and extra items\nWrite few alphabets and press Down key to populate this combobox")
       Sorted = True
     }
+    { chkadmixture CheckBox
+      MoveScaled(33,7.5,19,3)
+      Text = ("New Admixture")
+    }
   }
   { TabPanel1 TabPanel
     MoveScaled(0,15,109,38)
@@ -112,86 +116,42 @@
     { Panel4 Panel
       MoveScaled(0,0,104,14.5)
       { txtdailydose ValueBox
-        MoveScaled(18,11,10,3)
+        MoveScaled(18,7.5,10,3)
         Background = &HDFFFF7
         ReadOnly = True
       }
-      { txttarget ValueBox
-        MoveScaled(18,0.5,10,3)
-      }
-      { cmbtarget ComboBox
-        MoveScaled(29,0.5,13,3)
-      }
-      { Label19 Label
-        MoveScaled(58,0.5,16,3)
-        Border = Border.Plain
-        Text = ("Frequency")
-      }
-      { cmbfreq ComboBox
-        MoveScaled(75,0.5,16,3)
-        ToolTip = ("Frequency of Use")
-      }
       { Label15 Label
-        MoveScaled(1,4,16,3)
+        MoveScaled(58,0.5,16,3)
         Border = Border.Plain
         Text = ("Calculated Dose")
       }
       { txtcalculate ValueBox
-        MoveScaled(18,4,10,3)
+        MoveScaled(75,0.5,10,3)
         Background = &HDFFFF7
         ReadOnly = True
       }
       { lblcalculate Label
+        MoveScaled(86,0.5,13,3)
+        Border = Border.Plain
+        Text = ("mg")
+      }
+      { Label17 Label
+        MoveScaled(1,4,16,3)
+        Border = Border.Plain
+        Text = ("Final Dose")
+      }
+      { lbldose Label
         MoveScaled(29,4,13,3)
         Border = Border.Plain
         Text = ("mg")
       }
-      { Label20 Label
-        MoveScaled(58,4,16,3)
-        Border = Border.Plain
-        Text = ("Duration (days)")
-      }
-      { txtday ValueBox
-        MoveScaled(75,4,10,3)
-        ToolTip = ("Duration of Use")
-      }
-      { Label17 Label
-        MoveScaled(1,7.5,16,3)
-        Border = Border.Plain
-        Text = ("Final Dose")
-      }
-      { txtdose ValueBox
-        MoveScaled(18,7.5,10,3)
-      }
-      { lbldose Label
+      { lbldailydose Label
         MoveScaled(29,7.5,13,3)
         Border = Border.Plain
         Text = ("mg")
       }
-      { Label21 Label
-        MoveScaled(58,7.5,16,3)
-        Border = Border.Plain
-        Text = ("Quantity")
-      }
-      { txtqty ValueBox
-        MoveScaled(75,7.5,10,3)
-        ToolTip = ("Quantity of item ordered")
-      }
-      { txtdosecount ValueBox
-        MoveScaled(75,11,10,3)
-      }
-      { Label23 Label
-        MoveScaled(58,11,16,3)
-        Border = Border.Plain
-        Text = ("Total Dose Count")
-      }
-      { lbldailydose Label
-        MoveScaled(29,11,13,3)
-        Border = Border.Plain
-        Text = ("mg")
-      }
       { Label24 Label
-        MoveScaled(1,11,16,3)
+        MoveScaled(1,7.5,16,3)
         Border = Border.Plain
         Text = ("Daily Dose")
       }
@@ -199,6 +159,50 @@
         MoveScaled(1,0.5,16,3)
         Border = Border.Plain
         Text = ("Target Dose")
+      }
+      { Label19 Label
+        MoveScaled(58,4,16,3)
+        Border = Border.Plain
+        Text = ("Frequency")
+      }
+      { Label20 Label
+        MoveScaled(58,7.5,16,3)
+        Border = Border.Plain
+        Text = ("Duration (days)")
+      }
+      { Label21 Label
+        MoveScaled(58,11,16,3)
+        Border = Border.Plain
+        Text = ("Quantity")
+      }
+      { Label23 Label
+        MoveScaled(1,11,16,3)
+        Border = Border.Plain
+        Text = ("Total Dose Count")
+      }
+      { txttarget ValueBox
+        MoveScaled(18,0.5,10,3)
+      }
+      { cmbtarget ComboBox
+        MoveScaled(29,0.5,13,3)
+      }
+      { txtdose ValueBox
+        MoveScaled(18,4,10,3)
+      }
+      { cmbfreq ComboBox
+        MoveScaled(75,4,24,3)
+        ToolTip = ("Frequency of Use")
+      }
+      { txtday ValueBox
+        MoveScaled(75,7.5,10,3)
+        ToolTip = ("Duration of Use")
+      }
+      { txtdosecount ValueBox
+        MoveScaled(18,11,10,3)
+      }
+      { txtqty ValueBox
+        MoveScaled(75,11,10,3)
+        ToolTip = ("Quantity of item ordered")
       }
     }
     { pnldiluent Panel
@@ -238,7 +242,7 @@
         Text = ("Admin Rate")
       }
       { lbldose3 Label
-        MoveScaled(87,4,13,3)
+        MoveScaled(86,4,13,3)
         Border = Border.Plain
         Text = ("mL/Hour")
       }
