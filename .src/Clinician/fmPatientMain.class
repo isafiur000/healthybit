@@ -24,10 +24,6 @@ Private $rPlanRes As Result
 Private $aPlanFields As String[]
 Private $rInputRes As Result
 Private $aInputFields As String[]
-Private $rFludRes As Result
-Private $aFludFields As String[]
-Private $rRateRes As Result
-Private $aRateFields As String[]
 
 Private hMultiCompl As FmMultiComplaints
 Private hDigForm As FmDiagnosticTab
@@ -2935,16 +2931,16 @@ End
 ''--------------------------- IV Fluids --------------------------------------------------------
 Public Sub btndosinfoivdrip_Click()
 
-  Dim GridView1 As GridView
+  Dim GridView1x As GridView
   Dim i As Integer
   Dim dosid As Long[]
   Dim xPath As String
 
   If txtencid.Text Then
-    GridView1 = hIpInfusion.grdfluid
+    GridView1x = hIpInfusion.grdfluid
     dosid = New Long[]
-    For i = 0 To GridView1.Rows.Count - 1
-      dosid.Add(GridView1[i, 0].Text)
+    For i = 0 To GridView1x.Rows.Count - 1
+      dosid.Add(GridView1x[i, 0].Text)
     Next
     Inc Application.Busy
     xPath = modCHTMLPatient.ShowMedicationLabelReport(Trim(txtencid.Text), dosid, "Inpatient")
@@ -2956,16 +2952,16 @@ End
 
 Public Sub btnfluidinfo_Click()
 
-  Dim GridView1 As GridView
+  Dim GridView1x As GridView
   Dim doslst As Long[]
   Dim i As Integer
   Dim xPath As String
 
   If txtencid.Text Then
-    GridView1 = hIpInfusion.grdfluid
+    GridView1x = hIpInfusion.grdfluid
     doslst = New Long[]
-    For i = 0 To GridView1.Rows.Count - 1
-      doslst.Add(GridView1[i, 0].Text)
+    For i = 0 To GridView1x.Rows.Count - 1
+      doslst.Add(GridView1x[i, 0].Text)
     Next
     Inc Application.Busy
     xPath = modCHTMLPatient.ShowCounselingReport(Trim(txtencid.Text), doslst)
@@ -2977,7 +2973,7 @@ End
 
 Public Sub btnfluidcompat_Click()
 
-  Dim GridView1 As GridView
+  Dim GridView1x As GridView
   Dim sql As String
   Dim res As Result
   Dim opt As String[]
@@ -2986,8 +2982,8 @@ Public Sub btnfluidcompat_Click()
   Dim xmsg As String
   Dim xout As String
 
-  GridView1 = hIpInfusion.grdfluid
-  If GridView1.Rows.Selection.Count > 0 Then
+  GridView1x = hIpInfusion.grdfluid
+  If GridView1x.Rows.Selection.Count > 0 Then
     opt = New String[]
     sql = "select fldid,fldroute,flditem from tblpatdosing where fldencounterval=&1 and fldsave_order=&2 and fldstarttime<=&3 and fldendtime>=&4 and flditemtype=&5 and fldcurval=&6"                    ''
     res = modDatabase.$myConn.Exec(sql, Trim(txtencid.Text), True, modDate.EndSqlDate(Now()), modDate.StartSqlDate(Now()), "Medicines", "Continue")
@@ -3009,7 +3005,7 @@ Public Sub btnfluidcompat_Click()
 
     cForm = New CMedError
     Inc Application.Busy
-    xmsg = cForm.ShowMedCompatibleSingleDosIDMessage(Trim(txtencid.Text), GridView1[GridView1.Row, 2].Text, opt)
+    xmsg = cForm.ShowMedCompatibleSingleDosIDMessage(Trim(txtencid.Text), GridView1x[GridView1x.Row, 2].Text, opt)
     Dec Application.Busy
     If xmsg Then
       xout = MessageHtml("Drug related Problems", xmsg, [("Continue")])
@@ -3020,13 +3016,13 @@ End
 
 Public Sub btncompatinfo_Click()
 
-  Dim GridView1 As GridView
+  Dim GridView1x As GridView
   Dim strDrug As String
   Dim hForm As FmListDOuble
 
-  GridView1 = hIpInfusion.grdfluid
-  If GridView1.Rows.Selection.Count Then
-    strDrug = modMedConstant.GetDrugFromStockID(GridView1[GridView1.Row, 15].Text)
+  GridView1x = hIpInfusion.grdfluid
+  If GridView1x.Rows.Selection.Count Then
+    strDrug = modMedConstant.GetDrugFromStockID(GridView1x[GridView1x.Row, 15].Text)
     hForm = New FmListDOuble(strDrug, "Compatible Drugs", "Incompatible Drugs", "Drug Compatibility", False)
     hForm.ShowModal
   Endif

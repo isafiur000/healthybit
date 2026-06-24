@@ -13,6 +13,12 @@ Private $RepoStr As String
 Private $tblpatlabtest As String
 Private $tblpatlabsubtest As String
 
+Private $rDatav As Result
+Private $aMyFieldsv As String[]
+Private $varList As String[]
+Private $dataVar As Collection
+Private $cataVar As Collection
+
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Horizontal")
@@ -257,12 +263,15 @@ Public Sub mnusearname_Click()
 
 End
 
-Private Function ExecuteQuery(xFldList As String[]) As Result
+Private Function ExecuteQuery(xFldList As String[], Optional sExtra As String) As Result
 
   Dim sql As String
   Dim xfldtime As String
   Dim res As Result
   Dim xmicrobe As String
+
+  Dim xextra As String
+  Dim asx As String[]
 
   If rball.Value = True Then
     xmicrobe = "%"
@@ -274,14 +283,29 @@ Private Function ExecuteQuery(xFldList As String[]) As Result
     Endif
   Endif
 
+  If sExtra Then
+    If sExtra = "GROUP BY" Then
+      xextra = " GROUP BY t2.fldencounterval,t2.fldsubtest"
+    Else
+      asx = Split(sExtra, "|")
+      If asx.Count = 2 Then
+        xextra = db.Subst(" and " & asx[0] & "=&1", asx[1])
+      Else If asx.Count = 4 Then
+        xextra = db.Subst(" and " & asx[0] & "=&1 and " & asx[2] & "=&2", asx[1], asx[3])
+      Endif
+    Endif
+  Else
+    xextra = ""
+  Endif
+
   $RepoStr = modDataRepo.GetWhereStringRepo(cmblocation.Text, cmbvalue.Text, "t2")
   If xmicrobe Then
     xfldtime = GetLabTimeStr()
     If cmbsensi.Text = "ValidValue" Then
-      sql = "select " & xFldList.Join(",") & " FROM (tblpatlabsubtable AS t3 inner join " & $tblpatlabsubtest & " AS t2 on (t3.fldsubtestid=t2.fldid and t3.fldindex<=>t2.fldindex)) inner join " & $tblpatlabtest & " AS t1 on (t2.fldtestid=t1.fldid and t2.fldencounterval=t1.fldencounterval) WHERE " & xfldtime & ">=&1 and " & xfldtime & "<=&2 and lower(t1.fldsampletype) like &3 and (t2.fldtanswertype=&4 or t2.fldtanswertype=&5) and lower(t2.fldsubtest) like &6 and lower(t3.fldvariable) like &7 and (t3.fldvalue like &8 or t3.fldvalue like &9 or t3.fldvalue like &{10})" & $RepoStr
+      sql = "select " & xFldList.Join(",") & " FROM (tblpatlabsubtable AS t3 inner join " & $tblpatlabsubtest & " AS t2 on (t3.fldsubtestid=t2.fldid and t3.fldindex<=>t2.fldindex)) inner join " & $tblpatlabtest & " AS t1 on (t2.fldtestid=t1.fldid and t2.fldencounterval=t1.fldencounterval) WHERE " & xfldtime & ">=&1 and " & xfldtime & "<=&2 and lower(t1.fldsampletype) like &3 and (t2.fldtanswertype=&4 or t2.fldtanswertype=&5) and lower(t2.fldsubtest) like &6 and lower(t3.fldvariable) like &7 and (t3.fldvalue like &8 or t3.fldvalue like &9 or t3.fldvalue like &{10})" & $RepoStr & xextra                         ''
       res = modDatabase.$syConn.Exec(sql, modDate.StartSqlDate(dtfir.Value), modDate.EndSqlDate(dtlast.Value), LCase(cmbspecimen.Text), "Drug Sensitivity", "WHO Sensitivity", LCase(xmicrobe), LCase(cmbdrug.Text), "Sensitive", "Intermediate", "Resistant")
     Else
-      sql = "select " & xFldList.Join(",") & " FROM (tblpatlabsubtable AS t3 inner join " & $tblpatlabsubtest & " AS t2 on (t3.fldsubtestid=t2.fldid and t3.fldindex<=>t2.fldindex)) inner join " & $tblpatlabtest & " AS t1 on (t2.fldtestid=t1.fldid and t2.fldencounterval=t1.fldencounterval) WHERE " & xfldtime & ">=&1 and " & xfldtime & "<=&2 and lower(t1.fldsampletype) like &3 and (t2.fldtanswertype=&4 or t2.fldtanswertype=&5) and lower(t2.fldsubtest) like &6 and lower(t3.fldvariable) like &7 and t3.fldvalue like &8" & $RepoStr
+      sql = "select " & xFldList.Join(",") & " FROM (tblpatlabsubtable AS t3 inner join " & $tblpatlabsubtest & " AS t2 on (t3.fldsubtestid=t2.fldid and t3.fldindex<=>t2.fldindex)) inner join " & $tblpatlabtest & " AS t1 on (t2.fldtestid=t1.fldid and t2.fldencounterval=t1.fldencounterval) WHERE " & xfldtime & ">=&1 and " & xfldtime & "<=&2 and lower(t1.fldsampletype) like &3 and (t2.fldtanswertype=&4 or t2.fldtanswertype=&5) and lower(t2.fldsubtest) like &6 and lower(t3.fldvariable) like &7 and t3.fldvalue like &8" & $RepoStr & xextra
       res = modDatabase.$syConn.Exec(sql, modDate.StartSqlDate(dtfir.Value), modDate.EndSqlDate(dtlast.Value), LCase(cmbspecimen.Text), "Drug Sensitivity", "WHO Sensitivity", LCase(xmicrobe), LCase(cmbdrug.Text), cmbsensi.Text)
     Endif
   Endif
@@ -336,6 +360,10 @@ Public Sub btnrefresh_Click()
 
   If chkchart.Value = True Then
     FillItemChartQTY()
+  Endif
+
+  If chkdataview.Value = True Then
+    MakeDataViewGrid()
   Endif
 
   Dec Application.Busy
@@ -1253,5 +1281,224 @@ Public Sub mnuexpocolumn_Click()
 
   hForm = New FmCustColumnSet(Me.Tag)
   hForm.ShowModal
+
+End
+
+''========================= Data View ========================
+Private Function GetDataViewColumns() As String[]
+
+  Dim xlist As String[]
+  Dim xFldList As String[]
+  Dim i As Integer
+  Dim xcol As String
+
+  xlist = modControlSub.GetDirectFillresultNoNull(ExecuteQuery(["distinct(t3.fldvariable)"]))
+  $varList = xlist
+
+  xFldList = New String[]
+  xFldList.Add("t2.fldencounterval")
+  xFldList.Add("t2.fldencounterval")
+  xFldList.Add("t2.fldencounterval")
+  xFldList.Add("t2.fldencounterval")
+  xFldList.Add("t2.fldsubtest")
+  For Each xcol In $varList
+    xFldList.Add("CONCAT(t2.fldencounterval, '|', t2.fldsubtest) ")
+  Next
+
+  modCustPatient.FillNewCOlumnCollection(Me.Tag)
+  $newColumn = modCustPatient.CustomNewColumnsTitle(Me.Tag)
+  If $newColumn.Count Then
+    For i = 0 To $newColumn.Count - 1
+      xFldList.Add("t2.fldencounterval")
+    Next
+  Endif
+
+  Return xFldList
+
+End
+
+Private Sub MakeDataViewGrid()
+
+  Dim xFldList As String[]
+
+  xFldList = GetDataViewColumns()
+  $rDatav = ExecuteQuery(xFldList, "GROUP BY")
+  $dataVar = New Collection
+  $cataVar = New Collection
+  FillDataViewGrid()
+
+End
+
+Private Sub FillDataViewGrid()
+
+  Dim i As Integer
+  Dim Column As Integer
+
+  $aMyFieldsv = New String[]
+  modGridView.ReadSmallData(GridView2, $rDatav, $aMyFieldsv)
+  With GridView2
+    .Columns[0].Width = 125 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 250 * modBasic.$AppWidthRatio
+    .Columns[0].Text = "EncID"
+    .Columns[1].Text = "Name"
+    .Columns[2].Text = "Age"
+    .Columns[3].Text = "Gender"
+    .Columns[4].Text = "Organism"
+
+    For Column = 0 To $varList.Count - 1
+      .Columns[Column + 5].Width = 100 * modBasic.$AppWidthRatio
+      .Columns[Column + 5].Text = $varList[Column]
+    Next
+
+    If $newColumn.Count Then
+      For i = 0 To $newColumn.Count - 1
+        .Columns[i + 5 + $varList.Count].Text = $newColumn[i]
+        .Columns[i + 5 + $varList.Count].Width = 150 * modBasic.$AppWidthRatio
+      Next
+    Endif
+  End With
+
+End
+
+Public Sub GridView2_Data(Row As Integer, Column As Integer)
+
+  $rDatav.MoveTo(Row)
+  modGeneralMain.GridViewDecoration(GridView2, Row)
+  If Column > ($varList.Count + 5) - 1 Then
+    GridView2.Data.RichText = modString.TextToHTML(GetDataViewValue(Column, $rDatav[$aMyFieldsv[Column]]))
+  Else
+    GridView2.Data.Text = GetDataViewValue(Column, $rDatav[$aMyFieldsv[Column]])
+  Endif
+
+End
+
+Private Function GetDataViewValue(Column As Integer, xVariable As Variant) As Variant
+
+  Dim xxx As Variant
+  Dim i As Integer
+  Dim aColl As Collection
+
+  If Split(xVariable, "|").Count = 2 Then
+    If $dataVar.Exist(xVariable) = False Then
+      $dataVar.Add(GetLastLabCollection(xVariable), xVariable)
+    Endif
+  Endif
+
+  If Column = 0 Then
+    xxx = xVariable
+  Else If Column = 1 Then
+    xxx = modPatient.GetPatientNameByEnc(xVariable, modDatabase.$syConn)
+  Else If Column = 2 Then
+    xxx = modMedReports.GetPatientPastAgeString("tblencounter", xVariable)
+  Else If Column = 3 Then
+    xxx = modPatient.GetPatientSex(xVariable, modDatabase.$syConn)
+  Else If Column = 4 Then
+    xxx = xVariable
+  Else
+
+    If Column < $varList.Count + 5 Then
+      aColl = $dataVar[xVariable]
+      If $varList[Column - 5] And If aColl.Exist($varList[Column - 5]) Then
+        xxx = aColl[$varList[Column - 5]]
+      Else
+        xxx = ""
+      Endif
+    Endif
+
+  Endif
+
+  If $newColumn.Count Then
+    For i = 0 To $newColumn.Count - 1
+      If Column = $varList.Count + 5 + i Then
+        xxx = modCustPatient.NewColValue(Me.Tag, $newColumn[i], xVariable)
+      Endif
+    Next
+  Endif
+  Return xxx
+
+End
+
+Private Function GetLastLabCollection(xStr As String) As Collection
+
+  Dim encid As String
+  Dim xOrganism As String
+  Dim res As Result
+  Dim aColl As Collection
+  Dim asx As String[]
+
+  asx = Split(xStr, "|")
+  If asx.Count = 2 Then
+    encid = asx[0]
+    xOrganism = asx[1]
+
+    aColl = New Collection
+    res = ExecuteQuery(["t3.fldvariable as fldvariable", "t3.fldvalue as fldvalue"], "t2.fldencounterval|" & encid & "|t2.fldsubtest|" & xOrganism)
+    If res.Available Then
+      For Each res
+        If aColl.Exist(res["fldvariable"]) = False Then
+          aColl.Add(res["fldvalue"], res["fldvariable"])
+        Endif
+      Next
+    Endif
+
+  Endif
+
+  Return aColl
+
+End
+
+Public Sub mnumultivariate_Click()
+
+  Dim CForm As CMultivariate
+  Dim sArry As String[]
+  Dim Row As Integer
+  Dim Column As Integer
+  Dim sPath As String
+  Dim xHeader As String[]
+  Dim hPython As FmPythonTerminal
+
+  If MMain.$IsGUIApp = True Then
+    $ProgressBar1 = modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory)
+    $ProgressBar1.Visible = True
+    $ProgressBar1.Value = 0
+  Endif
+
+  If GridView2.Rows.Count Then
+    xHeader = New String[]
+    For Column = 0 To GridView2.Columns.Count - 1
+      xHeader.Add(GridView2.Columns[Column].Text)
+    Next
+
+    Inc Application.Busy
+    CForm = New CMultivariate
+    For Row = 0 To GridView2.Rows.Count - 1
+      sArry = New String[]
+      For Column = 0 To xHeader.Count - 1
+        If Column < $varList.Count + 4 Then
+          sArry.Add(Quote(GridView2[Row, Column].Text))
+        Else
+          sArry.Add(Quote(modString.ConvertRichTextToPlain(GridView2[Row, Column].RichText)))
+        Endif
+      Next
+      CForm.Add(sArry)
+      If MMain.$IsGUIApp = True Then
+        $ProgressBar1.Value = (Row + 1) / GridView2.Rows.Count
+        Wait
+      Endif
+    Next
+    sPath = CForm.GetCSVFile()
+    Dec Application.Busy
+    If MMain.$IsGUIApp = True Then
+      $ProgressBar1.Visible = False
+    Endif
+
+    If Exist(sPath) Then
+      hPython = New FmPythonTerminal("Multivariate", xHeader, sPath)
+      modWorkSpace.Add(hPython)
+    Endif
+  Endif
 
 End

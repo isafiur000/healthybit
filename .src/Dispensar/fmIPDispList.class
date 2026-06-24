@@ -45,6 +45,7 @@ Public Sub Form_Open()
   xpackLst = modNonMedical.FillDiscountCombo()
   cmbpackage.List = xpackLst
   cmbpackage.Text = "%"
+  cmbroute.List = modMedicine.AllComboRoute()
 
   xregimen = modSettings.ShowSettingFromFIle("ShowRegimen/DispensingList")
   If xregimen = "Yes" Then
@@ -54,7 +55,6 @@ Public Sub Form_Open()
   Endif
 
   dtdisp.Value = Now()
-  chkselall.Value = True
   txtsearch.SetFocus
 
 End
@@ -117,6 +117,7 @@ Private Sub FillEncList(xencid As String)
   Dim xsql As String
   Dim sql1 As String
   Dim sql2 As String
+  Dim xroute As String
 
   If cmbdepart.Text = "%" And If cmbpackage.Text = "%" Then
     xsql = ""
@@ -130,14 +131,27 @@ Private Sub FillEncList(xencid As String)
     Endif
   Endif
 
+  If cmbroute.Text Then
+    Select cmbroute.Text
+      Case "oral", "liquid", "fluid", "injection", "resp", "topical", "eye/ear", "anal/vaginal"
+        xroute = db.Subst(" and flditem in(select fldbrandid from tblmedbrand where flddrug in(select flddrug from tbldrug where fldroute=&1))", cmbroute.Text)
+      Case "suture", "msurg", "ortho"
+        xroute = db.Subst(" and flditem in(select fldbrandid from tblsurgbrand where fldsurgid in(select fldsurgid from tblsurgicals where fldsurgcateg=&1))", cmbroute.Text)
+      Case "extra"
+        xroute = " and flditem in(select fldbrandid from tblextrabrand)"
+    End Select
+  Else
+    xroute = ""
+  Endif
+
   $FieldList = ["fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval"]
   If xencid Then
-    sql1 = "select " & $FieldList.Join(",") & " from tblinpatdosing where fldcurval=&1 and fldsave=&2 and fldendtime>=&3 and fldencounterval like &4 and flddays>&5" & xsql
-    sql2 = "select " & $FieldList.Join(",") & " from tblinpatdosing where fldcurval=&1 and fldsave=&2 and fldencounterval like &4 and flddays=&5" & xsql
+    sql1 = "select " & $FieldList.Join(",") & " from tblinpatdosing where fldcurval=&1 and fldsave=&2 and fldendtime>=&3 and fldencounterval like &4 and flddays>&5" & xsql & xroute
+    sql2 = "select " & $FieldList.Join(",") & " from tblinpatdosing where fldcurval=&1 and fldsave=&2 and fldencounterval like &4 and flddays=&5" & xsql & xroute
     $rData1 = modDatabase.$myConn.Exec(sql1 & " UNION " & sql2 & " GROUP BY fldencounterval", "Continue", False, modDate.StartSqlDate(Now()), xencid, 0)                                          ''
   Else
-    sql1 = "select " & $FieldList.Join(",") & " from tblinpatdosing where fldcurval=&1 and fldsave=&2 and fldendtime>=&3 and flddays>&4" & xsql
-    sql2 = "select " & $FieldList.Join(",") & " from tblinpatdosing where fldcurval=&1 and fldsave=&2 and flddays=&4" & xsql
+    sql1 = "select " & $FieldList.Join(",") & " from tblinpatdosing where fldcurval=&1 and fldsave=&2 and fldendtime>=&3 and flddays>&4" & xsql & xroute
+    sql2 = "select " & $FieldList.Join(",") & " from tblinpatdosing where fldcurval=&1 and fldsave=&2 and flddays=&4" & xsql & xroute
     $rData1 = modDatabase.$myConn.Exec(sql1 & " UNION " & sql2 & " GROUP BY fldencounterval", "Continue", False, modDate.StartSqlDate(Now()), 0)                                          ''
   Endif
   $aMyFields1 = New String[]
@@ -226,6 +240,7 @@ Private Sub ShowMedicineOrderList(encid As String)
   Dim xrestr As String
   Dim i As Integer
   Dim xList As String[]
+  Dim xroute As String
 
   If $RestrictType And If $RestrictList.Count Then
     xList = $RestrictList.Copy()
@@ -241,8 +256,21 @@ Private Sub ShowMedicineOrderList(encid As String)
     xrestr = ""
   Endif
 
-  sql1 = "select fldid,fldid,flditem,CONCAT(flddose, '|', fldfreq, '|', flddays),flduserid,fldcomp,fldencounterval from tblinpatdosing where fldencounterval=&1 and fldcurval=&2 and fldsave=&3 and flddays>&4 and fldendtime>=&5" & xrestr
-  sql2 = "select fldid,fldid,flditem,CONCAT(flddose, '|', fldfreq, '|', flddays),flduserid,fldcomp,fldencounterval from tblinpatdosing where fldencounterval=&1 and fldcurval=&2 and fldsave=&3 and flddays=&4" & xrestr
+  If cmbroute.Text Then
+    Select cmbroute.Text
+      Case "oral", "liquid", "fluid", "injection", "resp", "topical", "eye/ear", "anal/vaginal"
+        xroute = db.Subst(" and flditem in(select fldbrandid from tblmedbrand where flddrug in(select flddrug from tbldrug where fldroute=&1))", cmbroute.Text)
+      Case "suture", "msurg", "ortho"
+        xroute = db.Subst(" and flditem in(select fldbrandid from tblsurgbrand where fldsurgid in(select fldsurgid from tblsurgicals where fldsurgcateg=&1))", cmbroute.Text)
+      Case "extra"
+        xroute = " and flditem in(select fldbrandid from tblextrabrand)"
+    End Select
+  Else
+    xroute = " and "
+  Endif
+
+  sql1 = "select fldid,fldid,flditem,CONCAT(flddose, '|', fldfreq, '|', flddays),flduserid,fldcomp,fldencounterval from tblinpatdosing where fldencounterval=&1 and fldcurval=&2 and fldsave=&3 and flddays>&4 and fldendtime>=&5" & xrestr & xroute
+  sql2 = "select fldid,fldid,flditem,CONCAT(flddose, '|', fldfreq, '|', flddays),flduserid,fldcomp,fldencounterval from tblinpatdosing where fldencounterval=&1 and fldcurval=&2 and fldsave=&3 and flddays=&4" & xrestr & xroute
   $rDatax = modDatabase.$myConn.Exec(sql1 & " UNION ALL " & sql2, encid, "Continue", False, 0, modDate.StartSqlDate(Now()))                 ''
   $aMyFieldsx = New String[]
   modGridView.ReadSmallData(ListView1, $rDatax, $aMyFieldsx)
@@ -965,26 +993,26 @@ Public Sub btnlist_Click()
 
 End
 
-Private Function GetMedicineListEncid(encid As String) As String[]
-
-  Dim res As Result
-  Dim xxx As String[]
-
-  xxx = New String[]
-  res = ExecuteQuery(encid)
-  If res.Available Then
-    For Each res
-      If chkregimen.Value = True Then
-        xxx.Add(res["fldroute"] & " " & res["flditem"] & " " & res["flddose"] & "X" & res["fldfreq"] & "X" & res["flddays"] & " QTY: " & res["fldqtydisp"])
-      Else
-        xxx.Add(res["fldroute"] & " " & res["flditem"] & " QTY: " & res["fldqtydisp"])
-      Endif
-    Next
-  Endif
-
-  Return xxx
-
-End
+' Private Function GetMedicineListEncid(encid As String) As String[]
+'
+'   Dim res As Result
+'   Dim xxx As String[]
+'
+'   xxx = New String[]
+'   res = ExecuteQuery(encid)
+'   If res.Available Then
+'     For Each res
+'       If chkregimen.Value = True Then
+'         xxx.Add(res["fldroute"] & " " & res["flditem"] & " " & res["flddose"] & "X" & res["fldfreq"] & "X" & res["flddays"] & " QTY: " & res["fldqtydisp"])
+'       Else
+'         xxx.Add(res["fldroute"] & " " & res["flditem"] & " QTY: " & res["fldqtydisp"])
+'       Endif
+'     Next
+'   Endif
+'
+'   Return xxx
+'
+' End
 
 Public Sub btnsumall_Click()
 

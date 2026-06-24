@@ -47,6 +47,20 @@ Private hOwnStockForm As FmWardStock
 
 Private $HiCappingVar As Collection
 
+''for drug errors
+Private $pregstat As String
+Private $hepstat As String
+Private $cretclr As Float
+Private $dtbir As Date
+Private $dtrec As Date
+Private $sAllerList As String[]
+Private $diagnosisList As String[]
+Private $hypoTestList As String[]
+Private $hyperTestList As String[]
+Private $bradyExamList As String[]
+Private $tachyExamList As String[]
+Private $donelablist As String[]
+
 Public Sub _new(encid As String, sStatus As String, DiscPackage As String)
 
   $encid = encid
@@ -142,9 +156,6 @@ Public Sub Form_Open()
   SetNarcoticsPrescriber()
 
   $ShowReview = modBasic.$MedErrorEnable
-  If Not $ShowReview Then
-    $ShowReview = "Notification"
-  Endif
   If modPharmacy.DisableEncounterForReview($encid) = True Then
     $ShowReview = "None"
   Endif
@@ -168,6 +179,7 @@ Public Sub Form_Open()
     pnlwardstock.Enabled = False
   Endif
   ShowBasicParamStatus()
+  GetMedErrorParameters()
   $Ready = True
 
 End
@@ -418,7 +430,6 @@ Public Sub btnrepeat_Click()
         AddPastRegimens(xLst)
       Endif
     Next
-    GetReviewMultiMessage()
   Endif
 
 End
@@ -911,52 +922,52 @@ Public Sub cmbfreq_KeyRelease()
 
 End
 
-Public Sub cmbfreq_LostFocus()
-
-  Dim opt As String[]
-  Dim Row As Integer
-  Dim xval As String
-  Dim xcount As String
-  Dim cForm As CMedError
-
-  If txtdose.Value And If cmbfreq.Text Then
-
-    Select cmbroute.Text
-      Case "suture", "msurg", "ortho", "extra", "topical"
-        ''do nothing
-      Case Else
-        If $ShowReview = "None" Then
-        Else
-          opt = New String[]
-          For Row = 0 To GridView1.Rows.Count - 1
-            Select GridView1[Row, 2].Text
-              Case "suture", "msurg", "ortho", "extra", "topical"
-              Case Else
-                xval = modMedConstant.GetDrugFromStockID(GridView1[Row, 3].Text)
-                If opt.Count = 0 Then
-                  opt.Add(xval)
-                Else
-                  If opt.Exist(xval) = False Then
-                    opt.Add(xval)
-                  Endif
-                Endif
-            End Select
-          Next
-
-          cForm = New CMedError
-          Inc Application.Busy
-          xcount = cForm.ShowMedicationReviewPunching($encid, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, opt)
-          Dec Application.Busy
-          If xcount Then
-            MessageView1.Close()
-            MessageView1.Open(xcount, Picture["icon:/small/info"])
-          Endif
-        Endif
-    End Select
-
-  Endif
-
-End
+' Public Sub cmbfreq_LostFocus()
+'
+'   Dim opt As String[]
+'   Dim Row As Integer
+'   Dim xval As String
+'   Dim xcount As String
+'   Dim cForm As CMedError
+'
+'   If txtdose.Value And If cmbfreq.Text Then
+'
+'     Select cmbroute.Text
+'       Case "suture", "msurg", "ortho", "extra", "topical"
+'         ''do nothing
+'       Case Else
+'         If $ShowReview = "None" Then
+'         Else
+'           opt = New String[]
+'           For Row = 0 To GridView1.Rows.Count - 1
+'             Select GridView1[Row, 2].Text
+'               Case "suture", "msurg", "ortho", "extra", "topical"
+'               Case Else
+'                 xval = modMedConstant.GetDrugFromStockID(GridView1[Row, 3].Text)
+'                 If opt.Count = 0 Then
+'                   opt.Add(xval)
+'                 Else
+'                   If opt.Exist(xval) = False Then
+'                     opt.Add(xval)
+'                   Endif
+'                 Endif
+'             End Select
+'           Next
+'
+'           cForm = New CMedError
+'           Inc Application.Busy
+'           xcount = cForm.ShowMedicationReviewPunching($encid, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, opt)
+'           Dec Application.Busy
+'           If xcount Then
+'             MessageView1.Close()
+'             MessageView1.Open(xcount, Picture["icon:/small/info"])
+'           Endif
+'         Endif
+'     End Select
+'
+'   Endif
+'
+' End
 
 Public Sub txtday_GotFocus()
 
@@ -1193,7 +1204,6 @@ Public Sub btngroup_Click()
         Endif
       Next
       FillDosingGrid()
-      GetReviewMultiMessage()
     Endif
 
   Else
@@ -1214,6 +1224,10 @@ Private Sub FillDosingGrid()
   $rDataM = modDatabase.$myConn.Exec(sql, $encid, False, $status, "Request", "Continue", "Reserve", "Planned")
   $aMyFieldsM = New String[]
   modGridView.ReadSmallData(GridView1, $rDataM, $aMyFieldsM)
+  If $ShowReview = "None" Then
+  Else
+    GetReviewMultiMessage()
+  Endif
 
   With GridView1
     .Columns[0].Width = 1
@@ -1550,45 +1564,6 @@ Public Sub mnudisplabel_Click()
     xPath = modCHTMLPatient.ShowSingleCounselingReport(GridView1[GridView1.Row, 0].Text)
     Dec Application.Busy
     modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
-  Endif
-
-End
-
-Private Sub GetReviewMultiMessage()
-
-  Dim xVar As Variant[]
-  Dim xColl As Collection
-  Dim Row As Integer
-  Dim cForm As CMedError
-  Dim xmsg As String
-
-  If GridView1.Rows.Count Then
-    If rbvalue.Value = True Then
-
-      xVar = New Variant[]
-      For Row = 0 To GridView1.Rows.Count - 1
-        Select GridView1[Row, 2].Text
-          Case "suture", "msurg", "ortho", "extra", "topical"
-          Case Else
-            xColl = New Collection
-            xColl.Add(GridView1[Row, 2].Text, "Route")
-            xColl.Add(GridView1[Row, 3].Text, "Medicine")
-            xColl.Add(GridView1[Row, 4].Text, "Dose")
-            xColl.Add(GridView1[Row, 5].Text, "Frequency")
-            xVar.Add(xColl)
-        End Select
-      Next
-
-      cForm = New CMedError
-      Inc Application.Busy
-      xmsg = cForm.ShowMedicationReviewMultipleDosIDMessage($encid, xVar)
-      Dec Application.Busy
-      If xmsg Then
-        MessageView1.Close()
-        MessageView1.Open(xmsg, Picture["icon:/small/info"])
-      Endif
-
-    Endif
   Endif
 
 End
@@ -2494,6 +2469,111 @@ Public Sub btnprotdel_Click()
         res.Update
       Endif
       ShowPatProtocols()
+    Endif
+  Endif
+
+End
+
+''==================== drug errors =====================
+Private Sub GetMedErrorParameters()
+
+  If modMedError.$PregnancyPrecaution = "No" Then
+  Else
+    $pregstat = modPatient.GetPregnancyStatus($encid)
+  Endif
+  If modMedError.$HepaticPrecaution = "No" Then
+  Else
+    $hepstat = modClinic.GetHepaticStatus($encid)
+  Endif
+  If modMedError.$RenalPrecaution = "No" Then
+  Else
+    $cretclr = modSysCons.GetCreatinineClearance($encid)
+  Endif
+
+  If modMedError.$AgeContraindication = "Yes" Or If modMedError.$PreservativePrecaution = "Yes" Then
+    $dtbir = modPatient.GetPatientBirthDay($encid)
+    $dtrec = modPatient.GetRecordDate($encid)
+  Endif
+  If modMedError.$DrugAllergy = "Yes" Then
+    $sAllerList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(t1.fldcode) as col from tblpatfindings as t1 inner join tblencounter as t2 on t1.fldencounterval=t2.fldencounterval where t1.fldtype=&1 and t2.fldpatientval=&2 and fldsave=&3", "Allergic Drugs", modPatient.GetPatientNoByEnc($encid), True))
+  Endif
+  If modMedError.$DiseaseContraindication = "Yes" Or If modMedError.$SideEffects = "Yes" Then
+    $diagnosisList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select distinct(fldcode) as col from tblpatfindings where fldencounterval=&1 and (fldtype=&2 or fldtype=&3) and fldsave=&4", $encid, "Final Diagnosis", "Provisional Diagnosis", True))
+  Endif
+  If modMedError.$LaboratoryInteraction = "Yes" Then
+    $hypoTestList = modLabTest.GetHypoTestList($encid)
+    $hyperTestList = modLabTest.GetHyperTestList($encid)
+  Endif
+  If modMedError.$ExaminationInteraction = "Yes" Then
+    $bradyExamList = modClinic.GetBradyExamList($encid)
+    $tachyExamList = modClinic.GetTachyExamList($encid)
+  Endif
+  If modMedError.$PreAdminMonitor = "Yes" Then
+    $donelablist = modLabTest.PaientAllTestNameArray($encid)
+  Endif
+
+End
+
+Private Sub GetReviewMultiMessage()
+
+  Dim xVar As Variant[]
+  Dim xColl As Collection
+  Dim cForm As CCheckErrors
+  Dim xmsg As String
+
+  If $rDataM.Available Then
+    xVar = New Variant[]
+    For Each $rDataM
+      Select $rDataM["fldroute"]
+        Case "suture", "msurg", "ortho", "extra", "topical"
+        Case Else
+          xColl = New Collection
+          xColl.Add($rDataM["fldroute"], "Route")
+          xColl.Add($rDataM["flditem"], "Medicine")
+          xColl.Add($rDataM["flddose"], "Dose")
+          xColl.Add($rDataM["fldfreq"], "Frequency")
+          xVar.Add(xColl)
+      End Select
+    Next
+
+    cForm = New CCheckErrors($encid, xVar)
+    If modMedError.$PregnancyPrecaution = "No" Then
+    Else
+      cForm.SetPregnancyStatus($pregstat)
+    Endif
+    If modMedError.$HepaticPrecaution = "No" Then
+    Else
+      cForm.SetHepaticStatus($hepstat)
+    Endif
+    If modMedError.$RenalPrecaution = "No" Then
+    Else
+      cForm.SetRenalStatus($cretclr)
+    Endif
+
+    If modMedError.$AgeContraindication = "Yes" Or If modMedError.$PreservativePrecaution = "Yes" Then
+      cForm.SetPatientDates($dtbir, $dtrec)
+    Endif
+    If modMedError.$DrugAllergy = "Yes" Then
+      cForm.SetAllergy($sAllerList)
+    Endif
+    If modMedError.$DiseaseContraindication = "Yes" Or If modMedError.$SideEffects = "Yes" Then
+      cForm.SetDiagnosisList($diagnosisList)
+    Endif
+    If modMedError.$LaboratoryInteraction = "Yes" Then
+      cForm.SetLabAbnormList($hypoTestList, $hyperTestList)
+    Endif
+    If modMedError.$ExaminationInteraction = "Yes" Then
+      cForm.SetExamAbnormList($bradyExamList, $tachyExamList)
+    Endif
+    If modMedError.$PreAdminMonitor = "Yes" Then
+      cForm.SetDoneLabList($donelablist)
+    Endif
+    Inc Application.Busy
+    xmsg = cForm.GetMedErrorOutput()
+    Dec Application.Busy
+    If xmsg Then
+      MessageView1.Close()
+      MessageView1.Open(xmsg, Picture["icon:/small/info"])
     Endif
   Endif
 
