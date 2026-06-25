@@ -266,7 +266,7 @@ Private Sub ShowMedicineOrderList(encid As String)
         xroute = " and flditem in(select fldbrandid from tblextrabrand)"
     End Select
   Else
-    xroute = " and "
+    xroute = ""
   Endif
 
   sql1 = "select fldid,fldid,flditem,CONCAT(flddose, '|', fldfreq, '|', flddays),flduserid,fldcomp,fldencounterval from tblinpatdosing where fldencounterval=&1 and fldcurval=&2 and fldsave=&3 and flddays>&4 and fldendtime>=&5" & xrestr & xroute
@@ -485,7 +485,7 @@ Private Sub FillDispenstable(encid As String)
     .Columns[1].Width = 135 * modBasic.$AppWidthRatio
     .Columns[2].Width = 75 * modBasic.$AppWidthRatio
     .Columns[3].Width = 350 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 50 * modBasic.$AppWidthRatio
     If chkregimen.Value = True Then
       .Columns[5].Width = 75 * modBasic.$AppWidthRatio
       .Columns[6].Width = 50 * modBasic.$AppWidthRatio
@@ -498,7 +498,7 @@ Private Sub FillDispenstable(encid As String)
       .Columns[8].Width = 1
     Endif
 
-    .Columns[9].Width = 200 * modBasic.$AppWidthRatio
+    .Columns[9].Width = 300 * modBasic.$AppWidthRatio
     .Columns[10].Width = 1
     .Columns[11].Width = 1
     .Columns[12].Width = 1
