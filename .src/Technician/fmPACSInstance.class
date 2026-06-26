@@ -275,3 +275,26 @@ Public Sub SpinBox1_Change()
   ShowImageView(TextBox1.Text)
 
 End
+
+Public Sub btnanalyze_Click()
+
+  Dim xList As String[]
+  Dim xPath As Variant
+  Dim xmodel As String
+  Dim xval As String
+
+  xPath = pictimage.Tag
+  If xPath Then
+    xList = modMLModels.GetMLModelsList()
+    xmodel = InputCombo("Select appropriate model to analyze", "Image Recognition", xList, "", True)
+    If xmodel Then
+      Inc Application.Busy
+      xval = Trim(modMLModels.GetModelValue($encid, xmodel, xPath))
+      Dec Application.Busy
+      If xval Then
+        Message.Info(xval, "OK")
+      Endif
+    Endif
+  Endif
+
+End

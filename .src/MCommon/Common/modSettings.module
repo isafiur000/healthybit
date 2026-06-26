@@ -256,6 +256,16 @@ Public Function ShowEqnSettingFromFIle(strSetting As String) As String
 
 End
 
+''-------------------------------- model.conf -----------------------------------
+Public Sub SaveModelSettingToFile(strSetting As String, strVal As String)
+
+  Dim ConfFile As Settings
+
+  ConfFile = New Settings(modHelpVariable.AppDirectory &/ "/calculators/models.conf")
+  ConfFile[strSetting] = Trim(strVal)
+
+End
+
 Public Function ShowModelsSettingFromFIle(strSetting As String) As String
 
   Dim strVal As String

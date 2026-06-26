@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,99,60)
+  MoveScaled(0,0,105,64)
   Text = ("PACS Images")
   Resizable = False
   { GridView3 GridView
@@ -10,31 +10,31 @@
     Header = GridView.Horizontal
   }
   { Panel1 Panel
-    MoveScaled(34,54,64,5)
+    MoveScaled(34,58,70,5)
     { Slider1 Slider
-      MoveScaled(7,1,44,4)
+      MoveScaled(7,1,49,4)
       MinValue = 1
       MaxValue = 1000
       Value = 150
     }
     { btnnext Button
-      MoveScaled(58,0.6667,5,4)
+      MoveScaled(64,1,5,4)
       Picture = Picture["icon:/small/right"]
     }
     { btnprev Button
-      MoveScaled(0,0.6667,4.9333,4)
+      MoveScaled(0,0.625,4.875,4)
       Picture = Picture["icon:/small/left"]
     }
     { SpinBox1 SpinBox
-      MoveScaled(52,1,5,3)
+      MoveScaled(58,1,5,3)
       MinValue = 1
       Value = 1
     }
   }
   { ScrollView1 ScrollView
-    MoveScaled(34,1,64,53)
+    MoveScaled(34,1,70,56)
     { pictimage ImageView
-      MoveScaled(1,1,62,51)
+      MoveScaled(1,1,68,54)
     }
   }
   { Panel2 Panel
@@ -42,6 +42,7 @@
     { rbdicom RadioButton
       MoveScaled(10,0,10,3)
       Text = ("DICOM")
+      Value = True
     }
     { rbimage RadioButton
       MoveScaled(0,0,10,3)
@@ -74,5 +75,9 @@
   { btncopy ToolButton
     MoveScaled(29,56,4,3)
     Picture = Picture["icon:/small/copy"]
+  }
+  { btnanalyze Button
+    MoveScaled(1,59.5,32,4)
+    Text = ("Analyze")
   }
 }

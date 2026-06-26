@@ -15,18 +15,19 @@ Public Function GetMLModelsList() As String[]
 
 End
 
-Public Function GetModelValue(encid As String, xModel As String) As String
+Public Function GetModelValue(encid As String, xModel As String, Optional sFile As String) As String
 
   Dim i As Integer
   Dim xargs As String
   Dim xurl As String
+  Dim xcmd As String
 
   Dim asx As String[]
   Dim xx As String
   Dim xvar As Variant
   Dim xVarLst As String[]
 
-  Dim xcoll As Collection
+  Dim aData As String[]
   Dim xval As String
 
   For i = 1 To 20
@@ -36,6 +37,9 @@ Public Function GetModelValue(encid As String, xModel As String) As String
       Break
     Endif
   Next
+
+  aData = New String[]
+  aData.Add("--form 'model=" & Quote(xModel) & "'")
 
   If xargs Then
     asx = Split(xargs, ";")
@@ -50,17 +54,17 @@ Public Function GetModelValue(encid As String, xModel As String) As String
       Endif
     Next
 
-    If asx.Count = xVarLst.Count Then
-      xcoll = New Collection
-      xcoll.Add(xModel, "model")
-      xcoll.Add(xVarLst.Join(","), "args")
+    aData.Add("--form 'args=" & Quote(xVarLst.Join(",")) & "'")
+  Endif
 
-      If xurl Then
-        modBasic.DebugAPIString("Parameters:" & JSON.Encode(xcoll))
-        modBasic.DebugAPIString("curl " & xurl & "?" & Base64(JSON.Encode(xcoll)))
-        Shell "curl " & xurl & "?" & Base64(JSON.Encode(xcoll)) To xval
-      Endif
-    Endif
+  If sFile Then
+    aData.Add("--form 'files=@" & Quote(sFile) & "'")
+  Endif
+
+  If xurl Then
+    xcmd = "curl --location " & xurl & "?upload" & Space(1) & aData.Join(Space(1))
+    modBasic.DebugAPIString(xcmd)
+    Shell xcmd To xval
   Endif
 
   Return xval
