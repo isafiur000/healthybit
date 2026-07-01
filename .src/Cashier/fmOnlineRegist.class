@@ -316,6 +316,7 @@ Private Function GetRegistration(sBookID As String) As String
   Dim xformat As String
   Dim xdate As Date
   Dim xpdamt As Float
+  Dim asx As String[]
 
   res = modDatabase.$myConn.Exec("select fldpatientval,fldconsultdate,fldadmitlocat,flduserid,flddisctype,fldbillingmode,fldencounterval,fldbillno,fldpayreference,flditemamt,fldstate from tblonlinebook where fldbookingval=&1", sBookID)
   If res.Available Then
@@ -365,7 +366,14 @@ Private Function GetRegistration(sBookID As String) As String
             res1["flddoa"] = ""
             res1["flddod"] = ""
             res1["fldheight"] = ""
-            res1["flduserid"] = res["flduserid"]
+            If res["flduserid"] Then
+              asx = Split(res["flduserid"], ":")
+              If asx.Count = 2 Then
+                res1["flduserid"] = asx[1]
+              Else
+                res1["flduserid"] = res["flduserid"]
+              Endif
+            Endif
             res1["fldcashdeposit"] = 0
             res1["fldcashcredit"] = 0
             res1["fldcharity"] = 0

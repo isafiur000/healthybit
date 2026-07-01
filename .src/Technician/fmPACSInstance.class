@@ -285,8 +285,12 @@ Public Sub btnanalyze_Click()
 
   xPath = pictimage.Tag
   If xPath Then
-    xList = modMLModels.GetMLModelsList()
-    xmodel = InputCombo("Select appropriate model to analyze", "Image Recognition", xList, "", True)
+    xList = modMLModels.GetMLModelsList("PACS Image")
+    If xList.Count = 1 Then
+      xmodel = xList[0]
+    Else
+      xmodel = InputCombo("Select appropriate model to analyze", "Image Recognition", xList, "", True)
+    Endif
     If xmodel Then
       Inc Application.Busy
       xval = Trim(modMLModels.GetModelValue($encid, xmodel, xPath))

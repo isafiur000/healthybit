@@ -96,7 +96,7 @@ Public Sub Form_Open()
   cmbhepatic.List = ["Impaired", "Normal"]
   cmbsympunit.List = modMedicine.$SymptomFrequency
   cmburgency.List = ["Urgent", "Normal"]
-  cmbmlmodel.List = modMLModels.GetMLModelsList()
+  cmbmlmodel.List = modMLModels.GetMLModelsList("Clinicial")
   If modBasic.$ItemListFormat = "GridView" Then
   Else
     cmbfinding.List = modString.GetListFromCompareVariant(modTableCache.$ExaminationCompVar, "fldexamid", "fldcategory", "Physician Examinations", True)

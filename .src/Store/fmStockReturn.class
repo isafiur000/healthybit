@@ -104,49 +104,75 @@ Public Sub cmbmedicine_GotFocus()
 
 End
 
-Public Sub cmbbatch_GotFocus()
+Public Sub cmbmedicine_LostFocus()
 
-  Dim res1 As Result
-
-  If Not cmbbatch.Count Then
-    If cmbmedicine.Text Then
-      If modStockSub.GetComboStockControl(cmbroute.Text, cmbmedicine.Text, rbgeneric, rbrand) = False Then
-        cmbmedicine.Text = ""
-        Balloon.Warning(("Item not listed"), cmbmedicine)
-        Balloon.Delay = modBasic.$BalloonDelay
-        cmbroute.SetFocus
+  If cmbmedicine.Text Then
+    If modStockSub.GetComboStockControl(cmbroute.Text, cmbmedicine.Text, rbgeneric, rbrand) = False Then
+      cmbmedicine.Text = ""
+      Balloon.Warning(("Item not listed"), cmbmedicine)
+      Balloon.Delay = modBasic.$BalloonDelay
+      cmbroute.SetFocus
+    Else
+      If cmbroute.Text = "suture" Or cmbroute.Text = "msurg" Or cmbroute.Text = "ortho" Or cmbroute.Text = "extra" Then
       Else
-        If cmbroute.Text = "suture" Or cmbroute.Text = "msurg" Or cmbroute.Text = "ortho" Or cmbroute.Text = "extra" Then
-        Else
-          If rbrand.Value = True Then
-            cmbmedicine.Text = modMedConstant.ConvertBrandToGeneric(cmbroute.Text, cmbmedicine.Text)
-          Endif
+        If rbrand.Value = True Then
+          cmbmedicine.Text = modMedConstant.ConvertBrandToGeneric(cmbroute.Text, cmbmedicine.Text)
         Endif
-        res1 = modDatabase.$myConn.Exec("select distinct(fldbatch) as col from tblentry where fldstockid=&1 and fldcomp=&2 and fldqty>&3", cmbmedicine.Text, modBasic.$compID, 0)
-        cmbbatch.List = modControlSub.GetDirectFillresult(res1)
       Endif
     Endif
   Endif
 
 End
 
-Public Sub cmbbatch_Click()
+Public Sub cmbbatch_GotFocus()
 
   Dim res As Result
+  Dim rsx As Result
   Dim res1 As Result
+  Dim xList As String[]
+  Dim asx As String[]
 
-  res = modDatabase.$myConn.Exec("select fldstockno,fldexpiry,fldqty,fldstatus,fldcategory,fldsellpr from tblentry where fldstockid=&1 and fldbatch=&2 and fldcomp=&3", cmbmedicine.Text, cmbbatch.Text, modBasic.$compID)                                                   ''
-  If res.Available Then
-    res.MoveFirst
-    txtstatus.Value = res["fldstatus"]
-    lbldate.Value = res["fldexpiry"]
-    ' txtmax.Value = res["fldqty"]
-    txtstockno.Value = res["fldstockno"]
-    res1 = modDatabase.$myConn.Exec("select distinct(fldsuppname) as col from tblpurchase where fldstockno=&1 and fldtotalqty>fldreturnqty", txtstockno.Value)
-    If res1.Available Then
-      cmbvendor.List = modControlSub.GetDirectFillresult(res1)
-    Else
-      cmbvendor.Text = "Purchased from Other Location"
+  If Not txtstockno.Value And If Not cmbbatch.Text Then
+    res = modDatabase.$myConn.Exec("select fldstockno,fldbatch,fldexpiry,fldqty,fldstatus,fldcategory,fldsellpr from tblentry where fldstockid=&1 and fldcomp=&2 and fldqty>&3", cmbmedicine.Text, modBasic.$compID, 0)
+    If res.Available Then
+      If res.Count = 1 Then
+        txtstockno.Value = res["fldstockno"]
+        cmbbatch.Text = res["fldbatch"]
+        cmbbatch.ReadOnly = True
+        lbldate.Value = res["fldexpiry"]
+        txtstatus.Value = res["fldstatus"]
+        ' txtmax.Value = res["fldqty"]
+      Else
+
+        xList = New String[]
+        For Each res
+          xList.Add(res["fldbatch"] & "|" & res["fldstockno"])
+        Next
+        asx = DualGridValue("Select Batch No", xList, True)
+        If asx.Count Then
+          rsx = modDatabase.$myConn.Exec("select fldstockno,fldbatch,fldexpiry,fldqty,fldstatus,fldcategory,fldsellpr from tblentry where fldstockid=&1 and fldcomp=&2 and fldstockno=&3", cmbmedicine.Text, modBasic.$compID, CLong(asx[0]))
+          If rsx.Available Then
+            txtstockno.Value = rsx["fldstockno"]
+            cmbbatch.Text = rsx["fldbatch"]
+            cmbbatch.ReadOnly = True
+            lbldate.Value = rsx["fldexpiry"]
+            txtstatus.Value = rsx["fldstatus"]
+            ' txtmax.Value = rsx["fldqty"]
+          Else
+            cmbroute.SetFocus
+          Endif
+        Endif
+      Endif
+
+      If txtstockno.Value Then
+        res1 = modDatabase.$myConn.Exec("select distinct(fldsuppname) as col from tblpurchase where fldstockno=&1 and fldtotalqty>fldreturnqty", txtstockno.Value)
+        If res1.Available Then
+          cmbvendor.List = modControlSub.GetDirectFillresult(res1)
+        Else
+          cmbvendor.Text = "Purchased from Other Location"
+        Endif
+      Endif
+
     Endif
   Endif
 
@@ -156,8 +182,8 @@ Private Sub BlankAllBox()
 
   cmbroute.Text = ""
   cmbmedicine.Text = ""
-  cmbbatch.Clear()
   cmbbatch.Text = ""
+  cmbbatch.ReadOnly = False
   txtqty.Value = 0
   txtmax.Value = 0
   txtstatus.Value = 0
@@ -220,8 +246,8 @@ Public Sub cmbroute_Click()
   chksave.Value = False
   cmbmedicine.Clear()
   cmbmedicine.Text = ""
-  cmbbatch.Clear()
   cmbbatch.Text = ""
+  cmbbatch.ReadOnly = False
 
 End
 
@@ -235,13 +261,6 @@ Public Sub cmbroute_KeyRelease()
 
   modFillContainer.AutoFillComboBox(cmbroute)
   modFillContainer.RestrictComboToContent(cmbroute)
-
-End
-
-Public Sub cmbbatch_KeyRelease()
-
-  modFillContainer.AutoFillComboBox(cmbbatch)
-  modFillContainer.RestrictComboToContent(cmbbatch)
 
 End
 

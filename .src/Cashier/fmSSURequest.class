@@ -10,18 +10,35 @@ End
 
 Public Sub Form_Open()
 
+  If modHelpVariable.$LogInCategory = "Account" Then
+    pnlapprove.Visible = True
+    pnlusers.Enabled = False
+  Else
+    pnlapprove.Visible = False
+    pnlusers.Enabled = True
+  Endif
+
   txtpatientname.Text = modPatient.GetPatientNameByEnc($encid)
   txtgender.Text = modPatient.GetPatientAgeString($encid, Now()) & "/" & modPatient.GetPatientSex($encid)
   txtpatientaddress.Text = modPatient.GetPatientAddressByEnc($encid)
+  cmbpackage.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldtype as col from tbldiscount where fldreference=&1 and fldreserved=&2", "Assigned List", "Scheme"))
   ShowRequest()
+
+End
+
+Public Sub cmbpackage_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbpackage)
+  modFillContainer.RestrictComboToContent(cmbpackage)
 
 End
 
 Private Sub ShowRequest()
 
   Dim res As Result
+  Dim xmode As String
 
-  res = modDatabase.$myConn.Exec("select fldid,flddetail,fldstatus,flduserid_order,fldtime_order,flduserid_verify,fldtime_verify from tblssurequest where fldencounterval=&1", $encid)                    ''
+  res = modDatabase.$myConn.Exec("select fldid,fldscheme,flddetail,fldstatus,fldcharity,fldcredit,flduserid_order,fldtime_order,flduserid_verify,fldtime_verify from tblssurequest where fldencounterval=&1", $encid)                    ''
   If res.Available Then
     If res["fldstatus"] = "Requested" Then
       btnadd.Enabled = False
@@ -32,12 +49,54 @@ Private Sub ShowRequest()
     Endif
 
     txtid.Value = res["fldid"]
+    cmbpackage.Text = res["fldscheme"]
+    If cmbpackage.Text Then
+      SetPackageParams(cmbpackage.Text)
+      cmbpackage.Enabled = False
+    Endif
+    If res["fldcharity"] Then
+      txtdiscount.Value = res["fldcharity"]
+    Endif
+    If res["fldcredit"] Then
+      txtcredit.Value = res["fldcredit"]
+    Endif
+
     txtdetail.Text = res["flddetail"]
-    lblrequest.Text = res["flduserid_order"] & " (" & modReportVar.GetDateTimeReport(res["fldtime_order"], gb.MediumDate) & ")"
-    lblverify.Text = res["flduserid_verify"] & " (" & modReportVar.GetDateTimeReport(res["fldtime_verify"], gb.MediumDate) & ")"
+    If res["flduserid_order"] Then
+      lblrequest.Text = res["flduserid_order"] & " (" & modReportVar.GetDateTimeReport(res["fldtime_order"], gb.MediumDate) & ")"
+    Endif
+    If res["flduserid_verify"] Then
+      lblverify.Text = res["flduserid_verify"] & " (" & modReportVar.GetDateTimeReport(res["fldtime_verify"], gb.MediumDate) & ")"
+    Endif
   Else
     btnadd.Enabled = True
     btnverify.Enabled = False
+  Endif
+
+End
+
+Public Sub cmbpackage_Click()
+
+  If cmbpackage.Text Then
+    SetPackageParams(cmbpackage.Text)
+  Endif
+
+End
+
+Private Sub SetPackageParams(sPack As String)
+
+  Dim xmode As String
+  Dim hForm As CPackageParams
+
+  hForm = New CPackageParams($encid, sPack)
+  txtbillmode.Text = hForm.GetBillingMode()
+  xmode = hForm.GetBillType()
+  If xmode = "Credit" Then
+    txtdiscount.Enabled = False
+    txtcredit.Enabled = True
+  Else If xmode = "Cash" Then
+    txtdiscount.Enabled = True
+    txtcredit.Enabled = False
   Endif
 
 End
@@ -46,19 +105,22 @@ Public Sub btnadd_Click()
 
   Dim res As Result
 
-  res = modDatabase.$myConn.Create("tblssurequest")
-  res["fldencounterval"] = $encid
-  res["flddetail"] = txtdetail.Text
-  res["fldstatus"] = "Requested"
-  res["flduserid_order"] = modBasic.$lbluser
-  res["fldtime_order"] = Now()
-  res["fldcomp_order"] = modBasic.$compID
-  res["fldsave_order"] = True
-  lblrequest.Text = modBasic.$lbluser
-  res.Update
-  Balloon.Info(("Information saved"), btnadd)
-  Balloon.Delay = modBasic.$BalloonDelay
-  btnadd.Enabled = False
+  If cmbpackage.Text Then
+    res = modDatabase.$myConn.Create("tblssurequest")
+    res["fldencounterval"] = $encid
+    res["fldscheme"] = cmbpackage.Text
+    res["flddetail"] = txtdetail.Text
+    res["fldstatus"] = "Requested"
+    res["flduserid_order"] = modBasic.$lbluser
+    res["fldtime_order"] = Now()
+    res["fldcomp_order"] = modBasic.$compID
+    res["fldsave_order"] = True
+    lblrequest.Text = modBasic.$lbluser
+    res.Update
+    Balloon.Info(("Information saved"), btnadd)
+    Balloon.Delay = modBasic.$BalloonDelay
+    btnadd.Enabled = False
+  Endif
 
 End
 
@@ -66,18 +128,73 @@ Public Sub btnverify_Click()
 
   Dim res As Result
 
-  res = modDatabase.$myConn.Edit("tblssurequest", "fldid=&1 and fldencounterval=&2", txtid.Value, $encid)
-  If res.Available Then
-    res["flddetail"] = txtdetail.Text
-    res["fldstatus"] = "Verified"
-    res["flduserid_verify"] = modBasic.$lbluser
-    res["fldtime_verify"] = Now()
-    res["fldcomp_verify"] = modBasic.$compID
-    res["fldsave_verify"] = True
-    lblverify.Text = modBasic.$lbluser
-    res.Update
-    Balloon.Info(("Information saved"), btnverify)
-    Balloon.Delay = modBasic.$BalloonDelay
+  If cmbpackage.Text Then
+    res = modDatabase.$myConn.Edit("tblssurequest", "fldid=&1 and fldencounterval=&2", txtid.Value, $encid)
+    If res.Available Then
+      res["fldscheme"] = cmbpackage.Text
+      res["flddetail"] = txtdetail.Text
+      res["fldstatus"] = "Verified"
+      res["flduserid_verify"] = modBasic.$lbluser
+      res["fldtime_verify"] = Now()
+      res["fldcomp_verify"] = modBasic.$compID
+      res["fldsave_verify"] = True
+      lblverify.Text = modBasic.$lbluser
+      res.Update
+      Balloon.Info(("Information saved"), btnverify)
+      Balloon.Delay = modBasic.$BalloonDelay
+    Endif
   Endif
+
+End
+
+Public Sub btnapprove_Click()
+
+  Dim res As Result
+  Dim res1 As Result
+
+  If txtdiscount.Value Or If txtcredit.Value Then
+    If cmbpackage.Text Then
+
+      Inc Application.Busy
+      modDatabase.$myConn.Begin
+      res = modDatabase.$myConn.Edit("tblssurequest", "fldid=&1 and fldencounterval=&2", txtid.Value, $encid)
+      If res.Available Then
+        res["flddetail"] = txtdetail.Text
+        res["fldcharity"] = txtdiscount.Value
+        res["fldcredit"] = txtcredit.Value
+        res["fldstatus"] = "Approved"
+        res["flduserid_unit"] = modBasic.$lbluser
+        res["fldtime_unit"] = Now()
+        res["fldcomp_unit"] = modBasic.$compID
+        res["fldsave_unit"] = True
+
+        res1 = modDatabase.$myConn.Edit("tblencounter", "fldencounterval=&1", $encid)
+        res1["flddisctype"] = cmbpackage.Text
+        res1["fldbillingmode"] = txtbillmode.Text
+        res1["fldcashcredit"] = txtcredit.Value
+        res1["fldcharity"] = txtdiscount.Value
+        res1["fldvalidity"] = DateAdd(Now(), gb.Year, 1)
+        res1["xyz"] = False
+        res1.Update
+
+        res.Update
+        modDatabase.$myConn.Commit
+        btnapprove.Enabled = False
+        Dec Application.Busy
+
+        Balloon.Info(("Information saved"), btnapprove)
+        Balloon.Delay = modBasic.$BalloonDelay
+      Else
+        modDatabase.$myConn.Rollback
+        Dec Application.Busy
+      Endif
+
+    Endif
+  Endif
+
+Catch
+  modDatabase.$myConn.Rollback
+  Dec Application.Busy
+  modHelpVariable.CreateErrorReport()
 
 End

@@ -19,7 +19,7 @@ Public Sub _new(sTitle As String, xType As String, xItemName As String)
     Case "Essential Examinations", "Physician Examinations", "Nursing Examinations", "ABC Examinations", "Discharge Examinations"
       cmbcategory.List = ["Qualitative", "Quantitative"]
     Case "Bipanna Grouping"
-      cmbcategory.List = ["Diagnostic Tests", "General Services", "Procedures", "Equipment", "Radio Diagnostics", "Other Items", "Mapped Items", "Pharmacy"]
+      cmbcategory.List = ["Diagnostic Tests", "General Services", "Procedures", "Equipment", "Radio Diagnostics", "Other Items", "Medicines", "Surgicals", "Extra Items", "Mapped Items"]
   End Select
   ShowFilledList()
 
@@ -35,7 +35,7 @@ End
 Private Sub LoadSelectedListsView()
 
   Select $typ
-    Case "No Discount List"
+    Case "No Discount List", "Bipanna Grouping"
       NonStockBillingItemListView(cmbcategory.Text)
     Case "Prohibited List"
       GetServiceBillingItemListView(cmbcategory.Text, modNonMedical.GetDiscBindBillMode(txtitemname.Text))
@@ -43,8 +43,6 @@ Private Sub LoadSelectedListsView()
       CompComplaintsListView(cmbcategory.Text)
     Case "Essential Examinations", "Physician Examinations", "Nursing Examinations", "ABC Examinations", "Discharge Examinations"
       CompVitalExamListView(cmbcategory.Text)
-    Case "Bipanna Grouping"
-      NonStockBillingItemListView(cmbcategory.Text)
   End Select
 
 End

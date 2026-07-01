@@ -60,7 +60,9 @@ Public Sub Form_Open()
   Endif
 
   modBasic.$ClinDietApprove = modGlobalSetting.ShowSettingFromDB("ClinicForms/User_DietApproval")
-  modAMISRep.$AyurvedicDiagnosis = modHelpVariable.$docsDirectory &/ "ayurvedicdisease.csv"
+  If MMain.$Ayurveda = "Yes" Then
+    modAMISRep.$AyurvedicDiagnosis = modHelpVariable.$docsDirectory &/ "ayurvedicdisease.csv"
+  Endif
 
 End
 

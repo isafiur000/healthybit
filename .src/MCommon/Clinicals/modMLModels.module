@@ -1,6 +1,6 @@
 ' Gambas module file
 
-Public Function GetMLModelsList() As String[]
+Public Function GetMLModelsList(sType As String) As String[]
 
   Dim i As Integer
   Dim xxx As String[]
@@ -8,7 +8,9 @@ Public Function GetMLModelsList() As String[]
   xxx = New String[]
   For i = 1 To 20
     If modSettings.ShowModelsSettingFromFIle("Model" & CStr(i) & "/" & "Name") Then
-      xxx.Add(modSettings.ShowModelsSettingFromFIle("Model" & CStr(i) & "/" & "Name"))
+      If modSettings.ShowModelsSettingFromFIle("Model" & CStr(i) & "/" & "Role") = sType Then
+        xxx.Add(modSettings.ShowModelsSettingFromFIle("Model" & CStr(i) & "/" & "Name"))
+      Endif
     Endif
   Next
   Return xxx

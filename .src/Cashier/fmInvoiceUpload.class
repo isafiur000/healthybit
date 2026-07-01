@@ -803,7 +803,7 @@ Public Sub mnusettreatment_Click()
   Dim xItem As String
   Dim hForm As FmSelectList
 
-  xItem = InputCombo("Select Category", "Treatment", xList, "", True)
+  xItem = InputCombo("Select Category of Items", "Treatment", xList, "", True)
   If xItem Then
     hForm = New FmSelectList("Treatment", "Bipanna Grouping", xItem)
     hForm.ShowModal
@@ -817,7 +817,7 @@ Public Sub mnusetkidn_Click()
   Dim xItem As String
   Dim hForm As FmSelectList
 
-  xItem = InputCombo("Select Category", "Kidney Disease", xList, "", True)
+  xItem = InputCombo("Select Category of Items", "Kidney Disease", xList, "", True)
   If xItem Then
     hForm = New FmSelectList("Kidney Disease", "Bipanna Grouping", xItem)
     hForm.ShowModal

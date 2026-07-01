@@ -1,75 +1,115 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,70,42)
+  MoveScaled(0,0,69,55)
   Text = ("SSU Request")
   Resizable = False
-  { Label1 Label
-    MoveScaled(1,1,12,3)
-    Border = Border.Plain
-    Text = ("Full Name")
+  Arrangement = Arrange.Vertical
+  AutoResize = True
+  Margin = True
+  { Panel1 Panel
+    MoveScaled(0,0,69,32)
+    { Label2 Label
+      MoveScaled(0,4,12,3)
+      Border = Border.Plain
+      Text = ("Address")
+    }
+    { txtpatientaddress TextBox
+      MoveScaled(13,4,53,3)
+      ReadOnly = True
+    }
+    { Label3 Label
+      MoveScaled(0,8,12,3)
+      Border = Border.Plain
+      Text = ("Age/Sex")
+    }
+    { txtgender TextBox
+      MoveScaled(13,8,32,3)
+      ReadOnly = True
+    }
+    { Label4 Label
+      MoveScaled(0,12,12,3)
+      Border = Border.Plain
+      Text = ("Package")
+    }
+    { txtdetail TextArea
+      MoveScaled(0,16,68,15)
+    }
+    { txtid ValueBox
+      MoveScaled(46,8,11,3)
+      Visible = False
+    }
+    { cmbpackage ComboBox
+      MoveScaled(13,12,32,3)
+    }
+    { txtpatientname TextBox
+      MoveScaled(13,0,53,3)
+      Font = Font["Bold"]
+      ReadOnly = True
+    }
+    { Label1 Label
+      MoveScaled(0,0,12,3)
+      Border = Border.Plain
+      Text = ("Full Name")
+    }
+    { txtbillmode TextBox
+      MoveScaled(46,12,11,3)
+      Visible = False
+    }
   }
-  { txtpatientname TextBox
-    MoveScaled(14,1,53,3)
-    Font = Font["Bold"]
-    ReadOnly = True
+  { pnlusers Panel
+    MoveScaled(0,32,69,9)
+    { Label5 Label
+      MoveScaled(0,1,15,3)
+      Border = Border.Plain
+      Text = ("Requested")
+    }
+    { lblrequest Label
+      MoveScaled(16,1,38,3)
+      Border = Border.Plain
+    }
+    { btnadd Button
+      MoveScaled(56,1,11,3)
+      Text = ("Add")
+      Picture = Picture["icon:/small/add"]
+    }
+    { Label6 Label
+      MoveScaled(0,5,15,3)
+      Border = Border.Plain
+      Text = ("Verified")
+    }
+    { lblverify Label
+      MoveScaled(16,5,38,3)
+      Border = Border.Plain
+    }
+    { btnverify Button
+      MoveScaled(56,5,11,3)
+      Text = ("Verify")
+      Picture = Picture["icon:/small/apply"]
+    }
   }
-  { Label2 Label
-    MoveScaled(1,5,12,3)
-    Border = Border.Plain
-    Text = ("Address")
-  }
-  { txtpatientaddress TextBox
-    MoveScaled(14,5,53,3)
-    ReadOnly = True
-  }
-  { Label3 Label
-    MoveScaled(1,9,12,3)
-    Border = Border.Plain
-    Text = ("Age/Sex")
-  }
-  { txtgender TextBox
-    MoveScaled(14,9,20,3)
-    ReadOnly = True
-  }
-  { Label4 Label
-    MoveScaled(1,13,12,3)
-    Border = Border.Plain
-    Text = ("Description")
-  }
-  { txtdetail TextArea
-    MoveScaled(1,17,68,15)
-  }
-  { btnadd Button
-    MoveScaled(57,33,11,3)
-    Text = ("Add")
-    Picture = Picture["icon:/small/add"]
-  }
-  { Label5 Label
-    MoveScaled(1,33,15,3)
-    Border = Border.Plain
-    Text = ("Requested")
-  }
-  { lblrequest Label
-    MoveScaled(17,33,38,3)
-    Border = Border.Plain
-  }
-  { Label6 Label
-    MoveScaled(1,37,15,3)
-    Border = Border.Plain
-    Text = ("Verified")
-  }
-  { lblverify Label
-    MoveScaled(17,37,38,3)
-    Border = Border.Plain
-  }
-  { btnverify Button
-    MoveScaled(57,37,11,3)
-    Text = ("Verify")
-    Picture = Picture["icon:/small/apply"]
-  }
-  { txtid ValueBox
-    MoveScaled(35,9,11,3)
-    Visible = False
+  { pnlapprove Panel
+    MoveScaled(0,41,69,12)
+    { Label7 Label
+      MoveScaled(0,1,12,3)
+      Border = Border.Plain
+      Text = ("Discount")
+    }
+    { Label8 Label
+      MoveScaled(0,5,12,3)
+      Border = Border.Plain
+      Text = ("Credit")
+    }
+    { txtdiscount ValueBox
+      MoveScaled(13,1,13,3)
+    }
+    { txtcredit ValueBox
+      MoveScaled(13,5,13,3)
+    }
+    { btnapprove Button
+      MoveScaled(49,8,18,3)
+      Text = ("Approve")
+      Picture = Picture["icon:/small/apply"]
+    }
   }
 }

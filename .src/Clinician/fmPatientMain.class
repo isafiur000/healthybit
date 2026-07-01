@@ -81,7 +81,7 @@ Public Sub Form_Open()
   cmbpatheightunit.List = ["cm", "inch", "foot"]
   cmbhepatic.List = ["Impaired", "Normal"]
   cmbsympunit.List = modMedicine.$SymptomFrequency
-  cmbmlmodel.List = modMLModels.GetMLModelsList()
+  cmbmlmodel.List = modMLModels.GetMLModelsList("Clinicial")
   If modBasic.$ItemListFormat = "GridView" Then
   Else
     cmbsymptom.List = modString.GetListFromVariant(modTableCache.$SymptomCompVar, "fldsymptom", True)

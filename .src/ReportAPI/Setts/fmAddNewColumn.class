@@ -725,7 +725,7 @@ Private Function GetModelName() As String
   Dim xval As String
   Dim xxx As String
 
-  xDirList = modMLModels.GetMLModelsList()
+  xDirList = modMLModels.GetMLModelsList("Clinicial")
   If xDirList And If xDirList.Count Then
     xval = DIctionaryList(xDirList)
     If xval Then

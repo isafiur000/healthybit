@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,119,82)
+  MoveScaled(0,0,119,85)
   Tag = "Medical Query"
   Text = ("Medical Query")
   { mnuhidden Menu
@@ -110,7 +110,7 @@
         Picture = Picture["icon:/small/refresh"]
       }
       { btnexport Button
-        MoveScaled(96,0.5,16,3.25)
+        MoveScaled(96,0.5,16,3)
         Text = ("Export")
         Picture = Picture["icon:/small/html"]
       }
@@ -276,20 +276,24 @@
     { Panel15 Panel
       MoveScaled(1,22,117,4)
       { chklaball CheckBox
-        MoveScaled(1,0.5,19,3)
+        MoveScaled(1,0.5,16,3)
         Text = ("Laboratory")
       }
       { chkexamall CheckBox
-        MoveScaled(20,0.5,19,3)
+        MoveScaled(18,0.5,16,3)
         Text = ("Examination")
       }
-      { chkdiagnoall CheckBox
-        MoveScaled(39,0.5,19,3)
-        Text = ("Diagnosis")
-      }
       { chkmedall CheckBox
-        MoveScaled(58,0.5,19,3)
+        MoveScaled(69,0.5,16,3)
         Text = ("Medicines")
+      }
+      { chkradiology CheckBox
+        MoveScaled(35,0.5,16,3)
+        Text = ("Radiology")
+      }
+      { chknoteall CheckBox
+        MoveScaled(52,0.5,16,3)
+        Text = ("History/Notes")
       }
     }
     { TabStrip1 TabPanel
