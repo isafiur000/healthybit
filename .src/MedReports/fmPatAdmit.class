@@ -1437,14 +1437,14 @@ Public Sub mnumachine_Click()
     Next
 
     Inc Application.Busy
-    CForm = New CMultivariate
+    CForm = New CMultivariate(modBasic.$StatDataFormat)
     For Row = 0 To GridView1.Rows.Count - 1
       sArry = New String[]
       For Column = 0 To xHeader.Count - 1
         If Column < $SSQLFields.Count Then
-          sArry.Add(Quote(GridView1[Row, Column].Text))
+          sArry.Add(GridView1[Row, Column].Text)
         Else
-          sArry.Add(Quote(modString.ConvertRichTextToPlain(GridView1[Row, Column].RichText)))
+          sArry.Add(GridView1[Row, Column].RichText)
         Endif
       Next
       CForm.Add(sArry)

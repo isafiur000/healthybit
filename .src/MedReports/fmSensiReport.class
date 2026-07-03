@@ -1473,14 +1473,14 @@ Public Sub mnumultivariate_Click()
     Next
 
     Inc Application.Busy
-    CForm = New CMultivariate
+    CForm = New CMultivariate(modBasic.$StatDataFormat)
     For Row = 0 To GridView2.Rows.Count - 1
       sArry = New String[]
       For Column = 0 To xHeader.Count - 1
         If Column < $varList.Count + 4 Then
-          sArry.Add(Quote(GridView2[Row, Column].Text))
+          sArry.Add(GridView2[Row, Column].Text)
         Else
-          sArry.Add(Quote(modString.ConvertRichTextToPlain(GridView2[Row, Column].RichText)))
+          sArry.Add(GridView2[Row, Column].RichText)
         Endif
       Next
       CForm.Add(sArry)

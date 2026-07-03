@@ -47,6 +47,7 @@ Public Sub Form_Open()
   cmbrowdate.List = ["Enable", "Disable"]
 
   cmbMLvar.List = ["FitsrVal", "LastVal", "First-LastVal"]
+  cmbdataview.List = ["CSV", "JSON"]
 
   cmbhmisproc.List = ["Billing", "Service"]
   cmbhmisradio.List = ["Billing", "Service"]
@@ -598,6 +599,7 @@ Private Sub StatSetting()
     txtconfinterval.Value = modSettings.ShowSettingFromFIle("StatisticsSetting/ConfidenceInterval")
   Endif
   cmbMLvar.Text = modSettings.ShowSettingFromFIle("StatisticsSetting/ClinicalValues")
+  cmbdataview.Text = modSettings.ShowSettingFromFIle("StatisticsSetting/DataViewFormat")
 
 End
 
@@ -615,6 +617,15 @@ Public Sub btnMLvar_Click()
   modSettings.SaveSettingsToFile("StatisticsSetting/ClinicalValues", cmbMLvar.Text)
   modBasic.$StatClinValues = cmbMLvar.Text
   Balloon.Info(("Information saved"), btnMLvar)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btndataview_Click()
+
+  modSettings.SaveSettingsToFile("StatisticsSetting/DataViewFormat", cmbdataview.Text)
+  modBasic.$StatDataFormat = cmbdataview.Text
+  Balloon.Info(("Information saved"), btndataview)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

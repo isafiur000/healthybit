@@ -1,24 +1,43 @@
 ' Gambas class file
 
+Private $sFormat As String
+
 Private $ReportPath As String
 Private ReportFile As File
+Private $sDataVar As Variant[]
 
-Public Sub _new()
+Public Sub _new(sFormat As String)
 
-  $ReportPath = Temp() & ".csv"
-  ReportFile = Open $ReportPath For Write Create
+  $sFormat = sFormat
+
+  If $sFormat = "CSV" Then
+    $ReportPath = Temp() & ".csv"
+    ReportFile = Open $ReportPath For Write Create
+  Else
+    $sDataVar = New Variant[]
+    $ReportPath = Temp() & ".json"
+  Endif
 
 End
 
 Public Sub Add(sArry As String[])
 
-  Write #ReportFile, sArry.Join(gb.Tab) & gb.NewLine
+  If $sFormat = "CSV" Then
+    Write #ReportFile, sArry.Join(gb.Tab) & gb.NewLine
+  Else
+    $sDataVar.Add(sArry)
+  Endif
 
 End
 
 Public Function GetCSVFile() As String
 
-  Close #ReportFile
+  If $sFormat = "CSV" Then
+    Close #ReportFile
+  Else
+    File.Save($ReportPath, JSON.Encode($sDataVar))
+  Endif
+
   Return $ReportPath
 
 End

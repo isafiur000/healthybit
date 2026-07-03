@@ -1284,6 +1284,9 @@ ALTER TABLE tblpatradiotest ADD COLUMN fldpacsnode VARCHAR( 255 ) NULL
 ALTER TABLE tbldiscount ADD fldbookday INT( 11 ) NULL
 ALTER TABLE tbldiscount ADD fldcostlevel INT( 11 ) NULL
 
+ALTER TABLE `tblquota` CHANGE `fldconsultant` `fldconsultant` VARCHAR(250) NULL DEFAULT NULL;
+ALTER TABLE `tblonlinebook` CHANGE `flduserid` `flduserid` VARCHAR(250) NULL DEFAULT NULL;
+
 
 
 

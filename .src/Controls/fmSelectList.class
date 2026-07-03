@@ -32,6 +32,42 @@ Public Sub cmbcategory_Click()
 
 End
 
+Public Sub Form_Open()
+
+  modGeneralMain.ArrangeFormCentre(Me, "False")
+  cmbcategory.Text = ""
+
+End
+
+Public Sub lstfirst_Click()
+
+  modFillContainer.ShowCheckedListView(lstfirst)
+
+End
+
+Public Sub lstfirst_KeyRelease()
+
+  If Key.Code = Key.Space Then
+    modFillContainer.ShowCheckedListView(lstfirst)
+  Endif
+
+End
+
+Public Sub cmbcategory_KeyRelease()
+
+  modFillContainer.AutoFillComboBox(cmbcategory)
+  modFillContainer.RestrictComboToContent(cmbcategory)
+
+End
+
+Public Sub Form_KeyRelease()
+
+  If Key.Code = Key.Escape Then
+    Me.Close
+  Endif
+
+End
+
 Private Sub LoadSelectedListsView()
 
   Select $typ
@@ -110,6 +146,7 @@ Public Sub btnsave_Click()
   For i = 1 To lstfirst.Count
     If lstfirst[CStr(i)].Picture = Picture["icons/checked.png"] Then
       If lstsecond.List.Exist(lstfirst[CStr(i)].Text) = False Then
+
         res = modDatabase.$myConn.Create($tbl)
         Select $typ
           Case "No Discount List"
@@ -127,7 +164,6 @@ Public Sub btnsave_Click()
             res["fldcomp"] = modBasic.$compID
           Case "Complaints List"
             asx = Split(txtitemname.Text, "|")
-            res = modDatabase.$myConn.Create("tblcomplaints")
             res["fldtype"] = asx[1]
             res["fldsymptom"] = lstfirst[CStr(i)].Text
             res["fldflag"] = False
@@ -159,45 +195,50 @@ Public Sub btnsave_Click()
 
 End
 
+Public Sub lstsecond_Menu()
+
+  mnuactivity.Popup
+
+End
+
+Public Sub mnudelete_Click()
+
+  Dim sField As String
+  Dim sFixed As String
+
+  If lstsecond.Text Then
+    Select $typ
+      Case "No Discount List"
+        sField = "flditemname"
+        sFixed = ""
+      Case "Prohibited List"
+        sField = "flditemname"
+        sFixed = "flddisctype"
+      Case "Essential Examinations", "Physician Examinations", "Nursing Examinations", "ABC Examinations", "Discharge Examinations"
+        sField = "fldexamid"
+        sFixed = "fldcomp"
+      Case "Bipanna Grouping"
+        sField = "flditemname"
+        sFixed = "fldgroup"
+    End Select
+
+    If sField Then
+      If sFixed Then
+        modDatabase.$myConn.Delete($tbl, sField & "=&1 and " & sFixed & "=&2", lstsecond.Text, txtitemname.Text)
+      Else
+        modDatabase.$myConn.Delete($tbl, sField & "=&1", lstsecond.Text)
+      Endif
+      ShowFilledList()
+      LoadSelectedListsView()
+    Endif
+
+  Endif
+
+End
+
 Public Sub lstfirst_Menu()
 
   mnufile.Popup
-
-End
-
-Public Sub Form_Open()
-
-  modGeneralMain.ArrangeFormCentre(Me, "False")
-  cmbcategory.Text = ""
-
-End
-
-Public Sub lstfirst_Click()
-
-  modFillContainer.ShowCheckedListView(lstfirst)
-
-End
-
-Public Sub lstfirst_KeyRelease()
-
-  If Key.Code = Key.Space Then
-    modFillContainer.ShowCheckedListView(lstfirst)
-  Endif
-
-End
-
-Public Sub cmbcategory_KeyRelease()
-
-  modFillContainer.AutoFillComboBox(cmbcategory)
-  modFillContainer.RestrictComboToContent(cmbcategory)
-
-End
-
-Public Sub Form_KeyRelease()
-
-  If Key.Code = Key.Escape Then
-    Me.Close
-  Endif
 
 End
 
@@ -242,6 +283,8 @@ Private Sub NonStockBillingItemListView(sType As String)
     res = modDatabase.$medConn.Exec("select fldbrandid as col from tblsurgbrand")
   Else If sType = "Extra Items" Then
     res = modDatabase.$medConn.Exec("select fldbrandid as col from tblextrabrand")
+  Else If sType = "Mapped Items" Then
+    res = modDatabase.$medConn.Exec("select distinct(flditemname) as col from tblstockrate")
   Else
     res = modDatabase.$myConn.Exec("select flditemname as col from tblservicecost where flditemtype=&1", sType) '("Diagnostic Tests","Procedures","General Services")
   Endif
