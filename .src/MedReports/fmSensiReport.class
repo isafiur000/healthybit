@@ -414,7 +414,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   $rData.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView1, Row)
   If Column > $SSQLFields.Count - 1 Then
-    GridView1.Data.RichText = modString.TextToHTML(GetGridViewValue(Column, $rData[$aMyFields[Column]]))
+    GridView1.Data.RichText = GetGridViewValue(Column, $rData[$aMyFields[Column]])
   Else
     GridView1.Data.Text = GetGridViewValue(Column, $rData[$aMyFields[Column]])
   Endif
@@ -1368,7 +1368,7 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
   $rDatav.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView2, Row)
   If Column > ($varList.Count + 5) - 1 Then
-    GridView2.Data.RichText = modString.TextToHTML(GetDataViewValue(Column, $rDatav[$aMyFieldsv[Column]]))
+    GridView2.Data.RichText = GetDataViewValue(Column, $rDatav[$aMyFieldsv[Column]])
   Else
     GridView2.Data.Text = GetDataViewValue(Column, $rDatav[$aMyFieldsv[Column]])
   Endif

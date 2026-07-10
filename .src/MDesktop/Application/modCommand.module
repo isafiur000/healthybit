@@ -725,6 +725,7 @@ Public Sub CommandPrint(sType As String, sUser As String, sPass As String, sVal 
       If asx.Count = 3 Then
         xFinClear = modNonMedical.GetFinanceClearance(Trim(asx[0]))
         If xFinClear = True Then
+          xPath = "Encounter Locked"
         Else
           modBasic.$BillMobileInvoiceAPI = modGlobalSetting.ShowSettingFromDB("CashBilling/EnableRemoteBilling")
           If modBasic.$BillMobileInvoiceAPI = "Enable" Then
@@ -742,6 +743,7 @@ Public Sub CommandPrint(sType As String, sUser As String, sPass As String, sVal 
       If asx.Count = 3 Then
         xFinClear = modNonMedical.GetFinanceClearance(Trim(asx[0]))
         If xFinClear = True Then
+          xPath = "Encounter Locked"
         Else
           modBasic.$BillMobileInvoiceAPI = modGlobalSetting.ShowSettingFromDB("CashBilling/EnableRemoteBilling")
           If modBasic.$BillMobileInvoiceAPI = "Enable" Then

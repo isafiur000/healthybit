@@ -713,7 +713,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   $rData.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView1, Row)
   If Column > $SSQLFields.Count - 1 Then
-    GridView1.Data.RichText = modString.TextToHTML(GetGridViewValue(Column, $rData[$aMyFields[Column]]))
+    GridView1.Data.RichText = GetGridViewValue(Column, $rData[$aMyFields[Column]])
   Else
     GridView1.Data.Text = GetGridViewValue(Column, $rData[$aMyFields[Column]])
   Endif
@@ -1435,27 +1435,30 @@ Public Sub btntrans_Click()
   Dim xPath As String
   Dim sList As String[]
   Dim xList As String[]
+  Dim sCompLst As String[]
 
   If $strType Then
-    If modBasic.$ViewLockInventory = "Branch" And If cmbcomp.Text = "%" Then
-    Else
+    cmbtarget.Text = "%"
+    xList = modControlSub.GetDirectFillresult(modDatabase.$syConn.Exec("select distinct(fldstockid) as col from tblentry where fldcategory=&1", $strType))
+    If xList.Count Then
+      sList = GridListView(("Select Particulars"), xList.Sort())
+      If sList Then
 
-      cmbtarget.Text = "%"
-      xList = modControlSub.GetDirectFillresult(modDatabase.$syConn.Exec("select distinct(fldstockid) as col from tblentry where fldcategory=&1", $strType))
-      If xList.Count Then
-        sList = GridListView(("Select Particulars"), xList.Sort())
-        If sList Then
-          Inc Application.Busy
-          If $quickReport = "Disable" Then
-            xPath = modInventory.ShowTransectionReport(modDatabase.$syConn, $strType, dtfir.Value, dtlast.Value, cmbcomp.Text, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
+        Inc Application.Busy
+        If $quickReport = "Disable" Then
+          xPath = modInventory.ShowTransectionReport(modDatabase.$syConn, $strType, dtfir.Value, dtlast.Value, cmbcomp.Text, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
+        Else
+          If modBasic.$ViewLockInventory = "Branch" And If cmbcomp.Text = "%" Then
+            sCompLst = modBasic.$branchList
           Else
-            xPath = modTransaction.ShowTransectionReport(modDatabase.$syConn, $strType, dtfir.Value, dtlast.Value, cmbcomp.Text, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
+            sCompLst = [cmbcomp.Text]
           Endif
-          Dec Application.Busy
-          modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
+          xPath = modTransaction.ShowTransectionReport(modDatabase.$syConn, $strType, dtfir.Value, dtlast.Value, sCompLst, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
         Endif
-      Endif
+        Dec Application.Busy
+        modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
 
+      Endif
     Endif
   Endif
 
@@ -1466,27 +1469,30 @@ Public Sub btntranssumm_Click()
   Dim xPath As String
   Dim sList As String[]
   Dim xList As String[]
+  Dim sCompLst As String[]
 
   If $strType Then
-    If modBasic.$ViewLockInventory = "Branch" And If cmbcomp.Text = "%" Then
-    Else
+    cmbtarget.Text = "%"
+    xList = modControlSub.GetDirectFillresult(modDatabase.$syConn.Exec("select distinct(fldstockid) as col from tblentry where fldcategory=&1", $strType))
+    If xList.Count Then
+      sList = GridListView(("Select Particulars"), xList.Sort())
+      If sList Then
 
-      cmbtarget.Text = "%"
-      xList = modControlSub.GetDirectFillresult(modDatabase.$syConn.Exec("select distinct(fldstockid) as col from tblentry where fldcategory=&1", $strType))
-      If xList.Count Then
-        sList = GridListView(("Select Particulars"), xList.Sort())
-        If sList Then
-          Inc Application.Busy
-          If $quickReport = "Disable" Then
-            xPath = modInventory.ShowTransectionReportItemwise(modDatabase.$syConn, $strType, dtfir.Value, dtlast.Value, cmbcomp.Text, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
+        Inc Application.Busy
+        If $quickReport = "Disable" Then
+          xPath = modInventory.ShowTransectionReportItemwise(modDatabase.$syConn, $strType, dtfir.Value, dtlast.Value, cmbcomp.Text, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
+        Else
+          If modBasic.$ViewLockInventory = "Branch" And If cmbcomp.Text = "%" Then
+            sCompLst = modBasic.$branchList
           Else
-            xPath = modTransaction.ShowTransectionReportItemwise(modDatabase.$syConn, $strType, dtfir.Value, dtlast.Value, cmbcomp.Text, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
+            sCompLst = [cmbcomp.Text]
           Endif
-          Dec Application.Busy
-          modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
+          xPath = modTransaction.ShowTransectionReportItemwise(modDatabase.$syConn, $strType, dtfir.Value, dtlast.Value, sCompLst, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
         Endif
-      Endif
+        Dec Application.Busy
+        modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
 
+      Endif
     Endif
   Endif
 
@@ -1496,35 +1502,37 @@ Public Sub btncurrstock_Click()
 
   Dim xdate As Date
   Dim xPath As String
-
   Dim sList As String[]
   Dim xList As String[]
+  Dim sCompLst As String[]
 
   If $strType Then
-    If modBasic.$ViewLockInventory = "Branch" And If cmbcomp.Text = "%" Then
-    Else
+    cmbtarget.Text = "%"
+    Dialog.Title = ("Inventory Value of ") & $strType & (" on Date")
+    If Dialog.SelectDate() Then Return
+    xdate = Dialog.Date
+    If xdate Then
+      xList = modControlSub.GetDirectFillresult(modDatabase.$syConn.Exec("select distinct(fldstockid) as col from tblentry where fldcategory=&1", $strType))
+      If xList.Count Then
+        sList = GridListView(("Select Particulars"), xList.Sort())
+        If sList Then
 
-      cmbtarget.Text = "%"
-      Dialog.Title = ("Inventory Value of ") & $strType & (" on Date")
-      If Dialog.SelectDate() Then Return
-      xdate = Dialog.Date
-      If xdate Then
-        xList = modControlSub.GetDirectFillresult(modDatabase.$syConn.Exec("select distinct(fldstockid) as col from tblentry where fldcategory=&1", $strType))
-        If xList.Count Then
-          sList = GridListView(("Select Particulars"), xList.Sort())
-          If sList Then
-            Inc Application.Busy
-            If $quickReport = "Disable" Then
-              xPath = modInventory.ShowSpecStockReport(modDatabase.$syConn, $strType, xdate, cmbcomp.Text, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
+          Inc Application.Busy
+          If $quickReport = "Disable" Then
+            xPath = modInventory.ShowSpecStockReport(modDatabase.$syConn, $strType, xdate, cmbcomp.Text, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
+          Else
+            If modBasic.$ViewLockInventory = "Branch" And If cmbcomp.Text = "%" Then
+              sCompLst = modBasic.$branchList
             Else
-              xPath = modTransaction.ShowSpecStockReport(modDatabase.$syConn, $strType, xdate, cmbcomp.Text, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
+              sCompLst = [cmbcomp.Text]
             Endif
-            Dec Application.Busy
-            modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
+            xPath = modTransaction.ShowSpecStockReport(modDatabase.$syConn, $strType, xdate, sCompLst, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
           Endif
+          Dec Application.Busy
+          modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
+
         Endif
       Endif
-
     Endif
   Endif
 
@@ -1534,35 +1542,37 @@ Public Sub btncurrstocksumm_Click()
 
   Dim xdate As Date
   Dim xPath As String
-
   Dim sList As String[]
   Dim xList As String[]
+  Dim sCompLst As String[]
 
   If $strType Then
-    If modBasic.$ViewLockInventory = "Branch" And If cmbcomp.Text = "%" Then
-    Else
+    cmbtarget.Text = "%"
+    Dialog.Title = ("Inventory Value of ") & $strType & (" on Date")
+    If Dialog.SelectDate() Then Return
+    xdate = Dialog.Date
+    If xdate Then
+      xList = modControlSub.GetDirectFillresult(modDatabase.$syConn.Exec("select distinct(fldstockid) as col from tblentry where fldcategory=&1", $strType))
+      If xList.Count Then
+        sList = GridListView(("Select Particulars"), xList.Sort())
+        If sList Then
 
-      cmbtarget.Text = "%"
-      Dialog.Title = ("Inventory Value of ") & $strType & (" on Date")
-      If Dialog.SelectDate() Then Return
-      xdate = Dialog.Date
-      If xdate Then
-        xList = modControlSub.GetDirectFillresult(modDatabase.$syConn.Exec("select distinct(fldstockid) as col from tblentry where fldcategory=&1", $strType))
-        If xList.Count Then
-          sList = GridListView(("Select Particulars"), xList.Sort())
-          If sList Then
-            Inc Application.Busy
-            If $quickReport = "Disable" Then
-              xPath = modInventory.ShowSpecStockReportItemwise(modDatabase.$syConn, $strType, xdate, cmbcomp.Text, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
+          Inc Application.Busy
+          If $quickReport = "Disable" Then
+            xPath = modInventory.ShowSpecStockReportItemwise(modDatabase.$syConn, $strType, xdate, cmbcomp.Text, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
+          Else
+            If modBasic.$ViewLockInventory = "Branch" And If cmbcomp.Text = "%" Then
+              sCompLst = modBasic.$branchList
             Else
-              xPath = modTransaction.ShowSpecStockReportItemwise(modDatabase.$syConn, $strType, xdate, cmbcomp.Text, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
+              sCompLst = [cmbcomp.Text]
             Endif
-            Dec Application.Busy
-            modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
+            xPath = modTransaction.ShowSpecStockReportItemwise(modDatabase.$syConn, $strType, xdate, sCompLst, sList, cmblocation.Text, cmbvalue.Text, chknullval.Value)
           Endif
+          Dec Application.Busy
+          modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
+
         Endif
       Endif
-
     Endif
   Endif
 

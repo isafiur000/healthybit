@@ -11,7 +11,7 @@ Public Sub Form_Open()
   Me.Icon = Picture[modGeneralMain.$strLogo]
   btnmnuqty.Menu = "mnuqty"
 
-  cmbstatus.List = ["Requested", "Verified", "Approved"]
+  cmbstatus.List = ["Requested", "Verified", "Assigned", "Approved"]
   cmbstatus.Text = "Verified"
   cmbcomp.List = modBasic.$AllCompPerList
   cmbcomp.Text = "%"
@@ -19,7 +19,7 @@ Public Sub Form_Open()
   dtfir.Value = Now()
   dtlast.Value = Now()
 
-  $SSQLFields = ["fldid", "fldtime_order", "fldencounterval", "fldencounterval", "fldencounterval", "fldstatus", "flddetail", "fldscheme", "fldcharity", "fldcredit", "flduserid_order", "flduserid_verify", "flduserid_unit", "fldtime_verify", "fldcomp_verify"]
+  $SSQLFields = ["fldid", "fldtime_order", "fldencounterval", "fldencounterval", "fldencounterval", "fldstatus", "flddetail", "fldscheme", "fldcharity", "fldcredit", "flduserid_order", "flduserid_verify", "flduserid_unit", "flduserid_head", "fldtime_head"]
 
 End
 
@@ -78,7 +78,7 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
     xxx = modPatient.GetPatientNameByEnc(xVariable, modDatabase.$syConn)
   Else If Column = 4 Then
     xxx = modPatient.GetPatientSex(xVariable, modDatabase.$syConn)
-  Else If Column = 13 Then
+  Else If Column = 14 Then
     xxx = modReportVar.GetDateTimeReport(xVariable, gb.GeneralDate)
   Else
     xxx = xVariable
@@ -124,8 +124,8 @@ Public Sub FillPatGrid()
     .Columns[10].Width = 100 * modBasic.$AppWidthRatio
     .Columns[11].Width = 100 * modBasic.$AppWidthRatio
     .Columns[12].Width = 100 * modBasic.$AppWidthRatio
-    .Columns[13].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[14].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[13].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[14].Width = 150 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "DateTime"
     .Columns[2].Text = "Encounter"
@@ -138,9 +138,9 @@ Public Sub FillPatGrid()
     .Columns[9].Text = "Credit"
     .Columns[10].Text = "Request"
     .Columns[11].Text = "Verified"
-    .Columns[12].Text = "Approved"
-    .Columns[13].Text = "DateTime"
-    .Columns[14].Text = "Location"
+    .Columns[12].Text = "Assigned"
+    .Columns[13].Text = "Approved"
+    .Columns[14].Text = "DateTime"
   End With
 
 End

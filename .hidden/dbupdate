@@ -1287,6 +1287,15 @@ ALTER TABLE tbldiscount ADD fldcostlevel INT( 11 ) NULL
 ALTER TABLE `tblquota` CHANGE `fldconsultant` `fldconsultant` VARCHAR(250) NULL DEFAULT NULL;
 ALTER TABLE `tblonlinebook` CHANGE `flduserid` `flduserid` VARCHAR(250) NULL DEFAULT NULL;
 
+''--------------------------- 0.5.26 ----------------------------------
+ALTER TABLE tblssurequest ADD flduserid_head VARCHAR( 25 ) NULL
+ALTER TABLE tblssurequest ADD fldtime_head DATETIME NULL
+ALTER TABLE tblssurequest ADD fldcomp_head VARCHAR( 50 ) NULL
+ALTER TABLE tblssurequest ADD fldsave_head BOOLEAN NULL
+
+ALTER TABLE tblonlinebook ADD fldinvoice VARCHAR( 250 ) NULL
+
+
 
 
 

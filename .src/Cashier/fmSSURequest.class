@@ -46,6 +46,10 @@ Private Sub ShowRequest()
     Else If res["fldstatus"] = "Verified" Then
       btnadd.Enabled = False
       btnverify.Enabled = False
+    Else If res["fldstatus"] = "Assigned" Then
+      btnadd.Enabled = False
+      btnverify.Enabled = False
+      btnassign.Enabled = False
     Endif
 
     txtid.Value = res["fldid"]
@@ -147,6 +151,37 @@ Public Sub btnverify_Click()
 
 End
 
+''Assign
+Public Sub btnassign_Click()
+
+  Dim res As Result
+  Dim res1 As Result
+
+  If txtdiscount.Value Or If txtcredit.Value Then
+    If cmbpackage.Text Then
+
+      res = modDatabase.$myConn.Edit("tblssurequest", "fldid=&1 and fldencounterval=&2", txtid.Value, $encid)
+      If res.Available Then
+        res["flddetail"] = txtdetail.Text
+        res["fldcharity"] = txtdiscount.Value
+        res["fldcredit"] = txtcredit.Value
+        res["fldstatus"] = "Assigned"
+        res["flduserid_unit"] = modBasic.$lbluser
+        res["fldtime_unit"] = Now()
+        res["fldcomp_unit"] = modBasic.$compID
+        res["fldsave_unit"] = True
+        res.Update
+        btnassign.Enabled = False
+        Balloon.Info(("Information saved"), btnassign)
+        Balloon.Delay = modBasic.$BalloonDelay
+      Endif
+
+    Endif
+  Endif
+
+End
+
+''Approve
 Public Sub btnapprove_Click()
 
   Dim res As Result
@@ -157,16 +192,13 @@ Public Sub btnapprove_Click()
 
       Inc Application.Busy
       modDatabase.$myConn.Begin
-      res = modDatabase.$myConn.Edit("tblssurequest", "fldid=&1 and fldencounterval=&2", txtid.Value, $encid)
+      res = modDatabase.$myConn.Edit("tblssurequest", "fldid=&1 and fldencounterval=&2 and fldstatus=&3", txtid.Value, $encid, "Assigned")
       If res.Available Then
-        res["flddetail"] = txtdetail.Text
-        res["fldcharity"] = txtdiscount.Value
-        res["fldcredit"] = txtcredit.Value
         res["fldstatus"] = "Approved"
-        res["flduserid_unit"] = modBasic.$lbluser
-        res["fldtime_unit"] = Now()
-        res["fldcomp_unit"] = modBasic.$compID
-        res["fldsave_unit"] = True
+        res["flduserid_head"] = modBasic.$lbluser
+        res["fldtime_head"] = Now()
+        res["fldcomp_head"] = modBasic.$compID
+        res["fldsave_head"] = True
 
         res1 = modDatabase.$myConn.Edit("tblencounter", "fldencounterval=&1", $encid)
         res1["flddisctype"] = cmbpackage.Text
@@ -179,10 +211,10 @@ Public Sub btnapprove_Click()
 
         res.Update
         modDatabase.$myConn.Commit
-        btnapprove.Enabled = False
+        btnassign.Enabled = False
         Dec Application.Busy
 
-        Balloon.Info(("Information saved"), btnapprove)
+        Balloon.Info(("Information saved"), btnassign)
         Balloon.Delay = modBasic.$BalloonDelay
       Else
         modDatabase.$myConn.Rollback

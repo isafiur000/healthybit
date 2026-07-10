@@ -331,7 +331,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
     GridView1.Data.Text = ""
   Else
     If Column > $SSQLFields.Count - 1 Then
-      GridView1.Data.RichText = modString.TextToHTML(GetGridViewValue(Column, $rData[$aMyFields[Column]]))
+      GridView1.Data.RichText = GetGridViewValue(Column, $rData[$aMyFields[Column]])
     Else
       GridView1.Data.Text = GetGridViewValue(Column, $rData[$aMyFields[Column]])
     Endif

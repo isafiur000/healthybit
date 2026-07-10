@@ -1236,7 +1236,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
 
   modGeneralMain.GridViewDecoration(GridView1, Row)
   If Column > 7 Then
-    GridView1.Data.RichText = modString.TextToHTML(GetGridViewValue(Column, $encTot[Row]))
+    GridView1.Data.RichText = GetGridViewValue(Column, $encTot[Row])
   Else
     GridView1.Data.Text = GetGridViewValue(Column, $encTot[Row])
   Endif

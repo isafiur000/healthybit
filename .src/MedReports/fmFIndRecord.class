@@ -506,7 +506,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
     If $aMyFields[Column] = "fldpassword" Or If $aMyFields[Column] = "fldpass" Then
       GridView1.Data.Text = ""
     Else
-      GridView1.Data.RichText = modString.TextToHTML(GetGridViewValue(Column, $rData[$aMyFields[Column]]))
+      GridView1.Data.RichText = GetGridViewValue(Column, $rData[$aMyFields[Column]])
     Endif
   Else
     If $aMyFields[Column] = "fldpassword" Or If $aMyFields[Column] = "fldpass" Then
