@@ -352,6 +352,7 @@ Public Sub btnprimt_Click()
 
       If hPatient.Enabled = True Then
         hPatient.$ACLedger = cmbledgerac.Text
+        hPatient.$TaxSource = modNonMedical.GetTaxCollectSource(cmbdisctype.Text)
         hPatient.$ACReference = Trim(txtreference.Text)
         hPatient.DirectCashBilling()
       Endif

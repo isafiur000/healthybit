@@ -218,6 +218,7 @@ Private Sub SHowInvoiceData(Row As Integer)
   hPatient1.$billtype = "CashBilling"
   xCashMode = GridView2[Row, 11].Text
   hPatient1.$ACLedger = GridView2[Row, 13].Text
+  hPatient1.$TaxSource = modNonMedical.GetTaxCollectSource(GridView2[Row, 12].Text)
   xrefmode = modNonMedical.GetFixedReferenceScheme(GridView2[Row, 12].Text)
   If xrefmode = "Claim Code" Then
     hPatient1.$ACReference = modClaim.GetClaimCidePatient($encid, modNonMedical.GetLastCLaimType($encid))

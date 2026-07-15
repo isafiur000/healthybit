@@ -149,7 +149,7 @@ Private Sub ShowReturnDoneGrid()
 
   xx = 0
   For Each $rData1
-    xx = xx + $rData1!tot
+    xx = xx + $rData1["tot"]
     Column = 0
     For Each fld In $rData1.Fields
       modGeneralMain.GridExplicitDecoration(GridView2, $rData1.Index, Column)
@@ -227,6 +227,7 @@ Private Sub SHowInvoiceData(Row As Integer)
   Endif
   xCashMode = GridView2[Row, 11].Text
   hPatient1.$ACLedger = GridView2[Row, 13].Text
+  hPatient1.$TaxSource = modNonMedical.GetTaxCollectSource(GridView2[Row, 12].Text)
   xrefmode = modNonMedical.GetFixedReferenceScheme(GridView2[Row, 12].Text)
   Select xrefmode
     Case "Claim Code"

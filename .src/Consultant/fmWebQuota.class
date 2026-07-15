@@ -110,7 +110,9 @@ Public Sub btnadd_Click()
     res["fldscheme"] = cmbdisctype.Text
     res["fldconsultdate"] = dtquota.Value
     res["flddepartment"] = cmbdepart.Text
-    res["fldconsultant"] = btnconsult.Text & ":" & btnconsult.Tag
+    If btnconsult.Tag Then
+      res["fldconsultant"] = btnconsult.Text & ":" & btnconsult.Tag
+    Endif
     res["flditemname"] = cmbpayment.Text
     res["flditemcost"] = txtpaycost.Value
     res["fldwebquota"] = txtquota.Value

@@ -311,6 +311,7 @@ Public Sub btnshow_Click()
         ShowReturnGrid()
         ShowReturnDoneGrid()
         BlankAllControl()
+
         txtbill.ReadOnly = True
         If $xFinClear = True Then
           Balloon.Info(("Account Locked"), btnshow)
@@ -599,6 +600,7 @@ Private Sub ShowReturnGrid()
   Dim fld As ResultField
   Dim xx As Float
   Dim xstatus As String
+  Dim xpackage As String
 
   If rbpunch.Value = True Then
     xstatus = "Punched"
@@ -628,6 +630,7 @@ Private Sub ShowReturnGrid()
   xx = 0
   For Each $rData
     xx = xx + $rData["tot"]
+    xpackage = $rData["flddisctype"]
     Column = 0
     For Each fld In $rData.Fields
       modGeneralMain.GridExplicitDecoration(GridView1, $rData.Index, Column)
@@ -671,7 +674,10 @@ Private Sub ShowReturnGrid()
     .Columns[12].Width = 125 * modBasic.$AppWidthRatio
     .Columns[13].Width = 125 * modBasic.$AppWidthRatio
   End With
-  txttotnew.Value = Round(xx, -2)
+  If xpackage Then
+    txttotnew.Value = Round(xx, -2)
+    hPatient1.$TaxSource = modNonMedical.GetTaxCollectSource(xpackage)
+  Endif
 
 End
 
@@ -681,6 +687,7 @@ Public Sub GridView1_Click()
 
     $CashMode = GridView1[GridView1.Row, 11].Text
     $LedgerAC = GridView1[GridView1.Row, 13].Text
+    hPatient1.$TaxSource = modNonMedical.GetTaxCollectSource(GridView1[GridView1.Row, 12].Text)
     hPatient1.SetDefaultModeCashCredit($CashMode, True)
     hPatient1.$ACLedger = $LedgerAC
 
@@ -694,6 +701,7 @@ Private Sub ShowReturnDoneGrid()
   Dim Column As Integer
   Dim fld As ResultField
   Dim xx As Float
+  Dim xpackage As String
 
   If rbBill.Value = True Then
     If modBasic.$BillInvoiceWiseReturn = "Yes" Then
@@ -723,6 +731,7 @@ Private Sub ShowReturnDoneGrid()
   xx = 0
   For Each $rData1
     xx = xx + $rData1["tot"]
+    xpackage = $rData1["flddisctype"]
     Column = 0
     For Each fld In $rData1.Fields
       modGeneralMain.GridExplicitDecoration(GridView2, $rData1.Index, Column)
@@ -768,8 +777,11 @@ Private Sub ShowReturnDoneGrid()
     .Columns[12].Width = 125 * modBasic.$AppWidthRatio
     .Columns[13].Width = 125 * modBasic.$AppWidthRatio
   End With
-  txttotsaved.Value = Round(xx, -2)
-  hPatient1.ShowBillingDatainBox()
+  If xpackage Then
+    txttotsaved.Value = Round(xx, -2)
+    hPatient1.$TaxSource = modNonMedical.GetTaxCollectSource(xpackage)
+    hPatient1.ShowBillingDatainBox()
+  Endif
 
 End
 
@@ -777,6 +789,7 @@ Public Sub GridView2_Click()
 
   If GridView2.Rows.Selection.Count Then
     hPatient1.$ACLedger = GridView2[GridView2.Row, 13].Text
+    hPatient1.$TaxSource = modNonMedical.GetTaxCollectSource(GridView2[GridView2.Row, 12].Text)
   Endif
 
 End
