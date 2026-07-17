@@ -2175,13 +2175,14 @@ Private Sub GetNewServiceTotal()
   Dim xx As Float
   Dim disc As Float
   Dim tax As Float
-  Dim xCashCrd As Float
+  Dim xcshper As Float
+  Dim xrcvamt As Float
 
   xitem = 0
   tax = 0
   disc = 0
   xx = 0
-  xCashCrd = 0
+  xrcvamt = 0
   For Row = 0 To GridView1.Rows.Count - 1
     If GridView1[Row, 13].Picture = Picture["icons/checked.png"] Then
       $rData.MoveTo(Row)
@@ -2189,13 +2190,22 @@ Private Sub GetNewServiceTotal()
       tax = tax + $rData["fldtaxamt"]
       disc = disc + $rData["flddiscamt"]
       xx = xx + $rData["fldditemamt"]
+
+      If $rData["fldcashincredit"] Then
+        xcshper = $rData["fldcashincredit"]
+      Else
+        xcshper = 0
+      Endif
       If $rData["fldbilltype"] = "Cash" Then
-        xCashCrd = xCashCrd + $rData["fldditemamt"]
+        xrcvamt = xrcvamt + $rData["fldditemamt"]
       Else If $rData["fldbilltype"] = "Credit" Then
-        If $rData["fldcashincredit"] Then
-          xCashCrd = xCashCrd + ($rData["fldcashincredit"] / 100) * $rData["fldditemamt"]
+        If modNonMedical.GetTaxCollectSource($rData["flddisctype"]) = "Proportional" Then
+          xrcvamt = xrcvamt + (xcshper / 100) * (($rData["flditemrate"] * $rData["flditemqty"]) + $rData["fldtaxamt"] - $rData["flddiscamt"])
+        Else
+          xrcvamt = xrcvamt + $rData["fldtaxamt"] + ((xcshper / 100) * (($rData["flditemrate"] * $rData["flditemqty"]) - $rData["flddiscamt"]))
         Endif
       Endif
+
     Endif
   Next
 
@@ -2203,7 +2213,7 @@ Private Sub GetNewServiceTotal()
   txttotaxnew.Value = Round(tax, -2)
   txtdiscnew.Value = Round(disc, -2)
   txtnetotalnew.Value = Round(xx, -2)
-  txtpaynew.Value = Round(xCashCrd, -2)
+  txtpaynew.Value = Round(xrcvamt, -2)
   txttotnew.Value = txtpaynew.Value + txtpayitem.Value
 
 End

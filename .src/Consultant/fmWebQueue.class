@@ -39,6 +39,29 @@ Private Sub CLearComntrols()
 
 End
 
+Public Sub btnconsult_Click()
+
+  Dim xMedUser As String[]
+
+  xMedUser = MedicalSelectedValue(("Select Consultant"), modBasic.$OPConsulUserList)
+  If xMedUser And If xMedUser.Count Then
+    btnconsult.Tag = xMedUser[0]
+    btnconsult.Text = xMedUser[1]
+  Else
+    btnconsult.Tag = ""
+    btnconsult.Text = ""
+  Endif
+
+End
+
+Public Sub btnconsult_Change()
+
+  If btnconsult.Text = "" Then
+    btnconsult.Tag = ""
+  Endif
+
+End
+
 Public Sub btnadd_Click()
 
   Dim res As Result
@@ -50,6 +73,9 @@ Public Sub btnadd_Click()
       res["fldgroup"] = cmbcategory.Text
       res["fldscheme"] = cmbdisctype.Text
       res["flddepartment"] = cmbdepart.Text
+      If btnconsult.Tag Then
+        res["fldconsultant"] = btnconsult.Text & ":" & btnconsult.Tag
+      Endif
       res["fldqueue"] = txtquefirst.Value + (txtjump.Value * Row)
       res["fldconsultstart"] = dtconsultime.Value
 
