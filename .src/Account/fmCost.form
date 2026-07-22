@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,121,78)
+  MoveScaled(0,0,121,85)
   Expand = True
   Text = ("Costing List")
   AutoResize = True
@@ -11,7 +11,7 @@
     }
   }
   { Panel1 Panel
-    MoveScaled(0,0,120,77)
+    MoveScaled(0,0,120,82)
     { Panel7 Panel
       MoveScaled(0,0,70,73)
       Expand = True
@@ -92,7 +92,7 @@
       Arrangement = Arrange.Vertical
     }
     { Panel4 Panel
-      MoveScaled(72,0,48,77)
+      MoveScaled(72,0,48,81)
       Expand = True
       { cmbmode ComboBox
         MoveScaled(11,1,22,3)
@@ -159,37 +159,37 @@
         MoveScaled(18,45,10,3)
       }
       { txthospshare ValueBox
-        MoveScaled(18,49,10,3)
-      }
-      { txtinstrushare ValueBox
         MoveScaled(18,53,10,3)
       }
-      { txtdepartshare ValueBox
+      { txtinstrushare ValueBox
         MoveScaled(18,57,10,3)
       }
-      { txtanesthshare ValueBox
+      { txtdepartshare ValueBox
         MoveScaled(18,61,10,3)
       }
-      { txtothershare ValueBox
+      { txtanesthshare ValueBox
         MoveScaled(18,65,10,3)
       }
+      { txtothershare ValueBox
+        MoveScaled(18,69,10,3)
+      }
       { cmbstatus ComboBox
-        MoveScaled(18,69,17,3)
+        MoveScaled(18,73,17,3)
         ToolTip = ("Current Status")
       }
       { btnBrOK Button
-        MoveScaled(0,73,12,3)
+        MoveScaled(0,77,12,3)
         Tag = "Auto"
         Text = Shortcut(("Add"), "A")
         Picture = Picture["icon:/small/add"]
       }
       { btnedit Button
-        MoveScaled(30,73,12,3)
+        MoveScaled(30,77,12,3)
         Text = ("Edit")
         Picture = Picture["icon:/small/edit"]
       }
       { btnexpo ToolButton
-        MoveScaled(43,73,3.5,3)
+        MoveScaled(43,77,3.5,3)
         Picture = Picture["icon:/small/html"]
       }
       { btnrefrmode ToolButton
@@ -254,61 +254,61 @@
         Text = ("Abbreviation")
       }
       { Label4 Label
-        MoveScaled(0,69,17,3)
+        MoveScaled(0,73,17,3)
         Border = Border.Plain
         Text = ("Current Status")
       }
       { lbldept9 Label
-        MoveScaled(0,49,17,3)
+        MoveScaled(0,53,17,3)
         Border = Border.Plain
         Text = ("Hospital Share")
       }
       { lbldept10 Label
-        MoveScaled(0,53,17,3)
+        MoveScaled(0,57,17,3)
         Border = Border.Plain
         Text = ("Instrument Share")
       }
       { lbldept11 Label
-        MoveScaled(0,57,17,3)
+        MoveScaled(0,61,17,3)
         Border = Border.Plain
         Text = ("Department Share")
       }
       { lbldept12 Label
-        MoveScaled(0,61,17,3)
+        MoveScaled(0,65,17,3)
         Border = Border.Plain
         Text = ("Anesthesia Share")
       }
       { lbldept13 Label
-        MoveScaled(0,65,17,3)
+        MoveScaled(0,69,17,3)
         Border = Border.Plain
         Text = ("Other Share")
       }
       { Label7 Label
-        MoveScaled(29,49,5,3)
-        Alignment = Align.Center
-        Border = Border.Plain
-        Text = ("%")
-      }
-      { Label8 Label
         MoveScaled(29,53,5,3)
         Alignment = Align.Center
         Border = Border.Plain
         Text = ("%")
       }
-      { Label11 Label
+      { Label8 Label
         MoveScaled(29,57,5,3)
         Alignment = Align.Center
         Border = Border.Plain
         Text = ("%")
       }
-      { Label12 Label
+      { Label11 Label
         MoveScaled(29,61,5,3)
         Alignment = Align.Center
         Border = Border.Plain
         Text = ("%")
       }
-      { Label13 Label
+      { Label12 Label
         MoveScaled(29,65,5,3)
+        Alignment = Align.Center
+        Border = Border.Plain
+        Text = ("%")
+      }
+      { Label13 Label
+        MoveScaled(29,69,5,3)
         Alignment = Align.Center
         Border = Border.Plain
         Text = ("%")
@@ -343,6 +343,14 @@
       { txtminlimit ValueBox
         MoveScaled(36,33,10,3)
         Visible = False
+      }
+      { lbldept8 Label
+        MoveScaled(0,49,17,3)
+        Border = Border.Plain
+        Text = ("Default QTY")
+      }
+      { txtdefqty ValueBox
+        MoveScaled(18,49,10,3)
       }
     }
   }

@@ -5,6 +5,7 @@ Private $aMyFields As String[]
 
 Private $examList As String[]
 Private $TestList As String[]
+Private $MedList As String[]
 
 Public Sub Form_Open()
 
@@ -18,9 +19,10 @@ Public Sub Form_Open()
     cmbtarget.Enabled = True
   Endif
   cmbdatatype.List = ["Qualitative", "Quantitative"]
-  cmbcategory.List = ["Laboratory", "Examination"]
+  cmbcategory.List = ["Laboratory", "Examination", "Medicines"]
   $examList = modMedicine.FillExamQualiOrQuantiCombo("%")
   $TestList = modMedicine.FillLabTestCombo("%")
+  $MedList = modMedicine.GetMedicineList()
 
 End
 
@@ -57,6 +59,8 @@ Public Sub btnaddexam_Click()
     cmbexamname.Text = GridViewNew("Select " & cmbcategory.Text, $examList, False)
   Else If cmbcategory.Text = "Laboratory" Then
     cmbexamname.Text = GridViewNew("Select " & cmbcategory.Text, $TestList, False)
+  Else If cmbcategory.Text = "Medicines" Then
+    cmbexamname.Text = GridViewNew("Select " & cmbcategory.Text, $MedList, False)
   Endif
 
   If cmbexamname.Text Then
@@ -68,6 +72,8 @@ Public Sub btnaddexam_Click()
       cmbdatatype.Text = modFixLab.GetLabTestType(cmbexamname.Text)
       txtsysconst.Text = modFixLab.GetTestSysName(cmbexamname.Text)
       cmboptions.Text = modFixLab.GetLabTestOptionType(cmbexamname.Text)
+    Else If cmbcategory.Text = "Medicines" Then
+
     Endif
     cmbdatatype.Enabled = False
     txtsysconst.Enabled = False

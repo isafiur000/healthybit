@@ -289,6 +289,8 @@ Public Sub btnselecttree_Click()
 
   Dim acount As Integer
   Dim xparent As String[]
+  Dim xdef As Float
+  Dim xqty As Float
 
   acount = 0
   xrefer = ""
@@ -299,8 +301,14 @@ Public Sub btnselecttree_Click()
 
       If modBasic.$AutoBillRadio = "Standard" Or If modBasic.$AutoBillRadio = "Full" Or If modBasic.$AutoBillRadio = "Partial" Then
         xparent = Split(TreeView1.Current.ParentKey, "@")
-        modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", TreeView1.Current.Text, 1, "Punched", 0, False, False, xpayble, xrefer, "", xparent[1])
-        acount = acount + 1
+        xdef = modNonMedical.GetBillingDefaultQTY(TreeView1.Current.Text)
+        If xdef Then
+          xqty = xdef
+        Else
+          xqty = 1
+        Endif
+        modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", TreeView1.Current.Text, xqty, "Punched", 0, False, False, xpayble, xrefer, "", xparent[1])
+        acount = acount + xqty
         TreeView1.Current.Picture = Picture["icons/coll2.png"]
       Endif
 
