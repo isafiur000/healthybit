@@ -7,9 +7,6 @@
   Resizable = False
   { mnufile Menu
     Text = ("File")
-    { mnuinvupload Menu
-      Text = ("Invoice Upload")
-    }
   }
   { mnusetting Menu
     Text = ("Settings")
@@ -18,6 +15,12 @@
     }
     { mnusetkidn Menu
       Text = ("Kidney Disease")
+    }
+  }
+  { mnubulk Menu
+    Text = ("Bulk Upload")
+    { mnuinvupload Menu
+      Text = ("Invoice")
     }
   }
   { Panel1 Panel
@@ -61,12 +64,12 @@
         Default = True
       }
       { btnupload Button
-        MoveScaled(97,4,16,3)
+        MoveScaled(97,4,17,3)
         Text = ("Upload")
         Picture = Picture["icon:/small/up"]
       }
       { txttotal ValueBox
-        MoveScaled(65,7.5,10,3)
+        MoveScaled(103,0.625,11,3)
       }
       { Label3 Label
         MoveScaled(0,0.625,5.5,3)
@@ -102,7 +105,7 @@
         Sorted = True
       }
       { Label6 Label
-        MoveScaled(58,7.5,6,3)
+        MoveScaled(97,0.625,6,3)
         Border = Border.Plain
         Text = ("TOTAL")
       }
@@ -120,33 +123,37 @@
         Text = ("Type")
       }
       { mnudetails Button
-        MoveScaled(97,7.5,3,3)
+        MoveScaled(100.5,7.5,3,3)
         Picture = Picture["icon:/small/info"]
       }
       { chksummary CheckBox
-        MoveScaled(80,0.625,13,3)
+        MoveScaled(79,0.625,13,3)
         Text = ("Summary")
       }
       { btnexport Button
-        MoveScaled(75,7.5,3,3)
+        MoveScaled(97,7.5,3,3)
         Picture = Picture["icon:/small/html"]
       }
       { btnclaimweb Button
-        MoveScaled(101,7.5,12,3)
+        MoveScaled(104,7.5,10,3)
         Text = ("Page")
         Picture = Picture["icon:/small/internet"]
-      }
-      { Label13 Label
-        MoveScaled(97,0.625,4,3)
-        Border = Border.Plain
-        Text = ("R69")
-      }
-      { cmbnodiagno ComboBox
-        MoveScaled(101,0.625,12,3)
       }
       { cmbfiscal ComboBox
         MoveScaled(80,4,14,3)
         Sorted = True
+      }
+      { Panel6 Panel
+        MoveScaled(58,7.5,20,3)
+        { rbretn RadioButton
+          MoveScaled(10,0,10,3)
+          Text = ("Return")
+        }
+        { rbsales RadioButton
+          MoveScaled(0.5,0,9,3)
+          Text = ("Sales")
+          Value = True
+        }
       }
     }
     { GridView1 GridView

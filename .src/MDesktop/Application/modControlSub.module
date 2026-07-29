@@ -166,9 +166,13 @@ Public Sub DisplayReportExport(sPath As String) As String
 
   If sPath Then
     If modBasic.$ExpoRepoUser = True Then
-      If modBasic.$ReportingPopUp = "CSV File" Then
+      If modBasic.$ReportingPopUp = "CSV" Then
         If Dialog.SelectDirectory() Then Return
         sTarget = Dialog.Path &/ modString.GetNowString() & ".csv"
+        Copy sPath To sTarget
+      Else If modBasic.$ReportingPopUp = "JSON" Then
+        If Dialog.SelectDirectory() Then Return
+        sTarget = Dialog.Path &/ modString.GetNowString() & ".json"
         Copy sPath To sTarget
       Else
         modPrint.PrintPopUp("", sPath, "ReportSize")

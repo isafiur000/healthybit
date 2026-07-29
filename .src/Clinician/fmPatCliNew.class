@@ -540,7 +540,7 @@ Private Sub BasicInfoPatient()
     ShowTelemedSaved()
     GetPatientOutComeVal()
 
-    hMultiCompl = New FmMultiComplaints(Trim(txtencid.Text), pnlmulticomplaints)
+    hMultiCompl = New FmMultiComplaints(Trim(txtencid.Text), txtbedno.Text, pnlmulticomplaints)
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
     hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
@@ -1134,7 +1134,7 @@ Public Sub tbndisease_Click()
     Endif
     If sName Then
       If sName[1] And If sName[0] Then
-        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
+        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2], txtbedno.Text)
         xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
       Endif
     Endif
@@ -1156,7 +1156,7 @@ Public Sub tbnsyndro_Click()
 
     If sName Then
       If sName[1] And If sName[0] Then
-        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1])
+        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1], txtbedno.Text)
 
         If sName.Count > 2 And If sName[2] Then
           If modBasic.$ProvDiagnosisObstetrics = "Selection List" Then
@@ -1183,12 +1183,12 @@ Public Sub btndismanual_Click()
     If modBasic.$ProvDiagnosisObstetrics = "Custom Text" Then
       sName = DiagnoObstetrics(Trim(txtencid.Text), True)
       If sName Then
-        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1])
+        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1], txtbedno.Text)
       Endif
     Else
       xx = InputBox(("Enter custom Provisional Diagnosis"), ("Provisional Diagnosis"), "")
       If xx Then
-        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
+        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), xx, "Other", "Other", txtbedno.Text)
       Endif
     Endif
     xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
@@ -1206,7 +1206,7 @@ Public Sub btncopydiagnosis_Click()
     If asx[1] = "Other" Then
     Else
       If Message.Question("Do you want to copy " & lsticdisease.Current.Text, ("No"), ("OK")) = 2 Then
-        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), asx[2], asx[1], "")
+        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), asx[2], asx[1], "", txtbedno.Text)
         xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
       Endif
     Endif
@@ -1240,7 +1240,7 @@ Public Sub tbnfinaldisease_Click()
 
     If sName Then
       If sName[1] And If sName[0] Then
-        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1])
+        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1], txtbedno.Text)
         xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
       Endif
     Endif
@@ -1271,7 +1271,7 @@ Public Sub btnfinalsyndro_Click()
     Endif
     If sName Then
       If sName[1] And If sName[0] Then
-        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
+        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2], txtbedno.Text)
         xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
       Endif
     Endif
@@ -1289,12 +1289,12 @@ Public Sub btnfinalcustom_Click()
     If modBasic.$FinalDiagnosisObstetrics = "Custom Text" Then
       sName = DiagnoObstetrics(Trim(txtencid.Text), True)
       If sName Then
-        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
+        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2], txtbedno.Text)
       Endif
     Else
       xx = InputBox(("Enter custom Final Diagnosis"), ("Final Diagnosis"), "")
       If xx Then
-        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
+        modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), xx, "Other", "Other", txtbedno.Text)
       Endif
     Endif
     xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
@@ -1353,7 +1353,7 @@ Public Sub btnallergymanual_Click()
   If txtencid.Text Then
     xx = InputBox(("Enter Other Allergy"), ("Drug Allergy"), "")
     If xx Then
-      modPatientGeneral.AddPatientFindings("Allergic Drugs", Trim(txtencid.Text), xx, "", "")
+      modPatientGeneral.AddPatientFindings("Allergic Drugs", Trim(txtencid.Text), xx, "", "", txtbedno.Text)
       xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
       If xallrg = True Then
         lblallergy.Text = "ALLERGY"
@@ -1379,7 +1379,7 @@ Public Sub btnallergy_Click()
     sName = GridListView(("Select Drugs"), druglist, lsticdisease, lsticdisease.Height + TabPanel1.Height)
     If sName And If sName.Count Then
       For Each sText In sName
-        modPatientGeneral.AddPatientFindings("Allergic Drugs", Trim(txtencid.Text), sText, "", "")
+        modPatientGeneral.AddPatientFindings("Allergic Drugs", Trim(txtencid.Text), sText, "", "", txtbedno.Text)
       Next
     Endif
     xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
@@ -1874,7 +1874,7 @@ Public Sub btnaddsymplist_Click()
     aList = GridListView("Select Presenting Complaints", xlist, Panel13, grdchiefsymptom.Height + cmbsymptom.Height + lblhistoryhead.Height + cmbfinding.Height + GridView1.Height)
     If aList And If aList.Count Then
       For Each xitem In aList
-        modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", xitem, "", 0, "")
+        modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", xitem, "", 0, "", txtbedno.Text)
       Next
       ShowSymptomData()
     Endif
@@ -1971,7 +1971,7 @@ Public Sub btnsympadd_Click()
     pnlquantisyn.Visible = False
 
     If cmbsymptom.Text Then
-      modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", cmbsymptom.Text, cmbsymdura.Text, txtsympval.Value, cmbsympunit.Text)
+      modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", cmbsymptom.Text, cmbsymdura.Text, txtsympval.Value, cmbsympunit.Text, txtbedno.Text)
       ShowSymptomData()
       cmbsymptom.Text = ""
       cmbsymdura.Text = ""
@@ -2503,7 +2503,7 @@ Public Sub btnhistory_Click()
 
   If cmbinpathistory.Text Then
     If txthistory.Text Then
-      modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "History", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean)
+      modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "History", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean, txtbedno.Text)
       Balloon.Info(("Information saved"), btnhistory)
       Balloon.Delay = modBasic.$BalloonDelay
       btnhistory.Enabled = False
@@ -2577,7 +2577,7 @@ Public Sub btnplan_Click()
   Endif
 
   If txtplan.Text Then
-    modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "Notes", "Initial Planning", txtplan.KeyList.Join(";"), txtplan.RichText, xboolean)
+    modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "Notes", "Initial Planning", txtplan.KeyList.Join(";"), txtplan.RichText, xboolean, txtbedno.Text)
     btnoutcome.Enabled = True
     Balloon.Info(("Information saved"), btnplan)
     Balloon.Delay = modBasic.$BalloonDelay
@@ -4410,7 +4410,7 @@ Public Sub btngetfeed_Click()
   Endif
 
   If txtfeedback.Text Then
-    modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "Notes", "Expert Planning", txtfeedback.KeyList.Join(";"), txtfeedback.RichText, xboolean)
+    modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "Notes", "Expert Planning", txtfeedback.KeyList.Join(";"), txtfeedback.RichText, xboolean, txtbedno.Text)
     Balloon.Info(("Information saved"), btngetfeed)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
@@ -4556,7 +4556,7 @@ Public Sub btnoutcome_Click()
       modDatabase.$myConn.Begin
       If rbadmission.Value = True Then
         xmode = "Admission"
-        modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "Notes", "Doctor Order", "", txtcomment.RichText, False)
+        modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "Notes", "Doctor Order", "", txtcomment.RichText, False, txtbedno.Text)
       Else If rbfollowup.Value = True Then
         xmode = "Follow Up"
       Else If rbreferred.Value = True Then

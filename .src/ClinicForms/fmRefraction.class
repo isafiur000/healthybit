@@ -628,7 +628,7 @@ Private Sub SaveLeftRightExams(xhash As String, sExam As String, sPanelRight As 
   Next
 
   If varList.Count And If xhash Then
-    modClinSub.AddClinicExam($encid, "", sExam, "Left/Right Components", "", 0, False, $sType, "", "Regular", xhash)
+    modClinSub.AddClinicExam($encid, "", sExam, "Left/Right Components", "", 0, False, $sType, "", "Regular", "", xhash)
     sIndex = modClinic.GetExamIndexFromFilePath(xhash, $encid, sExam)
     If sIndex Then
       For Each xItem In varList
@@ -662,8 +662,8 @@ Public Sub btnvisual_Click()
 
   xhash = $encid & ":" & "Visual Acuity" & ":" & modMisc.GetWebIndexStr(modString.GetDateString(Now()))
   SaveLeftRightExams(xhash, "Visual Acuity", pnlvisualright, pnlvisualleft)
-  modClinSub.AddClinicExam($encid, "", "Stereopsis", "", txtbothstreopsis.Text, 0, False, $sType, "", "Regular", xhash)
-  modClinSub.AddClinicExam($encid, "", "Miscellaneous Visual Acuity", "", txtbothmiscell.Text, 0, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", "Stereopsis", "", txtbothstreopsis.Text, 0, False, $sType, "", "Regular", "", xhash)
+  modClinSub.AddClinicExam($encid, "", "Miscellaneous Visual Acuity", "", txtbothmiscell.Text, 0, False, $sType, "", "Regular", "", xhash)
   Balloon.Info(("Information saved"), btnvisual)
   Balloon.Delay = modBasic.$BalloonDelay
   btnvisual.Enabled = False
@@ -676,8 +676,8 @@ Public Sub btnpresent_Click()
 
   xhash = $encid & ":" & "Present Glass" & ":" & modMisc.GetWebIndexStr(modString.GetDateString(Now()))
   SaveLeftRightExams(xhash, "Present Glass", pnlpresentright, pnlpresentleft)
-  modClinSub.AddClinicExam($encid, "", "Present Glass Lens Type", "", cmbbothpgplenstype.Text, 0, False, $sType, "", "Regular", xhash)
-  modClinSub.AddClinicExam($encid, "", "Present Glass Remarks", "", txtbothpgpremark.Text, 0, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", "Present Glass Lens Type", "", cmbbothpgplenstype.Text, 0, False, $sType, "", "Regular", "", xhash)
+  modClinSub.AddClinicExam($encid, "", "Present Glass Remarks", "", txtbothpgpremark.Text, 0, False, $sType, "", "Regular", "", xhash)
   Balloon.Info(("Information saved"), btnpresent)
   Balloon.Delay = modBasic.$BalloonDelay
   btnpresent.Enabled = False
@@ -702,8 +702,8 @@ Public Sub btnprescribe_Click()
 
   xhash = $encid & ":" & "Prescribed Glass" & ":" & modMisc.GetWebIndexStr(modString.GetDateString(Now()))
   SaveLeftRightExams(xhash, "Prescribed Glass", pnlprescrright, pnlprescrleft)
-  modClinSub.AddClinicExam($encid, "", "Prescribed Glass Source", "", cmbbothprescsource.Text, 0, False, $sType, "", "Regular", xhash)
-  modClinSub.AddClinicExam($encid, "", "Prescribed Glass Remarks", "", txtbothpresremark.Text, 0, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", "Prescribed Glass Source", "", cmbbothprescsource.Text, 0, False, $sType, "", "Regular", "", xhash)
+  modClinSub.AddClinicExam($encid, "", "Prescribed Glass Remarks", "", txtbothpresremark.Text, 0, False, $sType, "", "Regular", "", xhash)
   Balloon.Info(("Information saved"), btnprescribe)
   Balloon.Delay = modBasic.$BalloonDelay
   btnprescribe.Enabled = False

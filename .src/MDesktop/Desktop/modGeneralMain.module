@@ -1126,16 +1126,18 @@ Public Sub LoadRightPanelWebPage()
     $RightAdView.Zoom = modBasic.$WebZoomValue
     Select modBasic.$RightPanelURL
       Case "https://imis.hib.gov.np/"
-        $RightAdView.ExecJavascript("document.getElementById('txtUserName').value='" & modBasic.$RightPanelUser & "';")
-        $RightAdView.ExecJavascript("document.getElementById('txtPassword').value='" & modBasic.$RightPanelPass & "';")
+        $RightAdView.ExecJavascript("document.querySelector('input[type=\"text\"]').value='" & modBasic.$RightPanelUser & "';")
+        $RightAdView.ExecJavascript("document.querySelector('input[type=\"password\"]').value='" & modBasic.$RightPanelPass & "';")
         Wait
-        $RightAdView.ExecJavascript("document.getElementById('btnLogin').click();")
+        ' $RightAdView.ExecJavascript("document.getElementById('btnLogin').click();")
+        $RightAdView.ExecJavascript("document.querySelector('input[type=\"submit\"]').click();")
 
       Case "{HI_IMIS_Page}"
-        $RightAdView.ExecJavascript("document.getElementById('txtUserName').value='" & modBasic.$RightImisHIUser & "';")
-        $RightAdView.ExecJavascript("document.getElementById('txtPassword').value='" & modBasic.$RightImisHIPass & "';")
+        $RightAdView.ExecJavascript("document.querySelector('input[type=\"text\"]').value='" & modBasic.$RightImisHIUser & "';")
+        $RightAdView.ExecJavascript("document.querySelector('input[type=\"password\"]').value='" & modBasic.$RightImisHIPass & "';")
         Wait
-        $RightAdView.ExecJavascript("document.getElementById('btnLogin').click();")
+        ' $RightAdView.ExecJavascript("document.getElementById('btnLogin').click();")
+        $RightAdView.ExecJavascript("document.querySelector('input[type=\"submit\"]').click();")
 
       Case "https://openimis.ssf.gov.np/"
         $RightAdView.ExecJavascript("document.getElementById('txtUserName').value='" & modBasic.$RightPanelUser & "';")

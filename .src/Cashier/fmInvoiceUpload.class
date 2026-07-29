@@ -25,7 +25,6 @@ Public Sub Form_Open()
   If cmbaccount.Count Then
     cmbaccount.Index = 0
   Endif
-  cmbnodiagno.List = ["Disable", "Enable"]
   dtfir.Value = Now()
   dtlast.Value = Now()
   modAccount.PasInvoiceSetting(cmbfiscal, False)
@@ -213,15 +212,30 @@ Private Sub FillGridView()
     xsear = ""
   Endif
 
-  If cmbsource.Text = "Invoice" Then
-    sql1 = "select " & xList.Join(",") & " from " & $tblpatbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
-    sql2 = "select " & xList.Join(",") & " from tblpatbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
-  Else If cmbsource.Text = "Receipt" Then
-    sql1 = "select " & xList.Join(",") & " from " & $tbltempbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
-    sql2 = "select " & xList.Join(",") & " from tbltempbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
-  Else
-    sql1 = "select " & xList.Join(",") & " from " & $tblpatbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno & " UNION select " & xList.Join(",") & " from " & $tbltempbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
-    sql2 = "select " & xList.Join(",") & " from tblpatbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno & " UNION select " & xList.Join(",") & " from tbltempbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
+  If rbsales.Value = True Then
+    If cmbsource.Text = "Invoice" Then
+      sql1 = "select " & xList.Join(",") & " from " & $tblpatbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
+      sql2 = "select " & xList.Join(",") & " from tblpatbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
+    Else If cmbsource.Text = "Receipt" Then
+      sql1 = "select " & xList.Join(",") & " from " & $tbltempbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
+      sql2 = "select " & xList.Join(",") & " from tbltempbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
+    Else
+      sql1 = "select " & xList.Join(",") & " from " & $tblpatbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno & " UNION select " & xList.Join(",") & " from " & $tbltempbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
+      sql2 = "select " & xList.Join(",") & " from tblpatbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno & " UNION select " & xList.Join(",") & " from tbltempbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
+    Endif
+
+  Else If rbretn.Value = True Then
+    If cmbsource.Text = "Invoice" Then
+      sql1 = "select " & xList.Join(",") & " from " & $tblpatbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)<&6" & yregist & xrefno
+      sql2 = "select " & xList.Join(",") & " from tblpatbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)<&6" & yregist & xrefno
+    Else If cmbsource.Text = "Receipt" Then
+      sql1 = "select " & xList.Join(",") & " from " & $tbltempbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)<&6" & yregist & xrefno
+      sql2 = "select " & xList.Join(",") & " from tbltempbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)<&6" & yregist & xrefno
+    Else
+      sql1 = "select " & xList.Join(",") & " from " & $tblpatbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)<&6" & yregist & xrefno & " UNION select " & xList.Join(",") & " from " & $tbltempbilldetail & " where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)>&6" & yregist & xrefno
+      sql2 = "select " & xList.Join(",") & " from tblpatbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)<&6" & yregist & xrefno & " UNION select " & xList.Join(",") & " from tbltempbilldetail where fldbankname like &1 and fldencounterval like &2 and fldbilltype like &3" & xsear & " and fldtime>=&4 and fldtime<=&5 and (flditemamt+fldtaxamt-flddiscountamt-fldreceivedamt)<&6" & yregist & xrefno
+    Endif
+
   Endif
 
   If cmbfiscal.Text = "Current" Then
@@ -373,7 +387,6 @@ Public Sub GridView1_Click()
 
   txtinvoice.Text = GridView1[GridView1.Row, 0].Text
   txtaccount.Text = GridView1[GridView1.Row, 1].Text
-  cmbnodiagno.Text = ""
 
   SHowCreditGrid()
 

@@ -238,16 +238,16 @@ Public Sub btnsave_Click()
   gcsColl.Add(txtgcsE.Value, txtgcsE.Tag)
   gcsColl.Add(txtgcsV.Value, txtgcsV.Tag)
   gcsColl.Add(txtgcsM.Value, txtgcsM.Tag)
-  modClinSub.AddClinicExam($encid, "", "GCS", "Clinical Scale", JSON.Encode(gcsColl), gcstot, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", "GCS", "Clinical Scale", JSON.Encode(gcsColl), gcstot, False, $sType, "", "Regular", "", xhash)
 
   ''"MMSE",
-  modClinSub.AddClinicExam($encid, "", "MMSE", "", txtmmse.Value, txtmmseval.Value, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", "MMSE", "", txtmmse.Value, txtmmseval.Value, False, $sType, "", "Regular", "", xhash)
   ''"Nystagmus",
-  modClinSub.AddClinicExam($encid, "", "Nystagmus", "Dichotomous", txtnystagmus.Value, 0, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", "Nystagmus", "Dichotomous", txtnystagmus.Value, 0, False, $sType, "", "Regular", "", xhash)
   ''"Neck Rigidity"
-  modClinSub.AddClinicExam($encid, "", "Neck Rigidity", "Dichotomous", txtneckrigidity.Value, 0, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", "Neck Rigidity", "Dichotomous", txtneckrigidity.Value, 0, False, $sType, "", "Regular", "", xhash)
 
-  modClinSub.AddClinicExam($encid, "", $sExam & " [Two-sided Examinations]", "Left/Right Components", "", 0, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", $sExam & " [Two-sided Examinations]", "Left/Right Components", "", 0, False, $sType, "", "Regular", "", xhash)
   sIndex = modClinic.GetExamIndexFromFilePath(xhash, $encid, $sExam & " [Two-sided Examinations]")
   If sIndex Then
     For Each xleftright In modNeuroSpec.$NeuroTwin
@@ -313,20 +313,20 @@ Public Sub btnsave_Click()
   Endif
 
   ''"Cervical Spine"
-  modClinSub.AddClinicExam($encid, "", "Cervical Spine", "Single Selection", btncervical.Tag, 0, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", "Cervical Spine", "Single Selection", btncervical.Tag, 0, False, $sType, "", "Regular", "", xhash)
   ''"Thoracic Spine"
-  modClinSub.AddClinicExam($encid, "", "Thoracic Spine", "Single Selection", btnthoracic.Tag, 0, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", "Thoracic Spine", "Single Selection", btnthoracic.Tag, 0, False, $sType, "", "Regular", "", xhash)
   ''"Lumbar Spine"
-  modClinSub.AddClinicExam($encid, "", "Lumbar Spine", "Single Selection", btnlumbar.Tag, 0, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", "Lumbar Spine", "Single Selection", btnlumbar.Tag, 0, False, $sType, "", "Regular", "", xhash)
   ''"Sacrococcygeal Spine"
-  modClinSub.AddClinicExam($encid, "", "Sacrococcygeal Spine", "Single Selection", btnsacro.Tag, 0, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", "Sacrococcygeal Spine", "Single Selection", btnsacro.Tag, 0, False, $sType, "", "Regular", "", xhash)
   ''"Tandem Gait"
   If txttendemgait.Value = "Norm" Then
     xgait = "Normal"
   Else If txttendemgait.Value = "Abnorm" Then
     xgait = "Abnormal"
   Endif
-  modClinSub.AddClinicExam($encid, "", "Tandem Gait", "Dichotomous", xgait, 0, False, $sType, "", "Regular", xhash)
+  modClinSub.AddClinicExam($encid, "", "Tandem Gait", "Dichotomous", xgait, 0, False, $sType, "", "Regular", "", xhash)
 
   Message.Info("Information saved", ("OK"))
   btnsave.Enabled = False

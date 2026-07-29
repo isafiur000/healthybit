@@ -345,6 +345,21 @@ End
 ''---------------------------- Gridview --------------------------
 Public Sub btnexpo_Click()
 
+  Dim xparam1 As String
+  Dim xparam2 As String
+
+  If TabStrip1.Index = 2 Then
+    xparam1 = "Structured Examination: " & cmbsubclass.Text
+    xparam2 = modReportVar.GetDateTimeReport(dtfir.Value, gb.MediumDate) & " To " & modReportVar.GetDateTimeReport(dtlast.Value, gb.MediumDate)
+    modCHTMLReport.ExportGridToHTML(GridView2, xparam1, xparam2)
+  Else
+    ExportMainGrid()
+  Endif
+
+End
+
+Private Sub ExportMainGrid()
+
   Dim xHeader As String[]
   Dim xhide As Integer[]
   Dim Column As Integer
@@ -420,6 +435,15 @@ End
 
 Public Sub mnuenchart_Click()
 
+  If TabStrip1.Index = 0 Then
+    UnivariateGridView()
+  Else If TabStrip1.Index = 2 Then
+  Endif
+
+End
+
+Private Sub UnivariateGridView()
+
   Dim xx As String
   Dim xField As String
   Dim Column As Integer
@@ -476,6 +500,15 @@ Public Sub mnuenchart_Click()
 End
 
 Public Sub mnucross_Click()
+
+  If TabStrip1.Index = 0 Then
+    BivariateGridView()
+  Else If TabStrip1.Index = 2 Then
+  Endif
+
+End
+
+Private Sub BivariateGridView()
 
   Dim xx As String
   Dim Row As Integer
@@ -546,6 +579,15 @@ End
 
 Public Sub mnucrotab_Click()
 
+  If TabStrip1.Index = 0 Then
+    CrossTabGridView()
+  Else If TabStrip1.Index = 2 Then
+  Endif
+
+End
+
+Private Sub CrossTabGridView()
+
   Dim Row As Integer
   Dim Column As Integer
   Dim xFieRow As String
@@ -606,6 +648,15 @@ Public Sub mnucrotab_Click()
 End
 
 Public Sub mnugridsummary_Click()
+
+  If TabStrip1.Index = 0 Then
+    SummaryGridView()
+  Else If TabStrip1.Index = 2 Then
+  Endif
+
+End
+
+Private Sub SummaryGridView()
 
   Dim xx As String
   Dim ChapCol As String
@@ -893,6 +944,15 @@ Public Sub chkchart_Click()
 End
 
 Public Sub mnucountuni_Click()
+
+  If TabStrip1.Index = 0 Then
+    ColCountGridView()
+  Else If TabStrip1.Index = 2 Then
+  Endif
+
+End
+
+Private Sub ColCountGridView()
 
   Dim Column As Integer
   Dim xFieColm As String
