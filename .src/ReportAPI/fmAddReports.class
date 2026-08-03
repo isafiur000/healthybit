@@ -1,6 +1,8 @@
 ' Gambas class file
 
 Private $encid As String
+
+Private $currencid As String
 Private $iCreate As Boolean
 Private $sValue As String[]
 
@@ -10,7 +12,7 @@ Private $tblpatreport As String
 
 Public Sub Run(encid As String, iCreate As Boolean) As String[]
 
-  $encid = encid
+  $currencid = encid
   $iCreate = iCreate
   If Me.ShowModal() Then Return $sValue
 
@@ -23,6 +25,9 @@ Public Sub Form_Open()
   cmbsource.List = ["Diagnostic Tests", "Radio Diagnostics", "General Reports", "Scanned Images", "Past Documents"]
   cmbsource.Text = "Scanned Images"
   modAccount.PasInvoiceSettingRead(cmbfiscal)
+
+  chkcurrent.Value = True
+  $encid = $currencid
   LoadTableNames()
   ShowDocuments()
 
@@ -263,5 +268,17 @@ Public Sub btnupload_Click()
   Wait
   $sValue = pathList
   Me.Close(True)
+
+End
+
+Public Sub chkcurrent_Click()
+
+  $encid = $currencid
+
+End
+
+Public Sub chklast_Click()
+
+  $encid = modPatient.GetSecondLastEncidPatient($currencid)
 
 End

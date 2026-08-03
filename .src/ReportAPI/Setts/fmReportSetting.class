@@ -1903,6 +1903,7 @@ Public Sub btnclear_Click()
   chkarrlist.Value = False
   txtexposcript.Text = ""
   txtexposhell.Text = ""
+  chkconvert.Value = False
 
 End
 
@@ -1918,6 +1919,7 @@ Public Sub btnsaveformat_Click()
   modSettings.SaveSettingsToFile("ReportColumnFormat/ColumnID", CStr(txtcolnoformat.Value))
   modSettings.SaveSettingsToFile("ReportColumnFormat/FormatScript", txtexposcript.Text)
   modSettings.SaveSettingsToFile("ReportColumnFormat/FormatShell", txtexposhell.Text)
+  modSettings.EnterCheckSetting(chkconvert, "ReportColumnFormat/Translate")
   Balloon.Info(("Information saved"), btnsaveformat)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -1940,6 +1942,35 @@ Private Sub ShowColuFormat()
   Endif
   txtexposcript.Text = modSettings.ShowSettingFromFIle("ReportColumnFormat/FormatScript")
   txtexposhell.Text = modSettings.ShowSettingFromFIle("ReportColumnFormat/FormatShell")
+  modSettings.ShowCheckBox(chkconvert, "ReportColumnFormat/Translate")
+
+End
+
+Private Function GetListFile(sLink As String) As String
+
+  Dim sPath As String
+  Dim hForm As FmTwoColmGrid
+
+  If sLink And If Exist(sLink) Then
+    sPath = sLink
+  Else
+    sPath = Desktop.CacheDir &/ modHelpVariable.AppName &/ modString.GetDateString(Now()) & ".txt"
+  Endif
+  hForm = New FmTwoColmGrid(sPath)
+  hForm.ShowModal()
+
+  Return sPath
+
+End
+
+Public Sub btnsetlist1_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txtexposcript.Text)
+  If Exist(sPath) Then
+    txtexposcript.Text = sPath
+  Endif
 
 End
 
@@ -1969,7 +2000,10 @@ Private Sub SHowCOlumnSearchSetting()
   If xcol Then
     txtcolnosearch.Value = CInt(xcol)
   Endif
+
   txtcolsearchtext.Text = modSettings.ShowSettingFromFIle("ReportColumnSearch/String")
+  txtcusttranslatefile.Text = modSettings.ShowSettingFromFIle("ReportColumnTranslate/TranslateList")
+  txtcusttransdefault.Text = modSettings.ShowSettingFromFIle("ReportColumnTranslate/Default")
 
 End
 
@@ -1978,6 +2012,33 @@ Public Sub btnsavecolsearch_Click()
   modSettings.SaveSettingsToFile("ReportColumnSearch/Column", CStr(txtcolnosearch.Value))
   modSettings.SaveSettingsToFile("ReportColumnSearch/String", txtcolsearchtext.Text)
   Balloon.Info(("Information saved"), btnsavecolsearch)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub txtcusttranslatefile_Click()
+
+  If Dialog.OpenFile() Then Return
+  txtcusttranslatefile.Text = Dialog.Path
+
+End
+
+Public Sub btnsetTnasList_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txtcusttranslatefile.Text)
+  If Exist(sPath) Then
+    txtcusttranslatefile.Text = sPath
+  Endif
+
+End
+
+Public Sub btncusttranslare_Click()
+
+  modSettings.SaveSettingsToFile("ReportColumnTranslate/TranslateList", txtcusttranslatefile.Text)
+  modSettings.SaveSettingsToFile("ReportColumnTranslate/Default", txtcusttransdefault.Text)
+  Balloon.Info(("Information saved"), btncusttranslare)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

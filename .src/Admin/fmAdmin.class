@@ -231,7 +231,7 @@ End
 Public Sub mnubackup_Click()
 
   If Dialog.SelectDirectory() Then Return
-  modDatabase.BackUpCurrentDB(Dialog.Path)
+  modDatabase.BackUpCurrentDB(modDatabase.$syConn, Dialog.Path)
 
 End
 

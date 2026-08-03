@@ -941,7 +941,7 @@ Public Sub CmdBackupLocalSelTable(sFolder As String, xdebug As Boolean)
   Endif
   modHelpVariable.ConnectionMain()
   If modDatabase.$myConn.Opened = True Then
-    modDatabase.BackUpCurrentDB(sFolder)
+    modDatabase.BackUpCurrentDB(modDatabase.$myConn, sFolder)
     Try modDatabase.$myConn.Close()
   Endif
 

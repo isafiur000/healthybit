@@ -229,17 +229,6 @@
       }
       { Panel6 Panel
         MoveScaled(1,14,119,4)
-        { Label18 Label
-          MoveScaled(0,0.5,11,3)
-          Border = Border.Plain
-          Text = ("Ledger A/C")
-        }
-        { cmbledgerac ComboBox
-          MoveScaled(11.375,0.5,32.5,3)
-        }
-        { txtreference TextBox
-          MoveScaled(44.125,0.5,15,3)
-        }
         { Panel3 Panel
           MoveScaled(71,0.5,24,3)
           Border = Border.Plain
@@ -257,16 +246,6 @@
             Text = ("Unit")
           }
         }
-        { btncopycode ToolButton
-          MoveScaled(59,0.5,3,3)
-          ToolTip = ("Copy Reference")
-          Picture = Picture["icon:/small/cdrom"]
-        }
-        { btncopypatno ToolButton
-          MoveScaled(63,0.5,3,3)
-          ToolTip = ("Copy Code/PAN")
-          Picture = Picture["icon:/small/copy"]
-        }
         { Label7 Label
           MoveScaled(96,0.5,6,3)
           Border = Border.Plain
@@ -280,9 +259,26 @@
           ToolTip = ("Copy Code/PAN")
           Picture = Picture["icon:/small/refresh"]
         }
-        { btncrdstate ToolButton
-          MoveScaled(67,0.5,3,3)
-          Picture = Picture["icon:/small/info"]
+        { Label5 Label
+          MoveScaled(0,0.5,8,3)
+          Border = Border.Plain
+          Text = ("Package")
+        }
+        { cmbdisctype ComboBox
+          MoveScaled(8,0.5,29,3)
+          Sorted = True
+        }
+        { Label15 Label
+          MoveScaled(45,0.5,5,3)
+          Border = Border.Plain
+          Text = ("Rate")
+        }
+        { cmbbillmode ComboBox
+          MoveScaled(50,0.5,19,3)
+        }
+        { txtstockno ValueBox
+          MoveScaled(39,0.5,4,3)
+          Visible = False
         }
       }
     }
@@ -341,13 +337,6 @@
       Text = ("New Entry")
       { Panel2 Panel
         MoveScaled(0,0,119,12)
-        { cmbdisctype ComboBox
-          MoveScaled(13,1,22,3)
-          Sorted = True
-        }
-        { cmbbillmode ComboBox
-          MoveScaled(47,1,16,3)
-        }
         { cmbroute ComboBox
           MoveScaled(3,4.625,10,3)
           ToolTip = ("Category of Dispensing Item")
@@ -389,16 +378,6 @@
           MoveScaled(0.5,4.625,2.625,2.5)
           Tag = "Auto"
           ToolTip = ("Click or press Space bar to add the entry")
-        }
-        { Label5 Label
-          MoveScaled(5,1,8,3)
-          Border = Border.Plain
-          Text = ("Package")
-        }
-        { Label15 Label
-          MoveScaled(42,1,5,3)
-          Border = Border.Plain
-          Text = ("Rate")
         }
         { Panel5 Panel
           MoveScaled(57,8,25,3)
@@ -490,9 +469,25 @@
             Text = ("Label")
           }
         }
-        { txtstockno ValueBox
-          MoveScaled(36,1,4,3)
-          Visible = False
+        { cmbledgerac ComboBox
+          MoveScaled(6,1,28,3)
+        }
+        { txtreference TextBox
+          MoveScaled(36,1,15,3)
+        }
+        { btncopycode ToolButton
+          MoveScaled(52,1,3,3)
+          ToolTip = ("Copy Reference")
+          Picture = Picture["icon:/small/cdrom"]
+        }
+        { btncopypatno ToolButton
+          MoveScaled(56,1,3,3)
+          ToolTip = ("Copy Code/PAN")
+          Picture = Picture["icon:/small/copy"]
+        }
+        { btncrdstate ToolButton
+          MoveScaled(60,1,3,3)
+          Picture = Picture["icon:/small/info"]
         }
       }
       { GridView1 GridView

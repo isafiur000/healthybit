@@ -699,7 +699,7 @@ Private Sub UploadItemClaim()
   Dim sColl As Collection
   Dim res As Result
 
-  If txtinvoice.Text And If txttotal.Value > 0 Then
+  If txtinvoice.Text And If txttotal.Value <> 0 Then
     If txtssucode.Text And If txtdiseaseid.Text Then
       xDate = dtinvoice.Value
 

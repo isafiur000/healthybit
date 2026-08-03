@@ -17,6 +17,8 @@ Private $xFinClear As Boolean
 Private $xNHISCode As String
 Private $AdvPayment As String
 Private $DefaultItemType As String
+Private $frmshow As Boolean
+Private $refShow As Boolean
 
 Private $TestArray As String[]
 Private $ServiceArray As String[]
@@ -400,7 +402,6 @@ Public Sub btnshow_Click()
   Dim xledger As String
   Dim xlock As Boolean
   Dim xcredit As Float
-  Dim frmshow As Boolean
   Dim xlstenc As String
   Dim xallow As Boolean
   Dim xtaxsource As String
@@ -436,7 +437,7 @@ Public Sub btnshow_Click()
       modRepository.$RepoDataStatus = False
       txtpatientname.Text = modPatient.GetPatientNameByEnc(Trim(txtencid.Text))
       If txtpatientname.Text Then
-        frmshow = True
+        $frmshow = True
         hPatient.$encid = Trim(txtencid.Text)
         hPatient.$billtype = "CashBilling"
         If ShowBilling() = False Then
@@ -514,7 +515,7 @@ Public Sub btnshow_Click()
               If txtreference.Text Then
                 txtreference.ReadOnly = True
               Else
-                frmshow = False
+                $frmshow = False
               Endif
               If modBasic.$BillCreditAPICheck = "Enable" Then
                 GetCreditLimitUpdate(Trim(txtencid.Text), resx["fldreference"], txtreference.Text, $DiscPackage)
@@ -579,7 +580,7 @@ Public Sub btnshow_Click()
         ' Endif
 
         If $xFinClear = True Then
-          frmshow = False
+          $frmshow = False
         Endif
 
         If xbilltype Then
@@ -647,14 +648,14 @@ Public Sub btnshow_Click()
         ' ' ShowCashCreditMode() ''not required
 
       Else
-        frmshow = False
+        $frmshow = False
         Balloon.Warning(("Encounter ID not found"), btnshow)
         Balloon.Delay = modBasic.$BalloonDelay
       Endif
     Endif
   Endif
 
-  If frmshow = True Then
+  If $frmshow = True Then
     Panel4.Enabled = True
     Panel10.Enabled = True
     GridView1.Enabled = True
@@ -667,7 +668,7 @@ Public Sub btnshow_Click()
     Else
       cmbledgerac.SetFocus
     Endif
-  Else If frmshow = False Then
+  Else If $frmshow = False Then
     Panel4.Enabled = False
     Panel10.Enabled = False
     GridView1.Enabled = False
@@ -5549,18 +5550,29 @@ Private Sub GetHImedicineCappingVar(xSave As Boolean)
         If Not $HiCappingVar.Count Then
           Inc Application.Busy
           hForm = New CimisAPICap($xNHISCode)
-          $HiCappingVar = hForm.GetMedicineLimits()
-          $HiCapAPIView = hForm.GetCapValidationItems()
-          If $HiCappingVar And If $HiCappingVar.Count Then
-            If xSave = True Then
-              modClaim.SaveClaimCappingLim(txtreference.Text, JSON.Encode($HiCappingVar))
+          Dec Application.Busy
+          If hForm.GetCapValidationStatus() = True Then
+            $HiCappingVar = hForm.GetMedicineLimits()
+            $HiCapAPIView = hForm.GetCapValidationItems()
+            If $HiCappingVar And If $HiCappingVar.Count Then
+              If xSave = True Then
+                modClaim.SaveClaimCappingLim(txtreference.Text, JSON.Encode($HiCappingVar))
+              Endif
+            Endif
+          Else
+            Message.Warning("Couldn't obtain capping details", "OK")
+            If modBasic.$BillCappingLock = "Enable" Then
+              txtreference.Text = ""
+              txtreference.Tag = ""
             Endif
           Endif
-          Dec Application.Busy
         Endif
 
         If Not $HiCappingVar.Count Then
-          $HiCappingVar = modClaim.GetClaimCappingLimit(Trim(txtencid.Text), txtreference.Text)
+          If modBasic.$BillCappingLock = "Enable" Then
+          Else
+            $HiCappingVar = modClaim.GetClaimCappingLimit(Trim(txtencid.Text), txtreference.Text)
+          Endif
         Endif
 
       Endif

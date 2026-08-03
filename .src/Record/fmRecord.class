@@ -206,7 +206,7 @@ Public Sub mnubackup_Click()
   If modHelpVariable.$IRDLevel = "Yes" Then
     modHelpVariable.RecordIRDActivity(modDatabase.$myConn, "Database Backup", Me.Name, "BACKUP", "")
   Endif
-  modDatabase.BackUpCurrentDB(Dialog.Path)
+  modDatabase.BackUpCurrentDB(modDatabase.$syConn, Dialog.Path)
 
 End
 

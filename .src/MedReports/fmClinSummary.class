@@ -36,8 +36,8 @@ Public Sub Form_Open()
   cmbgender.Text = "%"
   cmbpackage.List = modNonMedical.FillDiscountCombo()
   cmbpackage.Text = "%"
-  rball.Value = True
-  cmbdepart.List = modGeneral.GetDepartmentAllList("%")
+  rbward.Value = True
+  cmbdepart.List = modGeneral.GetDepartmentAllList("Patient Ward")
   cmbdepart.Add("%")
 
   dtfir.Value = Now()
@@ -95,15 +95,15 @@ Public Sub dtneplast_Click()
 
 End
 
-Public Sub rball_Click()
+Public Sub rbward_Click()
 
-  cmbdepart.List = modGeneral.GetDepartmentAllList("%")
+  cmbdepart.List = modGeneral.GetDepartmentAllList("Patient Ward")
 
 End
 
-Public Sub rbindoor_Click()
+Public Sub rbservice_Click()
 
-  cmbdepart.List = modGeneral.GetDepartmentAllList("Patient Ward")
+  cmbdepart.List = modBasic.$IPDServDepartments
 
 End
 
@@ -155,16 +155,30 @@ Private Function SHowPatGrid(xFldList As String[]) As Result
   Endif
 
   If cmbdepart.Text Then
-    If cmbstatus.Text = "Current" Then
-      xdept = " and fldcurrlocat in(select fldbed from tbldepartmentbed where flddept like &8)"
-    Else If cmbstatus.Text = "Admitted" Then
-      xdept = " and fldadmitward like &9"
-    Else If cmbstatus.Text = "Transition" Then
-      xdept = " and fldcomment in(select fldbed from tbldepartmentbed where flddept like &9)"
-    Else If cmbstatus.Text = "Exits(All)" Then
-      xdept = " and fldcurrlocat in(select fldbed from tbldepartmentbed where flddept like &{13})"
-    Else
-      xdept = " and fldcurrlocat in(select fldbed from tbldepartmentbed where flddept like &9)"
+    If rbward.Value = True Then
+      If cmbstatus.Text = "Current" Then
+        xdept = " and fldcurrlocat in(select fldbed from tbldepartmentbed where flddept like &8)"
+      Else If cmbstatus.Text = "Admitted" Then
+        xdept = " and fldadmitward like &9"
+      Else If cmbstatus.Text = "Transition" Then
+        xdept = " and fldcomment in(select fldbed from tbldepartmentbed where flddept like &9)"
+      Else If cmbstatus.Text = "Exits(All)" Then
+        xdept = " and fldcurrlocat in(select fldbed from tbldepartmentbed where flddept like &{13})"
+      Else
+        xdept = " and fldcurrlocat in(select fldbed from tbldepartmentbed where flddept like &9)"
+      Endif
+    Else If rbservice.Value = True Then
+      If cmbstatus.Text = "Current" Then
+        xdept = " and fldcurrlocat in(select fldbed from tbldepartmentbed where fldservice like &8 or fldaddservice like &8)"
+      Else If cmbstatus.Text = "Admitted" Then
+        xdept = " and fldadmitward in (select flddept from tbldepartmentbed where fldservice like &9 or fldaddservice like &9)"
+      Else If cmbstatus.Text = "Transition" Then
+        xdept = " and fldcomment in(select fldbed from tbldepartmentbed where fldservice like &9 or fldaddservice like &9)"
+      Else If cmbstatus.Text = "Exits(All)" Then
+        xdept = " and fldcurrlocat in(select fldbed from tbldepartmentbed where fldservice like &{13} or fldaddservice like &{13})"
+      Else
+        xdept = " and fldcurrlocat in(select fldbed from tbldepartmentbed where fldservice like &9 or fldaddservice like &9)"
+      Endif
     Endif
   Else
     xdept = ""

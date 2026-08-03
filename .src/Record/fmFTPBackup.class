@@ -14,6 +14,7 @@ Public Sub Form_Open()
 
   cmbcompresslocal.List = ["Enabled", "None"]
   cmblocalenable.List = ["Yes", "No"]
+  cmbdumplocal.List = ["File Per Table", "File Per DB"]
 
 End
 
@@ -127,6 +128,7 @@ End
 Private Sub SHowLocalvalue()
 
   ListBox2.List = modGlobalSetting.ShowTableSettingDB(cmbcomp.Text, "LocalBackup")
+  cmbdumplocal.Text = modGlobalSetting.ShowSettingFromDBAny("LocalBackup/DumpFile", cmbcomp.Text)
   cmbcompresslocal.Text = modGlobalSetting.ShowSettingFromDBAny("LocalBackup/Compression", cmbcomp.Text)
   txtpassword.Text = modGlobalSetting.ShowSettingFromDBAny("LocalBackup/Password", cmbcomp.Text)
   cmblocalenable.Text = modGlobalSetting.ShowSettingFromDBAny("LocalBackup/Enable", cmbcomp.Text)
@@ -177,6 +179,7 @@ End
 
 Private Sub SaveSettingLocal()
 
+  modGlobalSetting.SaveSettingToDB("LocalBackup/DumpFile", cmbdumplocal.Text, cmbcomp.Text)
   modGlobalSetting.SaveSettingToDB("LocalBackup/Compression", cmbcompresslocal.Text, cmbcomp.Text)
   modGlobalSetting.SaveSettingToDB("LocalBackup/Password", txtpassword.Text, cmbcomp.Text)
   modGlobalSetting.SaveSettingToDB("LocalBackup/Enable", cmblocalenable.Text, cmbcomp.Text)

@@ -16,6 +16,8 @@ Private $DiscPackage As String
 Private $PatientNum As String
 Private $xNHISCode As String
 Private $xFinClear As Boolean
+Private $frmshow As Boolean
+Private $refShow As Boolean
 
 Private $MSurgicalLst As String[]
 Private $ExtraItemLst As String[]
@@ -407,7 +409,6 @@ Public Sub BasicInfoPatient()
   Dim xbilltype As String
   Dim resx As Result
   Dim xlock As Boolean
-  Dim frmshow As Boolean
   Dim xallow As Boolean
 
   txtencid.Text = hPatient.$PatientEncounter
@@ -416,7 +417,6 @@ Public Sub BasicInfoPatient()
   Endif
 
   If txtencid.Text Then
-    frmshow = True
     modRepository.$RepoDataStatus = False
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
     $sTatus = modPatient.CurrentAdmissionStatus(Trim(txtencid.Text))
@@ -442,6 +442,9 @@ Public Sub BasicInfoPatient()
     Else
       cmbdisctype.Enabled = False
     Endif
+
+    $frmshow = True
+    $refShow = True
     xlock = False
     resx = modDatabase.$myConn.Exec("select fldmode,fldbillingmode,fldacledger,fldbilltype,fldreference,fldlimit,fldlockstate from tbldiscount where fldtype=&1", $DiscPackage)
     If resx.Available Then
@@ -484,7 +487,7 @@ Public Sub BasicInfoPatient()
           If txtreference.Text Then
             txtreference.ReadOnly = True
           Else
-            frmshow = False
+            $refShow = False
           Endif
         Endif
       Endif
@@ -537,19 +540,9 @@ Public Sub BasicInfoPatient()
         xbilltype = modNonMedical.GetDefaultACBillType(cmbledgerac.Text)
       Endif
     Endif
-    ' If modNonMedical.GetFixedReference(Trim(txtencid.Text)) = "Claim Code" Then
-    '   btnlastclaim.Enabled = True
-    ' Endif
-    ' xledger = modNonMedical.GetFixedLedgerAC(Trim(txtencid.Text))
-    ' If xledger Then
-    '   cmbledgerac.Text = xledger
-    ' Endif
-    ' If cmbledgerac.Text Then
-    '   xbilltype = modNonMedical.GetDefaultACBillType(cmbledgerac.Text)
-    ' Endif
 
     If $xFinClear = True Then
-      frmshow = False
+      $frmshow = False
     Endif
 
     If xbilltype Then
@@ -609,15 +602,27 @@ Public Sub BasicInfoPatient()
     ' ' ShowCashCreditMode() ''not required
   Endif
 
-  If frmshow = True Then
-    TabPanel1.Enabled = True
-    Panel4.Enabled = True
-    If cmbledgerac.Text Then
-      cmbroute.SetFocus
-    Else
-      cmbledgerac.SetFocus
+  SetEntryForm()
+
+End
+
+Private Sub SetEntryForm()
+
+  If $frmshow = True Then
+    If $refShow = True Then
+      TabPanel1.Enabled = True
+      Panel4.Enabled = True
+      If cmbledgerac.Text Then
+        cmbroute.SetFocus
+      Else
+        cmbledgerac.SetFocus
+      Endif
+    Else If $refShow = False Then
+      TabPanel1.Enabled = False
+      Panel4.Enabled = False
     Endif
-  Else If frmshow = False Then
+
+  Else If $frmshow = False Then
     TabPanel1.Enabled = False
     Panel4.Enabled = False
   Endif
@@ -638,6 +643,8 @@ Private Sub LoadDiscCreditVal()
     BlankDosingBox()
     txtreference.Text = ""
     txtreference.Tag = ""
+
+    $refShow = True
     xlock = False
     resx = modDatabase.$myConn.Exec("select fldmode,fldbillingmode,fldacledger,fldbilltype,fldreference,fldlimit,fldlockstate from tbldiscount where fldtype=&1", cmbdisctype.Text)
     If resx.Available Then
@@ -679,6 +686,8 @@ Private Sub LoadDiscCreditVal()
           Endif
           If txtreference.Text Then
             txtreference.ReadOnly = True
+          Else
+            $refShow = False
           Endif
         Endif
       Endif
@@ -788,8 +797,11 @@ End
 
 Public Sub cmbdisctype_Click()
 
-  IniateCategoryPharmArray()
-  LoadDiscCreditVal()
+  If $frmshow = True Then
+    IniateCategoryPharmArray()
+    LoadDiscCreditVal()
+    SetEntryForm()
+  Endif
 
 End
 
@@ -3819,18 +3831,29 @@ Private Sub GetHImedicineCappingVar(xSave As Boolean)
         If Not $HiCappingVar.Count Then
           Inc Application.Busy
           hForm = New CimisAPICap($xNHISCode)
-          $HiCappingVar = hForm.GetMedicineLimits()
-          $HiCapAPIView = hForm.GetCapValidationItems()
-          If $HiCappingVar And If $HiCappingVar.Count Then
-            If xSave = True Then
-              modClaim.SaveClaimCappingLim(txtreference.Text, JSON.Encode($HiCappingVar))
+          Dec Application.Busy
+          If hForm.GetCapValidationStatus() = True Then
+            $HiCappingVar = hForm.GetMedicineLimits()
+            $HiCapAPIView = hForm.GetCapValidationItems()
+            If $HiCappingVar And If $HiCappingVar.Count Then
+              If xSave = True Then
+                modClaim.SaveClaimCappingLim(txtreference.Text, JSON.Encode($HiCappingVar))
+              Endif
+            Endif
+          Else
+            Message.Warning("Couldn't obtain capping details", "OK")
+            If modBasic.$BillCappingLock = "Enable" Then
+              txtreference.Text = ""
+              txtreference.Tag = ""
             Endif
           Endif
-          Dec Application.Busy
         Endif
 
         If Not $HiCappingVar.Count Then
-          $HiCappingVar = modClaim.GetClaimCappingLimit(Trim(txtencid.Text), txtreference.Text)
+          If modBasic.$BillCappingLock = "Enable" Then
+          Else
+            $HiCappingVar = modClaim.GetClaimCappingLimit(Trim(txtencid.Text), txtreference.Text)
+          Endif
         Endif
 
       Endif

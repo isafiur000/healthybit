@@ -843,6 +843,64 @@ Public Sub mnuenchart_Click()
   If TabStrip1.Index = 0 Then
     UnivariateGridView()
   Else If TabStrip1.Index = 3 Then
+    UnivariateDataView()
+  Endif
+
+End
+
+Private Sub UnivariateDataView()
+
+  Dim xx As String
+  Dim xField As String
+  Dim Column As Integer
+  Dim res As Result
+  Dim xval As Variant
+  Dim hFile As CUnivariate
+  Dim xFldList As String[]
+  Dim sOrder As String[]
+
+  Dim hUniv As FmAnalyzeSett
+
+  hUniv = New FmAnalyzeSett("Univariate", modGridView.GetGridViewColumns(GridView2))
+  hUniv.ShowModal
+
+  xFldList = GetDataViewColumns()
+  If MMain.$IsGUIApp = True Then
+    $ProgressBar1 = modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory)
+    $ProgressBar1.Visible = True
+    $ProgressBar1.Value = 0
+  Endif
+  Inc Application.Busy
+  hFile = New CUnivariate
+
+  Column = modCustPatient.GetUnivariateColumn(0)
+  xField = xFldList[Column]
+  res = ExecuteQuery([xField], "GROUP BY")
+
+  If res.Available Then
+    For Each res
+      xval = GetDataViewValue(Column, res[xField])
+      If xval Then
+        hFile.Add(xval)
+      Endif
+
+      If MMain.$IsGUIApp = True Then
+        $ProgressBar1.Value = (res.Index + 1) / res.Count
+        Wait
+      Endif
+    Next
+  Endif
+  Dec Application.Busy
+  If MMain.$IsGUIApp = True Then
+    $ProgressBar1.Visible = False
+  Endif
+
+  If modSettings.ShowSettingFromFIle("UnivariateAnalysis/DataType") = "Ordinal" Then
+    sOrder = ListOrder("Select Order", hFile.DistinctValues())
+  Endif
+  xx = modPSPP.GetEncChartGridNew(hFile.GetSPSSFile(), sOrder)
+  If xx Then
+    modControlSub.OpenBrowser(xx)
   Endif
 
 End
@@ -909,6 +967,76 @@ Public Sub mnucrosstab_Click()
   If TabStrip1.Index = 0 Then
     BivariateGridView()
   Else If TabStrip1.Index = 3 Then
+    BivariateDataView()
+  Endif
+
+End
+
+Private Sub BivariateDataView()
+
+  Dim xx As String
+  Dim Row As Integer
+  Dim Column As Integer
+  Dim xFieRow As String
+  Dim xFieColm As String
+  Dim res As Result
+  Dim xval As Variant
+  Dim yval As Variant
+
+  Dim hFile As CBivariate
+  Dim xFldList As String[]
+  Dim sOrder As String[]
+  Dim hBivar As FmAnalyzeSett
+  Dim hPython As FmPythonTerminal
+
+  hBivar = New FmAnalyzeSett("Bivariate", modGridView.GetGridViewColumns(GridView2))
+  hBivar.ShowModal
+
+  xFldList = GetDataViewColumns()
+  If MMain.$IsGUIApp = True Then
+    $ProgressBar1 = modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory)
+    $ProgressBar1.Visible = True
+    $ProgressBar1.Value = 0
+  Endif
+
+  Inc Application.Busy
+  hFile = New CBivariate
+  Row = modCustPatient.GetCrossVarRow(0)
+  xFieRow = xFldList[Row]
+  Column = modCustPatient.GetCrossVarColumn(0)
+  xFieColm = xFldList[Column]
+  res = ExecuteQuery([xFieRow, xFieColm], "GROUP BY")
+
+  If res.Available Then
+    For Each res
+      xval = GetDataViewValue(Row, res[xFieRow])
+      yval = GetDataViewValue(Column, res[xFieColm])
+      If xval And If yval Then
+        hFile.Add([xval, yval])
+      Endif
+
+      If MMain.$IsGUIApp = True Then
+        $ProgressBar1.Value = (res.Index + 1) / res.Count
+        Wait
+      Endif
+    Next
+  Endif
+  Dec Application.Busy
+  If MMain.$IsGUIApp = True Then
+    $ProgressBar1.Visible = False
+  Endif
+
+  If modBasic.$DataAnalysis = "ML" Then
+    hPython = New FmPythonTerminal("Bivariate", [GridView2.Columns[Row].Text, GridView2.Columns[Column].Text], hFile.GetSPSSFile())
+    modWorkSpace.Add(hPython)
+  Else
+    If modCustPatient.$CrossOutcomeType = "Ordinal" Then
+      sOrder = ListOrder("Select Order", hFile.DistinctValues())
+    Endif
+    xx = modPSPP.GetCrossTabStatNew(hFile.GetSPSSFile(), hFile.GetGroups(), sOrder)
+    If xx Then
+      modControlSub.OpenBrowser(xx)
+    Endif
   Endif
 
 End
@@ -987,6 +1115,137 @@ Public Sub mnuregression_Click()
   If TabStrip1.Index = 0 Then
     RegressionGridView()
   Else If TabStrip1.Index = 3 Then
+    RegressionDataView()
+  Endif
+
+End
+
+Private Sub RegressionDataView()
+
+  Dim xx As String
+  Dim res As Result
+  Dim xFieldList As String[]
+
+  Dim DepCol As Integer
+  Dim Indep1Col As Integer
+  Dim Indep2Col As Integer
+  Dim Indep3Col As Integer
+  Dim Indep4Col As Integer
+  Dim Indep5Col As Integer
+
+  Dim xDepField As String
+  Dim xIndep1Field As String
+  Dim xIndep2Field As String
+  Dim xIndep3Field As String
+  Dim xIndep4Field As String
+  Dim xIndep5Field As String
+
+  Dim Depvalue As Variant
+  Dim Indep1Val As Variant
+  Dim Indep2Val As Variant
+  Dim Indep3Val As Variant
+  Dim Indep4Val As Variant
+  Dim Indep5Val As Variant
+
+  Dim DepData As Variant[]
+  Dim Indep1Data As Variant[]
+  Dim Indep2Data As Variant[]
+  Dim Indep3Data As Variant[]
+  Dim Indep4Data As Variant[]
+  Dim Indep5Data As Variant[]
+
+  Dim xFldList As String[]
+  Dim hUniv As FmAnalyzeSett
+
+  hUniv = New FmAnalyzeSett("Regression", modGridView.GetGridViewColumns(GridView2))
+  hUniv.ShowModal
+
+  xFldList = GetDataViewColumns()
+  Inc Application.Busy
+  xFieldList = New String[]
+  DepData = New Variant[]
+  Indep1Data = New Variant[]
+  Indep2Data = New Variant[]
+  Indep3Data = New Variant[]
+  Indep4Data = New Variant[]
+  Indep5Data = New Variant[]
+
+  DepCol = modCustPatient.GetRegressionDepVal(0)
+  xDepField = xFldList[DepCol]
+  xFieldList.Add(xDepField)
+
+  If modCustPatient.$RegVar1UseGridVal = "Yes" Or If modCustPatient.$RegVar1Variable Or If modCustPatient.$RegVar1SQLText Then
+    Indep1Col = modCustPatient.GetRegressionVar1Val(0)
+    xIndep1Field = xFldList[Indep1Col]
+    xFieldList.Add(xIndep1Field)
+  Endif
+  If modCustPatient.$RegVar2UseGridVal = "Yes" Or If modCustPatient.$RegVar2Variable Or If modCustPatient.$RegVar2SQLText Then
+    Indep2Col = modCustPatient.GetRegressionVar2Val(0)
+    xIndep2Field = xFldList[Indep2Col]
+    xFieldList.Add(xIndep2Field)
+  Endif
+  If modCustPatient.$RegVar3UseGridVal = "Yes" Or If modCustPatient.$RegVar3Variable Or If modCustPatient.$RegVar3SQLText Then
+    Indep3Col = modCustPatient.GetRegressionVar3Val(0)
+    xIndep3Field = xFldList[Indep3Col]
+    xFieldList.Add(xIndep3Field)
+  Endif
+  If modCustPatient.$RegVar4UseGridVal = "Yes" Or If modCustPatient.$RegVar4Variable Or If modCustPatient.$RegVar4SQLText Then
+    Indep4Col = modCustPatient.GetRegressionVar4Val(0)
+    xIndep4Field = xFldList[Indep4Col]
+    xFieldList.Add(xIndep4Field)
+  Endif
+  If modCustPatient.$RegVar5UseGridVal = "Yes" Or If modCustPatient.$RegVar5Variable Or If modCustPatient.$RegVar5SQLText Then
+    Indep5Col = modCustPatient.GetRegressionVar5Val(0)
+    xIndep5Field = xFldList[Indep5Col]
+    xFieldList.Add(xIndep5Field)
+  Endif
+
+  res = ExecuteQuery(xFieldList, "GROUP BY")
+
+  If res.Available Then
+    For Each res
+      Depvalue = GetDataViewValue(DepCol, res[xDepField])
+      If xIndep1Field Then
+        Indep1Val = GetDataViewValue(Indep1Col, res[xIndep1Field])
+      Else
+        Indep1Val = "__"
+      Endif
+      If xIndep2Field Then
+        Indep2Val = GetDataViewValue(Indep2Col, res[xIndep2Field])
+      Else
+        Indep2Val = "__"
+      Endif
+      If xIndep3Field Then
+        Indep3Val = GetDataViewValue(Indep3Col, res[xIndep3Field])
+      Else
+        Indep3Val = "__"
+      Endif
+      If xIndep4Field Then
+        Indep4Val = GetDataViewValue(Indep4Col, res[xIndep4Field])
+      Else
+        Indep4Val = "__"
+      Endif
+      If xIndep5Field Then
+        Indep5Val = GetDataViewValue(Indep5Col, res[xIndep5Field])
+      Else
+        Indep5Val = "__"
+      Endif
+
+      If Depvalue And If Indep1Val And If Indep2Val And If Indep3Val And If Indep4Val And If Indep5Val Then
+        modCustPatient.AddFormatRegressionDepToList(DepData, Depvalue)
+        modCustPatient.AddFormatRegressionVar1ToList(Indep1Data, Indep1Val)
+        modCustPatient.AddFormatRegressionVar2ToList(Indep2Data, Indep2Val)
+        modCustPatient.AddFormatRegressionVar3ToList(Indep3Data, Indep3Val)
+        modCustPatient.AddFormatRegressionVar4ToList(Indep4Data, Indep4Val)
+        modCustPatient.AddFormatRegressionVar5ToList(Indep5Data, Indep5Val)
+      Endif
+    Next
+  Endif
+  Dec Application.Busy
+
+  xx = modPSPP.RegressionChartGridNew(DepData, Indep1Data, Indep2Data, Indep3Data, Indep4Data, Indep5Data)
+  If xx Then
+    modControlSub.OpenBrowser(xx)
   Endif
 
 End
@@ -1126,6 +1385,68 @@ Public Sub mnucrotab_Click()
   If TabStrip1.Index = 0 Then
     CrossTabGridView()
   Else If TabStrip1.Index = 3 Then
+    CrossTabDataView()
+  Endif
+
+End
+
+Private Sub CrossTabDataView()
+
+  Dim Row As Integer
+  Dim Column As Integer
+  Dim xFieRow As String
+  Dim xFieColm As String
+  Dim res As Result
+  Dim xval As Variant
+  Dim yval As Variant
+
+  Dim hForm As FmGridCrossTab
+  Dim xForm As CCrossTab
+  Dim xFldList As String[]
+  Dim hGdChr As FmAnalyzeSett
+
+  hGdChr = New FmAnalyzeSett("GridCrossTab", modGridView.GetGridViewColumns(GridView2))
+  hGdChr.ShowModal
+
+  xFldList = GetDataViewColumns()
+  If MMain.$IsGUIApp = True Then
+    $ProgressBar1 = modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory)
+    $ProgressBar1.Visible = True
+    $ProgressBar1.Value = 0
+  Endif
+
+  If modCustPatient.$TabRowColumn And If modCustPatient.$TabFieldColumn Then
+    xForm = New CCrossTab
+    Inc Application.Busy
+    Row = CInt(modCustPatient.$TabRowColumn) - 1
+    xFieRow = xFldList[Row]
+    Column = CInt(modCustPatient.$TabFieldColumn) - 1
+    xFieColm = xFldList[Column]
+    res = ExecuteQuery([xFieRow, xFieColm], "GROUP BY")
+
+    If res.Available Then
+      For Each res
+        xval = GetDataViewValue(Row, res[xFieRow])
+        yval = GetDataViewValue(Column, res[xFieColm])
+        If xval And If yval Then
+          xForm.Add([xval, yval])
+        Endif
+
+        If MMain.$IsGUIApp = True Then
+          $ProgressBar1.Value = (res.Index + 1) / res.Count
+          Wait
+        Endif
+      Next
+    Endif
+    Dec Application.Busy
+
+    hForm = New FmGridCrossTab(GridView2.Columns[Row].Text, xForm.GetSPSSFile())
+    hForm.ShowModal
+    modExternal.$ExecValueColl.Clear()
+  Endif
+
+  If MMain.$IsGUIApp = True Then
+    $ProgressBar1.Visible = False
   Endif
 
 End
@@ -1196,6 +1517,83 @@ Public Sub mnugridsummary_Click()
   If TabStrip1.Index = 0 Then
     SummaryGridView()
   Else If TabStrip1.Index = 3 Then
+    SummaryDataView()
+  Endif
+
+End
+
+Private Sub SummaryDataView()
+
+  Dim xx As String
+  Dim ChapCol As String
+  Dim GropCol As String
+  Dim xChapList As String[]
+  Dim xGropList As String[]
+
+  Dim res As Result
+  Dim valCol As String
+  Dim xFieldList As String[]
+
+  Dim xFinList As Variant[]
+  Dim xrowVar As Variant[]
+  Dim xchapval As String
+  Dim xgroup As String
+  Dim xPath As String
+  Dim xFldList As String[]
+
+  Dim hGdSum As FmAnalyzeSett
+
+  hGdSum = New FmAnalyzeSett("GridSummary", modGridView.GetGridViewColumns(GridView2))
+  hGdSum.ShowModal
+
+  xFldList = GetDataViewColumns()
+  Inc Application.Busy
+  xFieldList = New String[]
+  If modCustPatient.$SumChapterColumn Then
+    ChapCol = xFldList[modCustPatient.$SumChapterColumn - 1]
+    xFieldList.Add(ChapCol)
+  Endif
+  GropCol = xFldList[modCustPatient.$SumGroupColumn - 1]
+  valCol = xFldList[modCustPatient.$SumValueColumn - 1]
+  xFieldList.Add(GropCol)
+  xFieldList.Add(valCol)
+
+  xChapList = New String[]
+  xGropList = New String[]
+  xFinList = New Variant[]
+  res = ExecuteQuery(xFieldList, "GROUP BY")
+  If res.Available Then
+    For Each res
+      xrowVar = New Variant[]
+      If modCustPatient.$SumChapterColumn Then
+        xchapval = GetDataViewValue(modCustPatient.$SumChapterColumn - 1, res[ChapCol])
+        xrowVar.Add(xchapval)
+        xChapList.Add(xchapval)
+      Endif
+      xgroup = GetDataViewValue(modCustPatient.$SumGroupColumn - 1, res[GropCol])
+      xrowVar.Add(xgroup)
+      xGropList.Add(xgroup)
+
+      xrowVar.Add(GetDataViewValue(modCustPatient.$SumValueColumn - 1, res[valCol]))
+      xFinList.Add(xrowVar)
+    Next
+  Endif
+  Dec Application.Busy
+
+  xx = "Date: " & modReportVar.GetDateTimeReport(dtfir.Value, gb.MediumDate) & " To " & modReportVar.GetDateTimeReport(dtlast.Value, gb.MediumDate)
+  If modCustPatient.$SumGroupColumn And If modCustPatient.$SumValueColumn Then
+    If modCustPatient.$SumChapterColumn Then
+      If modCustPatient.$SummaryType = "Summation(Table)" Then
+        xPath = modCHTMLReport.SummaryGridChapterTableReport("Report Summary", xx, modString.GetDistinctStringArray(xChapList), modString.GetDistinctStringArray(xGropList), xFinList)
+      Else If modCustPatient.$SummaryType = "Count(Table)" Then
+        xPath = modCHTMLReport.SummaryGridChapCountTableReport("Report Summary", xx, modString.GetDistinctStringArray(xChapList), modString.GetDistinctStringArray(xGropList), xFinList)
+      Else
+        xPath = modCHTMLReport.SummaryGridChapterReport("Report Summary", xx, modString.GetDistinctStringArray(xChapList), modString.GetDistinctStringArray(xGropList), xFinList)
+      Endif
+    Else
+      xPath = modCHTMLReport.SummaryGridReport("Report Summary", xx, modString.GetDistinctStringArray(xGropList), xFinList)
+    Endif
+    modControlSub.DisplayReportExport(xPath)
   Endif
 
 End
@@ -1907,6 +2305,58 @@ Public Sub mnucountuni_Click()
   If TabStrip1.Index = 0 Then
     ColCountGridView()
   Else If TabStrip1.Index = 3 Then
+    ColCountDataView()
+  Endif
+
+End
+
+Private Sub ColCountDataView()
+
+  Dim Column As Integer
+  Dim xFieColm As String
+  Dim res As Result
+  Dim yval As Variant
+
+  Dim xColl As Collection
+  Dim xFldList As String[]
+  Dim xPath As String
+
+  Column = ListIndex("Column Index", modGridView.GetGridViewColumns(GridView2))
+  If Column + 1 > 0 Then
+    xFldList = GetDataViewColumns()
+    If MMain.$IsGUIApp = True Then
+      $ProgressBar1 = modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory)
+      $ProgressBar1.Visible = True
+      $ProgressBar1.Value = 0
+    Endif
+
+    Inc Application.Busy
+    xFieColm = xFldList[Column]
+    res = ExecuteQuery([xFieColm], "GROUP BY")
+    xColl = New Collection
+    If res.Available Then
+      For Each res
+        yval = GetDataViewValue(Column, res[xFieColm])
+        If yval Then
+          If xColl.Exist(CStr(yval)) Then
+            xColl[CStr(yval)] = xColl[CStr(yval)] + 1
+          Else
+            xColl[CStr(yval)] = 1
+          Endif
+        Endif
+
+        If MMain.$IsGUIApp = True Then
+          $ProgressBar1.Value = (res.Index + 1) / res.Count
+          Wait
+        Endif
+      Next
+    Endif
+    If xColl.Count Then
+      xPath = modCHTMLReport.CreateHTMLReportFromCollection(["Variable", "Count"], xColl, GridView2.Columns[Column].Text, modReportVar.GetDateTimeReport(Now(), gb.GeneralDate))
+    Endif
+    Dec Application.Busy
+
+    modControlSub.OpenHTMLPreview("", xPath, "ReportSize")
   Endif
 
 End
