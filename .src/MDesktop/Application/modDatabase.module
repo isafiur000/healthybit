@@ -1,9 +1,12 @@
 ' Gambas module file
 
-Public $myConn As Connection
+Public $myConn As Connection  ''main server
 Public $syConn As Connection
 Public $sreadConn As Connection
-Public $ssyncConn As Connection
+Public $ssyncConn As Connection  ''for slave to use as read only
+Public $pastConn As Connection  ''for past database
+
+''sqlite3
 Public $calConn As Connection
 Public $icdConn As Connection
 

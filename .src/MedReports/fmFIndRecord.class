@@ -649,6 +649,26 @@ Public Sub mnujson_Click()
 
 End
 
+Public Sub mnundjson_Click()
+
+  Dim sFolder As String
+  Dim xfile As String
+
+  If GridView1.Columns.Count > 0 Then
+    If modBasic.$ExpoRepoUser = True Then
+      If Dialog.SelectDirectory() Then Return
+      sFolder = Dialog.Path
+      If sFolder Then
+        Inc Application.Busy
+        xfile = modTextDB.ConvertResultToNDJSON($rData)
+        Copy xfile To sFolder &/ cmbtable.Text & ".ndjson"
+        Dec Application.Busy
+      Endif
+    Endif
+  Endif
+
+End
+
 Public Sub txtselect_KeyRelease()
 
   If Key.Code = Key.Down Then
@@ -1022,5 +1042,60 @@ Public Sub mnuexpocolumn_Click()
 
   hForm = New FmCustColumnSet(Me.Tag)
   hForm.ShowModal
+
+End
+
+Public Sub mnumultivariate_Click()
+
+  Dim CForm As CMultivariate
+  Dim sArry As String[]
+  Dim Row As Integer
+  Dim Column As Integer
+  Dim sPath As String
+  Dim xHeader As String[]
+  Dim hPython As FmPythonTerminal
+
+  If MMain.$IsGUIApp = True Then
+    $ProgressBar1 = modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory)
+    $ProgressBar1.Visible = True
+    $ProgressBar1.Value = 0
+  Endif
+
+  If GridView1.Rows.Count Then
+    xHeader = New String[]
+    For Column = 0 To GridView1.Columns.Count - 1
+      xHeader.Add(GridView1.Columns[Column].Text)
+    Next
+
+    Inc Application.Busy
+    CForm = New CMultivariate(modBasic.$StatDataFormat)
+    CForm.WriteHeaders(xHeader)
+
+    For Row = 0 To GridView1.Rows.Count - 1
+      sArry = New String[]
+      For Column = 0 To xHeader.Count - 1
+        If Column < $SSQLFields.Count Then
+          sArry.Add(GridView1[Row, Column].Text)
+        Else
+          sArry.Add(GridView1[Row, Column].RichText)
+        Endif
+      Next
+      CForm.Add(sArry)
+      If MMain.$IsGUIApp = True Then
+        $ProgressBar1.Value = (Row + 1) / GridView1.Rows.Count
+        Wait
+      Endif
+    Next
+    sPath = CForm.GetCSVFile()
+    Dec Application.Busy
+    If MMain.$IsGUIApp = True Then
+      $ProgressBar1.Visible = False
+    Endif
+
+    If Exist(sPath) Then
+      hPython = New FmPythonTerminal("Multivariate", xHeader, sPath)
+      modWorkSpace.Add(hPython)
+    Endif
+  Endif
 
 End

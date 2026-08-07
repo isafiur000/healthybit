@@ -8,6 +8,7 @@ Private aObj1 As New Object[50]
 Private aObHBox As New Object[50]
 Private aObVal As New Object[50]
 Private aObBox As New Object[50]
+Private aObBtn As New Object[50]
 Private aObButt As New Object[50]
 
 Private bObHBox As New Object[50]
@@ -21,6 +22,7 @@ Private $encid As String
 Private $sTitle As String
 Private $xParamVar As Variant[]
 Private $xalllow As Boolean
+Private $hasInfusion As Boolean
 
 Private $unt As String
 Private AppFactor As Float
@@ -51,6 +53,11 @@ Public Sub Form_Open()
   $input = modPatient.EnableClinicForm($status)
   $UserRestrict = modBasic.$ClinicDisableCompo
 
+  If modBasic.$ClinNotesWithChart = "Enable" Then
+    pnlcustnotes.Visible = True
+  Else
+    pnlcustnotes.Visible = False
+  Endif
   modBasic.LoadClinicalChartSetting()
   AppFactor = modBasic.$AppScaleFactor
   GetVariables()
@@ -78,6 +85,7 @@ Private Sub GetVariables()
   Dim aColl As Collection
   Dim xList As String
 
+  $hasInfusion = False
   $xParamVar = New Variant[]
   If $sTitle = "Essential Examinations" Then
     For Each aColl In modTableCache.$ExaminationCompVar
@@ -104,6 +112,10 @@ Private Sub GetVariables()
     res = modDatabase.$myConn.Exec("select fldcategory,fldexam,fldsubexam,fldtype,fldcomment,fldsysconst,fldoption,fldselection from tbldepartchart where fldtitle=&1 and (fldcomp=&2 or fldcomp=&3) ORDER BY fldexamorder", $sTitle, modBasic.$compID, "%")
     If res.Available Then
       For Each res
+        If res["fldcategory"] = "Intake" And If res["fldexam"] = "Infusion" Then
+          $hasInfusion = True
+        Endif
+
         sColl = New Collection
         sColl.Add(res["fldcategory"], "Category")
         sColl.Add(res["fldexam"], "Examination")
@@ -113,8 +125,20 @@ Private Sub GetVariables()
         sColl.Add(res["fldsysconst"], "Constant")
         sColl.Add(res["fldoption"], "Option")
         If res["fldtype"] = "Qualitative" And If res["fldsysconst"] Then
-          xList = modAllExam.SelectExamOptionList("Exam", res["fldexam"]).join(";")
-          sColl.Add(xList, "OptionValues")
+          If res["fldcategory"] = "Examination" Then
+
+            If res["fldsubexam"] Then
+              If res["fldoption"] = "Clinical Scale" Then
+                xList = modAllExam.GetCLinicalScaleCategoryOptions("Exam", res["fldexam"], res["fldsubexam"]).join(";")
+              Endif
+            Else
+              xList = modAllExam.SelectExamOptionList("Exam", res["fldexam"], res["fldoption"]).join(";")
+            Endif
+            sColl.Add(xList, "OptionValues")
+
+          Else
+            sColl.Add("", "OptionValues")
+          Endif
         Else
           sColl.Add(res["fldselection"], "OptionValues")
         Endif
@@ -172,7 +196,55 @@ Public Sub btnrefresh_Click()
     LoadControls()
   Else If rbtable.Value = True Then
     LoadTablesExam()
+    ShowLastDoctorOrder()
     GetDataEntry()
+    btnoteadd.Enabled = True
+    txtnote.RichText = ""
+    txtimpression.Text = ""
+  Endif
+
+End
+
+Private Function GetDateRange(xfir As Date, colm As Integer) As Date
+
+  Dim dtrange As Date
+
+  If rboneday.Value = True Then
+    dtrange = DateAdd(xfir, gb.Minute, colm * 10)
+  Else If rbtwoday.Value = True Then
+    dtrange = DateAdd(xfir, gb.Hour, colm)
+  Else If rbthreeday.Value = True Then
+    dtrange = DateAdd(xfir, gb.Day, colm)
+  Else If rbweek.Value = True Then
+    dtrange = DateAdd(xfir, gb.Month, colm)
+  Endif
+
+  Return dtrange
+
+End
+
+Private Sub GetInfusionItemList(patNo As String, xStart As Date, xLast As Date)
+
+  Dim res As Result
+  Dim sColl As Collection
+  Dim i As Integer
+
+  For i = 0 To $xParamVar.Count - 1
+    If $xParamVar[i]["Category"] = "Intake" And If $xParamVar[i]["Examination"] = "Infusion" Then
+      $xParamVar.Remove(i)
+    Endif
+  Next
+
+  res = modDatabase.$myConn.Exec("select DISTINCT(tblnurdosing.fldmedicine) as fldmedicine from tblnurdosing inner join tblencounter on tblnurdosing.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblnurdosing.fldsave=&2 and tblnurdosing.fldfromtime<&3 and (tblnurdosing.fldtotime IS NULL or tblnurdosing.fldtotime>&4) and flddoseno in(select fldid from tblpatdosing where fldroute=&5 or fldroute=&6 or fldroute=&7) ORDER BY tblnurdosing.fldtime", patNo, True, xLast, xStart, "fluid", "IIV", "CIV")
+  If res.Available Then
+    For Each res
+      sColl = New Collection
+      sColl.Add("Intake", "Category")
+      sColl.Add("Infusion", "Examination")
+      sColl.Add(modMedConstant.GetDrugFromStockID(res["fldmedicine"]), "Component")
+      sColl.Add(res["fldmedicine"], "Constant")
+      $xParamVar.Add(sColl)
+    Next
   Endif
 
 End
@@ -186,10 +258,10 @@ Private Sub LoadTablesExam()
   Dim i As Integer
   Dim j As Integer
   Dim xdiff As Integer
+  Dim dtrange As Date
 
   xdiff = 0 - spncolumn.Value
   GridView2.Clear()
-  GridView2.Rows.Count = $xParamVar.Count
   If rboneday.Value = True Then
     xfir = modDate.StartSqlTenMinute(DateAdd(Now(), gb.Minute, xdiff * 10))
     xlast = modDate.StartSqlTenMinute(DateAdd(Now(), gb.Minute, 10))
@@ -207,13 +279,18 @@ Private Sub LoadTablesExam()
     xlast = modDate.StartSqlMonth(DateAdd(Now(), gb.Month, 1))
     xcolm = DateDiff(xfir, xlast, gb.Month)
   Endif
+  If $hasInfusion = True Then
+    GetInfusionItemList($PatientNum, xfir, xlast)
+    $hasInfusion = False
+  Endif
+  GridView2.Rows.Count = $xParamVar.Count
   GridView2.Columns.Count = xcolm + 2
 
   With GridView2
     .Rows.Height = modBasic.$AppGridRowHeight
     For j = 0 To GridView2.Columns.Count - 1
       If j = 0 Then
-        .Columns[j].Width = 175 * modBasic.$AppWidthRatio
+        .Columns[j].Width = 200 * modBasic.$AppWidthRatio
         .Columns[j].Text = "Examination"
       Else If j = 1 Then
         If chkcomment.Value = True Then
@@ -225,13 +302,13 @@ Private Sub LoadTablesExam()
       Else
         .Columns[j].Width = 64 * modBasic.$AppWidthRatio
         If rboneday.Value = True Then
-          .Columns[j].Text = modReportVar.GetDateTimeReport(DateAdd(xfir, gb.Minute, j * 10), gb.ShortTime)
+          .Columns[j].Text = modReportVar.GetDateTimeReport(GetDateRange(xfir, j), gb.ShortTime)
         Else If rbtwoday.Value = True Then
-          .Columns[j].Text = modReportVar.GetDateTimeReport(DateAdd(xfir, gb.Hour, j), gb.ShortTime)
+          .Columns[j].Text = modReportVar.GetDateTimeReport(GetDateRange(xfir, j), gb.ShortTime)
         Else If rbthreeday.Value = True Then
-          .Columns[j].Text = modDate.GetDateOnlyInFormatForAll(DateAdd(xfir, gb.Day, j), modBasic.$DateFormat, "DateOnly")
+          .Columns[j].Text = modDate.GetDateOnlyInFormatForAll(GetDateRange(xfir, j), modBasic.$DateFormat, "DateOnly")
         Else If rbweek.Value = True Then
-          .Columns[j].Text = modDate.GetDateOnlyInFormatForAll(DateAdd(xfir, gb.Month, j), modBasic.$DateFormat, "YearMonth")
+          .Columns[j].Text = modDate.GetDateOnlyInFormatForAll(GetDateRange(xfir, j), modBasic.$DateFormat, "YearMonth")
         Endif
       Endif
     Next
@@ -250,35 +327,15 @@ Private Sub LoadTablesExam()
       Else
 
         If $xParamVar[i]["Category"] = "Examination" Then
-          If rboneday.Value = True Then
-            GridView2[i, j].Text = GetExamValueByDate($PatientNum, $xParamVar[i], DateAdd(xfir, gb.Minute, j * 10))
-          Else If rbtwoday.Value = True Then
-            GridView2[i, j].Text = GetExamValueByDate($PatientNum, $xParamVar[i], DateAdd(xfir, gb.Hour, j))
-          Else If rbthreeday.Value = True Then
-            GridView2[i, j].Text = GetExamValueByDate($PatientNum, $xParamVar[i], DateAdd(xfir, gb.Day, j))
-          Else If rbweek.Value = True Then
-            GridView2[i, j].Text = GetExamValueByDate($PatientNum, $xParamVar[i], DateAdd(xfir, gb.Month, j))
-          Endif
+          GridView2[i, j].Text = GetExamValueByDate($PatientNum, $xParamVar[i], GetDateRange(xfir, j))
         Else If $xParamVar[i]["Category"] = "Laboratory" Then
-          If rboneday.Value = True Then
-            GridView2[i, j].Text = GetLabValueByDate($PatientNum, $xParamVar[i], DateAdd(xfir, gb.Minute, j * 10))
-          Else If rbtwoday.Value = True Then
-            GridView2[i, j].Text = GetLabValueByDate($PatientNum, $xParamVar[i], DateAdd(xfir, gb.Hour, j))
-          Else If rbthreeday.Value = True Then
-            GridView2[i, j].Text = GetLabValueByDate($PatientNum, $xParamVar[i], DateAdd(xfir, gb.Day, j))
-          Else If rbweek.Value = True Then
-            GridView2[i, j].Text = GetLabValueByDate($PatientNum, $xParamVar[i], DateAdd(xfir, gb.Month, j))
-          Endif
+          GridView2[i, j].Text = GetLabValueByDate($PatientNum, $xParamVar[i], GetDateRange(xfir, j))
         Else If $xParamVar[i]["Category"] = "Medicines" Then
-          If rboneday.Value = True Then
-            GridView2[i, j].Text = GetMedicineDoseByDate($PatientNum, $xParamVar[i], DateAdd(xfir, gb.Minute, j * 10))
-          Else If rbtwoday.Value = True Then
-            GridView2[i, j].Text = GetMedicineDoseByDate($PatientNum, $xParamVar[i], DateAdd(xfir, gb.Hour, j))
-          Else If rbthreeday.Value = True Then
-            GridView2[i, j].Text = GetMedicineDoseByDate($PatientNum, $xParamVar[i], DateAdd(xfir, gb.Day, j))
-          Else If rbweek.Value = True Then
-            GridView2[i, j].Text = GetMedicineDoseByDate($PatientNum, $xParamVar[i], DateAdd(xfir, gb.Month, j))
-          Endif
+          GridView2[i, j].Text = GetMedicineDoseByDate($PatientNum, $xParamVar[i], GetDateRange(xfir, j))
+        Else If $xParamVar[i]["Category"] = "Intake" Then
+          GridView2[i, j].Text = GetIntakeVolumeByDate($PatientNum, $xParamVar[i], GetDateRange(xfir, j))
+        Else If $xParamVar[i]["Category"] = "Output" Then
+          GridView2[i, j].Text = GetOutputVolByDate($PatientNum, $xParamVar[i], GetDateRange(xfir, j))
         Endif
 
       Endif
@@ -289,6 +346,176 @@ Private Sub LoadTablesExam()
 
 End
 
+Private Function GetFirstDate(xDate As Date) As Date
+
+  Dim xfir As Date
+
+  If rboneday.Value = True Then
+    xfir = modDate.StartSqlTenMinute(xDate)
+  Else If rbtwoday.Value = True Then
+    xfir = modDate.StartSqlHour(xDate)
+  Else If rbthreeday.Value = True Then
+    xfir = modDate.StartSqlDate(xDate)
+  Else If rbweek.Value = True Then
+    xfir = modDate.StartSqlMonth(xDate)
+  Endif
+
+  Return xfir
+
+End
+
+Private Function GetLastDate(xDate As Date) As Date
+
+  Dim xlast As Date
+
+  If rboneday.Value = True Then
+    xlast = modDate.EndSqlTenMinute(xDate)
+  Else If rbtwoday.Value = True Then
+    xlast = modDate.EndSqlHour(xDate)
+  Else If rbthreeday.Value = True Then
+    xlast = modDate.EndSqlDate(xDate)
+  Else If rbweek.Value = True Then
+    xlast = modDate.EndSqlMonth(xDate)
+  Endif
+
+  Return xlast
+
+End
+
+''-------------------------- SUM value -----------------------------
+Private Function GetIntakeVolumeByDate(patNo As String, xColl As Collection, xDate As Date) As String
+
+  Dim xfir As Date
+  Dim xlast As Date
+  Dim xx As String
+
+  xfir = GetFirstDate(xDate)
+  xlast = GetLastDate(xDate)
+
+  If xColl["Examination"] = "Oral/NGT" Then
+    xx = OralIntakeVolByDate(patNo, xfir, xlast)
+  Else If xColl["Examination"] = "Infusion" Then
+    xx = InfusionEstimateVolByDate(patNo, xColl["Constant"], xfir, xlast)
+  Else If xColl["Examination"] = "Injections" Then
+    xx = InjectionIntakeVolByDate(patNo, xfir, xlast)
+  Endif
+
+  Return xx
+
+End
+
+Private Function OralIntakeVolByDate(patNo As String, xfir As Date, xlast As Date) As String
+
+  Dim res As Result
+  Dim xx As String
+
+  res = modDatabase.$myConn.Exec("select SUM(tblexamgeneral.fldreportquanti) as fldvalue from tblexamgeneral inner join tblencounter on tblexamgeneral.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblexamgeneral.fldsave=&2 and tblexamgeneral.fldinput=&3 and tblexamgeneral.fldtime>=&4 and tblexamgeneral.fldtime<=&5 ORDER BY tblexamgeneral.fldtime", patNo, True, "Input Food/Fluid", xfir, xlast)
+  If res.Available Then
+    res.MoveLast
+    xx = res["fldvalue"]
+  Else
+    xx = ""
+  Endif
+
+  Return xx
+
+End
+
+Private Function InjectionIntakeVolByDate(patNo As String, xfir As Date, xlast As Date) As String
+
+End
+
+Private Function InfusionEstimateVolByDate(patNo As String, xMedicine As String, xfir As Date, xlast As Date) As String
+
+  Dim res As Result
+  Dim xvol As Float
+  Dim xx As String
+  Dim xstart As Date
+  Dim xend As Date
+
+  If xfir > Now() And If xlast > Now() Then
+    xx = ""
+  Else
+    xvol = 0
+    res = modDatabase.$myConn.Exec("select tblnurdosing.fldvalue as fldvalue,tblnurdosing.fldfromtime as fldfromtime,tblnurdosing.fldtotime as fldtotime from tblnurdosing inner join tblencounter on tblnurdosing.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblnurdosing.fldsave=&2 and tblnurdosing.fldfromtime<&3 and (tblnurdosing.fldtotime IS NULL or tblnurdosing.fldtotime>&4) and tblnurdosing.fldmedicine=&5 and flddoseno in(select fldid from tblpatdosing where fldroute=&6 or fldroute=&7 or fldroute=&8) ORDER BY tblnurdosing.fldtime", patNo, True, xlast, xfir, xMedicine, "fluid", "IIV", "CIV")
+    If res.Available Then
+      For Each res
+        If res["fldfromtime"] <= xfir Then
+          xstart = xfir
+        Else
+          xstart = res["fldfromtime"]
+        Endif
+
+        If res["fldtotime"] Then
+          If res["fldtotime"] >= xlast Then
+            xend = xlast
+          Else
+            xend = res["fldtotime"]
+          Endif
+        Else
+          xend = xlast
+        Endif
+        If xend > Now() Then
+          xend = Now()
+        Endif
+
+        xvol = xvol + Round(DateDiff(xstart, xend, gb.Minute) * res["fldvalue"] / 60, 0)
+      Next
+      xx = CStr(xvol)
+    Else
+      xx = ""
+    Endif
+  Endif
+
+  Return xx
+
+End
+
+Private Function GetOutputVolByDate(patNo As String, xColl As Collection, xDate As Date) As String
+
+  Dim res As Result
+  Dim xx As String
+  Dim xfir As Date
+  Dim xlast As Date
+
+  xfir = GetFirstDate(xDate)
+  xlast = GetLastDate(xDate)
+
+  res = modDatabase.$myConn.Exec("select SUM(tblexamgeneral.fldreportquanti) as fldvalue from tblexamgeneral inner join tblencounter on tblexamgeneral.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblexamgeneral.flditem=&2 and tblexamgeneral.fldinput=&3 and tblexamgeneral.fldtime>=&4 and tblexamgeneral.fldtime<=&5 ORDER BY tblexamgeneral.fldtime", patNo, xColl["Examination"], "Output Fluid", xfir, xlast)
+  If res.Available Then
+    res.MoveLast
+    xx = res["fldvalue"]
+  Else
+    xx = ""
+  Endif
+
+  Return xx
+
+End
+
+Private Function GetMedicineDoseByDate(patNo As String, xColl As Collection, xDate As Date) As String
+
+  Dim res As Result
+  Dim xx As String
+  Dim xfir As Date
+  Dim xlast As Date
+
+  xfir = GetFirstDate(xDate)
+  xlast = GetLastDate(xDate)
+
+  res = modDatabase.$myConn.Exec("select SUM(tblnurdosing.fldvalue) as fldvalue,tblnurdosing.fldmedicine as fldmedicine from tblnurdosing inner join tblencounter on tblnurdosing.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblnurdosing.fldmedicine in(select fldbrandid from tblmedbrand where flddrug=&2) and tblnurdosing.fldtime>=&3 and tblnurdosing.fldtime<=&4 ORDER BY tblnurdosing.fldtime", patNo, xColl["Examination"], xfir, xlast)
+  If res.Available Then
+    res.MoveLast
+    xx = res["fldvalue"] * modMedConstant.GetDrugInitialStrength(res["fldmedicine"])
+  Else
+    xx = ""
+  Endif
+
+  Return xx
+
+End
+
+''--------------------- Last Values ----------------------------------
 Private Function GetLabValueByDate(patNo As String, xColl As Collection, xDate As Date) As String
 
   Dim res As Result
@@ -296,19 +523,8 @@ Private Function GetLabValueByDate(patNo As String, xColl As Collection, xDate A
   Dim xfir As Date
   Dim xlast As Date
 
-  If rboneday.Value = True Then
-    xfir = modDate.StartSqlTenMinute(xDate)
-    xlast = modDate.EndSqlTenMinute(xDate)
-  Else If rbtwoday.Value = True Then
-    xfir = modDate.StartSqlHour(xDate)
-    xlast = modDate.EndSqlHour(xDate)
-  Else If rbthreeday.Value = True Then
-    xfir = modDate.StartSqlDate(xDate)
-    xlast = modDate.EndSqlDate(xDate)
-  Else If rbweek.Value = True Then
-    xfir = modDate.StartSqlMonth(xDate)
-    xlast = modDate.EndSqlMonth(xDate)
-  Endif
+  xfir = GetFirstDate(xDate)
+  xlast = GetLastDate(xDate)
 
   If xColl["Component"] Then
     res = modDatabase.$myConn.Exec("select tblpatlabsubtest.fldreport as fldreport from (tblpatlabsubtest inner join tblpatlabtest on (tblpatlabtest.fldid=tblpatlabsubtest.fldtestid and tblpatlabtest.fldencounterval=tblpatlabsubtest.fldencounterval)) inner join tblencounter on tblpatlabtest.fldencounterval=tblencounter.fldencounterval  where tblencounter.fldpatientval=&1 and tblpatlabtest.fldsave_report=&2 and tblpatlabtest.fldtestid=&3 and tblpatlabsubtest.fldsubtest=&4 and tblpatlabtest.fldtime_sample>=&5 and tblpatlabtest.fldtime_sample<=&6 ORDER BY tblpatlabtest.fldtime_sample", patNo, True, xColl["Examination"], xColl["Component"], xfir, xlast)         ''
@@ -341,85 +557,47 @@ Private Function GetLabValueByDate(patNo As String, xColl As Collection, xDate A
 
 End
 
-Private Function GetMedicineDoseByDate(patNo As String, xColl As Collection, xDate As Date) As String
-
-  Dim res As Result
-  Dim xx As String
-  Dim xfir As Date
-  Dim xlast As Date
-  Dim aColl As Collection
-
-  If rboneday.Value = True Then
-    xfir = modDate.StartSqlTenMinute(xDate)
-    xlast = modDate.EndSqlTenMinute(xDate)
-  Else If rbtwoday.Value = True Then
-    xfir = modDate.StartSqlHour(xDate)
-    xlast = modDate.EndSqlHour(xDate)
-  Else If rbthreeday.Value = True Then
-    xfir = modDate.StartSqlDate(xDate)
-    xlast = modDate.EndSqlDate(xDate)
-  Else If rbweek.Value = True Then
-    xfir = modDate.StartSqlMonth(xDate)
-    xlast = modDate.EndSqlMonth(xDate)
-  Endif
-
-  res = modDatabase.$myConn.Exec("select tblnurdosing.fldvalue as fldvalue,tblnurdosing.fldmedicine as fldmedicine from tblnurdosing inner join tblencounter on tblnurdosing.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblnurdosing.fldmedicine in(select fldbrandid from tblmedbrand where flddrug=&2) and tblnurdosing.fldtime>=&3 and tblnurdosing.fldtime<=&4 ORDER BY tblnurdosing.fldtime", patNo, xColl["Examination"], xfir, xlast)
-  If res.Available Then
-    res.MoveLast
-    xx = res["fldvalue"] * modMedConstant.GetDrugInitialStrength(res["fldmedicine"])
-  Else
-    xx = ""
-  Endif
-
-  Return xx
-
-End
-
 Private Function GetExamValueByDate(patNo As String, xColl As Collection, xDate As Date) As String
 
   Dim res As Result
+  Dim res1 As Result
   Dim xx As String
   Dim xfir As Date
   Dim xlast As Date
-  Dim aColl As Collection
 
-  If rboneday.Value = True Then
-    xfir = modDate.StartSqlTenMinute(xDate)
-    xlast = modDate.EndSqlTenMinute(xDate)
-  Else If rbtwoday.Value = True Then
-    xfir = modDate.StartSqlHour(xDate)
-    xlast = modDate.EndSqlHour(xDate)
-  Else If rbthreeday.Value = True Then
-    xfir = modDate.StartSqlDate(xDate)
-    xlast = modDate.EndSqlDate(xDate)
-  Else If rbweek.Value = True Then
-    xfir = modDate.StartSqlMonth(xDate)
-    xlast = modDate.EndSqlMonth(xDate)
-  Endif
+  xfir = GetFirstDate(xDate)
+  xlast = GetLastDate(xDate)
 
   If xColl["Component"] Then
     If xColl["Option"] = "Clinical Scale" Then
-      res = modDatabase.$myConn.Exec("select tblpatientexam.fldrepquali as fldrepquali,tblpatientexam.fldrepquanti as fldrepquanti from tblpatientexam inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval  where tblencounter.fldpatientval=&1 and tblpatientexam.fldsave=&2 and tblpatientexam.fldhead=&3 and tblpatientexam.fldtime>=&4 and tblpatientexam.fldtime<=&5 ORDER BY tblpatientexam.fldtime", patNo, True, xColl["Examination"], xfir, xlast)
+      res = modDatabase.$myConn.Exec("select tblpatientexam.fldrepquali as fldrepquali,tblpatientexam.fldrepquanti as fldrepquanti from tblpatientexam inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval  where tblencounter.fldpatientval=&1 and tblpatientexam.fldsave=&2 and tblpatientexam.fldhead=&3 and tblpatientexam.fldtime>=&4 and tblpatientexam.fldtime<=&5 ORDER BY tblpatientexam.fldtime", patNo, True, xColl["Component"] & " [" & xColl["Examination"] & "]", xfir, xlast)
       If res.Available Then
         res.MoveLast
-        If res["fldrepquali"] Then
-          aColl = JSON.Decode(res["fldrepquali"])
-          If aColl Then
-            xx = aColl[xColl["Component"]]
+        If res["fldrepquanti"] Then
+          xx = CStr(res["fldrepquanti"])
+        Endif
+      Endif
+
+      If Not xx Then
+        res1 = modDatabase.$myConn.Exec("select tblpatientsubexam.fldreport as fldreport from (tblpatientsubexam inner join tblpatientexam  on (tblpatientexam.fldid=tblpatientsubexam.fldheadid and tblpatientexam.fldencounterval=tblpatientsubexam.fldencounterval)) inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval  where tblencounter.fldpatientval=&1 and tblpatientexam.fldsave=&2 and tblpatientexam.fldhead=&3 and tblpatientsubexam.fldsubtexam=&4 and tblpatientexam.fldtime>=&5 and tblpatientexam.fldtime<=&6 ORDER BY tblpatientexam.fldtime", patNo, True, xColl["Examination"], xColl["Component"], xfir, xlast)
+        If res1.Available Then
+          res1.MoveLast
+          If res1["fldreport"] Then
+            xx = res1["fldreport"]
+          Else
+            xx = ""
           Endif
         Else
           xx = ""
         Endif
-      Else
-        xx = ""
       Endif
 
     Else
-      res = modDatabase.$myConn.Exec("select tblpatientsubexam.fldreport as fldreport from (tblpatientsubexam inner join tblpatientexam  on (tblpatientexam.fldid=tblpatientsubexam.fldheadid and tblpatientexam.fldencounterval=tblpatientsubexam.fldencounterval)) inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval  where tblencounter.fldpatientval=&1 and tblpatientexam.fldsave=&2 and tblpatientexam.fldhead=&3 and tblpatientsubexam.fldsubtexam=&4 and tblpatientexam.fldtime>=&5 and tblpatientexam.fldtime<=&6 ORDER BY tblpatientexam.fldtime", patNo, True, xColl["Examination"], xColl["Component"], xfir, xlast)
-      If res.Available Then
-        res.MoveLast
-        If res["fldreport"] Then
-          xx = res["fldreport"]
+      res1 = modDatabase.$myConn.Exec("select tblpatientsubexam.fldreport as fldreport from (tblpatientsubexam inner join tblpatientexam  on (tblpatientexam.fldid=tblpatientsubexam.fldheadid and tblpatientexam.fldencounterval=tblpatientsubexam.fldencounterval)) inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval  where tblencounter.fldpatientval=&1 and tblpatientexam.fldsave=&2 and tblpatientexam.fldhead=&3 and tblpatientsubexam.fldsubtexam=&4 and tblpatientexam.fldtime>=&5 and tblpatientexam.fldtime<=&6 ORDER BY tblpatientexam.fldtime", patNo, True, xColl["Examination"], xColl["Component"], xfir, xlast)
+      If res1.Available Then
+        res1.MoveLast
+        If res1["fldreport"] Then
+          xx = res1["fldreport"]
         Else
           xx = ""
         Endif
@@ -430,13 +608,13 @@ Private Function GetExamValueByDate(patNo As String, xColl As Collection, xDate 
     Endif
 
   Else
-    res = modDatabase.$myConn.Exec("select tblpatientexam.fldrepquali as fldrepquali,tblpatientexam.fldrepquanti as fldrepquanti from tblpatientexam inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval  where tblencounter.fldpatientval=&1 and tblpatientexam.fldsave=&2 and tblpatientexam.fldhead=&3 and tblpatientexam.fldtime>=&4 and tblpatientexam.fldtime<=&5 ORDER BY tblpatientexam.fldtime", patNo, True, xColl["Examination"], xfir, xlast)
-    If res.Available Then
-      res.MoveLast
-      If res["fldrepquanti"] Then
-        xx = CStr(res["fldrepquanti"])
+    res1 = modDatabase.$myConn.Exec("select tblpatientexam.fldrepquali as fldrepquali,tblpatientexam.fldrepquanti as fldrepquanti from tblpatientexam inner join tblencounter on tblpatientexam.fldencounterval=tblencounter.fldencounterval  where tblencounter.fldpatientval=&1 and tblpatientexam.fldsave=&2 and tblpatientexam.fldhead=&3 and tblpatientexam.fldtime>=&4 and tblpatientexam.fldtime<=&5 ORDER BY tblpatientexam.fldtime", patNo, True, xColl["Examination"], xfir, xlast)
+    If res1.Available Then
+      res1.MoveLast
+      If res1["fldrepquanti"] Then
+        xx = CStr(res1["fldrepquanti"])
       Else
-        xx = res["fldrepquali"]
+        xx = res1["fldrepquali"]
       Endif
     Else
       xx = ""
@@ -457,24 +635,29 @@ Private Sub GetDataEntry()
   Endif
 
   For i = 0 To $xParamVar.Count - 1
-    If $xParamVar[i]["Component"] Then
-    Else
-      If $xParamVar[i]["Category"] = "Examination" Then
-        bObj1[i] = New TextLabel(pnlgridentry) As "ExamLabelGroup"
-        bObHBox[i] = New HBox(pnlgridentry)
+    If $xParamVar[i]["Category"] = "Examination" Then
+      bObj1[i] = New TextLabel(pnlgridentry) As "ExamLabelGroup"
+      bObHBox[i] = New HBox(pnlgridentry)
+
+      If $xParamVar[i]["Component"] Then
+        If $xParamVar[i]["Option"] = "Clinical Scale" Then
+          aObBtn[i] = New ButtonBox(bObHBox[i]) As "ButtonScale"
+          bObVal[i] = New ValueBox(bObHBox[i])
+        Endif
+
+      Else
         If $xParamVar[i]["Type"] = "Quantitative" Then
           bObVal[i] = New ValueBox(bObHBox[i])
-          If $input = True Then
-            bObButt[i] = New ToolButton(bObHBox[i]) As "SaveExam"
-          Endif
         Else
           bObBox[i] = New ComboBox(bObHBox[i])
-          If $input = True Then
-            bObButt[i] = New ToolButton(bObHBox[i]) As "SaveExam"
-          Endif
         Endif
-        bsepLine[i] = New Separator(pnlgridentry)
+
       Endif
+
+      If $input = True Then
+        bObButt[i] = New ToolButton(bObHBox[i]) As "SaveExam"
+      Endif
+      bsepLine[i] = New Separator(pnlgridentry)
     Endif
   Next
 
@@ -489,58 +672,68 @@ Private Sub ShowEntryControls()
 
   xcount = 0
   For i = 0 To $xParamVar.Count - 1
-    If $xParamVar[i]["Component"] Then
-    Else
-      If $xParamVar[i]["Category"] = "Examination" Then
+    If $xParamVar[i]["Category"] = "Examination" Then
 
+      If $xParamVar[i]["Component"] Then
         With bObj1[i]
           .Height = 24 * AppFactor
-          ' .Width = pnlgridentry.Width
-          .Text = $xParamVar[i]["Examination"]
+          .Text = $xParamVar[i]["Component"]
           .Tag = i
         End With
-
         With bObHBox[i]
           .Height = 24 * AppFactor
           .Tag = $xParamVar[i]["Constant"]
         End With
 
+        If $xParamVar[i]["Option"] = "Clinical Scale" Then
+          With aObBtn[i]
+            .Expand = True
+            .Picture = Picture["icon:/small/add"]
+            .Tag = i
+          End With
+          With bObVal[i]
+            .Width = 25 * AppFactor
+            .Enabled = False
+            .Tag = i
+          End With
+        Endif
+
+      Else
+        With bObj1[i]
+          .Height = 24 * AppFactor
+          .Text = $xParamVar[i]["Examination"]
+          .Tag = i
+        End With
+        With bObHBox[i]
+          .Height = 24 * AppFactor
+          .Tag = $xParamVar[i]["Constant"]
+        End With
         If $xParamVar[i]["Type"] = "Quantitative" Then
           With bObVal[i]
             .Width = 100 * AppFactor
             .Tag = i
           End With
-          If $input = True Then
-            With bObButt[i]
-              .Width = 25 * AppFactor
-              .Picture = Picture["icon:/small/apply"]
-              .Tag = i
-            End With
-          Endif
-
         Else
           With bObBox[i]
             .Expand = True
-            ' .Width = 200 * AppFactor
             .List = Split($xParamVar[i]["OptionValues"], ";")
             .Tag = i
           End With
-          If $input = True Then
-            With bObButt[i]
-              .Width = 25 * AppFactor
-              .Picture = Picture["icon:/small/apply"]
-              .Tag = i
-            End With
-          Endif
-
         Endif
 
-        With bsepLine[i]
-          .Height = 15 * AppFactor
-        End With
-
-        xcount = xcount + 1
       Endif
+
+      If $input = True Then
+        With bObButt[i]
+          .Width = 25 * AppFactor
+          .Picture = Picture["icon:/small/apply"]
+          .Tag = i
+        End With
+      Endif
+      With bsepLine[i]
+        .Height = 15 * AppFactor
+      End With
+      xcount = xcount + 1
     Endif
   Next
 
@@ -548,10 +741,25 @@ Private Sub ShowEntryControls()
 
 End
 
+Public Sub ButtonScale_Click()
+
+  Dim j As Integer
+  Dim xval As String[]
+
+  j = Last.Tag
+  xval = DualScaleValue($xParamVar[j]["Component"], Split($xParamVar[j]["OptionValues"], ";"))
+  If xval Then
+    aObBtn[j].Text = xval[1]
+    bObVal[j].Value = CFloat(xval[0])
+  Endif
+
+End
+
 Public Sub SaveExam_Click()
 
   Dim i As Integer
   Dim xcateg As String
+  Dim xColl As Collection
 
   i = Last.Tag
 
@@ -560,16 +768,27 @@ Public Sub SaveExam_Click()
   Else
     xcateg = "Physician Examinations"
   Endif
-  If bObVal[i] And If bObVal[i].Value Then
-    modClinSub.AddQuantiData($encid, "", $xParamVar[i]["Examination"], "", bObVal[i].Value, False, xcateg, bObHBox[i].Tag)
-    Balloon.Info(("Information saved"), bObButt[i])
-    Balloon.Delay = modBasic.$BalloonDelay
+  If $xParamVar[i]["Component"] Then
+    If $xParamVar[i]["Option"] = "Clinical Scale" Then
+      If aObBtn[i].Text Then
+        xColl = New Collection
+        xColl.Add(bObVal[i].Value, $xParamVar[i]["Component"])
+        modClinSub.AddClinicExam($encid, "", $xParamVar[i]["Component"] & " [" & $xParamVar[i]["Examination"] & "]", "Clinical Scale", JSON.Encode(xColl), bObVal[i].Value, False, xcateg, bObHBox[i].Tag, "Regular")
+      Endif
+    Endif
 
-  Else If bObBox[i] And If bObBox[i].Text Then
-    modClinSub.AddQualiData($encid, "", $xParamVar[i]["Examination"], "", bObBox[i].Text, False, xcateg, bObHBox[i].Tag)
-    Balloon.Info(("Information saved"), bObButt[i])
-    Balloon.Delay = modBasic.$BalloonDelay
+  Else
+    If bObVal[i] And If bObVal[i].Value Then
+      modClinSub.AddQuantiData($encid, "", $xParamVar[i]["Examination"], "", bObVal[i].Value, False, xcateg, bObHBox[i].Tag)
+      Balloon.Info(("Information saved"), bObButt[i])
+      Balloon.Delay = modBasic.$BalloonDelay
 
+    Else If bObBox[i] And If bObBox[i].Text Then
+      modClinSub.AddQualiData($encid, "", $xParamVar[i]["Examination"], "", bObBox[i].Text, False, xcateg, bObHBox[i].Tag)
+      Balloon.Info(("Information saved"), bObButt[i])
+      Balloon.Delay = modBasic.$BalloonDelay
+
+    Endif
   Endif
   LoadTablesExam()
 
@@ -622,6 +841,12 @@ Private Sub LoadControls()
         Else
           aObk[i] = New ListBox(aPanel[i]) As "ListGroup"
         Endif
+      Else If $xParamVar[i]["Category"] = "Intake" Then
+        aObjx[i] = New ScrollView(aPanel[i]) As "ScrollGroup"
+        aObj[i] = New PictureBox(aObjx[i]) As "PictureBoxgroup"
+      Else If $xParamVar[i]["Category"] = "Output" Then
+        aObjx[i] = New ScrollView(aPanel[i]) As "ScrollGroup"
+        aObj[i] = New PictureBox(aObjx[i]) As "PictureBoxgroup"
       Endif
 
     Endif
@@ -781,6 +1006,9 @@ Private Sub FillCHartItems(sHt As Integer)
           End With
 
         Endif
+
+      Else If $xParamVar[i]["Category"] = "Intake" Then
+      Else If $xParamVar[i]["Category"] = "Output" Then
 
       Endif
 
@@ -1097,5 +1325,32 @@ Public Sub Form_Resize()
 End
 
 Public Sub mnuexpo_Click()
+
+End
+
+''========================= Doctor Order =============================
+Private Sub ShowLastDoctorOrder()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Exec("select flddetail from tblpatientnotes where fldencounterval=&1 and fldinput=&2 and flditem=&3 ORDER BY fldtime DESC", $encid, "Notes", "Doctor Order")
+  If res.Available Then
+    res.MoveFirst
+    txtorder.RichText = res["flddetail"]
+  Endif
+
+End
+
+''========================= Nurses Note =============================
+Public Sub btnoteadd_Click()
+
+  If $encid Then
+    If txtnote.Text Then
+      modPatientGeneral.AddPatientParagraph($encid, "Notes", "Nurses Note", txtimpression.Text, txtnote.RichText, False, $sTitle)
+      Balloon.Info(("Information saved"), btnoteadd)
+      Balloon.Delay = modBasic.$BalloonDelay
+      btnoteadd.Enabled = False
+    Endif
+  Endif
 
 End

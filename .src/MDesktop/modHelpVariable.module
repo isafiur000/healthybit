@@ -105,6 +105,7 @@ Private $UserPassword As String
 Private $sPort As String
 
 Public $conTarget As String
+Public $pastDBService As String
 
 'NOTE: ------------------------------ File and Directory Functions -----------------------------
 Public Sub MakeWorkingDir()
@@ -242,6 +243,7 @@ Public Sub SetApplicationGUI()
     CreateRepositoryLocal()
   Endif
   CreateLatestLocalDB()
+  modHelpVariable.ConnRemotePastDatabase()  ''for past db
 
 End
 
@@ -554,6 +556,27 @@ End
 Public Sub SetSlaveAsReportCon()
 
   modDatabase.$syConn = modDatabase.$ssyncConn
+
+End
+
+Public Sub ConnRemotePastDatabase()
+
+  Dim xfile As String
+  Dim xdbname As String
+  Dim xhost As String
+  Dim xuser As String
+  Dim xpass As String
+  Dim xport As String
+
+  $pastDBService = modSettings.ShowSettingFromFIle("PastDatabase/RemoteService")
+  If $pastDBService Then
+    xhost = modSettings.ShowSettingFromFIle("PastDatabase/RemoteHost")
+    xdbname = modSettings.ShowSettingFromFIle("PastDatabase/RemoteDatabase")
+    xuser = UnBase64(modSettings.ShowSettingFromFIle("PastDatabase/RemoteUser"))
+    xpass = UnBase64(modSettings.ShowSettingFromFIle("PastDatabase/RemotePass"))
+    xport = modSettings.ShowSettingFromFIle("PastDatabase/RemotePort")
+    modDatabase.$pastConn = modDBApp.OpenConnection($pastDBService, xhost, xdbname, xuser, xpass, xport)
+  Endif
 
 End
 

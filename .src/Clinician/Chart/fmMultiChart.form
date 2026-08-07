@@ -98,21 +98,21 @@
       }
     }
     { Panel7 Panel
-      MoveScaled(1,17,108,46)
+      MoveScaled(1,14,113,31)
       Expand = True
       Arrangement = Arrange.Horizontal
       { ListContainer1 ScrollView
-        MoveScaled(0,0,32,42)
+        MoveScaled(0,0,32,29)
         Expand = True
         Arrangement = Arrange.Vertical
         Spacing = True
       }
       { Panel6 Panel
-        MoveScaled(33,0,40,41)
+        MoveScaled(33,0,40,28)
         Expand = True
         Arrangement = Arrange.Vertical
         { GridView2 GridView
-          MoveScaled(1,1,36,28)
+          MoveScaled(1,1,36,24)
           Expand = True
           Mode = Select.Single
           Header = GridView.Both
@@ -120,12 +120,67 @@
         }
       }
       { ScrollView1 ScrollView
-        MoveScaled(78,0,27,41)
+        MoveScaled(78,0,28,26)
         Arrangement = Arrange.Vertical
         { pnlgridentry Panel
-          MoveScaled(0,0,26,37)
+          MoveScaled(0,0,27,22)
           Arrangement = Arrange.Vertical
           Margin = True
+        }
+      }
+    }
+    { pnlcustnotes Panel
+      MoveScaled(1,46,117,24)
+      Visible = False
+      Arrangement = Arrange.Horizontal
+      { Panel8 Panel
+        MoveScaled(0,1,54,19)
+        Arrangement = Arrange.Vertical
+        { Panel10 Panel
+          MoveScaled(0,0,50,3)
+          { Label3 Label
+            MoveScaled(0,0,29,3)
+            Font = Font["Bold"]
+            Border = Border.Plain
+            Text = ("Doctor Order")
+          }
+        }
+        { txtorder TextEdit
+          MoveScaled(3,6,39,11)
+          Background = Color.White
+          Expand = True
+          Wrap = True
+        }
+      }
+      { Panel9 Panel
+        MoveScaled(54,1,63,19)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        { Panel11 Panel
+          MoveScaled(0,0,61,3)
+          { Label1 Label
+            MoveScaled(0,0,29,3)
+            Font = Font["Bold"]
+            Border = Border.Plain
+            Text = ("Nurses Note")
+          }
+          { btnoteadd Button
+            MoveScaled(49,0,11,3)
+            Text = Shortcut(("Add"), "A")
+            Picture = Picture["icon:/small/apply"]
+          }
+          { txtnoteid ValueBox
+            MoveScaled(41,0,3,3)
+            Visible = False
+          }
+        }
+        { txtnote TextHTML
+          MoveScaled(1,4,51,9)
+          Expand = True
+        }
+        { txtimpression TextBox
+          MoveScaled(2,14,60,3)
+          Placeholder = ("IMPRESSION")
         }
       }
     }

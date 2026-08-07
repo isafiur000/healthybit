@@ -6,7 +6,7 @@
   Resizable = False
   { IconPanel1 IconPanel
     MoveScaled(1,1,89,37)
-    Count = 5
+    Count = 6
     Border = True
     Index = 0
     Text = ("General")
@@ -334,6 +334,72 @@
       { cmbcalculate ComboBox
         MoveScaled(46,11,16,3)
       }
+    }
+    Index = 5
+    Text = ("Remote")
+    { cmbremotype ComboBox
+      MoveScaled(12,1,23,3)
+      Sorted = True
+    }
+    { txtremoserver TextBox
+      MoveScaled(12,5,23,3)
+    }
+    { txtremodb TextBox
+      MoveScaled(12,9,23,3)
+    }
+    { txtremouser TextBox
+      MoveScaled(12,13,23,3)
+      Password = True
+    }
+    { txtremopass TextBox
+      MoveScaled(12,17,23,3)
+      Password = True
+    }
+    { btnremote Button
+      MoveScaled(36,21,10,3)
+      Text = ("Save")
+      Picture = Picture["icon:/small/ok"]
+    }
+    { Label29 Label
+      MoveScaled(1,13,10,3)
+      Border = Border.Plain
+      Text = ("User")
+    }
+    { Label30 Label
+      MoveScaled(1,17,10,3)
+      Border = Border.Plain
+      Text = ("Password")
+    }
+    { Label31 Label
+      MoveScaled(1,5,10,3)
+      Border = Border.Plain
+      Text = ("Host")
+    }
+    { Label32 Label
+      MoveScaled(1,1,10,3)
+      Border = Border.Plain
+      Text = ("Type")
+    }
+    { chkremouser CheckBox
+      MoveScaled(36,13,10,3)
+      Text = ("Reveal")
+    }
+    { chkremopass CheckBox
+      MoveScaled(36,17,10,3)
+      Text = ("Reveal")
+    }
+    { Label33 Label
+      MoveScaled(1,9,10,3)
+      Border = Border.Plain
+      Text = ("Database")
+    }
+    { Label35 Label
+      MoveScaled(1,21,10,3)
+      Border = Border.Plain
+      Text = ("Port")
+    }
+    { txttemoport TextBox
+      MoveScaled(12,21,23,3)
     }
     Index = 0
   }

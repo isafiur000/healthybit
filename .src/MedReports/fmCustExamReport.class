@@ -1594,6 +1594,8 @@ Public Sub mnumultivariate_Click()
 
     Inc Application.Busy
     CForm = New CMultivariate(modBasic.$StatDataFormat)
+    CForm.WriteHeaders(xHeader)
+
     For Row = 0 To GridView2.Rows.Count - 1
       sArry = New String[]
       For Column = 0 To xHeader.Count - 1

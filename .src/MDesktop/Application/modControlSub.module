@@ -170,6 +170,10 @@ Public Sub DisplayReportExport(sPath As String) As String
         If Dialog.SelectDirectory() Then Return
         sTarget = Dialog.Path &/ modString.GetNowString() & ".csv"
         Copy sPath To sTarget
+      Else If modBasic.$ReportingPopUp = "NDJSON" Then
+        If Dialog.SelectDirectory() Then Return
+        sTarget = Dialog.Path &/ modString.GetNowString() & ".ndjson"
+        Copy sPath To sTarget
       Else If modBasic.$ReportingPopUp = "JSON" Then
         If Dialog.SelectDirectory() Then Return
         sTarget = Dialog.Path &/ modString.GetNowString() & ".json"

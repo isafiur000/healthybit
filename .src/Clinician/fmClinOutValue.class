@@ -8,9 +8,7 @@ Public Sub _new(strCategory As String, encid As String, strCombo As String[], st
 
   txtcategory.Text = strCategory
   $encid = encid
-  For Each srt In strCombo
-    cmbvariable.Add(srt)
-  Next
+  cmbvariable.List = strCombo
 
   txtvalue.Value = strValue
   txtunit.Text = strUnit

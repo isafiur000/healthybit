@@ -19,7 +19,7 @@ Public Sub Form_Open()
     cmbtarget.Enabled = True
   Endif
   cmbdatatype.List = ["Qualitative", "Quantitative"]
-  cmbcategory.List = ["Laboratory", "Examination", "Medicines"]
+  cmbcategory.List = ["Laboratory", "Examination", "Medicines", "Intake", "Output"]
   $examList = modMedicine.FillExamQualiOrQuantiCombo("%")
   $TestList = modMedicine.FillLabTestCombo("%")
   $MedList = modMedicine.GetMedicineList()
@@ -61,6 +61,10 @@ Public Sub btnaddexam_Click()
     cmbexamname.Text = GridViewNew("Select " & cmbcategory.Text, $TestList, False)
   Else If cmbcategory.Text = "Medicines" Then
     cmbexamname.Text = GridViewNew("Select " & cmbcategory.Text, $MedList, False)
+  Else If cmbcategory.Text = "Intake" Then
+    cmbexamname.Text = GridViewNew("Select " & cmbcategory.Text, ["Oral/NGT", "Infusion", "Injections"], False)
+  Else If cmbcategory.Text = "Output" Then
+    cmbexamname.Text = GridViewNew("Select " & cmbcategory.Text, modBasic.$ClinBodyFluidAll, False)
   Endif
 
   If cmbexamname.Text Then
@@ -73,7 +77,8 @@ Public Sub btnaddexam_Click()
       txtsysconst.Text = modFixLab.GetTestSysName(cmbexamname.Text)
       cmboptions.Text = modFixLab.GetLabTestOptionType(cmbexamname.Text)
     Else If cmbcategory.Text = "Medicines" Then
-
+    Else If cmbcategory.Text = "Intake" Then
+    Else If cmbcategory.Text = "Output" Then
     Endif
     cmbdatatype.Enabled = False
     txtsysconst.Enabled = False

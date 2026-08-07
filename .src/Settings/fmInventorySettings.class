@@ -25,11 +25,14 @@ Public Sub Form_Open()
   cmbinvenreport.List = ["Enable", "Disable"]
   cmbcostcalc.List = ["Exact", "Average", "Latest", "Fixed", "Average+Fixed"]
 
+  cmbremotype.List = ["sqlite3", "mysql", "postgresql", "odbc"]
+
   ShowGeneralSettings()
   ShowOutOrder()
   ShowDefProfit()
   ShowInventoryReport()
   ShowStoreRequest()
+  ShowRemoteSetting()
 
 End
 
@@ -293,5 +296,51 @@ Public Sub btnrequest_Click()
 
   Balloon.Info(("Information saved"), btnrequest)
   Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''------------------- Remote  -----------------------------
+Public Sub chkremouser_Click()
+
+  If chkremouser.Value = True Then
+    txtremouser.Password = False
+  Else If chkremouser.Value = False Then
+    txtremouser.Password = True
+  Endif
+
+End
+
+Public Sub chkremopass_Click()
+
+  If chkremopass.Value = True Then
+    txtremopass.Password = False
+  Else If chkremopass.Value = False Then
+    txtremopass.Password = True
+  Endif
+
+End
+
+Private Sub ShowRemoteSetting()
+
+  cmbremotype.Text = modSettings.ShowSettingFromFIle("PastDatabase/RemoteService")
+  txtremoserver.Text = modSettings.ShowSettingFromFIle("PastDatabase/RemoteHost")
+  txtremodb.Text = modSettings.ShowSettingFromFIle("PastDatabase/RemoteDatabase")
+  txtremouser.Text = UnBase64(modSettings.ShowSettingFromFIle("PastDatabase/RemoteUser"))
+  txtremopass.Text = UnBase64(modSettings.ShowSettingFromFIle("PastDatabase/RemotePass"))
+  txttemoport.Text = modSettings.ShowSettingFromFIle("PastDatabase/RemotePort")
+
+End
+
+Public Sub btnremote_Click()
+
+  If cmbremotype.Text And If txtremoserver.Text And If txtremodb.Text Then
+    modSettings.SaveSettingsToFile("PastDatabase/RemoteService", cmbremotype.Text)
+    modSettings.SaveSettingsToFile("PastDatabase/RemoteHost", txtremoserver.Text)
+    modSettings.SaveSettingsToFile("PastDatabase/RemoteDatabase", txtremodb.Text)
+    modSettings.SaveSettingsToFile("PastDatabase/RemoteUser", Base64(txtremouser.Text))
+    modSettings.SaveSettingsToFile("PastDatabase/RemotePass", Base64(txtremopass.Text))
+    modSettings.SaveSettingsToFile("PastDatabase/RemotePort", txttemoport.Text)
+    Balloon.Info(("Information saved"), btnremote)
+  Endif
 
 End
