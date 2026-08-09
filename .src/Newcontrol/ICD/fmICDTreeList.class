@@ -413,12 +413,14 @@ Public Sub btnadd_Click()
   Dim xx As String[]
 
   If txtcode.Text And If txtname.Text Then
-    xx = New String[]
-    xx.Add(Trim(txtname.Text))
-    xx.Add(txtcode.Text)
-    xx.Add(txtoldcode.Text)
-    $sValue = xx
-    Me.Close(True)
+    If GetProceedDiagnosis() = True Then
+      xx = New String[]
+      xx.Add(Trim(txtname.Text))
+      xx.Add(txtcode.Text)
+      xx.Add(txtoldcode.Text)
+      $sValue = xx
+      Me.Close(True)
+    Endif
   Endif
 
 End
@@ -426,5 +428,36 @@ End
 Public Sub btnicdclear_Click()
 
   txtname.Text = ""
+
+End
+
+Private Function GetProceedDiagnosis() As Boolean
+
+  Dim xper As Float
+  Dim xreply As Integer
+  Dim xallow As Boolean
+
+  xallow = True
+  If modSettings.ShowSettingFromFIle("MLClinic/Pre-Match_Diagnosis") = "Yes" Then
+    If txtfixed.Text = txtname.Text Then
+      xper = 100
+    Else
+      Inc Application.Busy
+      xper = modClinic.GetDiagnosisMatch(txtname.Text, txtfixed.Text)
+      Dec Application.Busy
+    Endif
+
+    If xper And If xper < 75 Then
+      xreply = Message.Question(CStr(xper) & " % matched. Do you want to proceed ?", ("Recheck"), ("Ignore"))
+      If xreply = 1 Then
+        xallow = False
+      Else If xreply = 2 Then
+        xallow = True
+      Endif
+    Endif
+
+  Endif
+
+  Return xallow
 
 End

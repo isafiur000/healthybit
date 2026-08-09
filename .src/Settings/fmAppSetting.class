@@ -1029,6 +1029,7 @@ Private Sub ShowOptionSettings()
   modSettings.ShowCheckBox(chktooltip, "GeneralSettings/DisableToolTip")
   modSettings.ShowCheckBox(cmbencsuffix, "GeneralSettings/AutoEncounterSuffix")
   modSettings.ShowCheckBox(chkreadnotice, "GeneralSettings/ReadNotification")
+  modSettings.ShowCheckBox(chkselfsearch, "GeneralSettings/UserList_SelfSearch")
   cmbshownotice.Text = modSettings.ShowSettingFromFIle("GeneralSettings/DesktopNotification")
   xuser = modSettings.ShowSettingFromFIle("GeneralSettings/GlobalUser")
   If xuser = modBasic.$lbluser Then
@@ -1151,6 +1152,19 @@ Public Sub btnreadnotice_Click()
     modBasic.$AutoReadNotice = "No"
   Endif
   Balloon.Info(("Information saved"), btnreadnotice)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnselfsearch_Click()
+
+  modSettings.EnterCheckSetting(chkselfsearch, "GeneralSettings/UserList_SelfSearch")
+  If chkselfsearch.Value = True Then
+    modBasic.$UserSelfSearch = "Yes"
+  Else If chkselfsearch.Value = False Then
+    modBasic.$UserSelfSearch = "No"
+  Endif
+  Balloon.Info(("Information saved"), btnselfsearch)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

@@ -1,0 +1,80 @@
+' Gambas class file
+
+Private $FormName As String
+
+Public Sub _new(frm As String)
+
+  $FormName = frm
+
+End
+
+Public Sub Form_Open()
+
+  cmbdelimiter.List = ["Tab"]
+  cmbcompare.List = ["LIKE", "EQUAL"]
+  ShowSetting()
+
+End
+
+Private Sub ShowSetting()
+
+  If modSettings.ShowSettingFromFIle($FormName & ":" & "ColmnFormat/Column") Then
+    txtunigridcol.Value = CInt(modSettings.ShowSettingFromFIle($FormName & ":" & "ColmnFormat/Column"))
+  Endif
+  txtuniscript.Text = modSettings.ShowSettingFromFIle($FormName & ":" & "ColmnFormat/TranslationPath")
+  cmbdelimiter.Text = modSettings.ShowSettingFromFIle($FormName & ":" & "ColmnFormat/Delimiter")
+  txtunishell.Text = modSettings.ShowSettingFromFIle($FormName & ":" & "ColmnFormat/Default")
+  cmbcompare.Text = modSettings.ShowSettingFromFIle($FormName & ":" & "ColmnFormat/Compare")
+
+End
+
+Public Sub txtuniscript_Click()
+
+  If Dialog.OpenFile() Then Return
+  txtuniscript.Text = Dialog.Path
+
+End
+
+Private Function GetListFile(sLink As String) As String
+
+  Dim sPath As String
+  Dim hForm As FmTwoColmGrid
+
+  If sLink And If Exist(sLink) Then
+    sPath = sLink
+  Else
+    sPath = Desktop.CacheDir &/ modHelpVariable.AppName &/ modString.GetDateString(Now()) & ".txt"
+  Endif
+  If cmbdelimiter.Text = "Tab" Then
+    hForm = New FmTwoColmGrid(sPath, gb.Tab)
+  Else
+    hForm = New FmTwoColmGrid(sPath, cmbdelimiter.Text)
+  Endif
+  hForm.ShowModal()
+
+  Return sPath
+
+End
+
+Public Sub btnsetlist_Click()
+
+  Dim sPath As String
+
+  sPath = GetListFile(txtuniscript.Text)
+  If Exist(sPath) Then
+    txtuniscript.Text = sPath
+  Endif
+
+End
+
+Public Sub btnformat_Click()
+
+  modSettings.SaveSettingsToFile($FormName & ":" & "ColmnFormat/Column", CStr(txtunigridcol.Value))
+  modSettings.SaveSettingsToFile($FormName & ":" & "ColmnFormat/TranslationPath", txtuniscript.Text)
+  modSettings.SaveSettingsToFile($FormName & ":" & "ColmnFormat/Delimiter", cmbdelimiter.Text)
+  modSettings.SaveSettingsToFile($FormName & ":" & "ColmnFormat/Default", txtunishell.Text)
+  modSettings.SaveSettingsToFile($FormName & ":" & "ColmnFormat/Compare", cmbcompare.Text)
+  Balloon.Info(("Information saved"), btnformat)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End

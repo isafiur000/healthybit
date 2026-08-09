@@ -75,6 +75,7 @@ Public Sub Form_Open()
   ClinGeneralSetting()
   ClinFormsSetting()
   SMSTextSetting()
+  MLOutputResponse()
 
 End
 
@@ -781,6 +782,21 @@ Public Sub btnmedadvice_Click()
 
   modSettings.SaveSettingsToFile("PharmacyForm/AdviceList", txtmedadvice.Text)
   Balloon.Info(("Information saved"), btnmedadvice)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''============================== AI Response ========================
+Private Sub MLOutputResponse()
+
+  modSettings.ShowCheckBox(chkmatchdiagnosis, "MLClinic/Pre-Match_Diagnosis")
+
+End
+
+Public Sub btnmatchdiagno_Click()
+
+  modSettings.EnterCheckSetting(chkmatchdiagnosis, "MLClinic/Pre-Match_Diagnosis")
+  Balloon.Info(("Information saved"), btnmatchdiagno)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

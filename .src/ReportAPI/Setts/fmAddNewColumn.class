@@ -604,7 +604,7 @@ Private Function GetListFile(sLink As String) As String
   Else
     sPath = Desktop.CacheDir &/ modHelpVariable.AppName &/ modString.GetDateString(Now()) & ".txt"
   Endif
-  hForm = New FmTwoColmGrid(sPath)
+  hForm = New FmTwoColmGrid(sPath, ";")
   hForm.ShowModal()
 
   Return sPath

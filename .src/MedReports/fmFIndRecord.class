@@ -11,6 +11,11 @@ Private $newColumn As String[]
 Private $RepoStr As String
 Private $RepoStrA As String
 
+Private $ColmnTrans As Integer
+Private $TranslColl As Collection
+Private $TransNull As String
+Private $TransCompare As String
+
 Public Sub Form_Open()
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
@@ -454,8 +459,36 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
 
   Dim xxx As Variant
   Dim i As Integer
+  Dim xword As String
 
-  xxx = xVariable
+  If $ColmnTrans Then
+    If Column = $ColmnTrans - 1 Then
+
+      If $TransCompare = "LIKE" Then
+        For Each xword In $TranslColl
+          If xVariable Like $TranslColl.Key & "*" Then
+            xxx = xword
+            Break
+          Endif
+        Next
+        If Not xxx Then
+          xxx = xVariable
+        Endif
+      Else
+        If $TranslColl[xVariable] Then
+          xxx = $TranslColl[xVariable]
+        Else
+          xxx = xVariable
+        Endif
+      Endif
+
+    Else
+      xxx = xVariable
+    Endif
+  Else
+    xxx = xVariable
+  Endif
+
   If $newColumn.Count Then
     For i = 0 To $newColumn.Count - 1
       If Column = $ColCount + i Then
@@ -467,6 +500,33 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
 
 End
 
+Private Sub GetFormatColmnParams()
+
+  Dim xPath As String
+  Dim xdelim As String
+
+  btnshow.Foreground = Color.Default
+  If modSettings.ShowSettingFromFIle(Me.Tag & ":" & "ColmnFormat/Column") Then
+    $ColmnTrans = CInt(modSettings.ShowSettingFromFIle(Me.Tag & ":" & "ColmnFormat/Column"))
+  Endif
+  If $ColmnTrans Then
+    xPath = modSettings.ShowSettingFromFIle(Me.Tag & ":" & "ColmnFormat/TranslationPath")
+    If Exist(xPath) Then
+      xdelim = modSettings.ShowSettingFromFIle(Me.Tag & ":" & "ColmnFormat/Delimiter")
+      If xdelim = "Tab" Then
+        $TranslColl = modString.GetCollectionFromCSV(xPath, gb.Tab)
+      Else
+        $TranslColl = modString.GetCollectionFromCSV(xPath, xdelim)
+      Endif
+
+      $TransNull = modSettings.ShowSettingFromFIle(Me.Tag & ":" & "ColmnFormat/Default")
+      $TransCompare = modSettings.ShowSettingFromFIle(Me.Tag & ":" & "ColmnFormat/Compare")
+      btnshow.Foreground = Color.Red
+    Endif
+  Endif
+
+End
+
 Public Sub btnshow_Click()
 
   Dim j As Integer
@@ -474,6 +534,7 @@ Public Sub btnshow_Click()
   Dim xFldList As String[]
   Dim i As Integer
 
+  GetFormatColmnParams()
   xFldList = GetSQLColumns()
   $rData = ExecuteQuery(xFldList)
 
@@ -1041,6 +1102,15 @@ Public Sub mnuexpocolumn_Click()
   Dim hForm As FmCustColumnSet
 
   hForm = New FmCustColumnSet(Me.Tag)
+  hForm.ShowModal
+
+End
+
+Public Sub mnuformatcolm_Click()
+
+  Dim hForm As FmFormatCol
+
+  hForm = New FmFormatCol(Me.Tag)
   hForm.ShowModal
 
 End

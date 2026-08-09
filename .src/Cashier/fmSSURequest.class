@@ -36,7 +36,6 @@ End
 Private Sub ShowRequest()
 
   Dim res As Result
-  Dim xmode As String
 
   res = modDatabase.$myConn.Exec("select fldid,fldscheme,flddetail,fldstatus,fldcharity,fldcredit,flduserid_order,fldtime_order,flduserid_verify,fldtime_verify from tblssurequest where fldencounterval=&1", $encid)                    ''
   If res.Available Then
@@ -155,7 +154,6 @@ End
 Public Sub btnassign_Click()
 
   Dim res As Result
-  Dim res1 As Result
 
   If txtdiscount.Value Or If txtcredit.Value Then
     If cmbpackage.Text Then

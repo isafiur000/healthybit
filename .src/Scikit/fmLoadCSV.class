@@ -3,6 +3,7 @@
 Public Sub Form_Open()
 
   Me.Center
+  cmbtype.List = ["CSV", "JSON", "NDJSON"]
   txtdelim.List = ["Tab"]
 
 End
@@ -15,6 +16,62 @@ Public Sub txtimport_Click()
 End
 
 Public Sub btnimport_Click()
+
+  Select cmbtype.Text
+    Case "CSV"
+      ImportCSVFormat()
+    Case "JSON"
+      ImportJSONFormat()
+    Case "NDJSON"
+      ImportNDJSONFormat()
+  End Select
+
+End
+
+Private Sub ImportNDJSONFormat()
+
+  Dim xHeadList As String[]
+  Dim hPython As FmPythonTerminal
+  Dim sFile As File
+  Dim sLine As String
+  Dim sColl As Collection
+
+  If txtheader.Text Then
+    xHeadList = Split(txtheader.Text, ";")
+  Else
+    sFile = Open txtimport.Text
+    For Each sLine In sFile.Lines
+      sColl = JSON.Decode(sLine)
+      xHeadList = sColl.Keys
+      Break
+    Next
+    sFile.Close
+  Endif
+  hPython = New FmPythonTerminal(cmbtype.Text, xHeadList, txtimport.Text)
+  modWorkSpace.Add(hPython)
+
+End
+
+Private Sub ImportJSONFormat()
+
+  Dim xHeadList As String[]
+  Dim hPython As FmPythonTerminal
+  Dim xText As String
+  Dim sColl As Collection
+
+  If txtheader.Text Then
+    xHeadList = Split(txtheader.Text, ";")
+  Else
+    xText = File.Load(txtimport.Text)
+    sColl = JSON.Decode(xText)[0]
+    xHeadList = sColl.Keys
+  Endif
+  hPython = New FmPythonTerminal(cmbtype.Text, xHeadList, txtimport.Text)
+  modWorkSpace.Add(hPython)
+
+End
+
+Private Sub ImportCSVFormat()
 
   Dim hCSV As CsvFile
   Dim xdelim As String
@@ -34,7 +91,11 @@ Public Sub btnimport_Click()
   Endif
 
   hCSV = New CsvFile(txtimport.Text, xdelim)
-  xHeadList = hCSV.Fields
+  If txtheader.Text Then
+    xHeadList = Split(txtheader.Text, ";")
+  Else
+    xHeadList = hCSV.Fields
+  Endif
 
   sPath = Temp() & ".csv"
   xfile = File.Load(txtimport.Text)

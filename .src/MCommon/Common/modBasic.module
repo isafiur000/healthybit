@@ -142,6 +142,7 @@ Public $AutoReadNotice As String
 Public $WebZoomValue As Float
 Public $WebViewFunction As String
 Public $AutoClearHighlight As String
+Public $UserSelfSearch As String
 
 ''general
 Public $FtpUploader As String
@@ -1153,6 +1154,7 @@ Public Sub LoadGeneralVariables()
   $WebViewFunction = modSettings.ShowSettingFromFIle("GeneralSettings/WebViewFunction")
   $AutoClearHighlight = modSettings.ShowSettingFromFIle("GeneralSettings/AutoClearHighLight")
   $ConvertToASCII = modSettings.ShowSettingFromFIle("GeneralSettings/ConvertToASCII")
+  $UserSelfSearch = modSettings.ShowSettingFromFIle("GeneralSettings/UserList_SelfSearch")
 
   $ConvImagePDF = modSettings.ShowSettingFromFIle("Converter/imagetopdf")
   $ConvHtmlPDF = modSettings.ShowSettingFromFIle("Converter/htmltopdf")

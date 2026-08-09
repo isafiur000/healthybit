@@ -18,6 +18,9 @@ Public Sub Form_Open()
   Me.Center
   Me.Title = $sTitle
   FillUserList()
+  If modBasic.$UserSelfSearch = "Yes" Then
+    txtsearch.Text = modBasic.$lbluser
+  Endif
   txtsearch.SetFocus
 
 End

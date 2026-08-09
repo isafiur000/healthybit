@@ -1,13 +1,13 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,64,9)
+  MoveScaled(0,0,64,22)
   Text = ("Load CSV File")
   Resizable = False
   { Label6 Label
     MoveScaled(1,1,9,3)
     Border = Border.Plain
-    Text = ("CSV File")
+    Text = ("File Path")
   }
   { txtimport ButtonBox
     MoveScaled(11,1,49,3)
@@ -15,16 +15,29 @@
     Picture = Picture["icon:/small/file"]
   }
   { Label1 Label
-    MoveScaled(1,5,9,3)
+    MoveScaled(1,9,9,3)
     Border = Border.Plain
     Text = ("Delimiter")
   }
   { btnimport Button
-    MoveScaled(48,5,12,3)
+    MoveScaled(48,9,12,3)
     Text = ("Import")
     Picture = Picture["icon:/small/exec"]
   }
   { txtdelim ComboBox
-    MoveScaled(11,5,9,3)
+    MoveScaled(11,9,9,3)
+  }
+  { Label2 Label
+    MoveScaled(1,5,9,3)
+    Border = Border.Plain
+    Text = ("File Type")
+  }
+  { cmbtype ComboBox
+    MoveScaled(11,5,14,3)
+  }
+  { txtheader TextArea
+    MoveScaled(1,13,61,8)
+    ToolTip = ("Header List separated by semicolon (;)")
+    Wrap = True
   }
 }

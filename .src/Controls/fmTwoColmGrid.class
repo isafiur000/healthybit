@@ -1,11 +1,13 @@
 ' Gambas class file
 
 Private $sPath As String
+Private $delim As String
 Private $sData As Variant[]
 
-Public Sub _new(sPath As String)
+Public Sub _new(sPath As String, delim As String)
 
   $sPath = sPath
+  $delim = delim
 
 End
 
@@ -45,7 +47,11 @@ Private Sub LoadFileToGrid(sPath As String)
   modBasic.DebugString("Open File " & sPath)
   For Each sLine In hFile.Lines
     If Len(Trim(sLine)) Then
-      sWord = Split(sLine, ";")
+      If $delim Then
+        sWord = Split(sLine, $delim)
+      Else
+        sWord = Split(sLine, ";")
+      Endif
       $sData.Add([sWord[0], sWord[1]])
     Endif
   Next
@@ -107,7 +113,11 @@ Public Sub btnsave_Click()
 
   sFile = New String[]
   For Each asx In $sData
-    sFile.Add(asx.Join(";"))
+    If $delim Then
+      sFile.Add(asx.Join($delim))
+    Else
+      sFile.Add(asx.Join(";"))
+    Endif
   Next
   File.Save($sPath, sFile.Join(gb.NewLine))
   Me.Close()

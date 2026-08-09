@@ -1,12 +1,12 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,105,44)
+  MoveScaled(0,0,105,47)
   Text = ("Medical Setting")
   Resizable = False
   { IconPanel1 IconPanel
-    MoveScaled(1,1,103,42)
-    Count = 9
+    MoveScaled(1,1,103,45)
+    Count = 10
     Index = 0
     Text = ("Calculation")
     { Label7 Label
@@ -843,6 +843,17 @@
     }
     { btnmedadvice ToolButton
       MoveScaled(66,22,4,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    Index = 9
+    Text = ("ML Outputs")
+    { chkmatchdiagnosis CheckBox
+      MoveScaled(2,2,63,3)
+      Text = ("Match Diagnosis with ICD text")
+    }
+    { btnmatchdiagno Button
+      MoveScaled(67,2,10,3)
+      Text = ("Save")
       Picture = Picture["icon:/small/apply"]
     }
     Index = 0
