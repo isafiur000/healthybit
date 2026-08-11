@@ -13,7 +13,6 @@ Public Sub Form_Open()
   Me.Icon = Picture[modGeneralMain.$strLogo]
 
   cmbroute.List = modMedicine.ComboRoute()
-  cmbcategory.List = ["Expired Items", "Near Expiry", "Broken Items", "Not Ordered", "QTY Error", "Other Cagory"]
   BlankAllBox()
   DisplayDefaultStockReturnMode()
   If modBasic.$AccessStockReturn = "Disable" Then
@@ -34,7 +33,34 @@ Public Sub Form_Open()
       mnusave.Enabled = False
     Endif
   Endif
+  rbreturn.Value = True
+  SetRetCategory()
   ShowTransferGrid()
+
+End
+
+Private Sub SetRetCategory()
+
+  Dim xxx As String[]
+
+  If rbreturn.Value = True Then
+    xxx = ["Expired Items", "Near Expiry", "Broken Items", "Not Ordered", "Other Category"]
+  Else If rbcancel.Value = True
+    xxx = ["Wrong Invoice", "Wrong Supplier", "Quantity Error", "Duplication"]
+  Endif
+  cmbcategory.List = xxx
+
+End
+
+Public Sub rbcancel_Click()
+
+  SetRetCategory()
+
+End
+
+Public Sub rbreturn_Click()
+
+  SetRetCategory()
 
 End
 
@@ -198,6 +224,7 @@ Private Sub BlankAllBox()
   cmbrate.Clear()
   cmbrate.Text = ""
   cmbrate.Enabled = True
+  txtcomment.Text = ""
 
 End
 
@@ -212,10 +239,16 @@ Public Sub chksave_Click()
       res["fldstockno"] = txtstockno.Value
       res["fldstockid"] = cmbmedicine.Text
       res["fldcategory"] = cmbcategory.Text
+      If rbreturn.Value = True Then
+        res["fldformat"] = "Return"
+      Else If rbcancel.Value = True
+        res["fldformat"] = "Cancel"
+      Endif
       res["fldqty"] = txtqty.Value
       res["fldcost"] = txtnetcost.Value
       res["fldsuppname"] = cmbvendor.Text
       res["fldreference"] = cmbreference.Text
+      res["fldcomment"] = Trim(txtcomment.Text)
       res["flduserid"] = modBasic.$lbluser
       res["fldtime"] = Now()
       res["fldcomp"] = modBasic.$compID

@@ -112,11 +112,14 @@ Private Sub GetFieldsList()
   Dim xhospfld As String
 
   xhospfld = modDataRepo.HospitalField()
-  If cmbstatus.Text = "Current" Then
-    $SSQLFields = ["fldencounterval", "fldencounterval", "flddoa", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval"]
-  Else
-    $SSQLFields = ["fldid", "fldencounterval", "fldtime", "fldencounterval", modDataRepo.SerialField(), "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval"]
-  Endif
+  Select cmbstatus.Text
+    Case "Transition"
+      $SSQLFields = ["fldid", "fldencounterval", "fldtime", "fldencounterval", modDataRepo.SerialField(), "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval"]
+    Case "Current", "Admitted"
+      $SSQLFields = ["fldencounterval", "fldencounterval", "flddoa", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval"]
+    Case Else
+      $SSQLFields = ["fldencounterval", "fldencounterval", "flddod", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval"]
+  End Select
   If xhospfld Then
     $SSQLFields.Add(xhospfld)
   Endif
@@ -137,11 +140,21 @@ Private Function SHowPatGrid(xFldList As String[]) As Result
   Dim xlast As Date
 
   If $UseDateTime = False Then
-    xfir = modDate.EndSqlDate(dtfir.value)
-    xlast = modDate.StartSqlDate(dtlast.value)
+    If cmbstatus.Text = "Current" Then
+      xfir = modDate.StartSqlDate(dtlast.value)
+      xlast = modDate.EndSqlDate(dtfir.value)
+    Else
+      xfir = modDate.EndSqlDate(dtfir.value)
+      xlast = modDate.StartSqlDate(dtlast.value)
+    Endif
   Else If $UseDateTime = True Then
-    xfir = dtfir.value
-    xlast = dtlast.value
+    If cmbstatus.Text = "Current" Then
+      xfir = dtlast.value
+      xlast = dtfir.value
+    Else
+      xfir = dtfir.value
+      xlast = dtlast.value
+    Endif
   Endif
 
   If Not cmbgender.Text Then
@@ -159,7 +172,7 @@ Private Function SHowPatGrid(xFldList As String[]) As Result
       If cmbstatus.Text = "Current" Then
         xdept = " and fldcurrlocat in(select fldbed from tbldepartmentbed where flddept like &8)"
       Else If cmbstatus.Text = "Admitted" Then
-        xdept = " and fldadmitward like &9"
+        xdept = " and fldadmitward like &8"
       Else If cmbstatus.Text = "Transition" Then
         xdept = " and fldcomment in(select fldbed from tbldepartmentbed where flddept like &9)"
       Else If cmbstatus.Text = "Exits(All)" Then
@@ -171,7 +184,7 @@ Private Function SHowPatGrid(xFldList As String[]) As Result
       If cmbstatus.Text = "Current" Then
         xdept = " and fldcurrlocat in(select fldbed from tbldepartmentbed where fldservice like &8 or fldaddservice like &8)"
       Else If cmbstatus.Text = "Admitted" Then
-        xdept = " and fldadmitward in (select flddept from tbldepartmentbed where fldservice like &9 or fldaddservice like &9)"
+        xdept = " and fldadmitward in (select flddept from tbldepartmentbed where fldservice like &9 or fldaddservice like &8)"
       Else If cmbstatus.Text = "Transition" Then
         xdept = " and fldcomment in(select fldbed from tbldepartmentbed where fldservice like &9 or fldaddservice like &9)"
       Else If cmbstatus.Text = "Exits(All)" Then
@@ -184,11 +197,26 @@ Private Function SHowPatGrid(xFldList As String[]) As Result
     xdept = ""
   Endif
 
-  If rbasc.Value = True Then
-    xorder = " ORDER BY fldtime ASC"
-  Else If rbdesc.Value = True Then
-    xorder = " ORDER BY fldtime DESC"
-  Endif
+  Select cmbstatus.Text
+    Case "Transition"
+      If rbasc.Value = True Then
+        xorder = " ORDER BY fldtime ASC"
+      Else If rbdesc.Value = True Then
+        xorder = " ORDER BY fldtime DESC"
+      Endif
+    Case "Current", "Admitted"
+      If rbasc.Value = True Then
+        xorder = " ORDER BY flddoa ASC"
+      Else If rbdesc.Value = True Then
+        xorder = " ORDER BY flddoa DESC"
+      Endif
+    Case Else
+      If rbasc.Value = True Then
+        xorder = " ORDER BY flddod ASC"
+      Else If rbdesc.Value = True Then
+        xorder = " ORDER BY flddod DESC"
+      Endif
+  End Select
 
   If Not txtfromage.Value And If Not txttoage.Value And If cmbgender.Text = "%" Then
     xsql = ""
@@ -217,18 +245,19 @@ Private Function SHowPatGrid(xFldList As String[]) As Result
     res = modDatabase.$syConn.Exec(sql, xfir, xlast, cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, cmbpackage.Text, cmbdepart.Text)
 
   Else If cmbstatus.Text = "Admitted" Then
-    sql = "select " & xFldList.Join(",") & " from tblpatientdate where fldtime>=&1 and fldtime<=&2" & xsql & " and fldhead=&7 and fldencounterval in(select fldencounterval from tblencounter where flddisctype like &8" & xdept & ")" & $RepoStr & xdstenc & xorder                                                                             ''
-    res = modDatabase.$syConn.Exec(sql, xfir, xlast, cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, "Admitted", cmbpackage.Text, cmbdepart.Text)
+    sql = "select " & xFldList.Join(",") & " from tblencounter where flddoa>=&1 and flddoa<=&2" & xsql & " and flddisctype like &7" & xdept & $RepoStr & xdstenc & xorder                                                                             ''
+    res = modDatabase.$syConn.Exec(sql, xfir, xlast, cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, cmbpackage.Text, cmbdepart.Text)
 
+    ''Transition
   Else If cmbstatus.Text = "Transition" Then
     sql = "select " & xFldList.Join(",") & " from tblpatientdate where fldtime>=&1 and fldtime<=&2" & xsql & " and fldhead=&7 and fldencounterval in(select fldencounterval from tblencounter where flddisctype like &8)" & xdept & $RepoStr & xdstenc & xorder                                                                              ''
     res = modDatabase.$syConn.Exec(sql, xfir, xlast, cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, "Location Update", cmbpackage.Text, cmbdepart.Text)
 
   Else If cmbstatus.Text = "Exits(All)" Then
-    sql = "select " & xFldList.Join(",") & " from tblpatientdate where fldtime>=&1 and fldtime<=&2" & xsql & " and (fldhead=&7 or fldhead=&8 or fldhead=&9 or fldhead=&{10} or fldhead=&{11}) and fldencounterval in(select fldencounterval from tblencounter where flddisctype like &{12}" & xdept & ")" & $RepoStr & xdstenc & xorder                                                                              ''
+    sql = "select " & xFldList.Join(",") & " from tblencounter where flddod>=&1 and flddod<=&2" & xsql & " and (fldadmission=&7 or fldadmission=&8 or fldadmission=&9 or fldadmission=&{10} or fldadmission=&{11}) and flddisctype like &{12}" & xdept & $RepoStr & xdstenc & xorder                                                                              ''
     res = modDatabase.$syConn.Exec(sql, xfir, xlast, cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, "Discharged", "LAMA", "Refer", "Death", "Absconder", cmbpackage.Text, cmbdepart.Text)                                                    ''
   Else
-    sql = "select " & xFldList.Join(",") & " from tblpatientdate where fldtime>=&1 and fldtime<=&2" & xsql & " and fldhead=&7 and fldencounterval in(select fldencounterval from tblencounter where flddisctype like &8" & xdept & ")" & $RepoStr & xdstenc & xorder                                                                            ''
+    sql = "select " & xFldList.Join(",") & " from tblencounter where flddod>=&1 and flddod<=&2" & xsql & " and fldadmission=&7 and flddisctype like &8" & xdept & $RepoStr & xdstenc & xorder                                                                            ''
     res = modDatabase.$syConn.Exec(sql, xfir, xlast, cmbgender.Text, "%", 365 * txtfromage.Value, 365 * txttoage.Value, cmbstatus.Text, cmbpackage.Text, cmbdepart.Text)                                                    ''
   Endif
   Return res
@@ -253,7 +282,7 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
   Else If Column = 5 Then
     xxx = modPatient.GetPatientSex(xVariable, modDatabase.$syConn)
   Else If Column = 6 Then
-    xxx = modReportVar.GetDateTimeReport(modPatient.GetAdmissionDate(xVariable), gb.MediumDate)
+    xxx = modReportVar.GetDateTimeReport(modPatient.GetRecordDate(xVariable), gb.MediumDate)
   Else If Column = 7 Then
     xxx = Round(modPatient.GetHospitalStayInHours(xVariable) / 24, -2)
   Else If Column = 8 Then
@@ -331,7 +360,7 @@ Private Sub FormatGrid()
     .Columns[3].Text = "Name"
     .Columns[4].Text = "Age"
     .Columns[5].Text = "Gender"
-    .Columns[6].Text = "DOA"
+    .Columns[6].Text = "DOReg"
     .Columns[7].Text = "Stay(Day)"
     .Columns[8].Text = "LastStatus"
     .Columns[9].Text = "Diagnosis"

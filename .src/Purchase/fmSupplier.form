@@ -164,52 +164,67 @@
       { Panel4 Panel
         MoveScaled(0,0,117,4)
         { cmbcomp ComboBox
-          MoveScaled(0.5,0.5,15,3)
+          MoveScaled(0.5,0.5,19,3)
         }
         { btndetail Button
-          MoveScaled(16,0.5,15,3)
+          MoveScaled(21,0.5,15,3)
           Text = ("Detail")
           Picture = Picture["icon:/small/file"]
         }
+        { chkall CheckBox
+          MoveScaled(101,0.5,14,3)
+          Text = ("All Vendors")
+        }
+        { btnpayment Button
+          MoveScaled(36,0.5,15,3)
+          Text = ("Payment")
+          Picture = Picture["icon:/small/file"]
+        }
+        { btnreturn Button
+          MoveScaled(51,0.5,15,3)
+          Text = ("Return")
+          Picture = Picture["icon:/small/file"]
+        }
+      }
+      { Panel5 Panel
+        MoveScaled(0,4,117,4)
         { btninvoice Button
-          MoveScaled(31,0.5,15,3)
+          MoveScaled(0,0.5,15,3)
           Text = ("Invoices")
           Picture = Picture["icon:/small/file"]
         }
         { btnitems Button
-          MoveScaled(46,0.5,15,3)
+          MoveScaled(15,0.5,15,3)
           Text = ("Items")
           Picture = Picture["icon:/small/file"]
         }
-        { btnpayment Button
-          MoveScaled(61,0.5,15,3)
-          Text = ("Payment")
-          Picture = Picture["icon:/small/file"]
-        }
         { btnrepototal Button
-          MoveScaled(76,0.5,15,3)
+          MoveScaled(30,0.5,15,3)
           Text = ("Summary")
           Picture = Picture["icon:/small/file"]
         }
-        { btnreturn Button
-          MoveScaled(91,0.5,15,3)
-          Text = ("Return")
-          Picture = Picture["icon:/small/file"]
-        }
-        { chkall CheckBox
-          MoveScaled(108,0.5,8,3)
-          Text = ("All")
+        { Panel6 Panel
+          MoveScaled(88,0.5,28,3)
+          { rbentrydate RadioButton
+            MoveScaled(0,0,13,3)
+            Text = ("Entry Date")
+            Value = True
+          }
+          { rbinvdate RadioButton
+            MoveScaled(13,0,14,3)
+            Text = ("Invoice Date")
+          }
         }
       }
       { GridView1 GridView
-        MoveScaled(1,5,116,19)
+        MoveScaled(1,16,116,19)
         Expand = True
         Mode = Select.Single
         Header = GridView.Both
         AutoResize = False
       }
       { Panel3 Panel
-        MoveScaled(0,27,117,5)
+        MoveScaled(0,38,117,5)
         { txttotdebit ValueBox
           MoveScaled(53,1,19,3)
           Text = ("ValueBox1")

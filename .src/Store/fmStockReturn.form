@@ -37,9 +37,9 @@
   { Panel1 Panel
     MoveScaled(0,0,120,72)
     { Panel2 Panel
-      MoveScaled(1,0,119,13)
+      MoveScaled(1,0,119,17)
       { cmbcategory ComboBox
-        MoveScaled(1,1,29,3)
+        MoveScaled(22,1,25,3)
       }
       { cmbroute ComboBox
         MoveScaled(4,5,11,3)
@@ -56,21 +56,24 @@
         Sorted = True
       }
       { cmbreference ComboBox
-        MoveScaled(54,9,20.5,3)
+        MoveScaled(54,9,29,3)
         Sorted = True
       }
       { cmbrate ComboBox
-        MoveScaled(75,9,11,3)
+        MoveScaled(87,9,16,3)
       }
       { txtqty ValueBox
         MoveScaled(111,9,7,3)
+      }
+      { txtcomment TextBox
+        MoveScaled(65,13,48,3)
       }
       { chksave CheckBox
         MoveScaled(1,5,2.625,3)
         Tag = "Auto"
       }
       { btnfullrep Button
-        MoveScaled(33,1,4,3)
+        MoveScaled(51,1,4,3)
         Picture = Picture["icon:/small/html"]
       }
       { txtstockno ValueBox
@@ -78,7 +81,7 @@
         Enabled = False
       }
       { txtnetcost ValueBox
-        MoveScaled(64,1,4,3)
+        MoveScaled(78,1,4,3)
         Visible = False
       }
       { txtstatus ValueBox
@@ -93,10 +96,9 @@
       { txtmax ValueBox
         MoveScaled(103,9,7,3)
         Enabled = False
-        Text = ("ValueBox1")
       }
       { lblinvoice Label
-        MoveScaled(87,9,15,3)
+        MoveScaled(1,13,29,3)
         Border = Border.Plain
       }
       { lbladdress Label
@@ -115,9 +117,28 @@
           Text = ("Brand")
         }
       }
+      { Panel4 Panel
+        MoveScaled(1,1,20,3)
+        { rbcancel RadioButton
+          MoveScaled(0,0,10,3)
+          ToolTip = ("Select it for Purchase Entry Correction")
+          Text = ("Cancel")
+        }
+        { rbreturn RadioButton
+          MoveScaled(10,0,10,3)
+          ToolTip = ("Select it for Purchase Return")
+          Text = ("Return")
+          Value = True
+        }
+      }
+      { Label1 Label
+        MoveScaled(54,13,10,3)
+        Border = Border.Plain
+        Text = ("Comment")
+      }
     }
     { GridView1 GridView
-      MoveScaled(1,13,118,58)
+      MoveScaled(1,30,118,26)
       Expand = True
       Mode = Select.Single
       Header = GridView.Both
