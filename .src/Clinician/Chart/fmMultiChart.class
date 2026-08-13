@@ -15,6 +15,7 @@ Private bObHBox As New Object[100]
 Private bObj1 As New Object[100]
 Private bObVal As New Object[100]
 Private bObBox As New Object[100]
+Private bObBtn As New Object[100]
 Private bObButt As New Object[100]
 Private bsepLine As New Object[100]
 
@@ -30,6 +31,8 @@ Private $UserRestrict As String[]
 Private $PatientNum As String
 Private $status As String
 Private $input As Boolean
+Private $hProgForm As FmNurProgress
+Private $hNoteForm As FmNurseNote
 
 Public Sub _new(encid As String, sTitle As String, unt As String)
 
@@ -53,9 +56,20 @@ Public Sub Form_Open()
   $input = modPatient.EnableClinicForm($status)
   $UserRestrict = modBasic.$ClinicDisableCompo
 
-  If modBasic.$ClinNotesWithChart = "Enable" Then
+  If modBasic.$ClinNotesWithChart = "Nursing Note" Then
     pnlcustnotes.Visible = True
+    btnaddprogr.Visible = False
+    If $input = True Then
+      $hNoteForm = New FmNurseNote($encid, $sTitle, Panel9)
+    Endif
+  Else If modBasic.$ClinNotesWithChart = "Progress Note" Then
+    pnlcustnotes.Visible = True
+    btnaddprogr.Visible = True
+    If $input = True Then
+      $hProgForm = New FmNurProgress($encid, $sTitle, Panel9)
+    Endif
   Else
+    btnaddprogr.Visible = False
     pnlcustnotes.Visible = False
   Endif
   modBasic.LoadClinicalChartSetting()
@@ -198,13 +212,342 @@ Public Sub btnrefresh_Click()
     LoadTablesExam()
     ShowLastDoctorOrder()
     GetDataEntry()
-    btnoteadd.Enabled = True
-    txtnote.RichText = ""
-    txtimpression.Text = ""
   Endif
 
 End
 
+''====================== Input with Chart ==========================
+Private Sub LoadControls()
+
+  Dim i As Integer
+
+  If ListContainer1.Children.Count Then
+    ListContainer1.Children.Clear()
+  Endif
+
+  For i = 0 To $xParamVar.Count - 1
+    aPanel[i] = New VBox(ListContainer1)
+    aObHBox[i] = New HBox(aPanel[i])
+    aObj1[i] = New TextLabel(aObHBox[i]) As "TextLabelGroup"
+
+    If $xParamVar[i]["Category"] = "Examination" Then
+      If $xParamVar[i]["Type"] = "Quantitative" Then
+        If $xalllow = True Then
+          aObVal[i] = New ValueBox(aObHBox[i])
+          If $input = True Then
+            aObButt[i] = New ToolButton(aObHBox[i]) As "SaveButton"
+          Endif
+        Endif
+        aObjx[i] = New ScrollView(aPanel[i]) As "ScrollGroup"
+        aObj[i] = New PictureBox(aObjx[i]) As "PictureBoxgroup"
+
+      Else
+        If $xParamVar[i]["Component"] And If $xParamVar[i]["Option"] = "Clinical Scale" Then
+          If $xalllow = True Then
+            aObBtn[i] = New ButtonBox(aObHBox[i]) As "ButtonBox"
+            aObVal[i] = New ValueBox(aObHBox[i])
+            If $input = True Then
+              aObButt[i] = New ToolButton(aObHBox[i]) As "SaveButton"
+            Endif
+          Endif
+          aObjx[i] = New ScrollView(aPanel[i]) As "ScrollGroup"
+          aObj[i] = New PictureBox(aObjx[i]) As "PictureBoxgroup"
+
+        Else ''purely qualitative
+          If $xalllow = True Then
+            aObBox[i] = New ComboBox(aObHBox[i])
+            If $input = True Then
+              aObButt[i] = New ToolButton(aObHBox[i]) As "SaveButton"
+            Endif
+          Endif
+          aObk[i] = New ListBox(aPanel[i]) As "ListGroup"
+        Endif
+      Endif
+
+    Else If $xParamVar[i]["Category"] = "Laboratory" Then
+      If $xParamVar[i]["Type"] = "Quantitative" Then
+        aObjx[i] = New ScrollView(aPanel[i]) As "ScrollGroup"
+        aObj[i] = New PictureBox(aObjx[i]) As "PictureBoxgroup"
+      Else
+        aObk[i] = New ListBox(aPanel[i]) As "ListGroup"
+      Endif
+
+    Else If $xParamVar[i]["Category"] = "Medicines" Then
+      aObjx[i] = New ScrollView(aPanel[i]) As "ScrollGroup"
+      aObj[i] = New PictureBox(aObjx[i]) As "PictureBoxgroup"
+
+    Else If $xParamVar[i]["Category"] = "Intake" Then
+      aObjx[i] = New ScrollView(aPanel[i]) As "ScrollGroup"
+      aObj[i] = New PictureBox(aObjx[i]) As "PictureBoxgroup"
+
+    Else If $xParamVar[i]["Category"] = "Output" Then
+      aObjx[i] = New ScrollView(aPanel[i]) As "ScrollGroup"
+      aObj[i] = New PictureBox(aObjx[i]) As "PictureBoxgroup"
+
+    Endif
+
+  Next
+
+  FillCHartItems(Slider1.Value * 10)
+
+End
+
+Public Sub ButtonBox_Click()
+
+  Dim j As Integer
+  Dim xval As String[]
+
+  j = Last.Tag
+  xval = DualScaleValue($xParamVar[j]["Component"], Split($xParamVar[j]["OptionValues"], ";"))
+  If xval Then
+    aObBtn[j].Text = xval[1]
+    aObVal[j].Value = CFloat(xval[0])
+  Endif
+
+End
+
+Private Sub FillCHartItems(sHt As Integer)
+
+  Dim i As Integer
+  Dim sPath As String
+
+  For i = 0 To $xParamVar.Count - 1
+    With aPanel[i]
+      .Height = (30 + sHt) * AppFactor
+    End With
+
+    With aObHBox[i]
+      .Height = 30 * AppFactor
+      .Tag = $xParamVar[i]["Constant"]
+    End With
+    With aObj1[i]
+      .Expand = True
+      .Height = 25 * AppFactor
+      If $xParamVar[i]["Component"] Then
+        .Text = "<b>" & $xParamVar[i]["Component"] & " [" & $xParamVar[i]["Examination"] & "]" & "</b>"
+      Else
+        .Text = "<b>" & $xParamVar[i]["Examination"] & "</b>"
+      Endif
+      .Tag = i
+    End With
+
+    If $xParamVar[i]["Category"] = "Examination" Then
+      If $xParamVar[i]["Type"] = "Quantitative" Then
+        ''input
+        If $xalllow = True Then
+          With aObVal[i]
+            .Width = 75 * AppFactor
+            .Height = 25 * AppFactor
+            .Tag = i
+          End With
+          If $input = True Then
+            With aObButt[i]
+              .Width = 50 * AppFactor
+              .Height = 25 * AppFactor
+              .Picture = Picture["icon:/small/apply"]
+              .Enabled = True
+              .Tag = i
+            End With
+          Endif
+        Endif
+
+        ''chart
+        With aObjx[i]
+          .Height = sHt * AppFactor
+          .Left = 0
+          .Tag = i
+        End With
+        With aObj[i]
+          .Background = Color.White
+          .Expand = True
+          .AutoResize = True
+          .Height = (sHt - 20) * AppFactor
+          .Left = 0
+          .Top = 0
+          .Tag = i
+        End With
+        sPath = ""
+        If rballvisit.Value = True Then
+          sPath = modClinSub.FillQuantiExamChartHistory(aObj[i].Height, $encid, $PatientNum, $xParamVar[i]["Examination"], ChartHourVal(), txtdiff.Value)
+        Else
+          sPath = modClinSub.FillQuantiExamChart(aObj[i].Height, $encid, $xParamVar[i]["Examination"], ChartHourVal(), txtdiff.Value)
+        Endif
+        If sPath Then
+          Try aObj[i].Picture = Picture.Load(sPath)
+        Endif
+
+      Else
+        If $xParamVar[i]["Component"] And If $xParamVar[i]["Option"] = "Clinical Scale" Then
+          If $xalllow = True Then
+            With aObBtn[i]
+              .Width = 200 * AppFactor
+              .Height = 25 * AppFactor
+              .Picture = Picture["icon:/small/add"]
+              .Tag = i
+            End With
+            With aObVal[i]
+              .Width = 50 * AppFactor
+              .Height = 25 * AppFactor
+              .Enabled = False
+              .Tag = i
+            End With
+            If $input = True Then
+              With aObButt[i]
+                .Width = 50 * AppFactor
+                .Height = 25 * AppFactor
+                .Picture = Picture["icon:/small/apply"]
+                .Enabled = True
+                .Tag = i
+              End With
+            Endif
+          Endif
+
+          ''chart
+          With aObjx[i]
+            .Height = sHt * AppFactor
+            .Left = 0
+            .Tag = i
+          End With
+          With aObj[i]
+            .Background = Color.White
+            .Expand = True
+            .AutoResize = True
+            .Height = (sHt - 20) * AppFactor
+            .Left = 0
+            .Top = 0
+            .Tag = i
+          End With
+          sPath = ""
+          If rballvisit.Value = True Then
+            sPath = modClinSub.FillQuantiExamChartHistory(aObj[i].Height, $encid, $PatientNum, $xParamVar[i]["Component"] & " [" & $xParamVar[i]["Examination"] & "]", ChartHourVal(), txtdiff.Value)
+          Else
+            sPath = modClinSub.FillQuantiExamChart(aObj[i].Height, $encid, $xParamVar[i]["Component"] & " [" & $xParamVar[i]["Examination"] & "]", ChartHourVal(), txtdiff.Value)
+          Endif
+          If sPath Then
+            Try aObj[i].Picture = Picture.Load(sPath)
+          Endif
+
+        Else  ''purely qualitative
+          ''input
+          If $xalllow = True Then
+            With aObBox[i]
+              .Width = 150 * AppFactor
+              .Height = 25 * AppFactor
+              .List = Split($xParamVar[i]["OptionValues"], ";")
+              .Tag = i
+            End With
+            If $input = True Then
+              With aObButt[i]
+                .Width = 50 * AppFactor
+                .Height = 25 * AppFactor
+                .Picture = Picture["icon:/small/apply"]
+                .Enabled = True
+                .Tag = i
+              End With
+            Endif
+          Endif
+
+          ''table
+          With aObk[i]
+            .Height = sHt * AppFactor
+            .Left = 0
+            .Width = (Panel1.Width - 75) * AppFactor
+            .List = modClinic.UniExamValueList($encid, $xParamVar[i]["Examination"])
+            .Tag = i
+          End With
+        Endif
+
+      Endif
+
+    Else If $xParamVar[i]["Category"] = "Laboratory" Then
+      If $xParamVar[i]["Type"] = "Quantitative" Then
+        With aObjx[i]
+          .Height = sHt * AppFactor
+          .Left = 0
+          .Tag = i
+        End With
+        With aObj[i]
+          .Background = Color.White
+          .Expand = True
+          .AutoResize = True
+          .Height = (sHt - 20) * AppFactor
+          .Left = 0
+          .Top = 0
+          .Tag = i
+        End With
+        sPath = ""
+        If rballvisit.Value = True Then
+          sPath = modLabSub.FillQuantiTestChartHistory(aObj[i].Height, $encid, $PatientNum, $xParamVar[i]["Examination"], $unt, ChartHourVal())
+        Else
+          sPath = modLabSub.FillQuantiTestChart(aObj[i].Height, $encid, $xParamVar[i]["Examination"], $unt, ChartHourVal())
+        Endif
+        If sPath Then
+          Try aObj[i].Picture = Picture.Load(sPath)
+        Endif
+
+      Else
+        With aObk[i]
+          .Height = sHt * AppFactor
+          .Left = 0
+          .Width = (Panel1.Width - 75) * AppFactor
+          .List = modLabTest.UniLabValueList($encid, $xParamVar[i]["Examination"])
+          .Tag = i
+        End With
+
+      Endif
+
+    Else If $xParamVar[i]["Category"] = "Medicines" Then
+    Else If $xParamVar[i]["Category"] = "Intake" Then
+    Else If $xParamVar[i]["Category"] = "Output" Then
+
+    Endif
+
+  Next
+
+End
+
+Public Sub SaveButton_Click()
+
+  Dim i As Integer
+  Dim xcateg As String
+  Dim xColl As Collection
+
+  i = Last.Tag
+
+  If $sTitle = "Essential Examinations" Then
+    xcateg = "Essential Examinations"
+  Else
+    xcateg = "Physician Examinations"
+  Endif
+  If $xParamVar[i]["Component"] And If $xParamVar[i]["Option"] = "Clinical Scale" Then
+    If aObBtn[i].Text And If aObVal[i].Value Then
+      xColl = New Collection
+      xColl.Add(aObVal[i].Value, $xParamVar[i]["Component"])
+      modClinSub.AddClinicExam($encid, "", $xParamVar[i]["Component"] & " [" & $xParamVar[i]["Examination"] & "]", "Clinical Scale", JSON.Encode(xColl), aObVal[i].Value, False, xcateg, aObHBox[i].Tag, "Regular")
+      Balloon.Info(("Information saved"), aObButt[i])
+      Balloon.Delay = modBasic.$BalloonDelay
+      aObButt[i].Enabled = False
+    Endif
+
+  Else
+    If aObVal[i] And If aObVal[i].Value Then
+      modClinSub.AddQuantiData($encid, "", $xParamVar[i]["Examination"], "", aObVal[i].Value, False, xcateg, aObHBox[i].Tag)
+      Balloon.Info(("Information saved"), aObButt[i])
+      Balloon.Delay = modBasic.$BalloonDelay
+      aObButt[i].Enabled = False
+
+    Else If aObBox[i] And If aObBox[i].Text Then
+      modClinSub.AddQualiData($encid, "", $xParamVar[i]["Examination"], "", aObBox[i].Text, False, xcateg, aObHBox[i].Tag)
+      Balloon.Info(("Information saved"), aObButt[i])
+      Balloon.Delay = modBasic.$BalloonDelay
+      aObButt[i].Enabled = False
+
+    Endif
+  Endif
+
+End
+
+''===================== Table Values ======================
 Private Function GetDateRange(xfir As Date, colm As Integer) As Date
 
   Dim dtrange As Date
@@ -225,17 +568,27 @@ End
 
 Private Sub GetInfusionItemList(patNo As String, xStart As Date, xLast As Date)
 
+  Dim sql1 As String
+  Dim sql2 As String
   Dim res As Result
   Dim sColl As Collection
   Dim i As Integer
+  Dim xcol As Integer
 
   For i = 0 To $xParamVar.Count - 1
     If $xParamVar[i]["Category"] = "Intake" And If $xParamVar[i]["Examination"] = "Infusion" Then
-      $xParamVar.Remove(i)
+      xcol = i + 1
+      Break
     Endif
   Next
 
-  res = modDatabase.$myConn.Exec("select DISTINCT(tblnurdosing.fldmedicine) as fldmedicine from tblnurdosing inner join tblencounter on tblnurdosing.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblnurdosing.fldsave=&2 and tblnurdosing.fldfromtime<&3 and (tblnurdosing.fldtotime IS NULL or tblnurdosing.fldtotime>&4) and flddoseno in(select fldid from tblpatdosing where fldroute=&5 or fldroute=&6 or fldroute=&7) ORDER BY tblnurdosing.fldtime", patNo, True, xLast, xStart, "fluid", "IIV", "CIV")
+  If xcol Then
+    $xParamVar.Remove(xcol - 1)
+  Endif
+
+  sql1 = "select DISTINCT(tblnurdosing.fldmedicine) as fldmedicine from tblnurdosing inner join tblencounter on tblnurdosing.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblnurdosing.fldsave=&2 and tblnurdosing.fldfromtime<&3 and (tblnurdosing.fldtotime IS NULL or tblnurdosing.fldtotime>&4) and flddoseno in(select fldid from tblpatdosing where fldroute=&5 or fldroute=&6 or fldroute=&7)"
+  sql2 = "select DISTINCT(tblnurdosing.fldmedicine) as fldmedicine from tblnurdosing inner join tblencounter on tblnurdosing.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblnurdosing.fldsave=&2 and tblnurdosing.fldfromtime<&3 and (tblnurdosing.fldtotime IS NULL or tblnurdosing.fldtotime>&4) and fldcardex in(select fldid from tblinpatdosing where fldroute=&5 or fldroute=&6 or fldroute=&7)"
+  res = modDatabase.$myConn.Exec(sql1 & " UNION " & sql2, patNo, True, xLast, xStart, "fluid", "IIV", "CIV")
   If res.Available Then
     For Each res
       sColl = New Collection
@@ -436,7 +789,7 @@ Private Function InfusionEstimateVolByDate(patNo As String, xMedicine As String,
     xx = ""
   Else
     xvol = 0
-    res = modDatabase.$myConn.Exec("select tblnurdosing.fldvalue as fldvalue,tblnurdosing.fldfromtime as fldfromtime,tblnurdosing.fldtotime as fldtotime from tblnurdosing inner join tblencounter on tblnurdosing.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblnurdosing.fldsave=&2 and tblnurdosing.fldfromtime<&3 and (tblnurdosing.fldtotime IS NULL or tblnurdosing.fldtotime>&4) and tblnurdosing.fldmedicine=&5 and flddoseno in(select fldid from tblpatdosing where fldroute=&6 or fldroute=&7 or fldroute=&8) ORDER BY tblnurdosing.fldtime", patNo, True, xlast, xfir, xMedicine, "fluid", "IIV", "CIV")
+    res = modDatabase.$myConn.Exec("select tblnurdosing.fldvalue as fldvalue,tblnurdosing.fldfromtime as fldfromtime,tblnurdosing.fldtotime as fldtotime from tblnurdosing inner join tblencounter on tblnurdosing.fldencounterval=tblencounter.fldencounterval where tblencounter.fldpatientval=&1 and tblnurdosing.fldsave=&2 and tblnurdosing.fldfromtime<&3 and (tblnurdosing.fldtotime IS NULL or tblnurdosing.fldtotime>&4) and tblnurdosing.fldmedicine=&5", patNo, True, xlast, xfir, xMedicine)
     If res.Available Then
       For Each res
         If res["fldfromtime"] <= xfir Then
@@ -640,7 +993,7 @@ Private Sub GetDataEntry()
 
       If $xParamVar[i]["Component"] Then
         If $xParamVar[i]["Option"] = "Clinical Scale" Then
-          aObBtn[i] = New ButtonBox(bObHBox[i]) As "ButtonScale"
+          bObBtn[i] = New ButtonBox(bObHBox[i]) As "ButtonScale"
           bObVal[i] = New ValueBox(bObHBox[i])
         Endif
 
@@ -685,7 +1038,7 @@ Private Sub ShowEntryControls()
         End With
 
         If $xParamVar[i]["Option"] = "Clinical Scale" Then
-          With aObBtn[i]
+          With bObBtn[i]
             .Expand = True
             .Picture = Picture["icon:/small/add"]
             .Tag = i
@@ -726,6 +1079,7 @@ Private Sub ShowEntryControls()
         With bObButt[i]
           .Width = 25 * AppFactor
           .Picture = Picture["icon:/small/apply"]
+          .Enabled = True
           .Tag = i
         End With
       Endif
@@ -748,7 +1102,7 @@ Public Sub ButtonScale_Click()
   j = Last.Tag
   xval = DualScaleValue($xParamVar[j]["Component"], Split($xParamVar[j]["OptionValues"], ";"))
   If xval Then
-    aObBtn[j].Text = xval[1]
+    bObBtn[j].Text = xval[1]
     bObVal[j].Value = CFloat(xval[0])
   Endif
 
@@ -769,10 +1123,13 @@ Public Sub SaveExam_Click()
   Endif
   If $xParamVar[i]["Component"] Then
     If $xParamVar[i]["Option"] = "Clinical Scale" Then
-      If aObBtn[i].Text Then
+      If bObBtn[i].Text Then
         xColl = New Collection
         xColl.Add(bObVal[i].Value, $xParamVar[i]["Component"])
         modClinSub.AddClinicExam($encid, "", $xParamVar[i]["Component"] & " [" & $xParamVar[i]["Examination"] & "]", "Clinical Scale", JSON.Encode(xColl), bObVal[i].Value, False, xcateg, bObHBox[i].Tag, "Regular")
+        Balloon.Info(("Information saved"), bObButt[i])
+        Balloon.Delay = modBasic.$BalloonDelay
+        bObButt[i].Enabled = False
       Endif
     Endif
 
@@ -781,238 +1138,17 @@ Public Sub SaveExam_Click()
       modClinSub.AddQuantiData($encid, "", $xParamVar[i]["Examination"], "", bObVal[i].Value, False, xcateg, bObHBox[i].Tag)
       Balloon.Info(("Information saved"), bObButt[i])
       Balloon.Delay = modBasic.$BalloonDelay
+      bObButt[i].Enabled = False
 
     Else If bObBox[i] And If bObBox[i].Text Then
       modClinSub.AddQualiData($encid, "", $xParamVar[i]["Examination"], "", bObBox[i].Text, False, xcateg, bObHBox[i].Tag)
       Balloon.Info(("Information saved"), bObButt[i])
       Balloon.Delay = modBasic.$BalloonDelay
+      bObButt[i].Enabled = False
 
     Endif
   Endif
   LoadTablesExam()
-
-End
-
-''====================== Chart ==========================
-Private Sub LoadControls()
-
-  Dim i As Integer
-
-  If ListContainer1.Children.Count Then
-    ListContainer1.Children.Clear()
-  Endif
-
-  For i = 0 To $xParamVar.Count - 1
-    If i < 49 Then
-      aPanel[i] = New VBox(ListContainer1)
-      aObHBox[i] = New HBox(aPanel[i])
-      aObj1[i] = New TextLabel(aObHBox[i]) As "TextLabelGroup"
-
-      If $xParamVar[i]["Category"] = "Examination" Then
-        If $xParamVar[i]["Type"] = "Quantitative" Then
-          If $xalllow = True Then
-            If $xParamVar[i]["Component"] Then
-            Else
-              aObVal[i] = New ValueBox(aObHBox[i])
-              If $input = True Then
-                aObButt[i] = New ToolButton(aObHBox[i]) As "SaveButton"
-              Endif
-            Endif
-          Endif
-          aObjx[i] = New ScrollView(aPanel[i]) As "ScrollGroup"
-          aObj[i] = New PictureBox(aObjx[i]) As "PictureBoxgroup"
-        Else
-          If $xalllow = True Then
-            If $xParamVar[i]["Component"] Then
-            Else
-              aObBox[i] = New ComboBox(aObHBox[i])
-              If $input = True Then
-                aObButt[i] = New ToolButton(aObHBox[i]) As "SaveButton"
-              Endif
-            Endif
-          Endif
-          aObk[i] = New ListBox(aPanel[i]) As "ListGroup"
-        Endif
-      Else If $xParamVar[i]["Category"] = "Laboratory" Then
-        If $xParamVar[i]["Type"] = "Quantitative" Then
-          aObjx[i] = New ScrollView(aPanel[i]) As "ScrollGroup"
-          aObj[i] = New PictureBox(aObjx[i]) As "PictureBoxgroup"
-        Else
-          aObk[i] = New ListBox(aPanel[i]) As "ListGroup"
-        Endif
-      Else If $xParamVar[i]["Category"] = "Intake" Then
-        aObjx[i] = New ScrollView(aPanel[i]) As "ScrollGroup"
-        aObj[i] = New PictureBox(aObjx[i]) As "PictureBoxgroup"
-      Else If $xParamVar[i]["Category"] = "Output" Then
-        aObjx[i] = New ScrollView(aPanel[i]) As "ScrollGroup"
-        aObj[i] = New PictureBox(aObjx[i]) As "PictureBoxgroup"
-      Endif
-
-    Endif
-  Next
-
-  FillCHartItems(Slider1.Value * 10)
-
-End
-
-Private Sub FillCHartItems(sHt As Integer)
-
-  Dim i As Integer
-  Dim sPath As String
-
-  For i = 0 To $xParamVar.Count - 1
-    If i < 49 Then
-
-      With aPanel[i]
-        .Height = (30 + sHt) * AppFactor
-      End With
-
-      With aObHBox[i]
-        .Height = 30 * AppFactor
-        .Tag = $xParamVar[i]["Constant"]
-      End With
-
-      With aObj1[i]
-        .Left = 0
-        .Expand = True
-        .Height = 25 * AppFactor
-        .Top = 0
-        If $xParamVar[i]["Component"] Then
-          .Text = "<b>" & $xParamVar[i]["Component"] & " [" & $xParamVar[i]["Examination"] & "]" & "</b>"
-        Else
-          .Text = "<b>" & $xParamVar[i]["Examination"] & "</b>"
-        Endif
-        .Tag = i
-      End With
-
-      If $xParamVar[i]["Category"] = "Examination" Then
-        If $xParamVar[i]["Type"] = "Quantitative" Then
-          If $xalllow = True Then
-            If $xParamVar[i]["Component"] Then
-            Else
-              With aObVal[i]
-                .Left = 250 * AppFactor
-                .Width = 75 * AppFactor
-                .Height = 25 * AppFactor
-                .Top = 0
-                .Tag = i
-              End With
-              If $input = True Then
-                With aObButt[i]
-                  .Left = 300 * AppFactor
-                  .Width = 50 * AppFactor
-                  .Height = 25 * AppFactor
-                  .Top = 0
-                  .Picture = Picture["icon:/small/apply"]
-                  .Tag = i
-                End With
-              Endif
-            Endif
-          Endif
-
-          With aObjx[i]
-            .Height = sHt * AppFactor
-            .Left = 0
-            .Tag = i
-          End With
-          With aObj[i]
-            .Background = Color.White
-            .Expand = True
-            .AutoResize = True
-            .Height = (sHt - 20) * AppFactor
-            .Left = 0
-            .Top = 0
-            .Tag = i
-          End With
-          sPath = ""
-          If rballvisit.Value = True Then
-            sPath = modClinSub.FillQuantiExamChartHistory(aObj[i].Height, $encid, $PatientNum, $xParamVar[i]["Examination"], ChartHourVal())
-          Else
-            sPath = modClinSub.FillQuantiExamChart(aObj[i].Height, $encid, $xParamVar[i]["Examination"], ChartHourVal())
-          Endif
-          If sPath Then
-            Try aObj[i].Picture = Picture.Load(sPath)
-          Endif
-
-        Else
-          If $xalllow = True Then
-            If $xParamVar[i]["Component"] Then
-            Else
-              With aObBox[i]
-                .Left = 250 * AppFactor
-                .Width = 150 * AppFactor
-                .Height = 25 * AppFactor
-                .Top = 0
-                .List = Split($xParamVar[i]["OptionValues"], ";")
-                .Tag = i
-              End With
-              If $input = True Then
-                With aObButt[i]
-                  .Left = 300 * AppFactor
-                  .Width = 50 * AppFactor
-                  .Height = 25 * AppFactor
-                  .Top = 0
-                  .Picture = Picture["icon:/small/apply"]
-                  .Tag = i
-                End With
-              Endif
-            Endif
-          Endif
-
-          With aObk[i]
-            .Height = sHt * AppFactor
-            .Left = 0
-            .Width = (Panel1.Width - 75) * AppFactor
-            .List = modClinic.UniExamValueList($encid, $xParamVar[i]["Examination"])
-            .Tag = i
-          End With
-
-        Endif
-
-      Else If $xParamVar[i]["Category"] = "Laboratory" Then
-        If $xParamVar[i]["Type"] = "Quantitative" Then
-          With aObjx[i]
-            .Height = sHt * AppFactor
-            .Left = 0
-            .Tag = i
-          End With
-          With aObj[i]
-            .Background = Color.White
-            .Expand = True
-            .AutoResize = True
-            .Height = (sHt - 20) * AppFactor
-            .Left = 0
-            .Top = 0
-            .Tag = i
-          End With
-          sPath = ""
-          If rballvisit.Value = True Then
-            sPath = modLabSub.FillQuantiTestChartHistory(aObj[i].Height, $encid, $PatientNum, $xParamVar[i]["Examination"], $unt, ChartHourVal())
-          Else
-            sPath = modLabSub.FillQuantiTestChart(aObj[i].Height, $encid, $xParamVar[i]["Examination"], $unt, ChartHourVal())
-          Endif
-          If sPath Then
-            Try aObj[i].Picture = Picture.Load(sPath)
-          Endif
-
-        Else
-          With aObk[i]
-            .Height = sHt * AppFactor
-            .Left = 0
-            .Width = (Panel1.Width - 75) * AppFactor
-            .List = modLabTest.UniLabValueList($encid, $xParamVar[i]["Examination"])
-            .Tag = i
-          End With
-
-        Endif
-
-      Else If $xParamVar[i]["Category"] = "Intake" Then
-      Else If $xParamVar[i]["Category"] = "Output" Then
-
-      Endif
-
-    Endif
-  Next
 
 End
 
@@ -1035,285 +1171,6 @@ Private Function ChartHourVal() As Integer
   Return xx
 
 End
-
-Public Sub SaveButton_Click()
-
-  Dim i As Integer
-  Dim xcateg As String
-
-  i = Last.Tag
-
-  If $sTitle = "Essential Examinations" Then
-    xcateg = "Essential Examinations"
-  Else
-    xcateg = "Physician Examinations"
-  Endif
-  If aObVal[i] And If aObVal[i].Value Then
-    modClinSub.AddQuantiData($encid, "", $xParamVar[i]["Examination"], "", aObVal[i].Value, False, xcateg, aObHBox[i].Tag)
-    Balloon.Info(("Information saved"), aObButt[i])
-    Balloon.Delay = modBasic.$BalloonDelay
-
-  Else If aObBox[i] And If aObBox[i].Text Then
-    modClinSub.AddQualiData($encid, "", $xParamVar[i]["Examination"], "", aObBox[i].Text, False, xcateg, aObHBox[i].Tag)
-    Balloon.Info(("Information saved"), aObButt[i])
-    Balloon.Delay = modBasic.$BalloonDelay
-
-  Endif
-
-End
-
-' Private Sub LoadControls()
-'
-'   Dim i As Integer
-'   Dim j As Integer
-'   Dim sColl As Collection
-'
-'   If ListContainer1.Children.Count Then
-'     ListContainer1.Children.Clear()
-'   Endif
-'
-'   $labarr = New String[]
-'   $examarr = New String[]
-'   If $sTitle = "Essential Examinations" Then
-'     $examarr = modString.GetListFromCompareVariant(modTableCache.$ExaminationCompVar, "fldexamid", "fldcategory", "Essential Examinations", True)
-'   Else
-'     For Each sColl In $xParamVar
-'       If sColl["Category"] = "Examination" Then
-'         $examarr.Add(sColl["Examination"])
-'       Else If sColl["Category"] = "Laboratory" Then
-'         $labarr.Add(sColl["Examination"])
-'       Endif
-'     Next
-'   Endif
-'
-'   If $examarr Then
-'     For i = 0 To $examarr.Count - 1
-'       If i < 49 Then
-'
-'         aPanel[i] = New VBox(ListContainer1)
-'         aObHBox[i] = New HBox(aPanel[i])
-'         aObj1[i] = New TextLabel(aObHBox[i]) As "TextLabelGroup"
-'         If modFixClinic.GetExaminationType($examarr[i]) = "Quantitative" Then
-'           If $xalllow = True Then
-'             aObVal[i] = New ValueBox(aObHBox[i])
-'             aObButt[i] = New ToolButton(aObHBox[i]) As "SaveButton"
-'             If $UserRestrict Then
-'               If $UserRestrict.Exist("Essential Examinations") Then
-'                 aObButt[i].Enabled = False
-'               Endif
-'             Endif
-'           Endif
-'
-'           aObjx[i] = New ScrollView(aPanel[i]) As "ScrollGroup"
-'           aObj[i] = New PictureBox(aObjx[i]) As "PictureBoxgroup"
-'         Else
-'           If $xalllow = True Then
-'             aObBox[i] = New ComboBox(aObHBox[i])
-'             aObButt[i] = New ToolButton(aObHBox[i]) As "SaveButton"
-'             If $UserRestrict Then
-'               If $UserRestrict.Exist("Essential Examinations") Then
-'                 aObButt[i].Enabled = False
-'               Endif
-'             Endif
-'           Endif
-'
-'           aObk[i] = New ListBox(aPanel[i]) As "ListGroup"
-'         Endif
-'
-'       Endif
-'     Next
-'   Endif
-'
-'   If $labarr Then
-'     For j = 0 To $labarr.Count - 1
-'       If j < 49 Then
-'
-'         bPanel[i] = New VBox(ListContainer1)
-'         bObj1[j] = New TextLabel(bPanel[i]) As "TextLabelGroup"
-'         If modFixLab.GetLabTestType($labarr[j]) = "Quantitative" Then
-'           bObjx[j] = New ScrollView(bPanel[i]) As "ScrollGroup"
-'           bObj[j] = New PictureBox(bObjx[j]) As "PictureBoxgroup"
-'         Else
-'           bObk[j] = New ListBox(bPanel[i]) As "ListGroup"
-'         Endif
-'
-'       Endif
-'     Next
-'   Endif
-'   FillCHartItems(Slider1.Value * 10)
-'
-' End
-'
-' Private Sub FillCHartItems(sHt As Integer)
-'
-'   Dim i As Integer
-'   Dim j As Integer
-'   Dim sPath As String
-'
-'   $examColl = New Collection
-'   $labColl = New Collection
-'
-'   ''examination
-'   If $examarr Then
-'     For i = 0 To $examarr.Count - 1
-'       If i < 49 Then
-'
-'         With aPanel[i]
-'           .Height = (30 + sHt) * AppFactor
-'         End With
-'
-'         With aObHBox[i]
-'           .Height = 30 * AppFactor
-'           .Tag = modFixClinic.SysConstFromGetExamID($examarr[i])
-'         End With
-'
-'         With aObj1[i]
-'           .Left = 0
-'           .Expand = True
-'           .Height = 25 * AppFactor
-'           .Top = 0
-'           .Text = "<b>" & $examarr[i] & "</b>"
-'           .Tag = i
-'         End With
-'
-'         'get info and draw
-'         If modFixClinic.GetExaminationType($examarr[i]) = "Quantitative" Then
-'           If $xalllow = True Then
-'             With aObVal[i]
-'               .Left = 250 * AppFactor
-'               .Width = 75 * AppFactor
-'               .Height = 25 * AppFactor
-'               .Top = 0
-'               .Tag = i
-'             End With
-'             With aObButt[i]
-'               .Left = 300 * AppFactor
-'               .Width = 50 * AppFactor
-'               .Height = 25 * AppFactor
-'               .Top = 0
-'               .Picture = Picture["icon:/small/apply"]
-'               .Tag = i
-'             End With
-'           Endif
-'
-'           With aObjx[i]
-'             .Height = sHt * AppFactor
-'             .Left = 0
-'             .Tag = i
-'           End With
-'           With aObj[i]
-'             .Background = Color.White
-'             .Expand = True
-'             .AutoResize = True
-'             .Height = (sHt - 20) * AppFactor
-'             .Left = 0
-'             .Top = 0
-'             .Tag = i
-'           End With
-'           sPath = ""
-'           If rballvisit.Value = True Then
-'             sPath = modClinSub.FillQuantiExamChartHistory(aObj[i].Height, $encid, $PatientNum, $examarr[i], ChartHourVal())
-'           Else
-'             sPath = modClinSub.FillQuantiExamChart(aObj[i].Height, $encid, $examarr[i], ChartHourVal())
-'           Endif
-'           If sPath Then
-'             Try aObj[i].Picture = Picture.Load(sPath)
-'             $examColl.Add(sPath, $examarr[i])
-'           Endif
-'
-'         Else
-'           If $xalllow = True Then
-'             With aObBox[i]
-'               .Left = 250 * AppFactor
-'               .Width = 150 * AppFactor
-'               .Height = 25 * AppFactor
-'               .Top = 0
-'               .List = modAllExam.SelectExamOptionList("Exam", $examarr[i])
-'               .Tag = i
-'             End With
-'             With aObButt[i]
-'               .Left = 300 * AppFactor
-'               .Width = 50 * AppFactor
-'               .Height = 25 * AppFactor
-'               .Top = 0
-'               .Picture = Picture["icon:/small/apply"]
-'               .Tag = i
-'             End With
-'           Endif
-'
-'           With aObk[i]
-'             .Height = sHt * AppFactor
-'             .Left = 0
-'             .Width = (Panel1.Width - 75) * AppFactor
-'             .List = modClinic.UniExamValueList($encid, $examarr[i])
-'             .Tag = i
-'           End With
-'
-'         Endif
-'
-'       Endif
-'     Next
-'   Endif
-'
-'   ''for lab tests
-'   If $labarr Then
-'     For j = 0 To $labarr.Count - 1
-'       If j < 49 Then
-'
-'         With bPanel[i]
-'           .Height = (30 + sHt) * AppFactor
-'         End With
-'
-'         With bObj1[j]
-'           .Left = 0
-'           .Width = 300 * AppFactor
-'           .Height = 25 * AppFactor
-'           .Text = "<b>" & $labarr[j] & "</b>"
-'           .Tag = j
-'         End With
-'
-'         'get info and draw
-'         If modFixLab.GetLabTestType($labarr[j]) = "Quantitative" Then
-'           With bObjx[j]
-'             .Height = sHt * AppFactor
-'             .Left = 0
-'             .Tag = j
-'           End With
-'           With bObj[j]
-'             .Expand = True
-'             .AutoResize = True
-'             .Height = (sHt - 20) * AppFactor
-'             .Left = 0
-'             .Top = 0
-'             .Tag = j
-'           End With
-'           sPath = ""
-'           If rballvisit.Value = True Then
-'             sPath = modLabSub.FillQuantiTestChartHistory(bObj[j].Height, $encid, $PatientNum, $labarr[j], $unt, ChartHourVal())
-'           Else
-'             sPath = modLabSub.FillQuantiTestChart(bObj[j].Height, $encid, $labarr[j], $unt, ChartHourVal())
-'           Endif
-'           If sPath Then
-'             Try bObj[i].Picture = Picture.Load(sPath)
-'             $labColl.Add(sPath, $labarr[j])
-'           Endif
-'
-'         Else
-'           With bObk[j]
-'             .Height = sHt * AppFactor
-'             .Left = 0
-'             .Width = (Panel1.Width - 75) * AppFactor
-'             .List = modLabTest.UniLabValueList($encid, $labarr[j])
-'             .Tag = j
-'           End With
-'
-'         Endif
-'
-'       Endif
-'     Next
-'   Endif
-'
-' End
 
 Public Sub Form_Resize()
 
@@ -1340,16 +1197,28 @@ Private Sub ShowLastDoctorOrder()
 
 End
 
-''========================= Nurses Note =============================
-Public Sub btnoteadd_Click()
+''==================== Progress Forms =================
 
-  If $encid Then
-    If txtnote.Text Then
-      modPatientGeneral.AddPatientParagraph($encid, "Notes", "Nurses Note", txtimpression.Text, txtnote.RichText, False, $sTitle)
-      Balloon.Info(("Information saved"), btnoteadd)
-      Balloon.Delay = modBasic.$BalloonDelay
-      btnoteadd.Enabled = False
-    Endif
-  Endif
+Public Sub btnaddprogr_Click()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Create("tblpatplanning")
+  res["fldencounterval"] = $encid
+  res["fldplancategory"] = $sTitle
+  res["fldlocation"] = ""
+  res["fldproblem"] = ""
+  res["fldsubjective"] = ""
+  res["fldobjective"] = ""
+  res["fldassess"] = ""
+  res["fldplan"] = ""
+  res["flduserid"] = modBasic.$lbluser
+  res["fldtime"] = Now()
+  res["fldcomp"] = modBasic.$compID
+  res["fldsave"] = True
+  res["flduptime"] = ""
+  res["xyz"] = False
+  res.Update()
+  $hProgForm.RefreshProgress()
 
 End

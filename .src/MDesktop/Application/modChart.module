@@ -140,7 +140,7 @@ End
 
 ''======================== ONLY FOR DESKTOP APPLICATION =====================
 'NOTE: ----------------------- Clinical chart --------------------------------------
-Public Function ClinicalChart(drwHt As Integer, encid As String, pointsArr_x As Date[], pointsArr_y As Float[], maxval As Float, minval As Float, normval As Float) As String                                                         ''
+Public Function ClinicalChart(drwHt As Integer, encid As String, pointsArr_x As Date[], pointsArr_y As Float[], maxval As Float, minval As Float, normval As Float, Optional xSpace As Float) As String                                                         ''
 
   Dim drwchart As SvgImage
   Dim tempFile As String
@@ -166,11 +166,15 @@ Public Function ClinicalChart(drwHt As Integer, encid As String, pointsArr_x As 
   Dim xdate As Date
   Dim xhr As String
 
-  xhr = modSettings.ShowSettingFromFIle("ClinicalChart/HourDifference")
-  If xhr Then
-    xdf = CInt(xhr) / 60
+  If xSpace Then
+    xdf = xSpace / 10
   Else
-    xdf = 0.25
+    xhr = modSettings.ShowSettingFromFIle("ClinicalChart/HourDifference")
+    If xhr Then
+      xdf = CInt(xhr) / 60
+    Else
+      xdf = 0.25
+    Endif
   Endif
 
   xadmis = modPatient.GetAdmissionDate(encid)

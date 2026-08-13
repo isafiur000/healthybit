@@ -1,0 +1,203 @@
+' Gambas class file
+
+Private $encid As String
+Private $sType As String
+
+Public Sub _new(encid As String, sType As String)
+
+  $encid = encid
+  $sType = sType
+
+End
+
+Public Sub Form_Open()
+
+  ShowProgressParams()
+
+End
+
+Public Sub RefreshProgress()
+
+  ShowProgressParams()
+
+End
+
+Private Sub ShowProgressParams()
+
+  Dim sql As String
+  Dim res As Result
+
+  sql = "select fldid,fldtime,fldid,fldproblem,fldsubjective,fldobjective,fldassess,fldplan from tblpatplanning where fldencounterval=&1 and fldplancategory=&2 ORDER BY fldtime DESC"
+  res = modDatabase.$myConn.Exec(sql, $encid, $sType)
+  If res.Available Then
+    res.MoveFirst
+    TabPanel1.Enabled = True
+    txtmonvalue.Value = res["fldid"]
+    txtmonimpression.Text = res["fldproblem"]
+    txtmonproblem.RichText = res["fldsubjective"]
+    txtmontreatment.RichText = res["fldobjective"]
+    txtmoninout.RichText = res["fldassess"]
+    txtmonplan.RichText = res["fldplan"]
+  Else
+    TabPanel1.Enabled = False
+  Endif
+
+End
+
+Public Sub dctprogproblem_Click()
+
+  Dim xx As String
+
+  xx = GetRichTextArea("Problem Summary", txtmonproblem.RichText)
+  If xx Then
+    txtmonproblem.RichText = xx
+  Endif
+
+End
+
+Public Sub btntemplpprogproblem_Click()
+
+  txtmonproblem.RichText = txtmonproblem.RichText & DictionaryVIew("Problem Summary")
+
+End
+
+Public Sub dctprogtreat_Click()
+
+  Dim xx As String
+
+  xx = GetRichTextArea("Treatment Summary", txtmontreatment.RichText)
+  If xx Then
+    txtmontreatment.RichText = xx
+  Endif
+
+End
+
+Public Sub btntemplprogtreat_Click()
+
+  txtmontreatment.RichText = txtmontreatment.RichText & DictionaryVIew("Treatment Summary")
+
+End
+
+Public Sub dctproginout_Click()
+
+  Dim xx As String
+
+  xx = GetRichTextArea("Intake/Output Summary", txtmoninout.RichText)
+  If xx Then
+    txtmoninout.RichText = xx
+  Endif
+
+End
+
+Public Sub btntemplproginout_Click()
+
+  txtmoninout.RichText = txtmoninout.RichText & DictionaryVIew("Intake/Output Summary")
+
+End
+
+Public Sub dctprogplan_Click()
+
+  Dim xx As String
+
+  xx = GetRichTextArea("Nursing Plan", txtmonplan.RichText)
+  If xx Then
+    txtmonplan.RichText = xx
+  Endif
+
+End
+
+Public Sub btntemplprogplan_Click()
+
+  txtmonplan.RichText = txtmonplan.RichText & DictionaryVIew("Nursing Plan")
+
+End
+
+Public Sub btnmonproblem_Click()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Edit("tblpatplanning", "fldid=&1", txtmonvalue.Value)
+  If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
+    res["fldsubjective"] = txtmonproblem.RichText
+    res["flduserid"] = modBasic.$lbluser
+    res["xyz"] = False
+    res.Update
+    Balloon.Info(("Information saved"), btnmonproblem)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Else
+    Message.Warning("Authorization with " & res["flduserid"], ("OK"))
+  Endif
+
+End
+
+Public Sub btnmontreatment_Click()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Edit("tblpatplanning", "fldid=&1", txtmonvalue.Value)
+  If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
+    res["fldobjective"] = txtmontreatment.RichText
+    res["flduserid"] = modBasic.$lbluser
+    res["xyz"] = False
+    res.Update
+    Balloon.Info(("Information saved"), btnmontreatment)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Else
+    Message.Warning("Authorization with " & res["flduserid"], ("OK"))
+  Endif
+
+End
+
+Public Sub btnmoninout_Click()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Edit("tblpatplanning", "fldid=&1", txtmonvalue.Value)
+  If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
+    res["fldassess"] = txtmoninout.RichText
+    res["flduserid"] = modBasic.$lbluser
+    res["xyz"] = False
+    res.Update
+    Balloon.Info(("Information saved"), btnmoninout)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Else
+    Message.Warning("Authorization with " & res["flduserid"], ("OK"))
+  Endif
+
+End
+
+Public Sub btnmonplan_Click()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Edit("tblpatplanning", "fldid=&1", txtmonvalue.Value)
+  If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
+    res["fldplan"] = txtmonplan.RichText
+    res["flduserid"] = modBasic.$lbluser
+    res["xyz"] = False
+    res.Update
+    Balloon.Info(("Information saved"), btnmonplan)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Else
+    Message.Warning("Authorization with " & res["flduserid"], ("OK"))
+  Endif
+
+End
+
+Public Sub btnmonimpression_Click()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Edit("tblpatplanning", "fldid=&1", txtmonvalue.Value)
+  If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
+    res["fldproblem"] = txtmonimpression.Text
+    res["flduserid"] = modBasic.$lbluser
+    res["xyz"] = False
+    res.Update
+    Balloon.Info(("Information saved"), btnmonimpression)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Else
+    Message.Warning("Authorization with " & res["flduserid"], ("OK"))
+  Endif
+
+End

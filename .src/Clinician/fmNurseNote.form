@@ -1,0 +1,33 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,81,64)
+  Expand = True
+  Arrangement = Arrange.Vertical
+  { Panel11 Panel
+    MoveScaled(0,0,61,3)
+    { Label1 Label
+      MoveScaled(0,0,29,3)
+      Font = Font["Bold"]
+      Border = Border.Plain
+      Text = ("Nurses Note")
+    }
+    { btnoteadd Button
+      MoveScaled(49,0,11,3)
+      Text = Shortcut(("Add"), "A")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { txtnoteid ValueBox
+      MoveScaled(41,0,3,3)
+      Visible = False
+    }
+  }
+  { txtnote TextHTML
+    MoveScaled(1,4,51,9)
+    Expand = True
+  }
+  { txtimpression TextBox
+    MoveScaled(2,14,60,3)
+    Placeholder = ("IMPRESSION")
+  }
+}

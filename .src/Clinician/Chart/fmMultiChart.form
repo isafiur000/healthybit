@@ -57,44 +57,47 @@
     { Panel2 Panel
       MoveScaled(0,8,118,4.375)
       { btnrefresh Button
-        MoveScaled(102,0.375,15,3)
+        MoveScaled(104,0.375,14,3)
         Text = ("Refresh")
         Picture = Picture["icon:/small/refresh"]
         Default = True
       }
       { Slider1 Slider
-        MoveScaled(75,0.375,24,3)
+        MoveScaled(71,0.375,24,3)
         MinValue = 5
         MaxValue = 50
         Value = 10
       }
       { Panel3 Panel
-        MoveScaled(0,0.375,74,3)
+        MoveScaled(0,0.375,69,3)
         { rboneday RadioButton
           MoveScaled(1,0,11,3)
           Text = ("24 Hours")
           Value = True
         }
         { rbtwoday RadioButton
-          MoveScaled(12.5,0,12,3)
+          MoveScaled(12.5,0,11,3)
           Text = ("48 Hours")
         }
         { rbthreeday RadioButton
-          MoveScaled(25,0,12,3)
+          MoveScaled(24,0,11,3)
           Text = ("72 Hours")
         }
         { rballday RadioButton
-          MoveScaled(50,0,11,3)
+          MoveScaled(47,0,10.5,3)
           Text = ("All Days")
         }
         { rbweek RadioButton
-          MoveScaled(37.5,0,12,3)
+          MoveScaled(35.5,0,10.5,3)
           Text = ("1 Week")
         }
         { rballvisit RadioButton
-          MoveScaled(61.5,0,11,3)
+          MoveScaled(58,0,11,3)
           Text = ("All Visits")
         }
+      }
+      { txtdiff SpinBox
+        MoveScaled(96,0.375,7,3)
       }
     }
     { Panel7 Panel
@@ -137,12 +140,18 @@
         MoveScaled(0,1,54,19)
         Arrangement = Arrange.Vertical
         { Panel10 Panel
-          MoveScaled(0,0,50,3)
+          MoveScaled(0,0,54,3)
           { Label3 Label
             MoveScaled(0,0,29,3)
             Font = Font["Bold"]
             Border = Border.Plain
             Text = ("Doctor Order")
+          }
+          { btnaddprogr Button
+            MoveScaled(45,0,9,3)
+            Visible = False
+            Text = ("Add")
+            Picture = Picture["icon:/small/add"]
           }
         }
         { txtorder TextEdit
@@ -156,32 +165,6 @@
         MoveScaled(54,1,63,19)
         Expand = True
         Arrangement = Arrange.Vertical
-        { Panel11 Panel
-          MoveScaled(0,0,61,3)
-          { Label1 Label
-            MoveScaled(0,0,29,3)
-            Font = Font["Bold"]
-            Border = Border.Plain
-            Text = ("Nurses Note")
-          }
-          { btnoteadd Button
-            MoveScaled(49,0,11,3)
-            Text = Shortcut(("Add"), "A")
-            Picture = Picture["icon:/small/apply"]
-          }
-          { txtnoteid ValueBox
-            MoveScaled(41,0,3,3)
-            Visible = False
-          }
-        }
-        { txtnote TextHTML
-          MoveScaled(1,4,51,9)
-          Expand = True
-        }
-        { txtimpression TextBox
-          MoveScaled(2,14,60,3)
-          Placeholder = ("IMPRESSION")
-        }
       }
     }
   }

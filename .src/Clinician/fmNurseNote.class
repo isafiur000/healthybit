@@ -1,0 +1,39 @@
+' Gambas class file
+
+Private $encid As String
+Private $sTitle As String
+
+Public Sub _new(encid As String, sTitle As String)
+
+  $encid = encid
+  $sTitle = sTitle
+
+End
+
+Public Sub Form_Open()
+
+  Dim res As Result
+  Dim sql As String
+
+  sql = "select fldreportquali,flddetail from tblpatientnotes where fldencounterval=&1 and fldinput=&2 and flditem=&3 and fldlocation=&4 ORDER BY fldtime DESC"
+  res = modDatabase.$myConn.Exec(sql, $encid, "Notes", "Nurses Note", $sTitle)
+  If res.Available Then
+    res.MoveFirst
+    txtimpression.Text = res["fldreportquali"]
+    txtnote.RichText = res["flddetail"]
+  Endif
+
+End
+
+Public Sub btnoteadd_Click()
+
+  If $encid Then
+    If txtnote.Text Then
+      modPatientGeneral.AddPatientParagraph($encid, "Notes", "Nurses Note", txtimpression.Text, txtnote.RichText, False, $sTitle)
+      Balloon.Info(("Information saved"), btnoteadd)
+      Balloon.Delay = modBasic.$BalloonDelay
+      btnoteadd.Enabled = False
+    Endif
+  Endif
+
+End

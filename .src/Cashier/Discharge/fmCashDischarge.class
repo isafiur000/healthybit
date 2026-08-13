@@ -18,7 +18,7 @@ Private $xNHISCode As String
 Private $AdvPayment As String
 Private $DefaultItemType As String
 Private $frmshow As Boolean
-Private $refShow As Boolean
+' Private $refShow As Boolean
 
 Private $TestArray As String[]
 Private $ServiceArray As String[]
@@ -1432,8 +1432,10 @@ Public Sub mnudemo_Click()
     If $xFinClear = False Then
       If modBasic.$RegistAutoDemograph Then
         hForm = New FmPatdemograph(Trim(txtencid.Text), modBasic.$RegistAutoDemograph)
-        hForm.ShowModal
+      Else
+        hForm = New FmPatdemograph(Trim(txtencid.Text), "Acount")
       Endif
+      hForm.ShowModal
     Endif
   Endif
 
