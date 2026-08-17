@@ -59,6 +59,7 @@ Public Sub cmbdisctype_LostFocus()
 
   If cmbdisctype.Text Then
     txtbillmode.Text = modNonMedical.GetDiscBindBillMode(cmbdisctype.Text)
+    txtbilltype.Text = modNonMedical.GetFixedInvType(cmbdisctype.Text)
   Endif
 
 End
@@ -73,6 +74,8 @@ End
 Public Sub cmbpayment_GotFocus()
 
   Dim xLst As String[]
+  Dim xtot As Float
+  Dim xcshCr As Float
 
   If cmbdisctype.Text And If txtbillmode.Text Then
     If Not cmbpayment.Text Then
@@ -80,7 +83,13 @@ Public Sub cmbpayment_GotFocus()
       If xLst.Count Then
         cmbpayment.Text = GridViewNew("Select Particulars", xLst, False, cmbpayment, GridView1.Height)
         If cmbpayment.Text Then
-          txtpaycost.Value = modNonMedical.GetCashBillItemCost(cmbpayment.Text, "General Services")
+          If txtbilltype.Text = "Cash" Then
+            txtpaycost.Value = modNonMedical.GetCashBillItemCost(cmbpayment.Text, "General Services")
+          Else If txtbilltype.Text = "Credit" Then
+            xtot = modNonMedical.GetCashBillItemCost(cmbpayment.Text, "General Services")
+            xcshCr = modNonMedical.CashInCreditPerForCategory(cmbdisctype.Text, "General Services", cmbpayment.Text, txtbillmode.Text)
+            txtpaycost.Value = xcshCr * xtot / 100
+          Endif
         Endif
       Endif
     Endif

@@ -1607,10 +1607,11 @@ End
 Public Sub btnlabtest_Click()
 
   If cmblabtest.Text Then
-    If modBasic.$AutoBillTest = "Standard" Or If modBasic.$AutoBillTest = "Full" Or If modBasic.$AutoBillTest = "Partial" Then
-      modBillings.GetAutoBillingClinic(Trim(txtencid.Text), $billModePharmacy, "Test", cmblabtest.Text, 1, "Punched", 0, False, False, "", "")
-      Message.Info("Information saved", ("OK"))
-    Endif
+    Select modBasic.$AutoBillTest
+      Case "Full", "Standard", "RefOnly", "Partial"
+        modBillings.GetAutoBillingClinic(Trim(txtencid.Text), $billModePharmacy, "Test", cmblabtest.Text, 1, "Punched", 0, False, False, "", "")
+        Message.Info("Information saved", ("OK"))
+    End Select
   Endif
 
 End

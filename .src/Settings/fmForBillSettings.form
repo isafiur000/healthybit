@@ -27,7 +27,7 @@
   { IconPanel1 IconPanel
     MoveScaled(1,5,99,54)
     Enabled = False
-    Count = 10
+    Count = 11
     Index = 0
     Text = ("General")
     { Label3 Label
@@ -136,19 +136,6 @@
     }
     { btnnulledger Button
       MoveScaled(46,45,5,3)
-      Picture = Picture["icon:/small/apply"]
-    }
-    { Label109 Label
-      MoveScaled(1,17,14,3)
-      Border = Border.Plain
-      Text = ("Mobile Billing")
-    }
-    { cmbmobilebill ComboBox
-      MoveScaled(16,17,21,3)
-      ToolTip = ("Enable it to allow Mobile App use Billing API")
-    }
-    { btnmobilebill Button
-      MoveScaled(38,17,5,3)
       Picture = Picture["icon:/small/apply"]
     }
     Index = 1
@@ -1404,6 +1391,59 @@
         MoveScaled(30,15,3,3)
         Picture = Picture["icon:/small/apply"]
       }
+    }
+    Index = 10
+    Text = ("Web Services")
+    { Label109 Label
+      MoveScaled(1,1,25,3)
+      Border = Border.Plain
+      Text = ("Enable Service Sales")
+    }
+    { cmbmobservice ComboBox
+      MoveScaled(27,1,16,3)
+      ToolTip = ("Enable it to allow Mobile App use Service Sales API")
+    }
+    { btnmobservice Button
+      MoveScaled(44,1,5,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label112 Label
+      MoveScaled(1,5,25,3)
+      Border = Border.Plain
+      Text = ("Enable Pharmacy Sales")
+    }
+    { cmbmobpharm ComboBox
+      MoveScaled(27,5,16,3)
+      ToolTip = ("Enable it to allow Mobile App use Pharmacy Sales API")
+    }
+    { btnmobpharm Button
+      MoveScaled(44,5,5,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label113 Label
+      MoveScaled(1,9,25,3)
+      Border = Border.Plain
+      Text = ("Enable Adding Deposit ")
+    }
+    { cmbmobdeposit ComboBox
+      MoveScaled(27,9,16,3)
+      ToolTip = ("Enable it to allow Mobile App use Deposit API")
+    }
+    { btnmobdeposit Button
+      MoveScaled(44,9,5,3)
+      Picture = Picture["icon:/small/apply"]
+    }
+    { Label114 Label
+      MoveScaled(1,13,25,3)
+      Border = Border.Plain
+      Text = ("Registration Fee Check")
+    }
+    { cmbmobregfee ComboBox
+      MoveScaled(27,13,16,3)
+    }
+    { btnmobregfee Button
+      MoveScaled(44,13,5,3)
+      Picture = Picture["icon:/small/apply"]
     }
     Index = 0
   }

@@ -150,10 +150,14 @@ Public Sub GridView1_Click()
 
 End
 
-Public Sub cmbtype_Click()
+Public Sub cmbtype_LostFocus()
 
+  cmbtest.Clear()
   If cmbbilmode.Text And If cmbtype.Text Then
-    cmbtest.List = modNonMedical.NonStockBillActiveItemArray(modNonMedical.GetBillItemCategoryFromCombo(cmbtype.Text), cmbbilmode.Text)
+    If modBasic.$ItemListFormat = "GridView" Then
+    Else
+      cmbtest.List = modNonMedical.NonStockBillActiveItemArray(modNonMedical.GetBillItemCategoryFromCombo(cmbtype.Text), cmbbilmode.Text)
+    Endif
   Endif
 
 End
@@ -172,12 +176,6 @@ Public Sub cmbtest_GotFocus()
       Endif
     Endif
   Endif
-
-End
-
-Public Sub cmbtype_GotFocus()
-
-  cmbtest.Clear()
 
 End
 

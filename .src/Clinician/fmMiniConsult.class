@@ -219,9 +219,9 @@ Public Sub btnsubOK_Click()
 
       If xgo = True Then
         If modGeneral.GetCategoryFromDept(txtdepart.Text) = "Consultation" Then
-          modPatientSub.AddConsultData($encid, txtdepart.Text, dtconsult.Value, $BillMode, "IP Consultation", btnconsult.Tag, txtpresummary.RichText)
+          modPatientSub.AddConsultDataInternal($encid, txtdepart.Text, dtconsult.Value, $BillMode, "IP Consultation", btnconsult.Tag, txtpresummary.RichText)
         Else
-          modPatientSub.AddOPVisitData($encid, txtdepart.Text, dtconsult.Value, $BillMode, "IP Consultation", txtpresummary.RichText)
+          modPatientSub.AddOPVisitDataInternal($encid, txtdepart.Text, dtconsult.Value, $BillMode, "IP Consultation", txtpresummary.RichText)
         Endif
 
         If modBasic.$AutoBillConsult Then

@@ -299,18 +299,19 @@ Public Sub btnselecttree_Click()
   If modMisc.AllowDiagnoBilling($encid) = True Then
     If TreeView1.Current.Picture = Picture["icons/coll3.png"] Then   '
 
-      If modBasic.$AutoBillRadio = "Standard" Or If modBasic.$AutoBillRadio = "Full" Or If modBasic.$AutoBillRadio = "Partial" Then
-        xparent = Split(TreeView1.Current.ParentKey, "@")
-        xdef = modNonMedical.GetBillingDefaultQTY(TreeView1.Current.Text)
-        If xdef Then
-          xqty = xdef
-        Else
-          xqty = 1
-        Endif
-        modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", TreeView1.Current.Text, xqty, "Punched", 0, False, False, xpayble, xrefer, "", xparent[1])
-        acount = acount + xqty
-        TreeView1.Current.Picture = Picture["icons/coll2.png"]
-      Endif
+      Select modBasic.$AutoBillRadio
+        Case "Full", "Standard", "RefOnly", "Partial"
+          xparent = Split(TreeView1.Current.ParentKey, "@")
+          xdef = modNonMedical.GetBillingDefaultQTY(TreeView1.Current.Text)
+          If xdef Then
+            xqty = xdef
+          Else
+            xqty = 1
+          Endif
+          modBillings.GetAutoBillingClinic($encid, cmbdisctype.Text, "Radio", TreeView1.Current.Text, xqty, "Punched", 0, False, False, xpayble, xrefer, "", xparent[1])
+          acount = acount + xqty
+          TreeView1.Current.Picture = Picture["icons/coll2.png"]
+      End Select
 
     Endif
     ShowGridTree()
