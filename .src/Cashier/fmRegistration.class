@@ -3473,7 +3473,7 @@ Public Sub mnudocs_Click()
   If txtbookingid.Text Then
     If rbstaff.Value = True Then
     Else If rbsocial.Value = True Then
-      res = modDatabase.$myConn.Exec("select" & xList1.Join(",") & "from tblofficedocs where fldreference=&1 and fldcateg=&2", Trim(txtbookingid.Text), "SocialService")
+      res = modDatabase.$logConn.Exec("select" & xList1.Join(",") & "from tblofficedocs where fldreference=&1 and fldcateg=&2", Trim(txtbookingid.Text), "SocialService")
       If res.Available Then
         myRes.AddResult(res)
         hForm = New FMyRequest(myRes, "Social Service", "OfficeReports", False, xList1.Count)

@@ -600,7 +600,6 @@ UPDATE tblgroupexam SET fldcomp='%' WHERE fldcomp IS NULL
 ALTER TABLE tblpatbillcounts ADD flduserid VARCHAR( 25 ) NULL
 ALTER TABLE tblstockrate ADD fldpackvol DOUBLE NULL
 
-
 #--------------------------- 0.5.4 --------------------------------
 ALTER TABLE tblpatbilling ADD COLUMN fldbilltype VARCHAR( 25 ) NULL
 ALTER TABLE tblpatbilling ADD COLUMN flddisctype VARCHAR( 150 ) NULL
@@ -635,7 +634,7 @@ ALTER TABLE tblcompexam ADD fldflag BOOLEAN NULL
 ALTER TABLE tblpatgeneral ADD fldgroupid BIGINT( 11 ) NULL
 
 ALTER TABLE tblpatreport ADD fldflag BOOLEAN NULL
-UPDATE tblpatreport SET fldflag=0 
+UPDATE tblpatreport SET fldflag=0
 
 INSERT into tblautoid(fldtype,fldvalue) Values('ReceiptSaleNo',1)
 INSERT into tblautoid(fldtype,fldvalue) Values('InvoiceReturnNo',1)
@@ -776,7 +775,6 @@ ALTER TABLE tblpatreport ADD COLUMN flvisible VARCHAR( 50 ) NULL
 ALTER TABLE tblpatlabtest ADD COLUMN fldflag BOOLEAN NULL
 #UPDATE tblpatlabtest SET fldflag=1 WHERE xyz=1
 
-
 #------------------------- 0.5.10 ----------------------------
 ALTER TABLE tblhospitals ADD fldcontact VARCHAR( 250 ) NULL
 ALTER TABLE tblhospitals ADD fldemail VARCHAR( 250 ) NULL
@@ -792,7 +790,6 @@ ALTER TABLE tblassetsentry ADD fldexpense DOUBLE NULL
 
 #------------------------- 0.5.11 ----------------------------
 ALTER TABLE tblmedbrand ADD fldpacksize INT( 11 ) NULL
-
 
 ALTER TABLE tbldiscount ADD fldcashincredit DOUBLE NULL
 UPDATE tbldiscount SET fldcashincredit=0 WHERE fldcashincredit IS NULL
@@ -1011,7 +1008,6 @@ ALTER TABLE tbldeptexamoption ADD fldabnormal BOOLEAN NULL
 ALTER TABLE tblevents ADD fldtype VARCHAR( 150 ) NULL
 ALTER TABLE tblevents ADD fldcategory VARCHAR( 150 ) NULL
 
-
 #------------------------- 0.5.18 ----------------------------
 ALTER TABLE tblsupplier ADD fldsuppemail VARCHAR( 250 ) NULL
 
@@ -1041,7 +1037,6 @@ ALTER TABLE tblpatradiotest ADD COLUMN fldpacseries VARCHAR( 255 ) NULL
 ALTER TABLE tblpatradiotest ADD COLUMN fldpacsform VARCHAR( 25 ) NULL
 
 ALTER TABLE tbldepconsult ADD fldwebquota INT( 11 ) NULL
-
 
 #------------------------- 0.5.19 ----------------------------
 ALTER TABLE tblcode ADD fldvaccine BOOLEAN NULL
@@ -1086,13 +1081,12 @@ ALTER TABLE tblbulksale ADD COLUMN fldcomment VARCHAR( 250 ) NULL
 
 ALTER TABLE tbltransfer ADD COLUMN fldrequest VARCHAR( 250 ) NULL
 
-ALTER TABLE `tbltest` CHANGE `fldsysconst` `fldsysconst` VARCHAR(250) NULL DEFAULT NULL; 
-ALTER TABLE `tblstructexam` CHANGE `fldsysconst` `fldsysconst` VARCHAR(250) NULL DEFAULT NULL; 
-ALTER TABLE `tblcompexam` CHANGE `fldsysconst` `fldsysconst` VARCHAR(250) NULL DEFAULT NULL; 
-ALTER TABLE `tbldeptexam` CHANGE `fldsysconst` `fldsysconst` VARCHAR(250) NULL DEFAULT NULL; 
+ALTER TABLE `tbltest` CHANGE `fldsysconst` `fldsysconst` VARCHAR(250) NULL DEFAULT NULL;
+ALTER TABLE `tblstructexam` CHANGE `fldsysconst` `fldsysconst` VARCHAR(250) NULL DEFAULT NULL;
+ALTER TABLE `tblcompexam` CHANGE `fldsysconst` `fldsysconst` VARCHAR(250) NULL DEFAULT NULL;
+ALTER TABLE `tbldeptexam` CHANGE `fldsysconst` `fldsysconst` VARCHAR(250) NULL DEFAULT NULL;
 ALTER TABLE `tblexam` CHANGE `fldsysconst` `fldsysconst` VARCHAR(250) NULL DEFAULT NULL;
 ALTER TABLE `tblradio` CHANGE `fldsysconst` `fldsysconst` VARCHAR(250) NULL DEFAULT NULL;
-
 
 #------------------------- 0.5.20 ----------------------------
 ALTER TABLE tblstructexam ADD fldunique BOOLEAN NULL
@@ -1107,7 +1101,6 @@ ALTER TABLE tblstructexam ADD flddefault TEXT NULL
 ALTER TABLE `tblonlinebook` CHANGE `fldorduserid` `fldorduserid` VARCHAR(150) NULL DEFAULT NULL;
 ALTER TABLE `tblpatientbook` CHANGE `fldorduserid` `fldorduserid` VARCHAR(150) NULL DEFAULT NULL;
 ALTER TABLE `tblwebpayment` CHANGE `flduserid` `flduserid` VARCHAR(150) NULL DEFAULT NULL;
-
 
 ALTER TABLE tbldiscount ADD fldbankaccount VARCHAR( 200 ) NULL
 
@@ -1315,11 +1308,4 @@ ALTER TABLE tblconsult ADD COLUMN fldqueue INT( 11 ) NULL
 ALTER TABLE tblstockreturn ADD fldformat VARCHAR( 25 ) NULL
 ALTER TABLE tblstockreturn ADD fldcomment VARCHAR( 250 ) NULL
 
-
-
-
-
-
-
-
-
+ALTER TABLE tblonlinebook ADD fldpatientno VARCHAR( 150 ) NULL

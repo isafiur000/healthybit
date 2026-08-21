@@ -53,6 +53,7 @@ Public Sub GetFirstValues(SvrSock As ServerSocket, SvrTrans As ServerSocket)
         modDBTables.$DbFormat = "REP"
         modDBTables.$DbEngine = "HEAP"
         modDBGroup.CreateDatabaseForSish(sCon)
+        modDBGroup.CreateDatabaseForLog(sCon)
         modDBTables.$DbFormat = "HIS"
         sCon.Close()
       Endif
@@ -709,7 +710,7 @@ Public Sub ExitAllWindows()
   For Each frm In modAppSupport.FindWorSpace(modHelpVariable.$LogInCategory).Windows
     frm.Close
   Next
-  modDatabase.$myConn.Delete("tblsystemlog", "fldindex=&1", modHelpVariable.$MACAddress)
+  modDatabase.$logConn.Delete("tblsystemlog", "fldindex=&1", modHelpVariable.$MACAddress)
   modScript.ExecClosingScript()
   modGSM.StopDefaultModem()
   modDevice.CamOnClose()
@@ -1004,10 +1005,10 @@ Public Sub RecordFormUse(frm As Form)
   Dim res As Result
   Dim xx As String
 
-  If modDatabase.$myConn.Tables.Exist("tbljobrecord") Then
+  If modDatabase.$logConn.Tables.Exist("tbljobrecord") Then
     modBasic.DebugString("Inserting user log on " & frm.Text & " entry")
     xx = modString.GetDateString(modHelpVariable.$LogInTime) & ":" & CStr($macCode) & ":" & CStr(frm.Handle)
-    res = modDatabase.$myConn.Create("tbljobrecord")
+    res = modDatabase.$logConn.Create("tbljobrecord")
     res["fldindex"] = xx
     res["fldfrmname"] = frm.Name
     res["fldfrmlabel"] = frm.Text
@@ -1030,10 +1031,10 @@ Public Sub RecordFormExit(frm As Form)
   Dim res As Result
   Dim xx As String
 
-  If modDatabase.$myConn.Tables.Exist("tbljobrecord") Then
+  If modDatabase.$logConn.Tables.Exist("tbljobrecord") Then
     modBasic.DebugString("Inserting user log on " & frm.Text & " exit")
     xx = modString.GetDateString(modHelpVariable.$LogInTime) & ":" & CStr($macCode) & ":" & CStr(frm.Handle)
-    res = modDatabase.$myConn.Edit("tbljobrecord", "fldindex=&1 and fldpresent=&2", xx, True)                                                                               ''"
+    res = modDatabase.$logConn.Edit("tbljobrecord", "fldindex=&1 and fldpresent=&2", xx, True)                                                                               ''"
     If res.Available = True Then
       For Each res
         res["fldexittime"] = Now()

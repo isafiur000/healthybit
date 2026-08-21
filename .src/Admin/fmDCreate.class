@@ -55,7 +55,11 @@ Public Sub btnstruct_Click()
     If chkselect.Value = True Then
       CreateApplicationTables($newCon)
     Else
-      modDBGroup.CreateDatabaseForSish($newCon)
+      If rbmaindb.Value = True Then
+        modDBGroup.CreateDatabaseForSish($newCon)
+      Else If rblogdb.Value = True Then
+        modDBGroup.CreateDatabaseForLog($newCon)
+      Endif
     Endif
   Endif
   Try $newCon.Close()

@@ -803,7 +803,7 @@ Public Sub SendScheduleMails(sVal As String, xdebug As Boolean)
 
   asx = Split(sVal, ";")
   modHelpVariable.$MACAddress = modApplication.GetMACAddress()
-  res = modDatabase.$myConn.Exec("select fldtousers,fldcctype,fldccusers,fldfromhost,fldfromuser,fldfrompass,fldsender,fldsubject,fldcontent,fldreport from tblautoemail where fldhostmac=&1 and fldreport=&2", modHelpVariable.$MACAddress, asx[0])
+  res = modDatabase.$logConn.Exec("select fldtousers,fldcctype,fldccusers,fldfromhost,fldfromuser,fldfrompass,fldsender,fldsubject,fldcontent,fldreport from tblautoemail where fldhostmac=&1 and fldreport=&2", modHelpVariable.$MACAddress, asx[0])
   If res.Available Then
     res.MoveFirst
     If xdebug = True Then
@@ -1189,7 +1189,7 @@ Public Sub UploadInvoiceRepository(sBillNo As String, xdebug As Boolean)
   modHelpVariable.ConnectionMain()
   modHelpVariable.CalenderConnection()
   If modDatabase.$myConn.Opened = True Then
-    res1 = modDatabase.$myConn.Edit("tblfiscal", "fldbillno=&1 and (fldsync IS NULL or fldsync<>&2)", sBillNo, "200")
+    res1 = modDatabase.$logConn.Edit("tblfiscal", "fldbillno=&1 and (fldsync IS NULL or fldsync<>&2)", sBillNo, "200")
     If res1.Available Then
       If sBillNo Like "CAS" & "*" Then
         cClass = New CCBMSUpload(sBillNo)
@@ -1237,7 +1237,7 @@ Public Sub ScheduleTask(xdebug As Boolean)
         Print "Check for Schedule Task"
       Endif
 
-      res = modDatabase.$myConn.Edit("tblcronjob", "fldtime>=&1 and fldtime<=&2 and fldstatus=&3 and fldhostmac=&4", modDate.StartSqlMinute(xdt), modDate.EndSqlMinute(xdt), True, modHelpVariable.$MACAddress)                       ''
+      res = modDatabase.$logConn.Edit("tblcronjob", "fldtime>=&1 and fldtime<=&2 and fldstatus=&3 and fldhostmac=&4", modDate.StartSqlMinute(xdt), modDate.EndSqlMinute(xdt), True, modHelpVariable.$MACAddress)                       ''
       If res.Available Then
         idLock = modBillLock.LockTableForID("ExecScript")
         If idLock = True Then

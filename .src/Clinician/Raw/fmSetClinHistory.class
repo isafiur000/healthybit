@@ -1,0 +1,236 @@
+' Gambas class file
+
+Private $encid As String
+Private $billReference As String
+Private $patDepart As String
+
+Private $patGender As String
+Private $PatientNum As String
+Private $sTatus As String
+Private $HistoryChange As Boolean
+Private $Locked As Boolean
+
+Public Sub _new(encid As String, billReference As String, patDepart As String)
+
+  $encid = encid
+  $billReference = billReference
+  $patDepart = patDepart
+
+End
+
+Public Sub Form_Open()
+
+  $patGender = modPatient.GetPatientSex($encid)
+  $PatientNum = modPatient.GetPatientNoByEnc($encid)
+  $sTatus = modPatient.CurrentAdmissionStatus($encid)
+
+  $Locked = True
+  SetHtmlTextOption(txthistory)
+  cmbinpathistory.List = GetHistoryList()
+  If cmbinpathistory.List.Count Then
+    cmbinpathistory.Index = 0
+  Endif
+
+End
+
+Public Sub ActivateForm()
+
+  If chkenabhistory.Value = True Then
+    If $Locked = True Then
+      btnhistory.Enabled = True
+    Endif
+  Endif
+  txthistory.SetFocus
+
+End
+
+Public Sub SetEntryControls(xBool As Boolean)
+
+  $Locked = xBool
+  btnhistory.Enabled = xBool
+  mnupatcomment.Enabled = xBool
+  chkenabhistory.Value = xBool
+
+End
+
+Public Sub SetHistoryText(sText As String)
+
+  txthistory.Text = txthistory.Text & gb.NewLine & sText
+
+End
+
+Private Function GetHistoryList() As String[]
+
+  Dim xList As String[]
+  Dim xnew As String[]
+  Dim xfinal As String[]
+
+  xList = New String[]
+  xList.Add("General Complaints")
+  If $sTatus = "Admitted" Then
+    xList.Add("Cause of Admission")
+  Endif
+  xList.Add("History of Illness")
+  xnew = modMedicine.GetClinHistoryList($billReference, modBasic.$compID, $patGender)
+  If xnew And If xnew.Count Then
+    xList.Insert(xnew)
+  Else
+    xList.Insert(modMedicine.GetDefaultClinHistories())
+  Endif
+  If $sTatus = "Admitted" Then
+    xList.Add("Initial Planning")
+  Endif
+
+  xfinal = modString.BinaryDistinctStringArray(xList)
+  Return xfinal
+
+End
+
+''----------------------------------------------- history -----------------------------------
+Private Sub SetHtmlTextOption(TextHTML1 As TextHTML)
+
+  TextHTML1.DictionaryPath = modBasic.$dictPathList
+  TextHTML1.UserList = modBasic.$OPConsulUserList
+  If modBasic.$AutoRichTextMode = "Yes" Then
+    TextHTML1.RichMode = True
+  Else
+    TextHTML1.RichMode = False
+  Endif
+
+End
+
+Private Sub ShowPatHistory()
+
+  Dim xcomplAr As String[]
+
+  If cmbinpathistory.Text Then
+    lblhistoryhead.Text = cmbinpathistory.Text
+    If cmbinpathistory.Text = "Initial Planning" Or If cmbinpathistory.Text = "Expert Planning" Then
+      xcomplAr = modPatPatho.ShowSelectedNoteUser($encid, cmbinpathistory.Text)
+    Else
+      xcomplAr = modPatPatho.ShowSelectedHistoryUser($encid, cmbinpathistory.Text)
+    Endif
+    If xcomplAr And If xcomplAr.Count Then
+      txthistory.RichText = xcomplAr[0]
+      lblhistoryuser.Text = xcomplAr[1]
+    Else
+      txthistory.RichText = ""
+      lblhistoryuser.Text = ""
+    Endif
+    $HistoryChange = False
+  Endif
+
+End
+
+Public Sub cmbinpathistory_Click()
+
+  If $HistoryChange = True And If txthistory.Text Then
+    cmbinpathistory.Index = cmbinpathistory.Find(lblhistoryhead.Text)
+
+  Else
+    ShowPatHistory()
+    If chkenabhistory.Value = True Then
+      btnhistory.Enabled = True
+    Endif
+    txthistory.SetFocus
+  Endif
+
+End
+
+Public Sub txthistory_Change()
+
+  If txthistory.Text Then
+    $HistoryChange = True
+  Else
+    $HistoryChange = True
+  Endif
+
+End
+
+Public Sub btnhistory_Click()
+
+  Dim xboolean As Boolean
+
+  If modBasic.$ClinHistoryInput = "Single" Then
+    xboolean = True
+  Else
+    xboolean = False
+  Endif
+
+  If cmbinpathistory.Text Then
+    If txthistory.Text Then
+      If cmbinpathistory.Text = "Initial Planning" Or If cmbinpathistory.Text = "Expert Planning" Then
+        modPatientGeneral.AddPatientParagraph($encid, "Notes", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean, $patDepart)
+      Else
+        modPatientGeneral.AddPatientParagraph($encid, "History", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean, $patDepart)
+      Endif
+      Balloon.Info(("Information saved"), btnhistory)
+      Balloon.Delay = modBasic.$BalloonDelay
+      btnhistory.Enabled = False
+      $HistoryChange = False
+    Endif
+  Endif
+
+End
+
+Public Sub btnhistorydef_Click()
+
+  If cmbinpathistory.Text Then
+    txthistory.RichText = AddHistory("History", $encid, cmbinpathistory.Text)
+  Endif
+
+End
+
+Public Sub dcthelphistory_Click()
+
+  Dim xx As String
+
+  If cmbinpathistory.Text Then
+    xx = GetRichTextArea(cmbinpathistory.Text, txthistory.RichText)
+    If xx Then
+      txthistory.RichText = xx
+    Endif
+  Endif
+
+End
+
+Public Sub btntemplphistory_Click()
+
+  If cmbinpathistory.Text Then
+    txthistory.RichText = txthistory.RichText & DictionaryVIew(cmbinpathistory.Text)
+  Endif
+
+End
+
+Public Sub btnhelphistory_Click()
+
+  txthistory.RichText = txthistory.RichText & modCloudAI.GetPatCloudAIResponse($encid, txthistory.Text)
+
+End
+
+Public Sub mnupatcomment_Click()
+
+  Dim res As Result
+  Dim xval As String
+
+  If $PatientNum Then
+    res = modDatabase.$myConn.Edit("tblpatientinfo", "fldpatientval=&1", $PatientNum)
+    If res.Available Then
+      xval = GetTextArea($PatientNum, res["fldcomment"])
+      If xval Then
+        res["fldcomment"] = xval
+        res["fldupuser"] = modBasic.$lbluser
+        res["flduptime"] = Now()
+        res.Update
+        modPatient.$PatProfileData.Remove($encid)
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub mnupatcomment2_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("Scanned Images", $encid)
+
+End

@@ -8,78 +8,78 @@ Public Sub SetReportServer(LogInType As String)
 
   If MMain.$SISHAppMode = "HIS" Or If MMain.$SISHAppMode = "REP" Then ''remoteoptimized
     If LoginType = "Account" Then
-      modDatabase.$syConn = modDatabase.$ssyncConn
+      modDatabase.$syConn = modDatabase.$slaveConn
     Else If LoginType = "Cashier" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Record" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Medical" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Technologist" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Technician" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Consultant" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Clinician" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Research" Then
-      modDatabase.$syConn = modDatabase.$ssyncConn
+      modDatabase.$syConn = modDatabase.$slaveConn
     Else If LoginType = "Purchase" Then
-      modDatabase.$syConn = modDatabase.$ssyncConn
+      modDatabase.$syConn = modDatabase.$slaveConn
     Else If LoginType = "Store" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Pharmacist" Then
-      modDatabase.$syConn = modDatabase.$ssyncConn
+      modDatabase.$syConn = modDatabase.$slaveConn
     Else If LoginType = "Dispensar" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Endif
 
   Else If MMain.$SISHAppMode = "POL" Then
     If LoginType = "Account" Then
-      modDatabase.$syConn = modDatabase.$ssyncConn
+      modDatabase.$syConn = modDatabase.$slaveConn
     Else If LoginType = "Cashier" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Record" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Technologist" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Technician" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Pharmacist" Then
-      modDatabase.$syConn = modDatabase.$ssyncConn
+      modDatabase.$syConn = modDatabase.$slaveConn
     Else If LoginType = "Dispensar" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Endif
 
   Else If MMain.$SISHAppMode = "LAB" Then
     If LoginType = "Account" Then
-      modDatabase.$syConn = modDatabase.$ssyncConn
+      modDatabase.$syConn = modDatabase.$slaveConn
     Else If LoginType = "Cashier" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Record" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Technologist" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Technician" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Endif
 
   Else If MMain.$SISHAppMode = "PHM" Then
     If LoginType = "Pharmacist" Then
-      modDatabase.$syConn = modDatabase.$ssyncConn
+      modDatabase.$syConn = modDatabase.$slaveConn
     Else If LoginType = "Dispensar" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Record" Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Else
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
     Endif
 
   Endif
@@ -603,7 +603,7 @@ Public Sub SendSMSData(txtnow As LCDLabel)
   devPath = modSettings.ShowSettingFromFIle("KDEConnect/DefaultPath")
 
   Inc Application.Busy
-  res = modDatabase.$myConn.Edit("tblsmslog", "fldstatus=&1", "Waiting")
+  res = modDatabase.$logConn.Edit("tblsmslog", "fldstatus=&1", "Waiting")
   If res.Available Then
     For Each res
       If xapi = "KDEConnect" Then
@@ -684,7 +684,7 @@ Public Sub RecordPatientActivity(sCategory As String, frm As String, sActivity A
 
   Dim res As Result
 
-  res = modDatabase.$myConn.Create("tblactivity")
+  res = modDatabase.$logConn.Create("tblactivity")
   res["fldfrmname"] = frm
   res["fldcategory"] = sCategory
   res["fldactivity"] = sActivity
@@ -703,15 +703,15 @@ Public Sub RecordSystemLog()
   Dim res As Result
   Dim xird As String
 
-  If modDatabase.$myConn.Tables.Exist("tblsystemlog") Then
+  If modDatabase.$logConn.Tables.Exist("tblsystemlog") Then
     modBasic.DebugString("Inserting Application usage log")
-    modDatabase.$myConn.Delete("tblsystemlog", "fldindex=&1", modHelpVariable.$MACAddress)
+    modDatabase.$logConn.Delete("tblsystemlog", "fldindex=&1", modHelpVariable.$MACAddress)
     If modHelpVariable.$IRDLevel = "Yes" Then
       xird = "IRD"
     Else
       xird = ""
     Endif
-    res = modDatabase.$myConn.Create("tblsystemlog")
+    res = modDatabase.$logConn.Create("tblsystemlog")
     res["fldindex"] = modHelpVariable.$MACAddress
     res["flduser"] = modBasic.$lbluser
     res["fldcomp"] = modBasic.$compID
@@ -736,9 +736,9 @@ Public Sub SaveMessageLog(sTarget As String, sText As String, sType As String)
 
   Dim res As Result
 
-  If modDatabase.$myConn.Tables.Exist("tblmessagelog") Then
+  If modDatabase.$logConn.Tables.Exist("tblmessagelog") Then
     modBasic.DebugString("Inserting Message Log")
-    res = modDatabase.$myConn.Create("tblmessagelog")
+    res = modDatabase.$logConn.Create("tblmessagelog")
     res["fldwindow"] = sType
     res["fldtarget"] = sTarget
     res["fldmesstext"] = sText
@@ -758,8 +758,8 @@ Public Sub SaveSMSEntry(sTarget As String, sText As String, xStatus As String, x
 
   Dim res As Result
 
-  If modDatabase.$myConn.Tables.Exist("tblsmslog") Then
-    res = modDatabase.$myConn.Create("tblsmslog")
+  If modDatabase.$logConn.Tables.Exist("tblsmslog") Then
+    res = modDatabase.$logConn.Create("tblsmslog")
     res["fldwindow"] = modHelpVariable.$LogInCategory
     res["fldtarget"] = sTarget
     res["fldsmstext"] = sText

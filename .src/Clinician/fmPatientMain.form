@@ -980,91 +980,10 @@
       }
       Index = 1
       Text = ("History[F2]")
-      { Panel20 Panel
-        MoveScaled(0,0,25,39)
-        Arrangement = Arrange.Vertical
-        { cmbinpathistory ListBox
-          MoveScaled(1,2,23,27)
-          Expand = True
-        }
-        { Panel44 Panel
-          MoveScaled(0,30,25,4)
-          { mnupatcomment Button
-            MoveScaled(0,0,24,3.5)
-            Text = ("Longitudinal Med Record")
-          }
-        }
-        { Panel2 Panel
-          MoveScaled(0,35,24,3)
-          { rbsi RadioButton
-            MoveScaled(1,0,9,3)
-            Text = ("SI Unit")
-            Value = True
-          }
-          { rbmetric RadioButton
-            MoveScaled(13,0,9,3)
-            Text = ("Metric")
-          }
-        }
-      }
-      { Panel16 Panel
-        MoveScaled(26,0,1,39)
-        Arrangement = Arrange.Vertical
-      }
-      { Panel13 Panel
-        MoveScaled(27,0,91,39)
+      { pnlsetHistory Panel
+        MoveScaled(2,2,77,16)
         Expand = True
         Arrangement = Arrange.Vertical
-        { Panel15 Panel
-          MoveScaled(0,0,91,4)
-          { txtfindmin ValueBox
-            MoveScaled(56,0.375,3,3)
-            Visible = False
-          }
-          { txtfindmax ValueBox
-            MoveScaled(59,0.375,3,3)
-            Visible = False
-          }
-          { btnhelphistory ToolButton
-            MoveScaled(48,0.375,3,3)
-            Picture = Picture["icon:/small/exec"]
-          }
-          { dcthelphistory ToolButton
-            MoveScaled(44,0.375,3,3)
-            Picture = Picture["icon:/small/edit"]
-          }
-          { btntemplphistory ToolButton
-            MoveScaled(52,0.375,3,3)
-            Picture = Picture["icon:/small/attach"]
-          }
-          { btnhistorydef ToolButton
-            MoveScaled(40,0.375,3,3)
-            Picture = Picture["icon:/small/database"]
-          }
-          { btnhistory Button
-            MoveScaled(72,0.5,14,3)
-            Text = ("Save")
-            Picture = Picture["icon:/small/apply"]
-          }
-          { lblhistoryhead Label
-            MoveScaled(0,0.5,36,3)
-            Font = Font["Bold"]
-            Border = Border.Plain
-          }
-          { chkenabhistory CheckBox
-            MoveScaled(63,0,3,3)
-            Visible = False
-          }
-        }
-        { txthistory TextHTML
-          MoveScaled(0,4,40,23)
-          Tag = "Auto"
-          Expand = True
-        }
-        { lblhistoryuser Label
-          MoveScaled(0,30,84,3)
-          Border = Border.Plain
-        }
       }
       Index = 2
       Text = ("Exams[F3]")
@@ -1120,6 +1039,14 @@
           }
           { Panel19 Panel
             MoveScaled(54,0,4,3)
+          }
+          { txtfindmax ValueBox
+            MoveScaled(58,0,4,3)
+            Visible = False
+          }
+          { txtfindmin ValueBox
+            MoveScaled(62,0,4,3)
+            Visible = False
           }
         }
         { Panel77 Panel
@@ -1584,12 +1511,24 @@
         { Panel25 Panel
           MoveScaled(0,26,40,4)
           { txtoutfluid ValueBox
-            MoveScaled(24,0.5,16,3)
+            MoveScaled(31,0.5,8,3)
           }
           { Label4 Label
-            MoveScaled(14,0.5,9,3)
+            MoveScaled(25,0.5,6,3)
             Border = Border.Plain
-            Text = ("Total (mL)")
+            Text = ("Total")
+          }
+          { Panel2 Panel
+            MoveScaled(0,0.5,20,3)
+            { rbsi RadioButton
+              MoveScaled(1,0,9,3)
+              Text = ("SI Unit")
+              Value = True
+            }
+            { rbmetric RadioButton
+              MoveScaled(10,0,9,3)
+              Text = ("Metric")
+            }
           }
         }
       }

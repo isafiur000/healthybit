@@ -1226,7 +1226,7 @@ Public Sub GetAutoBillingRegularCharges(sType As String)
       Endif
     Next
 
-    rsn = modDatabase.$myConn.Create("tblcronjob")
+    rsn = modDatabase.$logConn.Create("tblcronjob")
     rsn["fldcategory"] = sType
     rsn["fldhostmac"] = modHelpVariable.$MACAddress
     rsn["fldscript"] = ""

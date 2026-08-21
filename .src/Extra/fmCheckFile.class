@@ -33,7 +33,7 @@ Public Sub btncheck_Click()
   TextArea1.Text = ""
   If txtfile.Text Then
     extmd5 = modApplication.GetMD5SumFile(txtfile.Text)
-    res = modDatabase.$myConn.Exec("select fldfile,fldlink,flduserid,fldtype,fldwindow,fldtime,fldhostmac,fldhostuser,fldhostip,fldhostname,fldcomp from tblreportlog where fldcomment=&1", extmd5)                                                                   ''
+    res = modDatabase.$logConn.Exec("select fldfile,fldlink,flduserid,fldtype,fldwindow,fldtime,fldhostmac,fldhostuser,fldhostip,fldhostname,fldcomp from tblreportlog where fldcomment=&1", extmd5)                                                                   ''
     If res.Available = False Then
       Message.Warning(("No log record found"), ("OK"))
     Else

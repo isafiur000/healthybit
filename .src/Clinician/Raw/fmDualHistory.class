@@ -1,0 +1,188 @@
+' Gambas class file
+
+Private $encid As String
+Private $billReference As String
+Private $patDepart As String
+
+Private $PatientNum As String
+Private $HistoryChange As Boolean
+Private $Locked As Boolean
+
+Public Sub _new(encid As String, billReference As String, patDepart As String)
+
+  $encid = encid
+  $billReference = billReference
+  $patDepart = patDepart
+
+End
+
+Public Sub Form_Open()
+
+  $PatientNum = modPatient.GetPatientNoByEnc($encid)
+
+  $Locked = True
+  SetHtmlTextOption(txtcomplnt)
+  SetHtmlTextOption(txtillness)
+
+  ShowPatHistory("General Complaints")
+  ShowPatHistory("History of Illness")
+
+End
+
+Public Sub ActivateForm()
+
+  If $Locked = True Then
+    btnsavecompl.Enabled = True
+    btnsaveillness.Enabled = True
+  Endif
+
+End
+
+Public Sub SetEntryControls(xBool As Boolean)
+
+  $Locked = xBool
+  btnsavecompl.Enabled = xBool
+  btnsaveillness.Enabled = xBool
+  mnupatcomment.Enabled = xBool
+
+End
+
+Public Sub SetHistoryText(sText As String)
+
+  txtcomplnt.Text = txtcomplnt.Text & gb.NewLine & sText
+
+End
+
+''----------------------------------------------- history -----------------------------------
+Private Sub SetHtmlTextOption(TextHTML1 As TextHTML)
+
+  TextHTML1.DictionaryPath = modBasic.$dictPathList
+  TextHTML1.UserList = modBasic.$OPConsulUserList
+  If modBasic.$AutoRichTextMode = "Yes" Then
+    TextHTML1.RichMode = True
+  Else
+    TextHTML1.RichMode = False
+  Endif
+
+End
+
+Private Sub ShowPatHistory(sType As String)
+
+  Dim xcomplAr As String[]
+
+  xcomplAr = modPatPatho.ShowSelectedNoteUser($encid, sType)
+  If sType = "General Complaints" Then
+    If xcomplAr And If xcomplAr.Count Then
+      txtcomplnt.RichText = xcomplAr[0]
+      lblcompluser.Text = xcomplAr[1]
+    Else
+      txtcomplnt.RichText = ""
+      lblcompluser.Text = ""
+    Endif
+  Else If sType = "History of Illness" Then
+    If xcomplAr And If xcomplAr.Count Then
+      txtillness.RichText = xcomplAr[0]
+      lblillnessuser.Text = xcomplAr[1]
+    Else
+      txtillness.RichText = ""
+      lblillnessuser.Text = ""
+    Endif
+  Endif
+
+End
+
+Public Sub btnsavecompl_Click()
+
+  SaveHistoryData("General Complaints", txtcomplnt)
+  Balloon.Info(("Information saved"), btnsavecompl)
+  Balloon.Delay = modBasic.$BalloonDelay
+  btnsavecompl.Enabled = False
+
+End
+
+Public Sub btnsaveillness_Click()
+
+  SaveHistoryData("History of Illness", txtillness)
+  Balloon.Info(("Information saved"), btnsaveillness)
+  Balloon.Delay = modBasic.$BalloonDelay
+  btnsaveillness.Enabled = False
+
+End
+
+Private Sub SaveHistoryData(sType As String, txthistory As TextHTML)
+
+  Dim xboolean As Boolean
+
+  If modBasic.$ClinHistoryInput = "Single" Then
+    xboolean = True
+  Else
+    xboolean = False
+  Endif
+
+  If sType Then
+    If txthistory.Text Then
+      modPatientGeneral.AddPatientParagraph($encid, "History", sType, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean, $patDepart)
+    Endif
+  Endif
+
+End
+
+''--------------------- complaints -------------------
+Public Sub btncompldef_Click()
+
+  txtcomplnt.RichText = AddHistory("History", $encid, "General Complaints")
+
+End
+
+Public Sub dcthelpcompl_Click()
+
+  Dim xx As String
+
+  xx = GetRichTextArea("General Complaints", txtcomplnt.RichText)
+  If xx Then
+    txtcomplnt.RichText = xx
+  Endif
+
+End
+
+Public Sub btnhelpcompl_Click()
+
+  txtcomplnt.RichText = txtcomplnt.RichText & modCloudAI.GetPatCloudAIResponse($encid, txtcomplnt.Text)
+
+End
+
+Public Sub btntemplpcomplnt_Click()
+
+  txtcomplnt.RichText = txtcomplnt.RichText & DictionaryVIew("General Complaints")
+
+End
+
+''---------------------------- Illness --------------------------
+Public Sub btnillnessdef_Click()
+
+  txtillness.RichText = AddHistory("History", $encid, "History of Illness")
+
+End
+
+Public Sub dcthelpillness_Click()
+
+  Dim xx As String
+
+  xx = GetRichTextArea("History of Illness", txtillness.RichText)
+  If xx Then
+    txtillness.RichText = xx
+  Endif
+
+End
+
+Public Sub btnhelpillness_Click()
+
+  txtillness.RichText = txtillness.RichText & modCloudAI.GetPatCloudAIResponse($encid, txtillness.Text)
+
+End
+
+Public Sub btntemplpillness_Click()
+
+  txtillness.RichText = txtillness.RichText & DictionaryVIew("History of Illness")
+
+End

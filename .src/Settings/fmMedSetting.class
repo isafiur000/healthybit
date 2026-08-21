@@ -44,6 +44,7 @@ Public Sub Form_Open()
   cmbvardays.List = ["Enable", "Disable"]
   cmbmedexpiry.List = ["Enable", "Disable"]
   cmbprogchart.List = ["Nursing Note", "Progress Note", "None"]
+  cmbhistoryform.List = ["Dual", "Detail"]
 
   cmbbodyformat.List = ["Tabular", "Paragraph"]
   cmbshowday.List = ["Date", "User", "Date+User", "None"]
@@ -509,6 +510,7 @@ Private Sub ClinFormsSetting()
   cmbvardays.Text = modSettings.ShowSettingFromFIle("ClinicForms/IPDVariableDays")
   cmbmedexpiry.Text = modSettings.ShowSettingFromFIle("ClinicForms/DrugOrderExpiry")
   cmbprogchart.Text = modSettings.ShowSettingFromFIle("ClinicForms/ProgressNotes_Chart")
+  cmbhistoryform.Text = modSettings.ShowSettingFromFIle("ClinicForms/HistoryInputForm")
 
 End
 
@@ -579,6 +581,15 @@ Public Sub btnprogchart_Click()
   modSettings.SaveSettingsToFile("ClinicForms/ProgressNotes_Chart", cmbprogchart.Text)
   modBasic.$ClinNotesWithChart = cmbprogchart.Text
   Balloon.Info(("Information saved"), btnprogchart)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnhistoryform_Click()
+
+  modSettings.SaveSettingsToFile("ClinicForms/HistoryInputForm", cmbhistoryform.Text)
+  modBasic.$HistoryInputForm = cmbhistoryform.Text
+  Balloon.Info(("Information saved"), btnhistoryform)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

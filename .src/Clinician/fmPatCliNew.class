@@ -22,6 +22,9 @@ Private $isAdmited As Boolean
 Private $ExamLst As String[]
 Private $RuleChartLst As String[]
 
+Private $HistoryForm As String = "Compact"
+Private hDualHistory As FmDualHistory
+Private hSetHistory As FmSetClinHistory
 Private hMultiCompl As FmMultiComplaints
 Private hPtForm As FmClinHistory
 Private hDigForm As FmDiagnosticTab
@@ -50,8 +53,6 @@ Private $SystBPRangeLimits As Float[]
 Private $RespRateRangeLimits As Float[]
 Private $OxySatRangeLimits As Float[]
 Private $TempeRangeLimits As Float[]
-
-Private $HistoryChange As Boolean
 
 Public Sub _new(encid As String, sIndex As Long, sMode As String, sComp As String, Focus As Boolean)
 
@@ -92,6 +93,7 @@ Public Sub Form_Open()
   FillCustomFormMenu()
   FillCustomMenu()
   FillStructExamMenu()
+  $HistoryForm = modBasic.$HistoryInputForm
 
   cmbpatheightunit.List = ["cm", "inch", "foot"]
   cmbhepatic.List = ["Impaired", "Normal"]
@@ -120,7 +122,6 @@ Public Sub Form_Open()
     txtbedno.ReadOnly = True
   Endif
 
-  SetHtmlTextOption(txthistory)
   SetHtmlTextOption(txtplan)
   SetHtmlTextOption(txtcomment)
   rbimproved.Value = True
@@ -262,10 +263,11 @@ Public Sub Form_KeyRelease()
 
   Else If Key.Code = Key.F3 Then
     TabPanel1.Index = 0
-    If chkenabhistory.Value = True Then
-      btnhistory.Enabled = True
+    If $HistoryForm = "Detail" Then
+      hSetHistory.ActivateForm()
+    Else
+      hDualHistory.ActivateForm()
     Endif
-    txthistory.SetFocus
   Else If Key.Code = Key.F4 Then
     TabPanel1.Index = 1
   Else If Key.Code = Key.F5 Then
@@ -284,7 +286,7 @@ Public Sub Form_KeyRelease()
     TabPanel1.Index = 6
   Else If Key.Code = Key.F10 Then
     TabPanel1.Index = 7
-    If chkenabhistory.Value = True Then
+    If chkenabplan.Value = True Then
       btnplan.Enabled = True
     Endif
     txtplan.SetFocus
@@ -306,10 +308,11 @@ End
 Public Sub TabPanel1_Click()
 
   If TabPanel1.Index = 0 Then
-    If chkenabhistory.Value = True Then
-      btnhistory.Enabled = True
+    If $HistoryForm = "Detail" Then
+      hSetHistory.ActivateForm()
+    Else
+      hDualHistory.ActivateForm()
     Endif
-    txthistory.SetFocus
   Else If TabPanel1.Index = 1 Then
   Else If TabPanel1.Index = 2 Then
   Else If TabPanel1.Index = 3 Then
@@ -321,7 +324,7 @@ Public Sub TabPanel1_Click()
   Else If TabPanel1.Index = 5 Then
   Else If TabPanel1.Index = 6 Then
   Else If TabPanel1.Index = 7 Then
-    If chkenabhistory.Value = True Then
+    If chkenabplan.Value = True Then
       btnplan.Enabled = True
     Endif
     txtplan.SetFocus
@@ -344,14 +347,6 @@ Public Sub btnshowvital_Click()
   If txtencid.Text Then
     ShowEssentialExam()
     btnsavevitals.Enabled = True
-  Endif
-
-End
-
-Public Sub btnshowhistory_Click()
-
-  If txtencid.Text Then
-    ShowPatHistory()
   Endif
 
 End
@@ -521,10 +516,6 @@ Private Sub BasicInfoPatient()
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
     $SyndroType = modNonMedical.GetFixedInvType(modPatient.ShowDiscountCategEnc(Trim(txtencid.Text)))
     GetDefaultBillingmodes()
-    cmbinpathistory.List = GetHistoryList()
-    If cmbinpathistory.List.Count Then
-      cmbinpathistory.Index = 0
-    Endif
 
     $dateReg = modPatient.GetRecordDate(Trim(txtencid.Text))
     cmbhepatic.Text = modClinic.GetHepaticStatus(Trim(txtencid.Text))
@@ -544,6 +535,11 @@ Private Sub BasicInfoPatient()
     ShowTelemedSaved()
     GetPatientOutComeVal()
 
+    If $HistoryForm = "Detail" Then
+      hSetHistory = New FmSetClinHistory(Trim(txtencid.Text), $billReference, txtbedno.Text, pnlsetHistory)
+    Else
+      hDualHistory = New FmDualHistory(Trim(txtencid.Text), $billReference, txtbedno.Text, pnlsetHistory)
+    Endif
     hMultiCompl = New FmMultiComplaints(Trim(txtencid.Text), txtbedno.Text, pnlmulticomplaints)
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
     hOwnStockForm = New FmWardStock(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlwardstock)
@@ -967,12 +963,15 @@ Private Sub ButtonControl()
     xx = False
   Endif
 
+  If $HistoryForm = "Detail" Then
+    hSetHistory.SetEntryControls(xx)
+  Else
+    hDualHistory.SetEntryControls(xx)
+  Endif
   hOwnStockForm.SetEntryControls(xx)
-  chkenabhistory.Value = xx
-  mnupatcomment.Enabled = xx
+  chkenabplan.Value = xx
   btnsaveAll.Enabled = xx
   btnpharm.Enabled = xx
-  mnupatcomment.Enabled = xx
   tlbtpregnancy.Enabled = xx
   tlbthepatic.Enabled = xx
   ''complaints
@@ -981,8 +980,7 @@ Private Sub ButtonControl()
   grdchiefsymptom.Enabled = xx
   pnlmulticomplaints.Enabled = xx
   btnmultisymptom.Enabled = xx
-  ''history
-  btnhistory.Enabled = xx
+  ''advice
   btnplan.Enabled = xx
   ''Telemedicine
   btnquery.Enabled = xx
@@ -1165,7 +1163,11 @@ Public Sub tbnsyndro_Click()
         If sName.Count > 2 And If sName[2] Then
           If modBasic.$ProvDiagnosisObstetrics = "Selection List" Then
             If modSettings.ShowSettingFromFIle("ClinicalRule/ObstetricsParam_History") = "Yes" Then
-              txthistory.Text = txthistory.Text & gb.NewLine & sName[2]
+              If $HistoryForm = "Detail" Then
+                hSetHistory.SetHistoryText(sName[2])
+              Else
+                hDualHistory.SetHistoryText(sName[2])
+              Endif
             Endif
           Endif
         Endif
@@ -1875,7 +1877,7 @@ Public Sub btnaddsymplist_Click()
 
   xlist = modString.GetListFromVariant(modTableCache.$SymptomCompVar, "fldsymptom", True)
   If xlist.Count Then
-    aList = GridListView("Select Presenting Complaints", xlist, Panel13, grdchiefsymptom.Height + cmbsymptom.Height + lblhistoryhead.Height + cmbfinding.Height + GridView1.Height)
+    aList = GridListView("Select Presenting Complaints", xlist, Panel13, grdchiefsymptom.Height + cmbsymptom.Height + cmbfinding.Height + GridView1.Height)
     If aList And If aList.Count Then
       For Each xitem In aList
         modPatientGeneral.AddPatComplaintsData(Trim(txtencid.Text), "Presenting Symptoms", xitem, "", 0, "", txtbedno.Text)
@@ -2447,102 +2449,6 @@ Public Sub txttemp_GotFocus()
 
   txttemp.Tag = ""
   txttemp.SelectAll
-
-End
-
-''--------------------- History and planning ---------------------------
-Private Sub ShowPatHistory()
-
-  Dim xcomplAr As String[]
-
-  If cmbinpathistory.Text Then
-    lblhistoryhead.Text = cmbinpathistory.Text
-    xcomplAr = modPatPatho.ShowSelectedHistoryUser(Trim(txtencid.Text), cmbinpathistory.Text)
-    If xcomplAr And If xcomplAr.Count Then
-      txthistory.RichText = xcomplAr[0]
-      lblhistoryuser.Text = xcomplAr[1]
-    Else
-      txthistory.RichText = ""
-      lblhistoryuser.Text = ""
-    Endif
-    $HistoryChange = False
-  Endif
-
-End
-
-Public Sub cmbinpathistory_Click()
-
-  If $HistoryChange = True And If txthistory.Text Then
-    cmbinpathistory.Index = cmbinpathistory.Find(lblhistoryhead.Text)
-
-  Else
-    ShowPatHistory()
-    If chkenabhistory.Value = True Then
-      btnhistory.Enabled = True
-    Endif
-    txthistory.SetFocus
-  Endif
-
-End
-
-Public Sub txthistory_Change()
-
-  If txthistory.Text Then
-    $HistoryChange = True
-  Else
-    $HistoryChange = True
-  Endif
-
-End
-
-Public Sub btnhistory_Click()
-
-  Dim xboolean As Boolean
-
-  If modBasic.$ClinHistoryInput = "Single" Then
-    xboolean = True
-  Else
-    xboolean = False
-  Endif
-
-  If cmbinpathistory.Text Then
-    If txthistory.Text Then
-      modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "History", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean, txtbedno.Text)
-      Balloon.Info(("Information saved"), btnhistory)
-      Balloon.Delay = modBasic.$BalloonDelay
-      btnhistory.Enabled = False
-      $HistoryChange = False
-    Endif
-  Endif
-
-End
-
-Public Sub btnhistorydef_Click()
-
-  If cmbinpathistory.Text Then
-    txthistory.RichText = AddHistory("History", Trim(txtencid.Text), cmbinpathistory.Text)
-  Endif
-
-End
-
-Public Sub dcthelphistory_Click()
-
-  Dim xx As String
-
-  If cmbinpathistory.Text Then
-    xx = GetRichTextArea(cmbinpathistory.Text, txthistory.RichText)
-    If xx Then
-      txthistory.RichText = xx
-    Endif
-  Endif
-
-End
-
-Public Sub btntemplphistory_Click()
-
-  If cmbinpathistory.Text Then
-    txthistory.RichText = txthistory.RichText & DictionaryVIew(cmbinpathistory.Text)
-  Endif
 
 End
 
@@ -4036,9 +3942,6 @@ Private Sub RestrictUserAccess()
     pnlmulticomplaints.Enabled = False
     btnmultisymptom.Enabled = False
   Endif
-  If $UserRestrict.Exist("Patient History") Then
-    btnhistory.Enabled = False
-  Endif
   If $UserRestrict.Exist("Clinical Findings") Then
     btnfinadd.Enabled = False
     GridView1.Enabled = False
@@ -4144,12 +4047,6 @@ End
 Public Sub btnhelpplan_Click()
 
   txtplan.RichText = txtplan.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txtplan.Text)
-
-End
-
-Public Sub btnhelphistory_Click()
-
-  txthistory.RichText = txthistory.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txthistory.Text)
 
 End
 

@@ -71,7 +71,7 @@ Private Sub ShowGridImage()
   Else
     sql = "select fldid,fldtitle,fldlink from tblpatserialimage where fldencounterval=&1 and fldtestid=&2 and fldcateg=&3 and fldmode=&4"
   Endif
-  $rData = modDatabase.$myConn.Exec(sql, $encid, txtid.Value, $strType, lblobs.Text)
+  $rData = modDatabase.$logConn.Exec(sql, $encid, txtid.Value, $strType, lblobs.Text)
   $aMyFields = New String[]
   modGridView.ReadSmallData(dgimage, $rData, $aMyFields)
   dgimage.Columns[0].Width = 1
@@ -123,7 +123,7 @@ Private Sub DisplayBlobData(serial As Variant)
   Else
     sql = "select fldpic,fldtitle,fldkeyword,flddetail,fldlink,fldcateg from tblpatserialimage where fldid=&1"
   Endif
-  res = modDatabase.$myConn.Exec(sql, serial)
+  res = modDatabase.$logConn.Exec(sql, serial)
   If res.Available Then
     If res["fldcateg"] = "IMAGE" Then
       tempFile = Temp() & ".png"
@@ -237,7 +237,7 @@ Public Sub btnOK_Click()
       xblobfile = File.Load(sPath)
     Endif
     If xblobfile Then
-      res = modDatabase.$myConn.Create("tblpatserialimage")
+      res = modDatabase.$logConn.Create("tblpatserialimage")
       res["fldencounterval"] = $encid
       res["fldcateg"] = $strType
       res["fldmode"] = lblobs.Text
@@ -289,9 +289,9 @@ Public Sub btnChange_Click()
     If txttitle.Text Then
 
       If MMain.$WebEntry = True Then
-        res = modDatabase.$myConn.Edit("tblpatserialimage", "fldrepoid=&1", dgimage[dgimage.Row, 0].Text)
+        res = modDatabase.$logConn.Edit("tblpatserialimage", "fldrepoid=&1", dgimage[dgimage.Row, 0].Text)
       Else
-        res = modDatabase.$myConn.Edit("tblpatserialimage", "fldid=&1", dgimage[dgimage.Row, 0].Text)              ''
+        res = modDatabase.$logConn.Edit("tblpatserialimage", "fldid=&1", dgimage[dgimage.Row, 0].Text)              ''
       Endif
       If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
 
@@ -356,7 +356,7 @@ Public Sub ImageReport()
   $BillingReport.UserData.Add("REPORT", "Report")
   $BillingReport.UserData.Add($strType, "PARAM1")
 
-  res1 = modDatabase.$myConn.Exec("select fldtime,fldpic,fldtitle,flddetail,fldlink from tblpatserialimage where fldencounterval=&1 and fldtestid=&2 and fldcateg=&3 and fldmode=&4", $encid, txtid.Value, $strType, lblobs.Text)                      ''
+  res1 = modDatabase.$logConn.Exec("select fldtime,fldpic,fldtitle,flddetail,fldlink from tblpatserialimage where fldencounterval=&1 and fldtestid=&2 and fldcateg=&3 and fldmode=&4", $encid, txtid.Value, $strType, lblobs.Text)                      ''
   For Each res1
     tempFile = Temp() & ".png"
     If res1["fldlink"] Then

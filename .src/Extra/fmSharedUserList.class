@@ -25,7 +25,7 @@ Private Sub FillUserList()
   Dim xx As String
 
   ListView1.Clear()
-  $sUser = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldshared as col from tblfileshare where flduserid=&1 and fldperid=&2", modBasic.$lbluser, $sItem))
+  $sUser = modControlSub.GetDirectFillresult(modDatabase.$logConn.Exec("select fldshared as col from tblfileshare where flduserid=&1 and fldperid=&2", modBasic.$lbluser, $sItem))
   pic1 = Picture["icon:/small/identity"]
   If $sUser Then
     For Each xx In $sUser
@@ -58,7 +58,7 @@ Public Sub btnadduser_Click()
   Next
   xx = MedicalSelectedUser("File Sharing", aVar)
   If xx Then
-    res = modDatabase.$myConn.Create("tblfileshare")
+    res = modDatabase.$logConn.Create("tblfileshare")
     res["flduserid"] = modBasic.$lbluser
     res["fldshared"] = xx
     res["fldperid"] = $sItem
@@ -77,7 +77,7 @@ End
 
 Public Sub mnudelete_Click()
 
-  modDatabase.$myConn.Delete("tblfileshare", "fldshared=&1", ListView1.Key)
+  modDatabase.$logConn.Delete("tblfileshare", "fldshared=&1", ListView1.Key)
   FillUserList()
 
 End

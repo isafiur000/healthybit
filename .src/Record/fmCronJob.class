@@ -33,7 +33,7 @@ Public Sub btnadd_Click()
   Dim res As Result
 
   If cmbcategory.Text Then
-    res = modDatabase.$myConn.Create("tblcronjob")
+    res = modDatabase.$logConn.Create("tblcronjob")
     res["fldcategory"] = cmbcategory.Text
     res["fldhostmac"] = cmbmaclocat.Text
     res["fldscript"] = txtscript.Text

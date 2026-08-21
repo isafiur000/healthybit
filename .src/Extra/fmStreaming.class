@@ -28,7 +28,7 @@ Private Sub FillCurUser()
     $rData = modDatabase.$syConn.Exec(sql, "Webcam", "Admitted")
   Else If rbuser.Value = True Then
     sql = "select flduser,flduser,flddevicepath,fldhostmac,fldhostname,fldhostuser,fldhostmac,fldcomp,fldindex from tblsystemlog"
-    $rData = modDatabase.$syConn.Exec(sql)
+    $rData = modDatabase.$logConn.Exec(sql)
   Endif
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)

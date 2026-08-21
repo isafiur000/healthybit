@@ -280,7 +280,7 @@ Public Sub btnupload_Click()
                 Exec arcmd4 Wait
               Next
             Endif
-            res2 = modDatabase.$myConn.Exec("select fldid from tblpatserialimage where fldencounterval=&1 and fldtestid=&2", $encid, GridView1[GridView1.Row, 14].Text)
+            res2 = modDatabase.$logConn.Exec("select fldid from tblpatserialimage where fldencounterval=&1 and fldtestid=&2", $encid, GridView1[GridView1.Row, 14].Text)
             If res2.Available Then
               For Each res2
                 arcmd5 = [Application.Name, "--uploadimg-repo-one", "tblpatserialimage", res2["fldid"]]

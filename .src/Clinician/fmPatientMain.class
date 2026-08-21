@@ -26,6 +26,7 @@ Private $aPlanFields As String[]
 Private $rInputRes As Result
 Private $aInputFields As String[]
 
+Private hSetHistory As FmSetClinHistory
 Private hMultiCompl As FmMultiComplaints
 Private hDigForm As FmDiagnosticTab
 Private hOwnStockForm As FmWardStock
@@ -99,7 +100,6 @@ Public Sub Form_Open()
   FillCustomMenu()
   FillStructExamMenu()
 
-  SetHtmlTextOption(txthistory)
   SetHtmlTextOption(txtnote)
   SetHtmlTextOption(txtsubject)
   SetHtmlTextOption(txtobject)
@@ -610,10 +610,6 @@ Private Sub BasicInfoPatient()
 
     $SyndroType = modNonMedical.GetFixedInvType(modPatient.ShowDiscountCategEnc(Trim(txtencid.Text)))
     GetDefaultBillingmodes()
-    cmbinpathistory.List = GetHistoryList()
-    If cmbinpathistory.List.Count Then
-      cmbinpathistory.Index = 0
-    Endif
     $NotesList = NoteTakingTypeList()
     cmbnote.List = $NotesList
     cmbnotetype.List = ["All Types", "Progress Note", "Doctor Order", "Clinicians Note", "Nurses Note", "Transfer Note", "Patient Note"]
@@ -632,6 +628,7 @@ Private Sub BasicInfoPatient()
     SHowOutputFluid()
 
     hMultiCompl = New FmMultiComplaints(Trim(txtencid.Text), $patDepart, pnlmulticomplaints)
+    hSetHistory = New FmSetClinHistory(Trim(txtencid.Text), $billReference, $patDepart, pnlsetHistory)
     hDigForm = New FmDiagnosticTab(Trim(txtencid.Text), pnlabexams)
     hDosTable = New FmDosingTable(Trim(txtencid.Text), True, pnldosetable)
     hIpCardex = New FmIPMedOrder(Trim(txtencid.Text), $sTatus, $billModePharmacy, pnlcardex)
@@ -691,22 +688,18 @@ Private Sub ButtonControl()
     Endif
   Endif
 
+  hSetHistory.SetEntryControls(xx)
   hDosTable.SetDosingOrder(xx)
   hIpCardex.SetEntryOrder(xx)
   hIpInfusion.SetEntryOrder(xx)
-  chkenabhistory.Value = xx
-
   hOwnStockForm.SetEntryControls(xx)
 
-  mnupatcomment.Enabled = xx
   ''presenting complaints
   btnsympadd.Enabled = xx
   btnaddsymplist.Enabled = xx
   grdchiefsymptom.Enabled = xx
   pnlmulticomplaints.Enabled = xx
   btnmultisymptom.Enabled = xx
-  ''patient history
-  btnhistory.Enabled = xx
   ''clinical findings
   btnfinadd.Enabled = xx
   GridView1.Enabled = xx
@@ -1128,10 +1121,7 @@ Public Sub TabStrip1_Click()
     If TabStrip1.Index = 0 Then  ''complaints
 
     Else If TabStrip1.Index = 1 Then  ''history
-      If chkenabhistory.Value = True Then
-        btnhistory.Enabled = True
-      Endif
-      txthistory.SetFocus
+      hSetHistory.ActivateForm()
 
     Else If TabStrip1.Index = 2 Then ''exams
 
@@ -1167,10 +1157,7 @@ Public Sub Form_KeyRelease()
   Else If Key.Code = Key.F2 Then
     If txtencid.Text Then
       TabStrip1.Index = 1
-      If chkenabhistory.Value = True Then
-        btnhistory.Enabled = True
-      Endif
-      txthistory.SetFocus
+      hSetHistory.ActivateForm()
     Endif
   Else If Key.Code = Key.F3 Then
     TabStrip1.Index = 2
@@ -1965,110 +1952,6 @@ Public Sub GridView1_Click()
 
 End
 
-''----------------------------------------------- history -----------------------------------
-Private Sub ShowPatHistory()
-
-  Dim xcomplAr As String[]
-
-  If cmbinpathistory.Text Then
-    lblhistoryhead.Text = cmbinpathistory.Text
-    If cmbinpathistory.Text = "Initial Planning" Or If cmbinpathistory.Text = "Expert Planning" Then
-      xcomplAr = modPatPatho.ShowSelectedNoteUser(Trim(txtencid.Text), cmbinpathistory.Text)
-    Else
-      xcomplAr = modPatPatho.ShowSelectedHistoryUser(Trim(txtencid.Text), cmbinpathistory.Text)
-    Endif
-    If xcomplAr And If xcomplAr.Count Then
-      txthistory.RichText = xcomplAr[0]
-      lblhistoryuser.Text = xcomplAr[1]
-    Else
-      txthistory.RichText = ""
-      lblhistoryuser.Text = ""
-    Endif
-    $HistoryChange = False
-  Endif
-
-End
-
-Public Sub cmbinpathistory_Click()
-
-  If $HistoryChange = True And If txthistory.Text Then
-    cmbinpathistory.Index = cmbinpathistory.Find(lblhistoryhead.Text)
-
-  Else
-    ShowPatHistory()
-    If chkenabhistory.Value = True Then
-      btnhistory.Enabled = True
-    Endif
-    txthistory.SetFocus
-  Endif
-
-End
-
-Public Sub txthistory_Change()
-
-  If txthistory.Text Then
-    $HistoryChange = True
-  Else
-    $HistoryChange = True
-  Endif
-
-End
-
-Public Sub btnhistory_Click()
-
-  Dim xboolean As Boolean
-
-  If modBasic.$ClinHistoryInput = "Single" Then
-    xboolean = True
-  Else
-    xboolean = False
-  Endif
-
-  If cmbinpathistory.Text Then
-    If txthistory.Text Then
-      If cmbinpathistory.Text = "Initial Planning" Or If cmbinpathistory.Text = "Expert Planning" Then
-        modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "Notes", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean, $patDepart)
-      Else
-        modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "History", cmbinpathistory.Text, txthistory.KeyList.Join(";"), txthistory.RichText, xboolean, $patDepart)
-      Endif
-      Balloon.Info(("Information saved"), btnhistory)
-      Balloon.Delay = modBasic.$BalloonDelay
-      btnhistory.Enabled = False
-      $HistoryChange = False
-    Endif
-  Endif
-
-End
-
-Public Sub btnhistorydef_Click()
-
-  If cmbinpathistory.Text Then
-    txthistory.RichText = AddHistory("History", Trim(txtencid.Text), cmbinpathistory.Text)
-  Endif
-
-End
-
-Public Sub dcthelphistory_Click()
-
-  Dim xx As String
-
-  If cmbinpathistory.Text Then
-    xx = GetRichTextArea(cmbinpathistory.Text, txthistory.RichText)
-    If xx Then
-      txthistory.RichText = xx
-    Endif
-  Endif
-
-End
-
-Public Sub btntemplphistory_Click()
-
-  If cmbinpathistory.Text Then
-    txthistory.RichText = txthistory.RichText & DictionaryVIew(cmbinpathistory.Text)
-  Endif
-
-End
-
 '''------------------------------------------------- General parameters --------------------------------------------------------------------
 Private Sub ShowEssentialExamRange()
 
@@ -2111,7 +1994,7 @@ Private Sub ShowEssentialExamRange()
 
 End
 
-Private Sub GetMarkAbnorm(valueBox1 As ValueBox, sRange As Float[])
+Private Sub GetMarkAbnorm(txtfindmax As ValueBox, sRange As Float[])
 
   Dim xmax As Float
   Dim xmin As Float
@@ -2122,25 +2005,25 @@ Private Sub GetMarkAbnorm(valueBox1 As ValueBox, sRange As Float[])
     xmax = sRange[1]
 
     abn = False
-    If valueBox1.Value Then
+    If txtfindmax.Value Then
       If xmin Then
-        If xmin > valueBox1.Value Then
+        If xmin > txtfindmax.Value Then
           abn = True
         Endif
       Endif
       If xmax Then
-        If xmax < valueBox1.Value Then
+        If xmax < txtfindmax.Value Then
           abn = True
         Endif
       Endif
     Endif
 
     If abn = True Then
-      valueBox1.Font.Bold = True
-      valueBox1.Foreground = Color.Red
+      txtfindmax.Font.Bold = True
+      txtfindmax.Foreground = Color.Red
     Else
-      valueBox1.Font.Bold = False
-      valueBox1.Foreground = Color.Default
+      txtfindmax.Font.Bold = False
+      txtfindmax.Foreground = Color.Default
     Endif
 
   Endif
@@ -5207,9 +5090,6 @@ Private Sub RestrictUserAccess()
     pnlmulticomplaints.Enabled = False
     btnmultisymptom.Enabled = False
   Endif
-  If $UserRestrict.Exist("Patient History") Then
-    btnhistory.Enabled = False
-  Endif
   If $UserRestrict.Exist("Clinical Findings") Then
     btnfinadd.Enabled = False
     GridView1.Enabled = False
@@ -5344,12 +5224,6 @@ Private Sub RestrictUserAccess()
   If $UserRestrict.Exist("ABC Examinations") Then
     btnabcexam.Enabled = False
   Endif
-
-End
-
-Public Sub btnhelphistory_Click()
-
-  txthistory.RichText = txthistory.RichText & modCloudAI.GetPatCloudAIResponse(Trim(txtencid.Text), txthistory.Text)
 
 End
 

@@ -6,6 +6,7 @@ Private $SSQLFields As String[]
 Private $ProgressBar1 As ProgressBar
 Private $LargeTables As String[]
 
+Private $sConn As Connection
 Private $ColCount As Integer
 Private $newColumn As String[]
 Private $RepoStr As String
@@ -40,13 +41,13 @@ Public Sub Form_Open()
   $LargeTables.Insert(modLongVar.$RepoClinicTables)
   $LargeTables.Insert(modLongVar.$RepoAccountTables)
 
-  cmbtable.List = modDBApp.FillDBTables(modDatabase.$syConn, False)
   cmbrelation.List = ["=", "<", "<=", ">", ">=", "LIKE", "NOT LIKE", "IS NULL", "IS NOT NULL"]
   cmbrelation2.List = ["=", "<", "<=", ">", ">=", "LIKE", "NOT LIKE", "IS NULL", "IS NOT NULL"]
   cmbrelation3.List = ["=", "<", "<=", ">", ">=", "LIKE", "NOT LIKE", "IS NULL", "IS NOT NULL"]
   cmbrelation4.List = ["=", "<", "<=", ">", ">=", "LIKE", "NOT LIKE", "IS NULL", "IS NOT NULL"]
   cmbsortype.Add("ASC")
   cmbsortype.Add("DESC")
+  cmbdbtype.List = ["Main Database", "Log Database"]
 
 End
 
@@ -59,6 +60,17 @@ End
 Public Sub Form_Close()
 
   modGeneralMain.RecordFormExit(Me)
+
+End
+
+Public Sub btnsetdb_Click()
+
+  If cmbdbtype.Text = "Main Database" Then
+    $sConn = modDatabase.$syConn
+  Else If cmbdbtype.Text = "Log Database" Then
+    $sConn = modDatabase.$logConn
+  Endif
+  cmbtable.List = modDBApp.FillDBTables($sConn, False)
 
 End
 
@@ -81,10 +93,10 @@ Public Sub mnurepotable_Click()
 
   If mnurepotable.Checked = True Then
     mnurepotable.Checked = False
-    cmbtable.List = modDBApp.FillDBTables(modDatabase.$syConn, False)
+    cmbtable.List = modDBApp.FillDBTables($sConn, False)
   Else If mnurepotable.Checked = False Then
     mnurepotable.Checked = True
-    cmbtable.List = modDatabase.GetRepositoryTables(modDatabase.$syConn)
+    cmbtable.List = modDatabase.GetRepositoryTables($sConn)
   Endif
 
 End
@@ -108,7 +120,7 @@ Public Sub btnshowtable_Click()
   chkall.Value = False
 
   If cmbtable.Text And If cmbtable.List.Exist(cmbtable.Text) Then
-    xList = modDBApp.GetFIeldsinTable(cmbtable.Text, True, modDatabase.$syConn)
+    xList = modDBApp.GetFIeldsinTable(cmbtable.Text, True, $sConn)
     If xList.Exist("fldpassword") Then
       xList.Remove(xList.Find("fldpassword"))
     Endif
@@ -266,7 +278,7 @@ Private Sub GetFieldDataType(cmb As ComboBox, txtbox As TextBox, vlubox As Value
   Dim hTable As Table
   Dim xx As Integer
 
-  For Each hTable In modDatabase.$syConn.Tables
+  For Each hTable In $sConn.Tables
     If hTable.Name = cmbtable.Text Then
       For Each ref In hTable.Fields
         If ref.Name = cmb.Text Then
@@ -352,7 +364,7 @@ Private Function GetSQLColumns() As String[]
   modCustPatient.FillNewCOlumnCollection(Me.Tag)
   $newColumn = modCustPatient.CustomNewColumnsTitle(Me.Tag)
   xFldList = $SSQLFields.Copy()
-  If modDBApp.GetFIeldsinTable(cmbtable.Text, True, modDatabase.$syConn).Exist("fldencounterval") = True Then
+  If modDBApp.GetFIeldsinTable(cmbtable.Text, True, $sConn).Exist("fldencounterval") = True Then
     If $newColumn.Count Then
       For i = 0 To $newColumn.Count - 1
         xFldList.Add("fldencounterval")
@@ -414,7 +426,7 @@ Private Function ExecuteQuery(xFldList As String[]) As Result
   Endif
 
   If MMain.$WebReport = "Multiple" Then
-    xList = modDBApp.GetFIeldsinTable(cmbtable.Text, True, modDatabase.$syConn)
+    xList = modDBApp.GetFIeldsinTable(cmbtable.Text, True, $sConn)
     If xList.Exist("fldhospcode") = True Then
       $RepoStr = modDataRepo.GetWhereStringRepo(cmblocation.Text, cmbvalue.Text)
       $RepoStrA = modDataRepo.GetWhereStringRepoWhr(cmblocation.Text, cmbvalue.Text)
@@ -442,13 +454,13 @@ Private Function ExecuteQuery(xFldList As String[]) As Result
   If chkwhere.Value = True Then
     If txtwhere.Text Then
       If modMisc.CheckRestrictedKeyStrict(txtwhere.Text) = 0 Then
-        res = modDatabase.$syConn.Exec(Subst("select &1 where &2" & $RepoStr & xextra, sql, Trim(txtwhere.Text)))
+        res = $sConn.Exec(Subst("select &1 where &2" & $RepoStr & xextra, sql, Trim(txtwhere.Text)))
       Endif
     Else
-      res = modDatabase.$syConn.Exec(Subst("select &1 where &2" & $RepoStr & xextra, sql, GetGuidedSqlString()), xx1, xx2, xx3, xx4)                                                                          ''
+      res = $sConn.Exec(Subst("select &1 where &2" & $RepoStr & xextra, sql, GetGuidedSqlString()), xx1, xx2, xx3, xx4)                                                                          ''
     Endif
   Else If chkwhere.Value = False
-    res = modDatabase.$syConn.Exec(Subst("select &1" & $RepoStrA & xextra, sql))
+    res = $sConn.Exec(Subst("select &1" & $RepoStrA & xextra, sql))
   Endif
 
   Return res

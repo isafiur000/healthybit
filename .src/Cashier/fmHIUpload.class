@@ -1126,7 +1126,7 @@ Private Sub AutoUploadDocuments(sClaim As String, encid As String, sMessage As B
   Dim aOutPath As String
   Dim resx As Result
 
-  res = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval from " & $tblpatreport & " where fldencounterval like &1 and (fldcateg like &2 or fldcateg like &3) and (flvisible=&4 or flvisible IS NULL)", encid, "General Reports", "Scanned Images", "Visible")
+  res = modDatabase.$logConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval from " & $tblpatreport & " where fldencounterval like &1 and (fldcateg like &2 or fldcateg like &3) and (flvisible=&4 or flvisible IS NULL)", encid, "General Reports", "Scanned Images", "Visible")
   If res.Available Then
     For Each res
       aOutPath = ""
@@ -1137,7 +1137,7 @@ Private Sub AutoUploadDocuments(sClaim As String, encid As String, sMessage As B
         aOutPath = modClaimAPI.UploadImagesFilesClaimServerHI(sClaim, xFilePath, sMessage, modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory))
         Dec Application.Busy
         If aOutPath Then
-          resx = modDatabase.$myConn.Edit("tblpatreport", "fldid=&1", res["fldid"])
+          resx = modDatabase.$logConn.Edit("tblpatreport", "fldid=&1", res["fldid"])
           resx["fldflag"] = True
           resx.Update
         Endif
@@ -1154,7 +1154,7 @@ Private Sub BulkPendingUploadDocs(sClaim As String, sAccount As String, encid As
   Dim aOutPath As String
   Dim resx As Result
 
-  res = modDatabase.$myConn.Exec("select fldid from " & $tblpatreport & " where fldencounterval like &1 and (fldflag=&2 or fldflag IS NULL) and (flvisible=&3 or flvisible IS NULL) and fldhashcode=&4", encid, False, "Visible", sAccount & "|" & sClaim)
+  res = modDatabase.$logConn.Exec("select fldid from " & $tblpatreport & " where fldencounterval like &1 and (fldflag=&2 or fldflag IS NULL) and (flvisible=&3 or flvisible IS NULL) and fldhashcode=&4", encid, False, "Visible", sAccount & "|" & sClaim)
   If res.Available Then
     For Each res
       aOutPath = ""
@@ -1165,7 +1165,7 @@ Private Sub BulkPendingUploadDocs(sClaim As String, sAccount As String, encid As
         aOutPath = modClaimAPI.UploadImagesFilesClaimServerHI(xRemote, xFilePath, False, modAppSupport.FindWorkProgressBar(modHelpVariable.$LogInCategory))
         Dec Application.Busy
         If aOutPath Then
-          resx = modDatabase.$myConn.Edit("tblpatreport", "fldid=&1", res["fldid"])
+          resx = modDatabase.$logConn.Edit("tblpatreport", "fldid=&1", res["fldid"])
           resx["fldflag"] = True
           resx.Update
         Endif

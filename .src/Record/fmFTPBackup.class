@@ -15,6 +15,7 @@ Public Sub Form_Open()
   cmbcompresslocal.List = ["Enabled", "None"]
   cmblocalenable.List = ["Yes", "No"]
   cmbdumplocal.List = ["File Per Table", "File Per DB"]
+  cmbdbtype.List = ["Main DB", "Log DB"]
 
 End
 
@@ -140,7 +141,11 @@ Public Sub btnaddlocal_Click()
   Dim xx As String[]
   Dim tablist As String[]
 
-  tablist = modString.GetRemainingArray($TableList, ListBox2.List)
+  If cmbdbtype.Text = "Log DB" Then
+    tablist = modLongVar.$LogTables.Copy()
+  Else
+    tablist = modString.GetRemainingArray($TableList, ListBox2.List)
+  Endif
   xx = SelectListView("Insert Table Name", tablist, False)
   If xx Then
     Inc Application.Busy

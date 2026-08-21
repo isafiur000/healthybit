@@ -25,7 +25,7 @@ Public Sub btnaddrecord_Click()
   Dim res As Result
 
   If lstemail.List.Count And If cmbreport.Text Then
-    res = modDatabase.$myConn.Create("tblautoemail")
+    res = modDatabase.$logConn.Create("tblautoemail")
     res["fldtousers"] = lstemail.List.Join(";")
     res["fldcctype"] = cmbcc.Text
     res["fldccusers"] = lstccbcc.List.Join(";")
@@ -63,7 +63,7 @@ Private Sub SHowEmailSchedule()
   Dim sql As String
 
   sql = "select fldid,fldtousers,fldccusers,fldsubject,fldreport,fldfromuser,fldhostmac from tblautoemail"
-  $rData = modDatabase.$myConn.Exec(sql)
+  $rData = modDatabase.$logConn.Exec(sql)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
   With GridView1
@@ -97,7 +97,7 @@ Public Sub GridView1_Click()
 
   Dim res As Result
 
-  res = modDatabase.$myConn.Exec("select fldid,fldtousers,fldcctype,fldccusers,fldsubject,fldcontent,fldreport,fldfromhost,fldfromuser,fldfrompass,fldsender,fldhostmac from tblautoemail where fldid=&1", GridView1[GridView1.Row, 0].Text)                      ''
+  res = modDatabase.$logConn.Exec("select fldid,fldtousers,fldcctype,fldccusers,fldsubject,fldcontent,fldreport,fldfromhost,fldfromuser,fldfrompass,fldsender,fldhostmac from tblautoemail where fldid=&1", GridView1[GridView1.Row, 0].Text)                      ''
   If res.Available Then
     txtidval.Value = res["fldid"]
     lstemail.List = Split(res["fldtousers"], ";")
@@ -119,7 +119,7 @@ Public Sub btneditrecord_Click()
 
   Dim res As Result
 
-  res = modDatabase.$myConn.Edit("tblautoemail", "fldid=&1", txtidval.Value)
+  res = modDatabase.$logConn.Edit("tblautoemail", "fldid=&1", txtidval.Value)
   If lstemail.List.Count And If cmbreport.Text Then
     res["fldtousers"] = lstemail.List.Join(";")
     res["fldcctype"] = cmbcc.Text
@@ -149,7 +149,7 @@ End
 Public Sub mnudelete_Click()
 
   If GridView1.Rows.Selection.Count > 0 Then
-    modDatabase.$myConn.Delete("tblautoemail", "fldid=&1", GridView1[GridView1.Row, 0].Text)
+    modDatabase.$logConn.Delete("tblautoemail", "fldid=&1", GridView1[GridView1.Row, 0].Text)
     SHowEmailSchedule()
   Endif
 

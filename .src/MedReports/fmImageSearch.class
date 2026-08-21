@@ -99,7 +99,7 @@ Private Function ExecuteQuery(sType As String) As Result
 
   $RepoStr = modDataRepo.GetWhereStringRepo(cmblocation.Text, cmbvalue.Text)
   sql = "select " & xFldList1.Join(",") & " from tblpatimagedata where fldtime>=&1 and fldtime<=&2 and fldkeyword like &3 and fldcateg like &4" & $RepoStr & " UNION ALL select " & xFldList2.Join(",") & " from tblpatserialimage where fldtime>=&1 and fldtime<=&2 and fldkeyword like &3 and fldcateg like &4" & $RepoStr                                                                        ''
-  res = modDatabase.$syConn.Exec(sql, modDate.StartSqlDate(dtfir.Value), modDate.EndSqlDate(dtlast.Value), txtsearch.Text, xType)
+  res = modDatabase.$logConn.Exec(sql, modDate.StartSqlDate(dtfir.Value), modDate.EndSqlDate(dtlast.Value), txtsearch.Text, xType)
 
   Return res
 
@@ -264,15 +264,15 @@ Public Sub mnuimage_Click()
 
   If MMain.$WebEntry = True Then
     If GridView1[GridView1.Row, 8].Text = "tblpatimagedata" Then
-      res = modDatabase.$syConn.Exec("select fldcateg,fldpic,fldlink,fldcateg from tblpatimagedata where fldrepoid=&1", GridView1[GridView1.Row, 0].Text)
+      res = modDatabase.$logConn.Exec("select fldcateg,fldpic,fldlink,fldcateg from tblpatimagedata where fldrepoid=&1", GridView1[GridView1.Row, 0].Text)
     Else If GridView1[GridView1.Row, 8].Text = "tblpatserialimage" Then
-      res = modDatabase.$syConn.Exec("select fldpic,fldlink,fldcateg from tblpatserialimage where fldrepoid=&1", GridView1[GridView1.Row, 0].Text)
+      res = modDatabase.$logConn.Exec("select fldpic,fldlink,fldcateg from tblpatserialimage where fldrepoid=&1", GridView1[GridView1.Row, 0].Text)
     Endif
   Else
     If GridView1[GridView1.Row, 8].Text = "tblpatimagedata" Then
-      res = modDatabase.$syConn.Exec("select fldcateg,fldpic,fldlink,fldcateg from tblpatimagedata where fldid=&1", GridView1[GridView1.Row, 0].Text)
+      res = modDatabase.$logConn.Exec("select fldcateg,fldpic,fldlink,fldcateg from tblpatimagedata where fldid=&1", GridView1[GridView1.Row, 0].Text)
     Else If GridView1[GridView1.Row, 8].Text = "tblpatserialimage" Then
-      res = modDatabase.$syConn.Exec("select fldpic,fldlink,fldcateg from tblpatserialimage where fldid=&1", GridView1[GridView1.Row, 0].Text)
+      res = modDatabase.$logConn.Exec("select fldpic,fldlink,fldcateg from tblpatserialimage where fldid=&1", GridView1[GridView1.Row, 0].Text)
     Endif
   Endif
 

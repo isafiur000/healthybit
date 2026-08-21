@@ -51,7 +51,7 @@ Private Sub ShowGridImage()
   Else
     sql = "select fldid,fldtitle,fldlink from tblpatimagedata where fldcateg=&1 and fldencounterval=&2"
   Endif
-  $rData = modDatabase.$myConn.Exec(sql, $strType, $encid)
+  $rData = modDatabase.$logConn.Exec(sql, $strType, $encid)
   $aMyFields = New String[]
   modGridView.ReadSmallData(dgimage, $rData, $aMyFields)
   dgimage.Columns[0].Width = 1
@@ -99,7 +99,7 @@ Private Sub DisplayBlobData(serial As Variant)
   Else
     sql = "select fldpic,fldtitle,flddetail,fldlink,fldkeyword from tblpatimagedata where fldid=&1"
   Endif
-  res = modDatabase.$myConn.Exec(sql, serial)
+  res = modDatabase.$logConn.Exec(sql, serial)
   If res.Available = True Then
     If $strType = "VIDEO" Then
       tempFile = Temp()
@@ -168,7 +168,7 @@ Public Sub btnOK_Click()
     Endif
     If xblobfile Then
       Inc Application.Busy
-      res = modDatabase.$myConn.Create("tblpatimagedata")
+      res = modDatabase.$logConn.Create("tblpatimagedata")
       res["fldcateg"] = $strType
       res["fldencounterval"] = $encid
       res["fldtitle"] = Trim(txttitle.Text)
@@ -218,9 +218,9 @@ Public Sub btnChange_Click()
   If dgimage.Rows.Selection.Count > 0 Then
     If txttitle.Text And If MediaView1.Tag Then
       If MMain.$WebEntry = True Then
-        res = modDatabase.$myConn.Edit("tblpatimagedata", "fldrepoid=&1", dgimage[dgimage.Row, 0].Text)
+        res = modDatabase.$logConn.Edit("tblpatimagedata", "fldrepoid=&1", dgimage[dgimage.Row, 0].Text)
       Else
-        res = modDatabase.$myConn.Edit("tblpatimagedata", "fldid=&1", dgimage[dgimage.Row, 0].Text)              ''
+        res = modDatabase.$logConn.Edit("tblpatimagedata", "fldid=&1", dgimage[dgimage.Row, 0].Text)              ''
       Endif
       If modGeneral.AllowClinicalEdit(res["flduserid"]) = True Then
         If $strType = "VIDEO" Then

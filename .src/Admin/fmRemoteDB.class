@@ -90,6 +90,7 @@ Public Sub btnimport_Click()
     $sqCon = modDBApp.OpenConnection("sqlite3", User.Home, File.BaseName(txtfile.Text), "", "")
     modDBTables.$DbFormat = MMain.$SISHAppMode
     modDBGroup.CreateDatabaseForSish($sqCon)
+    modDBGroup.CreateDatabaseForLog($sqCon)
     Message.Info(("Tables creation completed"), ("OK"))
     Wait
 

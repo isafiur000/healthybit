@@ -1108,12 +1108,14 @@ Public Sub mnuremote_Click()
   Dim xpatno As String
   Dim sCon As Connection
   Dim xCon As Connection
+  Dim lCon As Connection
 
   If txtencid.Text Then
     xpatno = $patNo
 
     If modPatientSub.GetPatPassCheck(modDatabase.$myConn, xpatno) = True Then
       sCon = modDatabase.$myConn
+      lCon = modDatabase.$logConn
       xCon = modDatabase.$syConn
       Inc Application.Busy
       modRepository.TransferRemoConn(xpatno)
@@ -1121,6 +1123,7 @@ Public Sub mnuremote_Click()
       Dec Application.Busy
       modControlSub.OpenHTMLPreview($encid, xPath, "ReportSize")
       modDatabase.$myConn = sCon
+      modDatabase.$logConn = lCon
       modDatabase.$syConn = xCon
       MMain.InitialAppMode()
     Endif

@@ -1,6 +1,7 @@
 ' Gambas class file
 
 Private $patId As String
+Private $encList As String[]
 Private $tblpatreport As String
 
 Private $rData As Result
@@ -19,6 +20,7 @@ End
 Public Sub Form_Open()
 
   modAccount.PasInvoiceSetting(cmbfiscal, False)
+  $encList = modPatient.GetEncListFromPatNo($patId, modDatabase.$syConn)
   LoadTableNames()
 
   rbarchive.Value = True
@@ -68,17 +70,24 @@ End
 Private Sub ShowEncounterList()
 
   Dim sql As String
+  Dim encLst As String[]
+  Dim k As Integer
 
+  encLst = $encList.Copy()
+  For k = 0 To encLst.Count - 1
+    encLst[k] = "'" & encLst[k] & "'"
+  Next
   If rbarchive.Value = True Then
     cmbsource.List = ["All Archives", "Diagnostic Tests", "Radio Diagnostics", "General Reports", "Scanned Images", "Past Documents"]
     cmbsource.Text = "All Archives"
-    sql = "select t1.fldregdate as fldregdate,t2.fldencounterval as fldencounterval from tblencounter as t1 inner join " & $tblpatreport & " as t2 on t1.fldencounterval=t2.fldencounterval where t1.fldpatientval=&1 GROUP BY fldencounterval ORDER BY fldregdate DESC"
+    sql = "select fldencounterval,fldencounterval from " & $tblpatreport & " where fldencounterval in(" & encLst.Join(",") & ") and (flvisible=&1 or flvisible IS NULL) GROUP BY fldencounterval"
+    $rData = modDatabase.$logConn.Exec(sql, "Visible")
   Else If rbsaved.Value = True Then
     cmbsource.List = ["Patient Images", "Patient Videos"]
     cmbsource.Text = "Patient Images"
-    sql = "select t1.fldregdate as fldregdate,t2.fldencounterval as fldencounterval from tblencounter as t1 inner join tblpatimagedata as t2 on t1.fldencounterval=t2.fldencounterval where t1.fldpatientval=&1 GROUP BY fldencounterval ORDER BY fldregdate DESC"
+    sql = "select fldencounterval,fldencounterval from tblpatimagedata where fldencounterval in(" & encLst.Join(",") & ") GROUP BY fldencounterval"
+    $rData = modDatabase.$logConn.Exec(sql)
   Endif
-  $rData = modDatabase.$myConn.Exec(sql, $patId)
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields, -1)
   With GridView1
@@ -95,7 +104,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   $rData.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView1, Row)
   If Column = 0 Then
-    GridView1.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.MediumDate)
+    GridView1.Data.Text = modReportVar.GetDateTimeReport(modPatient.GetRecordDate($rData[$aMyFields[Column]]), gb.MediumDate)
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]
   Endif
@@ -117,16 +126,16 @@ Private Sub ShowDocuments(encid As String)
 
   If rbsaved.Value = True Then
     If cmbsource.Text = "Patient Images" Then
-      $rData3 = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,fldkeyword,fldtime from tblpatimagedata where fldencounterval like &1 and fldcateg=&2", encid, "IMAGE")
+      $rData3 = modDatabase.$logConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,fldkeyword,fldtime from tblpatimagedata where fldencounterval like &1 and fldcateg=&2", encid, "IMAGE")
     Else If cmbsource.Text = "Patient Videos" Then
-      $rData3 = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,fldkeyword,fldtime from tblpatimagedata where fldencounterval like &1 and fldcateg=&2", encid, "VIDEO")
+      $rData3 = modDatabase.$logConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,fldkeyword,fldtime from tblpatimagedata where fldencounterval like &1 and fldcateg=&2", encid, "VIDEO")
     Endif
 
   Else If rbarchive.Value = True Then
     If cmbsource.Text = "All Archives" Then
-      $rData3 = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,flvisible,fldtime from " & $tblpatreport & " where fldencounterval like &1 and (flvisible=&2 or flvisible IS NULL)", encid, "Visible")
+      $rData3 = modDatabase.$logConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,flvisible,fldtime from " & $tblpatreport & " where fldencounterval like &1 and (flvisible=&2 or flvisible IS NULL)", encid, "Visible")
     Else
-      $rData3 = modDatabase.$syConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,flvisible,fldtime from " & $tblpatreport & " where fldencounterval like &1 and fldcateg like &2 and (flvisible=&3 or flvisible IS NULL)", encid, cmbsource.Text, "Visible")
+      $rData3 = modDatabase.$logConn.Exec("select fldid,fldtime,fldcateg,fldtitle,flddetail,fldsave,fldlink,fldencounterval,flvisible,fldtime from " & $tblpatreport & " where fldencounterval like &1 and fldcateg like &2 and (flvisible=&3 or flvisible IS NULL)", encid, cmbsource.Text, "Visible")
     Endif
 
   Endif

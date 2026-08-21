@@ -146,12 +146,13 @@ Public Sub mnupdate_Click()
   Inc Application.Busy
   modDBTables.$DbFormat = MMain.$SISHAppMode
   modDBGroup.CreateDatabaseForSish(modDatabase.$myConn)
+  modDBGroup.CreateDatabaseForLog(modDatabase.$logConn)
   Dec Application.Busy
   Message.Info(("Tables creation completed"), ("OK"))
 
 End
 
-Public Sub mnualter_Click()
+Private Sub GetAlterTables(sCon As Connection, sName As String)
 
   Dim hFile As File
   Dim sLine As String
@@ -164,7 +165,7 @@ Public Sub mnualter_Click()
   Dim Cp As New Uncompress
   Dim xtmp As String
 
-  xsqlpath = "/usr/share/doc" &/ modHelpVariable.AppName &/ "dbupdate"
+  xsqlpath = "/usr/share/doc" &/ modHelpVariable.AppName &/ sName
   If Exist(xsqlpath) Then
     sQuery = File.Load(xsqlpath)
   Else If Exist(xsqlpath & ".gz") Then
@@ -189,7 +190,7 @@ Public Sub mnualter_Click()
             If sLine Then
               If Left(sLine, 1) = "#" Then
               Else
-                Try modDatabase.$myConn.Exec(sLine)
+                Try sCon.Exec(sLine)
               Endif
             Endif
           Next
@@ -202,6 +203,18 @@ Public Sub mnualter_Click()
   Else
     Message.Warning(("File doesn't exist"), ("OK"))
   Endif
+
+End
+
+Public Sub mnualter_Click()
+
+  GetAlterTables(modDatabase.$myConn, "dbupdate")
+
+End
+
+Public Sub mnualterlog_Click()
+
+  GetAlterTables(modDatabase.$logConn, "dbupdate")
 
 End
 

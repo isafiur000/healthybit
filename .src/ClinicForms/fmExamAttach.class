@@ -631,3 +631,128 @@ Public Sub mnugroupexam_Click()
   Endif
 
 End
+
+Public Sub mnucurvisitsumm_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modPatReportAll.GetOPDSummaryReportAllComp(Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnuallhistory_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowPatientHistoryReport(Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnuplanningall_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowPatientNoteReport(Trim(txtencid.Text), "Outpatient Notes")
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnuallprocedure_Click()
+
+  Dim xpath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xpath = modPatSurgery.GetProcedureReportAll(Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnuexamrepo_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowPatientExaminationgReport(Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnudiagnorep_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowPatientLaboratoryReport(Trim(txtencid.Text), MMain.$defUnit)
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnuradio_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowPatRadioReportbyEncID(Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnudrugdosing_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowNursingDosing(Trim(txtencid.Text), False)
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnuinfusionview_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLPatient.ShowInfusionDosing(Trim(txtencid.Text), False)
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
+Public Sub mnucompreport_Click()
+
+  If txtencid.Text Then
+    modPatReports.GetSelectedPatientValues(Trim(txtencid.Text), MMain.$defUnit)
+  Endif
+
+End

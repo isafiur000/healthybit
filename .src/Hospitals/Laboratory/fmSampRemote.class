@@ -1384,8 +1384,8 @@ Private Function SaveBillingENtry(encid As String, cmod As String, scheq As Stri
         modBillings.InsertBillingDetail(modDatabase.$myConn, encid, $billno, cmod, txtamtdue, txttaxamt, txtdiscamt, txttotalamt, txtrecvamt, scheq, sbank, sOldBill, "", xState)
       Endif
       If modHelpVariable.$IRDLevel = "Yes" Then
-        modBillings.InsertBillLog(modDatabase.$myConn, encid, $billno, txtamtdue, txttaxamt, txtdiscamt)
-        modHelpVariable.RecordIRDActivity(modDatabase.$myConn, txttitle, Me.Name, "INSERT", $billno)
+        modBillings.InsertBillLog(modDatabase.$logConn, encid, $billno, txtamtdue, txttaxamt, txtdiscamt)
+        modHelpVariable.RecordIRDActivity(modDatabase.$logConn, txttitle, Me.Name, "INSERT", $billno)
         If modSettings.ShowSettingFromFIle("CBMSAPI/UserName") Then
           Exec ["healthybit", "--upload-invoice", $billno]
         Endif

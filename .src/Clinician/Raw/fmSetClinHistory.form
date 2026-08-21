@@ -1,0 +1,85 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,127,52)
+  Expand = True
+  Arrangement = Arrange.Vertical
+  { Panel1 Panel
+    MoveScaled(0,0,119,47)
+    Expand = True
+    Arrangement = Arrange.Horizontal
+    { Panel20 Panel
+      MoveScaled(0,5,25,39)
+      Arrangement = Arrange.Vertical
+      { cmbinpathistory ListBox
+        MoveScaled(1,2,23,27)
+        Expand = True
+      }
+      { Panel44 Panel
+        MoveScaled(0,30,25,4)
+        { mnupatcomment Button
+          MoveScaled(0,0,24,3.5)
+          Text = ("Longitudinal Med Record")
+        }
+      }
+      { Panel40 Panel
+        MoveScaled(0,34,25,4)
+        { mnupatcomment2 Button
+          MoveScaled(0,0,24,3.5)
+          Text = ("Scanned Archive")
+        }
+      }
+    }
+    { Panel16 Panel
+      MoveScaled(26,5,1,39)
+      Arrangement = Arrange.Vertical
+    }
+    { Panel13 Panel
+      MoveScaled(27,5,91,39)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { Panel15 Panel
+        MoveScaled(0,0,91,4)
+        { btnhelphistory ToolButton
+          MoveScaled(58,0.375,3,3)
+          Picture = Picture["icon:/small/exec"]
+        }
+        { dcthelphistory ToolButton
+          MoveScaled(54,0.375,3,3)
+          Picture = Picture["icon:/small/edit"]
+        }
+        { btntemplphistory ToolButton
+          MoveScaled(62,0.375,3,3)
+          Picture = Picture["icon:/small/attach"]
+        }
+        { btnhistorydef ToolButton
+          MoveScaled(50,0.375,3,3)
+          Picture = Picture["icon:/small/database"]
+        }
+        { btnhistory Button
+          MoveScaled(72,0.5,14,3)
+          Text = ("Save")
+          Picture = Picture["icon:/small/apply"]
+        }
+        { lblhistoryhead Label
+          MoveScaled(0,0.5,44,3)
+          Font = Font["Bold"]
+          Border = Border.Plain
+        }
+        { chkenabhistory CheckBox
+          MoveScaled(65,0,3,3)
+          Visible = False
+        }
+      }
+      { txthistory TextHTML
+        MoveScaled(0,4,40,23)
+        Tag = "Auto"
+        Expand = True
+      }
+      { lblhistoryuser Label
+        MoveScaled(0,30,84,3)
+        Border = Border.Plain
+      }
+    }
+  }
+}

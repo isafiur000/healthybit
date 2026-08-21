@@ -133,6 +133,8 @@ Public Sub btnshow_Click()
   If modHelpVariable.$FIrstTimeSetting = True Then
     txtdbcreate.Text = ShowSysSettingFromFIleNew("System/Database")
     txtdbrestore.Text = ShowSysSettingFromFIleNew("System/Database")
+    txtlogcreate.Text = ShowSysSettingFromFIleNew("System/LogDatabase")
+    txtlogrestore.Text = ShowSysSettingFromFIleNew("System/LogDatabase")
     cmbcollation.Text = ShowSysSettingFromFIleNew("System/DBCollation")
     cmbengine.Text = ShowSysSettingFromFIleNew("System/DBEngine")
     cmbinterface.Text = ShowSysSettingFromFIleNew("System/NetInterface")
@@ -194,6 +196,8 @@ Public Sub btnshow_Click()
     xfile = modHelpVariable.GetConfigSettingFIle()
     txtdbcreate.Text = modControlSub.ShowSettingValue(xfile, "System/Database")
     txtdbrestore.Text = modControlSub.ShowSettingValue(xfile, "System/Database")
+    txtlogcreate.Text = modControlSub.ShowSettingValue(xfile, "System/LogDatabase")
+    txtlogrestore.Text = modControlSub.ShowSettingValue(xfile, "System/LogDatabase")
     cmbcollation.Text = modControlSub.ShowSettingValue(xfile, "System/DBCollation")
     cmbengine.Text = modControlSub.ShowSettingValue(xfile, "System/DBEngine")
     cmbinterface.Text = modControlSub.ShowSettingValue(xfile, "System/NetInterface")
@@ -481,7 +485,7 @@ Private Sub SaveSysSettingsToFile(strSetting As String, strVal As String)
 
 End
 
-Private Sub UpdateConfFile(dbFile As String)
+Private Sub UpdateConfFile(dbMain As String, dbLog As String)
 
   Dim xssl As String
   Dim xird As String
@@ -507,7 +511,8 @@ Private Sub UpdateConfFile(dbFile As String)
     Endif
     SaveSysSettingsToFile("Hospital/VATRegistration", xvat)
 
-    SaveSysSettingsToFile("System/Database", dbFile)
+    SaveSysSettingsToFile("System/Database", dbMain)
+    SaveSysSettingsToFile("System/LogDatabase", dbLog)
     SaveSysSettingsToFile("System/DBCollation", cmbcollation.Text)
     SaveSysSettingsToFile("System/DBEngine", cmbengine.Text)
     SaveSysSettingsToFile("System/NetInterface", cmbinterface.Text)
@@ -595,7 +600,7 @@ End
 Public Sub btnhospudate_Click()
 
   If txthospitalname.Text And If cmbcomp.Text Then
-    UpdateConfFile(txtdbcreate.Text)
+    UpdateConfFile(txtdbcreate.Text, txtlogcreate.Text)
     btnsave.Enabled = True
   Endif
 
@@ -619,10 +624,20 @@ Public Sub btndbcreate_Click()
       Else
         If modDatabase.$myConn.Opened = False Then
           modDatabase.$myConn = modDBApp.OpenConnection(cmbtype.Text, txtserver.Text, "", txtuser.Text, txtpass.text)
-        Else If modDatabase.$myConn.Opened = True Then
-          If Not modDatabase.$myConn.Databases.Exist(txtdbcreate.Text) Then
-            modDatabase.$myConn.Databases.Add(txtdbcreate.Text)
-            Message.Info(("Database creation completed. Wait ...."), ("OK"))
+        Endif
+        If modDatabase.$myConn.Opened = True Then
+          If txtdbcreate.Text Then
+            If Not modDatabase.$myConn.Databases.Exist(txtdbcreate.Text) Then
+              modDatabase.$myConn.Databases.Add(txtdbcreate.Text)
+              Message.Info(("Main Database creation completed."), ("OK"))
+            Endif
+          Endif
+
+          If txtlogcreate.Text Then
+            If Not modDatabase.$myConn.Databases.Exist(txtlogcreate.Text) Then
+              modDatabase.$myConn.Databases.Add(txtlogcreate.Text)
+              Message.Info(("Log Database creation completed."), ("OK"))
+            Endif
           Endif
           modDatabase.CloseDatabase()
         Endif
@@ -635,11 +650,11 @@ Public Sub btndbcreate_Click()
         Message.Warning(("Connection Type is set to Remote. Please remove appsettings.conf and try again"), ("OK"))
       Else
         modHelpVariable.ConnectionMain()
-        If modDatabase.$myConn.Opened = True Then
-          db.Debug = True
+        If cmbtype.Text = "odbc" Then
+        Else
+          If modDatabase.$myConn.Opened = True Then
+            db.Debug = True
 
-          If cmbtype.Text = "odbc" Then
-          Else
             Inc Application.Busy
             If cmbengine.Text Then
               modDBTables.$DbEngine = cmbengine.Text
@@ -647,9 +662,19 @@ Public Sub btndbcreate_Click()
             modDBTables.$DbFormat = MMain.$SISHAppMode
             If MMain.$SISHAppMode = "REP" Then  ''remoteoptimized
               modDBGroup.CreateDatabaseForSish(modDatabase.$myConn)
+              If txtlogcreate.Text Then
+                modDBGroup.CreateDatabaseForLog(modDatabase.$logConn)
+              Else
+                modDBGroup.CreateDatabaseForLog(modDatabase.$myConn)
+              Endif
               Message.Info(("Tables creation completed"), ("OK"))
             Else
               modDBGroup.CreateDatabaseForSish(modDatabase.$myConn)
+              If txtlogcreate.Text Then
+                modDBGroup.CreateDatabaseForLog(modDatabase.$logConn)
+              Else
+                modDBGroup.CreateDatabaseForLog(modDatabase.$myConn)
+              Endif
               Message.Info(("Tables creation completed"), ("OK"))
               If chkird.Value = True Then
                 modDatabase.CreateIRDTriggerBilling(modDatabase.$myConn)
@@ -657,10 +682,11 @@ Public Sub btndbcreate_Click()
               Endif
             Endif
             Dec Application.Busy
-          Endif
 
-          fmExecute.ShowModal
+            fmExecute.ShowModal
+          Endif
         Endif
+
       Endif
     Endif
   Endif
@@ -670,7 +696,7 @@ End
 '''--------------------------------------- back up db ----------------------------------------
 Public Sub btnhospudate2_Click()
 
-  UpdateConfFile(txtdbrestore.Text)
+  UpdateConfFile(txtdbrestore.Text, txtlogrestore.Text)
   btnsave2.Enabled = True
 
 End
@@ -681,16 +707,49 @@ Public Sub btnsave2_Click()
 
 End
 
-Public Sub txtrestore_Click()
+Public Sub txtdbdump_Click()
 
   If chkdumprepo.Value = True Then
     If Dialog.SelectDirectory() Then Return
-    txtrestore.Text = Dialog.Path
+    txtdbdump.Text = Dialog.Path
   Else
     Dialog.Filter = ["*.sql", "SQL Files"]
     If Dialog.OpenFile() Then Return
-    txtrestore.Text = Dialog.Path
+    txtdbdump.Text = Dialog.Path
   Endif
+
+End
+
+Private Sub GetDumpRestore(dbName As String, dumpFile As String, isRepo As Boolean) As Connection
+
+  Dim scon As Connection
+  Dim xFile As String
+  Dim xTable As Table
+
+  Inc Application.Busy
+  If isRepo = True Then
+    For Each xFile In Dir(dumpFile, Null, gb.File)
+      modDBApp.RestoreBackup(cmbtype.Text, txtserver.Text, dbName, txtuser.Text, txtpass.Text, Quote(dumpFile &/ xFile))
+    Next
+  Else
+    modDBApp.RestoreBackup(cmbtype.Text, txtserver.Text, dbName, txtuser.Text, txtpass.Text, Quote(dumpFile))                                                            ''
+  Endif
+  Dec Application.Busy
+  Wait
+  Message.Info(("Restore completed"), ("OK"))
+
+  If isRepo = True Then
+    scon = modDBApp.OpenConnection(cmbtype.Text, txtserver.Text, dbName, txtuser.Text, txtpass.text)
+    If scon.Opened Then
+      Inc Application.Busy
+      For Each xTable In scon.Tables
+        modDatabase.GetImportRepoDumpTable(scon, xTable.Name)
+      Next
+      Dec Application.Busy
+    Endif
+  Endif
+
+  Return scon
 
 End
 
@@ -698,51 +757,40 @@ Public Sub btnrestore_Click()
 
   Dim scon As Connection
 
-  Dim xFile As String
-  Dim xTable As Table
-
   If Exist(modHelpVariable.$appetcFolder &/ modHelpVariable.AppName & ".conf") Then
     If cmbtype.Text Then
       scon = modDBApp.OpenConnection(cmbtype.Text, txtserver.Text, "", txtuser.Text, txtpass.text)
-      If Not scon.Databases.Exist(txtdbrestore.Text) Then
-        scon.Databases.Add(txtdbrestore.Text)
-        Message.Info(("Database created. Wait for Table restoration ...."), ("OK"))
-        Wait
+      If txtdbrestore.Text Then
+        If Not scon.Databases.Exist(txtdbrestore.Text) Then
+          scon.Databases.Add(txtdbrestore.Text)
+          Message.Info(("Database created. Wait for Table restoration ...."), ("OK"))
+          Wait
+        Endif
+      Endif
+      If txtlogrestore.Text Then
+        If Not scon.Databases.Exist(txtlogrestore.Text) Then
+          scon.Databases.Add(txtlogrestore.Text)
+          Message.Info(("Database created. Wait for Table restoration ...."), ("OK"))
+          Wait
+        Endif
       Endif
       Try scon.Close()
 
-      If txtrestore.Text Then
-        Inc Application.Busy
-        If chkdumprepo.Value = True Then
-          For Each xFile In Dir(txtrestore.Text, Null, gb.File)
-            modDBApp.RestoreBackup(cmbtype.Text, txtserver.Text, txtdbrestore.Text, txtuser.Text, txtpass.Text, Quote(txtrestore.Text &/ xFile))
-          Next
-        Else
-          modDBApp.RestoreBackup(cmbtype.Text, txtserver.Text, txtdbrestore.Text, txtuser.Text, txtpass.Text, Quote(txtrestore.Text))                                                            ''
-        Endif
-        Dec Application.Busy
+      If txtdbdump.Text Then
+        scon = GetDumpRestore(txtdbrestore.Text, txtdbdump.Text, chkdumprepo.Value)
+        modDBGroup.CreateDatabaseForSish(scon)
         Wait
-        Message.Info(("Restore completed"), ("OK"))
-
-        scon = modDBApp.OpenConnection(cmbtype.Text, txtserver.Text, txtdbrestore.Text, txtuser.Text, txtpass.text)
-        If scon.Opened Then
-          If chkdumprepo.Value = True Then
-            Inc Application.Busy
-            For Each xTable In scon.Tables
-              modDatabase.GetImportRepoDumpTable(scon, xTable.Name)
-            Next
-            modDBTables.$DbFormat = MMain.$SISHAppMode
-            modDBGroup.CreateDatabaseForSish(scon)
-            Dec Application.Busy
-            Wait
-          Endif
-
-          If modHelpVariable.$IRDLevel = "Yes" Then
-            modHelpVariable.RecordIRDActivity(scon, "Database Restore", "", "RESTORE", "")
-          Endif
+        modDBTables.$DbFormat = MMain.$SISHAppMode
+        If modHelpVariable.$IRDLevel = "Yes" Then
+          modHelpVariable.RecordIRDActivity(scon, "Database Restore", "", "RESTORE", "")
         Endif
-
       Endif
+
+      If txtlogdump.Text Then
+        scon = GetDumpRestore(txtlogrestore.Text, txtlogdump.Text, chklogrepo.Value)
+        modDBGroup.CreateDatabaseForLog(scon)
+      Endif
+
     Endif
   Endif
 
@@ -751,7 +799,7 @@ End
 '''---------------------------- client Access ---------------------------------
 Public Sub btnhospudate3_Click()
 
-  UpdateConfFile(cmbdbclient.Text)
+  UpdateConfFile(cmbdbclient.Text, cmblogclient.Text)
   btnsave3.Enabled = True
 
 End

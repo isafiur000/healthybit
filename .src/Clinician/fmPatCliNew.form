@@ -836,91 +836,10 @@
       Count = 9
       Index = 0
       Text = ("History [F3]")
-      { Panel19 Panel
-        MoveScaled(0,0,25,39)
-        Arrangement = Arrange.Vertical
-        { cmbinpathistory ListBox
-          MoveScaled(1,1,23,22)
-          Expand = True
-        }
-        { Panel8 Panel
-          MoveScaled(0,25,25,4)
-          { mnupatcomment Button
-            MoveScaled(0,0,24,3.5)
-            Text = ("Longitudinal Med Record")
-          }
-        }
-        { Panel40 Panel
-          MoveScaled(0,29,25,4)
-          { mnupatcomment2 Button
-            MoveScaled(0,0,24,3.5)
-            Text = ("Scanned Archive")
-          }
-        }
-        { Panel2 Panel
-          MoveScaled(0,35,24,3)
-          Border = Border.Plain
-          { rbsi RadioButton
-            MoveScaled(1,0,10,3)
-            Text = ("SI Unit")
-            Value = True
-          }
-          { rbmetric RadioButton
-            MoveScaled(13,0,10,3)
-            Text = ("Metric")
-          }
-        }
-      }
-      { Panel20 Panel
-        MoveScaled(25,0,93,17)
+      { pnlsetHistory Panel
+        MoveScaled(4,3,77,16)
         Expand = True
         Arrangement = Arrange.Vertical
-        { Panel11 Panel
-          MoveScaled(0,0,93,4)
-          { dcthelphistory ToolButton
-            MoveScaled(50,0.5,3,3)
-            Picture = Picture["icon:/small/edit"]
-          }
-          { btnhelphistory ToolButton
-            MoveScaled(54,0.5,3,3)
-            Picture = Picture["icon:/small/exec"]
-          }
-          { btntemplphistory ToolButton
-            MoveScaled(58,0.5,3,3)
-            Picture = Picture["icon:/small/attach"]
-          }
-          { btnshowhistory ToolButton
-            MoveScaled(63,0.5,3,3)
-            Picture = Picture["icon:/small/refresh"]
-          }
-          { btnhistorydef ToolButton
-            MoveScaled(46,0.5,3,3)
-            Picture = Picture["icon:/small/database"]
-          }
-          { lblhistoryhead Label
-            MoveScaled(0,0.5,38,3)
-            Font = Font["Bold"]
-            Border = Border.Plain
-          }
-          { btnhistory Button
-            MoveScaled(78,0.5,13,3)
-            Text = ("Save")
-            Picture = Picture["icon:/small/apply"]
-          }
-          { chkenabhistory CheckBox
-            MoveScaled(38,0,3,3)
-            Visible = False
-          }
-        }
-        { txthistory TextHTML
-          MoveScaled(0,4,59,8)
-          Tag = "Auto"
-          Expand = True
-        }
-        { lblhistoryuser Label
-          MoveScaled(0,12,84,3)
-          Border = Border.Plain
-        }
       }
       Index = 1
       Text = ("Complaints [F4]")
@@ -1100,18 +1019,26 @@
         MoveScaled(79,0,1,29)
       }
       { Panel32 Panel
-        MoveScaled(80,0,39,39)
+        MoveScaled(80,0,39,40)
         Arrangement = Arrange.Vertical
         { Panel37 Panel
           MoveScaled(0,0,39,4)
-          { LCDLabel1 LCDLabel
-            MoveScaled(20,0.5,18,3)
-            Alignment = Align.Center
-            Border = True
-          }
           { mnumonitor Button
             MoveScaled(0,0.5,11,3)
             Text = ("Monitor")
+          }
+          { Panel2 Panel
+            MoveScaled(14,0.5,21,3)
+            Border = Border.Plain
+            { rbsi RadioButton
+              MoveScaled(1,0,9.5,3)
+              Text = ("SI Unit")
+              Value = True
+            }
+            { rbmetric RadioButton
+              MoveScaled(11,0,9.5,3)
+              Text = ("Metric")
+            }
           }
         }
         { Panel60 Panel
@@ -1220,7 +1147,7 @@
           }
         }
         { Panel57 Panel
-          MoveScaled(0,33,37,4)
+          MoveScaled(0,32,37,4)
           { txtmodelval ValueBox
             MoveScaled(24,0.5,9,3)
           }
@@ -1231,6 +1158,11 @@
           { cmbmlmodel ComboBox
             MoveScaled(0,0.5,24,3)
           }
+        }
+        { LCDLabel1 LCDLabel
+          MoveScaled(0,36,37,3)
+          Alignment = Align.Center
+          Border = True
         }
       }
       Index = 3
@@ -1298,6 +1230,10 @@
             MoveScaled(46,0.5,13,3)
             Text = ("Add")
             Picture = Picture["icon:/small/apply"]
+          }
+          { chkenabplan CheckBox
+            MoveScaled(17,0,3,3)
+            Visible = False
           }
         }
         { txtplan TextHTML

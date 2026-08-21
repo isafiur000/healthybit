@@ -140,10 +140,10 @@ Public Sub GridView1_Click()
   If GridView1.Rows.Selection.Count Then
     txtnewencid.Text = GridView1[GridView1.Row, 1].Text
     If GridView1.Row = 0 Then
-      modDatabase.$syConn = modDatabase.$sreadConn
+      modDatabase.$syConn = modDatabase.$readConn
       ShowReportEncid(GetReportItems())
     Else
-      modDatabase.$syConn = modDatabase.$ssyncConn
+      modDatabase.$syConn = modDatabase.$slaveConn
       ShowReportEncid(GetReportItems())
       modAppSupport.SetReportServer(modHelpVariable.$LogInCategory)
     Endif
@@ -345,7 +345,7 @@ Public Sub btnyearly_Click()
 
       encLst.Remove(encLst.Find(txtnewencid.Text))
       If encLst And If encLst.Count Then
-        modDatabase.$syConn = modDatabase.$ssyncConn
+        modDatabase.$syConn = modDatabase.$slaveConn
         xstring = GetAllVisitHistoryResultStr(xList, encLst, txtnewencid.Text)
         modAppSupport.SetReportServer(modHelpVariable.$LogInCategory)
         If modBasic.$WebViewApp = "webkit" Then
