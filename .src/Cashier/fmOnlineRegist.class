@@ -14,6 +14,8 @@ Private $MobSavedQueColl As Collection
 
 Public Sub Form_Open()
 
+  Dim xlst As String
+
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Vertical")
   Me.Icon = Picture[modGeneralMain.$strLogo]
   $BillingOption = modBasic.$BillCashOption
@@ -26,11 +28,16 @@ Public Sub Form_Open()
   cmbdepart.List = modGeneral.GetDepartmentsForOPDBoth()
   cmbdepart.Add("%")
   cmbdepart.Text = "%"
-  cmbgroup.List = ["General OPD"]
   dtconsult.Value = Now()
 
   $patMessage = modSettings.ShowSettingFromFIle("Registration/PatientMessage")
   $clinMessage = modSettings.ShowSettingFromFIle("Registration/PhysicianMessage")
+
+  xlst = modSettings.ShowSettingFromFIle("OnlineBooking/CategoryList")
+  If xlst Then
+    cmbgroup.List = Split(xlst, ";")
+  Endif
+  cmbgroup.Add("General OPD")
 
   If ShowBilling() = False Then
     hPatient.Enabled = False
@@ -51,6 +58,27 @@ Public Sub dtnepdate_Click()
   xx = BSDateFormat(("Enter BS Date in yyyy/mm/dd format"), ("Date Converter"), modDate.ConvertToLocaldate(dtconsult.Value))
   If xx Then
     dtconsult.Value = modDate.ConvertToEnglishdate(xx)
+  Endif
+
+End
+
+Public Sub btnaddcateg_Click()
+
+  Dim xx As String
+  Dim xList As String[]
+  Dim newLst As String[]
+
+  xx = modSettings.ShowSettingFromFIle("OnlineBooking/CategoryList")
+  If xx Then
+    xList = Split(xx, ";")
+  Else
+    xList = New String[]
+  Endif
+  newLst = InputList("Booking Categories", xList)
+  If newLst And If newLst.Count Then
+    modSettings.SaveSettingsToFile("OnlineBooking/CategoryList", newLst.Join(";"))
+    Balloon.Info(("Information saved"), btnaddcateg)
+    Balloon.Delay = modBasic.$BalloonDelay
   Endif
 
 End
@@ -196,6 +224,15 @@ Public Sub GridView1_Click()
       LoadGridData()
     Endif
 
+  Else If GridView1.Column = 3 Then
+    xval = InputCombo("Change Department for " & GridView1[GridView1.Row, 5].Text & Space(1) & GridView1[GridView1.Row, 6].Text, "Department", cmbdepart.List, GridView1[GridView1.Row, 3].Text, True)
+    If xval Then
+      res = modDatabase.$myConn.Edit("tblonlinebook", "fldbookingval=&1", GridView1[GridView1.Row, 13].Text)
+      res["fldadmitlocat"] = xval
+      res.Update
+      LoadGridData()
+    Endif
+
   Else If GridView1.Column = 8 Then
     xval = InputCombo("Select Scheme for " & GridView1[GridView1.Row, 5].Text & Space(1) & GridView1[GridView1.Row, 6].Text, "Scheme", $onlineSchemes, GridView1[GridView1.Row, 8].Text, True)
     If xval Then
@@ -243,6 +280,7 @@ Public Sub btnregist_Click()
           Endif
           xpass = modGeneral.SendPatientPasswordForRemote(xEncID)
 
+          ''sticker
           If chklabel.Value = True Then
             If modNonMedical.AllowRegistSlipWithInvoiceEncid(xEncID) = True Then
               $hReport = New CRegistLabel(xEncID)
@@ -250,8 +288,21 @@ Public Sub btnregist_Click()
             Endif
             Wait
           Endif
+          ''prescriptiob
           If chkprescr.Value = True Then
             modPatientSub.PrintRegistExtraReport(xEncID)
+            Wait
+          Endif
+          ''invoice
+          If chkinvoice.Value = True Then
+            If xbillno Then
+              modBILLFormat.PrintSelectedInvoice(xbillno)
+            Endif
+            Wait
+          Endif
+          ''patient messaging
+          If chkmessage.Value = True Then
+            modDevice.SendMessageToRegistPatient(xEncID)
             Wait
           Endif
         Endif
@@ -406,6 +457,9 @@ Private Function GetRegistration(sBookID As String) As String
 
   Dim xallow As Boolean
   Dim xque As Integer
+  Dim lstencDate As Date
+  Dim xday As Integer
+  Dim xfollow As String
 
   res = modDatabase.$myConn.Exec("select fldpatientval,fldconsultdate,fldadmitlocat,flduserid,flddisctype,fldbillingmode,fldencounterval,fldinvoice,fldpayreference,flditemamt,fldstate from tblonlinebook where fldbookingval=&1", sBookID)
   If res.Available Then
@@ -429,6 +483,37 @@ Private Function GetRegistration(sBookID As String) As String
     ''lock past visits
     If xoldpat Then
       LockPastEncounters(xoldpat)
+    Endif
+
+    ''check followup
+    If modBasic.$BillMobileCheckFollowup = "Enable" Then
+      If xoldpat Then
+
+        lstencDate = modPatient.GetLastPaidConsultDate(xoldpat)
+        If lstencDate Then
+          If modBasic.$AutoRegistNoBillHour Then
+            xday = CInt(modBasic.$AutoRegistNoBillHour)
+          Else
+            xday = 0
+          Endif
+          If xday Then
+            If DateDiff(lstencDate, Now(), gb.Hour) < xday Then
+              xfollow = "Follow-up"
+            Else
+              xfollow = "New"
+            Endif
+          Else
+            xfollow = "New"
+          Endif
+        Else
+          xfollow = "New"
+        Endif
+
+      Else
+        xfollow = "New"
+      Endif
+    Else
+      xfollow = "New"
     Endif
 
     ''get paid amount
@@ -553,7 +638,7 @@ Private Function GetRegistration(sBookID As String) As String
             res1["fldregdate"] = Now()
             res1["fldcomp"] = modBasic.$compID
             res1["fldvisit"] = xvisit
-            res1["fldfollow"] = "New"
+            res1["fldfollow"] = xfollow
 
             res1["fldcurrlocat"] = ""
             res1["flddoa"] = ""
@@ -583,9 +668,13 @@ Private Function GetRegistration(sBookID As String) As String
               Endif
             Endif
 
-            autobil = modBillings.InsertRegistrationBilling("Full", xEncID, res["fldadmitlocat"], res["flddisctype"], xBillMode, "New", xuser)
+            autobil = modBillings.InsertRegistrationBilling("Full", xEncID, res["fldadmitlocat"], res["flddisctype"], xBillMode, xfollow, xuser)
             If autobil = True Then
-              xcomm = "Paid Consultation"
+              If xfollow = "Follow-up" Then
+                xcomm = "Follow-up Consultation"
+              Else If xfollow = "New" Then
+                xcomm = "Paid Consultation"
+              Endif
               xque = GetWebQueueNum(res["fldadmitlocat"], sBookID)
 
               xformat = modGeneral.GetCategoryFromDept(res["fldadmitlocat"])
@@ -775,22 +864,9 @@ End
 
 Public Sub mnusmspat_Click()
 
-  Dim sText As String
-  Dim sphno As String
-
   If GridView1.Rows.Selection.Count Then
-    sphno = modPatient.GetPatientContactByPatNo(GridView1[GridView1.Row, 4].Text)
-    If sphno Then
-      sText = $patMessage
-      If sText And If GridView1[GridView1.Row, 10].Text Then
-        sText = modReportVar.GetPatientSMSVAr(GridView1[GridView1.Row, 10].Text, sText)
-        sText = modReportVar.GetReportLastConsult(GridView1[GridView1.Row, 10].Text, sText)
-        If modBasic.$SMSQueDisable = "No" Then
-          modAppSupport.SaveSMSEntry(sphno, sText, "Waiting", "")
-        Else
-          modAppSupport.SendSMSSingle(sphno, sText)
-        Endif
-      Endif
+    If GridView1[GridView1.Row, 10].Text Then
+      modDevice.SendMessageToRegistPatient(GridView1[GridView1.Row, 10].Text)
     Endif
   Endif
 
@@ -802,19 +878,19 @@ Public Sub mnusmsphy_Click()
   Dim sphno As String
 
   If GridView1.Rows.Selection.Count Then
-    sphno = modGeneral.GetUserContact(GridView1[GridView1.Row, 15].Text)
-    If sphno Then
-      sText = $clinMessage
-      If sText And If GridView1[GridView1.Row, 10].Text Then
-        sText = modReportVar.GetDoctorSMSVAr(GridView1[GridView1.Row, 10].Text, sText)
-        sText = modReportVar.GetReportLastConsult(GridView1[GridView1.Row, 10].Text, sText)
-        If modBasic.$SMSQueDisable = "No" Then
-          modAppSupport.SaveSMSEntry(sphno, sText, "Waiting", "")
-        Else
-          modAppSupport.SendSMSSingle(sphno, sText)
-        Endif
-      Endif
+    If GridView1[GridView1.Row, 10].Text And If GridView1[GridView1.Row, 15].Text Then
+      modDevice.SendMessageToRegistPhysician(GridView1[GridView1.Row, 10].Text, GridView1[GridView1.Row, 15].Text)
     Endif
   Endif
+
+End
+
+''cancel
+Public Sub mnucancel_Click()
+
+End
+
+''transfer
+Public Sub mnutransfer_Click()
 
 End

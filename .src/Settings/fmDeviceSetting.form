@@ -1856,7 +1856,7 @@
     Index = 13
     Text = ("Dashboard")
     { Frame22 Frame
-      MoveScaled(1,1,71,11)
+      MoveScaled(1,1,71,16)
       Text = ("Bagmati")
       Alignment = Align.Left
       { Label26 Label
@@ -1885,9 +1885,22 @@
         MoveScaled(64,7,3,3)
         Picture = Picture["icon:/small/apply"]
       }
+      { Label124 Label
+        MoveScaled(1,11,10,3)
+        Border = Border.Plain
+        Text = ("SSU Acc")
+      }
+      { txtbagmatissu TextBox
+        MoveScaled(12,11,51,3)
+        ToolTip = ("Ledger Accounts of SSU schemes separated by semicolon (;)")
+      }
+      { btnbagmatissu ToolButton
+        MoveScaled(64,11,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
     }
     { Frame23 Frame
-      MoveScaled(1,13,72,19)
+      MoveScaled(1,19,72,19)
       Text = ("MoHP")
       Alignment = Align.Left
       { Label104 Label

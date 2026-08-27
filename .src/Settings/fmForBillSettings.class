@@ -162,6 +162,7 @@ Public Sub Form_Open()
   cmbmobpharm.List = ["Enable", "Disable"]
   cmbmobdeposit.List = ["Enable", "Disable"]
   cmbmobregfee.List = ["Enable", "Disable"]
+  cmbmobfollow.List = ["Enable", "Disable"]
 
 End
 
@@ -495,6 +496,8 @@ Private Sub UpdateAllowSaved()
   cmbcashpack.Text = modGlobalSetting.ShowSettingFromDBAny("CashBilling/DefaultPackage", cmbtarget.Text)
   cmbfullpack.Text = modGlobalSetting.ShowSettingFromDBAny("CashBilling/DefaultFullPackage", cmbtarget.Text)
 
+  modGlobalSetting.ShowCheckBoxFromDBAny(chklockgridservice, "CashBilling/LockServiceGrid", cmbtarget.Text)
+
 End
 
 Public Sub btnpackageset_Click()
@@ -524,6 +527,7 @@ End
 Public Sub btnpackservnew_Click()
 
   modGlobalSetting.SaveSettingToDB("CashBilling/AlterServicePackage", cmbpackservnew.Text, cmbtarget.Text)
+  modGlobalSetting.EnterSettingFromDB(chklockgridservice, "CashBilling/LockServiceGrid", cmbtarget.Text)
   Balloon.Info(("Information saved"), btnpackservnew)
   Balloon.Delay = modBasic.$BalloonDelay
 
@@ -1194,6 +1198,7 @@ Private Sub ShowWebServices()
   cmbmobpharm.Text = modGlobalSetting.ShowSettingFromDBAny("RemoteBilling/EnablePharmacySales", cmbtarget.Text)
   cmbmobdeposit.Text = modGlobalSetting.ShowSettingFromDBAny("RemoteBilling/EnableAddDeposit", cmbtarget.Text)
   cmbmobregfee.Text = modGlobalSetting.ShowSettingFromDBAny("RemoteBilling/CheckConsultationFee", cmbtarget.Text)
+  cmbmobfollow.Text = modGlobalSetting.ShowSettingFromDBAny("RemoteBilling/CheckFollowUp", cmbtarget.Text)
 
 End
 
@@ -1225,6 +1230,14 @@ Public Sub btnmobregfee_Click()
 
   modGlobalSetting.SaveSettingToDB("RemoteBilling/CheckConsultationFee", cmbmobregfee.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btnmobregfee)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnmobfollow_Click()
+
+  modGlobalSetting.SaveSettingToDB("RemoteBilling/CheckFollowUp", cmbmobfollow.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btnmobfollow)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End
@@ -1269,6 +1282,7 @@ Public Sub btnsettall_Click()
   xList.Add("SavedBillingEntry/EditPackageSaved")
   xList.Add("CashBilling/DefaultPackage")
   xList.Add("CashBilling/DefaultFullPackage")
+  xList.Add("CashBilling/LockServiceGrid")
 
   xList.Add("BillingOption/PharmacySales")
   xList.Add("BillingOption/PharmacyReturn")
@@ -1360,6 +1374,7 @@ Public Sub btnsettall_Click()
   xList.Add("RemoteBilling/EnablePharmacySales")
   xList.Add("RemoteBilling/EnableAddDeposit")
   xList.Add("RemoteBilling/CheckConsultationFee")
+  xList.Add("RemoteBilling/CheckFollowUp")
 
   Inc Application.Busy
   xPath = modGENReport.ShowSelectSetting(xList)
@@ -1424,6 +1439,7 @@ Private Sub PrintableSettings()
   AddSettingReport("SavedBillingEntry/EditPackageSaved", cmbtarget.Text, cmbeditpackage.Tooltip, cmbeditpackage.List.Join("; "))
   AddSettingReport("CashBilling/DefaultPackage", cmbtarget.Text, cmbcashpack.Tooltip, cmbcashpack.List.Join("; "))
   AddSettingReport("CashBilling/DefaultFullPackage", cmbtarget.Text, cmbfullpack.Tooltip, cmbfullpack.List.Join("; "))
+  AddSettingReport("CashBilling/LockServiceGrid", cmbtarget.Text, chklockgridservice.Tooltip, "Yes; No")
 
   $BillingReport.AddChapter("Billing Access")
   AddSettingReport("BillingOption/CashierBilling", cmbtarget.Text, cmbcasbill.Tooltip, cmbcasbill.List.Join("; "))
@@ -1525,6 +1541,7 @@ Private Sub PrintableSettings()
   AddSettingReport("RemoteBilling/EnablePharmacySales", cmbtarget.Text, cmbmobpharm.Tooltip, cmbmobpharm.List.Join("; "))
   AddSettingReport("RemoteBilling/EnableAddDeposit", cmbtarget.Text, cmbmobdeposit.Tooltip, cmbmobdeposit.List.Join("; "))
   AddSettingReport("RemoteBilling/CheckConsultationFee", cmbtarget.Text, cmbmobregfee.Tooltip, cmbmobregfee.List.Join("; "))
+  AddSettingReport("RemoteBilling/CheckFollowUp", cmbtarget.Text, cmbmobfollow.Tooltip, cmbmobfollow.List.Join("; "))
 
   xPath = $BillingReport.NewHTMLPath()
   modControlSub.OpenHTMLPreview("", xPath, "ReportSize")

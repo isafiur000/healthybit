@@ -5,12 +5,40 @@ Private $aMyFields As String[]
 
 Public Sub Form_Open()
 
+  Dim xlst As String
+
   modGeneralMain.ArrangeFormCentre(Me)
-  cmbcategory.List = ["General OPD"]
   dtquota.Value = Now()
   cmbdisctype.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldtype from tbldiscount where fldonline=&1", "Enable"))
   cmbdisctype.Add("%")
   cmbdepart.List = modGeneral.RegistrationDeptList()
+
+  xlst = modSettings.ShowSettingFromFIle("OnlineBooking/CategoryList")
+  If xlst Then
+    cmbcategory.List = Split(xlst, ";")
+  Endif
+  cmbcategory.Add("General OPD")
+
+End
+
+Public Sub btnaddcateg_Click()
+
+  Dim xx As String
+  Dim xList As String[]
+  Dim newLst As String[]
+
+  xx = modSettings.ShowSettingFromFIle("OnlineBooking/CategoryList")
+  If xx Then
+    xList = Split(xx, ";")
+  Else
+    xList = New String[]
+  Endif
+  newLst = InputList("Booking Categories", xList)
+  If newLst And If newLst.Count Then
+    modSettings.SaveSettingsToFile("OnlineBooking/CategoryList", newLst.Join(";"))
+    Balloon.Info(("Information saved"), btnaddcateg)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
 
 End
 

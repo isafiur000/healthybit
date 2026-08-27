@@ -267,9 +267,9 @@ Public Sub grdfluid_Click()
         yval = InputValue(("Enter Rate of Administration in ") & "<b>mL/Hour</b> FOR <b>" & grdfluid[grdfluid.Row, 15].Text & "</b>", "Administration Rate", 0)
         If yval Then
           If $useCardex = True Then
-            modPharmSub.InsertNurDosingIndoor($encid, 0, grdfluid[grdfluid.Row, 0].Text, yval, "mL/Hour", grdfluid[grdfluid.Row, 15].Text, grdfluid[grdfluid.Row, 18].Text, grdfluid[grdfluid.Row, 4].Text, Now())
+            modPharmSub.InsertNurDosingIndoor($encid, 0, grdfluid[grdfluid.Row, 0].Text, yval, "mL/Hour", grdfluid[grdfluid.Row, 15].Text, grdfluid[grdfluid.Row, 18].Text, grdfluid[grdfluid.Row, 4].Text, "", Now())
           Else
-            modPharmSub.InsertNurDosingIndoor($encid, grdfluid[grdfluid.Row, 0].Text, 0, yval, "mL/Hour", grdfluid[grdfluid.Row, 15].Text, grdfluid[grdfluid.Row, 18].Text, grdfluid[grdfluid.Row, 4].Text, Now())
+            modPharmSub.InsertNurDosingIndoor($encid, grdfluid[grdfluid.Row, 0].Text, 0, yval, "mL/Hour", grdfluid[grdfluid.Row, 15].Text, grdfluid[grdfluid.Row, 18].Text, grdfluid[grdfluid.Row, 4].Text, "", Now())
           Endif
           FillFluidGridView(grdfluid[grdfluid.Row, 0].Text)
           ShowMedFluids()
@@ -561,7 +561,7 @@ Public Sub btnmixstart_Click()
           If res.Available Then
             For Each res
               If $useCardex = True Then
-                modPharmSub.InsertNurDosingIndoor($encid, 0, res["fldid"], txtmixrate.Value, "mL/Hour", res["flditem"], res["flddose"], res["fldfreq"], Now())
+                modPharmSub.InsertNurDosingIndoor($encid, 0, res["fldid"], txtmixrate.Value, "mL/Hour", res["flditem"], res["flddose"], res["fldfreq"], "", Now())
               Endif
             Next
             FillMixtureGridView(txtmixture.Text)

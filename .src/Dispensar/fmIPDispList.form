@@ -56,8 +56,26 @@
         Mode = Select.Single
         Header = GridView.Both
       }
+      { Panel11 Panel
+        MoveScaled(0,40,38,4)
+        { txtlastdispdate TextBox
+          MoveScaled(12,0.5,18,3)
+          Font = Font["Bold"]
+          ReadOnly = True
+          Placeholder = ("Last Sales")
+        }
+        { txttotalqty ValueBox
+          MoveScaled(31,0.5,6,3)
+          Font = Font["Bold"]
+        }
+        { Label6 Label
+          MoveScaled(0,0.5,11,3)
+          Border = Border.Plain
+          Text = ("Dispensed")
+        }
+      }
       { Panel8 Panel
-        MoveScaled(0,37,39,4)
+        MoveScaled(0,45,39,4)
         { chkaddall CheckBox
           MoveScaled(1,0.5,12,3)
           Text = ("Select All")
@@ -76,13 +94,13 @@
         }
       }
       { ListView1 GridView
-        MoveScaled(1,42,34,19)
+        MoveScaled(1,50,34,14)
         Expand = True
         Mode = Select.Single
         Header = GridView.Horizontal
       }
       { Panel6 Panel
-        MoveScaled(0,63,37,4)
+        MoveScaled(0,67,37,4)
         { cmbnewscheme ComboBox
           MoveScaled(0,0.5,25,3)
           Sorted = True
@@ -182,6 +200,10 @@
           MoveScaled(43,4.5,9,3)
           Text = ("Labels")
         }
+        { txtpatientno TextBox
+          MoveScaled(46,8,4,3)
+          Visible = False
+        }
       }
       { GridView2 GridView
         MoveScaled(0,15,81,31)
@@ -195,26 +217,37 @@
           MoveScaled(77,0.5,3,3)
           Picture = Picture["icon:/small/html"]
         }
-        { Label6 Label
-          MoveScaled(0,0.5,5,3)
-          Border = Border.Plain
-          Text = ("Date")
-        }
         { dtdisp DateBox
-          MoveScaled(5,0.5,14,3)
+          MoveScaled(1,0.5,14,3)
         }
         { btnshowdisp ToolButton
-          MoveScaled(20,0.5,3,3)
+          MoveScaled(16,0.5,3,3)
           Picture = Picture["icon:/small/refresh"]
         }
         { chkalldate CheckBox
-          MoveScaled(25,0.5,12,3)
+          MoveScaled(21,0.5,12,3)
           Text = ("All Dates")
         }
         { btnlist Button
           MoveScaled(64,0.5,13,3)
           Text = ("Sent Out")
           Picture = Picture["icon:/small/html"]
+        }
+        { Panel7 Panel
+          MoveScaled(37,0.5,24,3)
+          { rbpastall RadioButton
+            MoveScaled(0,0,7,3)
+            Text = ("All")
+            Value = True
+          }
+          { rbpastIPD RadioButton
+            MoveScaled(8,0,7,3)
+            Text = ("IPD")
+          }
+          { rbpastOut RadioButton
+            MoveScaled(16,0,8,3)
+            Text = ("Out")
+          }
         }
       }
       { GridView3 GridView

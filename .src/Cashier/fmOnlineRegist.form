@@ -7,6 +7,19 @@
   Resizable = False
   AutoResize = True
   { mnuhide Menu
+    { mnucancel Menu
+      Text = ("Cancel")
+    }
+    { mnutransfer Menu
+      Text = ("Transfer")
+    }
+    { mnuslipimage Menu
+      Text = ("Image")
+      Shortcut = "Ctrl+I"
+    }
+  }
+  { mnuprinting Menu
+    Text = ("Printing")
     { mnusticker Menu
       Text = ("Sticker")
     }
@@ -16,17 +29,14 @@
     { mnuinvoice Menu
       Text = ("Invoice")
     }
-    { mnuslipimage Menu
-      Text = ("Image")
-      Shortcut = "Ctrl+I"
-    }
-    { Menu1 Menu
-    }
+  }
+  { mnumessage Menu
+    Text = ("Messaging")
     { mnusmspat Menu
-      Text = ("Patient SMS")
+      Text = ("Patient")
     }
     { mnusmsphy Menu
-      Text = ("Physician SMS")
+      Text = ("Physician")
     }
   }
   { Panel1 Panel
@@ -37,15 +47,14 @@
         MoveScaled(11,0.5,21.5,3)
       }
       { dtconsult DateBox
-        MoveScaled(44,0.5,17,3)
+        MoveScaled(44,0.5,18,3)
       }
       { dtnepdate ToolButton
-        MoveScaled(62,0.5,3,3)
-        ToolTip = ("Copy Code/PAN")
+        MoveScaled(62.5,0.5,3,3)
         Picture = Picture["icon:/small/calendar"]
       }
       { btnshow Button
-        MoveScaled(87,0.5,17,3)
+        MoveScaled(101,0.5,17,3)
         Text = ("Show")
         Picture = Picture["icon:/small/play"]
       }
@@ -53,12 +62,8 @@
         MoveScaled(11,4,21.5,3)
       }
       { btnregist Button
-        MoveScaled(87,4,17,3)
+        MoveScaled(101,4,17,3)
         Text = ("Register/Billing")
-      }
-      { btncancel Button
-        MoveScaled(106,0.5,12,3)
-        Text = ("Cancel")
       }
       { Label4 Label
         MoveScaled(1,0.5,9,3)
@@ -75,16 +80,12 @@
         Border = Border.Plain
         Text = ("Date")
       }
-      { btntransfer Button
-        MoveScaled(106,4,12,3)
-        Text = ("Transfer")
-      }
       { chklabel CheckBox
         MoveScaled(69,0.5,11,3)
         Text = ("Sticker")
       }
       { chkprescr CheckBox
-        MoveScaled(69,4,16,3)
+        MoveScaled(81,0.5,16,3)
         Text = ("Prescription")
       }
       { Label3 Label
@@ -93,7 +94,20 @@
         Text = ("Group")
       }
       { cmbgroup ComboBox
-        MoveScaled(44,4,21.5,3)
+        MoveScaled(44,4,18,3)
+      }
+      { btnaddcateg ToolButton
+        MoveScaled(62.5,4,3,3)
+        ToolTip = ("Copy Code/PAN")
+        Picture = Picture["icon:/small/add"]
+      }
+      { chkinvoice CheckBox
+        MoveScaled(69,4,11,3)
+        Text = ("Invoice")
+      }
+      { chkmessage CheckBox
+        MoveScaled(81,4,16,3)
+        Text = ("Message (Pat)")
       }
     }
     { GridView1 GridView

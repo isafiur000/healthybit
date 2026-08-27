@@ -250,7 +250,7 @@ Private Sub LoadMedicineGrid()
   Dim sFieldLst As String[]
   Dim sql As String
 
-  sFieldLst = ["fldid", "fldroute", "CONCAT(flditem, '|', COALESCE(fldmixing, ''))", "CONCAT(flditem, '|', flddose)", "fldfreq", "flddays", "fldcurval", "fldqtyorder", "fldid", "flduserid", "fldstarttime", "fldid", "flddirection", "fldadminsite", "fldmixing", "flduserid", "flditem", "fldmixvolume", "fldmixrate", "flddose", "CONCAT(fldroute, '|', flditem, '|', flddose, '|', fldmixvolume, '|', fldmixrate)"]
+  sFieldLst = ["fldid", "fldroute", "CONCAT(flditem, '|', COALESCE(fldmixing, ''))", "CONCAT(flditem, '|', flddose)", "fldfreq", "flddays", "fldcurval", "fldqtyorder", "fldid", "flduserid", "fldstarttime", "flditem", "flddirection", "fldadminsite", "fldmixing", "flduserid", "flditem", "fldmixvolume", "fldmixrate", "flddose", "CONCAT(fldroute, '|', flditem, '|', flddose, '|', fldmixvolume, '|', fldmixrate)"]
   If cmbstatus.Text = "%" Then
     sql = "select " & sFieldLst.Join(",") & " from tblinpatdosing where fldencounterval=&1 and (fldmixing IS NULL or fldmixing NOT LIKE &2) ORDER BY fldstarttime DESC"
   Else
@@ -272,7 +272,7 @@ Private Sub LoadMedicineGrid()
     .Columns[8].Width = 25 * modBasic.$AppWidthRatio
     .Columns[9].Width = 125 * modBasic.$AppWidthRatio
     .Columns[10].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[11].Width = 50 * modBasic.$AppWidthRatio
+    .Columns[11].Width = 30 * modBasic.$AppWidthRatio
     .Columns[12].Width = 150 * modBasic.$AppWidthRatio
     .Columns[13].Width = 150 * modBasic.$AppWidthRatio
     .Columns[14].Width = 250 * modBasic.$AppWidthRatio
@@ -319,6 +319,7 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   Else If Column = 10 Then
     GridView1.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.GeneralDate)
   Else If Column = 11 Then
+    GridView1.Data.Picture = Picture[GetMedCardex($encid, $rData[$aMyFields[Column]])]
     GridView1.Data.Text = ""
   Else If Column = 20 Then
     GridView1.Data.Text = GetDosingTarget($rData[$aMyFields[Column]])
@@ -327,6 +328,28 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
   Endif
   GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.RichText, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
   GridView1.Data.WordWrap = True
+
+End
+
+Private Function GetMedCardex(encid As String, xStockId As String) As String
+
+  Dim xtot As Float
+  Dim xadmn As Float
+  Dim xicon As String
+
+  If xStockId Then
+    xtot = modPharmacy.GetCardexDispensedQTY(encid, xStockId)
+    xadmn = modPharmacy.GetCardexAdministerQTY(encid, xStockId)
+    If xtot > xadmn Then
+      xicon = "icons/coll4.png"
+    Else
+      xicon = "icons/coll5.png"
+    Endif
+  Else
+    xicon = ""
+  Endif
+
+  Return xicon
 
 End
 

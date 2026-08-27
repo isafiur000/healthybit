@@ -2,20 +2,30 @@
 
 Public $BagmatiURL As String
 Public $BagmatiKey As String
+Public $BagCharity As String[]
 
 Private $ErrorLst As String[]
 
 Public Sub AutoLoadBagmatiNow()
 
+  Dim xcharVar As Variant[]
+  Dim sColl As JSONCollection
+
   $BagmatiURL = modSettings.ShowSettingFromFIle("BagmatiDashboard/URL")
   $BagmatiKey = modSettings.ShowSettingFromFIle("BagmatiDashboard/Key")
+  GetBagmatiCharities()
 
   If $BagmatiURL And If $BagmatiKey Then
     $ErrorLst = New String[]
     UploadRegistrationData(Now(), False)
     UploadWardData(Now(), False)
     UploadDepartmentData(Now(), False)
-    UploadSSUData(Now(), False)
+
+    xcharVar = modBagmatiReports.GetSocialDetails(Now(), Now(), $BagCharity, "", "")
+    For Each sColl In xcharVar
+      UploadSSUData(sColl, False)
+    Next
+
     If $ErrorLst.Count Then
       Message.Warning("Error in Upload: " & $ErrorLst.Join(", "), "OK")
     Endif
@@ -27,18 +37,40 @@ End
 
 Public Sub LoadBagmatiDash(xDate As Date, question As Boolean)
 
+  Dim xcharVar As Variant[]
+  Dim sColl As JSONCollection
+
   $BagmatiURL = modSettings.ShowSettingFromFIle("BagmatiDashboard/URL")
   $BagmatiKey = modSettings.ShowSettingFromFIle("BagmatiDashboard/Key")
+  GetBagmatiCharities()
 
   $ErrorLst = New String[]
   UploadRegistrationData(xDate, question)
   UploadWardData(xDate, question)
   UploadDepartmentData(xDate, question)
-  UploadSSUData(xDate, question)
+
+  xcharVar = modBagmatiReports.GetSocialDetails(Now(), Now(), $BagCharity, "", "")
+  For Each sColl In xcharVar
+    UploadSSUData(sColl, question)
+  Next
+
   If $ErrorLst.Count Then
     Message.Warning("Error in Upload: " & $ErrorLst.Join(", "), "OJ")
   Else
     Message.Info("Process Completed", "OK")
+  Endif
+
+End
+
+Private Sub GetBagmatiCharities()
+
+  Dim xcharity As String
+
+  xcharity = modSettings.ShowSettingFromFIle("BagmatiDashboard/CharityPackages")
+  If xcharity Then
+    $BagCharity = Split(xcharity, ";")
+  Else
+    $BagCharity = New String[]
   Endif
 
 End
@@ -127,12 +159,10 @@ Private Sub UploadDepartmentData(xDate As Date, question As Boolean)
 
 End
 
-Private Sub UploadSSUData(xDate As Date, question As Boolean)
+Private Sub UploadSSUData(xJson As JSONCollection, question As Boolean)
 
   Dim cForm As CBagmatiDash
-  Dim xJson As JSONCollection
 
-  xJson = GetSSUPatientJson(xDate)
   If xJson.Count Then
     If question = True Then
       If MessageHtml("SSU Data", JSON.Encode(xJson), ["Upload", "Cancel"]) = "Upload" Then
@@ -217,16 +247,6 @@ Private Function GetOutpatientJson(xDate As Date) As JSONCollection
   aColl = New JSONCollection
   aColl.Add(Format(xDate, "yyyy-mm-ddThh:nn:ssZ"), "ddate")
   aColl.Add(xVar, "dept_data")
-
-  Return aColl
-
-End
-
-Private Function GetSSUPatientJson(xDate As Date) As JSONCollection
-
-  Dim aColl As JSONCollection
-
-  aColl = New JSONCollection
 
   Return aColl
 

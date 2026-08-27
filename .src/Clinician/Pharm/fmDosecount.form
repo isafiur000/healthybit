@@ -105,17 +105,27 @@
           Border = Border.Plain
           Text = ("QTY")
         }
-        { txttransqty ValueBox
-          MoveScaled(51,0.5,7,3)
-          ReadOnly = True
-        }
         { btnreceive Button
           MoveScaled(60,0.5,11,3)
           Text = ("Transfer")
         }
+        { txttransqty SpinBox
+          MoveScaled(51,0.5,7,3)
+          ReadOnly = True
+        }
+      }
+      { txtdirection TextArea
+        MoveScaled(0,8,71,5)
+        Visible = False
+        ReadOnly = True
+        Wrap = True
+      }
+      { txtmixture Label
+        MoveScaled(0,13,36,3)
+        Border = Border.Plain
       }
       { Panel5 Panel
-        MoveScaled(0,12,76,4)
+        MoveScaled(0,16,76,4)
         { lblregimen Label
           MoveScaled(0,0.5,45,3)
           Border = Border.Plain
@@ -135,15 +145,17 @@
           Picture = Picture["icon:/small/add"]
         }
       }
-      { txtdirection TextArea
-        MoveScaled(0,16,71,5)
+      { pnlcomment Panel
+        MoveScaled(0,20,75,4)
         Visible = False
-        ReadOnly = True
-        Wrap = True
-      }
-      { txtmixture Label
-        MoveScaled(0,21,36,3)
-        Border = Border.Plain
+        { Label1 Label
+          MoveScaled(0,0.5,10,3)
+          Border = Border.Plain
+          Text = ("Comment")
+        }
+        { txtcomment TextBox
+          MoveScaled(10,0.5,64,3)
+        }
       }
       { GridView1 GridView
         MoveScaled(1,31,66,10)

@@ -6338,8 +6338,13 @@ Public Sub CREATEtblnurdosing($con As Connection)
     hTable.Fields.Add("fldrecfreq", db.String, 25)
     hTable.Fields.Add("fldvalue", db.Float)
     hTable.Fields.Add("fldunit", db.String, 150)
+    hTable.Fields.Add("fldcomment", db.String, 250)
+    ''infusion
     hTable.Fields.Add("fldfromtime", db.Date)
     hTable.Fields.Add("fldtotime", db.Date)
+    hTable.Fields.Add("fldused", db.Float)
+    hTable.Fields.Add("fldwaste", db.Float)
+
     hTable.Fields.Add("flduserid", db.String, 25)
     hTable.Fields.Add("fldtime", db.Date)
     hTable.Fields.Add("fldcomp", db.String, 50)

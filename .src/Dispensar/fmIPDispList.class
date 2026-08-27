@@ -200,6 +200,7 @@ Public Sub GridView1_Click()
   cmbnewscheme.Clear()
   If GridView1.Rows.Selection.Count Then
     GridView2.Clear()
+    ClearTextBoxData()
     $encid = GridView1[GridView1.Row, 1].Text
     GetPatientProfile($encid)
 
@@ -223,9 +224,21 @@ Public Sub GridView1_Click()
 
 End
 
+Private Sub ClearTextBoxData()
+
+  txtpatientname.Text = ""
+  txtpatientno.Text = ""
+  txtstatus.Text = ""
+  txtagesex.Text = ""
+  txtpatientcontact.Text = ""
+  txtnhsi.Text = ""
+
+End
+
 Private Sub GetPatientProfile(encid As String)
 
   txtpatientname.Text = modPatient.GetPatientNameByEnc(encid)
+  txtpatientno.Text = modPatient.GetPatientNoByEnc(encid)
   txtstatus.Text = modPatient.CurrentAdmissionStatus(encid)
   txtagesex.Text = modPatient.GetPatientAgeString(encid, Now()) & "/" & modPatient.GetPatientAddressByEnc(encid)
   txtpatientcontact.Text = modPatient.GetPatientLocation(encid)
@@ -278,7 +291,7 @@ Private Sub ShowMedicineOrderList(encid As String)
     .Columns[0].Width = 1
     .Columns[1].Width = 25 * modBasic.$AppWidthRatio
     .Columns[2].Width = 300 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 125 * modBasic.$AppWidthRatio
     .Columns[4].Width = 100 * modBasic.$AppWidthRatio
     .Columns[5].Width = 75 * modBasic.$AppWidthRatio
     .Columns[6].Width = 1
@@ -340,6 +353,33 @@ Public Sub ListView1_Click()
     xtot = modPharmacy.GetCardexDispensedQTY(ListView1[ListView1.Row, 6].Text, ListView1[ListView1.Row, 2].Text)
     xadmn = modPharmacy.GetCardexAdministerQTY(ListView1[ListView1.Row, 6].Text, ListView1[ListView1.Row, 2].Text)
     txtbalance.Value = xtot - xadmn
+    CheckLastDispensing(ListView1[ListView1.Row, 2].Text, txtpatientno.Text, txtnhsi.Text)
+  Endif
+
+End
+
+Private Sub CheckLastDispensing(xmedicine As String, xPatientNo As String, xNHISCode As String)
+
+  Dim cForm As CLastDispensing
+  Dim xdate As Date
+  Dim xdays As Integer
+
+  cForm = New CLastDispensing(xmedicine, xPatientNo, xNHISCode, cmbnewscheme.Text)
+  txttotalqty.Value = cForm.GetLastQty()
+  xdate = cForm.GetLastDate()
+  xdays = cForm.GetLastDays()
+
+  If xdate Then
+    txtlastdispdate.Text = modReportVar.GetDateTimeReport(xdate, gb.MediumDate)
+    If DateDiff(xdate, Now(), gb.Month) <= 3 Then
+      txtlastdispdate.Foreground = Color.Red
+    Endif
+
+    If xdays Then
+      If DateAdd(xdate, gb.Day, xdays) > Now() Then
+        Message.Warning("Dispensed for " & xdays & " Days On " & modReportVar.GetDateTimeReport(xdate, gb.GeneralDate), ("OK"))
+      Endif
+    Endif
   Endif
 
 End
@@ -1110,10 +1150,20 @@ End
 
 Private Sub ShowDispensedToday(encid As String)
 
+  Dim xstr As String
+
+  If rbpastall.Value = True Then
+    xstr = ""
+  Else If rbpastIPD.Value = True Then
+    xstr = db.Subst(" and flddispmode=&1", "IPD")
+  Else If rbpastOut.Value = True Then
+    xstr = db.Subst(" and flddispmode=&1", "Sent Out")
+  Endif
+
   If chkalldate.Value = True Then
-    $rData3 = modDatabase.$myConn.Exec("select fldid,fldtime,fldroute,flditem,fldqtydisp,flddose,fldfreq,flddays,fldlabel,flddirection,fldcomp,fldencounterval,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit,flddispmode from tblpatdosing where fldencounterval=&1 and fldlevel=&2 and flditemtype like &3 and fldcurval=&4 and fldqtydisp>&5 and fldstatus=&6 and fldsave_order=&7", encid, "Dispensed", "%", "Continue", 0, "Admitted", True)                     ''
+    $rData3 = modDatabase.$myConn.Exec("select fldid,fldtime,fldroute,flditem,fldqtydisp,flddose,fldfreq,flddays,fldlabel,flddirection,fldcomp,fldencounterval,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit,flddispmode from tblpatdosing where fldencounterval=&1 and fldlevel=&2 and flditemtype like &3 and fldcurval=&4 and fldqtydisp>&5 and fldstatus=&6 and fldsave_order=&7" & xstr, encid, "Dispensed", "%", "Continue", 0, "Admitted", True)                     ''
   Else
-    $rData3 = modDatabase.$myConn.Exec("select fldid,fldtime,fldroute,flditem,fldqtydisp,flddose,fldfreq,flddays,fldlabel,flddirection,fldcomp,fldencounterval,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit,flddispmode from tblpatdosing where fldencounterval=&1 and fldlevel=&2 and flditemtype like &3 and fldcurval=&4 and fldqtydisp>&5 and fldstatus=&6 and fldsave_order=&7 and fldtime>=&8 and fldtime<=&9", encid, "Dispensed", "%", "Continue", 0, "Admitted", True, modDate.StartSqlDate(dtdisp.Value), modDate.EndSqlDate(dtdisp.Value))                     ''
+    $rData3 = modDatabase.$myConn.Exec("select fldid,fldtime,fldroute,flditem,fldqtydisp,flddose,fldfreq,flddays,fldlabel,flddirection,fldcomp,fldencounterval,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit,flddispmode from tblpatdosing where fldencounterval=&1 and fldlevel=&2 and flditemtype like &3 and fldcurval=&4 and fldqtydisp>&5 and fldstatus=&6 and fldsave_order=&7 and fldtime>=&8 and fldtime<=&9" & xstr, encid, "Dispensed", "%", "Continue", 0, "Admitted", True, modDate.StartSqlDate(dtdisp.Value), modDate.EndSqlDate(dtdisp.Value))                     ''
   Endif
   $aMyFields3 = New String[]
   modGridView.ReadSmallData(GridView3, $rData3, $aMyFields3)

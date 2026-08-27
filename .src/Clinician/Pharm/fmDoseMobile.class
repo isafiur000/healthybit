@@ -25,6 +25,7 @@ Private aMedLabel As New Object[50]
 Private aDoseVal As New Object[50]
 Private aFreqVal As New Object[50]
 Private aCardex As New Object[50]
+Private aCommBox As New Object[50]
 Private aBlankBox As New Object[50]
 
 Public Sub _new(encid As String, useCardex As Boolean)
@@ -141,11 +142,16 @@ Private Sub LoadControlsWeb()
           aDoseVal[i] = New ValueBox(aHorizPanel[i])
           aFreqVal[i] = New Label(aHorizPanel[i])
           aCardex[i] = New ValueBox(aHorizPanel[i])
+          aCommBox[i] = New TextBox(aWebFrame[i])
           aBlankBox[i] = New Separator(Frame1)
 
           With aWebFrame[i]
             .Width = Frame1.Width
-            .Height = 50 * AppFactor
+            If modBasic.$ClinAdminComment = "Enable" Then
+              .Height = 75 * AppFactor
+            Else
+              .Height = 50 * AppFactor
+            Endif
           End With
 
           xallow = False
@@ -255,6 +261,17 @@ Private Sub LoadControlsWeb()
             .Visible = False
           End With
 
+          With aCommBox[i]
+            .Height = 25 * AppFactor
+            .Text = ""
+            If modBasic.$ClinAdminComment = "Enable" Then
+              .Visible = True
+            Else
+              .Visible = False
+            Endif
+            .Tag = i
+          End With
+
           With aBlankBox[i]
             .Height = 8 * AppFactor
           End With
@@ -311,12 +328,12 @@ Public Sub btnsaveall_Click()
 
             If aTimeLabel[i].Text Then
               If aSkipBox[i].Value Then
-                modPharmSub.InsertNurDosingIndoor($encid, aIndexVal[i].Value, aCardex[i].Value, 0, aDoseLabel[i].Text, aMedLabel[i].Text, aDoseVal[i].Value, aFreqVal[i].Text, aTimeBox[i].Value)
+                modPharmSub.InsertNurDosingIndoor($encid, aIndexVal[i].Value, aCardex[i].Value, 0, aDoseLabel[i].Text, aMedLabel[i].Text, aDoseVal[i].Value, aFreqVal[i].Text, Trim(aCommBox[i].Text), aTimeBox[i].Value)
               Else
-                modPharmSub.InsertNurDosingIndoor($encid, aIndexVal[i].Value, aCardex[i].Value, aQuantiBox[i].Value, aDoseLabel[i].Text, aMedLabel[i].Text, aDoseVal[i].Value, aFreqVal[i].Text, aTimeBox[i].Value)
+                modPharmSub.InsertNurDosingIndoor($encid, aIndexVal[i].Value, aCardex[i].Value, aQuantiBox[i].Value, aDoseLabel[i].Text, aMedLabel[i].Text, aDoseVal[i].Value, aFreqVal[i].Text, Trim(aCommBox[i].Text), aTimeBox[i].Value)
               Endif
             Else
-              modPharmSub.InsertNurDosingIndoor($encid, aIndexVal[i].Value, aCardex[i].Value, aQuantiBox[i].Value, aDoseLabel[i].Text, aMedLabel[i].Text, aDoseVal[i].Value, aFreqVal[i].Text)
+              modPharmSub.InsertNurDosingIndoor($encid, aIndexVal[i].Value, aCardex[i].Value, aQuantiBox[i].Value, aDoseLabel[i].Text, aMedLabel[i].Text, aDoseVal[i].Value, aFreqVal[i].Text, Trim(aCommBox[i].Text))
             Endif
             If aRegmLabel[i].Tag = "stat" Then
               res = modDatabase.$myConn.Edit("tblpatdosing", "fldid=&1", aIndexVal[i].Value)
@@ -325,6 +342,7 @@ Public Sub btnsaveall_Click()
             Endif
             aQuantiBox[i].Value = 0
             aQuantiBox[i].ReadOnly = True
+            aCommBox[i].Text = ""
 
           Endif
         Endif

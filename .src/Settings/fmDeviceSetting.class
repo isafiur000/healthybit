@@ -1878,6 +1878,7 @@ Private Sub ShowDashboard()
 
   txtbagmatiurl.Text = modSettings.ShowSettingFromFIle("BagmatiDashboard/URL")
   txtbagmatikey.Text = modSettings.ShowSettingFromFIle("BagmatiDashboard/Key")
+  txtbagmatissu.Text = modSettings.ShowSettingFromFIle("BagmatiDashboard/CharityPackages")
 
   txtmohpurl.Text = modSettings.ShowSettingFromFIle("MoHPDashboard/URL")
   txtmohpkey.Text = modSettings.ShowSettingFromFIle("MoHPDashboard/Key")
@@ -1887,6 +1888,7 @@ Private Sub ShowDashboard()
 
 End
 
+''----------------- bagmati dashboard
 Public Sub btnbagmatiurl_Click()
 
   modSettings.SaveSettingsToFile("BagmatiDashboard/URL", txtbagmatiurl.Text)
@@ -1903,6 +1905,15 @@ Public Sub btnbagmatikey_Click()
 
 End
 
+Public Sub btnbagmatissu_Click()
+
+  modSettings.SaveSettingsToFile("BagmatiDashboard/CharityPackages", txtbagmatissu.Text)
+  Balloon.Info(("Information saved"), btnbagmatissu)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+''------------------ mohp
 Public Sub btnmohpurl_Click()
 
   modSettings.SaveSettingsToFile("MoHPDashboard/URL", txtmohpurl.Text)
