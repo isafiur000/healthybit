@@ -531,7 +531,6 @@ Private Sub BasicInfoPatient()
       lblallergy.Text = ""
     Endif
     FillExamtable()
-    ShowPlanningInitial()
     ShowTelemedSaved()
     GetPatientOutComeVal()
 
@@ -547,6 +546,7 @@ Private Sub BasicInfoPatient()
     hPtArchive = New FmClinArchive($PatientNum, pnlarchivbe)
 
     ButtonControl()
+    ShowPlanningInitial()
     modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
   Endif
 

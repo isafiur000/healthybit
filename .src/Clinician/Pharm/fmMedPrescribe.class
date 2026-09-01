@@ -356,6 +356,9 @@ Public Sub cmbmedicine_GotFocus()
       Endif
 
     Endif
+    If Not cmbmedicine.Text Then
+      txttarget.SetFocus
+    Endif
   Endif
 
 End

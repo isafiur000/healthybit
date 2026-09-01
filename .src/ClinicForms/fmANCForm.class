@@ -369,6 +369,28 @@ Public Sub txteddscan_Change()
 
 End
 
+Public Sub btnobscancel_Click()
+
+  Dim res As Result
+  Dim res1 As Result
+
+  If txtreference.Text Then
+    res1 = modDatabase.$myConn.Exec("select fldencounterval from tblconfinement where fldreference=&1", txtreference.Text)
+    If res1.Available = False Then
+      If Message.Question("Are you sure to Cancel this pregnancy record ?", ("No"), ("Yes")) = 2 Then
+        res = modDatabase.$myConn.Edit("tblobstetrics", "flddelref=&1", txtreference.Text)
+        res["fldsave"] = False
+        res["flduptime"] = Now()
+        res["xyz"] = False
+        res.Update
+        Message.Info("Record Cancelled", ("OK"))
+        ShowObsDiagnosis()
+      Endif
+    Endif
+  Endif
+
+End
+
 Public Sub btnsavediagnosis_Click()
 
   Dim res As Result
@@ -466,7 +488,7 @@ Private Sub ShowObsDiagnosis()
   Dim xParamLst As String[] = ["EDD (Scan)", "Menstrual Cycle", "Contraception", "Married For", "Quickening"]
   Dim xparam As String
 
-  res = modDatabase.$myConn.Exec("select fldgravida,fldparity,fldbortion,fldlive,fldlast,fldexpect,fldgestation,fldpresent,fldstatus,fldpast,flddelref from tblobstetrics where fldpatientval=&1 and fldlast<&2 and fldexpect>&3 ORDER BY fldtime", $PatientNum, Now(), DateAdd(Now(), gb.Month, -3))
+  res = modDatabase.$myConn.Exec("select fldgravida,fldparity,fldbortion,fldlive,fldlast,fldexpect,fldgestation,fldpresent,fldstatus,fldpast,flddelref from tblobstetrics where fldpatientval=&1 and fldlast<&2 and fldexpect>&3 and fldsave=&4 ORDER BY fldtime", $PatientNum, Now(), DateAdd(Now(), gb.Month, -3), True)
   If res.Available Then
     res.MoveLast
     txtgravida.Value = res["fldgravida"]

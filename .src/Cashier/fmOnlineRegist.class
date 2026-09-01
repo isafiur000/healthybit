@@ -152,7 +152,7 @@ Private Sub LoadGridData()
 
   Dim sql As String
 
-  sql = "select fldbookingval,fldbookingval,fldconsultdate,fldadmitlocat,fldpatientno,fldptnamefir,fldptnamelast,fldptsex,flddisctype,fldpayreference,fldencounterval,fldinvoice,fldconsultdate,fldbookingval,fldptcontact,flduserid from tblonlinebook where fldgroup=&1 and flddisctype like &2 and fldconsultdate>=&3 and fldconsultdate<=&4 and fldadmitlocat like &5 and fldstate=&6"
+  sql = "select fldbookingval,fldbookingval,fldconsultdate,fldadmitlocat,fldpatientno,fldptnamefir,fldptnamelast,fldptsex,flddisctype,fldpayreference,fldencounterval,fldinvoice,fldconsultdate,fldbookingval,fldptcontact,flduserid,fldpatientval from tblonlinebook where fldgroup=&1 and flddisctype like &2 and fldconsultdate>=&3 and fldconsultdate<=&4 and fldadmitlocat like &5 and fldstate=&6"
   $rData = modDatabase.$myConn.Exec(sql, cmbgroup.Text, cmbscheme.Text, modDate.StartSqlDate(dtconsult.Value), modDate.EndSqlDate(dtconsult.Value), cmbdepart.Text, "Paid")
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
@@ -174,6 +174,7 @@ Private Sub LoadGridData()
     .Columns[13].Width = 1   ''id
     .Columns[14].Width = 125 * modBasic.$AppWidthRatio
     .Columns[15].Width = 150 * modBasic.$AppWidthRatio
+    .Columns[16].Width = 1   ''fldpatientval
 
     .Columns[1].Text = "BookID"
     .Columns[2].Text = "Time"
@@ -892,5 +893,62 @@ End
 
 ''transfer
 Public Sub mnutransfer_Click()
+
+End
+
+Public Sub mnuarchive_Click()
+
+  Dim xList As String[] = ["fldid", "fldtime", "fldencounterval", "fldtitle", "flddetail", "fldsave", "fldlink", "fldencounterval", "fldid"]
+  Dim xFldList As String[]
+  Dim myRes As New MyResult
+  Dim res As Result
+  Dim hForm As FMyRequest
+  Dim lstencid As String
+
+  If GridView1.Rows.Selection.Count Then
+    If GridView1[GridView1.Row, 16].Text Then
+      lstencid = modPatient.GetLastEncoutnerFromPatNo(GridView1[GridView1.Row, 16].Text)
+      xFldList = New String[]
+      xFldList.Insert(xList)
+      xFldList.Add(Quote("tblpatreport") & " as tblname")
+      res = modDatabase.$logConn.Exec("select " & xFldList.Join(",") & " from tblpatreport where (fldcateg=&1 or fldcateg=&2) and fldencounterval like &3 and (flvisible=&4 or flvisible IS NULL) ORDER BY fldid DESC", "Scanned Images", "Past Documents", lstencid, "Visible")
+      If res.Available Then
+        myRes.AddResult(res)
+        hForm = New FMyRequest(myRes, ("Archived Reports"), "ArchivedReports", False, xList.Count)
+        hForm.ShowModal
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub mnuarchivefull_Click()
+
+  Dim xList As String[] = ["fldid", "fldtime", "fldencounterval", "fldtitle", "flddetail", "fldsave", "fldlink", "fldencounterval", "fldid"]
+  Dim xFldList As String[]
+  Dim myRes As New MyResult
+  Dim res As Result
+  Dim hForm As FMyRequest
+  Dim encLst As String[]
+  Dim i As Integer
+
+  If GridView1.Rows.Selection.Count Then
+    If GridView1[GridView1.Row, 16].Text Then
+      encLst = modPatient.GetEncListFromPatNo(GridView1[GridView1.Row, 16].Text)
+      For i = 0 To encLst.Count - 1
+        encLst[i] = "'" & encLst[i] & "'"
+      Next
+
+      xFldList = New String[]
+      xFldList.Insert(xList)
+      xFldList.Add(Quote("tblpatreport") & " as tblname")
+      res = modDatabase.$logConn.Exec("select " & xFldList.Join(",") & " from tblpatreport where (fldcateg=&1 or fldcateg=&2) and fldencounterval in(" & encLst.Join(",") & ") and (flvisible=&3 or flvisible IS NULL) ORDER BY fldid DESC", "Scanned Images", "Past Documents", "Visible")
+      If res.Available Then
+        myRes.AddResult(res)
+        hForm = New FMyRequest(myRes, ("Archived Reports"), "ArchivedReports", False, xList.Count)
+        hForm.ShowModal
+      Endif
+    Endif
+  Endif
 
 End

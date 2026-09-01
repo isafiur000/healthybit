@@ -70,7 +70,7 @@ Private Sub ShowPatHistory(sType As String)
 
   Dim xcomplAr As String[]
 
-  xcomplAr = modPatPatho.ShowSelectedNoteUser($encid, sType)
+  xcomplAr = modPatPatho.ShowSelectedHistoryUser($encid, sType)
   If sType = "General Complaints" Then
     If xcomplAr And If xcomplAr.Count Then
       txtcomplnt.RichText = xcomplAr[0]
@@ -184,5 +184,32 @@ End
 Public Sub btntemplpillness_Click()
 
   txtillness.RichText = txtillness.RichText & DictionaryVIew("History of Illness")
+
+End
+
+Public Sub mnupatcomment_Click()
+
+  Dim res As Result
+  Dim xval As String
+
+  If $PatientNum Then
+    res = modDatabase.$myConn.Edit("tblpatientinfo", "fldpatientval=&1", $PatientNum)
+    If res.Available Then
+      xval = GetTextArea($PatientNum, res["fldcomment"])
+      If xval Then
+        res["fldcomment"] = xval
+        res["fldupuser"] = modBasic.$lbluser
+        res["flduptime"] = Now()
+        res.Update
+        modPatient.$PatProfileData.Remove($encid)
+      Endif
+    Endif
+  Endif
+
+End
+
+Public Sub mnupatcomment2_Click()
+
+  modPatReports.GetArchiveCurrReportEnc("Scanned Images", $encid)
 
 End

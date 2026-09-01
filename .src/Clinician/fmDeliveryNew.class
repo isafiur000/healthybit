@@ -248,7 +248,7 @@ Private Sub AutoDisplayDiagnosis()
   Dim res As Result
 
   If mnudiagnosis.Enabled = True Then
-    res = modDatabase.$myConn.Exec("select fldencounterval from tblobstetrics where fldpatientval=&1 and fldlast<&2 and fldexpect>&3", $PatientNum, Now(), DateAdd(Now(), gb.Month, -3))
+    res = modDatabase.$myConn.Exec("select fldencounterval from tblobstetrics where fldpatientval=&1 and fldlast<&2 and fldexpect>&3 and fldsave=&4", $PatientNum, Now(), DateAdd(Now(), gb.Month, -3), True)
     If Not res.Available Then
       sName = DiagnoObstetrics(Trim(txtencid.Text), True)
       If sName Then
