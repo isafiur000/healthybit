@@ -1,0 +1,86 @@
+' Gambas class file
+
+Private $hProcess As Process
+
+Public Sub _new()
+
+  $hProcess = TerminalView1.Shell("ipython3")
+
+End
+
+Public Sub Form_Open()
+
+  Me.Center
+
+End
+
+Public Sub SetTitle(sTitle As String)
+
+  lblcmd.Text = sTitle
+
+End
+
+Public Sub SetExecuteList(CmdList As String[])
+
+  TerminalInputList(CmdList)
+
+End
+
+Public Sub SetExecuteString(CmdString As String)
+
+  TerminalInput(CmdString)
+
+End
+
+Public Sub GetExecute(CmdString As String) As String
+
+  Dim xx As String
+
+  xx = GetIpythonOutput(CmdString)
+  Return xx
+
+End
+
+''-------------- Python ------------------
+Private Sub PressEnterKey()
+
+  TerminalView1.Input(Chr$(10))
+
+End
+
+Private Sub TerminalInput(cmd As String)
+
+  TerminalView1.Input(cmd)
+  PressEnterKey()
+  TerminalView1.EnsureVisible()
+
+End
+
+Private Sub TerminalInputList(cmdLst As String[])
+
+  TerminalView1.Input(cmdLst.Join(gb.NewLine))
+  PressEnterKey()
+  TerminalView1.EnsureVisible()
+
+End
+
+Private Function GetIpythonOutput(sOutput As String) As String
+
+  Dim cmdLst As New String[]
+  Dim sfile As String
+  Dim sText As String
+
+  sfile = Temp() & ".txt"
+  cmdLst.Add("with open('" & sfile & "', 'w') as f:")
+  cmdLst.Add("f.write(" & sOutput & ")")
+  TerminalInputList(cmdLst)
+  PressEnterKey()
+
+  While (Exist(sfile) = False)
+    Wait 0.5
+  Wend
+  sText = File.Load(sfile)
+
+  Return sText
+
+End

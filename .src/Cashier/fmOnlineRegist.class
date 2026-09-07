@@ -875,9 +875,6 @@ End
 
 Public Sub mnusmsphy_Click()
 
-  Dim sText As String
-  Dim sphno As String
-
   If GridView1.Rows.Selection.Count Then
     If GridView1[GridView1.Row, 10].Text And If GridView1[GridView1.Row, 15].Text Then
       modDevice.SendMessageToRegistPhysician(GridView1[GridView1.Row, 10].Text, GridView1[GridView1.Row, 15].Text)
@@ -893,6 +890,51 @@ End
 
 ''transfer
 Public Sub mnutransfer_Click()
+
+End
+
+Private Sub SHowArchivedFiles(sPatno As String, xSearch As String)
+
+  Dim xList As String[] = ["fldid", "fldtime", "fldencounterval", "fldtitle", "flddetail", "fldsave", "fldlink", "fldencounterval", "fldid"]
+  Dim xFldList As String[]
+  Dim myRes As New MyResult
+  Dim res As Result
+  Dim hForm As FMyRequest
+  Dim encLst As String[]
+  Dim i As Integer
+
+  If sPatno Then
+    encLst = modPatient.GetEncListFromPatNo(sPatno)
+    For i = 0 To encLst.Count - 1
+      encLst[i] = "'" & encLst[i] & "'"
+    Next
+
+    xFldList = New String[]
+    xFldList.Insert(xList)
+    xFldList.Add(Quote("tblpatreport") & " as tblname")
+    res = modDatabase.$logConn.Exec("select " & xFldList.Join(",") & " from tblpatreport where (fldcateg=&1 or fldcateg=&2) and fldencounterval in(" & encLst.Join(",") & ") and (flvisible=&3 or flvisible IS NULL) and fldtitle like &4 ORDER BY fldid DESC", "Scanned Images", "Past Documents", "Visible", xSearch)
+    If res.Available Then
+      myRes.AddResult(res)
+      hForm = New FMyRequest(myRes, ("Archived Reports"), "ArchivedReports", False, xList.Count)
+      hForm.ShowModal
+    Endif
+  Endif
+
+End
+
+Public Sub mnuarchivefull_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    SHowArchivedFiles(GridView1[GridView1.Row, 16].Text, "%")
+  Endif
+
+End
+
+Public Sub mnuregistrarchive_Click()
+
+  If GridView1.Rows.Selection.Count Then
+    SHowArchivedFiles(GridView1[GridView1.Row, 16].Text, "Registration_" & "%")
+  Endif
 
 End
 
@@ -912,37 +954,6 @@ Public Sub mnuarchive_Click()
       xFldList.Insert(xList)
       xFldList.Add(Quote("tblpatreport") & " as tblname")
       res = modDatabase.$logConn.Exec("select " & xFldList.Join(",") & " from tblpatreport where (fldcateg=&1 or fldcateg=&2) and fldencounterval like &3 and (flvisible=&4 or flvisible IS NULL) ORDER BY fldid DESC", "Scanned Images", "Past Documents", lstencid, "Visible")
-      If res.Available Then
-        myRes.AddResult(res)
-        hForm = New FMyRequest(myRes, ("Archived Reports"), "ArchivedReports", False, xList.Count)
-        hForm.ShowModal
-      Endif
-    Endif
-  Endif
-
-End
-
-Public Sub mnuarchivefull_Click()
-
-  Dim xList As String[] = ["fldid", "fldtime", "fldencounterval", "fldtitle", "flddetail", "fldsave", "fldlink", "fldencounterval", "fldid"]
-  Dim xFldList As String[]
-  Dim myRes As New MyResult
-  Dim res As Result
-  Dim hForm As FMyRequest
-  Dim encLst As String[]
-  Dim i As Integer
-
-  If GridView1.Rows.Selection.Count Then
-    If GridView1[GridView1.Row, 16].Text Then
-      encLst = modPatient.GetEncListFromPatNo(GridView1[GridView1.Row, 16].Text)
-      For i = 0 To encLst.Count - 1
-        encLst[i] = "'" & encLst[i] & "'"
-      Next
-
-      xFldList = New String[]
-      xFldList.Insert(xList)
-      xFldList.Add(Quote("tblpatreport") & " as tblname")
-      res = modDatabase.$logConn.Exec("select " & xFldList.Join(",") & " from tblpatreport where (fldcateg=&1 or fldcateg=&2) and fldencounterval in(" & encLst.Join(",") & ") and (flvisible=&3 or flvisible IS NULL) ORDER BY fldid DESC", "Scanned Images", "Past Documents", "Visible")
       If res.Available Then
         myRes.AddResult(res)
         hForm = New FMyRequest(myRes, ("Archived Reports"), "ArchivedReports", False, xList.Count)

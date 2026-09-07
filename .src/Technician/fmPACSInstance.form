@@ -10,31 +10,38 @@
     Header = GridView.Horizontal
   }
   { Panel1 Panel
-    MoveScaled(34,58,70,5)
+    MoveScaled(1,59,103,4)
     { Slider1 Slider
-      MoveScaled(7,1,49,4)
+      MoveScaled(52,0.5,39,3.5)
       MinValue = 1
       MaxValue = 1000
       Value = 150
     }
     { btnnext Button
-      MoveScaled(64,1,5,4)
+      MoveScaled(97,0.5,5,3.5)
       Picture = Picture["icon:/small/right"]
     }
     { btnprev Button
-      MoveScaled(0,0.625,4.875,4)
+      MoveScaled(46,0.5,4.875,3.5)
       Picture = Picture["icon:/small/left"]
     }
     { SpinBox1 SpinBox
-      MoveScaled(58,1,5,3)
+      MoveScaled(91,0.5,5,3.5)
       MinValue = 1
       Value = 1
     }
+    { btnanalyze Button
+      MoveScaled(33,0.5,11,3.5)
+      Text = ("Analyze")
+    }
+    { cmbmodel ComboBox
+      MoveScaled(0,0.5,33,3.5)
+    }
   }
   { ScrollView1 ScrollView
-    MoveScaled(34,1,70,56)
+    MoveScaled(34,1,70,58)
     { pictimage ImageView
-      MoveScaled(1,1,68,54)
+      MoveScaled(1,1,68,56)
     }
   }
   { Panel2 Panel
@@ -75,9 +82,5 @@
   { btncopy ToolButton
     MoveScaled(29,56,4,3)
     Picture = Picture["icon:/small/copy"]
-  }
-  { btnanalyze Button
-    MoveScaled(1,59.5,32,4)
-    Text = ("Analyze")
   }
 }

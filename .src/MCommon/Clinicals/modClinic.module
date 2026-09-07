@@ -1360,7 +1360,7 @@ Public Function GetDiagnosisMatch(sName As String, xgroup As String) As Float
   If sName = xgroup Then
     xout = 100
   Else
-    xout = modMLModels.GetModelValueArguments("Similarity", [sName, xgroup])
+    xout = modMLModels.GetModelValueArguments("text-similarity", [sName, xgroup])
     If xout Then
       xvar = JSON.Decode(xout)
       xper = Round(CFloat(xvar[0][0]) * 100, -2)

@@ -5267,6 +5267,7 @@ Private Function AllowDischargePending() As Boolean
 
   Dim paidamt As Float
   Dim expenseamt As Float
+  Dim xcrdtwait As Float
 
   xval = True
   If modBasic.$BillBedCharge = "Free" Then
@@ -5287,11 +5288,14 @@ Private Function AllowDischargePending() As Boolean
 
   zval = True
   If modBasic.$BillDischargeCreditCheck = "Enable" Then
-    paidamt = modNonMedical.ShowCreditLimitEnc(Trim(txtencid.Text))
-    expenseamt = modNonMedical.TotalSavedCreditExpensebyPatient(modDatabase.$myConn, Trim(txtencid.Text))
-    If expenseamt > paidamt Then
-      zval = False
-      Message.Warning("Insufficient Credit Limit", ("OK"))
+    xcrdtwait = modNonMedical.TotalSavedOnlyCreditExpensebyPatient(modDatabase.$myConn, Trim(txtencid.Text))
+    If xcrdtwait Then
+      paidamt = modNonMedical.ShowCreditLimitEnc(Trim(txtencid.Text))
+      expenseamt = modNonMedical.TotalSavedCreditExpensebyPatient(modDatabase.$myConn, Trim(txtencid.Text))
+      If expenseamt > paidamt Then
+        zval = False
+        Message.Warning("Insufficient Credit Limit", ("OK"))
+      Endif
     Endif
   Endif
 

@@ -118,17 +118,13 @@
     Index = 1
     Text = ("Local")
     { Panel2 Panel
-      MoveScaled(0,0,73,46)
+      MoveScaled(0,0,76,46)
       Border = Border.Plain
       { txtmodelhost TextBox
-        MoveScaled(22,9,45,3)
-      }
-      { btnmodelurl ToolButton
-        MoveScaled(68,9,3,3)
-        Picture = Picture["icon:/small/apply"]
+        MoveScaled(22,13,50,3)
       }
       { Label27 Label
-        MoveScaled(13,9,8,3)
+        MoveScaled(13,13,8,3)
         Border = Border.Plain
         Text = ("URL")
       }
@@ -140,24 +136,13 @@
         Border = Border.Plain
         Text = ("Name")
       }
-      { txtmodelname TextBox
-        MoveScaled(22,1,24,3)
-      }
-      { btnmodelname ToolButton
-        MoveScaled(47,1,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
       { Label117 Label
-        MoveScaled(13,13,8,3)
+        MoveScaled(13,17,8,3)
         Border = Border.Plain
         Text = ("Args")
       }
-      { btnmodelargs ToolButton
-        MoveScaled(68,13,3,3)
-        Picture = Picture["icon:/small/apply"]
-      }
       { txtargument TextArea
-        MoveScaled(22,13,45,8)
+        MoveScaled(22,17,50,8)
         Wrap = True
       }
       { Label1 Label
@@ -168,9 +153,25 @@
       { cmbmodelrole ComboBox
         MoveScaled(22,5,24,3)
       }
-      { btnmodelrole ToolButton
-        MoveScaled(47,5,3,3)
+      { Label2 Label
+        MoveScaled(13,9,8,3)
+        Border = Border.Plain
+        Text = ("Shell")
+      }
+      { cmbshell ComboBox
+        MoveScaled(22,9,24,3)
+      }
+      { btnmodelname Button
+        MoveScaled(50,1,12,3)
+        Text = ("Save")
         Picture = Picture["icon:/small/apply"]
+      }
+      { btnrefresh ToolButton
+        MoveScaled(69,9,3,3)
+        Picture = Picture["icon:/small/refresh"]
+      }
+      { txtmodelname ComboBox
+        MoveScaled(22,1,24,3)
       }
     }
     Index = 0

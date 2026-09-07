@@ -681,7 +681,7 @@ Public Sub btnOK_Click()
     AutoRegistrationSMS(txtencounter.Text, cmbconsult.Tag)
     If $imgList And If $imgList.Count Then
       For Each ximgpath In $imgList
-        sLongID = modImage.SavePatientFileGeneral(Trim(txtencounter.Text), "Scanned Images", "Scanned Images:" & modString.GetDateString(Now()), ximgpath)
+        sLongID = modImage.SavePatientFileGeneral(Trim(txtencounter.Text), "Scanned Images", "Registration_" & modString.GetDateString(Now()), ximgpath)
       Next
     Endif
 

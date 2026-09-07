@@ -59,8 +59,6 @@ Private $billModeService As String
 Private $billModeOthers As String
 Private $billReference As String
 
-Private $HistoryChange As Boolean
-
 Public Sub _new(encid As String, Focus As Boolean)
 
   txtencid.Text = encid
@@ -557,28 +555,28 @@ Private Function NoteTakingTypeList() As String[]
 
 End
 
-Private Function GetHistoryList() As String[]
-
-  Dim xList As String[]
-  Dim xnew As String[]
-  Dim xfinal As String[]
-
-  xList = New String[]
-  xList.Add("General Complaints")
-  xList.Add("Cause of Admission")
-  xList.Add("History of Illness")
-  xnew = modMedicine.GetClinHistoryList($billReference, modBasic.$compID, txtgender.Text)
-  If xnew And If xnew.Count Then
-    xList.Insert(xnew)
-  Else
-    xList.Insert(modMedicine.GetDefaultClinHistories())
-  Endif
-  xList.Add("Initial Planning")
-
-  xfinal = modString.BinaryDistinctStringArray(xList)
-  Return xfinal
-
-End
+' Private Function GetHistoryList() As String[]
+'
+'   Dim xList As String[]
+'   Dim xnew As String[]
+'   Dim xfinal As String[]
+'
+'   xList = New String[]
+'   xList.Add("General Complaints")
+'   xList.Add("Cause of Admission")
+'   xList.Add("History of Illness")
+'   xnew = modMedicine.GetClinHistoryList($billReference, modBasic.$compID, txtgender.Text)
+'   If xnew And If xnew.Count Then
+'     xList.Insert(xnew)
+'   Else
+'     xList.Insert(modMedicine.GetDefaultClinHistories())
+'   Endif
+'   xList.Add("Initial Planning")
+'
+'   xfinal = modString.BinaryDistinctStringArray(xList)
+'   Return xfinal
+'
+' End
 
 Private Sub PregnancySettings()
 
@@ -1994,7 +1992,7 @@ Private Sub ShowEssentialExamRange()
 
 End
 
-Private Sub GetMarkAbnorm(txtfindmax As ValueBox, sRange As Float[])
+Private Sub GetMarkAbnorm(txtmaxbox As ValueBox, sRange As Float[])
 
   Dim xmax As Float
   Dim xmin As Float
@@ -2005,25 +2003,25 @@ Private Sub GetMarkAbnorm(txtfindmax As ValueBox, sRange As Float[])
     xmax = sRange[1]
 
     abn = False
-    If txtfindmax.Value Then
+    If txtmaxbox.Value Then
       If xmin Then
-        If xmin > txtfindmax.Value Then
+        If xmin > txtmaxbox.Value Then
           abn = True
         Endif
       Endif
       If xmax Then
-        If xmax < txtfindmax.Value Then
+        If xmax < txtmaxbox.Value Then
           abn = True
         Endif
       Endif
     Endif
 
     If abn = True Then
-      txtfindmax.Font.Bold = True
-      txtfindmax.Foreground = Color.Red
+      txtmaxbox.Font.Bold = True
+      txtmaxbox.Foreground = Color.Red
     Else
-      txtfindmax.Font.Bold = False
-      txtfindmax.Foreground = Color.Default
+      txtmaxbox.Font.Bold = False
+      txtmaxbox.Foreground = Color.Default
     Endif
 
   Endif

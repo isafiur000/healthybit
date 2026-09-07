@@ -1,58 +1,79 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,83,52)
+  MoveScaled(0,0,83,63)
+  Resizable = False
+  Arrangement = Arrange.Vertical
   Margin = True
   { Panel1 Panel
-    MoveScaled(0,0,82,6)
+    MoveScaled(0,0,82,4)
     { btnrecord Button
-      MoveScaled(1,1,16,4)
+      MoveScaled(0,0,16,3.5)
       Text = ("START")
-      Default = True
     }
     { btnclose Button
-      MoveScaled(65,1,16,4)
+      MoveScaled(65,0,16,3.5)
       Text = ("Save")
       Cancel = True
     }
-    { Timer1 #Timer
-      #MoveScaled(52,-1)
-    }
     { LCDLabel1 LCDLabel
-      MoveScaled(29,1,20,4)
-      Text = ("00: 00: 00")
+      MoveScaled(20,0,13,3.5)
+      Text = ("00 : 00")
+      Alignment = Align.Center
       Border = True
     }
-  }
-  { Label2 Label
-    MoveScaled(56,7,9,3)
-    Border = Border.Plain
-    Text = ("Size (KB)")
-  }
-  { txtsize ValueBox
-    MoveScaled(66,7,15,3)
-  }
-  { TextArea1 TextArea
-    MoveScaled(1,16,81,35)
-    Wrap = True
+    { Timer1 #Timer
+      #MoveScaled(57,-1)
+    }
+    { buninstall ToolButton
+      MoveScaled(41,0,3.5,3)
+      Picture = Picture["icon:/small/exec"]
+    }
   }
   { Panel2 Panel
-    MoveScaled(0,6,38,9)
+    MoveScaled(0,4,82,11)
     { Label1 Label
-      MoveScaled(1,5,10,3)
+      MoveScaled(0,3.5,10,3)
       Border = Border.Plain
       Text = ("Language")
     }
     { cmblanguage ComboBox
-      MoveScaled(12,5,25,3)
+      MoveScaled(11,3.5,23,3)
     }
     { cmbmodel ComboBox
-      MoveScaled(12,1,25,3)
+      MoveScaled(11,0,23,3)
     }
     { Label3 Label
-      MoveScaled(1,1,10,3)
+      MoveScaled(0,0,10,3)
       Border = Border.Plain
       Text = ("Model")
     }
+    { ListBox1 ListBox
+      MoveScaled(41,0,40,10)
+      Sorted = True
+    }
+    { Timer2 #Timer
+      #MoveScaled(34,1)
+      Delay = 5000
+    }
+    { Panel3 Panel
+      MoveScaled(0,7,34,3)
+      { btnstart Button
+        MoveScaled(0,0,6,3)
+        Picture = Picture["icon:/small/play"]
+      }
+      { btnstop Button
+        MoveScaled(28,0,6,3)
+        Picture = Picture["icon:/small/stop"]
+      }
+    }
+  }
+  { TextArea1 TextArea
+    MoveScaled(0,17,81,35)
+    Expand = True
+    Wrap = True
+  }
+  { TerminalView1 TerminalView
+    MoveScaled(0,53,82,9)
   }
 }

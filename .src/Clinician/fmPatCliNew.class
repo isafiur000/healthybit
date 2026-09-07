@@ -552,26 +552,26 @@ Private Sub BasicInfoPatient()
 
 End
 
-Private Function GetHistoryList() As String[]
-
-  Dim xList As String[]
-  Dim xnew As String[]
-  Dim xfinal As String[]
-
-  xList = New String[]
-  xList.Add("General Complaints")
-  xList.Add("History of Illness")
-  xnew = modMedicine.GetClinHistoryList($billReference, $sComp, txtgender.Text)
-  If xnew And If xnew.Count Then
-    xList.Insert(xnew)
-  Else
-    xList.Insert(modMedicine.GetDefaultClinHistories())
-  Endif
-
-  xfinal = modString.BinaryDistinctStringArray(xList)
-  Return xfinal
-
-End
+' Private Function GetHistoryList() As String[]
+'
+'   Dim xList As String[]
+'   Dim xnew As String[]
+'   Dim xfinal As String[]
+'
+'   xList = New String[]
+'   xList.Add("General Complaints")
+'   xList.Add("History of Illness")
+'   xnew = modMedicine.GetClinHistoryList($billReference, $sComp, txtgender.Text)
+'   If xnew And If xnew.Count Then
+'     xList.Insert(xnew)
+'   Else
+'     xList.Insert(modMedicine.GetDefaultClinHistories())
+'   Endif
+'
+'   xfinal = modString.BinaryDistinctStringArray(xList)
+'   Return xfinal
+'
+' End
 
 Private Sub GetDefaultBillingmodes()
 
@@ -1063,6 +1063,12 @@ Private Sub ButtonControl()
 
   If $UserRestrict Then
     RestrictUserAccess()
+  Endif
+
+  If txtclinmode.Text = "OP Visit" Then
+    If modBasic.$AdmissionOPVisit = "Disable" Then
+      rbadmission.Enabled = False
+    Endif
   Endif
 
 End
@@ -4456,9 +4462,11 @@ Public Sub btnoutcome_Click()
       Inc Application.Busy
       modDatabase.$myConn.Begin
       If rbadmission.Value = True Then
-        xmode = "Admission"
-        modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "Notes", "Doctor Order", "", txtcomment.RichText, False, txtbedno.Text)
-        $isAdmited = True
+        If cmbrefer.Text Then
+          xmode = "Admission"
+          modPatientGeneral.AddPatientParagraph(Trim(txtencid.Text), "Notes", "Doctor Order", "", txtcomment.RichText, False, txtbedno.Text)
+          $isAdmited = True
+        Endif
       Else If rbfollowup.Value = True Then
         xmode = "Follow Up"
       Else If rbreferred.Value = True Then
@@ -4478,8 +4486,10 @@ Public Sub btnoutcome_Click()
       If xmode Then
         If txtclinmode.Text = "Consultation" Then
           If rbadmission.Value = True Then
-            modPatientSub.UpdateConsultData(txtclinIndex.Value, Trim(txtencid.Text), "Done", txtcomment.RichText, xmode, cmbrefer.Text)
-            ' modPatientSub.EmergencyAdmission(Trim(txtencid.Text))
+            If cmbrefer.Text Then
+              modPatientSub.UpdateConsultData(txtclinIndex.Value, Trim(txtencid.Text), "Done", txtcomment.RichText, xmode, cmbrefer.Text)
+              ' modPatientSub.EmergencyAdmission(Trim(txtencid.Text))
+            Endif
           Else If rbreferred.Value = True Then
             modPatientSub.UpdateConsultData(txtclinIndex.Value, Trim(txtencid.Text), "Done", txtcomment.RichText, xmode, cmbrefer.Text)
           Else If rbfollowup.Value = True Then
@@ -4489,7 +4499,9 @@ Public Sub btnoutcome_Click()
           Endif
         Else If txtclinmode.Text = "OP Visit" Then
           If rbadmission.Value = True Then
-            modPatientSub.UpdateOPVisitData(txtclinIndex.Value, Trim(txtencid.Text), "Done", txtcomment.RichText, xmode, cmbrefer.Text)
+            If cmbrefer.Text Then
+              modPatientSub.UpdateOPVisitData(txtclinIndex.Value, Trim(txtencid.Text), "Done", txtcomment.RichText, xmode, cmbrefer.Text)
+            Endif
           Else If rbreferred.Value = True Then
             modPatientSub.UpdateOPVisitData(txtclinIndex.Value, Trim(txtencid.Text), "Done", txtcomment.RichText, xmode, cmbrefer.Text)
           Else If rbfollowup.Value = True Then

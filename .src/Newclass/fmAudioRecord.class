@@ -1,9 +1,11 @@
 ' Gambas class file
 
-Private $hProc As Process
-Private $sPath As String
+' Private $hProc As Process
+Private $hProcess As Process
+Private $sFolder As String
 Private $start As Date
 
+Private $doneLst As String[]
 Private $sValue As String
 
 Public Sub Run() As String
@@ -14,59 +16,49 @@ End
 
 Public Sub Form_Open()
 
-  modGeneralMain.ArrangeFormCentre(Me, "False")
+  Me.Center
+  $hProcess = TerminalView1.Shell("ipython3")
   If modBasic.$CloudAIURL_Trans And If modBasic.$CloudAIModel_Trans Then
+    cmbmodel.Enabled = False
+    cmblanguage.Enabled = False
     cmbmodel.Text = modBasic.$CloudAIModel_Trans
-    Panel2.Enabled = False
   Else
-    Panel2.Enabled = True
+    cmbmodel.Enabled = True
+    cmblanguage.Enabled = True
     cmblanguage.List = ["English"]
     cmblanguage.Text = "English"
-    cmbmodel.List = modCloudAI.$WhisperModels
-    cmbmodel.Text = modSettings.ShowSettingFromFIle("SpeechToText/ModelName")
+    cmbmodel.List = modMLModels.GetMLModelsList("Audio/Video")
+    If cmbmodel.List.Count Then
+      cmbmodel.Text = cmbmodel.List[0]
+    Endif
   Endif
-
-End
-
-Public Sub cmbmodel_Click()
-
-  If cmbmodel.Text Then
-    modSettings.SaveSettingsToFile("SpeechToText/ModelName", cmbmodel.Text)
-  Endif
+  $doneLst = New String[]
 
 End
 
 Public Sub btnrecord_Click()
 
-  Dim xval As String
-
-  If btnrecord.Text = "START" Then
-    btnrecord.Text = "STOP"
-    btnrecord.Foreground = Color.Red
-    Wait
-    StartRecording()
-
-  Else If btnrecord.Text = "STOP" Then
-    btnrecord.Text = "START"
-    btnrecord.Foreground = Color.Default
-    Wait
-    StopRecording()
-    If Exist($sPath) Then
-      txtsize.Value = Round(Stat($sPath).Size / 1024, -3)
-      xval = GetVoiceTextConversion($sPath)
-      If xval Then
-        TextArea1.Text = xval
-        $sValue = xval
-      Endif
+  If cmbmodel.Text Then
+    If btnrecord.Text = "START" Then
+      btnrecord.Text = "STOP"
+      btnrecord.Foreground = Color.Red
+      btnclose.Enabled = False
+      Wait
+      StartRecording()
+    Else If btnrecord.Text = "STOP" Then
+      btnrecord.Text = "START"
+      btnrecord.Foreground = Color.Default
+      StopRecording()
+      btnclose.Enabled = True
     Endif
-
   Endif
 
 End
 
 Public Sub btnclose_Click()
 
-  If $sValue Then
+  If TextArea1.Text Then
+    $sValue = TextArea1.Text
     Me.Close(True)
   Else
     Me.Close()
@@ -79,65 +71,154 @@ Public Sub Timer1_Timer()
   Dim aa As Date
 
   aa = Date(0, 0, 0, 0, 0, 0)
-  LCDLabel1.Text = Format(DateAdd(aa, gb.Second, DateDiff($start, Now(), gb.Second)), "hh: nn: ss")
-
-End
-
-''--------------- Procedures -----------------
-Private Sub StartRecording()
-
-  Dim arcmd As String[]
-
-  If System.Exist("arecord") Then
-    $start = Now()
-    Timer1.Enabled = True
-    $sPath = Temp() & ".wav"
-    arcmd = New String[]
-    arcmd.Add("arecord")
-    If modBasic.$AudioRecFormat Then
-      arcmd.Add("-f")
-      arcmd.Add(modBasic.$AudioRecFormat)
-    Endif
-    arcmd.Add($sPath)
-    modBasic.DebugAPIString("Execute " & arcmd.Join(Space(1)))
-    $hProc = Exec arcmd
-  Else
-    modApplSub.InstallSelectedApplication(["alsa-utils"])
-  Endif
-
-End
-
-Private Sub StopRecording()
-
-  $hProc.Kill()
-  Timer1.Enabled = False
-  Wait
+  LCDLabel1.Text = Format(DateAdd(aa, gb.Second, DateDiff($start, Now(), gb.Second)), "nn : ss")
 
 End
 
 Private Function GetVoiceTextConversion(sPath As String) As String
 
   Dim xx As String
-  Dim xnew As String
   Dim hForm As CGroqTrans
+  Dim xxx As String[]
 
   If cmbmodel.Text Then
-    Inc Application.Busy
     If modBasic.$CloudAIURL_Trans And If modBasic.$CloudAIModel_Trans Then
       hForm = New CGroqTrans(modBasic.$CloudAIModel_Trans, sPath)
       xx = hForm.GetAPIAnswer()
     Else
-      If cmblanguage.Text Then
-        xnew = File.Dir(sPath) &/ File.BaseName(sPath) & ".txt"
-        modCloudAI.GetTextToSpeech(cmbmodel.Text, sPath, cmblanguage.Text, "txt", File.Dir(sPath))
-        If Exist(xnew) Then
-          xx = File.Load(xnew)
-        Endif
-      Endif
+      xxx = New String[]
+      xx = Trim(modMLModels.GetModelValueArguments(cmbmodel.Text, xxx, sPath))
     Endif
-    Dec Application.Busy
   Endif
 
   Return xx
 
 End
+
+''--------------- Procedures -----------------
+Public Sub buninstall_Click()
+
+  modApplSub.InstallSelectedApplication(["python3-pyaudio"])
+
+End
+
+Public Sub Timer2_Timer()
+
+  ListBox1.List = Dir($sFolder, "*.wav", gb.File)
+  ConvertVoice()
+
+End
+
+Private Sub ConvertVoice()
+
+  Dim xList As String[]
+  Dim xval As String
+  Dim xfile As String
+
+  xList = ListBox1.List
+  xList.Sort()
+  For Each xfile In xList
+    If $doneLst.Exist(xfile) = False Then
+      $doneLst.Add(xfile)
+      xval = GetVoiceTextConversion($sFolder &/ xfile)
+      If xval Then
+        TextArea1.Text = TextArea1.Text & Space(1) & xval
+      Endif
+    Endif
+  Next
+
+End
+
+Private Sub StartRecording()
+
+  Dim xcmd As String
+
+  $sFolder = File.Dir(Temp())
+  $start = Now()
+  Timer1.Enabled = True
+  Timer2.Enabled = True
+  xcmd = "%run " & modHelpVariable.$pythonDirectory &/ "pyrecord.py" & Space(1) & $sFolder
+  TerminalInput(xcmd)
+
+End
+
+Private Sub StopRecording()
+
+  Dim xcmd As String
+
+  ' $hProc.Kill()
+  xcmd = "\x03"
+  TerminalInput(xcmd)
+  Timer1.Enabled = False
+  Timer2.Enabled = False
+  Wait 5
+  ListBox1.List = Dir($sFolder, "*.wav", gb.File)
+  ConvertVoice()
+
+End
+
+Public Sub ListBox1_Click()
+
+  Music.Load($sFolder &/ ListBox1.Text)
+
+End
+
+Public Sub btnstart_Click()
+
+  If ListBox1.Text Then
+    Music.Play()
+  Endif
+
+End
+
+Public Sub btnstop_Click()
+
+  If ListBox1.Text Then
+    Music.Stop
+  Endif
+
+End
+
+''-------------- Python ------------------
+Private Sub PressEnterKey()
+
+  TerminalView1.Input(Chr$(10))
+
+End
+
+Private Sub TerminalInput(cmd As String)
+
+  TerminalView1.Input(cmd)
+  PressEnterKey()
+  TerminalView1.EnsureVisible()
+
+End
+
+' Private Sub TerminalInputList(cmdLst As String[])
+'
+'   TerminalView1.Input(cmdLst.Join(gb.NewLine))
+'   PressEnterKey()
+'   TerminalView1.EnsureVisible()
+'
+' End
+'
+' Private Function GetIpythonOutput(sOutput As String) As String
+'
+'   Dim cmdLst As New String[]
+'   Dim sfile As String
+'   Dim sText As String
+'
+'   sfile = Temp() & ".txt"
+'   cmdLst.Add("with open('" & sfile & "', 'w') as f:")
+'   cmdLst.Add("f.write(" & sOutput & ")")
+'   TerminalInputList(cmdLst)
+'   PressEnterKey()
+'
+'   While (Exist(sfile) = False)
+'     Wait 0.5
+'   Wend
+'   sText = File.Load(sfile)
+'
+'   Return sText
+'
+' End

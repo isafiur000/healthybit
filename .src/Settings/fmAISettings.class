@@ -4,7 +4,8 @@ Public Sub Form_Open()
 
   CloudAIList()
   cmbmodel.List = modMisc.LocalModelList()
-  cmbmodelrole.List = ["Clinicial", "PACS Image"]
+  cmbmodelrole.List = ["Clinicial", "PACS Image", "Audio/Video"]
+  cmbshell.List = ["python", "sh"]
 
   DisplayCloudAI()
 
@@ -165,9 +166,10 @@ End
 Private Sub ShowLocalModel(xmodel As String)
 
   txtmodelname.Text = modSettings.ShowModelsSettingFromFIle(xmodel & "/" & "Name")
+  cmbmodelrole.Text = modSettings.ShowModelsSettingFromFIle(xmodel & "/" & "Role")
+  cmbshell.Text = modSettings.ShowModelsSettingFromFIle(cmbmodel.Text & "/" & "Shell")
   txtmodelhost.Text = modSettings.ShowModelsSettingFromFIle(xmodel & "/" & "URL")
   txtargument.Text = modSettings.ShowModelsSettingFromFIle(xmodel & "/" & "Arguments")
-  cmbmodelrole.Text = modSettings.ShowModelsSettingFromFIle(xmodel & "/" & "Role")
 
 End
 
@@ -175,38 +177,35 @@ Public Sub btnmodelname_Click()
 
   If cmbmodel.Text Then
     modSettings.SaveModelSettingToFile(cmbmodel.Text & "/" & "Name", txtmodelname.Text)
+    modSettings.SaveModelSettingToFile(cmbmodel.Text & "/" & "Role", cmbmodelrole.Text)
+    modSettings.SaveModelSettingToFile(cmbmodel.Text & "/" & "Shell", cmbshell.Text)
+    modSettings.SaveModelSettingToFile(cmbmodel.Text & "/" & "URL", txtmodelhost.Text)
+    modSettings.SaveModelSettingToFile(cmbmodel.Text & "/" & "Arguments", txtargument.Text)
     Balloon.Info(("Information saved"), btnmodelname)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif
 
 End
 
-Public Sub btnmodelurl_Click()
+Public Sub btnrefresh_Click()
 
-  If cmbmodel.Text Then
-    modSettings.SaveModelSettingToFile(cmbmodel.Text & "/" & "URL", txtmodelhost.Text)
-    Balloon.Info(("Information saved"), btnmodelurl)
-    Balloon.Delay = modBasic.$BalloonDelay
+  Dim xval As String
+  Dim xcmd As String
+  Dim xList As String[]
+  Dim i As Integer
+
+  If txtmodelhost.Text Then
+    xcmd = "curl " & txtmodelhost.Text & "?models_list"
+    modBasic.DebugAPIString(xcmd)
+    Shell xcmd To xval
   Endif
 
-End
-
-Public Sub btnmodelargs_Click()
-
-  If cmbmodel.Text Then
-    modSettings.SaveModelSettingToFile(cmbmodel.Text & "/" & "Arguments", txtargument.Text)
-    Balloon.Info(("Information saved"), btnmodelargs)
-    Balloon.Delay = modBasic.$BalloonDelay
-  Endif
-
-End
-
-Public Sub btnmodelrole_Click()
-
-  If cmbmodel.Text Then
-    modSettings.SaveModelSettingToFile(cmbmodel.Text & "/" & "Role", cmbmodelrole.Text)
-    Balloon.Info(("Information saved"), btnmodelrole)
-    Balloon.Delay = modBasic.$BalloonDelay
+  If Trim(xval) Then
+    xList = Split(xval, ";")
+    For i = 0 To xList.Count - 1
+      xList[i] = Trim(xList[i])
+    Next
+    txtmodelname.List = xList
   Endif
 
 End

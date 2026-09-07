@@ -591,6 +591,7 @@ Public $ClinForceRadioTree As String
 Public $ClinLockLabTargt As String
 Public $ClinLockRadioTargt As String
 
+Public $AdmissionOPVisit As String
 Public $FixAdviceOPOutcome As String
 Public $FixDiagnosisDischarge As String
 Public $FixDiagnosisOPOutcome As String
@@ -2462,6 +2463,7 @@ Public Sub GlobalClinicSettings()
   $ClinLockLabTargt = modGlobalSetting.ShowSettingFromDB("RestrictClinicalRequest/Laboratory")
   $ClinLockRadioTargt = modGlobalSetting.ShowSettingFromDB("RestrictClinicalRequest/Radiology")
 
+  $AdmissionOPVisit = modGlobalSetting.ShowSettingFromDB("IPClinic/Admission_OPVisit")
   $FixAdviceOPOutcome = modGlobalSetting.ShowSettingFromDB("IPClinic/FixAdviceOPDOutcome")
   ' $FixDiagnosisDischarge = modGlobalSetting.ShowSettingFromDB("IPClinic/FixDiagnosisDischarge")
   $FixDiagnosisOPOutcome = modGlobalSetting.ShowSettingFromDB("IPClinic/FixDiagnosisOPDOutcome")
