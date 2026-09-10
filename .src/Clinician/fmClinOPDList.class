@@ -9,6 +9,7 @@ Private $ProgressBar1 As ProgressBar
 Private $SSQLFields As String[]
 Private $ColCount As Integer
 Private $newColumn As String[]
+Private $iconColumn As String[]
 Private $RepoStr As String
 Private $showList As String
 
@@ -286,6 +287,7 @@ Private Function GetSQLColumns() As String[]
   GetFieldsList()
   modCustPatient.FillNewCOlumnCollection(Me.Tag)
   $newColumn = modCustPatient.CustomNewColumnsTitle(Me.Tag)
+  $iconColumn = modCustPatient.CustomColumnWithIcons(Me.Tag)
   xFldList = $SSQLFields.Copy()
   If $newColumn.Count Then
     For i = 0 To $newColumn.Count - 1
@@ -596,6 +598,15 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
     For i = 0 To $newColumn.Count - 1
       If Column = $ColCount + i Then
         xxx = modCustPatient.NewColValue(Me.Tag, $newColumn[i], xVariable)
+        If xxx = "$green.svg" Then
+          xxx = "icons/false.svg"
+        Else If xxx = "$red.svg" Then
+          xxx = "icons/true.svg"
+        Else If xxx = "$none.svg" Then
+          xxx = "icons/null.svg"
+        Else If xxx = "$null.svg" Then
+          xxx = ""
+        Endif
       Endif
     Next
   Endif
@@ -763,7 +774,11 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
 
   Else
     If Column > $SSQLFields.Count - 1 Then
-      GridView1.Data.RichText = GetGridViewValue(Column, $rData[$aMyFields[Column]])
+      If $iconColumn.Exist($newColumn[Column - $SSQLFields.Count]) Then
+        GridView1.Data.Picture = Picture[GetGridViewValue(Column, $rData[$aMyFields[Column]])]
+      Else
+        GridView1.Data.RichText = GetGridViewValue(Column, $rData[$aMyFields[Column]])
+      Endif
     Else
       GridView1.Data.Text = GetGridViewValue(Column, $rData[$aMyFields[Column]])
     Endif

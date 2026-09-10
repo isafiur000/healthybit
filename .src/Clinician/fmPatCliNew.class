@@ -489,6 +489,7 @@ Private Sub GetEncounterValue()
               SHowALgorithmList()
               modImage.ShowPhotoSplash("Patient", $PatientNum)
               modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
+              ' GetBackgroundTasks()
               $focus = False
             Else
               Me.Enabled = False
@@ -502,6 +503,21 @@ Private Sub GetEncounterValue()
           Message.Warning("Not authorized", ("OK"))
         Endif
       Endif
+    Endif
+  Endif
+
+End
+
+Private Sub GetBackgroundTasks()
+
+  Dim lstencid As String
+
+  hPtForm.ReadyCurrentReport(Trim(txtencid.Text))
+  lstencid = modPatient.GetSecondLastEncidPatient(Trim(txtencid.Text))
+  If lstencid Then
+    If lstencid = Trim(txtencid.Text) Then
+    Else
+      hPtForm.ReadyPastReport(lstencid)
     Endif
   Endif
 
@@ -547,7 +563,6 @@ Private Sub BasicInfoPatient()
 
     ButtonControl()
     ShowPlanningInitial()
-    modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
   Endif
 
 End

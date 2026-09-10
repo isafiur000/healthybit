@@ -206,6 +206,7 @@ Private Sub ShowMiscSetting()
   txttelegramlink.Text = modSettings.ShowSettingFromFIle("Telegram/Link")
 
   txtaudioformat.Text = modSettings.ShowSettingFromFIle("AudioRecording/Format")
+  modSettings.ShowCheckBox(chkmultiaudio, "AudioRecording/MultipleFiles")
 
 End
 
@@ -240,7 +241,13 @@ End
 Public Sub btnaudioformat_Click()
 
   modSettings.SaveSettingsToFile("AudioRecording/Format", txtaudioformat.Text)
+  modSettings.EnterCheckSetting(chkmultiaudio, "AudioRecording/MultipleFiles")
   modBasic.$AudioRecFormat = txtaudioformat.Text
+  If chkmultiaudio.Value = True Then
+    modBasic.$AudioRecMultiFiles = "Yes"
+  Else If chkmultiaudio.Value = False Then
+    modBasic.$AudioRecMultiFiles = "No"
+  Endif
   Balloon.Info(("Information saved"), btnaudioformat)
   Balloon.Delay = modBasic.$BalloonDelay
 

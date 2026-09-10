@@ -3,10 +3,20 @@
 ' Private $hProc As Process
 Private $hProcess As Process
 Private $sFolder As String
-Private $start As Date
 
+Private $hProc As Process
+Private $sPath As String
+
+Private $start As Date
 Private $doneLst As String[]
 Private $sValue As String
+
+Private primesTask1 As Task
+Private primesTask2 As Task
+Private primesTask3 As Task
+Private primesTask4 As Task
+Private primesTask5 As Task
+Private $Index As Integer
 
 Public Sub Run() As String
 
@@ -18,6 +28,13 @@ Public Sub Form_Open()
 
   Me.Center
   $hProcess = TerminalView1.Shell("ipython3")
+  If modBasic.$AudioRecMultiFiles = "Yes" Then
+    ListBox1.Visible = True
+    TerminalView1.Visible = True
+  Else
+    ListBox1.Visible = False
+    TerminalView1.Visible = False
+  Endif
   If modBasic.$CloudAIURL_Trans And If modBasic.$CloudAIModel_Trans Then
     cmbmodel.Enabled = False
     cmblanguage.Enabled = False
@@ -33,6 +50,7 @@ Public Sub Form_Open()
     Endif
   Endif
   $doneLst = New String[]
+  $Index = 0
 
 End
 
@@ -48,7 +66,9 @@ Public Sub btnrecord_Click()
     Else If btnrecord.Text = "STOP" Then
       btnrecord.Text = "START"
       btnrecord.Foreground = Color.Default
+      Wait
       StopRecording()
+      Wait
       btnclose.Enabled = True
     Endif
   Endif
@@ -75,23 +95,36 @@ Public Sub Timer1_Timer()
 
 End
 
-Private Function GetVoiceTextConversion(sPath As String) As String
+Private Function GetVoiceTextConversion(sPath As String)
 
   Dim xx As String
   Dim hForm As CGroqTrans
-  Dim xxx As String[]
+  Dim xindex As Integer
 
   If cmbmodel.Text Then
     If modBasic.$CloudAIURL_Trans And If modBasic.$CloudAIModel_Trans Then
       hForm = New CGroqTrans(modBasic.$CloudAIModel_Trans, sPath)
       xx = hForm.GetAPIAnswer()
+      If xx Then
+        TextArea1.Text = TextArea1.Text & Space(1) & xx
+      Endif
     Else
-      xxx = New String[]
-      xx = Trim(modMLModels.GetModelValueArguments(cmbmodel.Text, xxx, sPath))
+      xindex = $Index Mod 5
+      Select xindex
+        Case 0
+          primesTask1 = New CAudioUpload(cmbmodel.Text, sPath) As "taskEvents1"
+        Case 1
+          primesTask2 = New CAudioUpload(cmbmodel.Text, sPath) As "taskEvents2"
+        Case 2
+          primesTask3 = New CAudioUpload(cmbmodel.Text, sPath) As "taskEvents3"
+        Case 3
+          primesTask4 = New CAudioUpload(cmbmodel.Text, sPath) As "taskEvents4"
+        Case 4
+          primesTask5 = New CAudioUpload(cmbmodel.Text, sPath) As "taskEvents5"
+      End Select
+      $Index = $Index + 1
     Endif
   Endif
-
-  Return xx
 
 End
 
@@ -112,7 +145,6 @@ End
 Private Sub ConvertVoice()
 
   Dim xList As String[]
-  Dim xval As String
   Dim xfile As String
 
   xList = ListBox1.List
@@ -120,10 +152,7 @@ Private Sub ConvertVoice()
   For Each xfile In xList
     If $doneLst.Exist(xfile) = False Then
       $doneLst.Add(xfile)
-      xval = GetVoiceTextConversion($sFolder &/ xfile)
-      If xval Then
-        TextArea1.Text = TextArea1.Text & Space(1) & xval
-      Endif
+      GetVoiceTextConversion($sFolder &/ xfile)
     Endif
   Next
 
@@ -132,13 +161,38 @@ End
 Private Sub StartRecording()
 
   Dim xcmd As String
+  Dim arcmd As String[]
 
-  $sFolder = File.Dir(Temp())
-  $start = Now()
-  Timer1.Enabled = True
-  Timer2.Enabled = True
-  xcmd = "%run " & modHelpVariable.$pythonDirectory &/ "pyrecord.py" & Space(1) & $sFolder
-  TerminalInput(xcmd)
+  If modBasic.$AudioRecMultiFiles = "Yes" Then
+    $sFolder = modHelpVariable.AppCacheDir &/ modString.GetNowString()
+    Mkdir $sFolder
+    $start = Now()
+    Timer1.Enabled = True
+    Timer2.Enabled = True
+    xcmd = "%run " & modHelpVariable.$pythonDirectory &/ "pyrecord.py" & Space(1) & $sFolder
+    TerminalInput(xcmd)
+
+  Else
+    If System.Exist("arecord") Then
+      $start = Now()
+      Timer1.Enabled = True
+      $sPath = Temp() & ".wav"
+      arcmd = New String[]
+      arcmd.Add("arecord")
+      arcmd.Add("-f")
+      arcmd.Add("S16_LE")
+      If modBasic.$AudioRecFormat Then
+        arcmd.Add("-f")
+        arcmd.Add(modBasic.$AudioRecFormat)
+      Endif
+      arcmd.Add($sPath)
+      modBasic.DebugAPIString("Execute " & arcmd.Join(Space(1)))
+      $hProc = Exec arcmd
+    Else
+      modApplSub.InstallSelectedApplication(["alsa-utils"])
+    Endif
+
+  Endif
 
 End
 
@@ -146,14 +200,27 @@ Private Sub StopRecording()
 
   Dim xcmd As String
 
-  ' $hProc.Kill()
-  xcmd = "\x03"
-  TerminalInput(xcmd)
-  Timer1.Enabled = False
-  Timer2.Enabled = False
-  Wait 5
-  ListBox1.List = Dir($sFolder, "*.wav", gb.File)
-  ConvertVoice()
+  If modBasic.$AudioRecMultiFiles = "Yes" Then
+    xcmd = "\x03"
+    TerminalInput(xcmd)
+    Timer1.Enabled = False
+    Timer2.Enabled = False
+    Wait 3
+    Try ListBox1.List = Dir($sFolder, "*.wav", gb.File)
+    If ListBox1.List.Count Then
+      ConvertVoice()
+    Endif
+
+  Else
+    $hProc.Kill()
+    Timer1.Enabled = False
+    Wait
+    If Exist($sPath) Then
+      Music.Load($sPath)
+      GetVoiceTextConversion($sPath)
+    Endif
+
+  Endif
 
 End
 
@@ -165,16 +232,28 @@ End
 
 Public Sub btnstart_Click()
 
-  If ListBox1.Text Then
-    Music.Play()
+  If modBasic.$AudioRecMultiFiles = "Yes" Then
+    If ListBox1.Text Then
+      Music.Play()
+    Endif
+  Else
+    If Exist($sPath) Then
+      Music.Play()
+    Endif
   Endif
 
 End
 
 Public Sub btnstop_Click()
 
-  If ListBox1.Text Then
-    Music.Stop
+  If modBasic.$AudioRecMultiFiles = "Yes" Then
+    If ListBox1.Text Then
+      Music.Stop()
+    Endif
+  Else
+    If Exist($sPath) Then
+      Music.Stop()
+    Endif
   Endif
 
 End
@@ -222,3 +301,59 @@ End
 '   Return sText
 '
 ' End
+
+''--------------------- Tasks ------------------
+Public Procedure taskEvents1_Kill()
+
+  Dim xx As String
+
+  xx = primesTask1.Value
+  If xx Then
+    TextArea1.Text = TextArea1.Text & Space(1) & xx
+  Endif
+
+End
+
+Public Procedure taskEvents2_Kill()
+
+  Dim xx As String
+
+  xx = primesTask2.Value
+  If xx Then
+    TextArea1.Text = TextArea1.Text & Space(1) & xx
+  Endif
+
+End
+
+Public Procedure taskEvents3_Kill()
+
+  Dim xx As String
+
+  xx = primesTask3.Value
+  If xx Then
+    TextArea1.Text = TextArea1.Text & Space(1) & xx
+  Endif
+
+End
+
+Public Procedure taskEvents4_Kill()
+
+  Dim xx As String
+
+  xx = primesTask4.Value
+  If xx Then
+    TextArea1.Text = TextArea1.Text & Space(1) & xx
+  Endif
+
+End
+
+Public Procedure taskEvents5_Kill()
+
+  Dim xx As String
+
+  xx = primesTask5.Value
+  If xx Then
+    TextArea1.Text = TextArea1.Text & Space(1) & xx
+  Endif
+
+End

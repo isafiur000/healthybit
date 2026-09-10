@@ -12,11 +12,11 @@ folder_path = sys.argv[1]
 os.makedirs(folder_path, exist_ok=True)
 
 # Audio Configuration
-FORMAT = pyaudio.paFloat32    # 16-bit resolution
+FORMAT = pyaudio.paInt16      # 16-bit resolution
 CHANNELS = 1                  # Mono recording
 RATE = 44100                  # 44.1kHz sampling rate (CD quality)
 CHUNK = 1024                  # Samples per buffer read
-SEGMENT_DURATION = 10         # Split files every 15 seconds
+SEGMENT_DURATION = 15         # Split files every 30 seconds
 
 # Calculate how many chunk reads equal 30 seconds
 CHUNKS_PER_SEGMENT = int((RATE / CHUNK) * SEGMENT_DURATION)

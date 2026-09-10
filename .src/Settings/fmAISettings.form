@@ -139,10 +139,11 @@
       { Label117 Label
         MoveScaled(13,17,8,3)
         Border = Border.Plain
-        Text = ("Args")
+        Text = ("String")
       }
-      { txtargument TextArea
-        MoveScaled(22,17,50,8)
+      { txtstrargs TextArea
+        MoveScaled(22,17,50,11)
+        ToolTip = ("Variables separated by semicolon (;)")
         Wrap = True
       }
       { Label1 Label
@@ -172,6 +173,16 @@
       }
       { txtmodelname ComboBox
         MoveScaled(22,1,24,3)
+      }
+      { Label3 Label
+        MoveScaled(13,29,8,3)
+        Border = Border.Plain
+        Text = ("Number")
+      }
+      { txtnumargs TextArea
+        MoveScaled(22,29,50,11)
+        ToolTip = ("Variables separated by semicolon (;)")
+        Wrap = True
       }
     }
     Index = 0

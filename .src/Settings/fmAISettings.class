@@ -169,7 +169,8 @@ Private Sub ShowLocalModel(xmodel As String)
   cmbmodelrole.Text = modSettings.ShowModelsSettingFromFIle(xmodel & "/" & "Role")
   cmbshell.Text = modSettings.ShowModelsSettingFromFIle(cmbmodel.Text & "/" & "Shell")
   txtmodelhost.Text = modSettings.ShowModelsSettingFromFIle(xmodel & "/" & "URL")
-  txtargument.Text = modSettings.ShowModelsSettingFromFIle(xmodel & "/" & "Arguments")
+  txtstrargs.Text = modSettings.ShowModelsSettingFromFIle(xmodel & "/" & "StrArgument")
+  txtnumargs.Text = modSettings.ShowModelsSettingFromFIle(cmbmodel.Text & "/" & "NumArgument")
 
 End
 
@@ -180,7 +181,8 @@ Public Sub btnmodelname_Click()
     modSettings.SaveModelSettingToFile(cmbmodel.Text & "/" & "Role", cmbmodelrole.Text)
     modSettings.SaveModelSettingToFile(cmbmodel.Text & "/" & "Shell", cmbshell.Text)
     modSettings.SaveModelSettingToFile(cmbmodel.Text & "/" & "URL", txtmodelhost.Text)
-    modSettings.SaveModelSettingToFile(cmbmodel.Text & "/" & "Arguments", txtargument.Text)
+    modSettings.SaveModelSettingToFile(cmbmodel.Text & "/" & "StrArgument", txtstrargs.Text)
+    modSettings.SaveModelSettingToFile(cmbmodel.Text & "/" & "NumArgument", txtnumargs.Text)
     Balloon.Info(("Information saved"), btnmodelname)
     Balloon.Delay = modBasic.$BalloonDelay
   Endif

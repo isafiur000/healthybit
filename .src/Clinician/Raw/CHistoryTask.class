@@ -1,0 +1,24 @@
+' Gambas class file
+
+Inherits Task
+
+Private $encid As String
+Private $xList As String[]
+Private $sUnit As String
+
+Public Sub _new(encid As String, xList As String[], sUnit As String)
+
+  $encid = encid
+  $xList = xList
+  $sUnit = sUnit
+
+End
+
+Public Function Main() As Variant
+
+  Dim xx As String
+
+  xx = modPatReportAll.ShowCompleteReport($encid, $xList, $sUnit, True)
+  Return xx
+
+End

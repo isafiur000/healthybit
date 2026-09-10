@@ -9,10 +9,21 @@ Private $PatNum As String
 Private $rData As Result
 Private $aMyFields As String[]
 
+Private primesTask1 As Task
+Private primesTask2 As Task
+Private $curEncid As String
+Private $pastEncid As String
+Private $RepoColl As Collection
+
 Public Sub _new(patId As String, sType As String)
 
   $patId = patId
   $sType = sType
+
+  $xFinList = GetSelectedItemList()
+  If Not $xFinList.Count Then
+    $xFinList = modMedicine.GetAttachReportVariables()
+  Endif
 
 End
 
@@ -35,10 +46,6 @@ Public Sub Form_Open()
     txtnewencid.Text = $patId
     $PatNum = modPatient.GetPatientNoByEnc($patId)
   Endif
-  $xFinList = GetSelectedItemList()
-  If Not $xFinList.Count Then
-    $xFinList = modMedicine.GetAttachReportVariables()
-  Endif
   AddListBiewContent($xFinList)
 
   If modBasic.$WebZoomValue Then
@@ -50,6 +57,7 @@ Public Sub Form_Open()
     Try modGeneralMain.$RightAdView.SetHtml("")
   Endif
   rbmetric.Value = True
+  $RepoColl = New Collection
 
 End
 
@@ -195,7 +203,16 @@ Private Sub GetSelectHistoryResultStr(xList As String[], encid As String) As Str
       If xList Then
         sUnit = modLabSub.GetTestUnitFromButton(rbsi, rbmetric)
         Inc Application.Busy
-        xstring = modPatReportAll.ShowCompleteReport(encid, xList, sUnit, True)
+        If $RepoColl.Count Then
+          If sUnit = "Metric" And If xList = $xFinList And If $RepoColl.Keys.Exist(encid) Then
+            xstring = $RepoColl[encid]
+            $RepoColl.Remove(encid)
+          Else
+            xstring = modPatReportAll.ShowCompleteReport(encid, xList, sUnit, True)
+          Endif
+        Else
+          xstring = modPatReportAll.ShowCompleteReport(encid, xList, sUnit, True)
+        Endif
         Dec Application.Busy
       Endif
     Else
@@ -379,5 +396,42 @@ Private Sub GetAllVisitHistoryResultStr(xList As String[], encLst As String[], e
   Endif
 
   Return xstring
+
+End
+
+''----------------- Task ----------------------
+Public Sub ReadyCurrentReport(encid As String)
+
+  $curEncid = encid
+  primesTask1 = New CHistoryTask($curEncid, $xFinList, "Metric") As "taskEvents1"
+
+End
+
+Public Sub ReadyPastReport(encid As String)
+
+  $pastEncid = encid
+  primesTask2 = New CHistoryTask($pastEncid, $xFinList, "Metric") As "taskEvents2"
+
+End
+
+Public Procedure taskEvents1_Kill()
+
+  Dim xx As String
+
+  xx = primesTask1.Value
+  If xx Then
+    $RepoColl.Add(xx, $curEncid)
+  Endif
+
+End
+
+Public Procedure taskEvents2_Kill()
+
+  Dim xx As String
+
+  xx = primesTask2.Value
+  If xx Then
+    $RepoColl.Add(xx, $pastEncid)
+  Endif
 
 End

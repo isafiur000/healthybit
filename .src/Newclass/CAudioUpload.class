@@ -1,0 +1,25 @@
+' Gambas class file
+
+Inherits Task
+
+Private $sModel As String
+Private $sPath As String
+
+Public Sub _new(sModel As String, sPath As String)
+
+  $sModel = sModel
+  $sPath = sPath
+
+End
+
+Public Function Main() As Variant
+
+  Dim xxx As String[]
+  Dim xval As String
+
+  xxx = New String[]
+  xval = Trim(modMLModels.GetModelValueArguments($sModel, xxx, $sPath))
+
+  Return xval
+
+End

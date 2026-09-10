@@ -575,6 +575,7 @@ Public $HideStorage As String
 
 ''Audio Recording
 Public $AudioRecFormat As String
+Public $AudioRecMultiFiles As String
 
 ''Global Clinic
 Public $ClinicDisableCompo As String[]
@@ -2339,6 +2340,7 @@ End
 Public Sub GetAudioRecording()
 
   $AudioRecFormat = modSettings.ShowSettingFromFIle("AudioRecording/Format")
+  $AudioRecMultiFiles = modSettings.ShowSettingFromFIle("AudioRecording/MultipleFiles")
 
 End
 
