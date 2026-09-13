@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,106,61)
+  MoveScaled(0,0,106,65)
   Tag = "Set Package"
   Text = ("Set Package")
   Resizable = False
@@ -12,7 +12,7 @@
     }
   }
   { GridView1 GridView
-    MoveScaled(1,1,31,59)
+    MoveScaled(1,1,31,63)
     Mode = Select.Single
     Header = GridView.Vertical
     AutoResize = False
@@ -78,7 +78,7 @@
     MoveScaled(49,37,18,3)
   }
   { btnqtylimit Button
-    MoveScaled(49,41,18,3)
+    MoveScaled(49,45,18,3)
     Text = ("View List")
     Picture = Picture["icon:/small/file"]
   }
@@ -97,35 +97,35 @@
     MoveScaled(87,37,14.625,3)
   }
   { cmbfixdepart ComboBox
-    MoveScaled(49,45,18,3)
+    MoveScaled(49,49,18,3)
   }
   { cmbfixstate ComboBox
     MoveScaled(87,45,18,3)
   }
   { txtcostval SpinBox
-    MoveScaled(49,49,18,3)
+    MoveScaled(49,53,18,3)
   }
   { cmbonline ComboBox
-    MoveScaled(49,57,18,3)
+    MoveScaled(87,49,18,3)
   }
   { cmboffspring ComboBox
-    MoveScaled(87,49,18,3)
+    MoveScaled(49,61,18,3)
   }
   { txtbookdays ValueBox
     MoveScaled(87,53,10,3)
   }
   { btnOKdisc Button
-    MoveScaled(70,57,16,3)
+    MoveScaled(70,61,16,3)
     Text = Shortcut(("Add"), "A")
     Picture = Picture["icon:/small/add"]
   }
   { btnedit Button
-    MoveScaled(87,57,14,3)
+    MoveScaled(87,61,14,3)
     Text = ("Update")
     Picture = Picture["icon:/small/edit"]
   }
   { btnexport Button
-    MoveScaled(102,57,3,3)
+    MoveScaled(102,61,3,3)
     Picture = Picture["icon:/small/html"]
   }
   { btnnodisclist Button
@@ -228,7 +228,7 @@
     Picture = Picture["icon:/small/book"]
   }
   { Label7 Label
-    MoveScaled(33,57,15,3)
+    MoveScaled(70,49,16,3)
     Border = Border.Plain
     Text = ("Show Online")
   }
@@ -242,12 +242,12 @@
     Picture = Picture["icon:/small/add"]
   }
   { Label20 Label
-    MoveScaled(70,49,16,3)
+    MoveScaled(33,61,15,3)
     Border = Border.Plain
     Text = ("Offspring")
   }
   { Label21 Label
-    MoveScaled(33,45,15,3)
+    MoveScaled(33,49,15,3)
     Border = Border.Plain
     Text = ("Fix Department")
   }
@@ -264,7 +264,7 @@
   { Label24 Label
     MoveScaled(33,41,15,3)
     Border = Border.Plain
-    Text = ("Quantity Limit")
+    Text = ("QTY Limit Days")
   }
   { Label25 Label
     MoveScaled(70,45,16,3)
@@ -277,16 +277,32 @@
     Text = ("Booking Days")
   }
   { Label27 Label
-    MoveScaled(33,49,15,3)
+    MoveScaled(33,53,15,3)
     Border = Border.Plain
     Text = ("Cost Level")
   }
   { Label28 Label
-    MoveScaled(33,53,15,3)
+    MoveScaled(33,57,15,3)
     Border = Border.Plain
     Text = ("Tax Collection")
   }
   { cmbtaxcollect ComboBox
-    MoveScaled(49,53,18,3)
+    MoveScaled(49,57,18,3)
+  }
+  { Label29 Label
+    MoveScaled(33,45,15,3)
+    Border = Border.Plain
+    Text = ("Quantity Limit")
+  }
+  { txtlimitdays ValueBox
+    MoveScaled(49,41,13,3)
+  }
+  { Label30 Label
+    MoveScaled(70,57,16,3)
+    Border = Border.Plain
+    Text = ("Booking Closure")
+  }
+  { dtbooktime DateBox
+    MoveScaled(87,57,18,3)
   }
 }

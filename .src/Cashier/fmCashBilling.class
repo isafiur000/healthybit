@@ -3927,6 +3927,19 @@ Public Sub mnuexpensedate_Click()
 
 End
 
+Public Sub mnuexpensecomp_Click()
+
+  Dim xPath As String
+
+  If txtencid.Text Then
+    Inc Application.Busy
+    xPath = modCHTMLInvoice.ShowTotalExpenseCompbyPatient(modDatabase.$syConn, Trim(txtencid.Text))
+    Dec Application.Busy
+    modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xPath, "ReportSize")
+  Endif
+
+End
+
 Public Sub mnuexpensedept_Click()
 
   Dim xPath As String

@@ -756,3 +756,15 @@ Public Sub mnucompreport_Click()
   Endif
 
 End
+
+Public Sub mnuhidepat_Click()
+
+  If mnuhidepat.Value = True Then
+    mnuhidepat.Text = "Show Profile"
+    Frame1.Visible = False
+  Else
+    mnuhidepat.Text = "Hide Profile"
+    Frame1.Visible = True
+  Endif
+
+End

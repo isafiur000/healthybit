@@ -1719,7 +1719,7 @@ Private Sub EnterDosingRecord()
       xtax = modNonMedical.ShowTaxValues(itemtype, cmbmedicine.Text)
       discval = modNonMedical.DiscPercentForCategoryValue(Trim(txtencid.Text), cmbdisctype.Text, itemtype, cmbmedicine.Text, itemmode)
       If itemtype = "Surgicals" Or If itemtype = "Extra Items" Then
-        modPharmSub.InsertNonMedDosingEntryStock(itemtype, Trim(txtencid.Text), hPatient1.GetCashCreditMode(), cmbbillmode.Text, cmbdisctype.Text, cmbledgerac.Text, cmbroute.Text, cmbmedicine.Text, txtqty.Value, sType, 0, xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, "", txtstockno.Value)
+        PhmInsertNonMedDosingEntryStock(itemtype, Trim(txtencid.Text), hPatient1.GetCashCreditMode(), cmbbillmode.Text, cmbdisctype.Text, cmbledgerac.Text, cmbroute.Text, cmbmedicine.Text, txtqty.Value, sType, 0, xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, "", txtstockno.Value)
 
       Else
         If modMedConstant.GetNarcoticType(cmbmedicine.Text) = "Yes" Then
@@ -1729,10 +1729,10 @@ Private Sub EnterDosingRecord()
             txpresno = xnarcotic[0]
           Endif
           If txprescriber And If txpresno Then
-            modPharmSub.InsertDosingEntryStock(Trim(txtencid.Text), hPatient1.GetCashCreditMode(), cmbbillmode.Text, cmbdisctype.Text, cmbledgerac.Text, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, sType, txprescriber, txpresno, 0, xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, "", txtstockno.Value)                    '
+            PhmInsertDosingEntryStock(Trim(txtencid.Text), hPatient1.GetCashCreditMode(), cmbbillmode.Text, cmbdisctype.Text, cmbledgerac.Text, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, sType, txprescriber, txpresno, 0, xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, "", txtstockno.Value)                    '
           Endif
         Else
-          modPharmSub.InsertDosingEntryStock(Trim(txtencid.Text), hPatient1.GetCashCreditMode(), cmbbillmode.Text, cmbdisctype.Text, cmbledgerac.Text, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, sType, "", "", 0, xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, "", txtstockno.Value)                    '
+          PhmInsertDosingEntryStock(Trim(txtencid.Text), hPatient1.GetCashCreditMode(), cmbbillmode.Text, cmbdisctype.Text, cmbledgerac.Text, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, sType, "", "", 0, xtax, discval, xfixname, xfixrate, "UseOwn", dispmode, "", txtstockno.Value)                    '
         Endif
       Endif
 
@@ -4012,5 +4012,182 @@ Private Sub GetReviewMultiMessage(sType As String)
       modControlSub.OpenHTMLPreview(Trim(txtencid.Text), xmsg, "ReportSize")
     Endif
   Endif
+
+End
+
+''--------------- with one stock No
+Private Sub PhmInsertDosingEntryStock(encid As String, sBilType As String, billingMode As String, DiscMode As String, sLedger As String, txtroute As String, txtitem As String, txtdose As Float, txtfreq As String, txtday As Float, txtqty As Float, PatStatus As String, txtprescriber As String, txtregno As String, startDay As Integer, taxper As Float, discper As Float, fixitem As String, fixrate As Float, OrderType As String, DeptID As String, sDirection As String, sParent As Long)                 ''
+
+  Dim res As Result
+  Dim order As String
+  Dim disptype As String
+  Dim xstart As Date
+  Dim xdirct As String
+  Dim xCashCredit As Float
+
+  If sDirection Then
+    xdirct = sDirection
+  Else
+    xdirct = ""
+  Endif
+  If DeptID Then
+    disptype = DeptID
+  Else
+    disptype = "OPD"
+  Endif
+  If OrderType Then
+    order = OrderType
+  Else
+    order = "UseOwn"
+  Endif
+  If startDay Then
+    xstart = DateAdd(Now(), gb.Hour, startDay)
+  Else
+    xstart = Now()
+  Endif
+  xCashCredit = modNonMedical.CashInCreditPerForCategory(DiscMode, "Medicines", txtitem, billingMode)
+
+  res = modDatabase.$myConn.Create("tblpatdosing")
+  res["fldencounterval"] = encid
+  res["flditemtype"] = "Medicines"
+  res["fldroute"] = txtroute
+  res["flditem"] = txtitem
+  res["flddose"] = txtdose
+  res["fldfreq"] = txtfreq
+  res["flddays"] = txtday
+  res["fldqtydisp"] = txtqty
+  res["fldqtyret"] = 0
+  res["fldprescriber"] = txtprescriber
+  res["fldregno"] = txtregno
+  res["fldlevel"] = "Requested" ''changes to Dispensed (Only used to indicate dispensing when cash billing done before real dispensing)
+  res["flddirection"] = xdirct
+
+  res["flddispmode"] = disptype  ''Requesting Dept (OPD/IPD/Aseptic/Delivery/Pre-Operative:<val> etc)
+  res["fldorder"] = order     ''whether request or useown stock
+  res["fldcurval"] = "Continue"    ''clinician order to continue to Hold
+  res["fldstarttime"] = xstart
+  res["fldendtime"] = ""     ''when dosing regimen expires
+  res["fldfixname"] = fixitem
+  If fixrate Then
+    res["fldfixrate"] = fixrate
+  Else
+    res["fldfixrate"] = 0
+  Endif
+  res["fldtaxper"] = taxper
+  res["flddiscper"] = discper
+  res["fldcashincredit"] = xCashCredit
+  res["fldbillingmode"] = billingMode
+  res["flddisctype"] = DiscMode
+  res["fldacledger"] = sLedger
+  res["fldbilltype"] = sBilType
+  If sParent Then
+    res["flditemno"] = sParent
+  Endif
+
+  res["flduserid_order"] = modBasic.$lbluser  ''on insert record
+  res["fldtime_order"] = Now()
+  res["fldcomp_order"] = modBasic.$compID
+  res["fldsave_order"] = False
+  res["flduserid"] = ""    ''on dispensing
+  res["fldtime"] = ""
+  res["fldcomp"] = ""
+
+  res["fldsave"] = True  ''if data appears online in pharmacy on pressing F2 for Reuested only
+  If modPharmLabel.ForceLabelPrint(txtitem) = True Then
+    res["fldlabel"] = True
+  Else
+    res["fldlabel"] = False   ''if label is printed
+  Endif
+  res["fldstatus"] = PatStatus   ''status of patient (admitted or discharged
+  res["flduptime"] = ""    ''date of data update
+  res["xyz"] = True
+  res.Update()
+  'don't catch error
+
+End
+
+Private Sub PhmInsertNonMedDosingEntryStock(sCategory As String, encid As String, sBilType As String, billingMode As String, DiscMode As String, sLedger As String, txtroute As String, txtitem As String, txtqty As Float, PatStatus As String, startDay As Integer, taxper As Float, discper As Float, fixitem As String, fixrate As Float, OrderType As String, DeptID As String, sDirection As String, sParent As Long)
+
+  Dim res As Result
+  Dim order As String
+  Dim disptype As String
+  Dim xstart As Date
+  Dim xdirct As String
+  Dim xCashCredit As Float
+
+  If sDirection Then
+    xdirct = sDirection
+  Else
+    xdirct = ""
+  Endif
+  If DeptID Then
+    disptype = DeptID
+  Else
+    disptype = "OPD"
+  Endif
+  If OrderType Then
+    order = OrderType
+  Else
+    order = "UseOwn"
+  Endif
+  If startDay Then
+    xstart = DateAdd(Now(), gb.Hour, startDay)
+  Else
+    xstart = Now()
+  Endif
+  xCashCredit = modNonMedical.CashInCreditPerForCategory(DiscMode, sCategory, txtitem, billingMode)
+
+  res = modDatabase.$myConn.Create("tblpatdosing")
+  res["fldencounterval"] = encid
+  res["flditemtype"] = sCategory
+  res["fldroute"] = txtroute
+  res["flditem"] = txtitem
+  res["flddose"] = 0
+  res["fldfreq"] = ""
+  res["flddays"] = 0
+  res["fldqtydisp"] = txtqty
+  res["fldqtyret"] = 0
+  res["fldprescriber"] = ""
+  res["fldregno"] = ""
+  res["fldlevel"] = "Requested"
+  res["flddirection"] = xdirct
+
+  res["flddispmode"] = disptype
+  res["fldorder"] = order
+  res["fldcurval"] = "Continue"
+  res["fldstarttime"] = xstart
+  res["fldendtime"] = ""
+  res["fldfixname"] = fixitem
+  If fixrate Then
+    res["fldfixrate"] = fixrate
+  Else
+    res["fldfixrate"] = 0
+  Endif
+  res["fldtaxper"] = taxper
+  res["flddiscper"] = discper
+  res["fldcashincredit"] = xCashCredit
+  res["fldbillingmode"] = billingMode
+  res["flddisctype"] = DiscMode
+  res["fldacledger"] = sLedger
+  res["fldbilltype"] = sBilType
+  If sParent Then
+    res["flditemno"] = sParent
+  Endif
+
+  res["flduserid_order"] = modBasic.$lbluser
+  res["fldtime_order"] = Now()
+  res["fldcomp_order"] = modBasic.$compID
+  res["fldsave_order"] = False
+  res["flduserid"] = ""
+  res["fldtime"] = ""
+  res["fldcomp"] = ""
+
+  res["fldsave"] = True
+  res["fldlabel"] = False
+  res["fldstatus"] = PatStatus
+  res["flduptime"] = ""
+  res["xyz"] = True
+  res.Update()
+  'don't catch error
 
 End

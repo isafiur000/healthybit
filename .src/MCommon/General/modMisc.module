@@ -102,8 +102,21 @@ Public Function LocalModelList() As String[]
   Dim i As Integer
 
   xx = New String[]
-  For i = 1 To 10
+  For i = 1 To 20
     xx.Add("Model" & CStr(i))
+  Next
+  Return xx
+
+End
+
+Public Function LocalAIModelList() As String[]
+
+  Dim xx As String[]
+  Dim i As Integer
+
+  xx = New String[]
+  For i = 1 To 20
+    xx.Add("AIModel" & CStr(i))
   Next
   Return xx
 

@@ -59,7 +59,7 @@ Public Sub Form_Open()
       FillGridViewData()
     Endif
   Endif
-  cmbmodel.List = modMLModels.GetMLModelsList("PACS Image")
+  cmbmodel.List = modMLModels.GetAIModelsList("dicom-prediction")
   If cmbmodel.List.Count Then
     cmbmodel.Text = cmbmodel.List[0]
   Endif
@@ -289,7 +289,7 @@ Public Sub btnanalyze_Click()
   If xPath Then
     If cmbmodel Then
       Inc Application.Busy
-      xval = Trim(modMLModels.GetModelValue($encid, cmbmodel.Text, xPath))
+      xval = Trim(modMLModels.GetAIModelValue($encid, cmbmodel.Text, xPath))
       Dec Application.Busy
       If xval Then
         Message.Info(xval, "OK")

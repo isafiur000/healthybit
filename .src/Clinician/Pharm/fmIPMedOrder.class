@@ -245,12 +245,18 @@ Public Sub btnshow_Click()
 
 End
 
+Public Sub chknofluid_Click()
+
+  LoadMedicineGrid()
+
+End
+
 Private Sub LoadMedicineGrid()
 
   Dim sFieldLst As String[]
   Dim sql As String
 
-  sFieldLst = ["fldid", "fldroute", "CONCAT(flditem, '|', COALESCE(fldmixing, ''))", "CONCAT(flditem, '|', flddose)", "fldfreq", "flddays", "fldcurval", "fldqtyorder", "fldid", "flduserid", "fldstarttime", "flditem", "flddirection", "fldadminsite", "fldmixing", "flduserid", "flditem", "fldmixvolume", "fldmixrate", "flddose", "CONCAT(fldroute, '|', flditem, '|', flddose, '|', fldmixvolume, '|', fldmixrate)"]
+  sFieldLst = ["fldid", "fldroute", "CONCAT(flditem, '|', COALESCE(fldmixing, ''))", "CONCAT(flditem, '|', flddose)", "fldfreq", "flddays", "fldcurval", "fldqtyorder", "fldid", "flduserid", "fldstarttime", "flditem", "flddirection", "fldadminsite", "fldmixing", "flduserid", "flditem", "fldmixvolume", "fldmixrate", "flddose", "CONCAT(fldroute, '|', flditem, '|', flddose, '|', fldmixvolume, '|', fldmixrate)", "fldcomment"]
   If cmbstatus.Text = "%" Then
     sql = "select " & sFieldLst.Join(",") & " from tblinpatdosing where fldencounterval=&1 and (fldmixing IS NULL or fldmixing NOT LIKE &2) ORDER BY fldstarttime DESC"
   Else
@@ -274,14 +280,25 @@ Private Sub LoadMedicineGrid()
     .Columns[10].Width = 150 * modBasic.$AppWidthRatio
     .Columns[11].Width = 30 * modBasic.$AppWidthRatio
     .Columns[12].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[13].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[14].Width = 250 * modBasic.$AppWidthRatio
+
     .Columns[15].Width = 1
     .Columns[16].Width = 1
-    .Columns[17].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[18].Width = 75 * modBasic.$AppWidthRatio
     .Columns[19].Width = 1  ''dose in number
-    .Columns[20].Width = 100 * modBasic.$AppWidthRatio
+
+    If chknofluid.Value = False Then
+      .Columns[13].Width = 150 * modBasic.$AppWidthRatio
+      .Columns[14].Width = 250 * modBasic.$AppWidthRatio
+      .Columns[17].Width = 75 * modBasic.$AppWidthRatio
+      .Columns[18].Width = 75 * modBasic.$AppWidthRatio
+      .Columns[20].Width = 100 * modBasic.$AppWidthRatio
+    Else If chknofluid.Value = True Then
+      .Columns[13].Width = 1
+      .Columns[14].Width = 1
+      .Columns[17].Width = 1
+      .Columns[18].Width = 1
+      .Columns[20].Width = 1
+    Endif
+    .Columns[21].Width = 150 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "Route"
     .Columns[2].Text = "Medicine"
@@ -294,11 +311,14 @@ Private Sub LoadMedicineGrid()
     .Columns[10].Text = "Start"
     .Columns[11].Text = "N"
     .Columns[12].Text = "Direction"
-    .Columns[13].Text = "Admin"
-    .Columns[14].Text = "Dilution"
-    .Columns[17].Text = "Vol(mL)"
-    .Columns[18].Text = "mL/Hour"
-    .Columns[20].Text = "Target"
+    If chknofluid.Value = False Then
+      .Columns[13].Text = "Admin"
+      .Columns[14].Text = "Dilution"
+      .Columns[17].Text = "Vol(mL)"
+      .Columns[18].Text = "mL/Hour"
+      .Columns[20].Text = "Target"
+    Endif
+    .Columns[21].Text = "Comment"
   End With
 
 End
@@ -521,6 +541,15 @@ Public Sub GridView1_Click()
       res.Update
       LoadMedicineGrid()
     Endif
+
+  Else If GridView1.Column = 21 Then ''comment
+    yval = InputBox(GridView1[GridView1.Row, 16].Text, "Comment", GridView1[GridView1.Row, 21].Text)
+    res = modDatabase.$myConn.Edit("tblinpatdosing", "fldid=&1 and fldencounterval=&2", GridView1[GridView1.Row, 0].Text, $encid)
+    res["fldcomment"] = Trim(yval)
+    res["xyz"] = False
+    res.Update
+    LoadMedicineGrid()
+
   Endif
 
 End

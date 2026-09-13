@@ -46,6 +46,7 @@ Public Sub Form_Open()
   cmbprogchart.List = ["Nursing Note", "Progress Note", "None"]
   cmbhistoryform.List = ["Dual", "Detail"]
   cmbdoseadmin.List = ["Enable", "Disable"]
+  cmbdosedirect.List = ["Enable", "Disable"]
 
   cmbbodyformat.List = ["Tabular", "Paragraph"]
   cmbshowday.List = ["Date", "User", "Date+User", "None"]
@@ -513,6 +514,7 @@ Private Sub ClinFormsSetting()
   cmbprogchart.Text = modSettings.ShowSettingFromFIle("ClinicForms/ProgressNotes_Chart")
   cmbhistoryform.Text = modSettings.ShowSettingFromFIle("ClinicForms/HistoryInputForm")
   cmbdoseadmin.Text = modSettings.ShowSettingFromFIle("ClinicForms/DoseAdminComment")
+  cmbdosedirect.Text = modSettings.ShowSettingFromFIle("ClinicForms/DoseDirection")
 
 End
 
@@ -601,6 +603,15 @@ Public Sub btndoseadmin_Click()
   modSettings.SaveSettingsToFile("ClinicForms/DoseAdminComment", cmbdoseadmin.Text)
   modBasic.$ClinAdminComment = cmbdoseadmin.Text
   Balloon.Info(("Information saved"), btndoseadmin)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btndosedirect_Click()
+
+  modSettings.SaveSettingsToFile("ClinicForms/DoseDirection", cmbdosedirect.Text)
+  modBasic.$ClinAdminDirection = cmbdosedirect.Text
+  Balloon.Info(("Information saved"), btndosedirect)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

@@ -1,0 +1,65 @@
+' Gambas class file
+
+Private $encid As String
+Private $sIndex As Long
+
+Public Sub _new(encid As String, sIndex As Long, sMedicine As String)
+
+  $encid = encid
+  $sIndex = sIndex
+  txtmedicine.Text = sMedicine
+
+End
+
+Public Sub Form_Open()
+
+  Me.Center
+
+End
+
+Public Sub btnsave_Click()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Edit("tblnurdosing", "fldid=&1 and fldencounterval=&2", $sIndex, $encid)
+  If res.Available Then
+    res["fldused"] = txtinfuse.Value
+    res["fldwaste"] = txtdiscard.Value
+    res["fldtotime"] = Now()
+    res["xyz"] = False
+    res.Update
+    Wait
+    Me.Close()
+  Endif
+
+End
+
+Public Sub btnsave_KeyRelease()
+
+  If Key.Code = Key.Return Or If Key.Code = Key.Enter Or If Key.Code = Key.AltKey Then
+    btnsave_Click()
+  Endif
+
+End
+
+Public Sub txtinfuse_GotFocus()
+
+  txtinfuse.SelectAll()
+
+End
+
+Public Sub txtdiscard_GotFocus()
+
+  txtdiscard.SelectAll()
+
+End
+
+Public Sub Form_KeyRelease()
+
+  If Key.Code = Key.Esc Then
+    Me.Close()
+  Else
+    modGeneralmain.GoToNextControlTab()
+  Endif
+
+End

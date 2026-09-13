@@ -13,7 +13,11 @@ Public Sub Form_Open()
     cmbtarget.Enabled = False
   Endif
 
-  cmbroute.List = modMedicine.ComboRoute()
+  If modHelpVariable.$LogInCategory = "Clinician" And If modBasic.$ClinInjectionRoute = "Disable" Then
+    cmbroute.List = modMedicine.InpatientSubRoute(False)
+  Else
+    cmbroute.List = modMedicine.ComboRoute()
+  Endif
   cmbdoseunit.List = modMedicine.$MedicineUnitList
   cmbfreq.List = modMedicine.FrequencyCombo()
   cmbgroup.List = modMedicine.GetMedicineProcolsList()

@@ -44,7 +44,7 @@ Public Sub Form_Open()
     cmblanguage.Enabled = True
     cmblanguage.List = ["English"]
     cmblanguage.Text = "English"
-    cmbmodel.List = modMLModels.GetMLModelsList("Audio/Video")
+    cmbmodel.List = modMLModels.GetAIModelsList("voice-to-text")
     If cmbmodel.List.Count Then
       cmbmodel.Text = cmbmodel.List[0]
     Endif

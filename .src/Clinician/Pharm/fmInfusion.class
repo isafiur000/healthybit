@@ -344,16 +344,19 @@ End
 
 Public Sub grdfluiddata_Click()
 
-  Dim res As Result
+  ' Dim res As Result
   Dim Row As Integer
+  Dim hForm As FmStopInfusion
 
   If grdfluiddata.Column = 4 Then
     If grdfluiddata[grdfluiddata.Row, 4].Picture = Picture["icon:/tiny/stop"] Then
       Row = grdfluid.Row
-      res = modDatabase.$myConn.Edit("tblnurdosing", "fldid=&1 and fldencounterval=&2", grdfluiddata[grdfluiddata.Row, 0].Text, $encid)
-      res["fldtotime"] = Now()
-      res["xyz"] = False
-      res.Update
+      ' res = modDatabase.$myConn.Edit("tblnurdosing", "fldid=&1 and fldencounterval=&2", grdfluiddata[grdfluiddata.Row, 0].Text, $encid)
+      ' res["fldtotime"] = Now()
+      ' res["xyz"] = False
+      ' res.Update
+      hForm = New FmStopInfusion($encid, grdfluiddata[grdfluiddata.Row, 0].Text, grdfluiddata[grdfluiddata.Row, 1].Text)
+      hForm.ShowModal
       FillFluidGridView(grdfluiddata[grdfluiddata.Row, 7].Text)
       ShowMedFluids()
       grdfluid.Row = Row

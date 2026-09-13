@@ -20,50 +20,53 @@
     }
   }
   { Panel1 Panel
-    MoveScaled(0,0,110,4)
+    MoveScaled(0,0,112,4)
     { cmbstatus ComboBox
       MoveScaled(1,0.5,18,3)
     }
     { btndispown Button
-      MoveScaled(102,0.5,7,3)
+      MoveScaled(104,0.5,7,3)
       ToolTip = ("Create Medicine Order")
       Picture = Picture["icon:/small/apply"]
     }
     { btnrepeat Button
-      MoveScaled(60,0.5,7,3)
+      MoveScaled(56,0.5,7,3)
       ToolTip = ("Repeat Selected regimen from new starting date")
       Picture = Picture["icon:/small/repeat"]
     }
     { btngroup Button
-      MoveScaled(67,0.5,5,3)
+      MoveScaled(63,0.5,5,3)
       ToolTip = ("Select Medicine Protocol")
       Picture = Picture["icon:/small/insert-link"]
     }
     { btnnewdose Button
-      MoveScaled(42,0.5,9,3)
+      MoveScaled(38,0.5,9,3)
       Text = ("New")
     }
     { chknextplan CheckBox
-      MoveScaled(27,0.5,12,3)
+      MoveScaled(26,0.5,12,3)
       Text = ("Next Visit")
     }
     { btncpoe Button
-      MoveScaled(51,0.5,9,3)
+      MoveScaled(47,0.5,9,3)
       Text = ("CPOE")
     }
     { cmbdisctype ComboBox
-      MoveScaled(82,0.5,19,3)
+      MoveScaled(84,0.5,19,3)
     }
     { btnshow ToolButton
       MoveScaled(19,0.5,4,3)
       Picture = Picture["icon:/small/refresh"]
     }
     { chkselall CheckBox
-      MoveScaled(75,0.5,3,3)
+      MoveScaled(80,0.5,3,3)
+    }
+    { chknofluid CheckBox
+      MoveScaled(69,0.5,3,3)
     }
   }
   { pnldosing Panel
-    MoveScaled(-1,4,111,11)
+    MoveScaled(-1,4,113,11)
     Visible = False
     Border = Border.Plain
     { txtstart ValueBox
@@ -81,25 +84,25 @@
         Sorted = True
       }
       { txtdose ValueBox
-        MoveScaled(62,0,8,3)
+        MoveScaled(62.5,0,8,3)
         ToolTip = ("Unit Dose of the Medicine")
       }
       { cmbfreq ComboBox
-        MoveScaled(75,0,11,3)
+        MoveScaled(76,0,11,3)
         ToolTip = ("Frequency of Use")
       }
       { txtday ValueBox
-        MoveScaled(86,0,6,3)
+        MoveScaled(87,0,6,3)
         ToolTip = ("Duration of Use")
       }
       { lbldose Label
-        MoveScaled(70,0,5,3)
+        MoveScaled(71,0,5,3)
         Border = Border.Plain
         Text = ("mg")
       }
     }
     { txtqty ValueBox
-      MoveScaled(105,4,5,3)
+      MoveScaled(105.5,4,6,3)
       Background = &HDFDFDF
       ToolTip = ("Quantity of item ordered")
     }
@@ -111,11 +114,11 @@
       Picture = Picture["icon:/small/add"]
     }
     { btnreview Button
-      MoveScaled(103,0.5,3,3)
+      MoveScaled(104,0.5,3,3)
       Picture = Picture["icon:/small/important"]
     }
     { btnshowdrug Button
-      MoveScaled(99,0.5,3,3)
+      MoveScaled(100,0.5,3,3)
       Picture = Picture["icon:/small/text"]
     }
     { Label6 Label
@@ -142,7 +145,7 @@
       Text = ("Direction")
     }
     { btnaireview Button
-      MoveScaled(107,0.5,3,3)
+      MoveScaled(108,0.5,3,3)
       Picture = Picture["icon:/small/book"]
     }
     { Panel2 Panel
