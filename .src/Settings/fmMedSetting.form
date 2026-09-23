@@ -527,7 +527,7 @@
     Index = 5
     Text = ("Report")
     { Frame1 Frame
-      MoveScaled(1,0,44,40)
+      MoveScaled(1,0,44,42)
       Text = ("Clinical")
       Alignment = Align.Left
       { cmbquantchart ComboBox
@@ -626,6 +626,18 @@
       }
       { btnvarnull ToolButton
         MoveScaled(39,31,3,3)
+        Picture = Picture["icon:/small/apply"]
+      }
+      { Label59 Label
+        MoveScaled(1,35,23,3)
+        Border = Border.Plain
+        Text = ("ICD Diagnosis Format")
+      }
+      { cmbdiagnocode ComboBox
+        MoveScaled(25,35,13,3)
+      }
+      { btndiagnocode ToolButton
+        MoveScaled(39,35,3,3)
         Picture = Picture["icon:/small/apply"]
       }
     }

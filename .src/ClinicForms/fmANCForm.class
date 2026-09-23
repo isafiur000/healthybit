@@ -85,7 +85,7 @@ Public Sub Form_Open()
   $SyndroType = modNonMedical.GetFixedInvType(modPatient.ShowDiscountCategEnc($encid))
   GetPatientOutComeVal()
   hPtForm = New FmClinHistory($PatientNum, "PatientID", pnlhistory)
-  xallrg = modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
+  xallrg = modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value, False)
   If modBasic.$LockDiagnosisList = "No" Then
   Else
     If modBasic.$ProvDiagnosisObstetrics = "Custom Text" Then
@@ -1822,7 +1822,7 @@ Public Sub btndismanual_Click()
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, xx, "Other", "Other")
       Endif
     Endif
-    xallrg = modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
+    xallrg = modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value, False)
   Endif
 
 End
@@ -1842,7 +1842,7 @@ Public Sub tbnsyndro_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, sName[0], sName[1], sName[1])
-        xallrg = modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value, False)
       Endif
     Endif
   Endif
@@ -1867,7 +1867,7 @@ Public Sub tbndisease_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", $encid, sName[0], sName[1], sName[2])
-        xallrg = modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value, False)
       Endif
     Endif
   Endif
@@ -1878,6 +1878,6 @@ Public Sub chkalldiagno_Click()
 
   Dim xallrg As Boolean
 
-  xallrg = modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value)
+  xallrg = modPatientGeneral.SetPatientFindingTree($encid, lsticdisease, chkalldiagno.Value, False)
 
 End

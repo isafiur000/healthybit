@@ -5913,14 +5913,18 @@ Public Sub mnuimisclaim_Click()
 
 End
 
-Private Sub AutoClaimProcedure(sType As String[])
+Private Sub AutoClaimProcedure(sType As String[], sMulti As Boolean)
 
   Dim sClaim As String
   Dim hForm As FmScanForm
   Dim hForm1 As FmCreateReport
   Dim hForm2 As FmUploadReport
 
-  AutoClaimIMIS(cmbdisctype.Text, sType)
+  If sMulti = True Then
+    AutoMultiClaimIMIS(cmbdisctype.Text, sType)
+  Else
+    AutoClaimIMIS(cmbdisctype.Text, sType)
+  Endif
   If modBasic.$RegistCreateHIClaim = "Disable" Then
     sClaim = txtreference.Text
   Else
@@ -5960,19 +5964,26 @@ Private Sub UploadHIClaimAuto()
   If modBasic.$IMISAutoClaim = "Consultation" Then
     If modClaim.GetHIClaimState(txtreference.Text) = "Consultation" Then
       If cmbdisctype.Text = modBasic.$HIPackage Or If cmbdisctype.Text = modBasic.$HIPackageER Then
-        AutoClaimProcedure(["Consultation"])
+        AutoClaimProcedure(["Consultation"], False)
+      Endif
+    Endif
+
+  Else If modBasic.$IMISAutoClaim = "MultiConsultation" Then
+    If modClaim.GetHIClaimState(txtreference.Text) = "Consultation" Then
+      If cmbdisctype.Text = modBasic.$HIPackage Or If cmbdisctype.Text = modBasic.$HIPackageER Then
+        AutoClaimProcedure(["Consultation"], True)
       Endif
     Endif
 
   Else If modBasic.$IMISAutoClaim = "Emergency" Then
     If modClaim.GetHIClaimState(txtreference.Text) = "Emergency" Then
       If cmbdisctype.Text = modBasic.$HIPackageER Then
-        AutoClaimProcedure(["Emergency"])
+        AutoClaimProcedure(["Emergency"], False)
       Endif
     Endif
 
   Else If modBasic.$IMISAutoClaim = "Both" Then
-    AutoClaimProcedure(["Consultation", "Emergency"])
+    AutoClaimProcedure(["Consultation", "Emergency"], False)
 
   Endif
 
@@ -6069,6 +6080,107 @@ Private Sub AutoClaimIMIS(sPackage As String, TypeList As String[])
 
       If xdiagno Then
         sql = "select " & xfldList.Join(",") & " from tblpatbilling where fldencounterval=&1 and fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&2 and fldbilltype like &3 and fldchequeno=&4 and fldchequeno in(select fldclaimid from tblclaimcode where fldtime>=&5 and fldtime<=&6 and fldstatus like &7)) and fldclaimstate IS NULL GROUP BY flditemname HAVING SUM(flditemqty)>&8"
+        res1 = modDatabase.$syConn.Exec(sql, Trim(txtencid.Text), xacc, "Credit", txtreference.Text, modDate.StartSqlDate(Now()), modDate.EndSqlDate(Now()), sType, 0)
+        If res1.Available Then
+
+          xSNo = New Variant[]
+          ySNo = New Variant[]
+          For Each res1
+            aCode = ""
+            aCode = modClaimAPI.GetBillingItemAbbvName(res1["flditemcode"])
+            If aCode Then
+              If res1["flditemqty"] Then
+                sColl = New Collection
+                sColl.Add(aCode, "code")
+                sColl.Add(res1["flditemname"], "item")
+                sColl.Add(res1["flditemrate"], "rate")
+                sColl.Add(res1["flditemqty"], "qty")
+                sColl.Add(res1["fldditemamt"], "total")
+                sColl.Add(res1["fldid"], "index")
+                sColl.Add(res1["flditemtype"], "type")
+                sColl.Add("tblpatbilling", "table")
+                If regLst.Exist(aCode) Then
+                  ySNo.Add(sColl)
+                Else
+                  xSNo.Add(sColl)
+                Endif
+              Endif
+            Endif
+          Next
+
+          If ySNo.Count Then
+            hForm1 = New CimisAPIClaim($xNHISCode, Trim(txtencid.Text), txtreference.Text, True, btnaddcomment.Tag)
+            hForm1.AddBilling(ySNo)
+            xout1 = hForm1.UploadClaim()
+            xmsg1 = modClaimAPI.GetClaimOutRecording(ySNo, xout1, "tblpatbilling")
+          Endif
+          If xSNo.Count Then
+            If xdiagno = "Diagnosis" Then
+              hForm = New CimisAPIClaim($xNHISCode, Trim(txtencid.Text), txtreference.Text, False, btnaddcomment.Tag)
+              hForm.AddBilling(xSNo)
+              xout = hForm.UploadClaim()
+              xmsg = modClaimAPI.GetClaimOutRecording(xSNo, xout, "tblpatbilling")
+            Endif
+          Endif
+
+        Endif
+      Endif  ''diagnosis
+
+    Endif  ''Ledger
+  Next   ''category
+  Dec Application.Busy
+
+End
+
+''MultiConsultation (sum)
+Private Sub AutoMultiClaimIMIS(sPackage As String, TypeList As String[])
+
+  Dim sType As String
+  Dim xfldList As String[]
+  Dim xacc As String
+  Dim rex As Result
+  Dim sql As String
+  Dim res1 As Result
+
+  Dim aCode As String
+  Dim sColl As Collection
+  Dim xSNo As Variant[]
+  Dim hForm As CimisAPIClaim
+  Dim xout As String
+  Dim xmsg As String
+
+  Dim ySNo As Variant[]
+  Dim hForm1 As CimisAPIClaim
+  Dim xout1 As String
+  Dim xmsg1 As String
+
+  Dim xdiagno As String
+  Dim regLst As String[] = ["EMRT", "OPD4", "ER01", "OPD01"]
+
+  Inc Application.Busy
+  xfldList = ["flditemname", "CONCAT(flditemtype,'|', flditemname) as flditemcode", "flditemname", "AVG(flditemrate) as flditemrate", "SUM(flditemqty) as flditemqty", "SUM(fldditemamt) as fldditemamt", "GROUP_CONCAT(DISTINCT fldid) as fldid", "flditemtype"]
+  For Each sType In TypeList
+    xacc = ""
+    xacc = modNonMedical.GetLedgerFromDiscount(sPackage)
+    If xacc Then
+      If modBasic.$IMISICDForm = "ICD10" Then
+        rex = modDatabase.$myConn.Exec("select fldcode,flduserid from tblpatfindings where fldencounterval=&1 and (fldtype=&2 or fldtype=&3) and fldsave=&4 and fldcodeid<>&5 and fldcodeid<>&6 and flduserid in(select flduserid from tbluser where fldusercode like &7)", Trim(txtencid.Text), "Provisional Diagnosis", "Final Diagnosis", True, "Obstetrics", "Other", "%")
+      Else
+        rex = modDatabase.$myConn.Exec("select fldcode,flduserid from tblpatfindings where fldencounterval=&1 and (fldtype=&2 or fldtype=&3) and fldsave=&4 and fldcodenew<>&5 and fldcodenew<>&6 and flduserid in(select flduserid from tbluser where fldusercode like &7)", Trim(txtencid.Text), "Provisional Diagnosis", "Final Diagnosis", True, "Obstetrics", "Other", "%")
+      Endif
+      If rex.Available Then
+        rex.MoveLast
+        If rex["fldcode"] And If rex["flduserid"] Then
+          xdiagno = "Diagnosis"
+        Else
+          xdiagno = ""
+        Endif
+      Else
+        xdiagno = "No Diagnosis"
+      Endif  ''diagnosis
+
+      If xdiagno Then
+        sql = "select " & xfldList.Join(",") & " from tblpatbilling where fldencounterval=&1 and fldbillno in(select fldbillno from tblpatbilldetail where fldbankname=&2 and fldbilltype like &3 and fldchequeno=&4 and fldchequeno in(select fldclaimid from tblclaimcode where fldtime>=&5 and fldtime<=&6 and fldstatus like &7)) GROUP BY flditemname HAVING SUM(flditemqty)>&8"
         res1 = modDatabase.$syConn.Exec(sql, Trim(txtencid.Text), xacc, "Credit", txtreference.Text, modDate.StartSqlDate(Now()), modDate.EndSqlDate(Now()), sType, 0)
         If res1.Available Then
 

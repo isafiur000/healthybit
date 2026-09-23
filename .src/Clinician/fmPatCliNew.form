@@ -635,16 +635,14 @@
       { Panel16 Panel
         MoveScaled(62,0,14,16)
         { btndismanual Button
-          MoveScaled(0,0,13.5,3)
+          MoveScaled(10,5,4,3)
           ToolTip = ("Write Provisional Diagnosis")
-          Text = ("Diagnosis")
           Picture = Picture["icon:/small/add"]
         }
         { tbnsyndro Button
-          MoveScaled(0,4,13.5,3)
+          MoveScaled(0,5,10,3)
           ToolTip = ("Select Provisional Diagnosis")
           Text = ("Diagnosis")
-          Picture = Picture["icon:/small/add"]
         }
         { tbndisease Button
           MoveScaled(0,8,13.5,3)
@@ -653,19 +651,29 @@
           Picture = Picture["icon:/small/add"]
         }
         { btnallergymanual ToolButton
-          MoveScaled(8,12,3,3)
+          MoveScaled(8,12.5,3,3)
           ToolTip = ("Select Allergic Drugs")
           Picture = Picture["icon:/small/add"]
         }
         { tlbtndelallergy ToolButton
-          MoveScaled(11,12,3,3)
+          MoveScaled(11,12.5,3,3)
           ToolTip = ("Delete Allergic Drug")
           Picture = Picture["icon:/small/cancel"]
         }
         { btnallergy Button
-          MoveScaled(0,12,7.75,3)
+          MoveScaled(0,12.5,7.75,3)
           ToolTip = ("Select Allergic Drugs")
-          Text = ("Alrg")
+          Text = ("Allergy")
+        }
+        { chkdifdiag CheckBox
+          MoveScaled(0.5,0.5,9,3)
+          ToolTip = ("Differential Diagnosis")
+          Text = ("Differ")
+        }
+        { btndiffdiagno Button
+          MoveScaled(9.5,0.5,4,3)
+          Visible = False
+          ToolTip = ("Add Differential Diagnosis")
           Picture = Picture["icon:/small/add"]
         }
       }

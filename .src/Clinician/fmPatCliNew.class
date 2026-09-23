@@ -540,7 +540,7 @@ Private Sub BasicInfoPatient()
     ShowSymptomData()
     ShowEssentialExamRange()
     ShowEssentialExam()
-    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
     If xallrg = True Then
       lblallergy.Text = "ALLERGY"
     Else
@@ -1011,6 +1011,7 @@ Private Sub ButtonControl()
   btntriage.Enabled = xx
   mnustructured.Enabled = xx
   ''diagnosis
+  btndiffdiagno.Enabled = xx
   tlbtndeldises.Enabled = xx
   btndismanual.Enabled = xx
   tbnsyndro.Enabled = xx
@@ -1116,6 +1117,31 @@ Public Sub mnupatlock_Click()
 
 End
 
+''----------------------------------- differential -----------------------------
+Public Sub chkdifdiag_Click()
+
+  Dim xallrg As Boolean
+
+  btndiffdiagno.Visible = chkdifdiag.Value
+  xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
+
+End
+
+Public Sub btndiffdiagno_Click()
+
+  Dim xx As String
+  Dim xallrg As Boolean
+
+  If txtencid.Text Then
+    xx = InputBox(("Enter custom Differential Diagnosis"), ("Differential Diagnosis"), "")
+    If xx Then
+      modPatientGeneral.AddPatientFindings("Differential Diagnosis", Trim(txtencid.Text), xx, "Other", "Other", txtbedno.Text)
+      xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
+    Endif
+  Endif
+
+End
+
 ''--------------------------------------------- icd disease --------------------------------------------------
 Public Sub tlbtndeldises_Click()
 
@@ -1132,7 +1158,7 @@ Public Sub tlbtndeldises_Click()
           res.Update
           Balloon.Delete(("Information deleted"), tlbtndeldises)
           Balloon.Delay = modBasic.$BalloonDelay
-          xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+          xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
         Endif
       Endif
     Endif
@@ -1158,7 +1184,7 @@ Public Sub tbndisease_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2], txtbedno.Text)
-        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
       Endif
     Endif
   Endif
@@ -1193,7 +1219,7 @@ Public Sub tbnsyndro_Click()
           Endif
         Endif
 
-        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
       Endif
     Endif
   Endif
@@ -1218,7 +1244,7 @@ Public Sub btndismanual_Click()
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), xx, "Other", "Other", txtbedno.Text)
       Endif
     Endif
-    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
   Endif
 
 End
@@ -1234,7 +1260,7 @@ Public Sub btncopydiagnosis_Click()
     Else
       If Message.Question("Do you want to copy " & lsticdisease.Current.Text, ("No"), ("OK")) = 2 Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), asx[2], asx[1], "", txtbedno.Text)
-        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
       Endif
     Endif
   Endif
@@ -1268,7 +1294,7 @@ Public Sub tbnfinaldisease_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1], txtbedno.Text)
-        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
       Endif
     Endif
   Endif
@@ -1299,7 +1325,7 @@ Public Sub btnfinalsyndro_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2], txtbedno.Text)
-        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
       Endif
     Endif
   Endif
@@ -1324,7 +1350,7 @@ Public Sub btnfinalcustom_Click()
         modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), xx, "Other", "Other", txtbedno.Text)
       Endif
     Endif
-    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
   Endif
 
 End
@@ -1333,7 +1359,7 @@ Public Sub chkalldiagno_Click()
 
   Dim xallrg As Boolean
 
-  xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+  xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
   btncopydiagnosis.Visible = chkalldiagno.Value
   If xallrg = True Then
     lblallergy.Text = "ALLERGY"
@@ -1359,7 +1385,7 @@ Public Sub tlbtndelallergy_Click()
           res.Update
           Balloon.Delete(("Information deleted"), tlbtndelallergy)
           Balloon.Delay = modBasic.$BalloonDelay
-          xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+          xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
           If xallrg = True Then
             lblallergy.Text = "ALLERGY"
           Else
@@ -1381,7 +1407,7 @@ Public Sub btnallergymanual_Click()
     xx = InputBox(("Enter Other Allergy"), ("Drug Allergy"), "")
     If xx Then
       modPatientGeneral.AddPatientFindings("Allergic Drugs", Trim(txtencid.Text), xx, "", "", txtbedno.Text)
-      xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+      xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
       If xallrg = True Then
         lblallergy.Text = "ALLERGY"
       Else
@@ -1409,7 +1435,7 @@ Public Sub btnallergy_Click()
         modPatientGeneral.AddPatientFindings("Allergic Drugs", Trim(txtencid.Text), sText, "", "", txtbedno.Text)
       Next
     Endif
-    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
     If xallrg = True Then
       lblallergy.Text = "ALLERGY"
     Else

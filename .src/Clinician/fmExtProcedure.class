@@ -80,7 +80,7 @@ Public Sub BasicInfoPatient()
     GetDefaultBillingmodes()
     ButtonControl()
     modPatientSub.PopUpPatientForm(Trim(txtencid.Text), Me.Tag)
-    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+    xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, False)
     ShowAddedProctable()
     ShowSymptomData()
     TableView1.SetFocus
@@ -1038,7 +1038,7 @@ Public Sub tlbtndeldises_Click()
           res.Update
           Balloon.Delete(("Information deleted"), tlbtndeldises)
           Balloon.Delay = modBasic.$BalloonDelay
-          xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+          xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, False)
         Endif
       Endif
     Endif
@@ -1055,7 +1055,7 @@ Public Sub btndismanual_Click()
     xx = InputBox(("Enter custom Provisional Diagnosis"), ("Provisional Diagnosis"), "")
     If xx Then
       modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), xx, "Other", "Other")
-      xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+      xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, False)
     Endif
   Endif
 
@@ -1076,7 +1076,7 @@ Public Sub tbnsyndro_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1])
-        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, False)
       Endif
     Endif
   Endif
@@ -1101,7 +1101,7 @@ Public Sub tbndisease_Click()
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2])
-        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value)
+        xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, False)
       Endif
     Endif
   Endif

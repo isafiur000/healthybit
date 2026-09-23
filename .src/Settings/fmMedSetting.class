@@ -56,6 +56,7 @@ Public Sub Form_Open()
   cmbclinscale.List = ["Summary", "GroupWise"]
   cmbvisithistory.List = ["All Visits", "Last Visit"]
   cmbvarnull.List = ["Enable", "Disable"]
+  cmbdiagnocode.List = ["ICD Code", "Diagnosis", "Code+Diagnosis"]
 
   cmbmedlabel.List = ["Brand", "Generic", "Both"]
   cmbmedicineday.List = ["Yes", "No"]
@@ -628,6 +629,7 @@ Private Sub ShowFormatReport()
   cmbclinscale.Text = modSettings.ShowSettingFromFIle("ClinicalReport/ScaleValue_Format")
   cmbvisithistory.Text = modSettings.ShowSettingFromFIle("ClinicalReport/HistorySource")
   cmbvarnull.Text = modSettings.ShowSettingFromFIle("ClinicalReport/NullValueVariable")
+  cmbdiagnocode.Text = modSettings.ShowSettingFromFIle("ClinicalReport/ICDDiagnosisFormat")
 
 End
 
@@ -672,6 +674,15 @@ Public Sub btnvarnull_Click()
   modSettings.SaveSettingsToFile("ClinicalReport/NullValueVariable", cmbvarnull.Text)
   modBasic.$ShowNullVariable = cmbvarnull.Text
   Balloon.Info(("Information saved"), btnvarnull)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btndiagnocode_Click()
+
+  modSettings.SaveSettingsToFile("ClinicalReport/ICDDiagnosisFormat", cmbdiagnocode.Text)
+  modBasic.$DiagnosisICDFormat = cmbdiagnocode.Text
+  Balloon.Info(("Information saved"), btndiagnocode)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

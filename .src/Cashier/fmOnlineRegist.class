@@ -963,3 +963,22 @@ Public Sub mnuarchive_Click()
   Endif
 
 End
+
+Public Sub mnupload_Click()
+
+  Dim res As Result
+  Dim hForm As FmHIReports
+
+  If GridView1.Rows.Selection.Count Then
+    If GridView1[GridView1.Row, 11].Text Then
+      res = modDatabase.$myConn.Exec("select fldchequeno,fldbankname from tblpatbilldetail where fldencounterval=&1 and fldbillno=&2", GridView1[GridView1.Row, 10].Text, GridView1[GridView1.Row, 11].Text)
+      If res.Available Then
+        If res["fldchequeno"] Then
+          hForm = New FmHIReports(GridView1[GridView1.Row, 10].Text, res["fldchequeno"], res["fldbankname"], "Current")
+          hForm.ShowModal
+        Endif
+      Endif
+    Endif
+  Endif
+
+End

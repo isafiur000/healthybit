@@ -545,10 +545,10 @@ Private Sub EnterDosingRecord()
           Endif
         Endif
         If txprescriber And If txpresno Then
-          modPharmSub.InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, txprescriber, txpresno, dtstarting.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), txtdosecount.Value, 0, xcurVal, cmbadminsite.Text, Trim(cmbdilution.Text), txtivrate.Value, txtdiluvolume.Value)                     '
+          modPharmSub.InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, txprescriber, txpresno, dtstarting.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), txtdosecount.Value, 0, xcurVal, "", cmbadminsite.Text, Trim(cmbdilution.Text), txtivrate.Value, txtdiluvolume.Value)                     '
         Endif
       Else
-        modPharmSub.InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, "", "", dtstarting.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), txtdosecount.Value, 0, xcurVal, cmbadminsite.Text, Trim(cmbdilution.Text), txtivrate.Value, txtdiluvolume.Value)                     '
+        modPharmSub.InsertDosingMedicine($encid, $xBillType, $sBillMode, $DiscPackage, $LedgerAC, cmbroute.Text, cmbmedicine.Text, txtdose.Value, cmbfreq.Text, txtday.Value, txtqty.Value, $status, "", "", dtstarting.Value, xtax, xdisc, xfixname, xfixrate, "Request", $Dept, Trim(txtdirection.Text), txtdosecount.Value, 0, xcurVal, "", cmbadminsite.Text, Trim(cmbdilution.Text), txtivrate.Value, txtdiluvolume.Value)                     '
       Endif
       ClearAllControl()
     Endif

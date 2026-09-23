@@ -430,7 +430,7 @@ Public Sub btnaddorder_Click()
 
   For Row = 0 To ListView1.Rows.Count - 1
     If ListView1[Row, 1].Picture = Picture["icons/checked.png"] Then
-      res = modDatabase.$myConn.Exec("select fldid,fldroute,flditem,flddose,fldfreq,flddays,fldqtyorder,fldprescriber,fldregno,flddirection,fldadminsite,fldmixing,fldstarttime,fldendtime,fldmixvolume,fldmixrate from tblinpatdosing where fldencounterval=&1 and fldid=&2 and fldcurval=&3 and fldsave=&4", ListView1[Row, 6].Text, ListView1[Row, 0].Text, "Continue", False)                 ''
+      res = modDatabase.$myConn.Exec("select fldid,fldroute,flditem,flddose,fldfreq,flddays,fldqtyorder,fldprescriber,fldregno,flddirection,fldadminsite,fldmixing,fldstarttime,fldendtime,fldmixvolume,fldmixrate,fldcomment from tblinpatdosing where fldencounterval=&1 and fldid=&2 and fldcurval=&3 and fldsave=&4", ListView1[Row, 6].Text, ListView1[Row, 0].Text, "Continue", False)                 ''
       If res.Available Then
 
         If res["fldmixvolume"] Then
@@ -470,7 +470,7 @@ Public Sub btnaddorder_Click()
             itemmode = xBillMode
             xtax = modNonMedical.ShowTaxValues(itemtype, res["flditem"])
             xdisc = modNonMedical.DiscPercentForCategoryValue($encid, cmbnewscheme.Text, itemtype, res["flditem"], itemmode)
-            modPharmSub.InsertDosingMedicine($encid, xBillType, xBillMode, cmbnewscheme.Text, xLedgerAC, res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtyorder"], txtstatus.Text, res["fldprescriber"], res["fldregno"], Now(), xtax, xdisc, xfixname, xfixrate, "Request", "IPD", res["flddirection"], 0, res["fldid"], "Continue", res["fldadminsite"], res["fldmixing"], xflrate, xflvool)
+            modPharmSub.InsertDosingMedicine($encid, xBillType, xBillMode, cmbnewscheme.Text, xLedgerAC, res["fldroute"], res["flditem"], res["flddose"], res["fldfreq"], res["flddays"], res["fldqtyorder"], txtstatus.Text, res["fldprescriber"], res["fldregno"], Now(), xtax, xdisc, xfixname, xfixrate, "Request", "IPD", res["flddirection"], 0, res["fldid"], "Continue", res["fldcomment"], res["fldadminsite"], res["fldmixing"], xflrate, xflvool)
           Endif
         Endif
 
@@ -508,7 +508,7 @@ Private Function ExecuteQuery(encid As String) As Result
   Else
     xsql = db.Subst(" and fldencounterval in(select fldencounterval from tblencounter where fldcurrlocat in(select fldbed from tbldepartmentbed where flddept like &1))", cmbdepart.Text)
   Endif
-  res = modDatabase.$myConn.Exec("select fldid,fldtime_order,fldroute,flditem,fldqtydisp,flddose,fldfreq,flddays,fldlabel,flddirection,fldcomp_order,fldencounterval,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit,flditemno from tblpatdosing where fldencounterval=&1 and fldlevel=&2 and flditemtype like &3 and fldcurval=&4 and fldqtydisp>&5 and fldstatus=&6 and fldsave_order=&7" & xrestr & xsql, encid, "Requested", "%", "Continue", 0, "Admitted", False)
+  res = modDatabase.$myConn.Exec("select fldid,fldtime_order,fldroute,flditem,fldqtydisp,flddose,fldfreq,flddays,fldlabel,flddirection,fldcomp_order,fldencounterval,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit,flditemno,fldcomment from tblpatdosing where fldencounterval=&1 and fldlevel=&2 and flditemtype like &3 and fldcurval=&4 and fldqtydisp>&5 and fldstatus=&6 and fldsave_order=&7" & xrestr & xsql, encid, "Requested", "%", "Continue", 0, "Admitted", False)
 
   Return res
 
@@ -553,6 +553,7 @@ Private Sub FillDispenstable(encid As String)
     .Columns[20].Width = 1
     .Columns[21].Width = 1
     .Columns[22].Width = 1 ''cardex no
+    .Columns[23].Width = 150 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "DateTime"
     .Columns[2].Text = "Route"
@@ -565,6 +566,7 @@ Private Sub FillDispenstable(encid As String)
     Endif
     .Columns[9].Text = "Direction"
     .Columns[18].Text = "Scheme"
+    .Columns[23].Text = "Comment"
   End With
 
 End
@@ -1161,9 +1163,9 @@ Private Sub ShowDispensedToday(encid As String)
   Endif
 
   If chkalldate.Value = True Then
-    $rData3 = modDatabase.$myConn.Exec("select fldid,fldtime,fldroute,flditem,fldqtydisp,flddose,fldfreq,flddays,fldlabel,flddirection,fldcomp,fldencounterval,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit,flddispmode from tblpatdosing where fldencounterval=&1 and fldlevel=&2 and flditemtype like &3 and fldcurval=&4 and fldqtydisp>&5 and fldstatus=&6 and fldsave_order=&7" & xstr, encid, "Dispensed", "%", "Continue", 0, "Admitted", True)                     ''
+    $rData3 = modDatabase.$myConn.Exec("select fldid,fldtime,fldroute,flditem,fldqtydisp,flddose,fldfreq,flddays,fldlabel,flddirection,fldcomp,fldencounterval,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit,flddispmode,fldcomment from tblpatdosing where fldencounterval=&1 and fldlevel=&2 and flditemtype like &3 and fldcurval=&4 and fldqtydisp>&5 and fldstatus=&6 and fldsave_order=&7" & xstr, encid, "Dispensed", "%", "Continue", 0, "Admitted", True)                     ''
   Else
-    $rData3 = modDatabase.$myConn.Exec("select fldid,fldtime,fldroute,flditem,fldqtydisp,flddose,fldfreq,flddays,fldlabel,flddirection,fldcomp,fldencounterval,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit,flddispmode from tblpatdosing where fldencounterval=&1 and fldlevel=&2 and flditemtype like &3 and fldcurval=&4 and fldqtydisp>&5 and fldstatus=&6 and fldsave_order=&7 and fldtime>=&8 and fldtime<=&9" & xstr, encid, "Dispensed", "%", "Continue", 0, "Admitted", True, modDate.StartSqlDate(dtdisp.Value), modDate.EndSqlDate(dtdisp.Value))                     ''
+    $rData3 = modDatabase.$myConn.Exec("select fldid,fldtime,fldroute,flditem,fldqtydisp,flddose,fldfreq,flddays,fldlabel,flddirection,fldcomp,fldencounterval,flditemtype,fldfixname,fldfixrate,fldtaxper,flddiscper,fldbillingmode,flddisctype,fldacledger,fldbilltype,fldcashincredit,flddispmode,fldcomment from tblpatdosing where fldencounterval=&1 and fldlevel=&2 and flditemtype like &3 and fldcurval=&4 and fldqtydisp>&5 and fldstatus=&6 and fldsave_order=&7 and fldtime>=&8 and fldtime<=&9" & xstr, encid, "Dispensed", "%", "Continue", 0, "Admitted", True, modDate.StartSqlDate(dtdisp.Value), modDate.EndSqlDate(dtdisp.Value))                     ''
   Endif
   $aMyFields3 = New String[]
   modGridView.ReadSmallData(GridView3, $rData3, $aMyFields3)
@@ -1200,6 +1202,7 @@ Private Sub ShowDispensedToday(encid As String)
     .Columns[20].Width = 1
     .Columns[21].Width = 1
     .Columns[22].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[23].Width = 150 * modBasic.$AppWidthRatio
 
     .Columns[1].Text = "DateTime"
     .Columns[2].Text = "Route"
@@ -1214,6 +1217,7 @@ Private Sub ShowDispensedToday(encid As String)
     .Columns[10].Text = "Location"
     .Columns[18].Text = "Scheme"
     .Columns[22].Text = "Mode"
+    .Columns[23].Text = "Comment"
   End With
 
 End

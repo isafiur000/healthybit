@@ -14,6 +14,9 @@
     { mnuwebcam Menu
       Text = ("Camera")
     }
+    { mnuarchive Menu
+      Text = ("Re-Archive")
+    }
   }
   { mnudoreport Menu
     Text = ("Activity")
@@ -154,21 +157,33 @@
     { Panel5 Panel
       MoveScaled(0,25,104,4)
       { chkblnwht CheckBox
-        MoveScaled(23,0.625,19,3)
+        MoveScaled(47,0.5,19,3)
         Text = ("Black-in-White")
       }
       { btnview Button
-        MoveScaled(51,0.625,12,3)
+        MoveScaled(69,0.5,12,3)
         Text = ("View")
         Picture = Picture["icon:/small/view-preview"]
       }
       { chkmergedocs CheckBox
-        MoveScaled(0.625,0.625,19,3)
+        MoveScaled(27,0.5,19,3)
         Text = ("Merge Selected")
       }
       { chkclaim CheckBox
-        MoveScaled(84,0.625,15,3)
+        MoveScaled(88,0.5,15,3)
         Text = ("Linked Only")
+      }
+      { Panel7 Panel
+        MoveScaled(0,0.5,25,3)
+        { rbcurrent RadioButton
+          MoveScaled(0,0,11,3)
+          Text = ("Current")
+          Value = True
+        }
+        { rbpast RadioButton
+          MoveScaled(12,0,12,3)
+          Text = ("Previous")
+        }
       }
     }
     { Panel6 Panel

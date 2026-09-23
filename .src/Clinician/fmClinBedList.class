@@ -12,6 +12,7 @@ Private $ColCount As Integer
 Private $newColumn As String[]
 Private $iconColumn As String[]
 Private $RepoStr As String
+Private $GridVarData As Collection
 
 Public Sub Form_Open()
 
@@ -362,85 +363,91 @@ Private Function GetGridViewValue(Column As Integer, xVariable As Variant) As Va
   Dim xxx As Variant
   Dim i As Integer
 
-  If Column = 5 Then
-    xxx = modPatient.GetPatientNameByEnc(xVariable, modDatabase.$syConn) & "<br>" & "<small>" & modPatient.ShowDiscountCategEnc(xVariable) & "</small>"
-  Else If Column = 6 Then
-    If cmbdept.Text = "Free Beds" Then
-      xxx = xVariable
-    Else
-      xxx = modPatient.GetPatientAgeString(xVariable, Now()) & modString.HTMLBlankSpace(1) & modPatient.GetPatientSex(xVariable, modDatabase.$syConn) & "<br>" & "<small>" & modReportVar.GetDateTimeReport(modPatient.GetAdmissionDate(xVariable), gb.GeneralDate) & "</small>"                           ''
-    Endif
-  Else If Column = 8 Then
-    xxx = modPatient.PatientDiagnoCurrentList(xVariable).Join(gb.NewLine)
-  Else If Column = 9 Then
-    If chkshowdepart.Value = True Then
-      xxx = modGeneral.GetUserFullName(modPatient.GetAttendingConsultant(xVariable))
-    Else
-      xxx = ""
-    Endif
-  Else If Column = 10 Then
-    If chkshowdepart.Value = True Then
-      xxx = GetPatientIndexing(xVariable)
-    Else
-      xxx = ""
-    Endif
-
-  Else If Column = 11 Then
-    If chkshowstatus.Value = True Then
-      xxx = GetClinStatusIcon(modClinSub.GetMedicineClinStaus(xVariable))
-    Else
-      xxx = ""
-    Endif
-  Else If Column = 12 Then
-    If chkshowstatus.Value = True Then
-      xxx = GetClinStatusIcon(modClinSub.GetLabClinStaus(xVariable))
-    Else
-      xxx = ""
-    Endif
-  Else If Column = 13 Then
-    If chkshowstatus.Value = True Then
-      xxx = GetClinStatusIcon(modClinSub.GetRadioClinStaus(xVariable))
-    Else
-      xxx = ""
-    Endif
-  Else If Column = 14 Then
-    If chkshowstatus.Value = True Then
-      xxx = GetClinStatusIcon(modClinSub.GetEquipClinStaus(xVariable))
-    Else
-      xxx = ""
-    Endif
-  Else If Column = 15 Then
-    If chkshowstatus.Value = True Then
-      xxx = GetClinStatusIcon(modClinSub.GetFluidsClinStaus(xVariable))
-    Else
-      xxx = ""
-    Endif
-  Else If Column = 16 Then
-    If chkshowstatus.Value = True Then
-      xxx = GetClinStatusIcon(modClinSub.GetDeviceClinStaus(xVariable))
-    Else
-      xxx = ""
-    Endif
-
+  If $GridVarData.Exist(CStr(Column) & "|" & xVariable) Then
+    xxx = $GridVarData[CStr(Column) & "|" & xVariable]
   Else
-    xxx = xVariable
-  Endif
 
-  If $newColumn.Count Then
-    For i = 0 To $newColumn.Count - 1
-      If Column = $ColCount + i Then
-        xxx = modCustPatient.NewColValue(Me.Tag, $newColumn[i], xVariable)
-        If xxx = "$green.svg" Then
-          xxx = "icons/false.svg"
-        Else If xxx = "$red.svg" Then
-          xxx = "icons/true.svg"
-        Else If xxx = "$none.svg" Then
-          xxx = "icons/null.svg"
-        Else If xxx = "$null.svg" Then
-          xxx = ""
-        Endif
+    If Column = 5 Then
+      xxx = modPatient.GetPatientNameByEnc(xVariable, modDatabase.$syConn) & "<br>" & "<small>" & modPatient.ShowDiscountCategEnc(xVariable) & "</small>"
+    Else If Column = 6 Then
+      If cmbdept.Text = "Free Beds" Then
+        xxx = xVariable
+      Else
+        xxx = modPatient.GetPatientAgeString(xVariable, Now()) & modString.HTMLBlankSpace(1) & modPatient.GetPatientSex(xVariable, modDatabase.$syConn) & "<br>" & "<small>" & modReportVar.GetDateTimeReport(modPatient.GetAdmissionDate(xVariable), gb.GeneralDate) & "</small>"                           ''
       Endif
-    Next
+    Else If Column = 8 Then
+      xxx = modPatient.PatientDiagnoCurrentList(xVariable).Join(gb.NewLine)
+    Else If Column = 9 Then
+      If chkshowdepart.Value = True Then
+        xxx = modGeneral.GetUserFullName(modPatient.GetAttendingConsultant(xVariable))
+      Else
+        xxx = ""
+      Endif
+    Else If Column = 10 Then
+      If chkshowdepart.Value = True Then
+        xxx = GetPatientIndexing(xVariable)
+      Else
+        xxx = ""
+      Endif
+
+    Else If Column = 11 Then
+      If chkshowstatus.Value = True Then
+        xxx = GetClinStatusIcon(modClinSub.GetMedicineClinStaus(xVariable))
+      Else
+        xxx = ""
+      Endif
+    Else If Column = 12 Then
+      If chkshowstatus.Value = True Then
+        xxx = GetClinStatusIcon(modClinSub.GetLabClinStaus(xVariable))
+      Else
+        xxx = ""
+      Endif
+    Else If Column = 13 Then
+      If chkshowstatus.Value = True Then
+        xxx = GetClinStatusIcon(modClinSub.GetRadioClinStaus(xVariable))
+      Else
+        xxx = ""
+      Endif
+    Else If Column = 14 Then
+      If chkshowstatus.Value = True Then
+        xxx = GetClinStatusIcon(modClinSub.GetEquipClinStaus(xVariable))
+      Else
+        xxx = ""
+      Endif
+    Else If Column = 15 Then
+      If chkshowstatus.Value = True Then
+        xxx = GetClinStatusIcon(modClinSub.GetFluidsClinStaus(xVariable))
+      Else
+        xxx = ""
+      Endif
+    Else If Column = 16 Then
+      If chkshowstatus.Value = True Then
+        xxx = GetClinStatusIcon(modClinSub.GetDeviceClinStaus(xVariable))
+      Else
+        xxx = ""
+      Endif
+
+    Else
+      xxx = xVariable
+    Endif
+
+    If $newColumn.Count Then
+      For i = 0 To $newColumn.Count - 1
+        If Column = $ColCount + i Then
+          xxx = modCustPatient.NewColValue(Me.Tag, $newColumn[i], xVariable)
+          If xxx = "$green.svg" Then
+            xxx = "icons/false.svg"
+          Else If xxx = "$red.svg" Then
+            xxx = "icons/true.svg"
+          Else If xxx = "$none.svg" Then
+            xxx = "icons/null.svg"
+          Else If xxx = "$null.svg" Then
+            xxx = ""
+          Endif
+        Endif
+      Next
+    Endif
+    $GridVarData.Add(xxx, CStr(Column) & "|" & xVariable)
   Endif
 
   Return xxx
@@ -471,6 +478,7 @@ Private Sub FillBedGrid()
 
   Dim xFldList As String[]
 
+  $GridVarData = New Collection
   xFldList = GetSQLColumns()
   $rData = ExecuteQuery(xFldList)
   ResizeGrid()

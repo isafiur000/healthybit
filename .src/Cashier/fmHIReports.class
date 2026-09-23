@@ -1,11 +1,13 @@
 ' Gambas class file
 
-Private $encid As String
+Private $curencid As String
+Private $pastencid As String
 Private $sClaim As String
 Private $sAccount As String
 Private $sYear As String
 Private $sType As String
 
+Private $encid As String
 Private $rData As Result
 Private $aMyFields As String[]
 Private $rData1 As Result
@@ -20,7 +22,7 @@ Private $hPDF As PdfDocument
 
 Public Sub _new(encid As String, sClaim As String, sAccount As String, sYear As String)
 
-  $encid = encid
+  $curencid = encid
   $sClaim = sClaim
   $sAccount = sAccount
   $sYear = sYear
@@ -29,18 +31,19 @@ End
 
 Public Sub Form_Open()
 
-  Dim xStatus As String
-
   $sType = modNonMedical.GetFixedReferenceFromLedger($sAccount)
-  xStatus = modPatient.CurrentAdmissionStatus($encid)
-  Select xStatus
-    Case "Registered", "Admitted"
-      mnudischarge.Visible = False
-      mnudischupload.Visible = False
-    Case Else
-      mnudischarge.Visible = True
-      mnudischupload.Visible = True
-  End Select
+  $pastencid = modPatient.GetSecondLastEncidPatient($curencid)
+  rbcurrent.Value = True
+  $encid = $curencid
+  SetPatStatus()
+
+  ''invoices
+  cmbsourcinv.List = ["Invoice", "Receipt", "Both"]
+  cmbsourcinv.Text = "Both"
+  chkmergeinv.Value = True
+  rbpendinginv.Value = True
+  LoadTableNames1()
+  ShowInvoices()
 
   ''reports
   mnucreate.Menu = "mnudocs"
@@ -52,13 +55,21 @@ Public Sub Form_Open()
   LoadTableNames()
   ShowDocuments()
 
-  ''invoices
-  cmbsourcinv.List = ["Invoice", "Receipt", "Both"]
-  cmbsourcinv.Text = "Both"
-  chkmergeinv.Value = True
-  rbpendinginv.Value = True
-  LoadTableNames1()
-  ShowInvoices()
+End
+
+Private Sub SetPatStatus()
+
+  Dim xStatus As String
+
+  xStatus = modPatient.CurrentAdmissionStatus($encid)
+  Select xStatus
+    Case "Registered", "Admitted"
+      mnudischarge.Visible = False
+      mnudischupload.Visible = False
+    Case Else
+      mnudischarge.Visible = True
+      mnudischupload.Visible = True
+  End Select
 
 End
 
@@ -137,6 +148,22 @@ End
 Public Sub cmbfiscal_Click()
 
   LoadTableNames()
+
+End
+
+Public Sub rbcurrent_Click()
+
+  $encid = $curencid
+  SetPatStatus()
+  ShowDocuments()
+
+End
+
+Public Sub rbpast_Click()
+
+  $encid = $pastencid
+  SetPatStatus()
+  ShowDocuments()
 
 End
 
@@ -1049,5 +1076,33 @@ Private Function GetReceiptData(sBillNo As String) As String
   Endif
 
   Return xPath
+
+End
+
+Public Sub mnuarchive_Click()
+
+  Dim rs As Result
+  Dim hField As ResultField
+  Dim res As Result
+
+  If GridView1.Rows.Selection.Count Then
+    If $encid = $pastencid Then
+      rs = modDatabase.$myConn.Exec("select *from " & $tblpatreport & " where fldid=&1", GridView1[GridView1.Row, 0].Text)
+      res = modDatabase.$myConn.Create("tblpatreport")
+      For Each hField In rs.Fields
+        If hField.Name = "fldencounterval" Then
+          res[hField.Name] = $curencid
+        Else If hField.Name = "fldflag" Then
+          res[hField.Name] = False
+        Else If hField.Name = "fldhashcode" Then
+          res[hField.Name] = $sAccount & "|" & $sClaim
+        Else
+          res[hField.Name] = rs[hField.Name]
+        Endif
+      Next
+      res.Update
+      Message.Info("Document re-archived", "OK")
+    Endif
+  Endif
 
 End
