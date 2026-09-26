@@ -4041,7 +4041,7 @@ Public Sub btnscreendraw_Click()
     If xxx Then
       sPath = xxx[0]
       If sPath Then
-        xval = modImage.SaveClinicScreenDraw(Trim(txtencid.Text), xxx[1], sPath)
+        xval = modImage.SaveClinicScreenDraw("IMAGE", Trim(txtencid.Text), xxx[1], sPath)
       Endif
     Endif
   Endif

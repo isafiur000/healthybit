@@ -4016,7 +4016,7 @@ Private Sub GetReviewMultiMessage(sType As String)
 End
 
 ''--------------- with one stock No
-Private Sub PhmInsertDosingEntryStock(encid As String, sBilType As String, billingMode As String, DiscMode As String, sLedger As String, txtroute As String, txtitem As String, txtdose As Float, txtfreq As String, txtday As Float, txtqty As Float, PatStatus As String, txtprescriber As String, txtregno As String, startDay As Integer, taxper As Float, discper As Float, fixitem As String, fixrate As Float, OrderType As String, DeptID As String, sDirection As String, sParent As Long)                 ''
+Private Sub PhmInsertDosingEntryStock(encid As String, sBilType As String, billingMode As String, DiscMode As String, sLedger As String, txtroute As String, txtitem As String, txtdoses As Float, txtfreq As String, txtdays As Float, txtqtys As Float, PatStatus As String, txtprescriber As String, txtregno As String, startDay As Integer, taxper As Float, discper As Float, fixitem As String, fixrate As Float, OrderType As String, DeptID As String, sDirection As String, sParent As Long)                 ''
 
   Dim res As Result
   Dim order As String
@@ -4052,10 +4052,10 @@ Private Sub PhmInsertDosingEntryStock(encid As String, sBilType As String, billi
   res["flditemtype"] = "Medicines"
   res["fldroute"] = txtroute
   res["flditem"] = txtitem
-  res["flddose"] = txtdose
+  res["flddose"] = txtdoses
   res["fldfreq"] = txtfreq
-  res["flddays"] = txtday
-  res["fldqtydisp"] = txtqty
+  res["flddays"] = txtdays
+  res["fldqtydisp"] = txtqtys
   res["fldqtyret"] = 0
   res["fldprescriber"] = txtprescriber
   res["fldregno"] = txtregno
@@ -4106,7 +4106,7 @@ Private Sub PhmInsertDosingEntryStock(encid As String, sBilType As String, billi
 
 End
 
-Private Sub PhmInsertNonMedDosingEntryStock(sCategory As String, encid As String, sBilType As String, billingMode As String, DiscMode As String, sLedger As String, txtroute As String, txtitem As String, txtqty As Float, PatStatus As String, startDay As Integer, taxper As Float, discper As Float, fixitem As String, fixrate As Float, OrderType As String, DeptID As String, sDirection As String, sParent As Long)
+Private Sub PhmInsertNonMedDosingEntryStock(sCategory As String, encid As String, sBilType As String, billingMode As String, DiscMode As String, sLedger As String, txtroute As String, txtitem As String, txtqtys As Float, PatStatus As String, startDay As Integer, taxper As Float, discper As Float, fixitem As String, fixrate As Float, OrderType As String, DeptID As String, sDirection As String, sParent As Long)
 
   Dim res As Result
   Dim order As String
@@ -4145,7 +4145,7 @@ Private Sub PhmInsertNonMedDosingEntryStock(sCategory As String, encid As String
   res["flddose"] = 0
   res["fldfreq"] = ""
   res["flddays"] = 0
-  res["fldqtydisp"] = txtqty
+  res["fldqtydisp"] = txtqtys
   res["fldqtyret"] = 0
   res["fldprescriber"] = ""
   res["fldregno"] = ""

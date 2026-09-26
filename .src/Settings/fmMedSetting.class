@@ -52,7 +52,6 @@ Public Sub Form_Open()
   cmbshowday.List = ["Date", "User", "Date+User", "None"]
   cmbdiagnoday.List = ["Date", "User", "Date+User", "None"]
   cmbquantchart.List = ["Chart", "FitsrVal", "LastVal", "First-LastVal", "AllValues"]
-  cmbqualival.List = ["FitsrVal", "LastVal", "First-LastVal", "AllValues"]
   cmbclinscale.List = ["Summary", "GroupWise"]
   cmbvisithistory.List = ["All Visits", "Last Visit"]
   cmbvarnull.List = ["Enable", "Disable"]
@@ -624,8 +623,7 @@ Private Sub ShowFormatReport()
   cmbshowday.Text = modSettings.ShowSettingFromFIle("ClinicalReport/ShowDay_Report")
   cmbdiagnoday.Text = modSettings.ShowSettingFromFIle("ClinicalReport/ShowDiagnosticDay_Report")
 
-  cmbquantchart.Text = modSettings.ShowSettingFromFIle("ClinicalReport/QuantiValue_Format")
-  cmbqualival.Text = modSettings.ShowSettingFromFIle("ClinicalReport/QualiValue_Format")
+  cmbquantchart.Text = modSettings.ShowSettingFromFIle("ClinicalReport/DiagnoValue_Format")
   cmbclinscale.Text = modSettings.ShowSettingFromFIle("ClinicalReport/ScaleValue_Format")
   cmbvisithistory.Text = modSettings.ShowSettingFromFIle("ClinicalReport/HistorySource")
   cmbvarnull.Text = modSettings.ShowSettingFromFIle("ClinicalReport/NullValueVariable")
@@ -635,18 +633,9 @@ End
 
 Public Sub btnquantchart_Click()
 
-  modSettings.SaveSettingsToFile("ClinicalReport/QuantiValue_Format", cmbquantchart.Text)
-  modBasic.$ShowQuantiMedReport = cmbquantchart.Text
+  modSettings.SaveSettingsToFile("ClinicalReport/DiagnoValue_Format", cmbquantchart.Text)
+  modBasic.$ShowDiagnosticReport = cmbquantchart.Text
   Balloon.Info(("Information saved"), btnquantchart)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btnqualival_Click()
-
-  modSettings.SaveSettingsToFile("ClinicalReport/QualiValue_Format", cmbqualival.Text)
-  modBasic.$ShowQualiMedReport = cmbqualival.Text
-  Balloon.Info(("Information saved"), btnqualival)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

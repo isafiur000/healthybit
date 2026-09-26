@@ -3,6 +3,7 @@
 Private $patId As String
 Private $sType As String
 Private $hView As Object
+Private $gender As String
 
 Private $xFinList As String[]
 Private $PatNum As String
@@ -22,7 +23,17 @@ Public Sub _new(patId As String, sType As String)
 
   $xFinList = GetSelectedItemList()
   If Not $xFinList.Count Then
-    $xFinList = modMedicine.GetAttachReportVariables()
+    If $sType = "PatientID" Then
+      $gender = modPatient.PatientGenderByPatNo($patId)
+    Else If $sType = "Encounter" Then
+      $gender = modPatient.GetPatientSex($patId)
+    Endif
+
+    If $gender = "Female" Then
+      $xFinList = modMedicine.GetAttachReportVariables(True)
+    Else
+      $xFinList = modMedicine.GetAttachReportVariables(False)
+    Endif
   Endif
 
 End
@@ -111,7 +122,11 @@ End
 
 Public Sub chkselect_Click()
 
-  $xFinList = modMedicine.GetAttachReportVariables()
+  If $gender = "Female" Then
+    $xFinList = modMedicine.GetAttachReportVariables(True)
+  Else
+    $xFinList = modMedicine.GetAttachReportVariables(False)
+  Endif
   AddListBiewContent($xFinList)
 
 End
