@@ -47,6 +47,7 @@ Public Sub Form_Open()
   cmbhistoryform.List = ["Dual", "Detail"]
   cmbdoseadmin.List = ["Enable", "Disable"]
   cmbdosedirect.List = ["Enable", "Disable"]
+  cmbmedpres.List = ["Pharmacy", "Cardex"]
 
   cmbbodyformat.List = ["Tabular", "Paragraph"]
   cmbshowday.List = ["Date", "User", "Date+User", "None"]
@@ -444,6 +445,9 @@ Private Sub ClinGeneralSetting()
   cmbgrouplab.Text = modSettings.ShowSettingFromFIle("ClinicForms/TestGrouping")
   cmbgroupradio.Text = modSettings.ShowSettingFromFIle("ClinicForms/RadioGroupings")
   cmbabnormexam.Text = modSettings.ShowSettingFromFIle("ClinicForms/FlagAbnormalExam")
+  cmbvardays.Text = modSettings.ShowSettingFromFIle("ClinicForms/IPDVariableDays")
+  cmbmedexpiry.Text = modSettings.ShowSettingFromFIle("ClinicForms/DrugOrderExpiry")
+  cmbclinreport.Text = modSettings.ShowSettingFromFIle("ClinicForms/DefaultReport")
 
 End
 
@@ -501,6 +505,33 @@ Public Sub btnabnormexam_Click()
 
 End
 
+Public Sub btnvardays_Click()
+
+  modSettings.SaveSettingsToFile("ClinicForms/IPDVariableDays", cmbvardays.Text)
+  modBasic.$ClinIPDVarDays = cmbvardays.Text
+  Balloon.Info(("Information saved"), btnvardays)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnmedexpiry_Click()
+
+  modSettings.SaveSettingsToFile("ClinicForms/DrugOrderExpiry", cmbmedexpiry.Text)
+  modBasic.$ClinMedOrderExpiry = cmbmedexpiry.Text
+  Balloon.Info(("Information saved"), btnmedexpiry)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnclinreport_Click()
+
+  modSettings.SaveSettingsToFile("ClinicForms/DefaultReport", cmbclinreport.Text)
+  modBasic.$ClinDefaultReport = cmbclinreport.Text
+  Balloon.Info(("Information saved"), btnclinreport)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
 ''------------------- Clinic forms -----------------------------
 Private Sub ClinFormsSetting()
 
@@ -508,13 +539,11 @@ Private Sub ClinFormsSetting()
   cmbgrpward.Text = modSettings.ShowSettingFromFIle("ClinicForms/GroupStructuredExams")
   cmbslider.Text = modSettings.ShowSettingFromFIle("ClinicForms/EnableSliderValue")
   cmbicdformat.Text = modSettings.ShowSettingFromFIle("ClinicForms/ICDEntryFormat")
-  cmbclinreport.Text = modSettings.ShowSettingFromFIle("ClinicForms/DefaultReport")
-  cmbvardays.Text = modSettings.ShowSettingFromFIle("ClinicForms/IPDVariableDays")
-  cmbmedexpiry.Text = modSettings.ShowSettingFromFIle("ClinicForms/DrugOrderExpiry")
   cmbprogchart.Text = modSettings.ShowSettingFromFIle("ClinicForms/ProgressNotes_Chart")
   cmbhistoryform.Text = modSettings.ShowSettingFromFIle("ClinicForms/HistoryInputForm")
   cmbdoseadmin.Text = modSettings.ShowSettingFromFIle("ClinicForms/DoseAdminComment")
   cmbdosedirect.Text = modSettings.ShowSettingFromFIle("ClinicForms/DoseDirection")
+  cmbmedpres.Text = modSettings.ShowSettingFromFIle("ClinicForms/MedicineOrder")
 
 End
 
@@ -553,33 +582,6 @@ Public Sub btnicdformat_Click()
 
 End
 
-Public Sub btnclinreport_Click()
-
-  modSettings.SaveSettingsToFile("ClinicForms/DefaultReport", cmbclinreport.Text)
-  modBasic.$ClinDefaultReport = cmbclinreport.Text
-  Balloon.Info(("Information saved"), btnclinreport)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btnvardays_Click()
-
-  modSettings.SaveSettingsToFile("ClinicForms/IPDVariableDays", cmbvardays.Text)
-  modBasic.$ClinIPDVarDays = cmbvardays.Text
-  Balloon.Info(("Information saved"), btnvardays)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
-Public Sub btnmedexpiry_Click()
-
-  modSettings.SaveSettingsToFile("ClinicForms/DrugOrderExpiry", cmbmedexpiry.Text)
-  modBasic.$ClinMedOrderExpiry = cmbmedexpiry.Text
-  Balloon.Info(("Information saved"), btnmedexpiry)
-  Balloon.Delay = modBasic.$BalloonDelay
-
-End
-
 Public Sub btnprogchart_Click()
 
   modSettings.SaveSettingsToFile("ClinicForms/ProgressNotes_Chart", cmbprogchart.Text)
@@ -612,6 +614,15 @@ Public Sub btndosedirect_Click()
   modSettings.SaveSettingsToFile("ClinicForms/DoseDirection", cmbdosedirect.Text)
   modBasic.$ClinAdminDirection = cmbdosedirect.Text
   Balloon.Info(("Information saved"), btndosedirect)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnmedpres_Click()
+
+  modSettings.SaveSettingsToFile("ClinicForms/MedicineOrder", cmbmedpres.Text)
+  modBasic.$ClinMedicineOrder = cmbmedpres.Text
+  Balloon.Info(("Information saved"), btnmedpres)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

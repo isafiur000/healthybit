@@ -1151,16 +1151,26 @@ End
 Public Sub btnpharm_Click()
 
   Dim hForm12 As FmMedOrder
+  Dim hForm2 As FmCardex
 
   If GridView1.Rows.Selection.Count Then
-    If modNonMedical.AllowEntryWithDeposit(GridView1[GridView1.Row, 2].Text, "Pharmacy") = True Then
-      If modBasic.$MedRequestForm = "Separate" Then
-      Else
+    If $sTable = "tblconsult" Then
+      If modNonMedical.AllowEntryWithDeposit(GridView1[GridView1.Row, 2].Text, "Pharmacy") = True Then
         hForm12 = New FmMedOrder(GridView1[GridView1.Row, 2].Text, "Registered", modNonMedical.DefaultBillingScheme(GridView1[GridView1.Row, 2].Text, modBasic.$compID))
         hForm12.ShowModal
       Endif
-      SHowPatIndicators(GridView1[GridView1.Row, 2].Text)
+    Else If $sTable = "tblopvisit" Then
+      If modBasic.$ClinMedicineOrder = "Cardex" Then
+        hForm2 = New FmCardex(GridView1[GridView1.Row, 2].Text, "Registered", modNonMedical.DefaultBillingScheme(GridView1[GridView1.Row, 2].Text, modBasic.$compID))
+        hForm2.ShowModal
+      Else
+        If modNonMedical.AllowEntryWithDeposit(GridView1[GridView1.Row, 2].Text, "Pharmacy") = True Then
+          hForm12 = New FmMedOrder(GridView1[GridView1.Row, 2].Text, "Registered", modNonMedical.DefaultBillingScheme(GridView1[GridView1.Row, 2].Text, modBasic.$compID))
+          hForm12.ShowModal
+        Endif
+      Endif
     Endif
+    SHowPatIndicators(GridView1[GridView1.Row, 2].Text)
   Endif
 
 End

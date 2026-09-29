@@ -2237,7 +2237,6 @@ Public Sub GridView1_Click()
   Dim allowDisc As Boolean
   Dim allowRate As Boolean
 
-  Dim res1 As Result
   Dim xpack As String
   Dim xcshCrd As Float
   Dim pckList As String[]
@@ -2365,27 +2364,8 @@ Public Sub GridView1_Click()
         Endif
         xpack = InputCombo("Select Package", Trim(txtencid.Text), pckList, GridView1[GridView1.Row, 16].Text, True)
         If xpack Then
-          res1 = modDatabase.$myConn.Exec("select fldbillingmode,fldacledger,fldreference,fldbilltype from tbldiscount where fldtype=&1", xpack)
-          If res1.Available Then
-            res = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1", GridView1[GridView1.Row, 0].Text)
-            res["flddisctype"] = xpack
-            If res1["fldbilltype"] Then
-              res["fldbilltype"] = res1["fldbilltype"]
-            Endif
-            If res1["fldbillingmode"] Then
-              res["fldbillingmode"] = res1["fldbillingmode"]
-            Endif
-            If res1["fldacledger"] Then
-              res["fldacledger"] = res1["fldacledger"]
-            Endif
-            If res1["fldbilltype"] = "Cash" Then
-              res["fldcashincredit"] = 0
-            Else
-              res["fldcashincredit"] = modNonMedical.CashInCreditPerForCategory(xpack, res["flditemtype"], res["flditemname"], res1["fldbillingmode"])
-            Endif
-            res.Update
-            ShowNewEntry()
-          Endif
+          modBillings.AlterServiceScheme(GridView1[GridView1.Row, 0].Text, xpack)
+          ShowNewEntry()
         Endif
 
       Endif
@@ -2496,8 +2476,6 @@ End
 
 Public Sub mnupackageall_Click()
 
-  Dim res As Result
-  Dim res1 As Result
   Dim xpack As String
   Dim Row As Integer
   Dim pckList As String[]
@@ -2513,29 +2491,10 @@ Public Sub mnupackageall_Click()
       Endif
       xpack = InputCombo("Select Package", Trim(txtencid.Text), pckList, "", True)
       If xpack Then
-        res1 = modDatabase.$myConn.Exec("select fldbillingmode,fldacledger,fldreference,fldbilltype from tbldiscount where fldtype=&1", xpack)
-        If res1.Available Then
-          For Row = 0 To GridView1.Rows.Count - 1
-            res = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1", GridView1[Row, 0].Text)
-            res["flddisctype"] = xpack
-            If res1["fldbilltype"] Then
-              res["fldbilltype"] = res1["fldbilltype"]
-            Endif
-            If res1["fldbillingmode"] Then
-              res["fldbillingmode"] = res1["fldbillingmode"]
-            Endif
-            If res1["fldacledger"] Then
-              res["fldacledger"] = res1["fldacledger"]
-            Endif
-            If res1["fldbilltype"] = "Cash" Then
-              res["fldcashincredit"] = 0
-            Else
-              res["fldcashincredit"] = modNonMedical.CashInCreditPerForCategory(xpack, res["flditemtype"], res["flditemname"], res1["fldbillingmode"])
-            Endif
-            res.Update
-          Next
-          ShowNewEntry()
-        Endif
+        For Row = 0 To GridView1.Rows.Count - 1
+          modBillings.AlterServiceScheme(GridView1[Row, 0].Text, xpack)
+        Next
+        ShowNewEntry()
       Endif
 
     Endif
@@ -3171,8 +3130,6 @@ End
 
 Public Sub mnueditcashcredit_Click()
 
-  Dim res As Result
-  Dim res1 As Result
   Dim xpack As String
 
   Dim col As Integer
@@ -3191,27 +3148,8 @@ Public Sub mnueditcashcredit_Click()
             xpack = InputCombo("Select Package", Trim(txtencid.Text), modBasic.$BillDiscountCash, GridView2[GridView2.Row, 15].Text, True)
           Endif
           If xpack Then
-            res1 = modDatabase.$myConn.Exec("select fldbillingmode,fldacledger,fldreference,fldbilltype from tbldiscount where fldtype=&1", xpack)
-            If res1.Available Then
-              res = modDatabase.$myConn.Edit("tblpatbilling", "fldid=&1", GridView2[GridView2.Row, 0].Text)
-              res["flddisctype"] = xpack
-              If res1["fldbilltype"] Then
-                res["fldbilltype"] = res1["fldbilltype"]
-              Endif
-              If res1["fldbillingmode"] Then
-                res["fldbillingmode"] = res1["fldbillingmode"]
-              Endif
-              If res1["fldacledger"] Then
-                res["fldacledger"] = res1["fldacledger"]
-              Endif
-              If res1["fldbilltype"] = "Cash" Then
-                res["fldcashincredit"] = 0
-              Else
-                res["fldcashincredit"] = modNonMedical.CashInCreditPerForCategory(xpack, res["flditemtype"], res["flditemname"], res1["fldbillingmode"])
-              Endif
-              res.Update
-              ShowOldEntry()
-            Endif
+            modBillings.AlterServiceScheme(GridView2[GridView2.Row, 0].Text, xpack)
+            ShowOldEntry()
           Endif
 
         Endif

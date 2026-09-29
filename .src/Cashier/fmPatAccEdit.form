@@ -21,13 +21,8 @@
     Border = Border.Plain
     Text = ("Encounter ID")
   }
-  { Label7 Label
-    MoveScaled(45,1,6,3)
-    Border = Border.Plain
-    Text = ("Name")
-  }
   { txtpatientname TextBox
-    MoveScaled(51,1,37,3)
+    MoveScaled(47,1,41,3)
     Font = Font["Bold"]
     ReadOnly = True
   }
@@ -52,10 +47,10 @@
     Sorted = True
   }
   { txtcredit ValueBox
-    MoveScaled(15,17,16.625,3)
+    MoveScaled(15,17,13,3)
   }
   { txtcharity ValueBox
-    MoveScaled(15,21,16.625,3)
+    MoveScaled(15,21,13,3)
   }
   { dtvalid DateBox
     MoveScaled(15,25,16.625,3)
@@ -164,5 +159,9 @@
     MoveScaled(36,5,3,3)
     Visible = False
     Picture = Picture["icon:/small/apply"]
+  }
+  { btnaddcredit ToolButton
+    MoveScaled(29,17,3,3)
+    Picture = Picture["icon:/small/add"]
   }
 }

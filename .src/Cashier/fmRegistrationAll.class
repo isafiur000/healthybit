@@ -550,6 +550,9 @@ Private Sub SaveRegistrationData()
             res["xyz"] = False
             res.Update()
           Endif
+          If txtcredit.Value Or If txtcharity.Value Then
+            modBillings.AddCreditLimits(modDatabase.$myConn, txtencounter.Text, cmbdisctype.Text, $ValidExpiry, txtcredit.Value, txtcharity.Value)
+          Endif
           If chkconsult.Value = True Then
             If chkbilling.Value = True Then
               modBillings.GetAutoBillingEntry(txtencounter.Text, cmbdisctype.Text, "Service", cmbbilling.Text, 1, "Done", 0, True, False, btnconsult.Tag)

@@ -8,6 +8,7 @@ Public Sub Form_Open()
 
   cmbarsource.List = ["Image", "Video", "Hardware"]
   cmbartext.List = ["Yes", "No"]
+  cmbbase64img.List = ["Yes", "No"]
   cmbarformat.List = BarCodeFormats()
   xList = modApplication.GetWebCamDevList()
   If xList.count Then
@@ -423,6 +424,8 @@ Private Sub ShowBarcodeSetting()
     txtbarmargin.Value = CInt(modSettings.ShowSettingFromFIle("BarCodeFormat/MarginWidth"))
   Endif
 
+  cmbbase64img.Text = modSettings.ShowSettingFromFIle("BarCodeFormat/UseBase64Image")
+
 End
 
 Public Sub btnbarformat_Click()
@@ -502,6 +505,15 @@ Public Sub btnbarmargin_Click()
   modSettings.SaveSettingsToFile("BarCodeFormat/MarginWidth", CStr(txtbarmargin.Value))
   modBasic.$BarCodeMarginWidth = txtbarmargin.Value
   Balloon.Info(("Information saved"), btnbarmargin)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnbase64img_Click()
+
+  modSettings.SaveSettingsToFile("BarCodeFormat/UseBase64Image", cmbbase64img.Text)
+  modBasic.$BarCodeBase64Img = cmbbase64img.Text
+  Balloon.Info(("Information updated"), btnbase64img)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

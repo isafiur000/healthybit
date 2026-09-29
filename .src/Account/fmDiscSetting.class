@@ -156,7 +156,7 @@ Public Sub btnOKdisc_Click()
 
     res["fldonline"] = cmbonline.Text
     res["fldbookday"] = txtbookdays.Value
-    res["fldbookclose"] = dtbooktime.Value
+    res["fldbookbefore"] = txtbookclose.Value
 
     res["fldlab"] = 0
     res["fldradio"] = 0
@@ -225,7 +225,7 @@ Public Sub btnedit_Click()
 
     res["fldonline"] = cmbonline.Text
     res["fldbookday"] = txtbookdays.Value
-    res["fldbookclose"] = dtbooktime.Value
+    res["fldbookbefore"] = txtbookclose.Value
 
     res["flduserid"] = modBasic.$lbluser
     res["fldtime"] = Now()
@@ -273,7 +273,7 @@ Public Sub GridView1_Click()
 
   Dim res As Result
 
-  res = modDatabase.$myConn.Exec("select fldtype,fldmode,fldacledger,fldbilltype,fldamount,fldcredit,fldpercent,fldlimit,fldbillingmode,fldacledger,fldreference,fldyear,fldinvoice,fldreserved,fldcashincredit,fldforce,fldqtylimit,fldqtylimitday,fldfixdepart,fldlockstate,fldonline,fldoffspring,fldbankaccount,fldbookday,fldbookclose,fldcostlevel,fldtaxsource from tbldiscount where fldtype=&1", GridView1[GridView1.Row, 0].Text)
+  res = modDatabase.$myConn.Exec("select fldtype,fldmode,fldacledger,fldbilltype,fldamount,fldcredit,fldpercent,fldlimit,fldbillingmode,fldacledger,fldreference,fldyear,fldinvoice,fldreserved,fldcashincredit,fldforce,fldqtylimit,fldqtylimitday,fldfixdepart,fldlockstate,fldonline,fldoffspring,fldbankaccount,fldbookday,fldbookbefore,fldcostlevel,fldtaxsource from tbldiscount where fldtype=&1", GridView1[GridView1.Row, 0].Text)
   If res.Available Then
     txtdiscper.Enabled = True
     txtdisctyp.Text = res["fldtype"]
@@ -316,7 +316,11 @@ Public Sub GridView1_Click()
     Else
       txtbookdays.Value = 0
     Endif
-    dtbooktime.Value = res["fldbookclose"]
+    If res["fldbookbefore"] Then
+      txtbookclose.Value = res["fldbookbefore"]
+    Else
+      txtbookclose.Value = 0
+    Endif
   Endif
 
 End
@@ -424,7 +428,7 @@ Public Sub btnschemeall_Click()
   $BillingReport.UserData.Add(modReportVar.GetDateTimeReport(Now(), gb.GeneralDate), "PARAM2")
 
   For Row = 0 To GridView1.Rows.Count - 1
-    res = modDatabase.$myConn.Exec("select fldtype,fldmode,fldacledger,fldbilltype,fldamount,fldcredit,fldpercent,fldlimit,fldbillingmode,fldacledger,fldreference,fldyear,fldinvoice,fldreserved,fldcashincredit,fldforce,fldqtylimit,fldqtylimitday,fldoffspring,fldfixdepart,fldlockstate,fldcostlevel,fldtaxsource,fldonline,fldbookday,fldbookclose,fldlab,fldradio,fldproc,fldequip,fldservice,fldother,fldmedicine,fldsurgical,fldextra,fldregist,fldcrdlab,fldcrdradio,fldcrdproc,fldcrdequip,fldcrdservice,fldcrdother,fldcrdmedicine,fldcrdsurgical,fldcrdextra from tbldiscount where fldtype=&1", GridView1[Row, 0].Text)
+    res = modDatabase.$myConn.Exec("select fldtype,fldmode,fldacledger,fldbilltype,fldamount,fldcredit,fldpercent,fldlimit,fldbillingmode,fldacledger,fldreference,fldyear,fldinvoice,fldreserved,fldcashincredit,fldforce,fldqtylimit,fldqtylimitday,fldoffspring,fldfixdepart,fldlockstate,fldcostlevel,fldtaxsource,fldonline,fldbookday,fldbookbefore,fldlab,fldradio,fldproc,fldequip,fldservice,fldother,fldmedicine,fldsurgical,fldextra,fldregist,fldcrdlab,fldcrdradio,fldcrdproc,fldcrdequip,fldcrdservice,fldcrdother,fldcrdmedicine,fldcrdsurgical,fldcrdextra from tbldiscount where fldtype=&1", GridView1[Row, 0].Text)
     If res.Available Then
       $BillingReport.AddSection(res["fldtype"], True)
 
@@ -524,7 +528,7 @@ Public Sub btnschemeall_Click()
 
       AddSettingReport("Online Billing", cmbonline.Tooltip, cmbonline.List.Join("; "), res["fldonline"])
       AddSettingReport("Booking Days", txtbookdays.Tooltip, "", CStr(res["fldbookday"]))
-      AddSettingReport("Booking Closure", dtbooktime.Tooltip, "", modReportVar.GetDateTimeReport(res["fldbookclose"], gb.MediumTime))
+      AddSettingReport("Booking Closure", txtbookclose.Tooltip, "", res["fldbookbefore"])
 
       xprohList = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select flditemname as col from tbllockedservice where flddisctype=&1", res["fldtype"]))
       If xprohList And If xprohList.Count Then

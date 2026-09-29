@@ -1,0 +1,51 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,108,64)
+  Tag = "Service Mapping"
+  Text = ("Service Mapping")
+  Resizable = False
+  { mnuhide Menu
+    { mnudelete Menu
+      Text = ("Delete")
+    }
+  }
+  { Label1 Label
+    MoveScaled(1,1,12,3)
+    Border = Border.Plain
+    Text = ("Category")
+  }
+  { cmbcategory ComboBox
+    MoveScaled(14,1,23,3)
+  }
+  { cmbplanA ComboBox
+    MoveScaled(1,6,23,3)
+  }
+  { cmbplanB ComboBox
+    MoveScaled(52,6,23,3)
+  }
+  { GridView1 GridView
+    MoveScaled(1,14,106,49)
+    Mode = Select.Single
+    Header = GridView.Both
+    AutoResize = False
+  }
+  { btnshow Button
+    MoveScaled(38,1,6,3)
+    Picture = Picture["icon:/small/refresh"]
+  }
+  { Panel1 Panel
+    MoveScaled(0,10,107,4)
+    { cmbitemA ComboBox
+      MoveScaled(1,0,47,3)
+    }
+    { cmbItemB ComboBox
+      MoveScaled(52,0,47,3)
+    }
+    { btnadd Button
+      MoveScaled(100,0,6,3)
+      Tag = "Auto"
+      Picture = Picture["icon:/small/add"]
+    }
+  }
+}
