@@ -66,9 +66,9 @@ Private Sub ShowMedFluids()
   Next
 
   If $useCardex = True Then
-    xFields = ["fldid", "fldid", "CONCAT(flditem, '|', COALESCE(fldmixing, ''))", "CONCAT(flditem, '|', flddose)", "fldfreq", "flddays", "fldstarttime", "fldcurval", "fldstarttime", "fldcurval", "fldendtime", "flddirection", "fldadminsite", "fldmixing", "fldroute", "flditem", "fldmixvolume", "fldmixrate", "flddose"]
+    xFields = ["fldid", "fldid", "CONCAT(flditem, '|', COALESCE(fldmixing, ''))", "CONCAT(flditem, '|', flddose)", "fldfreq", "flddays", "fldstarttime", "fldcurval", "fldstarttime", "fldcurval", "fldendtime", "flddirection", "fldadminsite", "fldmixing", "fldroute", "flditem", "fldmixvolume", "fldmixrate", "flddose", "flditem"]
   Else
-    xFields = ["fldid", "fldid", "CONCAT(flditem, '|', COALESCE(fldmixing, ''))", "CONCAT(flditem, '|', flddose)", "fldfreq", "flddays", "fldstarttime", "fldcurval", "fldstarttime", "fldstatus", "fldendtime", "flddirection", "fldadminsite", "fldmixing", "fldroute", "flditem", "fldmixvolume", "fldmixrate", "flddose"]
+    xFields = ["fldid", "fldid", "CONCAT(flditem, '|', COALESCE(fldmixing, ''))", "CONCAT(flditem, '|', flddose)", "fldfreq", "flddays", "fldstarttime", "fldcurval", "fldstarttime", "fldstatus", "fldendtime", "flddirection", "fldadminsite", "fldmixing", "fldroute", "flditem", "fldmixvolume", "fldmixrate", "flddose", "fldsave_order"]
   Endif
 
   If $useCardex = True Then
@@ -95,7 +95,7 @@ Private Sub ShowMedFluids()
   With grdfluid
     .Columns[0].Width = 1
     .Columns[1].Width = 35 * modBasic.$AppWidthRatio
-    .Columns[2].Width = Max(Me.Width / 2, 400 * modBasic.$AppWidthRatio)
+    .Columns[2].Width = Max(Me.Width / 2, 300 * modBasic.$AppWidthRatio)
     .Columns[3].Width = 75 * modBasic.$AppWidthRatio
     .Columns[4].Width = 100 * modBasic.$AppWidthRatio
     .Columns[5].Width = 50 * modBasic.$AppWidthRatio
@@ -112,6 +112,7 @@ Private Sub ShowMedFluids()
     .Columns[16].Width = 1 ''Mix Volume
     .Columns[17].Width = 75 * modBasic.$AppWidthRatio
     .Columns[18].Width = 1 ''dose
+    .Columns[19].Width = 35 * modBasic.$AppWidthRatio
 
     .Columns[2].Text = "Medicine"
     .Columns[3].Text = "Dose"
@@ -120,6 +121,7 @@ Private Sub ShowMedFluids()
     .Columns[6].Text = "Date"
     .Columns[7].Text = "Status"
     .Columns[17].Text = "mL/Hour"
+    .Columns[19].Text = "Q"
   End With
 
 End
@@ -137,6 +139,13 @@ Public Sub grdfluid_Data(Row As Integer, Column As Integer)
     grdfluid.Data.Text = GetMedicineDose($rFludRes[$aFludFields[Column]])
   Else If Column = 6 Then
     grdfluid.Data.Text = modReportVar.GetDateTimeReport($rFludRes[$aFludFields[Column]], gb.GeneralDate)
+  Else If Column = 19 Then
+    If $useCardex = True Then
+      grdfluid.Data.Picture = Picture[GetMedCardex($encid, $rFludRes[$aFludFields[Column]])]
+    Else
+      grdfluid.Data.Picture = Picture[GetMedStatus($rFludRes[$aFludFields[Column]])]
+    Endif
+    grdfluid.Data.Text = ""
   Else
     grdfluid.Data.Text = $rFludRes[$aFludFields[Column]]
   Endif
@@ -178,6 +187,42 @@ Private Function GetMedicineDose(sItem As String) As String
   Endif
 
   Return xx
+
+End
+
+Private Function GetMedCardex(encid As String, xStockId As String) As String
+
+  Dim xtot As Float
+  Dim xadmn As Float
+  Dim xicon As String
+
+  If xStockId Then
+    xtot = modPharmacy.GetCardexDispensedQTY(encid, xStockId)
+    xadmn = modPharmacy.GetCardexAdministerQTY(encid, xStockId)
+    If xtot > xadmn Then
+      xicon = "icons/coll4.png"
+    Else
+      xicon = "icons/coll5.png"
+    Endif
+  Else
+    xicon = ""
+  Endif
+
+  Return xicon
+
+End
+
+Private Function GetMedStatus(sBool As Boolean) As String
+
+  Dim xicon As String
+
+  If sBool = True Then
+    xicon = "icons/coll4.png"
+  Else If sBool = False Then
+    xicon = "icons/coll5.png"
+  Endif
+
+  Return xicon
 
 End
 

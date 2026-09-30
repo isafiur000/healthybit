@@ -344,15 +344,17 @@ Public Sub ListView1_Click()
 
   Dim xtot As Float
   Dim xadmn As Float
+  Dim xpckvol As Float
 
   If ListView1.Column = 1 Then
     modGridView.CheckUncheckGridNoDB(ListView1, 1)
   Else
     xtot = 0
     xadmn = 0
+    xpckvol = modMedConstant.GetPackVolValue(ListView1[ListView1.Row, 2].Text)
     xtot = modPharmacy.GetCardexDispensedQTY(ListView1[ListView1.Row, 6].Text, ListView1[ListView1.Row, 2].Text)
     xadmn = modPharmacy.GetCardexAdministerQTY(ListView1[ListView1.Row, 6].Text, ListView1[ListView1.Row, 2].Text)
-    txtbalance.Value = xtot - xadmn
+    txtbalance.Value = Round((xtot - xadmn) / xpckvol, -3)
     CheckLastDispensing(ListView1[ListView1.Row, 2].Text, txtpatientno.Text, txtnhsi.Text)
   Endif
 

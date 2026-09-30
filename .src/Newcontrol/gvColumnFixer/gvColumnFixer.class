@@ -1,0 +1,323 @@
+' Gambas class file
+
+Inherits UserControl
+
+Export
+
+Public Const _Properties As String = "*,FixedColumns{},FixedForeground{Color},FixedBackground{Color},Grid=True,ShowCursor=False,Header{Gridview.*}=Both,ScrollBar{Scroll.*}=Both,Mode{Select.*}=Single,Padding{Range:0;63}=2"
+Public Const _Group As String = "View"
+Public Const _Similar As String = "GridView"
+Public Const _DrawWith As String = "GridView"
+
+Event Data(row As Integer, column As Integer)
+Event Change
+Event Select
+Event Activate
+Event Click
+Event Scroll
+Event Font
+
+Property FixedColumns As Integer[]
+Property FixedForeground As Integer
+Property FixedBackground As Integer
+
+Property ShowCursor As Boolean
+Property Mode As Integer
+Property Header As Integer
+Property ScrollBar As Integer
+Property Row As Integer
+Property Column As Integer
+Property Grid As Boolean
+Property Padding As Integer
+Property Font As Font
+
+Property Read Rows As _Gridview_Rows
+Property Read Columns As _Gridview_Columns
+Property Read Current As _GridView_Cell
+Property Read {Data} As _GridView_Data
+
+Public gvData As Gridview
+Public gvFixed As Gridview
+
+Private $Form As FgvColFixer
+Private $Header As Integer
+Private $scrollBar As Integer
+
+Public Sub _new()
+
+  $Form = New FgvColFixer(Me)
+  $Form.FixedColumns = New Integer[]
+  $Form.FixedForeground = Color.Foreground
+  gvFixed = $Form.gvFijo
+  gvData = $Form.gvDatos
+  gvData.Mode = Select.Single
+  gvFixed.Mode = Select.Single
+  $ScrollBar = Scroll.Both
+  $Header = GridView.Both
+  gvData.Grid = True
+  gvFixed.Grid = True
+  gvData.Padding = 2
+  gvFixed.Padding = 2
+  Me.proxy = gvData
+
+End
+
+Public Sub _get(Row As Integer, Column As Integer) As _Gridview_Cell
+
+  Return gvData[row, column]
+
+End
+
+Public Sub _RaiseData(row As Integer, column As Integer)
+
+  Dim n, i As Integer
+
+  Raise Data(row, column)
+  For n = 0 To $Form.gvFijo.Rows.Max
+    For i = 0 To $Form.fixedcolumns.max
+      $Form.gvfijo[n, i].text = gvData[n, $Form.FixedColumns[i]].Text
+      $Form.gvfijo[n, i].Background = $Form.FixedBackground
+      $Form.gvfijo[n, i].Foreground = $Form.FixedForeground
+    Next
+  Next
+
+End
+
+Public Sub _RaiseChange()
+
+  Raise Change
+
+End
+
+Public Sub _RaiseSelect()
+
+  Raise Select
+
+End
+
+Public Sub _RaiseActivate()
+
+  Raise Activate
+
+End
+
+Public Sub _RaiseClick()
+
+  Raise Click
+
+End
+
+Public Sub _RaiseScroll()
+
+  Raise Scroll
+
+End
+
+Public Sub _RaiseFont()
+
+  Raise Font
+
+End
+
+Private Function FixedColumns_Read() As Integer[]
+
+  Return $Form.FixedColumns.Copy()
+
+End
+
+Private Sub FixedColumns_Write(Value As Integer[])
+
+  $Form.FixedColumns = Value
+
+End
+
+Private Function FixedForeground_Read() As Integer
+
+  Return $Form.FixedForeground
+
+End
+
+Private Sub FixedForeground_Write(Value As Integer)
+
+  $Form.FixedForeground = Value
+
+End
+
+Private Function FixedBackground_Read() As Integer
+
+  Return $Form.FixedBackground
+
+End
+
+Private Sub FixedBackground_Write(Value As Integer)
+
+  $Form.FixedBackground = Value
+
+End
+
+Private Function Rows_Read() As _Gridview_Rows
+
+  Return gvData.rows
+
+End
+
+Private Function Columns_Read() As _Gridview_Columns
+
+  Return gvData.Columns
+
+End
+
+Private Function ShowCursor_Read() As Boolean
+
+  Return gvData.ShowCursor
+
+End
+
+Private Sub ShowCursor_Write(Value As Boolean)
+
+  gvData.ShowCursor = Value
+  $Form.gvFijo.ShowCursor = Value
+
+End
+
+Private Function Header_Read() As Integer
+
+  Return $Header
+
+End
+
+Private Sub Header_Write(Value As Integer)
+
+  $Header = Value
+  SetHeaders()
+
+End
+
+Public Sub SetHeaders()
+
+  Select Case $Header
+    Case GridView.Both
+      If $Form.FixedColumns.count > 0 Then
+        gvData.Header = GridView.Horizontal
+        gvFixed.Header = GridView.Both
+      Else
+        gvData.Header = GridView.Both
+        gvFixed.Header = GridView.None
+      Endif
+    Case GridView.Horizontal
+      gvData.Header = GridView.Horizontal
+      gvFixed.Header = GridView.Horizontal
+    Case GridView.Vertical
+      If $Form.FixedColumns.count > 0 Then
+        gvData.Header = GridView.None
+        gvFixed.Header = GridView.Vertical
+      Else
+        gvData.Header = GridView.Vertical
+        gvFixed.Header = GridView.None
+      Endif
+    Case GridView.None
+      gvData.Header = GridView.None
+      gvFixed.Header = GridView.None
+  End Select
+
+End
+
+Private Function ScrollBar_Read() As Integer
+
+  Return gvData.ScrollBar
+
+End
+
+Private Sub ScrollBar_Write(Value As Integer)
+
+  gvData.ScrollBar = Value
+
+End
+
+Private Function Row_Read() As Integer
+
+  Return gvData.Row
+
+End
+
+Private Sub Row_Write(Value As Integer)
+
+  gvData.Row = Value
+
+End
+
+Private Function Column_Read() As Integer
+
+  Return gvData.Column
+
+End
+
+Private Sub Column_Write(Value As Integer)
+
+  gvData.Column = Value
+
+End
+
+Private Function Mode_Read() As Integer
+
+  Return gvData.Mode
+
+End
+
+Private Sub Mode_Write(Value As Integer)
+
+  gvData.Mode = Value
+  gvFixed.Mode = value
+
+End
+
+Private Function Current_Read() As _GridView_Cell
+
+  Return gvData.Current
+
+End
+
+Private Function Data_Read() As _GridView_Data
+
+  Return gvData.Data
+
+End
+
+Private Function Grid_Read() As Boolean
+
+  Return gvData.Grid
+
+End
+
+Private Sub Grid_Write(Value As Boolean)
+
+  gvData.Grid = Value
+  gvFixed.Grid = Value
+
+End
+
+Private Function Padding_Read() As Integer
+
+  Return gvData.Padding
+
+End
+
+Private Sub Padding_Write(Value As Integer)
+
+  gvData.Padding = Value
+  gvFixed.Padding = Value
+
+End
+
+Private Function Font_Read() As Font
+
+  Return gvData.Font
+
+End
+
+Private Sub Font_Write(Value As Font)
+
+  gvData.Font = Value
+  gvFixed.Font = Value
+
+End

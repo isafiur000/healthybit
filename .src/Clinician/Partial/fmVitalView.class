@@ -38,7 +38,7 @@ Private Sub FillDailyGrid()
   Dim i As Integer
   Dim j As Integer
 
-  GridView2.Clear()
+  ' GridView2.Clear()
   GridView2.Rows.Count = $sVitalsVar.Count
   If rbminutes.Value = True Then
     xfir = modDate.StartSqlTenMinute(DateAdd(Now(), gb.Minute, -120))
@@ -96,7 +96,8 @@ Private Sub FillDailyGrid()
       Endif
     Next
   End With
-  GridView2.Scroll(GridView2.X + GridView2.Width, GridView2.Y)
+  ' GridView2.Scroll(GridView2.X + GridView2.Width, GridView2.Y)
+  GridView2.FixedColumns = [0]
 
 End
 

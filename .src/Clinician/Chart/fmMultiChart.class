@@ -613,7 +613,7 @@ Private Sub LoadTablesExam()
   Dim xdiff As Integer
 
   xdiff = 0 - spncolumn.Value
-  GridView2.Clear()
+  ' GridView2.Clear()
   If rboneday.Value = True Then
     xfir = modDate.StartSqlTenMinute(DateAdd(Now(), gb.Minute, xdiff * 10))
     xlast = modDate.StartSqlTenMinute(DateAdd(Now(), gb.Minute, 10))
@@ -694,7 +694,8 @@ Private Sub LoadTablesExam()
     Next
   Next
 
-  GridView2.Scroll(GridView2.X + GridView2.Width, GridView2.Y)
+  ' GridView2.Scroll(GridView2.X + GridView2.Width, GridView2.Y)
+  GridView2.FixedColumns = [0]
 
 End
 

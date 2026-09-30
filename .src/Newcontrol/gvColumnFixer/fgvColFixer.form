@@ -1,0 +1,30 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,72,29)
+  Expand = True
+  Arrangement = Arrange.Fill
+  { Spliter Splitter
+    MoveScaled(0,1,70,27)
+    Expand = True
+    Border = False
+    { !gvFijo GridView
+      MoveScaled(0,1,23,25)
+      #Public = True
+      Border = False
+      Mode = Select.Single
+      ShowCursor = True
+      Header = GridView.Both
+      ScrollBar = Scroll.Horizontal
+    }
+    { !gvDatos GridView
+      MoveScaled(24,1,43,25)
+      #Public = True
+      Expand = True
+      Border = False
+      Mode = Select.Multiple
+      ShowCursor = True
+      Header = GridView.Horizontal
+    }
+  }
+}

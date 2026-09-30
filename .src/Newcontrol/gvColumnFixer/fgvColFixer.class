@@ -1,0 +1,179 @@
+' Gambas class file
+
+Property FixedColumns As Integer[]
+Property FixedForeground As Integer
+Property FixedBackground As Integer
+
+Private $Fixed As Integer[]
+Private $FixedWidths As Integer[]
+Private $FixedForeground As Integer
+Private $FixedBackground As Integer
+Private $Father As Object
+
+Public Sub _new()
+
+  gvfijo.visible = False
+  $Fixed = New Integer[]
+  $Fixedwidths = New Integer[]
+  $FixedForeground = Color.Foreground
+  $FixedBackground = Color.Background
+  gvDatos.Header = GridView.Both
+  gvfijo.Header = gvDatos.Header
+  gvfijo.Width = 0
+  Spliter.Layout = [1, 99]
+  $Father = Me.Parent
+
+End
+
+Public Sub gvDatos_Change()
+
+  gvFijo.row = gvDatos.row
+  $Father._RaiseChange()
+
+End
+
+Public Sub gvfijo_Change()
+
+  gvDatos.row = gvfijo.row
+
+End
+
+Public Sub gvDatos_Scroll()
+
+  gvFijo.scroll(0, gvDatos.ScrollY)
+  $Father._RaiseScroll()
+
+End
+
+Public Sub gvfijo_Scroll()
+
+  gvDatos.scroll(gvDatos.scrollx, gvfijo.ScrollY)
+
+End
+
+Private Function FixedColumns_Read() As Integer[]
+
+  Return $Fixed
+
+End
+
+Private Sub FixedColumns_Write(Value As Integer[])
+
+  Dim iBorder As Integer = Style.ScrollBarSize
+  Dim hBorder As New Border("style:none;bottom-style:solid;color:background;width:" & iBorder & ";")
+  Dim n As Integer
+  Dim i As Integer
+
+  For n = 0 To gvDatos.columns.Max
+    If gvDatos.Columns[n].Width = 0 Then
+      gvDatos.Columns[n].Width = 100
+      gvDatos.Columns[n].Resizable = True
+    Endif
+  Next
+  If Value.Count = 0 Then
+    gvfijo.columns.count = 0
+    gvfijo.Rows.count = 0
+    gvfijo.Width = 0
+    gvfijo.Visible = False
+    gvfijo.Resizable = False
+    Return
+  Else
+    gvfijo.Visible = True
+    gvfijo.Resizable = True
+  Endif
+  $Fixed = Value
+  $Father.SetHeaders
+  gvfijo.Columns.Count = $fixed.Count
+  gvfijo.Rows.Count = gvDatos.Rows.Count
+  i = 0
+  For n = 0 To $fixed.Max
+    i += gvDatos.Columns[$fixed[n]].Width
+    gvfijo.Columns[n].Expand = True
+    gvfijo.Columns[n].Text = gvDatos.Columns[$fixed[n]].Text
+    gvDatos.Columns[$fixed[n]].width = 0
+    gvDatos.Columns[$fixed[n]].Resizable = False
+    gvDatos.Columns[$fixed[n]].Expand = False
+  Next
+  gvfijo.Columns[gvfijo.Columns.Max].Resizable = False 'Avoid confusion on double Arrow mouse on resize
+  n = Int((i + 50) / Spliter.Width * 100) '50 seems to be the vertical header on my desktop
+  Spliter.Layout = [n, 100 - n]
+  If gvDatos.scrollbar <> Scroll.None Then
+    With gvfijo.Rows[gvfijo.Rows.Max] 'we make the bottom border the same height as the horizontal scroll bar to align the last row
+      If .Height = gvfijo.Rows[gvfijo.Rows.Max - 1].Height Then
+        .Height += iBorder
+        .Border = hBorder
+      Endif
+    End With
+  Endif
+  $Father._RaiseData(0, 0)
+
+End
+
+Public Sub Form_Close()
+
+  gvfijo.Delete()
+  gvDatos.Delete()
+  $Father = Null
+
+End
+
+Private Function FixedForeground_Read() As Integer
+
+  Return $FixedForeground
+
+End
+
+Private Sub FixedForeground_Write(Value As Integer)
+
+  $FixedForeground = Value
+
+End
+
+Private Function FixedBackground_Read() As Integer
+
+  Return $FixedBackground
+
+End
+
+Private Sub FixedBackground_Write(Value As Integer)
+
+  $FixedBackground = Value
+
+End
+
+Public Sub gvDatos_KeyPress()
+
+  gvDatos_Data(gvDatos.row, gvDatos.Column)
+
+End
+
+Public Sub gvDatos_Data(Row As Integer, Column As Integer)
+
+  $Father._RaiseData(row, column)
+
+End
+
+Public Sub gvDatos_Select()
+
+  Try gvFijo.Rows.Selection = gvDatos.Rows.selection
+  $Father._RaiseSelect()
+
+End
+
+Public Sub gvDatos_Activate()
+
+  $Father._RaiseActivate()
+
+End
+
+Public Sub gvDatos_Click()
+
+  $Father._RaiseClick()
+
+End
+
+Public Sub gvDatos_Font()
+
+  $Father._RaiseFont()
+
+End
