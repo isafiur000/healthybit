@@ -289,7 +289,7 @@ Public Sub btnanalyze_Click()
   If xPath Then
     If cmbmodel Then
       Inc Application.Busy
-      xval = Trim(modMLModels.GetAIModelValue($encid, cmbmodel.Text, xPath))
+      xval = Trim(modMLModels.GetAIModelValue($encid, cmbmodel.Text, [xPath]))
       Dec Application.Busy
       If xval Then
         Message.Info(xval, "OK")

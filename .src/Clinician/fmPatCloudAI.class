@@ -216,7 +216,7 @@ Public Sub btncompare_Click()
   xTemp = Temp() & ".txt"
   File.Save(xTemp, TextArea1.Text)
   Inc Application.Busy
-  xval = Trim(modMLModels.GetAIModelValue($encid, $ModelLst[0], xTemp))
+  xval = Trim(modMLModels.GetAIModelValue($encid, $ModelLst[0], [xTemp]))
   Dec Application.Busy
   If xval Then
     Message.Info(xval, "OK")

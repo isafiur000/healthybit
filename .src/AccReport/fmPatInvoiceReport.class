@@ -2,8 +2,8 @@
 
 Private $rData As Result
 Private $aMyFields As String[]
-Private $qtyChart As String[]
-Private $amtCHart As String[]
+' Private $qtyChart As String[]
+' Private $amtCHart As String[]
 Private $ProgressBar1 As ProgressBar
 Private $SSQLFields As String[]
 
@@ -841,14 +841,14 @@ Private Sub FillItemChartQTY()
 
   Dim sFile As String
 
-  sFile = Temp()
-  File.Save(sFile, $qtyChart.Join(gb.NewLine))
-  If modBasic.$ChartExecStat = "PSPP" Then
-    modImage.StretchtPictureToBox(PictureBox1, modChart.FrequencyChart(sFile, "Invoice Count"))
-  Else
-    modImage.StretchtPictureToBox(PictureBox1, modChart.FrequencyChart(sFile, "Invoice Count"))
-  Endif
-  mnustatsqty.Tag = sFile
+  ' sFile = Temp()
+  ' File.Save(sFile, $qtyChart.Join(gb.NewLine))
+  ' If modBasic.$ChartExecStat = "PSPP" Then
+  '   modImage.StretchtPictureToBox(PictureBox1, modChart.FrequencyChart(sFile, "Invoice Count"))
+  ' Else
+  '   modImage.StretchtPictureToBox(PictureBox1, modChart.FrequencyChart(sFile, "Invoice Count"))
+  ' Endif
+  ' mnustatsqty.Tag = sFile
 
 End
 
@@ -878,19 +878,19 @@ End
 ''---------------------------------------- AMT Chart --------------------------------------------
 Private Sub FillItemChartAMT()
 
-  Dim sPath As String
-  Dim sNew As String
-
-  sPath = Temp()
-  File.Save(sPath, $amtCHart.Join(gb.NewLine))
-  sNew = modString.GetGroupSUmmaryCSV(sPath, 0, 1, ";", gb.Tab, gb.Float)
-
-  If modBasic.$ChartExecStat = "PSPP" Then
-    modImage.StretchtPictureToBox(PictureBox2, modChart.HistogramChart(sNew, "[Received Amount in " & modChart.GetAMTLabelChart() & "]"))
-  Else
-    modImage.StretchtPictureToBox(PictureBox2, modChart.HistogramChart(sNew, "[Received Amount in " & modChart.GetAMTLabelChart() & "]"))
-  Endif
-  mnustatsamt.Tag = sNew
+  ' Dim sPath As String
+  ' Dim sNew As String
+  ' 
+  ' sPath = Temp()
+  ' File.Save(sPath, $amtCHart.Join(gb.NewLine))
+  ' sNew = modString.GetGroupSUmmaryCSV(sPath, 0, 1, ";", gb.Tab, gb.Float)
+  ' 
+  ' If modBasic.$ChartExecStat = "PSPP" Then
+  '   modImage.StretchtPictureToBox(PictureBox2, modChart.HistogramChart(sNew, "[Received Amount in " & modChart.GetAMTLabelChart() & "]"))
+  ' Else
+  '   modImage.StretchtPictureToBox(PictureBox2, modChart.HistogramChart(sNew, "[Received Amount in " & modChart.GetAMTLabelChart() & "]"))
+  ' Endif
+  ' mnustatsamt.Tag = sNew
 
 End
 
