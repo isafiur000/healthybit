@@ -697,11 +697,11 @@ Private Function GetCalcDose() As Float
   Endif
 
   Select cmbtarget.Text
-    Case "mg", "mcg", "gram", "IU", "Unit", "mL"
+    Case "mg", "mcg", "gram", "IU", "Unit", "mL", "mEq"
       xval = txttarget.Value
-    Case "mg/Kg", "mcg/Kg", "gram/Kg", "IU/Kg", "Unit/Kg", "mL/Kg"
+    Case "mg/Kg", "mcg/Kg", "gram/Kg", "IU/Kg", "Unit/Kg", "mL/Kg", "mEq/Kg"
       xval = xweight * txttarget.Value
-    Case "mg/sqm", "mcg/sqm", "gram/sqm", "IU/sqm", "Unit/sqm", "mL/sqm"
+    Case "mg/sqm", "mcg/sqm", "gram/sqm", "IU/sqm", "Unit/sqm", "mL/sqm", "mEq/sqm"
       xval = txtbodysurfarea.Value * txttarget.Value
   End Select
 
@@ -727,6 +727,8 @@ Private Function GetCalcDose() As Float
       lblcalculate.Text = "Unit"
     Case "mL", "mL/Kg", "mL/sqm"
       lblcalculate.Text = "mL"
+    Case "mEq", "mEq/Kg", "mEq/sqm"
+      lblcalculate.Text = "mEq"
   End Select
 
   Return xval

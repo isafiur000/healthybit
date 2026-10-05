@@ -308,7 +308,7 @@ Public Sub grdfluid_Click()
 
   Else If grdfluid.Column = 1 Then
     If grdfluid[grdfluid.Row, 7].Text = "Continue" Then
-      If grdfluid[grdfluid.Row, 1].Picture = Picture["icon:/tiny/next"] Then
+      If grdfluid[grdfluid.Row, 1].Picture = Picture["icon:/tiny/next"] And If grdfluid[grdfluid.Row, 19].Picture = Picture["icons/coll4.png"] Then
         yval = InputValue(("Enter Rate of Administration in ") & "<b>mL/Hour</b> FOR <b>" & grdfluid[grdfluid.Row, 15].Text & "</b>", "Administration Rate", 0)
         If yval Then
           If $useCardex = True Then
