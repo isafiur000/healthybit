@@ -23,6 +23,10 @@ Public Sub Form_Open()
 
   dtfir.Value = Now()
   dtlast.Value = Now()
+  If MMain.$SISHAppMode = "HIS" And If modHelpVariable.$LogInCategory = "Student" Then
+    modResearch.GetResearchSettings(dtfir, dtlast)
+  Endif
+
   If cmbserver.List.Count = 1 Then
     cmbserver.Index = 0
   Endif

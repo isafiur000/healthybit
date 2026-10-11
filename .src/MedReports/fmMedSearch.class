@@ -44,8 +44,13 @@ Public Sub Form_Open()
   cmbtime.List = ["Before", "After", "AnyTime"]
   cmbtime.Text = "AnyTime"
   cmbproctype.List = ["Delivery", "Procedure", "Medicine"]
+
   dtfir.Value = Now()
   dtlast.Value = Now()
+  If MMain.$SISHAppMode = "HIS" And If modHelpVariable.$LogInCategory = "Student" Then
+    modResearch.GetResearchSettings(dtfir, dtlast)
+  Endif
+
   rbmetric.Value = True
   rball.Value = True
   modAccount.PasInvoiceSetting(cmbfiscal, True)

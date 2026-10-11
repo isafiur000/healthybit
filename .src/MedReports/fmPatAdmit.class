@@ -27,12 +27,12 @@ Public Sub Form_Open()
       cmblocation.List = ["Hospital", "Municipality", "Category", "District", "Province"]
     Endif
     mnuhospsumm.Visible = True
-    If MMain.$RepoReportMode = True Then
-      mnusearname.Visible = False
-    Endif
 
   Else
     pnlocat.Visible = False
+  Endif
+  If MMain.$RepoReportMode = True Then
+    mnusearname.Visible = False
   Endif
 
   cmbcolumn.List = ["Surname", "District", "Municipality", "Ethnic Group", "Package", "Visit Type", "Visit Mode", "Regd Department"]
@@ -57,6 +57,9 @@ Public Sub Form_Open()
 
   dtfir.Value = Now()
   dtlast.Value = Now()
+  If MMain.$SISHAppMode = "HIS" And If modHelpVariable.$LogInCategory = "Student" Then
+    modResearch.GetResearchSettings(dtfir, dtlast)
+  Endif
 
   xhospfld = modDataRepo.HospitalField()
   $SSQLFields = ["fldencounterval", "fldencounterval", "fldencounterval", "fldencounterval", "fldpatientval", "fldregdate", "fldadmission", "fldadmitlocat", "flddisctype"]
@@ -199,6 +202,8 @@ Private Function ExecuteQuery(xFldList As String[], sCon As Connection, Optional
 
   Dim res As Result
   Dim xgroup As String
+  Dim xhideTab As String[]
+  Dim xhide As String
 
   Select cmbstatus.Text
     Case "Admitted"
@@ -236,7 +241,12 @@ Private Function ExecuteQuery(xFldList As String[], sCon As Connection, Optional
     Else
       xquery = ""
     Endif
+
     sql = "select " & xFldList.Join(",") & " from tblencounter where " & coltime & ">=&1 and " & coltime & "<=&2" & xquery & $RepoStr & xgroup
+    xhideTab = modBasic.$RepHideTables
+    For Each xhide In xhideTab
+      sql = Replace(sql, xhide, "<Unauthorized>")
+    Next
     res = sCon.Exec(sql, modDate.StartSqlDate(dtfir.value), modDate.EndSqlDate(dtlast.value))
 
   Else

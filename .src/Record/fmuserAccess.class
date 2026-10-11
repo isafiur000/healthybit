@@ -17,7 +17,7 @@ Public Sub _new(lblusid As String)
   sql = "select fldaccess from tbluseraccess where flduserid=&1"
   res = modDatabase.$myConn.Exec(sql, $lblusid)
   For Each res
-    ShowChkAccess(UnBase64(res!fldaccess))
+    ShowChkAccess(UnBase64(res["fldaccess"]))
   Next
 
 End
@@ -645,6 +645,7 @@ Private Sub FillList(chkMode As CheckBox)
     AddUserFormAccess(chkMode.Text, fmClinBedList.Tag)
     AddUserFormAccess(chkMode.Text, fmClinSummary.Tag)
     AddUserFormAccess(chkMode.Text, fmBedReport.Tag)
+    AddUserFormAccess(chkMode.Text, fmStudent.Tag)
 
     AddUserFormAccess(chkMode.Text, "Archived Reports")
     AddUserFormAccess(chkMode.Text, fmCustAllReport.Tag)
@@ -871,10 +872,10 @@ Private Sub FillList(chkMode As CheckBox)
   res = modDatabase.$myConn.Exec("select fldid,fldformname,fldstatus from tbluserformaccess where flduserid=&1 and fldcategory=&2", $lblusid, chkMode.Text)                                        ''
   ListView1.Clear
   For Each res
-    If res!fldstatus = "Inactive" Then
-      ListView1.Add(CStr(res!fldid), res!fldformname, pic1)
-    Else If res!fldstatus = "Active" Then
-      ListView1.Add(CStr(res!fldid), res!fldformname, pic2)
+    If res["fldstatus"] = "Inactive" Then
+      ListView1.Add(CStr(res["fldid"]), res["fldformname"], pic1)
+    Else If res["fldstatus"] = "Active" Then
+      ListView1.Add(CStr(res["fldid"]), res["fldformname"], pic2)
     Endif
   Next
 

@@ -27,6 +27,10 @@ Public Sub Form_Open()
 
   dtfir.Value = Now()
   dtlast.Value = Now()
+  If MMain.$SISHAppMode = "HIS" And If modHelpVariable.$LogInCategory = "Student" Then
+    modResearch.GetResearchSettings(dtfir, dtlast)
+  Endif
+
   txtsearch.Text = "%"
   If MMain.$WebReport = "Multiple" Then
     $SSQLFields = ["fldrepoid", "fldencounterval", "fldencounterval", "fldencounterval", "fldtitle", "flddetail", "fldtime", "fldcateg"]

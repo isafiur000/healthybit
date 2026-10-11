@@ -3,11 +3,13 @@
 Property FixedColumns As Integer[]
 Property FixedForeground As Integer
 Property FixedBackground As Integer
+Property RowHeight As Integer
 
 Private $Fixed As Integer[]
 Private $FixedWidths As Integer[]
 Private $FixedForeground As Integer
 Private $FixedBackground As Integer
+Private $RowHeight As Integer
 Private $Father As Object
 
 Public Sub _new()
@@ -94,13 +96,19 @@ Private Sub FixedColumns_Write(Value As Integer[])
     gvDatos.Columns[$fixed[n]].Resizable = False
     gvDatos.Columns[$fixed[n]].Expand = False
   Next
+
+  If $RowHeight Then
+    gvfijo.Rows.Height = $RowHeight
+    gvDatos.Rows.Height = $RowHeight
+  Endif
+
   gvfijo.Columns[gvfijo.Columns.Max].Resizable = False 'Avoid confusion on double Arrow mouse on resize
   n = Int((i + 50) / Spliter.Width * 100) '50 seems to be the vertical header on my desktop
   Spliter.Layout = [n, 100 - n]
   If gvDatos.scrollbar <> Scroll.None Then
     With gvfijo.Rows[gvfijo.Rows.Max] 'we make the bottom border the same height as the horizontal scroll bar to align the last row
       If .Height = gvfijo.Rows[gvfijo.Rows.Max - 1].Height Then
-        .Height += iBorder
+        ' .Height += iBorder
         .Border = hBorder
       Endif
     End With
@@ -175,5 +183,17 @@ End
 Public Sub gvDatos_Font()
 
   $Father._RaiseFont()
+
+End
+
+Private Function RowHeight_Read() As Integer
+
+  Return $RowHeight
+
+End
+
+Private Sub RowHeight_Write(Value As Integer)
+
+  $RowHeight = Value
 
 End

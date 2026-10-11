@@ -679,10 +679,14 @@ End
 
 Public Sub SetActiveForms()
 
-  If MMain.$SISHAppMode = "HIS" Or If MMain.$SISHAppMode = "REP" Then ''remoteoptimized
-    $HideFormList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldformname from tbluserformaccess where flduserid=&1 and fldcategory=&2 and fldstatus=&3", modBasic.$lbluser, modHelpVariable.$LogInCategory, "Inactive"))                   ''
-  Else
+  If MMain.$SISHAppMode = "HIS" And If modHelpVariable.$LogInCategory = "Student" Then
     $HideFormList = New String[]
+  Else
+    If MMain.$SISHAppMode = "HIS" Or If MMain.$SISHAppMode = "REP" Then ''remoteoptimized
+      $HideFormList = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldformname from tbluserformaccess where flduserid=&1 and fldcategory=&2 and fldstatus=&3", modBasic.$lbluser, modHelpVariable.$LogInCategory, "Inactive"))                   ''
+    Else
+      $HideFormList = New String[]
+    Endif
   Endif
 
 End

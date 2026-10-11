@@ -20,12 +20,12 @@ Public Sub Form_Open()
     Else
       cmblocation.List = ["Hospital", "Municipality", "Category", "District", "Province"]
     Endif
-    If MMain.$RepoReportMode = True Then
-      mnusearname.Visible = False
-    Endif
 
   Else
     pnlrep.Visible = False
+  Endif
+  If MMain.$RepoReportMode = True Then
+    mnusearname.Visible = False
   Endif
   btnmnuqty.Menu = "mnuchart"
   If MMain.$IsPolice = True Then
@@ -43,6 +43,9 @@ Public Sub Form_Open()
 
   dtfir.Value = Now()
   dtlast.Value = Now()
+  If MMain.$SISHAppMode = "HIS" And If modHelpVariable.$LogInCategory = "Student" Then
+    modResearch.GetResearchSettings(dtfir, dtlast)
+  Endif
 
   xhospfld = modDataRepo.HospitalField()
   $SSQLFields = ["fldpatientval", "fldpatientval", "fldethniccode", "fldptsex", "fldptbirday", "fldptaddvill", "fldptadddist", "fldptadmindate"]

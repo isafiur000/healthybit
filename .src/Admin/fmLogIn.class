@@ -89,7 +89,7 @@ Private Sub LoadCategor()
 
     Else If optclinic.Value = True Then
       modHelpVariable.$LogInGroup = optclinic.Tag
-      cmbusname.List = ["Consultant", "Clinician", "Research"]
+      cmbusname.List = ["Consultant", "Clinician", "Research", "Student"]
 
     Else If optstore.Value = True Then
       modHelpVariable.$LogInGroup = optstore.Tag
@@ -221,7 +221,11 @@ Public Sub btnOK_Click()
       modHelpVariable.$MACAddress = modApplication.GetMACAddress()
       modHelpVariable.$localIP = modApplication.GetLocalIP()
       If modPassword.AloowMacAddressCheck(modHelpVariable.$MACAddress) = True Then
-        res2 = modDatabase.$myConn.Exec("select fldcategory,flduserid,fldpass,fldusercode,fldfromdate,fldtodate from tbluser where flduserid=&1 and fldpass=&2 and fldstatus=&3", Trim(txtuser.text), modPassword.EncryptSimple(txtpass.Text), "Active")
+        If optclinic.Value = True And If cmbusname.Text = "Student" Then
+          res2 = modDatabase.$myConn.Exec("select fldcategory,flduserid,fldpass,fldusercode,fldfromdate,fldtodate,fldcomp from tblstudent where flduserid=&1 and fldpass=&2 and fldstatus=&3", Trim(txtuser.text), modPassword.EncryptSimple(txtpass.Text), "Active")
+        Else
+          res2 = modDatabase.$myConn.Exec("select fldcategory,flduserid,fldpass,fldusercode,fldfromdate,fldtodate from tbluser where flduserid=&1 and fldpass=&2 and fldstatus=&3", Trim(txtuser.text), modPassword.EncryptSimple(txtpass.Text), "Active")
+        Endif
         If res2.Available = False Then
           modDevice.CamOnError()
           Message.Warning(("Incorrect User or Password"), ("OK"))
@@ -259,82 +263,92 @@ Public Sub btnOK_Click()
                 Me.Close
 
               Else  ''HMIS
-                rs1 = modDatabase.$myConn.Exec("select fldid,fldcomp from tblcompaccess where flduserid=&1 and fldcomp=&2", Trim(txtuser.text), modBasic.$compID)
-                If rs1.Available = False Then
-                  Message.Warning(("Access to this Computer not granted"), ("OK"))
-                Else
-                  rs1.MoveFirst
-                  modBasic.$compID = rs1["fldcomp"]
-
-                  res = modDatabase.$myConn.Exec("select fldaccess from tbluseraccess where flduserid=&1 and fldaccess=&2", Trim(txtuser.text), Base64(cmbusname.Text))
-                  If res.Available = False Then
-                    Message.Warning(("Access not granted for one/all department"), ("OK"))
-                  Else If res.Available = True Then
-                    res.MoveFirst
+                If optclinic.Value = True And If cmbusname.Text = "Student" Then
+                  If modBasic.$compID = res2["fldcomp"] Then
+                    MMain.$RepoReportMode = True
                     modBasic.DebugString("Log In User is " & Trim(txtuser.Text) & "@" & cmbusname.Text)
-
-                    If optadmin.Value = True And If cmbusname.Text = "Admin" Then
-                      modHelpVariable.$ApplKey = 0
-                    Else
-                      modHelpVariable.$ApplKey = modPassword.ValidateKey()
-                    Endif
-                    If modHelpVariable.$ApplKey = 3 Then
-                      Return
-                    Else
-
-                      If optadmin.Value = True Then
-                        If cmbusname.Text = "Medical" Then
-                          fmMedical.Show
-                        Else If cmbusname.Text = "Record" Then
-                          fmRecord.Show
-                        Else If cmbusname.Text = "Admin" Then
-                          fmAdmin.Show
-                        Endif
-
-                      Else If optcash.Value = True Then
-                        If cmbusname.Text = "Cashier" Then
-                          fmCashier.Show
-                        Else If cmbusname.Text = "Account" Then
-                          fmAccount.Show
-                        Endif
-
-                      Else If optlab.Value = True Then
-                        If cmbusname.Text = "Technologist" Then
-                          fmTechnologist.Show
-                        Else If cmbusname.Text = "Technician" Then
-                          fmTechnician.Show
-                        Endif
-
-                      Else If optclinic.Value = True Then
-                        If cmbusname.Text = "Consultant" Then
-                          fmConsultant.Show
-                        Else If cmbusname.Text = "Clinician" Then
-                          ' ClinicianSettings()
-                          fmOfficer.Show
-                        Else If cmbusname.Text = "Research" Then
-                          fmResearch.Show
-                        Endif
-
-                      Else If optstore.Value = True Then
-                        If cmbusname.Text = "Purchase" Then
-                          fmPurchase.Show
-                        Else If cmbusname.Text = "Store" Then
-                          fmStore.Show
-                        Endif
-
-                      Else If optphm.Value = True Then
-                        If cmbusname.Text = "Pharmacist" Then
-                          fmPharmacist.Show
-                        Else If cmbusname.Text = "Dispensar" Then
-                          fmDispensar.Show
-                        Endif
-                      Endif
-                      Try Me.Close
-
-                    Endif
+                    fmStudentMain.Show
+                    Try Me.Close
                   Endif
 
-                Endif
+                Else
+                  rs1 = modDatabase.$myConn.Exec("select fldid,fldcomp from tblcompaccess where flduserid=&1 and fldcomp=&2", Trim(txtuser.text), modBasic.$compID)
+                  If rs1.Available = False Then
+                    Message.Warning(("Access to this Computer not granted"), ("OK"))
+                  Else
+                    rs1.MoveFirst
+                    modBasic.$compID = rs1["fldcomp"]
+
+                    res = modDatabase.$myConn.Exec("select fldaccess from tbluseraccess where flduserid=&1 and fldaccess=&2", Trim(txtuser.text), Base64(cmbusname.Text))
+                    If res.Available = False Then
+                      Message.Warning(("Access not granted for one/all department"), ("OK"))
+                    Else If res.Available = True Then
+                      res.MoveFirst
+                      modBasic.DebugString("Log In User is " & Trim(txtuser.Text) & "@" & cmbusname.Text)
+
+                      If optadmin.Value = True And If cmbusname.Text = "Admin" Then
+                        modHelpVariable.$ApplKey = 0
+                      Else
+                        modHelpVariable.$ApplKey = modPassword.ValidateKey()
+                      Endif
+                      If modHelpVariable.$ApplKey = 3 Then
+                        Return
+                      Else
+
+                        If optadmin.Value = True Then
+                          If cmbusname.Text = "Medical" Then
+                            fmMedical.Show
+                          Else If cmbusname.Text = "Record" Then
+                            fmRecord.Show
+                          Else If cmbusname.Text = "Admin" Then
+                            fmAdmin.Show
+                          Endif
+
+                        Else If optcash.Value = True Then
+                          If cmbusname.Text = "Cashier" Then
+                            fmCashier.Show
+                          Else If cmbusname.Text = "Account" Then
+                            fmAccount.Show
+                          Endif
+
+                        Else If optlab.Value = True Then
+                          If cmbusname.Text = "Technologist" Then
+                            fmTechnologist.Show
+                          Else If cmbusname.Text = "Technician" Then
+                            fmTechnician.Show
+                          Endif
+
+                        Else If optclinic.Value = True Then
+                          If cmbusname.Text = "Consultant" Then
+                            fmConsultant.Show
+                          Else If cmbusname.Text = "Clinician" Then
+                            ' ClinicianSettings()
+                            fmOfficer.Show
+                          Else If cmbusname.Text = "Research" Then
+                            fmResearch.Show
+                          Endif
+
+                        Else If optstore.Value = True Then
+                          If cmbusname.Text = "Purchase" Then
+                            fmPurchase.Show
+                          Else If cmbusname.Text = "Store" Then
+                            fmStore.Show
+                          Endif
+
+                        Else If optphm.Value = True Then
+                          If cmbusname.Text = "Pharmacist" Then
+                            fmPharmacist.Show
+                          Else If cmbusname.Text = "Dispensar" Then
+                            fmDispensar.Show
+                          Endif
+                        Endif
+                        Try Me.Close
+
+                      Endif
+                    Endif
+
+                  Endif
+                Endif ''if student
 
               Endif
 

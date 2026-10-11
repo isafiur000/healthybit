@@ -32,12 +32,12 @@ Public Sub Form_Open()
     Endif
     mnuhospsumm.Visible = True
     mnuhospdate.Visible = True
-    If MMain.$RepoReportMode = True Then
-      mnusearname.Visible = False
-    Endif
 
   Else
     pnlocat.Visible = False
+  Endif
+  If MMain.$RepoReportMode = True Then
+    mnusearname.Visible = False
   Endif
 
   cmbgender.List = ["Male", "Female", "Other", "%"]
@@ -60,6 +60,10 @@ Public Sub Form_Open()
 
   dtfir.Value = Now()
   dtlast.Value = Now()
+  If MMain.$SISHAppMode = "HIS" And If modHelpVariable.$LogInCategory = "Student" Then
+    modResearch.GetResearchSettings(dtfir, dtlast)
+  Endif
+
   rball.Value = True
 
 End

@@ -639,7 +639,8 @@ Private Sub LoadTablesExam()
   GridView2.Columns.Count = xcolm + 2
 
   With GridView2
-    .Rows.Height = modBasic.$AppGridRowHeight
+    .RowHeight = modBasic.$AppGridRowHeight
+    ' .Rows.Height = modBasic.$AppGridRowHeight
     For j = 0 To GridView2.Columns.Count - 1
       If j = 0 Then
         .Columns[j].Width = 200 * modBasic.$AppWidthRatio

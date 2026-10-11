@@ -65,12 +65,12 @@ Public Sub btnBrOK_Click()
     res = modDatabase.$myConn.Create("tblresearch")
     res["fldstudycode"] = txtstudycode.Text
     res["fldstudyname"] = txtstudyname.Text
-    res["fldstudylocat"] = txtstudylocation.Text
-    res["fldsamplesize"] = txtsample.Value
+    res["fldstudylocat"] = txtinvestigator.Text
+    ' res["fldsamplesize"] = txtsample.Value
     res["fldstudystart"] = dtstart.Value
     res["fldstudyend"] = dtend.Value
-    res["fldstudysample"] = txtallsample.Text
-    res["fldstudycriteria"] = txtsqltext.Text
+    res["fldstudysample"] = txtdescription.RichText
+    ' res["fldstudycriteria"] = txtsqltext.Text
     If modMisc.BlobTarget("ResearchImages") = "FTP" Then
       If txtircform.Text Then
         res["fldircconsentpic"] = ""
@@ -109,20 +109,24 @@ End
 
 Private Sub ShowStudyGrid()
 
-  $rData = modDatabase.$myConn.Exec("select fldstudycode,fldstudyname,fldstudylocat,fldsamplesize,fldstatus from tblresearch")
+  $rData = modDatabase.$myConn.Exec("select fldstudycode,fldstudyname,fldstudylocat,fldsamplesize,fldstudystart,fldstudyend,fldstatus from tblresearch")
   $aMyFields = New String[]
   modGridView.ReadSmallData(GridView1, $rData, $aMyFields)
   With GridView1
-    .Columns[0].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[1].Width = 400 * modBasic.$AppWidthRatio
+    .Columns[0].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[1].Width = 300 * modBasic.$AppWidthRatio
     .Columns[2].Width = 150 * modBasic.$AppWidthRatio
-    .Columns[3].Width = 75 * modBasic.$AppWidthRatio
-    .Columns[4].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[3].Width = 1
+    .Columns[4].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[5].Width = 100 * modBasic.$AppWidthRatio
+    .Columns[6].Width = 75 * modBasic.$AppWidthRatio
+
     .Columns[0].Text = "StudyCode"
     .Columns[1].Text = "Title of Study"
-    .Columns[2].Text = "Study Group"
-    .Columns[3].Text = "Sample"
-    .Columns[4].Text = "Status"
+    .Columns[2].Text = "Investigator"
+    .Columns[4].Text = "Start"
+    .Columns[5].Text = "End"
+    .Columns[6].Text = "Status"
   End With
 
 End
@@ -131,9 +135,10 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
 
   $rData.MoveTo(Row)
   modGeneralMain.GridViewDecoration(GridView1, Row)
-  GridView1.Data.Text = $rData[$aMyFields[Column]]
-  If Column = 3 Then
-    GridView1.Data.Text = modReportVar.GetLocaleNumberFormat($rData[$aMyFields[Column]], 0)
+  If Column = 4 Then
+    GridView1.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.MediumDate)
+  Else If Column = 5 Then
+    GridView1.Data.Text = modReportVar.GetDateTimeReport($rData[$aMyFields[Column]], gb.MediumDate)
   Else
     GridView1.Data.Text = $rData[$aMyFields[Column]]
   Endif
@@ -147,12 +152,12 @@ Public Sub btnedit_Click()
   If txtstudycode.Text Then
     res = modDatabase.$myConn.Edit("tblresearch", "fldstudycode=&1", txtstudycode.Text)
     res["fldstudyname"] = txtstudyname.Text
-    res["fldstudylocat"] = txtstudylocation.Text
-    res["fldsamplesize"] = txtsample.Value
+    res["fldstudylocat"] = txtinvestigator.Text
+    ' res["fldsamplesize"] = txtsample.Value
     res["fldstudystart"] = dtstart.Value
     res["fldstudyend"] = dtend.Value
-    res["fldstudysample"] = txtallsample.Text
-    res["fldstudycriteria"] = txtsqltext.Text
+    res["fldstudysample"] = txtdescription.RichText
+    ' res["fldstudycriteria"] = txtsqltext.Text
     If modMisc.BlobTarget("ResearchImages") = "FTP" Then
       If txtircform.Text Then
         res["fldircconsentpic"] = ""
@@ -193,35 +198,58 @@ Public Sub GridView1_Click()
 
   Dim res As Result
 
-  res = modDatabase.$myConn.Exec("select fldstudycode,fldstudyname,fldstudylocat,fldsamplesize,fldstudystart,fldstudyend,fldstudysample,fldstudycriteria,fldstatus from tblresearch where fldstudycode=&1", GridView1[GridView1.Row, 0].Text)                                                             ''
+  res = modDatabase.$myConn.Exec("select fldstudycode,fldstudyname,fldstudylocat,fldsamplesize,fldstudystart,fldstudyend,fldstudysample,fldstudycriteria,fldircconsentlink,fldconsentformlink,fldinterviewformlink,fldstatus from tblresearch where fldstudycode=&1", GridView1[GridView1.Row, 0].Text)                                                             ''
   If res.Available Then
-    txtstudycode.Text = res!fldstudycode
-    txtstudyname.Text = res!fldstudyname
-    txtstudylocation.Text = res!fldstudylocat
-    txtsample.Value = res!fldsamplesize
-    dtstart.Value = res!fldstudystart
-    dtend.Value = res!fldstudyend
-    txtallsample.Text = res!fldstudysample
-    txtsqltext.Text = res!fldstudycriteria
-    cmbstatus.Text = res!fldstatus
+    txtstudycode.Text = res["fldstudycode"]
+    txtstudyname.Text = res["fldstudyname"]
+    txtinvestigator.Text = res["fldstudylocat"]
+    ' txtsample.Value = res["fldsamplesize"]
+    dtstart.Value = res["fldstudystart"]
+    dtend.Value = res["fldstudyend"]
+    txtdescription.RichText = res["fldstudysample"]
+    ' txtsqltext.Text = res["fldstudycriteria"]
+    cmbstatus.Text = res["fldstatus"]
+
+    If res["fldircconsentlink"] Then
+      txtircform.Text = res["fldircconsentlink"]
+    Endif
+    If res["fldconsentformlink"] Then
+      txtconsentform.Text = res["fldconsentformlink"]
+    Endif
+    If res["fldinterviewformlink"] Then
+      txtinterviewform.Text = res["fldinterviewformlink"]
+    Endif
+
   Endif
-
-End
-
-Public Sub txtsqltext_KeyPress()
-
-  modGeneralMain.InsertTexEditortData(txtsqltext)
-
-End
-
-Public Sub txtallsample_KeyPress()
-
-  modGeneralMain.InsertTexEditortData(txtallsample)
 
 End
 
 Public Sub txtstudycode_KeyPress()
 
   modGeneralMain.InputTextKeyOnly()
+
+End
+
+Public Sub btncreateuser_Click()
+
+  fmStudent.Close
+  fmStudent.ShowModal
+
+End
+
+Public Sub GridView1_Menu()
+
+  mnuhide.Popup
+
+End
+
+Public Sub mnuaccess_Click()
+
+  Dim hForm As FmStudentAccess
+
+  If GridView1.Rows.Selection.Count Then
+    hForm = New FmStudentAccess(GridView1[GridView1.Row, 0].Text)
+    hForm.ShowModal
+  Endif
 
 End

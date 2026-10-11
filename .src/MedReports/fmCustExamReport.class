@@ -40,6 +40,9 @@ Public Sub Form_Open()
   cmbsubclass.List = GetCategoryList()
   dtfir.Value = Now()
   dtlast.Value = Now()
+  If MMain.$SISHAppMode = "HIS" And If modHelpVariable.$LogInCategory = "Student" Then
+    modResearch.GetResearchSettings(dtfir, dtlast)
+  Endif
 
   xhospfld = modDataRepo.HospitalField()
   $SSQLFields = ["fldid", "fldencounterval", "fldencounterval", modDataRepo.SerialField(), "fldencounterval", "fldencounterval", "fldtime", "fldhead", "fldabnormal", "fldrepquali"]

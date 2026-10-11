@@ -307,6 +307,8 @@ Private Sub CreateDatabaseForSish_Data($con As Connection)
 
   modDBTables.CREATEtblmedimage($con)
   modDBTables.CREATEtblelectrolyte($con)
+  modDBTables.CREATEtblstudent($con)
+  modDBTables.CREATEtblstudentaccess($con)
   modDBTables.CREATEtblresearch($con)
 
 End
@@ -1217,6 +1219,12 @@ Public Sub CreateRequiredTable($con As Connection, sTable As String)
 
   Else If sTable = "tblelectrolyte" Then
     modDBTables.CREATEtblelectrolyte($con)
+
+  Else If sTable = "tblstudent" Then
+    modDBTables.CREATEtblstudent($con)
+
+  Else If sTable = "tblstudentaccess" Then
+    modDBTables.CREATEtblstudentaccess($con)
 
   Else If sTable = "tblresearch" Then
     modDBTables.CREATEtblresearch($con)

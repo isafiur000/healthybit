@@ -24,6 +24,7 @@ Property FixedBackground As Integer
 Property ShowCursor As Boolean
 Property Mode As Integer
 Property Header As Integer
+Property RowHeight As Integer
 Property ScrollBar As Integer
 Property Row As Integer
 Property Column As Integer
@@ -319,5 +320,17 @@ Private Sub Font_Write(Value As Font)
 
   gvData.Font = Value
   gvFixed.Font = Value
+
+End
+
+Private Function RowHeight_Read() As Integer
+
+  Return $Form.RowHeight
+
+End
+
+Private Sub RowHeight_Write(Value As Integer)
+
+  $Form.RowHeight = Value
 
 End

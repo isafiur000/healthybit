@@ -1,0 +1,181 @@
+' Gambas class file
+
+Private $studtID As String
+Private $usrList As Variant[]
+Private pic1 As Picture
+Private pic2 As Picture
+
+Public Sub _new(studyId As String)
+
+  $studtID = studyId
+
+End
+
+Public Sub Form_Open()
+
+  modGeneralMain.ArrangeFormCentre(Me)
+  $usrList = GetUserList()
+  pic1 = Picture["icons/unchecked.png"]
+  pic2 = Picture["icons/checked.png"]
+
+End
+
+Public Sub Form_Close()
+
+  modGeneralMain.RecordFormExit(Me)
+
+End
+
+Private Function GetUserList() As Variant[]
+
+  Dim res As Result
+  Dim xList As Variant[]
+
+  xList = New Variant[]
+  res = modDatabase.$myConn.Exec("select flduserid,fldusername from tblstudent where fldstatus=&1", "Active")
+  If res.Available Then
+    For Each res
+      xList.Add([res["flduserid"], res["fldusername"]])
+    Next
+  Endif
+
+  Return xList
+
+End
+
+Public Sub btnadd_Click()
+
+  txtuserid.Text = MedicalSelectedUser("Research User", $usrList)
+  If txtuserid.Text Then
+    RefreshList()
+  Endif
+
+End
+
+Public Sub btnload_Click()
+
+  If txtuserid.Text Then
+    AddUserFormAccess(fmPatAdmit.Tag)
+    AddUserFormAccess(fmClinBedList.Tag)
+    AddUserFormAccess("Consultation List")
+    AddUserFormAccess("OPD Visit List")
+
+    AddUserFormAccess("Consult Report")
+    AddUserFormAccess("OP Visit Report")
+    AddUserFormAccess(fmClinSummary.Tag)
+    AddUserFormAccess(fmBedReport.Tag)
+    AddUserFormAccess(fmConfinement.Tag)
+
+    AddUserFormAccess(fmDiagnosisReport.Tag)
+    AddUserFormAccess(fmProcedReport.Tag)
+    AddUserFormAccess(fmEquipReport.Tag)
+    AddUserFormAccess("Event Report")
+    AddUserFormAccess(fmDrugSearch.Tag)
+    AddUserFormAccess(fmDietReport.Tag)
+
+    AddUserFormAccess(fmSampReport.Tag)
+    AddUserFormAccess(fmSensiReport.Tag)
+    AddUserFormAccess(fmSampRadio.Tag)
+    AddUserFormAccess(fmExamAll.Tag)
+    AddUserFormAccess(fmCustExamReport.Tag)
+
+    AddUserFormAccess(fmMedSearch.Tag)
+    AddUserFormAccess(fmMedStat.Tag)
+    AddUserFormAccess(fmPatclinSearch.Tag)
+    AddUserFormAccess(fmImageSearch.Tag)
+    AddUserFormAccess(fmPacsReport.Tag)
+    AddUserFormAccess(fmFIndRecord.Tag)
+
+    AddUserFormAccess(fmservreport.Tag)
+    AddUserFormAccess(fmGroupReport.Tag)
+    AddUserFormAccess(fmMasterReport.Tag)
+    AddUserFormAccess(fmGroupCateg.Tag)
+
+    AddUserFormAccess(fmPatBillRecord.Tag)
+    AddUserFormAccess(fmPatInvoiceReport.Tag)
+    AddUserFormAccess(fmDepositReport.Tag)
+    AddUserFormAccess(fmVoucherReport.Tag)
+
+    AddUserFormAccess(fmSupplier.Tag)
+    AddUserFormAccess(fmmedreport.Tag)
+    AddUserFormAccess(fmMedSales.Tag)
+    AddUserFormAccess(fmmedTransfer.Tag)
+
+    AddUserFormAccess(fmCusAccReport.Tag)
+    AddUserFormAccess("Query Report")
+    AddUserFormAccess(fmExportData.Tag)
+
+    AddUserFormAccess(fmPersonal.Tag)
+    AddUserFormAccess(fmMail.Tag)
+    AddUserFormAccess(fmStreaming.Tag)
+
+    RefreshList()
+  Endif
+
+End
+
+Private Sub AddUserFormAccess(formName As String)
+
+  Dim res As Result
+  Dim res1 As Result
+
+  res1 = modDatabase.$myConn.Exec("select fldid from tblstudentaccess where flduserid=&1 and fldstudycode=&2 and fldformname=&3", txtuserid.Text, $studtID, formName)
+  If res1.Available = False Then
+    res = modDatabase.$myConn.Create("tblstudentaccess")
+    res["flduserid"] = txtuserid.Text
+    res["fldstudycode"] = $studtID
+    res["fldformname"] = formName
+    res["fldstatus"] = "Inactive"
+    res.Update
+  Endif
+
+End
+
+Private Sub RefreshList()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Exec("select fldid,fldformname,fldstatus from tblstudentaccess where flduserid=&1 and fldstudycode=&2", txtuserid.Text, $studtID)                                        ''
+  ListView1.Clear
+  For Each res
+    If res["fldstatus"] = "Inactive" Then
+      ListView1.Add(CStr(res["fldid"]), res["fldformname"], pic1)
+    Else If res["fldstatus"] = "Active" Then
+      ListView1.Add(CStr(res["fldid"]), res["fldformname"], pic2)
+    Endif
+  Next
+
+End
+
+Public Sub cmdchange_Click()
+
+  RefreshList()
+
+End
+
+Public Sub btndel_Click()
+
+  If Message.Question(("Do you want to revoke all access?"), ("No"), ("Yes")) = 2 Then
+    modDatabase.$myConn.Delete("tblstudentaccess", "flduserid=&1 and fldstudycode=&2", txtuserid.Text, $studtID)
+    ListView1.Clear()
+    Balloon.Delete(("Information deleted"), btndel)
+    Balloon.Delay = modBasic.$BalloonDelay
+  Endif
+
+End
+
+Public Sub ListView1_Click()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Edit("tblstudentaccess", "fldid=&1", CInt(ListView1.Current.Key))
+  If ListView1.Current.Picture = pic1 Then
+    res["fldstatus"] = "Active"
+    ListView1.Current.Picture = pic2
+  Else If ListView1.Current.Picture = pic2 Then
+    res["fldstatus"] = "Inactive"
+    ListView1.Current.Picture = pic1
+  Endif
+  res.Update
+
+End

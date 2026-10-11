@@ -11,6 +11,7 @@ Public Sub GetDateRangeSetting(dtfir As DateBox, dtlast As DateBox)
         If dtfir.Value < DateAdd(Now(), gb.Year, -1) Then
           dtfir.Value = DateAdd(Now(), gb.Year, -1)
         Endif
+      Case "Student"
       Case Else
         If modHelpVariable.$SysSyncHost Then
         Else
@@ -32,6 +33,7 @@ Public Sub GetDateChooserRangeSetting(dtfir As DateChooser, dtlast As DateChoose
         If dtfir.Value < DateAdd(Now(), gb.Year, -1) Then
           dtfir.Value = DateAdd(Now(), gb.Year, -1)
         Endif
+      Case "Student"
       Case Else
         If modHelpVariable.$SysSyncHost Then
         Else

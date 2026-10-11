@@ -1,0 +1,145 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,99,48)
+  Tag = "Research Users"
+  Text = ("Research Users")
+  Resizable = False
+  Margin = True
+  { txtsearch TextBox
+    MoveScaled(1,1,17,3)
+  }
+  { txtuserid TextBox
+    MoveScaled(56,1,28.125,3.5)
+    Font = Font["Bold"]
+  }
+  { txtfullname TextBox
+    MoveScaled(56,5,40,3.5)
+  }
+  { txtpassword TextBox
+    MoveScaled(56,9,25.375,3.5)
+    Password = True
+  }
+  { dtfrom DateBox
+    MoveScaled(56,13,18.125,3.5)
+  }
+  { dtto DateBox
+    MoveScaled(78,13,18.125,3.5)
+  }
+  { cmbcategory ComboBox
+    MoveScaled(56,25,35,3.5)
+    Sorted = True
+  }
+  { txtusercode TextBox
+    MoveScaled(56,29,18.75,3.5)
+  }
+  { cmbstatus ComboBox
+    MoveScaled(56,37,18.75,3.5)
+  }
+  { btnOK Button
+    MoveScaled(45,44,11.25,3.25)
+    Text = Shortcut(("Add"), "A")
+    Picture = Picture["icon:/small/add"]
+  }
+  { btnChange Button
+    MoveScaled(74,44,11.25,3.25)
+    Text = Shortcut(("Edit"), "E")
+    Picture = Picture["icon:/small/edit"]
+  }
+  { btnCancel Button
+    MoveScaled(86,44,11.25,3.25)
+    Text = Shortcut(("Delete"), "D")
+    Picture = Picture["icon:/small/cancel"]
+  }
+  { Label2 Label
+    MoveScaled(45,1,10,3.375)
+    Border = Border.Plain
+    Text = ("User ID")
+  }
+  { GridView1 GridView
+    MoveScaled(1,5,42,42)
+    Mode = Select.Single
+    Header = GridView.Both
+    AutoResize = False
+  }
+  { btnAccess Button
+    MoveScaled(91,37,4,3)
+    Picture = Picture["icon:/small/add"]
+  }
+  { Label1 Label
+    MoveScaled(45,5,10,3.375)
+    Border = Border.Plain
+    Text = ("Full Name")
+  }
+  { Label3 Label
+    MoveScaled(45,9,10,3.375)
+    Border = Border.Plain
+    Text = ("Password")
+  }
+  { chkpass CheckBox
+    MoveScaled(86,9,10,3.5)
+    Enabled = False
+    Text = ("Reveal")
+  }
+  { lblcategory Label
+    MoveScaled(45,25,10,3.375)
+    Border = Border.Plain
+    Text = ("Role")
+  }
+  { Label11 Label
+    MoveScaled(45,13,10,3.375)
+    Border = Border.Plain
+    Text = ("Duration")
+  }
+  { Label12 Label
+    MoveScaled(74,13,4,3.375)
+    Alignment = Align.Center
+    Text = ("TO")
+  }
+  { Label16 Label
+    MoveScaled(45,29,10,3)
+    Border = Border.Plain
+    Text = ("User Code")
+  }
+  { Label14 Label
+    MoveScaled(84,37,6,3)
+    Border = Border.Plain
+    Text = ("Roles")
+  }
+  { Label19 Label
+    MoveScaled(45,37,10,3.375)
+    Border = Border.Plain
+    Text = ("Status")
+  }
+  { btnrandpass ToolButton
+    MoveScaled(82,9,3,3.5)
+    Picture = Picture["icon:/small/exec"]
+  }
+  { lblcategory2 Label
+    MoveScaled(45,17,10,3.375)
+    Border = Border.Plain
+    Text = ("Mobile")
+  }
+  { lblcategory3 Label
+    MoveScaled(45,21,10,3.375)
+    Border = Border.Plain
+    Text = ("E Mail")
+  }
+  { txtmobile TextBox
+    MoveScaled(56,17,40,3.5)
+  }
+  { txtemail TextBox
+    MoveScaled(56,21,40,3.5)
+  }
+  { txtsearchname TextBox
+    MoveScaled(19,1,24,3)
+  }
+  { Label4 Label
+    MoveScaled(45,33,10,3)
+    Border = Border.Plain
+    Text = ("Location")
+  }
+  { cmbcompid ComboBox
+    MoveScaled(56,33,18.75,3.5)
+  }
+}

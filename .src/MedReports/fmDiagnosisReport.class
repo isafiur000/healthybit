@@ -26,12 +26,12 @@ Public Sub Form_Open()
     Else
       cmblocation.List = ["Hospital", "Municipality", "Category", "District", "Province"]
     Endif
-    If MMain.$RepoReportMode = True Then
-      mnusearname.Visible = False
-    Endif
 
   Else
     pnlrep.Visible = False
+  Endif
+  If MMain.$RepoReportMode = True Then
+    mnusearname.Visible = False
   Endif
 
   cmbgender.List = ["Male", "Female", "Other", "%"]
@@ -39,6 +39,9 @@ Public Sub Form_Open()
 
   dtfir.Value = Now()
   dtlast.Value = Now()
+  If MMain.$SISHAppMode = "HIS" And If modHelpVariable.$LogInCategory = "Student" Then
+    modResearch.GetResearchSettings(dtfir, dtlast)
+  Endif
 
 End
 

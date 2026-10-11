@@ -1,0 +1,121 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,118.75,75)
+  Tag = "Research List"
+  Text = ("Research List")
+  Resizable = False
+  { mnuhide Menu
+    Text = ("File")
+    { mnuaccess Menu
+      Text = ("Study Access")
+    }
+  }
+  { Panel1 Panel
+    MoveScaled(0,0,117.5,74.375)
+    { Panel2 Panel
+      MoveScaled(1,0,116,36)
+      { txtstudycode TextBox
+        MoveScaled(13,1,19,3)
+      }
+      { txtstudyname TextBox
+        MoveScaled(13,5,60,3)
+      }
+      { txtinvestigator TextBox
+        MoveScaled(13,9,60,3)
+      }
+      { dtstart DateBox
+        MoveScaled(95,5,16,3)
+      }
+      { dtend DateBox
+        MoveScaled(95,9,16,3)
+      }
+      { txtconsentform ButtonBox
+        MoveScaled(13,13,41,3)
+        Picture = Picture["icon:/small/file"]
+      }
+      { txtinterviewform ButtonBox
+        MoveScaled(74,13,41,3)
+        Picture = Picture["icon:/small/file"]
+      }
+      { txtircform ButtonBox
+        MoveScaled(13,17,41,3)
+        Picture = Picture["icon:/small/file"]
+      }
+      { cmbstatus ComboBox
+        MoveScaled(74,17,20,3)
+      }
+      { btnBrOK Button
+        MoveScaled(95,17,10,3)
+        Tag = "Auto"
+        Text = Shortcut(("Add"), "A")
+        Picture = Picture["icon:/small/add"]
+      }
+      { btnedit Button
+        MoveScaled(106,17,9,3)
+        Text = Shortcut(("Edit"), "E")
+        Picture = Picture["icon:/small/edit"]
+      }
+      { Label2 Label
+        MoveScaled(0,5,12,3)
+        Border = Border.Plain
+        Text = ("Study Name")
+      }
+      { Label4 Label
+        MoveScaled(83,5,11,3)
+        Border = Border.Plain
+        Text = ("Start Date")
+      }
+      { Label5 Label
+        MoveScaled(83,9,11,3)
+        Border = Border.Plain
+        Text = ("End Date")
+      }
+      { Label11 Label
+        MoveScaled(0,9,12,3)
+        Border = Border.Plain
+        Text = ("Investigator")
+      }
+      { Label9 Label
+        MoveScaled(0,13,12,3)
+        Border = Border.Plain
+        Text = ("Consent")
+      }
+      { Label8 Label
+        MoveScaled(0,17,12,3)
+        Border = Border.Plain
+        Text = ("Approval")
+      }
+      { Label10 Label
+        MoveScaled(59,13,14,3)
+        Border = Border.Plain
+        Text = ("Data Tools")
+      }
+      { Label6 Label
+        MoveScaled(59,17,14,3)
+        Border = Border.Plain
+        Text = ("Curr Status")
+      }
+      { Label1 Label
+        MoveScaled(0,1,12,3)
+        Border = Border.Plain
+        Text = ("Study Code")
+      }
+      { btncreateuser Button
+        MoveScaled(91,1,24,3)
+        Text = ("Create Users")
+        Picture = Picture["icon:/small/user"]
+      }
+      { txtdescription TextHTML
+        MoveScaled(0,21,115,14)
+      }
+    }
+    { GridView1 GridView
+      MoveScaled(1,39,115,34)
+      Expand = True
+      Mode = Select.Single
+      Header = GridView.Both
+      AutoResize = False
+    }
+  }
+}

@@ -28,12 +28,12 @@ Public Sub Form_Open()
     Endif
     mnuhospsumm.Visible = True
     mnuhospdate.Visible = True
-    If MMain.$RepoReportMode = True Then
-      mnusearname.Visible = False
-    Endif
 
   Else
     pnlocat.Visible = False
+  Endif
+  If MMain.$RepoReportMode = True Then
+    mnusearname.Visible = False
   Endif
 
   cmbcolumn.List = ["Presentation", "Complication"]
@@ -46,6 +46,9 @@ Public Sub Form_Open()
 
   dtfir.Value = Now()
   dtlast.Value = Now()
+  If MMain.$SISHAppMode = "HIS" And If modHelpVariable.$LogInCategory = "Student" Then
+    modResearch.GetResearchSettings(dtfir, dtlast)
+  Endif
 
 End
 
@@ -223,6 +226,8 @@ Private Function ExecuteQuery(xFldList As String[], Optional sGroup As String) A
   Dim xquery As String
   Dim res As Result
   Dim xgroup As String
+  Dim xhideTab As String[]
+  Dim xhide As String
 
   If sGroup Then
     xgroup = " GROUP BY " & sGroup
@@ -243,7 +248,12 @@ Private Function ExecuteQuery(xFldList As String[], Optional sGroup As String) A
     Else
       xquery = ""
     Endif
+
     sql = "select " & xFldList.Join(",") & " from tblconfinement where flddeltime>=&1 and flddeltime<=&2" & xquery & $RepoStr & xgroup
+    xhideTab = modBasic.$RepHideTables
+    For Each xhide In xhideTab
+      sql = Replace(sql, xhide, "<Unauthorized>")
+    Next
     res = modDatabase.$syConn.Exec(sql, modDate.StartSqlDate(dtfir.value), modDate.EndSqlDate(dtlast.value))
   Else
 

@@ -244,13 +244,13 @@
           Arrangement = Arrange.Vertical
           { Panel15 Panel
             MoveScaled(0,0,23,4)
-            { txtgrpsearch TextBox
-              MoveScaled(0.5,0.5,11,3)
-            }
             { btnaddgrp Button
-              MoveScaled(13.5,0.5,9,3)
+              MoveScaled(12,0.5,11,3)
               Text = ("Add")
               Picture = Picture["icon:/small/add"]
+            }
+            { txtgrpsearch TextBox
+              MoveScaled(0,0.5,11,3)
             }
           }
           { lstgroup ListBox
@@ -278,6 +278,14 @@
             { btngrpdelete ToolButton
               MoveScaled(79,0.5,4,3)
               Picture = Picture["icon:/small/delete"]
+            }
+            { chkallservice CheckBox
+              MoveScaled(1,0.5,14,3)
+              Text = ("All Services")
+            }
+            { chkallpharm CheckBox
+              MoveScaled(16,0.5,15,3)
+              Text = ("All Pharmacy")
             }
           }
           { GridView4 GridView

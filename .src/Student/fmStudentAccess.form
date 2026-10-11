@@ -1,0 +1,31 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,51,52)
+  Text = ("User Authorization")
+  Resizable = False
+  { cmdchange Button
+    MoveScaled(28,46,16,4)
+    Text = Shortcut(("Change"), "C")
+    Picture = Picture["icon:/small/edit"]
+  }
+  { btndel Button
+    MoveScaled(45,46,5,4)
+    Picture = Picture["icon:/small/clear"]
+  }
+  { ListView1 ListView
+    MoveScaled(1,5,49,40)
+    Mode = Select.Multiple
+  }
+  { txtuserid TextBox
+    MoveScaled(1,1,26,3)
+  }
+  { btnadd Button
+    MoveScaled(28,1,4,3)
+    Picture = Picture["icon:/small/add"]
+  }
+  { btnload Button
+    MoveScaled(36,1,14,3)
+    Text = ("Load List")
+  }
+}

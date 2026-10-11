@@ -1,0 +1,310 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,117,53)
+  Text = ("Research Desk")
+  Border = False
+  Arrangement = Arrange.Vertical
+  { mnurepo Menu
+    Text = ("Patient")
+    Enabled = False
+    { mnudept Menu
+      Text = ("Visit Master")
+    }
+    { mnubedocc Menu
+      Text = ("Bed Occupancy")
+    }
+    { mnuopdlist Menu
+      Text = ("Consultation")
+    }
+    { mnuopvisit Menu
+      Text = ("OP Visits")
+    }
+  }
+  { mnuservreport Menu
+    Text = ("Service")
+    Enabled = False
+    { mnuconsreport Menu
+      Text = ("Consultations")
+    }
+    { mnuopvisits Menu
+      Text = ("OP Services")
+    }
+    { mnuipdates Menu
+      Text = ("IP Events")
+    }
+    { mnutrans Menu
+      Text = ("Transitions")
+    }
+    { mnuconfine Menu
+      Text = ("Confinement")
+    }
+  }
+  { mnuclinical Menu
+    Text = ("Clinical")
+    Enabled = False
+    { mnudiagnosis Menu
+      Text = ("Diagnosis")
+    }
+    { mnuprocerepo Menu
+      Text = ("Procedures")
+    }
+    { mnuequiprepo Menu
+      Text = ("Equipments")
+    }
+    { mnuDevice Menu
+      Text = ("Device Usage")
+    }
+    { mnumedquery Menu
+      Text = ("Prescriptions")
+    }
+    { mnunutrition Menu
+      Text = ("Nutrition")
+    }
+  }
+  { mnudiagno Menu
+    Text = ("Diagno")
+    Enabled = False
+    { mnuexamall Menu
+      Text = ("Examination")
+    }
+    { mnucustdept Menu
+      Text = ("Structured")
+    }
+    { mnulabrep Menu
+      Text = ("Laboratory")
+    }
+    { mnusensireport Menu
+      Text = ("Sensitivity")
+    }
+    { mnuradiorep Menu
+      Text = ("Radiology")
+    }
+  }
+  { mnuqueryall Menu
+    Text = ("Query")
+    Enabled = False
+    Radio = True
+    { mnurecord Menu
+      Text = ("Medical Report")
+    }
+    { mnuquery Menu
+      Text = ("Medical Query")
+    }
+    { mnuclinsearch Menu
+      Text = ("Text Search")
+    }
+    { mnuimagesearch Menu
+      Text = ("Image Search")
+    }
+    { mnupacsrepo Menu
+      Text = ("Dicom DB")
+    }
+    { mnusearchdb Menu
+      Text = ("Search DB")
+    }
+  }
+  { mnucustreport Menu
+    Text = ("SQL Forms")
+    Enabled = False
+    { mnucust1 Menu
+      Text = ("CustomQuery1")
+      Enabled = False
+    }
+    { mnucust2 Menu
+      Text = ("CustomQuery2")
+      Enabled = False
+    }
+    { mnucust3 Menu
+      Text = ("CustomQuery3")
+      Enabled = False
+    }
+    { mnucust4 Menu
+      Text = ("CustomQuery4")
+      Enabled = False
+    }
+    { mnucust5 Menu
+      Text = ("CustomQuery5")
+      Enabled = False
+    }
+    { mnucustsetting Menu
+      Text = ("SQL Reports")
+    }
+  }
+  { mnusett Menu
+    Text = ("Settings")
+    { mnuwebcam Menu
+      Text = ("Device Setting")
+    }
+    { mnuchartset Menu
+      Text = ("Chart Setting")
+    }
+    { mnubilprtset Menu
+      Text = ("Report Setting")
+    }
+    { mnuappset Menu
+      Text = ("App Setting")
+    }
+    { mnuprinter Menu
+      Text = ("Printers")
+      Picture = Picture["icon:/small/print"]
+    }
+  }
+  { mnuextra Menu
+    Text = ("Extra")
+    { mnupersonal Menu
+      Text = ("Personal Page")
+      Picture = Picture["icon:/small/people"]
+      Tag = "Personal Page"
+    }
+    { mnumlanalysis Menu
+      Text = ("ML Analysis")
+    }
+    { mnubrowser Menu
+      Text = ("Open Browser")
+      Picture = Picture["icon:/small/html"]
+    }
+    { mnuscript Menu
+      Text = ("Script Editor")
+    }
+    { mnumail Menu
+      Text = ("User Message")
+      Picture = Picture["icon:/small/mail"]
+    }
+    { mnunotice Menu
+      Text = ("Notification")
+    }
+    { mnuremoaccess Menu
+      Text = ("Remote Access")
+    }
+    { mnusearrepo Menu
+      Text = ("Search Report")
+    }
+    { mnuembedder Menu
+      Text = ("External App")
+    }
+    { mnutranslate Menu
+      Text = ("Translate Text")
+    }
+    { mnurightweb Menu
+      Text = ("Right Panel Page")
+    }
+    { mnuscreen Menu
+      Text = ("Screen Shot")
+      Picture = Picture["icon:/small/camera"]
+    }
+    { mnuplaymedia Menu
+      Text = ("Play Media")
+      Picture = Picture["icon:/small/multimedia"]
+    }
+    { mnulock Menu
+      Text = ("Lock")
+      Picture = Picture["icon:/small/lock"]
+      Shortcut = "Ctrl+L"
+    }
+  }
+  { mnuhelp Menu
+    Text = ("Help")
+    { mnuseract Menu
+      Text = ("User Activity")
+      Picture = Picture["icon:/small/grid"]
+    }
+    { mnuclrcache Menu
+      Text = ("Clear Cache")
+    }
+    { mnugodebug Menu
+      Text = ("Debug On")
+    }
+    { mnunewextra Menu
+      Text = ("Help Page")
+      Picture = Picture["icon:/small/help"]
+      Shortcut = "Ctrl+H"
+    }
+    { mnubugreport Menu
+      Text = ("Bug Report")
+      Picture = Picture["icon:/small/mail"]
+    }
+    { mnuexit Menu
+      Text = ("Exit")
+      Picture = Picture["icon:/small/cancel"]
+    }
+  }
+  { mnufile Menu
+    Visible = False
+    { mnubackground Menu
+      Text = ("Set Background")
+    }
+  }
+  { pnltop Panel
+    MoveScaled(0,0,96,5)
+  }
+  { Panel6 Panel
+    MoveScaled(0,5,96,3)
+    Arrangement = Arrange.Horizontal
+    { Label1 Label
+      MoveScaled(0,0,12,3)
+      Border = Border.Plain
+      Text = ("Study Code")
+    }
+    { txtstudycode TextBox
+      MoveScaled(12,0,24,3)
+    }
+    { btnshowmenu Button
+      MoveScaled(37,0,17,3)
+      Text = ("Refresh")
+    }
+  }
+  { Panel1 Panel
+    MoveScaled(0,11,96,23)
+    Expand = True
+    Arrangement = Arrange.Horizontal
+    { pnlleft Panel
+      MoveScaled(0,1,19,21)
+      Arrangement = Arrange.Vertical
+    }
+    { !Workspace1 Workspace
+      MoveScaled(21,1,35,20)
+      #Public = True
+    }
+    { pnlright Panel
+      MoveScaled(73,1,19,21)
+      Arrangement = Arrange.Vertical
+    }
+  }
+  { Panel2 Panel
+    MoveScaled(0,34,61,2.5)
+    Arrangement = Arrange.Horizontal
+    { Panel3 Panel
+      MoveScaled(1,0,1.875,2.5)
+    }
+    { Panel4 Panel
+      MoveScaled(5,0,45,2.5)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      { pnlbottom Panel
+        MoveScaled(2,0,37,2.5)
+        Arrangement = Arrange.Vertical
+        { !ProgressBar1 ProgressBar
+          MoveScaled(0,0,31,1.875)
+          #Public = True
+          Visible = False
+        }
+      }
+    }
+    { Panel5 Panel
+      MoveScaled(54,0,1.875,2.5)
+    }
+  }
+  { txtpatno TextBox
+    MoveScaled(1,44,10,3)
+    Visible = False
+  }
+  { !ServerSocket1 #ServerSocket
+    #MoveScaled(14,42)
+    #Public = True
+  }
+  { !ServerSocket2 #ServerSocket
+    #MoveScaled(21,42)
+    #Public = True
+  }
+}

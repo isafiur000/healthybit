@@ -1377,10 +1377,16 @@ Public Function GetAddColumnsList() As String[]
 
   xxx = New String[]
   xxx.Add("{PatientNo}")
-  xxx.Add("{PatientFileNo}")
-  xxx.Add("{PatientName}")
-  xxx.Add("{PatientEthnicity}")
 
+  If modHelpVariable.$LogInCategory = "Student" Then
+  Else
+    xxx.Add("{PatientFileNo}")
+    xxx.Add("{PatientName}")
+    xxx.Add("{E-Mail}")
+    xxx.Add("{ContactNo}")
+  Endif
+
+  xxx.Add("{PatientEthnicity}")
   xxx.Add("{PatientGender}")
   xxx.Add("{Age/Sex}")
   xxx.Add("{PatientDOB}")
@@ -1396,8 +1402,6 @@ Public Function GetAddColumnsList() As String[]
   xxx.Add("{PatientProvince}")
   xxx.Add("{PatientGuardian}")
   xxx.Add("{PatientRelation}")
-  xxx.Add("{E-Mail}")
-  xxx.Add("{ContactNo}")
   xxx.Add("{PatientCode}")
 
   xxx.Add("{ServiceType}")

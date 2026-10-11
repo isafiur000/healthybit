@@ -1,5 +1,18 @@
 ' Gambas module file
 
+Public $dtStart As Date
+Public $dtEnd As Date
+
+Public Sub GetResearchSettings(dtfir As DateBox, dtlast As DateBox)
+
+  modBasic.$PatNameFormat = "Encrypted"
+  dtfir.Value = $dtStart
+  dtfir.Enabled = False
+  dtlast.Value = $dtEnd
+  dtlast.Enabled = False
+
+End
+
 Public Function GetStudyTitle(studycode As String) As String
 
   Dim res As Result
@@ -19,7 +32,7 @@ Public Function GetStudyTitle(studycode As String) As String
 
 End
 
-Public Function GetStudyGroup(studycode As String) As String
+Public Function GetStudyInvestigator(studycode As String) As String
 
   Dim res As Result
   Dim xx As String
@@ -38,15 +51,15 @@ Public Function GetStudyGroup(studycode As String) As String
 
 End
 
-Public Function GetStudySelection(studycode As String) As String
+Public Function GetStudyDescription(studycode As String) As String
 
   Dim res As Result
   Dim xx As String
 
-  res = modDatabase.$medConn.Exec("select fldstudycriteria from tblresearch where fldstudycode=&1", studycode)
+  res = modDatabase.$medConn.Exec("select fldstudysample from tblresearch where fldstudycode=&1", studycode)
   If res.Available Then
-    If res["fldstudycriteria"] Then
-      xx = res["fldstudycriteria"]
+    If res["fldstudysample"] Then
+      xx = res["fldstudysample"]
     Else
       xx = ""
     Endif

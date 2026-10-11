@@ -25,6 +25,8 @@ Public Sub SetReportServer(LogInType As String)
       modDatabase.$syConn = modDatabase.$readConn
     Else If LoginType = "Research" Then
       modDatabase.$syConn = modDatabase.$slaveConn
+    Else If LoginType = "Student" Then
+      modDatabase.$syConn = modDatabase.$slaveConn
     Else If LoginType = "Purchase" Then
       modDatabase.$syConn = modDatabase.$slaveConn
     Else If LoginType = "Store" Then
@@ -109,6 +111,8 @@ Public Function FindWorkProgressBar(LogInType As String) As ProgressBar
       xx = fmOfficer.ProgressBar1
     Else If LoginType = "Research" Then
       xx = fmResearch.ProgressBar1
+    Else If LoginType = "Student" Then
+      xx = fmResearch.ProgressBar1
     Else If LoginType = "Purchase" Then
       xx = fmPurchase.ProgressBar1
     Else If LoginType = "Store" Then
@@ -187,6 +191,8 @@ Public Function FindWorSpace(LoginType As String) As Workspace
       xx = fmOfficer.Workspace1
     Else If LoginType = "Research" Then
       xx = fmResearch.Workspace1
+    Else If LoginType = "Student" Then
+      xx = fmStudentMain.Workspace1
     Else If LoginType = "Purchase" Then
       xx = fmPurchase.Workspace1
     Else If LoginType = "Store" Then
@@ -235,6 +241,82 @@ Public Function FindWorSpace(LoginType As String) As Workspace
     Else If LoginType = "Record" Then
       xx = fmRecord.Workspace1
     Endif
+  Endif
+
+  Return xx
+
+End
+
+Public Function FindServerSocket(LoginType As String) As ServerSocket
+
+  Dim xx As ServerSocket
+
+  If LoginType = "Account" Then
+    xx = fmAccount.ServerSocket1
+  Else If LoginType = "Cashier" Then
+    xx = fmCashier.ServerSocket1
+  Else If LoginType = "Record" Then
+    xx = fmRecord.ServerSocket1
+  Else If LoginType = "Medical" Then
+    xx = fmMedical.ServerSocket1
+  Else If LoginType = "Technologist" Then
+    xx = fmTechnologist.ServerSocket1
+  Else If LoginType = "Technician" Then
+    xx = fmTechnician.ServerSocket1
+  Else If LoginType = "Consultant" Then
+    xx = fmConsultant.ServerSocket1
+  Else If LoginType = "Clinician" Then
+    xx = fmOfficer.ServerSocket1
+  Else If LoginType = "Research" Then
+    xx = fmResearch.ServerSocket1
+  Else If LoginType = "Student" Then
+    xx = fmStudentMain.ServerSocket1
+  Else If LoginType = "Purchase" Then
+    xx = fmPurchase.ServerSocket1
+  Else If LoginType = "Store" Then
+    xx = fmStore.ServerSocket1
+  Else If LoginType = "Pharmacist" Then
+    xx = fmPharmacist.ServerSocket1
+  Else If LoginType = "Dispensar" Then
+    xx = fmDispensar.ServerSocket1
+  Endif
+
+  Return xx
+
+End
+
+Public Function FindTransferSocket(LoginType As String) As ServerSocket
+
+  Dim xx As ServerSocket
+
+  If LoginType = "Account" Then
+    xx = fmAccount.ServerSocket2
+  Else If LoginType = "Cashier" Then
+    xx = fmCashier.ServerSocket2
+  Else If LoginType = "Record" Then
+    xx = fmRecord.ServerSocket2
+  Else If LoginType = "Medical" Then
+    xx = fmMedical.ServerSocket2
+  Else If LoginType = "Technologist" Then
+    xx = fmTechnologist.ServerSocket2
+  Else If LoginType = "Technician" Then
+    xx = fmTechnician.ServerSocket2
+  Else If LoginType = "Consultant" Then
+    xx = fmConsultant.ServerSocket2
+  Else If LoginType = "Clinician" Then
+    xx = fmOfficer.ServerSocket2
+  Else If LoginType = "Research" Then
+    xx = fmResearch.ServerSocket2
+  Else If LoginType = "Student" Then
+    xx = fmStudentMain.ServerSocket2
+  Else If LoginType = "Purchase" Then
+    xx = fmPurchase.ServerSocket2
+  Else If LoginType = "Store" Then
+    xx = fmStore.ServerSocket2
+  Else If LoginType = "Pharmacist" Then
+    xx = fmPharmacist.ServerSocket2
+  Else If LoginType = "Dispensar" Then
+    xx = fmDispensar.ServerSocket2
   Endif
 
   Return xx
@@ -353,78 +435,6 @@ Public Sub GetMessaging(SvrSock As ServerSocket)
 
 Catch
   modBasic.DebugString(Error.Text)
-
-End
-
-Public Function FindServerSocket(LoginType As String) As ServerSocket
-
-  Dim xx As ServerSocket
-
-  If LoginType = "Account" Then
-    xx = fmAccount.ServerSocket1
-  Else If LoginType = "Cashier" Then
-    xx = fmCashier.ServerSocket1
-  Else If LoginType = "Record" Then
-    xx = fmRecord.ServerSocket1
-  Else If LoginType = "Medical" Then
-    xx = fmMedical.ServerSocket1
-  Else If LoginType = "Technologist" Then
-    xx = fmTechnologist.ServerSocket1
-  Else If LoginType = "Technician" Then
-    xx = fmTechnician.ServerSocket1
-  Else If LoginType = "Consultant" Then
-    xx = fmConsultant.ServerSocket1
-  Else If LoginType = "Clinician" Then
-    xx = fmOfficer.ServerSocket1
-  Else If LoginType = "Research" Then
-    xx = fmResearch.ServerSocket1
-  Else If LoginType = "Purchase" Then
-    xx = fmPurchase.ServerSocket1
-  Else If LoginType = "Store" Then
-    xx = fmStore.ServerSocket1
-  Else If LoginType = "Pharmacist" Then
-    xx = fmPharmacist.ServerSocket1
-  Else If LoginType = "Dispensar" Then
-    xx = fmDispensar.ServerSocket1
-  Endif
-
-  Return xx
-
-End
-
-Public Function FindTransferSocket(LoginType As String) As ServerSocket
-
-  Dim xx As ServerSocket
-
-  If LoginType = "Account" Then
-    xx = fmAccount.ServerSocket2
-  Else If LoginType = "Cashier" Then
-    xx = fmCashier.ServerSocket2
-  Else If LoginType = "Record" Then
-    xx = fmRecord.ServerSocket2
-  Else If LoginType = "Medical" Then
-    xx = fmMedical.ServerSocket2
-  Else If LoginType = "Technologist" Then
-    xx = fmTechnologist.ServerSocket2
-  Else If LoginType = "Technician" Then
-    xx = fmTechnician.ServerSocket2
-  Else If LoginType = "Consultant" Then
-    xx = fmConsultant.ServerSocket2
-  Else If LoginType = "Clinician" Then
-    xx = fmOfficer.ServerSocket2
-  Else If LoginType = "Research" Then
-    xx = fmResearch.ServerSocket2
-  Else If LoginType = "Purchase" Then
-    xx = fmPurchase.ServerSocket2
-  Else If LoginType = "Store" Then
-    xx = fmStore.ServerSocket2
-  Else If LoginType = "Pharmacist" Then
-    xx = fmPharmacist.ServerSocket2
-  Else If LoginType = "Dispensar" Then
-    xx = fmDispensar.ServerSocket2
-  Endif
-
-  Return xx
 
 End
 
