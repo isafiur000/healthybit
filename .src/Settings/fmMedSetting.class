@@ -834,6 +834,7 @@ End
 Private Sub MLOutputResponse()
 
   modSettings.ShowCheckBox(chkmatchdiagnosis, "MLClinic/Pre-Match_Diagnosis")
+  modSettings.ShowCheckBox(chkrecommdiagnosis, "MLClinic/Recommend_ICDDiagnosis")
 
 End
 
@@ -841,6 +842,14 @@ Public Sub btnmatchdiagno_Click()
 
   modSettings.EnterCheckSetting(chkmatchdiagnosis, "MLClinic/Pre-Match_Diagnosis")
   Balloon.Info(("Information saved"), btnmatchdiagno)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnrecomdiagno_Click()
+
+  modSettings.EnterCheckSetting(chkrecommdiagnosis, "MLClinic/Recommend_ICDDiagnosis")
+  Balloon.Info(("Information saved"), btnrecomdiagno)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

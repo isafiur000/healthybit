@@ -517,9 +517,10 @@ Public Sub btnshow_Click()
               Else
                 $frmshow = False
               Endif
-              If modBasic.$BillCreditAPICheck = "Enable" Then
-                GetCreditLimitUpdate(Trim(txtencid.Text), resx["fldreference"], txtreference.Text, $DiscPackage)
-              Endif
+              Select modBasic.$BillCreditAPICheck
+                Case "Enable", "Force"
+                  GetCreditLimitUpdate(Trim(txtencid.Text), resx["fldreference"], txtreference.Text, $DiscPackage, modBasic.$BillCreditAPICheck)
+              End Select
             Endif
           Endif
           ''BillType
@@ -5577,9 +5578,10 @@ Public Sub mnumedhilimit_Click()
 
 End
 
-Public Sub GetCreditLimitUpdate(encid As String, sRefType As String, sClaimCode As String, DiscType As String)
+Public Sub GetCreditLimitUpdate(encid As String, sRefType As String, sClaimCode As String, DiscType As String, Optional sMode As String)
 
   Dim xmsg As Variant[]
+  Dim xallow As Boolean
 
   Dim xcredamt As Float
   Dim xexpdate As Date
@@ -5587,6 +5589,7 @@ Public Sub GetCreditLimitUpdate(encid As String, sRefType As String, sClaimCode 
   Dim crdtot As Float
   Dim res As Result
 
+  xallow = False
   If DiscType Then
     If sRefType = "Claim Code" Then
       xmsg = modClaim.CheckFixedIMISValues(encid, sClaimCode, DiscType)
@@ -5616,7 +5619,16 @@ Public Sub GetCreditLimitUpdate(encid As String, sRefType As String, sClaimCode 
     If xcredamt Then
       crdtot = xcredamt + modNonMedical.TotalClaimedCreditExpensebyPatient(modDatabase.$myConn, encid)
       If txtcreditlimit.Value > crdtot Then
-        If Message.Warning("Creidt Limit has Changed. Do you want to correct ?", ("No"), ("Yes")) = 2 Then
+        If sMode = "Force" Then
+          xallow = True
+          Message.Info("Correcting Credit Limit", "OK")
+        Else
+          If Message.Warning("Creidt Limit has Changed. Do you want to correct ?", ("No"), ("Yes")) = 2 Then
+            xallow = True
+          Endif
+        Endif
+
+        If xallow = True Then
           res = modDatabase.$myConn.Edit("tblencounter", "fldencounterval=&1", Trim(txtencid.Text))
           res["fldcashcredit"] = crdtot
           res["fldvalidity"] = xexpdate

@@ -1,0 +1,145 @@
+' Gambas class file
+
+Private $Conn As Connection
+Private $sValue As String[]
+
+Private $ModelLst As String[]
+Private $xVar As Variant[]
+
+Private $rData As Result
+Private $aMyFields As String[]
+
+Public Sub Run(sConn As Connection) As String[]
+
+  $Conn = sConn
+  If Me.ShowModal() Then Return $sValue
+
+End
+
+Public Sub Form_Open()
+
+  modGeneralMain.ArrangeFormCentre(Me, "False")
+  $ModelLst = modMLModels.GetAIModelsList("search_diagnosis")
+  $sValue = New String[]
+  txtname.SetFocus
+
+End
+
+Public Sub btnload_Click()
+
+  Dim xinput As String
+  Dim xout As String
+  Dim xVar As Variant[]
+  Dim xList As String[]
+
+  Dim asx As String[]
+  Dim bsx As String[]
+  Dim Row As Integer
+
+  Dim sCode As String
+  Dim xprob As String
+  Dim xname As String
+
+  If txtname.Text Then
+    xinput = Trim(txtname.Text)
+
+    If $ModelLst.Count Then
+      Inc Application.Busy
+      xout = Trim(modMLModels.GeAItModelValueArguments($ModelLst[0], [xinput]))
+      Dec Application.Busy
+
+      xVar = New Variant[]
+      If xout Then
+        asx = Split(xout, gb.NewLine)
+        For Row = 0 To asx.Count - 1
+          bsx = Split(asx[Row], ":")
+          If bsx.Count = 3 Then
+            xname = Trim(bsx[0])
+            sCode = Trim(Replace(bsx[1], "Score", ""))
+            xprob = Trim(bsx[2])
+            xVar.Add([xname, sCode, xprob])
+          Endif
+        Next
+      Endif
+
+      $xVar = xVar
+      FillICDGrid()
+
+    Else
+      xList = [xinput, "Other"]
+      $sValue = xList
+      Me.Close(True)
+    Endif
+  Endif
+
+End
+
+Private Sub FillICDGrid()
+
+  GridView1.Clear()
+  GridView1.Rows.Count = $xVar.Count
+  GridView1.Columns.Count = 3
+
+  With GridView1
+    .Rows.Height = modBasic.$AppGridRowHeight
+    .Columns[1].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[2].Width = 75 * modBasic.$AppWidthRatio
+    .Columns[0].Width = GridView1.Width - 160 * modBasic.$AppWidthRatio
+
+    .Columns[0].Text = "Particulars"
+    .Columns[1].Text = "Code"
+    .Columns[2].Text = "Prob"
+  End With
+
+End
+
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  modGeneralMain.GridViewDecoration(GridView1, Row)
+  GridView1.Data.Text = $xVar[Row][Column]
+  GridView1.Rows[Row].Height = Max(GridView1.Rows[Row].Height, GridView1.Data.Font.RichTextHeight(GridView1.Data.Text, GridView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView1.Rows.Height - GridView1.Font.Height))
+  GridView1.Data.WordWrap = True
+
+End
+
+Public Sub GridView1_KeyRelease()
+
+  Dim xxx As String[]
+
+  If Key.Code = Key.Return Or If Key.Code = Key.Enter Or If Key.Code = Key.AltKey Then
+    If GridView1.Rows.Selection.Count Then
+      xxx = New String[]
+      If chkusecustom.Value = True Then
+        xxx.Add(Trim(txtname.Text))
+      Else
+        xxx.Add(GridView1[GridView1.Row, 0].Text)
+      Endif
+      xxx.Add(GridView1[GridView1.Row, 1].Text)
+      $sValue = xxx
+      Me.Close(True)
+    Endif
+  Endif
+
+End
+
+Public Sub btnsave_Click()
+
+  Dim xxx As String[]
+
+  If txtname.Text Then
+    If GridView1.Rows.Selection.Count Then
+      xxx = New String[]
+      If chkusecustom.Value = True Then
+        xxx.Add(Trim(txtname.Text))
+      Else
+        xxx.Add(GridView1[GridView1.Row, 0].Text)
+      Endif
+      xxx.Add(GridView1[GridView1.Row, 1].Text)
+      $sValue = xxx
+      Me.Close(True)
+    Endif
+  Else
+    Me.Close
+  Endif
+
+End

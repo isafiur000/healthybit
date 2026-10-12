@@ -1,0 +1,37 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,83,60)
+  Text = ("Custom ICD Diagnosis")
+  Resizable = False
+  Arrangement = Arrange.Vertical
+  Margin = True
+  { Panel1 Panel
+    MoveScaled(0,0,82,3.5)
+    { txtname TextBox
+      MoveScaled(0,0,59,3)
+    }
+    { btnload Button
+      MoveScaled(60,0,10,3)
+      Text = ("Load")
+    }
+    { btnsave Button
+      MoveScaled(71,0,10,3)
+      Text = ("Save")
+      Cancel = True
+    }
+  }
+  { GridView1 GridView
+    MoveScaled(0,4.5,82,51)
+    Mode = Select.Single
+    Header = GridView.Horizontal
+    AutoResize = False
+  }
+  { Panel2 Panel
+    MoveScaled(0,56,82,4)
+    { chkusecustom CheckBox
+      MoveScaled(1,0.5,19,3)
+      Text = ("Use Custom Text")
+    }
+  }
+}

@@ -1239,9 +1239,19 @@ Public Sub btndismanual_Click()
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[1], txtbedno.Text)
       Endif
     Else
-      xx = InputBox(("Enter custom Provisional Diagnosis"), ("Provisional Diagnosis"), "")
-      If xx Then
-        modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), xx, "Other", "Other", txtbedno.Text)
+      If modSettings.ShowSettingFromFIle("MLClinic/Recommend_ICDDiagnosis") = "Yes" Then
+        sName = CustomICD(modDatabase.$icdConn)
+      Else
+        xx = InputBox(("Enter custom Provisional Diagnosis"), ("Provisional Diagnosis"), "")
+        If xx Then
+          sName = [xx, "Other"]
+        Endif
+      Endif
+
+      If sName Then
+        If sName[1] And If sName[0] Then
+          modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], "Other", txtbedno.Text)
+        Endif
       Endif
     Endif
     xallrg = modPatientGeneral.SetPatientFindingTree(Trim(txtencid.Text), lsticdisease, chkalldiagno.Value, chkdifdiag.Value)
