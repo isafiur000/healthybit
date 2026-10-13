@@ -2,6 +2,7 @@
 
 Private $rData As Result
 Private $aMyFields As String[]
+Private $diagnoPanel As String
 
 Private $rData1 As Result
 Private $aMyFields1 As String[]
@@ -167,7 +168,10 @@ Public Sub chkok_Click()
   modMisc.GetDateRangeSetting(dtfir, dtlast)
 
   Inc Application.Busy
-  FillGridView()
+  If cmbaccount.Text Then
+    $diagnoPanel = modNonMedical.GetDiagnosisByAccount(cmbaccount.Text)
+    FillGridView()
+  Endif
   Dec Application.Busy
 
 End
@@ -781,7 +785,7 @@ Public Sub btnaddicd_Click()
 
   If txtgridencid.Text Then
     If btnconsult.Tag Then
-      sName = ICDGridView("Select Diseases")
+      sName = ICDGridView("Select Diseases", $diagnoPanel)
       If sName Then
         txtsearch.Text = sName[0]
         txtcode.Text = sName[1]

@@ -18,6 +18,7 @@ Private $vidRoom As String
 Private $VidIndex As String
 Private $SyndroType As String
 Private $isAdmited As Boolean
+Private $diagnoPanel As String
 
 Private $ExamLst As String[]
 Private $RuleChartLst As String[]
@@ -526,11 +527,14 @@ End
 Private Sub BasicInfoPatient()
 
   Dim xallrg As Boolean
+  Dim xscheme As String
 
   If txtencid.Text Then
     modRepository.$RepoDataStatus = False
+    xscheme = modPatient.ShowDiscountCategEnc(Trim(txtencid.Text))
     modAppSupport.RecordPatientActivity("Patient Data", Me.Name, "EncounterID", Trim(txtencid.Text))
-    $SyndroType = modNonMedical.GetFixedInvType(modPatient.ShowDiscountCategEnc(Trim(txtencid.Text)))
+    $SyndroType = modNonMedical.GetFixedInvType(xscheme)
+    $diagnoPanel = modNonMedical.GetDiagnosisPanel(xscheme)
     GetDefaultBillingmodes()
 
     $dateReg = modPatient.GetRecordDate(Trim(txtencid.Text))
@@ -1015,8 +1019,8 @@ Private Sub ButtonControl()
   tlbtndeldises.Enabled = xx
   btndismanual.Enabled = xx
   tbnsyndro.Enabled = xx
-  tbndisease.Enabled = xx
-  btnfinalsyndro.Enabled = xx
+  btnicdprov.Enabled = xx
+  btnicdfinal.Enabled = xx
   tbnfinaldisease.Enabled = xx
   btnfinalcustom.Enabled = xx
   ''alergy
@@ -1075,6 +1079,12 @@ Private Sub ButtonControl()
     Else
       btndismanual.Enabled = False
     Endif
+  Endif
+  If $diagnoPanel Then
+    tbnsyndro.Enabled = False
+    btndismanual.Enabled = False
+    btnfinalcustom.Enabled = False
+    tbnfinaldisease.Enabled = False
   Endif
 
   If $UserRestrict Then
@@ -1166,7 +1176,7 @@ Public Sub tlbtndeldises_Click()
 
 End
 
-Public Sub tbndisease_Click()
+Public Sub btnicdprov_Click()
 
   Dim sName As String[]
   Dim xallrg As Boolean
@@ -1175,12 +1185,17 @@ Public Sub tbndisease_Click()
     If MMain.$Ayurveda = "Yes" Then
       sName = AyurvedicDiagnosis(modAMISRep.$AyurvedicDiagnosis)
     Else
-      If modBasic.$ClinICDPunchFormat = "GridView" Then
-        sName = ICDGridView("Select Diseases")
+      If $diagnoPanel Then
+        sName = ICDGridView("Select Diseases", $diagnoPanel)
       Else
-        sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, modBasic.$FixDiagnoGroupOPD, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
+        If modBasic.$ClinICDPunchFormat = "GridView" Then
+          sName = ICDGridView("Select Diseases", $diagnoPanel)
+        Else
+          sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, modBasic.$FixDiagnoGroupOPD, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
+        Endif
       Endif
     Endif
+
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Provisional Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2], txtbedno.Text)
@@ -1311,7 +1326,7 @@ Public Sub tbnfinaldisease_Click()
 
 End
 
-Public Sub btnfinalsyndro_Click()
+Public Sub btnicdfinal_Click()
 
   Dim sName As String[]
   Dim xGroup As String
@@ -1321,17 +1336,22 @@ Public Sub btnfinalsyndro_Click()
     If MMain.$Ayurveda = "Yes" Then
       sName = AyurvedicDiagnosis(modAMISRep.$AyurvedicDiagnosis)
     Else
-      If modBasic.$ClinICDPunchFormat = "GridView" Then
-        sName = ICDGridView("Select Diseases")
+      If $diagnoPanel Then
+        sName = ICDGridView("Select Diseases", $diagnoPanel)
       Else
-        xGroup = modPathoSub.GetDiagnoGroupForService(txtbedno.Text)
-        If xGroup Then
-          sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, xGroup, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
+        If modBasic.$ClinICDPunchFormat = "GridView" Then
+          sName = ICDGridView("Select Diseases", $diagnoPanel)
         Else
-          sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, modBasic.$FixDiagnoGroupOPD, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
+          xGroup = modPathoSub.GetDiagnoGroupForService(txtbedno.Text)
+          If xGroup Then
+            sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, xGroup, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
+          Else
+            sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, modBasic.$FixDiagnoGroupOPD, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
+          Endif
         Endif
       Endif
     Endif
+
     If sName Then
       If sName[1] And If sName[0] Then
         modPatientGeneral.AddPatientFindings("Final Diagnosis", Trim(txtencid.Text), sName[0], sName[1], sName[2], txtbedno.Text)
@@ -4034,10 +4054,10 @@ Private Sub RestrictUserAccess()
     tlbtndeldises.Enabled = False
     btndismanual.Enabled = False
     tbnsyndro.Enabled = False
-    tbndisease.Enabled = False
+    btnicdprov.Enabled = False
   Endif
   If $UserRestrict.Exist("Final Diagnosis") Then
-    btnfinalsyndro.Enabled = False
+    btnicdfinal.Enabled = False
     tbnfinaldisease.Enabled = False
     btnfinalcustom.Enabled = False
   Endif

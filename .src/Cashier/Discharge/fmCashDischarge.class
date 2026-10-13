@@ -19,6 +19,7 @@ Private $AdvPayment As String
 Private $DefaultItemType As String
 Private $frmshow As Boolean
 ' Private $refShow As Boolean
+Private $diagnoPanel As String
 
 Private $TestArray As String[]
 Private $ServiceArray As String[]
@@ -465,8 +466,10 @@ Public Sub btnshow_Click()
         '   cmbdisctype.Enabled = False
         ' Endif
         xlock = False
-        resx = modDatabase.$myConn.Exec("select fldmode,fldbillingmode,fldacledger,fldbilltype,fldreference,fldlimit,fldlockstate,fldtaxsource from tbldiscount where fldtype=&1", $DiscPackage)
+        resx = modDatabase.$myConn.Exec("select fldmode,fldbillingmode,fldacledger,fldbilltype,fldreference,fldlimit,fldlockstate,fldtaxsource,flddiagnosis from tbldiscount where fldtype=&1", $DiscPackage)
         If resx.Available Then
+          ''diagnosis
+          $diagnoPanel = resx["flddiagnosis"]
           ''billingmode
           If resx["fldbillingmode"] Then
             cmbmode.Text = resx["fldbillingmode"]
@@ -707,8 +710,10 @@ Private Sub ShowBillingParam(sPack As String)
     cmbmode.Enabled = True
     cmbledgerac.Enabled = True
     xlock = False
-    resx = modDatabase.$myConn.Exec("select fldmode,fldbillingmode,fldacledger,fldbilltype,fldreference,fldlimit,fldlockstate,fldtaxsource from tbldiscount where fldtype=&1", sPack)
+    resx = modDatabase.$myConn.Exec("select fldmode,fldbillingmode,fldacledger,fldbilltype,fldreference,fldlimit,fldlockstate,fldtaxsource,flddiagnosis from tbldiscount where fldtype=&1", sPack)
     If resx.Available Then
+      ''diagnosis
+      $diagnoPanel = resx["flddiagnosis"]
       ''billingmode
       If resx["fldbillingmode"] Then
         cmbmode.Text = resx["fldbillingmode"]
@@ -1079,7 +1084,7 @@ Public Sub btnaddicd_Click()
   Dim sName As String[]
 
   If txtencid.Text Then
-    sName = ICDGridView("Select Diseases")
+    sName = ICDGridView("Select Diseases", $diagnoPanel)
     If sName Then
       txtsearch.Text = sName[0]
       txtcode.Text = sName[1]

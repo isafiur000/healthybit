@@ -19,6 +19,7 @@ Public Sub Form_Open()
   cmbqtylimit.List = ["Encounter", "Custom Days", "Month Interval", "Quarter Interval", "Half-year Interval", "Year Interval", "Fiscal Year", "Item/Fiscal Year"]
   cmbfixstate.List = ["OPD", "IPD", "All"]
   cmbtaxcollect.List = ["Patient", "Proportional"]
+  cmbdiagnosis.List = ["Health Insurance"]
   cmbfixdepart.List = modGeneral.GetDepartCaptionList()
   cmboffspring.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldtype as col from tbldiscount"))
   dtstart.Value = Now()
@@ -153,6 +154,7 @@ Public Sub btnOKdisc_Click()
     res["fldbankaccount"] = Trim(txtbankaccount.Text)
     res["fldcostlevel"] = txtcostval.Value
     res["fldtaxsource"] = cmbtaxcollect.Text
+    res["flddiagnosis"] = cmbdiagnosis.Text
 
     res["fldonline"] = cmbonline.Text
     res["fldbookday"] = txtbookdays.Value
@@ -222,6 +224,7 @@ Public Sub btnedit_Click()
     res["fldbankaccount"] = Trim(txtbankaccount.Text)
     res["fldcostlevel"] = txtcostval.Value
     res["fldtaxsource"] = cmbtaxcollect.Text
+    res["flddiagnosis"] = cmbdiagnosis.Text
 
     res["fldonline"] = cmbonline.Text
     res["fldbookday"] = txtbookdays.Value
@@ -273,7 +276,7 @@ Public Sub GridView1_Click()
 
   Dim res As Result
 
-  res = modDatabase.$myConn.Exec("select fldtype,fldmode,fldacledger,fldbilltype,fldamount,fldcredit,fldpercent,fldlimit,fldbillingmode,fldacledger,fldreference,fldyear,fldinvoice,fldreserved,fldcashincredit,fldforce,fldqtylimit,fldqtylimitday,fldfixdepart,fldlockstate,fldonline,fldoffspring,fldbankaccount,fldbookday,fldbookbefore,fldcostlevel,fldtaxsource from tbldiscount where fldtype=&1", GridView1[GridView1.Row, 0].Text)
+  res = modDatabase.$myConn.Exec("select fldtype,fldmode,fldacledger,fldbilltype,fldamount,fldcredit,fldpercent,fldlimit,fldbillingmode,fldacledger,fldreference,fldyear,fldinvoice,fldreserved,fldcashincredit,fldforce,fldqtylimit,fldqtylimitday,fldfixdepart,fldlockstate,fldonline,fldoffspring,fldbankaccount,fldbookday,fldbookbefore,fldcostlevel,fldtaxsource,flddiagnosis from tbldiscount where fldtype=&1", GridView1[GridView1.Row, 0].Text)
   If res.Available Then
     txtdiscper.Enabled = True
     txtdisctyp.Text = res["fldtype"]
@@ -309,6 +312,7 @@ Public Sub GridView1_Click()
       txtcostval.Value = 0
     Endif
     cmbtaxcollect.Text = res["fldtaxsource"]
+    cmbdiagnosis.Text = res["flddiagnosis"]
 
     cmbonline.Text = res["fldonline"]
     If res["fldbookday"] Then
@@ -428,7 +432,7 @@ Public Sub btnschemeall_Click()
   $BillingReport.UserData.Add(modReportVar.GetDateTimeReport(Now(), gb.GeneralDate), "PARAM2")
 
   For Row = 0 To GridView1.Rows.Count - 1
-    res = modDatabase.$myConn.Exec("select fldtype,fldmode,fldacledger,fldbilltype,fldamount,fldcredit,fldpercent,fldlimit,fldbillingmode,fldacledger,fldreference,fldyear,fldinvoice,fldreserved,fldcashincredit,fldforce,fldqtylimit,fldqtylimitday,fldoffspring,fldfixdepart,fldlockstate,fldcostlevel,fldtaxsource,fldonline,fldbookday,fldbookbefore,fldlab,fldradio,fldproc,fldequip,fldservice,fldother,fldmedicine,fldsurgical,fldextra,fldregist,fldcrdlab,fldcrdradio,fldcrdproc,fldcrdequip,fldcrdservice,fldcrdother,fldcrdmedicine,fldcrdsurgical,fldcrdextra from tbldiscount where fldtype=&1", GridView1[Row, 0].Text)
+    res = modDatabase.$myConn.Exec("select fldtype,fldmode,fldacledger,fldbilltype,fldamount,fldcredit,fldpercent,fldlimit,fldbillingmode,fldacledger,fldreference,fldyear,fldinvoice,fldreserved,fldcashincredit,fldforce,fldqtylimit,fldqtylimitday,fldoffspring,fldfixdepart,fldlockstate,fldcostlevel,fldtaxsource,flddiagnosis,fldonline,fldbookday,fldbookbefore,fldlab,fldradio,fldproc,fldequip,fldservice,fldother,fldmedicine,fldsurgical,fldextra,fldregist,fldcrdlab,fldcrdradio,fldcrdproc,fldcrdequip,fldcrdservice,fldcrdother,fldcrdmedicine,fldcrdsurgical,fldcrdextra from tbldiscount where fldtype=&1", GridView1[Row, 0].Text)
     If res.Available Then
       $BillingReport.AddSection(res["fldtype"], True)
 
@@ -525,6 +529,7 @@ Public Sub btnschemeall_Click()
       Else
         AddSettingReport("Start Date", dtstart.Tooltip, "", "")
       Endif
+      AddSettingReport("Diagnosis List", cmbdiagnosis.Tooltip, cmbdiagnosis.List.Join("; "), res["flddiagnosis"])
 
       AddSettingReport("Online Billing", cmbonline.Tooltip, cmbonline.List.Join("; "), res["fldonline"])
       AddSettingReport("Booking Days", txtbookdays.Tooltip, "", CStr(res["fldbookday"]))
