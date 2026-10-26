@@ -8,6 +8,7 @@ Public Sub Form_Open()
   Me.Center
   $packList = modNonMedical.FillDiscountCombo()
   cmbpackage.List = $packList
+  cmbactive.List = ["Under 18 Years", "Under 21 Years"]
   ShowCategoryGrid()
 
 End
@@ -28,6 +29,7 @@ Private Sub ClearAll()
 
   txtcategory.Text = ""
   cmbpackage.Text = ""
+  cmbactive.Text = ""
   chkrank.Value = False
   chkunit.Value = False
 
@@ -41,6 +43,7 @@ Public Sub btnadd_Click()
     res = modDatabase.$myConn.Create("tblcategorylist")
     res["fldcategory"] = Trim(txtcategory.Text)
     res["fldpackage"] = cmbpackage.Text
+    res["fldactive"] = cmbactive.Text
     res["fldhiderank"] = chkrank.Value
     res["fldhideunit"] = chkunit.Value
     res.Update
@@ -59,6 +62,7 @@ Public Sub btnedit_Click()
   If txtcategory.Text Then
     res = modDatabase.$myConn.Edit("tblcategorylist", "fldcategory=&1", Trim(txtcategory.Text))
     res["fldpackage"] = cmbpackage.Text
+    res["fldactive"] = cmbactive.Text
     res["fldhiderank"] = chkrank.Value
     res["fldhideunit"] = chkunit.Value
     res.Update
@@ -75,7 +79,7 @@ Private Sub ShowCategoryGrid()
   Dim Column As Integer
   Dim fld As ResultField
 
-  sql = "select fldcategory,fldpackage,fldhiderank,fldhideunit from tblcategorylist"
+  sql = "select fldcategory,fldpackage,fldhiderank,fldhideunit,fldactive from tblcategorylist"
   $rData = modDatabase.$myConn.Exec(sql)
 
   GridView1.Clear
@@ -98,11 +102,13 @@ Private Sub ShowCategoryGrid()
     .Columns[1].Width = 200 * modBasic.$AppWidthRatio
     .Columns[2].Width = 50 * modBasic.$AppWidthRatio
     .Columns[3].Width = 50 * modBasic.$AppWidthRatio
+    .Columns[4].Width = 125 * modBasic.$AppWidthRatio
 
     .Columns[0].Text = "Category"
     .Columns[1].Text = "Package"
     .Columns[2].Text = "Rank"
     .Columns[3].Text = "Unit"
+    .Columns[4].Text = "Active"
   End With
 
 End
@@ -111,6 +117,7 @@ Public Sub GridView1_Click()
 
   txtcategory.Text = GridView1[GridView1.Row, 0].Text
   cmbpackage.Text = GridView1[GridView1.Row, 1].Text
+  cmbactive.Text = GridView1[GridView1.Row, 4].Text
   If GridView1[GridView1.Row, 2].Text Then
     chkrank.Value = True
   Else

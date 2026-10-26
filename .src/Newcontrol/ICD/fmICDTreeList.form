@@ -2,6 +2,7 @@
 
 { Form Form
   MoveScaled(0,0,98,60)
+  Text = ("Select Diagnosis")
   Arrangement = Arrange.Horizontal
   Margin = True
   { Panel3 Panel
@@ -28,12 +29,24 @@
       MoveScaled(2,7,29,29)
       Expand = True
     }
+    { Panel4 Panel
+      MoveScaled(1,46,38,3.5)
+      { chkgroup CheckBox
+        MoveScaled(0,0.5,14,3)
+        Text = ("Group Only")
+      }
+      { chksemantic CheckBox
+        MoveScaled(18,0.5,18,3)
+        Text = ("Semantic Search")
+      }
+    }
   }
   { Panel2 Panel
     MoveScaled(40,0,1,51)
   }
   { Panel10 Panel
-    MoveScaled(41,0,55,58)
+    MoveScaled(41,0,56,58)
+    Expand = True
     Arrangement = Arrange.Vertical
     { Panel7 Panel
       MoveScaled(0,0,55,4)
@@ -43,12 +56,13 @@
       { chkleftsub CheckBox
         MoveScaled(0,0.375,3,3)
       }
-      { chkgroup CheckBox
-        MoveScaled(27,0.375,14,3)
-        Text = ("Group Only")
-      }
       { txtcodelist TextBox
         MoveScaled(44,0.375,10,3)
+      }
+      { btnsemantic Button
+        MoveScaled(22.25,0.375,4.5,3)
+        Visible = False
+        Picture = Picture["icon:/small/right"]
       }
     }
     { GridView2 GridView
@@ -59,7 +73,7 @@
     { Panel8 Panel
       MoveScaled(0,37,55,4)
       { txtcode TextBox
-        MoveScaled(7,0.5,11,3)
+        MoveScaled(6,0.5,11,3)
         ReadOnly = True
       }
       { btnadd Button
@@ -78,21 +92,23 @@
       }
     }
     { Panel1 Panel
-      MoveScaled(0,42,55,4)
-      { txtfixed TextBox
-        MoveScaled(7,0.5,43.75,3)
-        Enabled = False
-      }
+      MoveScaled(0,42,55,3)
+      Arrangement = Arrange.Horizontal
       { Label3 Label
-        MoveScaled(0,0.5,6,3)
+        MoveScaled(0,0,6,3)
         Border = Border.Plain
         Text = ("Fixed")
       }
+      { txtfixed TextBox
+        MoveScaled(6,0,43.75,3)
+        Enabled = False
+        Expand = True
+      }
     }
     { Panel9 Panel
-      MoveScaled(0,46,55,4)
+      MoveScaled(0,46,55,3.5)
       { txtname TextBox
-        MoveScaled(7,0.5,43.75,3)
+        MoveScaled(6,0.5,43.75,3)
       }
       { Label2 Label
         MoveScaled(0,0.5,6,3)

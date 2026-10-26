@@ -661,3 +661,13 @@ Public Sub mnudbdumprange_Click()
   fmDumpSelect.ShowModal
 
 End
+
+Public Sub mnuaddembedding_Click()
+
+  Dim res As Result
+
+  ''"ALTER TABLE tblpatientnotes ADD COLUMN fldembedding VECTOR(768) NOT NULL;"
+  res = modDatabase.$myConn.Exec(Subst("ALTER TABLE `&1` ADD COLUMN `&2` &3 NOT NULL", "tblpatientnotes", "fldembedding", "VECTOR(768)"))
+  Message.Info("Completed")
+
+End

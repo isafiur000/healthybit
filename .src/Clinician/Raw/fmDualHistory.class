@@ -33,6 +33,7 @@ Public Sub ActivateForm()
   If $Locked = True Then
     btnsavecompl.Enabled = True
     btnsaveillness.Enabled = True
+    btnsaveboth.Enabled = True
   Endif
 
 End
@@ -43,6 +44,7 @@ Public Sub SetEntryControls(xBool As Boolean)
   btnsavecompl.Enabled = xBool
   btnsaveillness.Enabled = xBool
   mnupatcomment.Enabled = xBool
+  btnsaveboth.Enabled = xBool
 
 End
 
@@ -210,5 +212,18 @@ End
 Public Sub mnupatcomment2_Click()
 
   modPatReports.GetArchiveCurrReportEnc("Scanned Images", $encid)
+
+End
+
+Public Sub btnsaveboth_Click()
+
+  SaveHistoryData("General Complaints", txtcomplnt)
+  SaveHistoryData("History of Illness", txtillness)
+
+  Balloon.Info(("Information saved"), btnsaveboth)
+  Balloon.Delay = modBasic.$BalloonDelay
+  btnsaveillness.Enabled = False
+  btnsavecompl.Enabled = False
+  btnsaveboth.Enabled = False
 
 End

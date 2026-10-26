@@ -339,6 +339,7 @@ Public Sub GridView2_Data(Row As Integer, Column As Integer)
         GridView2.Data.Text = xFinal[Row][CStr(Column)]
       Else
         GridView2.Data.RichText = xFinal[Row][CStr(Column)]
+        GridView2.Rows[Row].Height = Max(GridView2.Rows[Row].Height, GridView2.Data.Font.RichTextHeight(GridView2.Data.RichText, GridView2.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (GridView2.Rows.Height - GridView2.Font.Height))
       Endif
     Else
       GridView2.Data.Text = xFinal[Row][CStr(Column)]

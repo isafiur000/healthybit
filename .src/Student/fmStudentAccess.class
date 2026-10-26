@@ -54,62 +54,68 @@ End
 
 Public Sub btnload_Click()
 
+  Dim res As Result
+
   If txtuserid.Text Then
-    AddUserFormAccess(fmPatAdmit.Tag)
-    AddUserFormAccess(fmClinBedList.Tag)
-    AddUserFormAccess("Consultation List")
-    AddUserFormAccess("OPD Visit List")
+    res = modDatabase.$myConn.Exec("select fldid,fldformname,fldstatus from tblstudentaccess where flduserid=&1 and fldstudycode=&2", txtuserid.Text, $studtID)
+    If res.Available = False Then
 
-    AddUserFormAccess("Consult Report")
-    AddUserFormAccess("OP Visit Report")
-    AddUserFormAccess(fmClinSummary.Tag)
-    AddUserFormAccess(fmBedReport.Tag)
-    AddUserFormAccess(fmConfinement.Tag)
+      AddUserFormAccess(fmPatAdmit.Tag)
+      AddUserFormAccess(fmClinBedList.Tag)
+      AddUserFormAccess("Consultation List")
+      AddUserFormAccess("OPD Visit List")
 
-    AddUserFormAccess(fmDiagnosisReport.Tag)
-    AddUserFormAccess(fmProcedReport.Tag)
-    AddUserFormAccess(fmEquipReport.Tag)
-    AddUserFormAccess("Event Report")
-    AddUserFormAccess(fmDrugSearch.Tag)
-    AddUserFormAccess(fmDietReport.Tag)
+      AddUserFormAccess("Consult Report")
+      AddUserFormAccess("OP Visit Report")
+      AddUserFormAccess(fmClinSummary.Tag)
+      AddUserFormAccess(fmBedReport.Tag)
+      AddUserFormAccess(fmConfinement.Tag)
 
-    AddUserFormAccess(fmSampReport.Tag)
-    AddUserFormAccess(fmSensiReport.Tag)
-    AddUserFormAccess(fmSampRadio.Tag)
-    AddUserFormAccess(fmExamAll.Tag)
-    AddUserFormAccess(fmCustExamReport.Tag)
+      AddUserFormAccess(fmDiagnosisReport.Tag)
+      AddUserFormAccess(fmProcedReport.Tag)
+      AddUserFormAccess(fmEquipReport.Tag)
+      AddUserFormAccess("Event Report")
+      AddUserFormAccess(fmDrugSearch.Tag)
+      AddUserFormAccess(fmDietReport.Tag)
 
-    AddUserFormAccess(fmMedSearch.Tag)
-    AddUserFormAccess(fmMedStat.Tag)
-    AddUserFormAccess(fmPatclinSearch.Tag)
-    AddUserFormAccess(fmImageSearch.Tag)
-    AddUserFormAccess(fmPacsReport.Tag)
-    AddUserFormAccess(fmFIndRecord.Tag)
+      AddUserFormAccess(fmSampReport.Tag)
+      AddUserFormAccess(fmSensiReport.Tag)
+      AddUserFormAccess(fmSampRadio.Tag)
+      AddUserFormAccess(fmExamAll.Tag)
+      AddUserFormAccess(fmCustExamReport.Tag)
 
-    AddUserFormAccess(fmservreport.Tag)
-    AddUserFormAccess(fmGroupReport.Tag)
-    AddUserFormAccess(fmMasterReport.Tag)
-    AddUserFormAccess(fmGroupCateg.Tag)
+      AddUserFormAccess(fmMedSearch.Tag)
+      AddUserFormAccess(fmMedStat.Tag)
+      AddUserFormAccess(fmPatclinSearch.Tag)
+      AddUserFormAccess(fmImageSearch.Tag)
+      AddUserFormAccess(fmPacsReport.Tag)
+      AddUserFormAccess(fmFIndRecord.Tag)
 
-    AddUserFormAccess(fmPatBillRecord.Tag)
-    AddUserFormAccess(fmPatInvoiceReport.Tag)
-    AddUserFormAccess(fmDepositReport.Tag)
-    AddUserFormAccess(fmVoucherReport.Tag)
+      AddUserFormAccess(fmservreport.Tag)
+      AddUserFormAccess(fmGroupReport.Tag)
+      AddUserFormAccess(fmMasterReport.Tag)
+      AddUserFormAccess(fmGroupCateg.Tag)
 
-    AddUserFormAccess(fmSupplier.Tag)
-    AddUserFormAccess(fmmedreport.Tag)
-    AddUserFormAccess(fmMedSales.Tag)
-    AddUserFormAccess(fmmedTransfer.Tag)
+      AddUserFormAccess(fmPatBillRecord.Tag)
+      AddUserFormAccess(fmPatInvoiceReport.Tag)
+      AddUserFormAccess(fmDepositReport.Tag)
+      AddUserFormAccess(fmVoucherReport.Tag)
 
-    AddUserFormAccess(fmCusAccReport.Tag)
-    AddUserFormAccess("Query Report")
-    AddUserFormAccess(fmExportData.Tag)
+      AddUserFormAccess(fmSupplier.Tag)
+      AddUserFormAccess(fmmedreport.Tag)
+      AddUserFormAccess(fmMedSales.Tag)
+      AddUserFormAccess(fmmedTransfer.Tag)
 
-    AddUserFormAccess(fmPersonal.Tag)
-    AddUserFormAccess(fmMail.Tag)
-    AddUserFormAccess(fmStreaming.Tag)
+      AddUserFormAccess(fmCusAccReport.Tag)
+      AddUserFormAccess("Query Report")
+      AddUserFormAccess(fmExportData.Tag)
 
-    RefreshList()
+      AddUserFormAccess(fmPersonal.Tag)
+      AddUserFormAccess(fmMail.Tag)
+      AddUserFormAccess(fmStreaming.Tag)
+
+      RefreshList()
+    Endif
   Endif
 
 End
@@ -177,5 +183,12 @@ Public Sub ListView1_Click()
     ListView1.Current.Picture = pic1
   Endif
   res.Update
+
+End
+
+Public Sub btnclear_Click()
+
+  txtuserid.Text = ""
+  ListView1.Clear()
 
 End

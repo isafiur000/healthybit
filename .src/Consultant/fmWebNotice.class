@@ -1,0 +1,68 @@
+' Gambas class file
+
+Public Sub Form_Open()
+
+  Dim xlst As String
+
+  modGeneralMain.ArrangeFormCentre(Me)
+  cmbdisctype.List = modControlSub.GetDirectFillresult(modDatabase.$myConn.Exec("select fldtype from tbldiscount where fldonline=&1", "Enable"))
+  cmbdisctype.Add("%")
+  cmbdepart.List = modGeneral.RegistrationDeptList()
+
+  xlst = modSettings.ShowSettingFromFIle("OnlineBooking/CategoryList")
+  If xlst Then
+    cmbcategory.List = Split(xlst, ";")
+  Endif
+  cmbcategory.Add("General OPD")
+
+End
+
+Public Sub btnshow_Click()
+
+  If cmbcategory.Text And If cmbdisctype.Text And If cmbdepart.Text Then
+    SHowSelectNotice()
+  Endif
+
+End
+
+Private Sub SHowSelectNotice()
+
+  Dim res As Result
+
+  res = modDatabase.$myConn.Exec("select fldnotice from tblwebnotice where fldgroup=&1 and fldscheme=&2 and flddepartment=&3", cmbcategory.Text, cmbdisctype.Text, cmbdepart.Text)
+  If res.Available Then
+    TextHTML1.RichText = res["fldnotice"]
+    btnupdate.Text = "Edit"
+  Else
+    btnupdate.Text = "Add"
+  Endif
+
+End
+
+Public Sub btnupdate_Click()
+
+  Dim res As Result
+
+  If cmbcategory.Text And If cmbdisctype.Text And If cmbdepart.Text Then
+    If btnupdate.Text = "Edit" Then
+      res = modDatabase.$myConn.Edit("tblwebnotice", "fldgroup=&1 and fldscheme=&2 and flddepartment=&3", cmbcategory.Text, cmbdisctype.Text, cmbdepart.Text)
+      res["fldnotice"] = TextHTML1.RichText
+      res["flduptime"] = Now()
+      res.Update
+    Else If btnupdate.Text = "Add" Then
+      res = modDatabase.$myConn.Create("tblwebnotice")
+      res["fldgroup"] = cmbcategory.Text
+      res["fldscheme"] = cmbdisctype.Text
+      res["flddepartment"] = cmbdepart.Text
+      res["fldnotice"] = TextHTML1.RichText
+      res["flduserid"] = modBasic.$lbluser
+      res["fldtime"] = Now()
+      res["fldcomp"] = modBasic.$compID
+      res["fldsave"] = True
+      res["flduptime"] = ""
+      res.Update
+    Endif
+    SHowSelectNotice()
+  Endif
+
+End

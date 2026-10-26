@@ -69,6 +69,7 @@ Public Sub btnBrOK_Click()
     res["fldcomp"] = cmbcompid.Text
     res["fldinterval"] = txtinterval.Value
     res["fldstart"] = dtstart.Value
+    res["fldfollowhour"] = txtfollowup.Value
     If MMain.$WebEntry = True Then
       xIntVal = modString.GetDateString(Now())
       res["fldid"] = CLong(xIntVal)
@@ -104,6 +105,7 @@ Public Sub btnedit_Click()
     res["fldcomp"] = cmbcompid.Text
     res["fldinterval"] = txtinterval.Value
     res["fldstart"] = dtstart.Value
+    res["fldfollowhour"] = txtfollowup.Value
     res["xyz"] = False
     res.Update()
     ShowCostGrid()
@@ -126,7 +128,7 @@ Private Sub ShowCostGrid()
   Else
     xcateg = "%"
   Endif
-  sql = "select fldid,flddept,fldcateg,fldroom,flddisctype,fldactive,flddeptcode,fldcomp,fldinterval,fldstart from tbldepartment where fldcateg like &1 ORDER BY flddept ASC"
+  sql = "select fldid,flddept,fldcateg,fldroom,flddisctype,fldactive,flddeptcode,fldcomp,fldinterval,fldstart,fldfollowhour from tbldepartment where fldcateg like &1 ORDER BY flddept ASC"
   $rData = modDatabase.$myConn.Exec(sql, xcateg)
 
   GridView1.Clear
@@ -155,6 +157,7 @@ Private Sub ShowCostGrid()
     .Columns[7].Width = 100 * modBasic.$AppWidthRatio
     .Columns[8].Width = 1
     .Columns[9].Width = 1
+    .Columns[10].Width = 1
 
     .Columns[1].Text = "Department"
     .Columns[3].Text = "RoomNo"
@@ -192,6 +195,7 @@ Public Sub GridView1_Click()
     txtinterval.Value = 0
   Endif
   dtstart.Value = GridView1[GridView1.Row, 9].Text
+  txtfollowup.Value = GridView1[GridView1.Row, 10].Text
 
 End
 

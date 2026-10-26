@@ -90,27 +90,8 @@
     { Panel7 Panel
       MoveScaled(0,0,22,47)
       Arrangement = Arrange.Vertical
-      { Panel8 Panel
-        MoveScaled(0,1,22,3)
-        Border = Border.Plain
-        { rbasc RadioButton
-          MoveScaled(0.5,0,8,3)
-          Text = ("ASC")
-        }
-        { rbdesc RadioButton
-          MoveScaled(10,0,9,3)
-          Text = ("DESC")
-          Value = True
-        }
-      }
-      { GridView1 GridView
-        MoveScaled(1,5,16,24)
-        Expand = True
-        Mode = Select.Single
-        AutoResize = False
-      }
       { Panel10 Panel
-        MoveScaled(1,31,20,3)
+        MoveScaled(1,1,20,3)
         Border = Border.Plain
         { rbtext RadioButton
           MoveScaled(0.5,0,8,3)
@@ -120,6 +101,25 @@
         { rbgrid RadioButton
           MoveScaled(10,0,9,3)
           Text = ("Grid")
+        }
+      }
+      { GridView1 GridView
+        MoveScaled(1,5,16,24)
+        Expand = True
+        Mode = Select.Single
+        AutoResize = False
+      }
+      { Panel8 Panel
+        MoveScaled(0,35,22,3)
+        Border = Border.Plain
+        { rbasc RadioButton
+          MoveScaled(0.5,0,8,3)
+          Text = ("ASC")
+        }
+        { rbdesc RadioButton
+          MoveScaled(10,0,9,3)
+          Text = ("DESC")
+          Value = True
         }
       }
     }

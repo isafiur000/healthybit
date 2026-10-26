@@ -595,16 +595,28 @@ Catch
 
 End
 
-Private Sub GetFollowStatus()
+Private Sub GetFollowStatus(sDepart As String)
 
   Dim xday As Integer
 
   If $lstencDate Then
-    If modBasic.$AutoRegistNoBillHour Then
-      xday = CInt(modBasic.$AutoRegistNoBillHour)
+    If sDepart Then
+      xday = modGeneral.GetDepartFollowup(sDepart)
+      If Not xday Then
+        If modBasic.$AutoRegistNoBillHour Then
+          xday = CInt(modBasic.$AutoRegistNoBillHour)
+        Else
+          xday = 0
+        Endif
+      Endif
     Else
-      xday = 0
+      If modBasic.$AutoRegistNoBillHour Then
+        xday = CInt(modBasic.$AutoRegistNoBillHour)
+      Else
+        xday = 0
+      Endif
     Endif
+
     If xday Then
       If DateDiff($lstencDate, Now(), gb.Hour) < xday Then
         chkfollow.Value = True
@@ -914,7 +926,7 @@ Private Sub GetPatientInfoAll()
         lstdat = modPatient.GetRecordDate(modPatient.GetLastEncoutnerFromPatNo(Trim(txtpatno.Text)))
         $lstencDate = modPatient.GetLastPaidConsultDate(Trim(txtpatno.Text))
         If chkfollow.Enabled = True Then
-          GetFollowStatus()
+          GetFollowStatus("")
         Endif
         If lstdat Then
           If lstdat >= modDate.StartSqlDate(Date()) And If lstdat <= modDate.EndSqlDate(Date()) Then
@@ -1757,6 +1769,11 @@ End
 Public Sub btnshowrefr_Click()
 
   If cmbconsult.Text And If cmbbillmode.Text Then
+    If txtpatno.Text Then
+      If chkfollow.Enabled = True Then
+        GetFollowStatus(cmbconsult.Text)
+      Endif
+    Endif
     btnwebcam.Enabled = False
     If modBasic.$RegistAutoWebcam = "Yes" Then
       If Not $ImgPath Then
@@ -1765,9 +1782,11 @@ Public Sub btnshowrefr_Click()
     Endif
 
     If dtconsultdate.Value Then
-      If GetConsultLock() = True Then
-        btnOK.Enabled = False
-        txtpatno.SetFocus
+      If GetConsultLock() = True Then  ''general Check
+        If AllowPoliceCheck() = True Then ''Police Specific Check
+          btnOK.Enabled = False
+          txtpatno.SetFocus
+        Endif
       Else
         btnshowrefr.Tag = ""
         btnOK.Enabled = True
@@ -2046,7 +2065,7 @@ Public Sub cmbsex_GotFocus()
 
 End
 
-''for police
+''--------- for police -------------
 Public Sub cmbcategory_Click()
 
   Dim res As Result
@@ -2054,9 +2073,10 @@ Public Sub cmbcategory_Click()
   If cmbcategory.Text Then
     cmbdisctype.List = modControlSub.GetDirectFillresultNoNull(modDatabase.$myConn.Exec("select fldpackage as col from tblschemecategory where fldcategory=&1", cmbcategory.Text))
 
-    res = modDatabase.$myConn.Exec("select fldpackage,fldhiderank,fldhideunit from tblcategorylist where fldcategory=&1", cmbcategory.Text)
+    res = modDatabase.$myConn.Exec("select fldpackage,fldhiderank,fldhideunit,fldactive from tblcategorylist where fldcategory=&1", cmbcategory.Text)
     If res.Available Then
       cmbdisctype.Text = res["fldpackage"]
+      txtpolactive.Text = res["fldactive"]
       If res["fldhiderank"] = True Then
         cmbrank.Text = ""
         cmbrank.Enabled = False
@@ -2071,6 +2091,34 @@ Public Sub cmbcategory_Click()
       Endif
     Endif
   Endif
+
+End
+''----------end -------------------
+
+Private Function AllowPoliceCheck() As Boolean
+
+  Dim xPolgo As Boolean
+
+  If txtpolactive.Text Then
+    Select txtpolactive.Text
+      Case "Under 18 Years"
+        If txtyears.Value <= 18 Then
+          xPolgo = True
+        Else
+          xPolgo = False
+        Endif
+      Case "Under 21 Years"
+        If txtyears.Value <= 18 Then
+          xPolgo = True
+        Else
+          xPolgo = False
+        Endif
+    End Select
+  Else
+    xPolgo = True
+  Endif
+
+  Return xPolgo
 
 End
 

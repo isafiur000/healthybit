@@ -2769,9 +2769,9 @@ Public Sub btnfinalsyndro_Click()
       Else
         xGroup = modPathoSub.GetDiagnoGroupForService(txtbedno.Text)
         If xGroup Then
-          sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, xGroup, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
+          sName = ICDTree(modDatabase.$icdConn, "Disease", xGroup, modBasic.$FixDiagnoGroupER)
         Else
-          sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$ClinDiagnoChapterGrouped, modBasic.$FixDiagnoGroupOPD, modBasic.$FixDiagnoGroupER, modBasic.$ClinDiagnoSelectGrouped, modBasic.$ClinDiagnoSelectERGroup)
+          sName = ICDTree(modDatabase.$icdConn, "Disease", modBasic.$FixDiagnoGroupOPD, modBasic.$FixDiagnoGroupER)
         Endif
       Endif
     Endif
