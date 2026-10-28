@@ -2765,7 +2765,7 @@ Public Sub btnfinalsyndro_Click()
       sName = AyurvedicDiagnosis(modAMISRep.$AyurvedicDiagnosis)
     Else
       If modBasic.$ClinICDPunchFormat = "GridView" Then
-        sName = ICDGridView("Select Diseases")
+        sName = ICDGridView(modDatabase.$icdConn, "Disease")
       Else
         xGroup = modPathoSub.GetDiagnoGroupForService(txtbedno.Text)
         If xGroup Then

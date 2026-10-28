@@ -58,6 +58,7 @@ Public Sub Form_Open()
   cmbconsultcomment.List = ["Optional", "Essential"]
   cmbfracqty.List = ["Enable", "Disable"]
   cmbinjection.List = ["Enable", "Disable"]
+  cmbgridiagnosis.List = ["All", "Specific", "None"]
 
   cmbessendoctor.List = ["Enable", "Disable"]
   cmbtriage.List = ["Manual", "Dynamic"]
@@ -411,12 +412,13 @@ Private Sub ShowDataEntry()
   cmblockanestech.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/AnesTechnique_InputLock", cmbtarget.Text)
   cmbpathistory.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/History_InputFormat", cmbtarget.Text)
   cmbdietapprove.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/User_DietApproval", cmbtarget.Text)
-  cmbicdgroup.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/ICDGroup_Diagnosis", cmbtarget.Text)
   cmbhistdisch.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/History_Discharge_Variables", cmbtarget.Text)
 
   cmbconsultcomment.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/ConsultationComment", cmbtarget.Text)
   cmbfracqty.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/FractionalQuantity", cmbtarget.Text)
   cmbinjection.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/Injection_Route", cmbtarget.Text)
+  cmbicdgroup.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/ICDGroup_Diagnosis", cmbtarget.Text)
+  cmbgridiagnosis.Text = modGlobalSetting.ShowSettingFromDBAny("ClinicForms/Diagnosis_GridView", cmbtarget.Text)
 
 End
 
@@ -521,6 +523,14 @@ Public Sub btninjection_Click()
 
   modGlobalSetting.SaveSettingToDB("ClinicForms/Injection_Route", cmbinjection.Text, cmbtarget.Text)
   Balloon.Info(("Information saved"), btninjection)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btngridiagnos_Click()
+
+  modGlobalSetting.SaveSettingToDB("ClinicForms/Diagnosis_GridView", cmbgridiagnosis.Text, cmbtarget.Text)
+  Balloon.Info(("Information saved"), btngridiagnos)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

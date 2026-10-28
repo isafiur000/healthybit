@@ -171,7 +171,7 @@ Public Sub btnsaveimg_Click()
     If chkmultiple.Value = True Then
       Select Case Lower(File.Ext(txtpath.Text))
         Case "bmp", "jpg", "jpeg", "png", "gif", "svg", "tiff"
-          sPath = modDevAll.ComvertMultiImagesToPDF($ImgList)
+          sPath = modDevAll.ComvertMultiImagesToPDF($ImgList, chkcompress.Value)
         Case Else
           sPath = txtpath.Text
       End Select
@@ -206,7 +206,7 @@ Public Sub btnupload_Click()
     If chkmultiple.Value = True Then
       Select Case Lower(File.Ext(txtpath.Text))
         Case "bmp", "jpg", "jpeg", "png", "gif", "svg", "tiff"
-          xPath = modDevAll.ComvertMultiImagesToPDF($ImgList)
+          xPath = modDevAll.ComvertMultiImagesToPDF($ImgList, chkcompress.Value)
         Case Else
           xPath = txtpath.Text
       End Select

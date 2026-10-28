@@ -3,6 +3,8 @@
 Private $encid As String
 Private $BillMode As String
 Private $sPackage As String
+Private $gender As String
+Private $agegroup As String
 
 Private $bedLocation As String
 Private $xFinClear As Boolean
@@ -46,6 +48,8 @@ Public Sub Form_Open()
   txtgender.Text = modPatient.GetPatientSex($encid)
   $PatientNum = modPatient.GetPatientNoByEnc($encid)
   $xNHISCode = modPatient.GetPatientExtCOdebyEnc($encid)
+  $gender = modPatient.GetPatientSex($encid)
+  $agegroup = modPatient.GetAgeGroupFIxed($encid, Now())
   ShowBillingParam($sPackage)
   ' $BillMode = modNonMedical.GetDiscBindBillMode($sPackage)
   ' If Not $BillMode Then

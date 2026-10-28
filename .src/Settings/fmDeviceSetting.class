@@ -55,6 +55,7 @@ Public Sub Form_Open()
   cmbimagetopdf.List = ["imagemagick", "img2pdf"]
   cmbhtmltopdf.List = ["wkhtmltopdf", "chrome"]
   cmbnumtotext.List = ["number", "num2words"]
+  cmbpfgcompres.List = ["imagemagick", "ghostscript"]
 
   cmbmohocert.List = ["Enable", "Disable"]
 
@@ -1764,6 +1765,8 @@ Private Sub SHowPDFSetting()
   txtchromepath.Text = modSettings.ShowSettingFromFIle("Converter/ChromePath")
   cmbnumtotext.Text = modSettings.ShowSettingFromFIle("Converter/NumberToText")
 
+  cmbpfgcompres.Text = modSettings.ShowSettingFromFIle("PDFProcessing/Compression")
+
 End
 
 Public Sub btnimagetopdf_Click()
@@ -1805,6 +1808,15 @@ Public Sub btnnumtotext_Click()
   modSettings.SaveSettingsToFile("Converter/NumberToText", cmbnumtotext.Text)
   modBasic.$ConvNumberText = cmbnumtotext.Text
   Balloon.Info(("Information saved"), btnnumtotext)
+  Balloon.Delay = modBasic.$BalloonDelay
+
+End
+
+Public Sub btnpdfcompres_Click()
+
+  modSettings.SaveSettingsToFile("PDFProcessing/Compression", cmbpfgcompres.Text)
+  modBasic.$PDFCompression = cmbpfgcompres.Text
+  Balloon.Info(("Information saved"), btnpdfcompres)
   Balloon.Delay = modBasic.$BalloonDelay
 
 End

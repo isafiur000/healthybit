@@ -116,7 +116,7 @@ Public Sub Form_Open()
   FillCustomMenu()
   FillCustomFormMenu()
   FillExamMenu()
-  modSettings.ShowCheckBox(chkdate, "OPDPatientList/SelectDate")
+  modSettings.ShowCheckBoxFalse(chkdate, "OPDPatientList/SelectDate")
   dtsort.Enabled = chkdate.Value
   btnepsort.Enabled = chkdate.Value
   rbboth.Value = True

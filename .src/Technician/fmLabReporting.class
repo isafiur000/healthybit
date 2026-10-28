@@ -8,6 +8,8 @@ Private $rData As Result
 Private $aMyFields As String[]
 Private $rData1 As Result
 Private $aMyFields1 As String[]
+Private $gender As String
+Private $agegroup As String
 
 Private $tblpatlabtest As String
 Private $tblpatlabsubtest As String
@@ -40,7 +42,6 @@ Private $xData As Variant[]
 
 Public Sub Form_Open()
 
-  Dim xoption As String
   Dim ht As String
 
   modGeneralMain.ArrangeEmbedForms(Me, Panel1, "Column")
@@ -63,14 +64,8 @@ Public Sub Form_Open()
 
   dtselected.Value = Now()
   dtlisted.Value = Now()
-  xoption = modSettings.ShowSettingFromFIle("EntrySetting/Laboratory_DateSelect")
-  If xoption = "Yes" Then
-    chkdate.Value = True
-    chklist.Value = True
-  Else If xoption = "No" Then
-    chkdate.Value = False
-    chklist.Value = False
-  Endif
+  modSettings.ShowCheckBoxFalse(chkdate, "EntrySetting/Laboratory_DateSelect")
+  modSettings.ShowCheckBoxFalse(chklist, "EntrySetting/Laboratory_DateSelect")
   DateSelectionSett()
   rballtype.Value = True
   ShowInputForm()
@@ -279,6 +274,7 @@ Private Sub FillReportList()
   Dim str1 As String
   Dim xcomp As String
   Dim xstr As String
+  Dim xorder As String
 
   If modBasic.$LabReportingComp Then
     xcomp = modBasic.$LabReportingComp
@@ -291,23 +287,29 @@ Private Sub FillReportList()
     xstr = " and fldcomp_sample like &3"
   Endif
 
+  If chkorder.Value = True Then
+    xorder = " ORDER BY fldid ASC"
+  Else
+    xorder = ""
+  Endif
+
   If chklist.Value = True Then
     If cmbcategory.Text = "%" Then
       If rbencounter.Value = True Then
-        str1 = "select distinct(fldencounterval) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtime_sample>=&4 and fldtime_sample<=&5 and fldsampletype like &6 ORDER BY fldid ASC"
+        str1 = "select distinct(fldencounterval) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtime_sample>=&4 and fldtime_sample<=&5 and fldsampletype like &6" & xorder
       Else If rbsample.Value = True Then
-        str1 = "select distinct(fldsampleid) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtime_sample>=&4 and fldtime_sample<=&5 and fldsampletype like &6 ORDER BY fldid ASC"
+        str1 = "select distinct(fldsampleid) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtime_sample>=&4 and fldtime_sample<=&5 and fldsampletype like &6" & xorder
       Else If rbinvoice.Value = True Then
-        str1 = "select distinct(fldbillno) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtime_sample>=&4 and fldtime_sample<=&5 and fldsampletype like &6 ORDER BY fldid ASC"
+        str1 = "select distinct(fldbillno) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtime_sample>=&4 and fldtime_sample<=&5 and fldsampletype like &6" & xorder
       Endif
       $rData1 = modDatabase.$myConn.Exec(str1, "Sampled", True, xcomp, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), cmbspecimen.Text)
     Else
       If rbencounter.Value = True Then
-        str1 = "select distinct(fldencounterval) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7 ORDER BY fldid ASC"
+        str1 = "select distinct(fldencounterval) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7" & xorder
       Else If rbsample.Value = True Then
-        str1 = "select distinct(fldsampleid) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7 ORDER BY fldid ASC"
+        str1 = "select distinct(fldsampleid) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7" & xorder
       Else If rbinvoice.Value = True Then
-        str1 = "select distinct(fldbillno) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7 ORDER BY fldid ASC"
+        str1 = "select distinct(fldbillno) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7" & xorder
       Endif
       $rData1 = modDatabase.$myConn.Exec(str1, "Sampled", True, xcomp, cmbcategory.Text, modDate.StartSqlDate(dtlisted.Value), modDate.EndSqlDate(DateAdd(dtlisted.Value, gb.Day, CInt(txtrange.Value))), cmbspecimen.Text)
     Endif
@@ -316,20 +318,20 @@ Private Sub FillReportList()
     If modBasic.$SQLDateRange = "Disable" Then
       If cmbcategory.Text = "%" Then
         If rbencounter.Value = True Then
-          str1 = "select distinct(fldencounterval) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldsampletype like &4 ORDER BY fldid ASC"
+          str1 = "select distinct(fldencounterval) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldsampletype like &4" & xorder
         Else If rbsample.Value = True Then
-          str1 = "select distinct(fldsampleid) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldsampletype like &4 ORDER BY fldid ASC"
+          str1 = "select distinct(fldsampleid) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldsampletype like &4" & xorder
         Else If rbinvoice.Value = True Then
-          str1 = "select distinct(fldbillno) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldsampletype like &4 ORDER BY fldid ASC"
+          str1 = "select distinct(fldbillno) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldsampletype like &4" & xorder
         Endif
         $rData1 = modDatabase.$myConn.Exec(str1, "Sampled", True, xcomp, cmbspecimen.Text)
       Else
         If rbencounter.Value = True Then
-          str1 = "select distinct(fldencounterval) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldsampletype like &5 ORDER BY fldid ASC"
+          str1 = "select distinct(fldencounterval) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldsampletype like &5" & xorder
         Else If rbsample.Value = True Then
-          str1 = "select distinct(fldsampleid) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldsampletype like &5 ORDER BY fldid ASC"
+          str1 = "select distinct(fldsampleid) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldsampletype like &5" & xorder
         Else If rbinvoice.Value = True Then
-          str1 = "select distinct(fldbillno) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldsampletype like &5 ORDER BY fldid ASC"
+          str1 = "select distinct(fldbillno) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldsampletype like &5" & xorder
         Endif
         $rData1 = modDatabase.$myConn.Exec(str1, "Sampled", True, xcomp, cmbcategory.Text, cmbspecimen.Text)
       Endif
@@ -337,20 +339,20 @@ Private Sub FillReportList()
     Else
       If cmbcategory.Text = "%" Then
         If rbencounter.Value = True Then
-          str1 = "select distinct(fldencounterval) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtime_sample>=&4 and fldtime_sample<=&5 and fldsampletype like &6 ORDER BY fldid ASC"
+          str1 = "select distinct(fldencounterval) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtime_sample>=&4 and fldtime_sample<=&5 and fldsampletype like &6" & xorder
         Else If rbsample.Value = True Then
-          str1 = "select distinct(fldsampleid) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtime_sample>=&4 and fldtime_sample<=&5 and fldsampletype like &6 ORDER BY fldid ASC"
+          str1 = "select distinct(fldsampleid) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtime_sample>=&4 and fldtime_sample<=&5 and fldsampletype like &6" & xorder
         Else If rbinvoice.Value = True Then
-          str1 = "select distinct(fldbillno) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtime_sample>=&4 and fldtime_sample<=&5 and fldsampletype like &6 ORDER BY fldid ASC"
+          str1 = "select distinct(fldbillno) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtime_sample>=&4 and fldtime_sample<=&5 and fldsampletype like &6" & xorder
         Endif
         $rData1 = modDatabase.$myConn.Exec(str1, "Sampled", True, xcomp, modDate.StartSqlDate(DateAdd(dtlisted.Value, gb.Day, 0 - 365)), modDate.EndSqlDate(dtlisted.Value), cmbspecimen.Text)
       Else
         If rbencounter.Value = True Then
-          str1 = "select distinct(fldencounterval) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7 ORDER BY fldid ASC"
+          str1 = "select distinct(fldencounterval) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7" & xorder
         Else If rbsample.Value = True Then
-          str1 = "select distinct(fldsampleid) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7 ORDER BY fldid ASC"
+          str1 = "select distinct(fldsampleid) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7" & xorder
         Else If rbinvoice.Value = True Then
-          str1 = "select distinct(fldbillno) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7 ORDER BY fldid ASC"
+          str1 = "select distinct(fldbillno) as fldparent,fldencounterval,fldencounterval,fldencounterval from " & $tblpatlabtest & " where fldstatus=&1 and fldsave_sample=&2" & xstr & " and fldtestid in(select fldtestid from tbltest where fldcategory like &4) and fldtime_sample>=&5 and fldtime_sample<=&6 and fldsampletype like &7" & xorder
         Endif
         $rData1 = modDatabase.$myConn.Exec(str1, "Sampled", True, xcomp, cmbcategory.Text, modDate.StartSqlDate(DateAdd(dtlisted.Value, gb.Day, 0 - 365)), modDate.EndSqlDate(dtlisted.Value), cmbspecimen.Text)
       Endif
@@ -400,6 +402,8 @@ Public Sub GridView1_Click()
     txtpatientaddress.Text = modPatient.GetPatientAddressByEnc($encid)
 
     $patNo = modPatient.GetPatientNoByEnc($encid)
+    $gender = modPatient.GetPatientSex($encid)
+    $agegroup = modPatient.GetAgeGroupFIxed($encid, Now())
     xstatus = modPatient.CurrentAdmissionStatus($encid)
     txtlocation.Text = modPatient.GetLocationSetting($encid, xstatus)
     txtcolor.Background = modPatient.GetPatientColor($encid)
@@ -516,6 +520,8 @@ Public Sub btnshow_Click()
     txtpatientaddress.Text = modPatient.GetPatientAddressByEnc($encid)
 
     $patNo = modPatient.GetPatientNoByEnc($encid)
+    $gender = modPatient.GetPatientSex($encid)
+    $agegroup = modPatient.GetAgeGroupFIxed($encid, Now())
     xstatus = modPatient.CurrentAdmissionStatus($encid)
     txtlocation.Text = modPatient.GetLocationSetting($encid, xstatus)
     txtcolor.Background = modPatient.GetPatientColor($encid)
@@ -834,7 +840,7 @@ Public Sub TableView1_Data(Row As Integer, Column As Integer)
     If chkfreeview.Value = True Then
       TableView1.Data.RichText = $rData[$aMyFields[Column]]
     Else
-      TableView1.Data.RichText = modLabTest.GetLabTestValueString($rData["fldid"], modLabSub.GetTestUnitFromButton(rbsi, rbmetric), True, $encid, $tblpatlabtest)
+      TableView1.Data.RichText = modLabTest.GetQuickLabTestValueString($encid, $gender, $agegroup, $rData["fldid"], modLabSub.GetTestUnitFromButton(rbsi, rbmetric), True, $tblpatlabtest)
     Endif
     If modBasic.$RichtextResizeRow = "Yes" Then
       TableView1.Rows[Row].Height = Max(TableView1.Rows[Row].Height, TableView1.Data.Font.RichTextHeight(TableView1.Data.RichText, TableView1.Columns[Column].Width - 5 * modBasic.$AppWidthRatio) + (TableView1.Rows.Height - TableView1.Font.Height))
@@ -1023,7 +1029,7 @@ Private Sub EnterTextData()
 
   Else If TableView1[TableView1.Row, 11].Text = "Quantitative" Then
     xunit = modLabSub.GetTestUnitFromButton(rbsi, rbmetric)
-    defVal = modLabTest.GetTestQuantiValueLabID($encid, TableView1[TableView1.Row, 0].Text, xunit, $tblpatlabtest)
+    defVal = modLabTest.GetQuickTestQuantiValueLabID($encid, $gender, $agegroup, TableView1[TableView1.Row, 0].Text, xunit, $tblpatlabtest)
     If Not defVal Then
       xType = modFixLab.GetLabTestOptionType(TableView1[TableView1.Row, 2].Text)
       If xType = "Calculated" Then
@@ -1033,7 +1039,7 @@ Private Sub EnterTextData()
         Endif
       Endif
     Endif
-    hForm2 = New FmLabQuantiVal(TableView1[TableView1.Row, 0].Text, TableView1[TableView1.Row, 2].Text, defVal, xunit, TableView1[TableView1.Row, 9].Text, CompLabNotification(), $tblpatlabtest)
+    hForm2 = New FmLabQuantiVal($encid, TableView1[TableView1.Row, 0].Text, TableView1[TableView1.Row, 2].Text, defVal, xunit, TableView1[TableView1.Row, 9].Text, CompLabNotification(), $tblpatlabtest)
     hForm2.ShowModal
 
   Endif
@@ -1264,9 +1270,11 @@ End
 Public Sub btnsms_Click()
 
   Dim xmsg As String
+  Dim xreport As String
 
   If TableView1.Rows.Selection.Count > 0 Then
-    xmsg = modDevice.SendSMSLabPatient($encid, TableView1[TableView1.Row, 2].Text, modLabTest.GetLabTestValueString(TableView1[TableView1.Row, 0].Text, modLabSub.GetTestUnitFromButton(rbsi, rbmetric), False, $encid, $tblpatlabtest))
+    xreport = modLabTest.GetQuickLabTestValueString($encid, $gender, $agegroup, TableView1[TableView1.Row, 0].Text, modLabSub.GetTestUnitFromButton(rbsi, rbmetric), False, $tblpatlabtest)
+    xmsg = modDevice.SendSMSLabPatient($encid, TableView1[TableView1.Row, 2].Text, xreport)
   Endif
   If xmsg Then
     Balloon.Info(xmsg, btnsms)
