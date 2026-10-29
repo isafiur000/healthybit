@@ -2,45 +2,63 @@
 
 { Form Form
   MoveScaled(0,0,75,60)
+  Expand = True
   Text = ("ICD Database")
-  Resizable = False
-  { txtname ButtonBox
-    MoveScaled(4,1,26,3)
-    ToolTip = ("Write few alphabets of disease name for quick sorting")
-    Picture = Picture["icon:/small/cancel"]
-  }
-  { txtcode TextBox
-    MoveScaled(61,1,12,3)
+  Arrangement = Arrange.Vertical
+  Margin = True
+  { Panel1 Panel
+    MoveScaled(0,0,74,3.5)
+    { txtname ButtonBox
+      MoveScaled(4,0,24,3)
+      ToolTip = ("Write few alphabets of disease name for quick sorting")
+      Picture = Picture["icon:/small/cancel"]
+    }
+    { btninsert Button
+      MoveScaled(38,0,11,3)
+      Text = ("Select")
+      Picture = Picture["icon:/small/apply"]
+    }
+    { btnok Button
+      MoveScaled(49,0,11,3)
+      Text = ("Save")
+      Picture = Picture["icon:/small/save"]
+    }
+    { txtcode TextBox
+      MoveScaled(62,0,12,3)
+    }
+    { chkleftmain CheckBox
+      MoveScaled(1,0,3,3)
+    }
+    { btnsemantic Button
+      MoveScaled(28,0,4.5,3)
+      Visible = False
+      Picture = Picture["icon:/small/right"]
+    }
   }
   { GridView1 GridView
     MoveScaled(1,5,73,50.625)
+    Expand = True
     Mode = Select.Single
     Header = GridView.Horizontal
     AutoResize = False
   }
-  { btnok Button
-    MoveScaled(46,1,13.375,3)
-    Text = ("Save")
-    Picture = Picture["icon:/small/save"]
-  }
-  { chkleftmain CheckBox
-    MoveScaled(1,1,3,3)
-  }
-  { chkboth CheckBox
-    MoveScaled(1,56,19,3)
-    Text = ("With Both Codings")
-  }
-  { chkgroup CheckBox
-    MoveScaled(26,56,14,3)
-    Text = ("Group Only")
-  }
-  { btninsert Button
-    MoveScaled(34,1,10,3)
-    Text = ("Select")
-    Picture = Picture["icon:/small/apply"]
-  }
-  { chkall CheckBox
-    MoveScaled(59,56,14,3)
-    Text = ("Select All")
+  { Panel2 Panel
+    MoveScaled(1,56,72.875,3.5)
+    { chkgroup CheckBox
+      MoveScaled(19,0,14,3)
+      Text = ("Group Only")
+    }
+    { chksemantic CheckBox
+      MoveScaled(36,0,18,3)
+      Text = ("Semantic Search")
+    }
+    { chkall CheckBox
+      MoveScaled(58,0,14,3)
+      Text = ("Select All")
+    }
+    { chkboth CheckBox
+      MoveScaled(0,0,16,3)
+      Text = ("Both Codings")
+    }
   }
 }
